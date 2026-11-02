@@ -79,6 +79,54 @@ namespace PortfolioIdleRpg.Editor
     }
 
     /// <summary>
+    /// 에디터가 읽을 앱 설정(config/local.json, config/live.json)을 고르는 메뉴. 고른 것은 이 기기의 EditorPrefs에만 남고,
+    /// 플레이어 빌드가 넣는 앱 설정(TypeScriptBuildValidation)과는 상관없다. 다음 플레이부터 적용된다.
+    /// </summary>
+    public static class AppConfigMenu
+    {
+        /// <summary>로컬 서버와 로컬 버킷을 고르는 메뉴 경로.</summary>
+        private const string LocalMenu = "Tools/TypeScript/App Config/Local";
+
+        /// <summary>Live VPS의 서버와 패치를 고르는 메뉴 경로.</summary>
+        private const string LiveMenu = "Tools/TypeScript/App Config/Live";
+
+        /// <summary>로컬 설정을 고른다.</summary>
+        [MenuItem(LocalMenu)]
+        private static void UseLocal() => SetConfig("local");
+
+        /// <summary>Live 설정을 고른다. 에디터에서 로그인하면 Live DB의 계정을 쓴다.</summary>
+        [MenuItem(LiveMenu)]
+        private static void UseLive() => SetConfig("live");
+
+        /// <summary>Local 메뉴에 체크를 표시하고, 플레이 중이면 끈다.</summary>
+        [MenuItem(LocalMenu, true)]
+        private static bool ValidateLocal() => Validate("local", LocalMenu);
+
+        /// <summary>Live 메뉴에 체크를 표시하고, 플레이 중이면 끈다.</summary>
+        [MenuItem(LiveMenu, true)]
+        private static bool ValidateLive() => Validate("live", LiveMenu);
+
+        /// <summary>고른 환경이면 메뉴에 체크를 표시한다.</summary>
+        /// <param name="environment">메뉴의 환경.</param>
+        /// <param name="menu">메뉴 경로.</param>
+        /// <returns>플레이 중이 아니라 메뉴를 쓸 수 있으면 true.</returns>
+        private static bool Validate(string environment, string menu)
+        {
+            string selected = EditorPrefs.GetString(RuntimeFacade.EditorConfigPref, RuntimeFacade.EditorDefaultConfig);
+            Menu.SetChecked(menu, selected == environment);
+            return !EditorApplication.isPlayingOrWillChangePlaymode;
+        }
+
+        /// <summary>환경을 EditorPrefs에 쓴다. RuntimeFacade.Config가 에디터에서 그 환경의 파일을 읽는다.</summary>
+        /// <param name="environment">환경 이름. config 폴더의 파일 이름이다.</param>
+        private static void SetConfig(string environment)
+        {
+            EditorPrefs.SetString(RuntimeFacade.EditorConfigPref, environment);
+            Debug.Log($"[TypeScript] The Editor reads config/{environment}.json from the next Play.");
+        }
+    }
+
+    /// <summary>
     /// Development가 선택된 채로 플레이어를 빌드하지 못하게 막고, 앱에 들 부트 번들(Resources)이 있고 지금 C# API로
     /// 빌드됐는지 본다. 게임 번들은 앱에 들지 않고 첫 실행의 패치가 받는다. 고른 환경의 앱 설정(config/환경.json)을
     /// Resources에 넣는다. 환경은 메뉴 빌드가 고른 것이나 배치 모드 인자 -idleEnvironment이고, 없으면 local이다.

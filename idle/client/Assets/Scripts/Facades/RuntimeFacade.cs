@@ -28,6 +28,12 @@ namespace PortfolioIdleRpg.Facades
         /// <summary>앱 설정 파일(local.json, live.json)의 폴더. Unity 프로젝트 루트(idle/client/) 기준 상대 경로다.</summary>
         internal const string ConfigDirectory = "config";
 
+        /// <summary>에디터가 읽을 앱 설정의 환경(local, live)을 담는 EditorPrefs 키. 메뉴 Tools/TypeScript/App Config가 쓴다.</summary>
+        internal const string EditorConfigPref = "PortfolioIdleRpg.EditorAppConfig";
+
+        /// <summary>에디터에서 고른 것이 없을 때의 환경.</summary>
+        internal const string EditorDefaultConfig = "local";
+
         /// <summary>
         /// 스크립트의 요청. 스크립트가 이 파사드를 정적으로 부르므로 static이다. 런타임은 한 번에 하나만 돈다.
         /// </summary>
@@ -49,15 +55,16 @@ namespace PortfolioIdleRpg.Facades
 
         /// <summary>
         /// 앱 설정(환경, 게임 서버 주소, 패치 주소)의 JSON. 검사는 TypeScript가 한다(parseAppConfig). 플레이어는 빌드가
-        /// Resources에 넣은 설정을 읽고, 에디터는 늘 로컬 설정(config/local.json)을 읽는다. 마지막 플레이어 빌드가 남긴
-        /// 설정으로 에디터가 Live에 붙지 않게 하기 위해서다.
+        /// Resources에 넣은 설정을 읽고, 에디터는 메뉴 Tools/TypeScript/App Config에서 고른 설정(기본은 config/local.json)을
+        /// 읽는다. 마지막 플레이어 빌드가 남긴 설정으로 에디터가 Live에 붙지 않게 하기 위해서다.
         /// </summary>
         /// <returns>설정 JSON.</returns>
         [Preserve]
         public static string Config()
         {
 #if UNITY_EDITOR
-            return File.ReadAllText(Path.Combine(Application.dataPath, "..", ConfigDirectory, "local.json"));
+            string environment = UnityEditor.EditorPrefs.GetString(EditorConfigPref, EditorDefaultConfig);
+            return File.ReadAllText(Path.Combine(Application.dataPath, "..", ConfigDirectory, $"{environment}.json"));
 #else
             TextAsset config = Resources.Load<TextAsset>(ConfigResource);
             if (config == null)
