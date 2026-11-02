@@ -355,9 +355,9 @@ CI 시간(2026-10-31 두 번째 실행 41183358485): 체크아웃부터 테스�
 | 곳 | 할 일 | GitHub Secrets |
 | --- | --- | --- |
 | DNS | hPanel의 `dennou.cloud`에 A 레코드 `idle` → 187.127.101.236. 끝남(2026-10-31) | 없음 |
-| VPS | CI 전용 SSH 키(`~/Keys/idle-deploy`)를 만들고 VPS에서 root로 `server/deploy/setup.sh`를 돌림. 끝남(2026-10-31). 비밀값만 남음 | `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_KNOWN_HOSTS` |
+| VPS | CI 전용 SSH 키(`~/Keys/idle-deploy`)를 만들고 VPS에서 root로 `server/deploy/setup.sh`를 돌림. 끝남(2026-10-31). 비밀값만 남음 | `VPS_SSH_KEY`, `VPS_KNOWN_HOSTS`(변수: `VPS_HOST`, `VPS_USER`) |
 | Unity | 계정 이메일·비밀번호. 끝남(2026-10-31). Personal은 CI가 계정으로 좌석을 받습니다(라이선스 파일 `.ulf`는 만든 컴퓨터에 묶여 CI 컨테이너에서 거절되므로 `UNITY_LICENSE`는 쓰지 않음) | `UNITY_EMAIL`, `UNITY_PASSWORD` |
-| Android | 전용 키스토어 만들기(잃으면 업데이트 설치가 안 되니 따로 백업), base64로 바꾸기 | `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASS`, `ANDROID_KEYALIAS_NAME`, `ANDROID_KEYALIAS_PASS` |
+| Android | 전용 키스토어 만들기(잃으면 업데이트 설치가 안 되니 따로 백업), base64로 바꾸기 | `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASS`, `ANDROID_KEYALIAS_PASS`(변수: `ANDROID_KEYALIAS_NAME`) |
 
 GitHub Release는 태그가 빌드한 커밋을 붙잡습니다. 그래서 2026-11-02에 기록 없이 공개할 때 같은 저장소를 강제 푸시하지 않고 새 공개 저장소로 옮겼고, 옛 Release와 태그는 비공개로 둔 옛 저장소(`game-portfolio-archive`)에 남았습니다([release.md 10절](../../release.md#10-공개-저장소로-옮기기)).
 

@@ -215,7 +215,8 @@ Unity를 쓰지 않는 액션은 약 3분이고, Library 캐시가 APK 빌드를
 
 - **한 번에 하나**: 모든 액션이 같은 `concurrency` 그룹(`idle-live`)이라 차례로 돌고, 앞 실행을 취소하지 않습니다. 도는 실행을 손으로 취소하지 않습니다. 올리기는 더하기만 해서 괜찮지만, 공개 중에 멈추면 서버만 바뀌고 포인터는 그대로일 수 있습니다. 그때는 같은 버전을 `idle publish / rollback`으로 다시 공개합니다.
 - **`main`에서 실행**: 손으로 실행하는 액션은 기본 브랜치(`main`)에 파일이 있어야 목록에 보입니다. 개발도 `main`에서 하므로 워크플로를 고치면 바로 반영됩니다. 다른 브랜치에서 새 액션을 만들면 `main`에 합친 뒤에 보입니다(2026-10-31까지는 `feat/p0-foundation`에서 개발하며 워크플로만 `main`에 복사했음).
-- **비밀값**(Settings → Secrets and variables → Actions): `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_KNOWN_HOSTS`, `UNITY_EMAIL`, `UNITY_PASSWORD`, `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASS`, `ANDROID_KEYALIAS_NAME`, `ANDROID_KEYALIAS_PASS`. `UNITY_LICENSE`는 쓰지 않습니다(Personal 라이선스 파일은 CI 컨테이너에서 거절됨).
+- **비밀값**(Settings → Secrets and variables → Actions → Secrets): `VPS_SSH_KEY`, `VPS_KNOWN_HOSTS`, `UNITY_EMAIL`, `UNITY_PASSWORD`, `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASS`, `ANDROID_KEYALIAS_PASS`.
+- **변수**(같은 곳의 Variables): `VPS_HOST`(`idle.dennou.cloud`), `VPS_USER`(`deploy`), `ANDROID_KEYALIAS_NAME`(`idle`). 숨길 필요가 없는 값이라 변수에 둡니다. 비밀값은 로그에서 같은 글자를 모두 `***`로 가리므로, 이 값들을 비밀값에 두면 로그의 `idle`과 `deploy`가 모두 가려집니다(2026-11-02에 옮김). `UNITY_LICENSE`는 쓰지 않습니다(Personal 라이선스 파일은 CI 컨테이너에서 거절됨).
 
 ## 8. 멈췄을 때
 
@@ -258,7 +259,7 @@ git remote add archive https://github.com/colorsockss/game-portfolio-archive.git
 git update-ref refs/heads/main "$c" && git reset -q
 ```
 
-**2. 비밀값**: 7절의 비밀값 10개를 새 저장소에 다시 넣습니다. 비밀값은 읽어 올 수 없으므로 원본(키 파일, 계정, 키스토어)에서 넣습니다(`gh secret set <이름> -R colorsockss/game-portfolio`).
+**2. 비밀값**: 7절의 비밀값을 새 저장소에 다시 넣습니다(그때는 변수 3개도 비밀값이라 10개였음). 비밀값은 읽어 올 수 없으므로 원본(키 파일, 계정, 키스토어)에서 넣습니다(`gh secret set <이름> -R colorsockss/game-portfolio`).
 
 **3. Live를 새 커밋으로 다시 내기**: Live가 옛 커밋 id를 기억합니다. 패치 매니페스트의 `parts`와 `server`, VPS의 서버 릴리스 이름(`releases/<커밋>`)이 모두 커밋을 가리키고, 조합 검사 2와 5는 그 커밋을 `git diff`로 견주므로, 이것을 마치기 전에는 단위 액션이 `Cannot compare …`로 멈춥니다. Actions → `idle all`, 브랜치 `main`, `apk` 켬. 서버(`releases/<새 커밋>`, 다시 시작), 패치, APK가 새 커밋으로 나갑니다. 조합 검사는 모든 단위가 같은 커밋이라 옛 커밋을 보지 않습니다. 새 저장소에는 태그가 없어 APK 번호가 1부터 다시 시작하므로, 옛 빌드가 깔린 기기는 지우고 설치합니다(저장 데이터는 서버에 있음).
 
