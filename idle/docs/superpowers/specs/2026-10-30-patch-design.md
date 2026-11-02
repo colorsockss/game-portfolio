@@ -2,7 +2,7 @@
 
 - 날짜: 2026-10-30. 2026-10-31에 Live를 Cloudflare R2·Railway에서 사용자가 이미 쓰는 Hostinger VPS로 바꿨습니다.
 - 범위: 백로그 74의 패치를 어디에 어떤 모양으로 올리고 부트가 어떻게 찾는지, 앱이 환경(로컬, Live)을 어떻게 고르는지, APK·패치·게임 서버를 CI로 어떻게 함께 내보내는지. 부트의 확인 흐름(`client/TypeScript/src/application/update/update.ts`), 릴리스 빌드(`tools/build.mjs`, `tools/manifest.mjs`), 새 올리기 도구, Addressables 빌드 출력(`Assets/Editor/Patch/RemoteContent.cs`), 앱 설정, VPS의 웹 서버와 게임 서버 설정, 새 CI 워크플로를 바꿉니다. 에셋을 번들로 나누는 방식(그룹)과 받는 시점(설치 전에 모두 받음)은 바꾸지 않습니다. Android만 다룹니다.
-- 상태: 7절의 1–4단계가 끝났고 Live가 떠 있습니다(2026-10-31, 백로그 75). VPS를 준비했고(`server/deploy/setup.sh`), 이 Mac에서 패치를 올려 채널 포인터를 옮겼으며(`npm run patch`), 게임 서버를 한 번 배포했습니다(`server/deploy/deploy.sh`). 5단계의 CI 워크플로(`.github/workflows/idle-android.yml`)는 썼고, 2026-10-31 두 번째 실행에서 Unity 활성화와 Addressables 빌드까지 확인했습니다(APK 빌드와 내보내기는 아직). 내보내기를 단위로 나눠(4.12절) 단위마다 액션을 두었고(2026-10-31), 전체 액션이 세 번째 실행에서 끝까지 돌아 서버 `ea63042`, 패치 `e23dd7312d1f78b3`, APK Release `idle-android-b3`이 Live였습니다. 2026-11-02에 그 Release와 태그를 지우고 `idle APK`로 `idle aos build 1`을 다시 냈고, 단위 액션은 `publish` 없이 시험했습니다(백로그 75).
+- 상태: 7절의 1–4단계가 끝났고 Live가 떠 있습니다(2026-10-31, 백로그 75). VPS를 준비했고(`server/deploy/setup.sh`), 이 Mac에서 패치를 올려 채널 포인터를 옮겼으며(`npm run patch`), 게임 서버를 한 번 배포했습니다(`server/deploy/deploy.sh`). 5단계의 CI 워크플로(`.github/workflows/idle-android.yml`)는 썼고, 2026-10-31 두 번째 실행에서 Unity 활성화와 Addressables 빌드까지 확인했습니다(APK 빌드와 내보내기는 아직). 내보내기를 단위로 나눠(4.12절) 단위마다 액션을 두었고(2026-10-31), 전체 액션이 세 번째 실행에서 끝까지 돌아 서버 `ea63042`, 패치 `e23dd7312d1f78b3`, APK Release `idle-android-b3`이 Live였습니다. 2026-11-02에 그 Release와 태그를 지우고 `idle APK`로 `idle aos build 1`을 다시 냈고, 단위 액션은 `publish` 없이 시험했습니다(백로그 75). 같은 날 공개 저장소로 옮겨 Live는 서버 `c7922ad`, 패치 `28b79e6cf1b7cff3`, APK `idle aos build 1`입니다(백로그 76).
 
 ## 1. 목적
 
@@ -359,7 +359,7 @@ CI 시간(2026-10-31 두 번째 실행 41183358485): 체크아웃부터 테스�
 | Unity | 계정 이메일·비밀번호. 끝남(2026-10-31). Personal은 CI가 계정으로 좌석을 받습니다(라이선스 파일 `.ulf`는 만든 컴퓨터에 묶여 CI 컨테이너에서 거절되므로 `UNITY_LICENSE`는 쓰지 않음) | `UNITY_EMAIL`, `UNITY_PASSWORD` |
 | Android | 전용 키스토어 만들기(잃으면 업데이트 설치가 안 되니 따로 백업), base64로 바꾸기 | `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASS`, `ANDROID_KEYALIAS_NAME`, `ANDROID_KEYALIAS_PASS` |
 
-GitHub Release는 태그가 빌드한 커밋을 붙잡으므로, 마지막에 main을 커밋 하나로 합칠 때 옛 Release와 태그를 함께 지웁니다(그 APK도 사라짐).
+GitHub Release는 태그가 빌드한 커밋을 붙잡습니다. 그래서 2026-11-02에 기록 없이 공개할 때 같은 저장소를 강제 푸시하지 않고 새 공개 저장소로 옮겼고, 옛 Release와 태그는 비공개로 둔 옛 저장소(`game-portfolio-archive`)에 남았습니다([release.md 10절](../../release.md#10-공개-저장소로-옮기기)).
 
 ## 10. 위험
 

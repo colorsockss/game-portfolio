@@ -81,7 +81,7 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 
 부트 번들(앱에 드는 TS)과 APK를 빌드해 GitHub Release(태그 `idle-android-b<번호>`, 제목 `idle aos build <번호>`)로 냅니다. APK는 늘 공개를 함께 합니다.
 
-- 번호는 지금까지의 `idle-android-b<번호>` 태그에서 가장 큰 것의 다음입니다(Number the APK 단계). 이 번호가 versionCode, 버전 이름(`0.1.<번호>`), 태그, Release 제목에 함께 쓰이므로, 어느 액션(`idle APK`, `idle all`)에서 내도 저장소 전체에서 늘고 앞의 APK 위에 덮어 설치됩니다. 2026-11-02에 사용자가 Release 3을 지워 태그도 지우고 1부터 다시 시작했고, 지금 마지막은 2(`idle aos build 2`, `ba8b246`)입니다. 기기에 예전 빌드 3이 있으면 지우고 설치합니다(저장 데이터는 서버에 있음).
+- 번호는 지금까지의 `idle-android-b<번호>` 태그에서 가장 큰 것의 다음입니다(Number the APK 단계). 이 번호가 versionCode, 버전 이름(`0.1.<번호>`), 태그, Release 제목에 함께 쓰이므로, 어느 액션(`idle APK`, `idle all`)에서 내도 저장소 전체에서 늘고 앞의 APK 위에 덮어 설치됩니다. 2026-11-02에 공개 저장소로 옮기며 1부터 다시 시작했고(10절), 지금 마지막은 1(`idle aos build 1`, `c7922ad`)입니다. 옛 저장소의 빌드가 깔린 기기는 지우고 설치합니다(저장 데이터는 서버에 있음).
 
 - `full_patch`를 끄면 APK만 냅니다. 채널은 그대로이고, Release 본문에 지금 Live 패치 버전을 적습니다. C# API가 Live와 같을 때만 됩니다(다르면 기준 버전 받기에서 `No patch is published for API …`로 멈춤).
 - C# API가 바뀌었으면 `full_patch`를 켭니다. 새 API의 채널에는 아직 버전이 없으므로 패치 네 단위와 서버를 모두 이번 커밋에서 냅니다. Unity는 한 번만 띄워 에셋과 APK를 함께 빌드합니다(`PlayerBuild.BuildForCi`).
@@ -100,7 +100,7 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 
 ### 3.7 `idle all`
 
-패치 네 단위와 서버를 모두 이번 커밋에서 내고, `apk`를 켜면 APK도 냅니다. 첫 출시나 여러 단위가 함께 바뀐 큰 변경용입니다. 2026-10-31 세 번째 실행(41194734472)이 지금 Live의 서버 `ea63042`와 패치 `e23dd7312d1f78b3`를 냈습니다. 그때의 APK(빌드 3)는 2026-11-02에 지웠고, 지금 APK는 `idle APK`(41412647184)가 낸 `idle aos build 2`입니다.
+패치 네 단위와 서버를 모두 이번 커밋에서 내고, `apk`를 켜면 APK도 냅니다. 첫 출시나 여러 단위가 함께 바뀐 큰 변경용입니다. 공개 저장소의 첫 실행(2026-11-02, 41457129314)이 지금 Live의 서버 `c7922ad`, 패치 `28b79e6cf1b7cff3`, APK `idle aos build 1`을 냈습니다.
 
 ## 4. 공용 워크플로의 단계
 
@@ -192,8 +192,8 @@ ssh -i ~/Keys/idle-deploy deploy@idle.dennou.cloud 'readlink /srv/idle/server/cu
 | `idle assets`, `publish` 끔(41399141216) | 15분 27초 | Library 캐시 없음. 조합 검사 3에서 멈춤(그때 Release가 없었음) |
 | `idle data`, `publish` 끔(41398422576) | 3분 18초 | 조합 검사 3에서 멈춤(같은 이유) |
 | `idle server`, `publish` 끔(41398784285) | 3분 6초 | 서버를 올려 두기만 함 |
-
 | `idle APK`(41412647184, Library 캐시 있음) | 18분 51초 | Build the APK 11분 48초(캐시 없을 때 42분 46초), Library 받기 54초·저장 57초, 디스크 정리 1분 58초 |
+| `idle all` + APK(41457129314, 2026-11-02, 공개 저장소의 4 vCPU 러너, Library 캐시 없음) | 27분 19초 | Build the APK 21분 41초(2 vCPU에서 42분 46초), 디스크 정리 1분 46초, 테스트 53초 |
 
 Unity를 쓰지 않는 액션은 약 3분이고, Library 캐시가 APK 빌드를 42분 46초에서 11분 48초로 줄였습니다.
 
@@ -209,7 +209,7 @@ Unity를 쓰지 않는 액션은 약 3분이고, Library 캐시가 APK 빌드를
 
 캐시는 브랜치마다 따로입니다(한 실행은 자기 브랜치와 `main`의 것만 받음). `feat/p0-foundation`에서 쌓은 캐시는 `main`에서 받지 못하므로 `main`의 첫 Unity 실행은 Library 캐시 없이 돕니다. Unity 실행의 캐시(LFS, PuerTS, Library)는 잡 끝이 아니라 채운 직후에 저장해서, 뒤의 검사나 내보내기가 실패해도 남습니다(2026-11-02에 바꿈. 그전에는 `idle assets`가 Unity 빌드에 성공하고도 조합 검사에서 멈춰 캐시를 남기지 못했음). Library는 실행마다 새로 저장하고, 지난 것은 7일 동안 쓰지 않거나 저장소 합계가 10 GB를 넘으면 GitHub가 지웁니다. 10 GB까지는 무료입니다.
 
-**비용**: 2026-11-02에 공개 저장소가 되어 표준 러너의 실행 시간은 무료입니다(그전에는 비공개 저장소라 무료 플랜 월 2,000분에서 빠졌고 APK 실행 한 번이 약 48분이었음). 공개 저장소의 Linux 표준 러너는 4 vCPU라 위의 시간(2 vCPU에서 잼)보다 짧을 수 있습니다. VPS는 이미 쓰는 것이라 더 드는 돈이 없습니다.
+**비용**: 2026-11-02에 공개 저장소가 되어 표준 러너의 실행 시간은 무료입니다(그전에는 비공개 저장소라 무료 플랜 월 2,000분에서 빠졌고 APK 실행 한 번이 약 48분이었음). 공개 저장소의 Linux 표준 러너는 4 vCPU라, Library 캐시 없는 `idle all` + APK가 47분 52초에서 27분 19초로 줄었습니다. VPS는 이미 쓰는 것이라 더 드는 돈이 없습니다.
 
 ## 7. 지켜야 할 것
 
@@ -253,7 +253,7 @@ Unity를 쓰지 않는 액션은 약 3분이고, Library 캐시가 APK 빌드를
 gh repo rename game-portfolio-archive -R colorsockss/game-portfolio --yes
 gh repo create colorsockss/game-portfolio --public
 c=$(git commit-tree 'main^{tree}' -m "<커밋 메시지>")
-git push origin "$c:refs/heads/main"
+git push origin "${c}:refs/heads/main"
 git remote add archive https://github.com/colorsockss/game-portfolio-archive.git
 git update-ref refs/heads/main "$c" && git reset -q
 ```
@@ -283,4 +283,4 @@ npm run patch -w @idle/client -- pull <버전> /tmp/idle-record-check
 - **롤백**: 옮기기 전 버전으로 되돌리면 그 버전이 옛 커밋을 적고 있어, 그 뒤의 단위 액션이 다시 `Cannot compare …`로 멈춥니다. 되돌려야 하면 그 뒤에 `idle all`을 냅니다.
 - **VPS**: 옛 서버 릴리스와 패치 버전은 이름에 옛 커밋이 들어 있을 뿐이라 남겨도 됩니다(정리는 설계 4.11절).
 - **문서의 커밋 해시와 실행 id**(`performance.md`의 기준 커밋, 6절의 잰 실행 등)는 옛 저장소의 것이라 새 저장소에서 열리지 않습니다. 기록으로만 남깁니다.
-- 3·4가 끝나면 이 절과 백로그 76을 끝난 상태로 고칩니다.
+- **한 일**(2026-11-02): 1–4를 마쳤습니다. `idle all`(41457129314)이 서버 `c7922ad`, APK `idle aos build 1`을 냈고, 패치는 옛 저장소에서 올려 둔 `28b79e6cf1b7cff3`과 같아 올리기를 건너뛰었으므로 그 기록(`parts`, `server`, `build`)을 새 커밋과 실행으로 고쳤습니다.
