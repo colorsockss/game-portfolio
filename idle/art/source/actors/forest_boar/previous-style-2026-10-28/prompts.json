@@ -1,0 +1,479 @@
+{
+  "actor": "forest_boar",
+  "tool": "Codex image_gen",
+  "author": "colorsocks",
+  "styleReference": "../hero/reference.png",
+  "reference": {
+    "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view game character sprite reference for a mobile idle RPG battle\nInput images: Image 1 is STYLE ONLY. Match its extremely bold near-black contour, simple flat color shapes, chunky cute proportions and minimal face. Do not copy the knight, clothing, scarf, sword or human anatomy.\nPrimary request: a stocky brown wild boar with white tusks and a bristly mane, standing in a relaxed idle pose. A compact cute forest enemy, strict side profile looking to image-LEFT. Large rounded head, short blunt tan snout, one simple black oval eye visible on the near side, small pointed ear, ivory tusks curving up beside its snout, rounded barrel body, a short dark-chocolate bristly ridge along its back, four short sturdy legs with tiny dark cloven hooves, tiny curled tail on image-right.\nProportions: compact silhouette, overall nose-to-tail width only about 1.35 times the mane-to-hoof height, so running and lunging poses have room inside square game frames. Head is large and legs are stubby. Readable as a wild boar, not a domestic pink pig. Near two legs warm brown, far two legs slightly darker and offset so their anatomy is readable.\nColor palette: chestnut brown body, tan muzzle, dark chocolate mane/hooves, ivory tusks; near-black outline. A single simple shadow patch and a small flat top-left highlight. No detailed fur or gradients.\nComposition/framing: exactly ONE whole boar, strict side view facing LEFT, centered, hooves on one flat baseline, generous transparent margins, nothing cropped.\nConstraints: true transparent background; no ground shadow, no props on the ground, no effects, no landscape, no text. No armor, clothes or weapon.",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-418c35db-5717-4f58-9106-bb99415fb24d.png",
+    "source": "reference.png",
+    "inputImages": [
+      "../hero/reference.png"
+    ]
+  },
+  "clips": [
+    {
+      "key": "idle",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view sprite animation strip for a mobile idle RPG battle\nInput images: Image 1 is the exact FOREST BOAR character reference. Preserve its compact body proportions, chestnut fur, tan snout with two nostrils, ivory upward-curving tusks, near-black thick outlines, dark jagged mane, small tail, four short sturdy legs and dark cloven hooves. Keep the single simple black oval near eye. Near-side legs are brighter brown; far-side legs are darker and behind the body. Do not exchange near and far legs or attach them to different shoulders or hips.\nAnimation consistency: same animal, same body volume, same camera zoom, same head and tusk sizes in EVERY frame. Keep the body facing image-LEFT throughout. Motion is in place; the game translates the actor. No perspective or camera rotation. Do not add or remove anatomical parts. Occluded far-side legs may be hidden naturally behind the near legs.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. All silhouettes are separated by ample transparent gaps and entirely inside their own cell. Neutral mane-tip to hoof height about 60% of a square cell; neutral total width about 80%. Maximum pose width below 92% of a cell. Same invisible ground baseline at 78% of cell height. No visible grid, labels, floor, shadows, dust, speed lines or effects. True transparent background.\n\nPrimary request: TWO frames of a breathing IDLE loop. Frame 1 is the exact relaxed neutral standing pose in Image 1. Frame 2 has a tiny breath out: body just 3% lower, belly subtly wider, head dips a little, same calm open eye. All four hooves remain planted, legs unchanged in place. Tusks and mane retain exact size and shape. No step, no jump, no floating feet. Keep the same hoof contact baseline. 2:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-ed8ee78c-9b51-4f82-8b01-a810ef95345a.png",
+      "source": "idle.png",
+      "final": "../../../actors/forest_boar/idle.png",
+      "inputImages": [
+        "reference.png"
+      ]
+    },
+    {
+      "key": "enter",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view sprite animation strip for a mobile idle RPG battle\nInput images: Image 1 is the exact FOREST BOAR character reference. Preserve its compact body proportions, chestnut fur, tan snout with two nostrils, ivory upward-curving tusks, near-black thick outlines, dark jagged mane, small tail, four short sturdy legs and dark cloven hooves. Keep the single simple black oval near eye. Near-side legs are brighter brown; far-side legs are darker and behind the body. Do not exchange near and far legs or attach them to different shoulders or hips.\nAnimation consistency: same animal, same body volume, same camera zoom, same head and tusk sizes in EVERY frame. Keep the body facing image-LEFT throughout. Motion is in place; the game translates the actor. No perspective or camera rotation. Do not add or remove anatomical parts. Occluded far-side legs may be hidden naturally behind the near legs.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. All silhouettes are separated by ample transparent gaps and entirely inside their own cell. Neutral mane-tip to hoof height about 60% of a square cell; neutral total width about 80%. Maximum pose width below 92% of a cell. Same invisible ground baseline at 78% of cell height. No visible grid, labels, floor, shadows, dust, speed lines or effects. True transparent background.\n\nPrimary request: TWO frames of a fast RUNNING ENTER loop toward image-LEFT, clearly more energetic than walking.\nFrame 1 is a compact gathered stride: body dips slightly, head points forward-left, forelegs flex under the chest and hind legs gather under the rump ready to push. One hoof pair touches the ground baseline.\nFrame 2 is the extended stride: front legs stretch forward-left and hind legs push backward-right, body leans forward slightly. Keep legs short and the whole pose compact, torso unchanged in length. The lowest supporting hoof is on the same baseline; the other hooves are swinging above it. Use an eager open eye without changing face or tusk design.\nExactly four legs with normal shoulders and hips, clear grounded fast running cadence, no dust or motion streaks. The chestnut body and tusks must match Image 1, no added muscle or shaggy fur. 2:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-c5fbd6a0-128d-4fd4-89ce-d95771e3b671.png",
+      "source": "enter.png",
+      "final": "../../../actors/forest_boar/enter.png",
+      "inputImages": [
+        "reference.png"
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nInput images: Image 1 is the four-frame WALK animation target. Image 2 is a leg-pose guide.\nPrimary request: edit ONLY the FRONT TWO LEGS in the THIRD figure of Image 1. Its bright foreground front leg currently reaches left, duplicating frame 1. It must instead reach BACKWARD RIGHT. Use the THIRD figure of Image 2 as the guide: the large bright foreleg there slopes down-right under the belly, and the dark far foreleg reaches down-left.\nIn the THIRD figure of Image 1, redraw the bright front leg from its existing shoulder to a hoof well behind the shoulder, at roughly 60% of that cell's width, touching the baseline. The large bright leg must form a diagonal DOWN-RIGHT from shoulder to hoof. The dark far front leg instead reaches diagonally DOWN-LEFT, its hoof around 25% of cell width. This reversed stride is the only change.\nDo NOT edit the other three figures. Do NOT move the third figure's body, head, tusks, mane, tail or hind legs. Retain exactly two forelegs and two hind legs. Keep same colors, short limb lengths, perspective and frame scale. Four figures in one horizontal row on a true transparent background. No other marks.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-c816ad91-c279-490b-b2b2-78498d7c191d.png",
+      "source": "walk.png",
+      "final": "../../../actors/forest_boar/walk.png",
+      "inputImages": [
+        "rejected/walk-04.png",
+        "rejected/walk-02.png"
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view sprite animation strip for a mobile idle RPG battle\nInput images: Image 1 is the exact FOREST BOAR character reference. Preserve its compact body proportions, chestnut fur, tan snout with two nostrils, ivory upward-curving tusks, near-black thick outlines, dark jagged mane, small tail, four short sturdy legs and dark cloven hooves. Keep the single simple black oval near eye. Near-side legs are brighter brown; far-side legs are darker and behind the body. Do not exchange near and far legs or attach them to different shoulders or hips.\nAnimation consistency: same animal, same body volume, same camera zoom, same head and tusk sizes in EVERY frame. Keep the body facing image-LEFT throughout. Motion is in place; the game translates the actor. No perspective or camera rotation. Do not add or remove anatomical parts. Occluded far-side legs may be hidden naturally behind the near legs.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. All silhouettes are separated by ample transparent gaps and entirely inside their own cell. Neutral mane-tip to hoof height about 60% of a square cell; neutral total width about 80%. Maximum pose width below 92% of a cell. Same invisible ground baseline at 78% of cell height. No visible grid, labels, floor, shadows, dust, speed lines or effects. True transparent background.\n\nPrimary request: FOUR frames of a TUSK CHARGE attack toward image-LEFT.\nFrame 1: small wind-up, body shifts weight back onto hind legs, front knees soften, head begins to dip. Same nearly neutral height and calm but focused eye.\nFrame 2: deeper anticipation, bends all legs, shoulders lower, head and snout bow down-left while tusks rotate naturally with the skull and point at the target. Hind legs compress ready to push.\nFrame 3: the HIT at full extension. A clear leftward compact lunge: neck and head thrust FORWARD LEFT and slightly down, ivory tusks lead the charge, back becomes more horizontal, front legs brace ahead while rear legs push back. Tusks remain the same size as reference, not weapons. This pose must look distinctly different from normal running. Body length unchanged; maximum silhouette width within 92% of one cell.\nFrame 4: recovery to the original neutral standing shape and height in Image 1. All hooves back under the body, head and mane back up, simple relaxed black eye.\nIn every frame one or more planted hooves contact the same baseline. No airborne leap. Exactly four attached short legs, original single near-side eye, same fur and tail. No impact spark, dust, speed lines, gore, enemy, armor or objects. 4:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-aa7515a1-74e5-4c0a-9d17-984abb3f6021.png",
+      "source": "attack.png",
+      "final": "../../../actors/forest_boar/attack.png",
+      "inputImages": [
+        "reference.png"
+      ]
+    },
+    {
+      "key": "hit",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view sprite animation strip for a mobile idle RPG battle\nInput images: Image 1 is the exact FOREST BOAR character reference. Preserve its compact body proportions, chestnut fur, tan snout with two nostrils, ivory upward-curving tusks, near-black thick outlines, dark jagged mane, small tail, four short sturdy legs and dark cloven hooves. Keep the single simple black oval near eye. Near-side legs are brighter brown; far-side legs are darker and behind the body. Do not exchange near and far legs or attach them to different shoulders or hips.\nAnimation consistency: same animal, same body volume, same camera zoom, same head and tusk sizes in EVERY frame. Keep the body facing image-LEFT throughout. Motion is in place; the game translates the actor. No perspective or camera rotation. Do not add or remove anatomical parts. Occluded far-side legs may be hidden naturally behind the near legs.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. All silhouettes are separated by ample transparent gaps and entirely inside their own cell. Neutral mane-tip to hoof height about 60% of a square cell; neutral total width about 80%. Maximum pose width below 92% of a cell. Same invisible ground baseline at 78% of cell height. No visible grid, labels, floor, shadows, dust, speed lines or effects. True transparent background.\n\nPrimary request: TWO frames of a HIT REACTION. Frame 1: recoils backward away from an impact coming from image-LEFT. Head jerks slightly up and right, shoulder leans back, front knees bend; hind hooves support the weight. Near eye tightly squeezed shut as one simple curved stroke. Keep four short attached legs and unchanged tusks. Frame 2: settles back toward the exact original neutral standing height and pose in Image 1, near eye opening normally again. Face remains LEFT in both frames. Same ground baseline, same zoom and body length.\nNo flashes, impact marks, symbols, tears, particles or other characters. This is a mild game reaction, no injury. 2:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-74d6c006-08d4-4f8d-8a20-9b2e03a29691.png",
+      "source": "hit.png",
+      "final": "../../../actors/forest_boar/hit.png",
+      "inputImages": [
+        "reference.png"
+      ]
+    },
+    {
+      "key": "die",
+      "count": 3,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view sprite animation strip for a mobile idle RPG battle\nInput images: Image 1 is the exact FOREST BOAR character reference. Preserve its compact body proportions, chestnut fur, tan snout with two nostrils, ivory upward-curving tusks, near-black thick outlines, dark jagged mane, small tail, four short sturdy legs and dark cloven hooves. Keep the single simple black oval near eye. Near-side legs are brighter brown; far-side legs are darker and behind the body. Do not exchange near and far legs or attach them to different shoulders or hips.\nAnimation consistency: same animal, same body volume, same camera zoom, same head and tusk sizes in EVERY frame. Keep the body facing image-LEFT throughout. Motion is in place; the game translates the actor. No perspective or camera rotation. Do not add or remove anatomical parts. Occluded far-side legs may be hidden naturally behind the near legs.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. All silhouettes are separated by ample transparent gaps and entirely inside their own cell. Neutral mane-tip to hoof height about 60% of a square cell; neutral total width about 80%. Maximum pose width below 92% of a cell. Same invisible ground baseline at 78% of cell height. No visible grid, labels, floor, shadows, dust, speed lines or effects. True transparent background.\n\nPrimary request: THREE DEFEATED frames, one horizontal row.\nFrame 1: stagger at nearly the same standing height as Image 1, knees wobble and head droops just a little; visible eye becomes a tired curved closed line. Same torso and head size.\nFrame 2: collapse downward, front knees buckle and hindquarters sink, chest lowers toward the ground, snout dips left, legs fold naturally beneath the body. About 70% of standing pose height. Closed eye.\nFrame 3: fully lying flat ON ITS SIDE, whole heavy barrel torso and head rest on the ground, head still at the left end, snout touching the ground, short legs folded together sideways along the lower body. It must look completely down, not still standing or crouching. About 55% of standing pose height. Same-sized skull, tusks, torso and limbs, only rotated and folded. Near eye closed as a simple curved line, no X.\nThe contact point of hooves or collapsed body shares the same baseline across all three frames. Keep entire silhouette compact and inside the cell, no stretched or shrunken anatomy. Do not lose tail or tusks. No ghosts, stars, crosses, damage effects, blood, text or ground shadow. 3:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-13ba58ad-1acf-4f4d-9410-d2824f4c6ddc.png",
+      "source": "die.png",
+      "final": "../../../actors/forest_boar/die.png",
+      "inputImages": [
+        "reference.png"
+      ]
+    }
+  ],
+  "rejected": [
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view sprite animation strip for a mobile idle RPG battle\nInput images: Image 1 is the exact FOREST BOAR character reference. Preserve its compact body proportions, chestnut fur, tan snout with two nostrils, ivory upward-curving tusks, near-black thick outlines, dark jagged mane, small tail, four short sturdy legs and dark cloven hooves. Keep the single simple black oval near eye. Near-side legs are brighter brown; far-side legs are darker and behind the body. Do not exchange near and far legs or attach them to different shoulders or hips.\nAnimation consistency: same animal, same body volume, same camera zoom, same head and tusk sizes in EVERY frame. Keep the body facing image-LEFT throughout. Motion is in place; the game translates the actor. No perspective or camera rotation. Do not add or remove anatomical parts. Occluded far-side legs may be hidden naturally behind the near legs.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. All silhouettes are separated by ample transparent gaps and entirely inside their own cell. Neutral mane-tip to hoof height about 60% of a square cell; neutral total width about 80%. Maximum pose width below 92% of a cell. Same invisible ground baseline at 78% of cell height. No visible grid, labels, floor, shadows, dust, speed lines or effects. True transparent background.\n\nPrimary request: FOUR distinct frames of a calm WALKING cycle IN PLACE toward image-LEFT, with four short legs. Alternate the NEAR foreleg with the FAR foreleg, never repeat the same step. The chest and rump stay in the same horizontal position, and the mane and head bob only slightly. This is an easy walk, not a jump, gallop or attack.\nFrame 1, contact A: brighter NEAR front leg reaches forward (toward image-LEFT), its hoof touches ground. Near hind leg extends gently backward (right). Dark FAR front leg is back and FAR hind leg is forward. Normal standing body height.\nFrame 2, passing A: near front hoof supports the chest under the shoulder. Dark FAR front leg bends and swings forward past it. Near hind leg bends forward under the belly while far hind leg supports the rump. Body very slightly higher.\nFrame 3, opposite contact B: dark FAR front leg is forward (left) on the ground, while brighter NEAR front leg is back (right). Brighter NEAR hind leg is forward and dark FAR hind leg is back. This is the opposite stride from frame 1, same body height.\nFrame 4, passing B: FAR front hoof supports the chest under the shoulder while brighter NEAR front leg lifts and swings forward. Near hind leg supports rump while dark far hind leg swings forward. This is the opposite passing phase from frame 2.\nGrounded hooves always share the SAME baseline; swinging hooves lift only a little. Do not lengthen the legs. Keep lighter near legs drawn in front and dark far legs behind. Head relaxed, eye open, tusks unchanged, face LEFT in all frames. No lifted whole-body airborne pose. 4:1 wide canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-4074d6fe-aafd-4962-b326-05b3a0a7dd7a.png",
+      "source": "rejected/walk-01.png",
+      "inputImages": [
+        "reference.png"
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nInput images: Image 1 is the WALK STRIP to edit. Image 2 is the character design reference.\nPrimary request: fix ONLY the leg animation in the four frames of Image 1. The current brighter NEAR FRONT LEG, the big leg attached directly below the cheek at the left side of the torso, stays nearly vertical and planted in all four frames. It MUST swing forward and backward in a clear alternating walk.\nFrame 1: change that BRIGHT NEAR FRONT LEG into a diagonal reaching strongly FORWARD to image-LEFT; its hoof is LEFT of its shoulder. Move the DARK FAR FRONT LEG backward so its hoof is RIGHT of that shoulder. Brighter near hind leg reaches back/right, far hind reaches forward/left.\nFrame 2: bright near front leg supports weight under shoulder; dark far front leg bends and lifts forward. Bright near hind leg is lifted and bends toward front/left, dark far hind supports weight.\nFrame 3: reverse frame 1. Change BRIGHT NEAR FRONT LEG to a diagonal reaching BACKWARD to image-RIGHT, its hoof RIGHT of its shoulder under the belly. DARK FAR FRONT LEG reaches FORWARD toward image-LEFT. Bright near hind reaches forward/left, dark far hind reaches back/right.\nFrame 4: BRIGHT NEAR FRONT LEG is bent with its HOOF visibly LIFTED from the ground, swinging forward/left. The DARK FAR FRONT LEG is planted under shoulder. Bright near hind is planted, dark far hind is lifted.\nMake this near-front-leg change unmissable: frame 1 hoof front/LEFT, frame 2 center, frame 3 back/RIGHT, frame 4 raised and returning LEFT. Keep legs the original short length, stable shoulder and hip attachment points, 4 legs only, lighter legs always nearer the viewer.\nPreserve EVERYTHING else: heads, body silhouettes, colors, tusks, mane, tail, facial expression, left-facing direction, frame scale, four equal cells in one horizontal row, ground baseline and true transparent background. No extra objects or effects.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-278119e8-9007-4874-abab-b3c344f00f0c.png",
+      "source": "rejected/walk-02.png",
+      "inputImages": [
+        "rejected/walk-01.png",
+        "reference.png"
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nInput images: Image 1 is the four-frame boar walking strip to edit.\nPrimary request: correct leg DEPTH and placement in FRAME 1 and FRAME 4 only, so the near front leg has a coherent forward / planted / backward / lifted-forward cycle.\nFRAME 1: the diagonal foreleg that reaches toward the left must visibly be the BRIGHT NEAR FRONT LEG, attached to the visible foreground shoulder beneath the cheek. It passes IN FRONT of the other front leg. The other front leg, the currently prominent vertical leg under the cheek, must become the darker FAR front leg behind it. Give that far hoof a slight back/right reach. Preserve two front legs, not three.\nFRAME 4: make the bent foreleg with its hoof LIFTED FORWARD LEFT be the BRIGHT NEAR FRONT LEG attached to the visible foreground shoulder. The vertical planted foreleg under the cheek must now be the DARK FAR FRONT LEG behind it. This is the opposite front-leg depth arrangement from frame 2. For the hind pair in frame 4, near/brighter hind leg is planted and far/darker hind leg is the lifted one.\nFRAMES 2 and 3: keep their existing pose, head and body unchanged.\nKeep exactly FOUR legs on each boar, with the same short lengths. Head, face, ears, mane, tusks, tail, torso shapes, colors, size, cell positions, left-facing direction and ground baseline are otherwise unchanged. One row of four figures on true transparent background, no extra symbols, shadows or objects.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-8ccb1cd7-e594-4987-a823-e0489394066e.png",
+      "source": "rejected/walk-03.png",
+      "inputImages": [
+        "rejected/walk-02.png"
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 4-frame quadruped WALK CYCLE sprite strip, one horizontal row, transparent background\nInput images: Image 1 defines the exact boar's design and proportions. Image 2 is a movement example: in its second figure the LARGE FOREGROUND FRONT LEG clearly swings forward from the shoulder. Use that understanding of anatomy for the walk below, but make the walk calm with shorter strides.\nPrimary request: redraw the boar in FOUR sequential walking poses. Face LEFT throughout. Keep its head, torso, tusks, mane and tail consistent. The FOREGROUND FRONT LEG, attached to the big visible shoulder directly below the cheek, MUST make a full forward-to-backward cycle. Do NOT keep it planted in all frames.\nFrame 1: FOREGROUND FRONT LEG sweeps diagonally FORWARD LEFT, its hoof lands well to the LEFT of the shoulder, like the forward-reaching foreground leg in Image 2's second figure. The background front leg is clearly swept BACK to the right. Foreground hind leg is back/right.\nFrame 2: FOREGROUND FRONT LEG nearly VERTICAL, weight over that hoof under the shoulder. Background front leg is bent and lifted, passing forward. Foreground hind leg bends beneath belly.\nFrame 3: FOREGROUND FRONT LEG sweeps diagonally BACKWARD RIGHT, with hoof behind the shoulder under the belly. Background front leg reaches forward/left and touches down. Foreground hind leg is forward/left.\nFrame 4: FOREGROUND FRONT LEG is visibly BENT, HOOF RAISED and coming FORWARD LEFT. Background front leg is vertical and bears weight. Foreground hind leg bears weight under rump.\nUse short sturdy anatomical legs, not long limbs. The foreground pair are light chestnut and layered in FRONT of the slightly darker background pair. Exactly four legs; far legs can partly hide behind the body. Make the four leg silhouettes unambiguously different. No camera rotation.\nComposition: 4 equal-width square cells in one wide row, same camera zoom and body size, same torso center in each cell, hooves on a common ground baseline when planted. Whole boar including tusks and tail fully visible. Ample transparent space between figures and outside edges, no touching or clipping. Neutral character height is 60% of cell height and width around 80%. No ground shadow, text, symbols, frames, motion lines, dust or particles. Same flat cartoon style as Image 1.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-6570b414-2fc5-47e6-aab6-687af862d929.png",
+      "source": "rejected/walk-04.png",
+      "inputImages": [
+        "reference.png",
+        "enter.png"
+      ]
+    }
+  ],
+  "postprocess": {
+    "runtime": "~/.venvs/art (Pillow 11.3.0)",
+    "scriptLocation": "/private/tmp/finish-forest-boar.py",
+    "notes": [
+      "기준 그림과 클립 생성 원본은 그대로 보존했습니다. 알파 16으로 연결된 몸을 찾고, 주변의 원래 알파를 포함해 4픽셀 여백으로 잘랐습니다. 공격 3·4는 가로 범위가 겹치지만 몸은 분리되어 있어 연결 영역으로 나눴습니다.",
+      "대기 1의 갈기 끝부터 발굽까지 높이를 150픽셀로 맞췄습니다. 클립별 생성 줌은 걷기 2, 공격 4, 피격 2, 사망 1의 몸 높이를 대기 좌표로 먼저 환산해 통일하고, 그 뒤 모든 프레임에 공통 배율을 적용했습니다. 등장은 대기와 같은 해상도와 줌입니다. 프레임마다 크기를 따로 조절하지 않았습니다.",
+      "프레임은 모두 256×256, 실루엣 중심 x=128, 접지선 y=192입니다. 사망은 쓰러진 몸이 같은 바닥에 닿도록 정렬했습니다.",
+      "RGBA를 premultiplied-alpha LANCZOS로 줄였으며 캐릭터 내부의 색과 알파는 다시 칠하지 않았습니다.",
+      "6개 클립, 17프레임이며 모두 왼쪽을 봅니다. 공격 3이 엄니 돌진의 타격 자세입니다.",
+      "걷기는 가까운 앞다리가 앞으로 내딛기, 지지, 뒤로 밀기, 들어 올리기로 이어지는 4박자입니다. 발이 고정되거나 같은 접촉 자세가 반복된 초안은 rejected/에 보존했습니다. 마지막 수정은 3번째 프레임의 앞다리를 뒤로 미는 자세로 바꿨습니다.",
+      "Unity Assets에 넣거나 게임 안에서 재생하지 않았습니다."
+    ],
+    "measurements": {
+      "normalizedStandingBodyHeight": 599,
+      "commonScale": 0.25041736227045075,
+      "clips": {
+        "idle": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "generationZoomNormalization": 1.0,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                19,
+                170,
+                860,
+                769
+              ],
+              "finalBounds": [
+                23,
+                42,
+                234,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                912,
+                202,
+                1753,
+                769
+              ],
+              "finalBounds": [
+                23,
+                50,
+                234,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "enter": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "generationZoomNormalization": 1,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                36,
+                169,
+                842,
+                756
+              ],
+              "finalBounds": [
+                27,
+                45,
+                229,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                868,
+                169,
+                1743,
+                754
+              ],
+              "finalBounds": [
+                19,
+                46,
+                238,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "walk": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "generationZoomNormalization": 1.568062827225131,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                18,
+                162,
+                530,
+                537
+              ],
+              "finalBounds": [
+                27,
+                44,
+                229,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                551,
+                161,
+                1063,
+                543
+              ],
+              "finalBounds": [
+                27,
+                41,
+                229,
+                192
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1086,
+                162,
+                1605,
+                541
+              ],
+              "finalBounds": [
+                25,
+                42,
+                230,
+                192
+              ]
+            },
+            {
+              "frame": 4,
+              "sourceBounds": [
+                1623,
+                160,
+                2150,
+                541
+              ],
+              "finalBounds": [
+                24,
+                41,
+                232,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            1024,
+            256
+          ]
+        },
+        "attack": {
+          "sourceSize": [
+            2057,
+            764
+          ],
+          "generationZoomNormalization": 1.6016042780748663,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                30,
+                220,
+                500,
+                594
+              ],
+              "finalBounds": [
+                33,
+                42,
+                223,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                517,
+                250,
+                969,
+                591
+              ],
+              "finalBounds": [
+                37,
+                54,
+                219,
+                192
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                970,
+                259,
+                1569,
+                595
+              ],
+              "finalBounds": [
+                7,
+                56,
+                248,
+                192
+              ]
+            },
+            {
+              "frame": 4,
+              "sourceBounds": [
+                1540,
+                220,
+                2028,
+                594
+              ],
+              "finalBounds": [
+                29,
+                42,
+                226,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            1024,
+            256
+          ]
+        },
+        "hit": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "generationZoomNormalization": 0.9900826446280991,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                83,
+                135,
+                871,
+                769
+              ],
+              "finalBounds": [
+                31,
+                35,
+                226,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                915,
+                167,
+                1736,
+                772
+              ],
+              "finalBounds": [
+                26,
+                42,
+                230,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "die": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "generationZoomNormalization": 1.217479674796748,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                15,
+                129,
+                705,
+                621
+              ],
+              "finalBounds": [
+                23,
+                42,
+                234,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                732,
+                227,
+                1400,
+                619
+              ],
+              "finalBounds": [
+                26,
+                72,
+                230,
+                192
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1417,
+                312,
+                2152,
+                621
+              ],
+              "finalBounds": [
+                15,
+                97,
+                240,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            768,
+            256
+          ]
+        }
+      }
+    }
+  }
+}

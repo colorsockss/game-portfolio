@@ -1,0 +1,18 @@
+{
+  // 타입 검사 전용: 모든 워크스페이스를 esbuild가 번들하므로 tsc는 파일을 내보내지 않는다.
+  // DOM 없는 `lib`과 `types: []`로 공용 패키지에서 호스트 API를 쓰지 못하게 하고, Node에서 도는
+  // 워크스페이스는 `types: ["node"]`로 따로 켠다. skipLibCheck는 @msgpack/msgpack의 선언이 DOM
+  // 스트림 타입을 언급하는데, DOM 없는 이 lib 설정으로는 그 타입을 찾을 수 없어서 켠다.
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2020"],
+    "types": [],
+    "strict": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true
+  }
+}

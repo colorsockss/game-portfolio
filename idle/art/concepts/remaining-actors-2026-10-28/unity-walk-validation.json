@@ -1,0 +1,55 @@
+{
+  "complete": true,
+  "checkedFrames": 129,
+  "elapsedSeconds": 0.2821843329584226,
+  "seen": {
+    "hero": [
+      "hero_walk_0",
+      "hero_walk_1",
+      "hero_walk_2",
+      "hero_walk_3"
+    ],
+    "goblin_shaman": [
+      "goblin_shaman_walk_0",
+      "goblin_shaman_walk_1",
+      "goblin_shaman_walk_2",
+      "goblin_shaman_walk_3"
+    ],
+    "poison_slime": [
+      "poison_slime_walk_0",
+      "poison_slime_walk_1",
+      "poison_slime_walk_2",
+      "poison_slime_walk_3"
+    ],
+    "rock_golem": [
+      "rock_golem_walk_0",
+      "rock_golem_walk_1",
+      "rock_golem_walk_2",
+      "rock_golem_walk_3"
+    ],
+    "frost_wolf": [
+      "frost_wolf_walk_0",
+      "frost_wolf_walk_1",
+      "frost_wolf_walk_2",
+      "frost_wolf_walk_3"
+    ],
+    "ogre_chief": [
+      "ogre_chief_walk_0",
+      "ogre_chief_walk_1",
+      "ogre_chief_walk_2",
+      "ogre_chief_walk_3"
+    ],
+    "fire_dragon": [
+      "fire_dragon_walk_0",
+      "fire_dragon_walk_1",
+      "fire_dragon_walk_2",
+      "fire_dragon_walk_3"
+    ],
+    "spirit_wolf": [
+      "spirit_wolf_walk_0",
+      "spirit_wolf_walk_1",
+      "spirit_wolf_walk_2",
+      "spirit_wolf_walk_3"
+    ]
+  }
+}

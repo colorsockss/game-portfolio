@@ -1,0 +1,186 @@
+[
+  {
+    "id": 3001,
+    "nameKey": "stage.trainingMeadow",
+    "recommendedLevel": 1,
+    "monsterIds": [
+      2001
+    ],
+    "bossId": null,
+    "energyCost": 0,
+    "clearItemIds": [
+      1,
+      2,
+      101
+    ],
+    "clearAmounts": [
+      "30",
+      "50",
+      "1"
+    ],
+    "unlockStageId": null,
+    "timeLimitSeconds": 0,
+    "repeatable": false,
+    "note": "최초 1회 튜토리얼",
+    "waveCount": 3,
+    "unlockLevel": null,
+    "waveSize": 2,
+    "spawnIntervalSeconds": 1,
+    "background": "meadow",
+    "bgm": "bgm.battle"
+  },
+  {
+    "id": 3002,
+    "nameKey": "stage.forestEntrance",
+    "recommendedLevel": 3,
+    "monsterIds": [
+      2001,
+      2002,
+      2003
+    ],
+    "bossId": null,
+    "energyCost": 5,
+    "clearItemIds": [
+      1,
+      2,
+      102
+    ],
+    "clearAmounts": [
+      "60",
+      "100",
+      "1"
+    ],
+    "unlockStageId": 3001,
+    "timeLimitSeconds": 180,
+    "repeatable": true,
+    "note": null,
+    "waveCount": 3,
+    "unlockLevel": null,
+    "waveSize": 3,
+    "spawnIntervalSeconds": 1,
+    "background": "forest",
+    "bgm": "bgm.battle"
+  },
+  {
+    "id": 3003,
+    "nameKey": "stage.goblinCamp",
+    "recommendedLevel": 5,
+    "monsterIds": [
+      2003,
+      2004,
+      2005
+    ],
+    "bossId": null,
+    "energyCost": 6,
+    "clearItemIds": [
+      1,
+      2,
+      103
+    ],
+    "clearAmounts": [
+      "100",
+      "180",
+      "1"
+    ],
+    "unlockStageId": 3002,
+    "timeLimitSeconds": 240,
+    "repeatable": true,
+    "note": null,
+    "waveCount": 3,
+    "unlockLevel": null,
+    "waveSize": 3,
+    "spawnIntervalSeconds": 1,
+    "background": "camp",
+    "bgm": "bgm.fortress"
+  },
+  {
+    "id": 3004,
+    "nameKey": "stage.ogreFortress",
+    "recommendedLevel": 10,
+    "monsterIds": [
+      2005,
+      2006,
+      2007
+    ],
+    "bossId": 2008,
+    "energyCost": 10,
+    "clearItemIds": [
+      1,
+      2
+    ],
+    "clearAmounts": [
+      "250",
+      "400"
+    ],
+    "unlockStageId": 3003,
+    "timeLimitSeconds": 300,
+    "repeatable": true,
+    "note": "보스 처치 시 클리어",
+    "waveCount": 3,
+    "unlockLevel": null,
+    "waveSize": 3,
+    "spawnIntervalSeconds": 1,
+    "background": "fortress",
+    "bgm": "bgm.fortress"
+  },
+  {
+    "id": 3005,
+    "nameKey": "stage.frozenPass",
+    "recommendedLevel": 12,
+    "monsterIds": [
+      2007,
+      2009
+    ],
+    "bossId": null,
+    "energyCost": 8,
+    "clearItemIds": [
+      1,
+      2,
+      105
+    ],
+    "clearAmounts": [
+      "300",
+      "500",
+      "1"
+    ],
+    "unlockStageId": 3004,
+    "timeLimitSeconds": 240,
+    "repeatable": true,
+    "note": null,
+    "waveCount": 3,
+    "unlockLevel": null,
+    "waveSize": 3,
+    "spawnIntervalSeconds": 1,
+    "background": "snow",
+    "bgm": "bgm.peak"
+  },
+  {
+    "id": 3006,
+    "nameKey": "stage.dragonNest",
+    "recommendedLevel": 15,
+    "monsterIds": [
+      2006,
+      2007
+    ],
+    "bossId": 2010,
+    "energyCost": 15,
+    "clearItemIds": [
+      1,
+      2
+    ],
+    "clearAmounts": [
+      "800",
+      "1000"
+    ],
+    "unlockStageId": 3005,
+    "timeLimitSeconds": 420,
+    "repeatable": true,
+    "note": "최종 보스 스테이지",
+    "waveCount": 3,
+    "unlockLevel": 15,
+    "waveSize": 3,
+    "spawnIntervalSeconds": 1,
+    "background": "lava",
+    "bgm": "bgm.peak"
+  }
+]

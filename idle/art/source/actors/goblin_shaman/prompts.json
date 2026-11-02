@@ -1,0 +1,367 @@
+{
+  "actor": "goblin_shaman",
+  "name": "고블린 주술사",
+  "date": "2026-10-28",
+  "creator": "colorsocks",
+  "tool": "Codex image_gen (built-in)",
+  "kind": "normal",
+  "gameSize": 0.75,
+  "direction": "right",
+  "design": "a small green goblin shaman, exactly the same short compact two-head proportions as the goblin reference. Simple cream bone face mask with two small dark eye holes, one broad purple feather, short plain purple robe, two very short brown boots. A short straight wooden staff with one simple lime-green diamond crystal is held firmly in the FAR/LEFT hand at the RIGHT waist; the NEAR/RIGHT hand at LEFT hip is empty and visible. Mask, one feather and crystal are the only distinctive ornaments. Staff top no higher than feather. Six-color low-detail ordinary enemy, not a boss.",
+  "reference": {
+    "path": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-2f738b31-a0ff-4284-a73f-e893d480d260.png",
+    "prompt": "Use case: stylized-concept\nAsset type: production reference for one transparent 2D game actor.\nInput image: style reference ONLY; inherit compact proportions, thick clean contour and flat spot-color simplicity, not its species or equipment.\nSubject: a small green goblin shaman, exactly the same short compact two-head proportions as the goblin reference. Simple cream bone face mask with two small dark eye holes, one broad purple feather, short plain purple robe, two very short brown boots. A short straight wooden staff with one simple lime-green diamond crystal is held firmly in the FAR/LEFT hand at the RIGHT waist; the NEAR/RIGHT hand at LEFT hip is empty and visible. Mask, one feather and crystal are the only distinctive ornaments. Staff top no higher than feather. Six-color low-detail ordinary enemy, not a boss.\nComposition: exactly ONE full body, neutral stance, facing RIGHT, head to screen right, same side view as reference. Generous transparent margin, feet on one baseline. No ground or scenery.\nRendering: perfectly flat solid opaque color fields with antialiasing only along boundaries. Palette ONLY #231B15, #70AA4D, #755395, #815337, #E5D7B1, #A3CE58. No gradients, shading, highlights, texture, glow blur, shadows, labels or text. Keep appendage counts anatomically correct. True transparent background."
+  },
+  "clips": [
+    {
+      "clip": "idle",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, goblin_shaman idle. Input image is the exact character reference: preserve identity, colors, costume and proportions.\nCharacter: a small green goblin shaman, exactly the same short compact two-head proportions as the goblin reference. Simple cream bone face mask with two small dark eye holes, one broad purple feather, short plain purple robe, two very short brown boots. A short straight wooden staff with one simple lime-green diamond crystal is held firmly in the FAR/LEFT hand at the RIGHT waist; the NEAR/RIGHT hand at LEFT hip is empty and visible. Mask, one feather and crystal are the only distinctive ornaments. Staff top no higher than feather. Six-color low-detail ordinary enemy, not a boss.\nAction left-to-right: Two idle frames: (1) neutral reference stance; (2) very subtle breathing squash, paws remain planted. Almost identical scale and posture.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses, each centered in its own evenly spaced invisible column. Very wide EMPTY transparent gutters between poses. Whole body and equipment within each column. All face RIGHT; no flipping. Feet aligned except intentional motion. Same camera and scale across frames; never zoom to fit a pose.\nStyle: EXACTLY flat solid opaque spot colors #231B15, #70AA4D, #755395, #815337, #E5D7B1, #A3CE58; crisp thick outline and minimal detail matching reference. No gradients, highlights, shading, texture, glow, blur, shadow, ground, text, numbers, labels, grid or borders. Background genuinely transparent. No detached effects or particles.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-3b026abc-0a33-4462-9102-b3c41f795ea5.png"
+    },
+    {
+      "clip": "enter",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, goblin_shaman enter. Input image is the exact character reference: preserve identity, colors, costume and proportions.\nCharacter: a small green goblin shaman, exactly the same short compact two-head proportions as the goblin reference. Simple cream bone face mask with two small dark eye holes, one broad purple feather, short plain purple robe, two very short brown boots. A short straight wooden staff with one simple lime-green diamond crystal is held firmly in the FAR/LEFT hand at the RIGHT waist; the NEAR/RIGHT hand at LEFT hip is empty and visible. Mask, one feather and crystal are the only distinctive ornaments. Staff top no higher than feather. Six-color low-detail ordinary enemy, not a boss.\nAction left-to-right: Two quick entry run frames: (1) compact running stride, slight forward lean; (2) opposite stride, facing right. Keep torso length and limbs short. Feet close to ground, no airborne flying pose.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses, each centered in its own evenly spaced invisible column. Very wide EMPTY transparent gutters between poses. Whole body and equipment within each column. All face RIGHT; no flipping. Feet aligned except intentional motion. Same camera and scale across frames; never zoom to fit a pose.\nStyle: EXACTLY flat solid opaque spot colors #231B15, #70AA4D, #755395, #815337, #E5D7B1, #A3CE58; crisp thick outline and minimal detail matching reference. No gradients, highlights, shading, texture, glow, blur, shadow, ground, text, numbers, labels, grid or borders. Background genuinely transparent. No detached effects or particles.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-3ba1ed3d-b2b0-4df2-8602-b44b12cd7292.png"
+    },
+    {
+      "clip": "walk",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, goblin_shaman walk. Input image is the exact character reference: preserve identity, colors, costume and proportions.\nCharacter: a small green goblin shaman, exactly the same short compact two-head proportions as the goblin reference. Simple cream bone face mask with two small dark eye holes, one broad purple feather, short plain purple robe, two very short brown boots. A short straight wooden staff with one simple lime-green diamond crystal is held firmly in the FAR/LEFT hand at the RIGHT waist; the NEAR/RIGHT hand at LEFT hip is empty and visible. Mask, one feather and crystal are the only distinctive ornaments. Staff top no higher than feather. Six-color low-detail ordinary enemy, not a boss.\nAction left-to-right: Four in-place walking loop frames: (1) contact left-near leg forward, (2) passing pose, (3) opposite contact right-far leg forward, (4) passing pose. Clear alternating little steps, compact torso stays SAME length. All limbs remain anatomically attached, no vanishing feet.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses, each centered in its own evenly spaced invisible column. Very wide EMPTY transparent gutters between poses. Whole body and equipment within each column. All face RIGHT; no flipping. Feet aligned except intentional motion. Same camera and scale across frames; never zoom to fit a pose.\nStyle: EXACTLY flat solid opaque spot colors #231B15, #70AA4D, #755395, #815337, #E5D7B1, #A3CE58; crisp thick outline and minimal detail matching reference. No gradients, highlights, shading, texture, glow, blur, shadow, ground, text, numbers, labels, grid or borders. Background genuinely transparent. No detached effects or particles.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-a5b03404-7e51-4016-8f35-5a301f88455f.png"
+    },
+    {
+      "clip": "attack",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, goblin_shaman attack. Input image is the exact character reference: preserve identity, colors, costume and proportions.\nCharacter: a small green goblin shaman, exactly the same short compact two-head proportions as the goblin reference. Simple cream bone face mask with two small dark eye holes, one broad purple feather, short plain purple robe, two very short brown boots. A short straight wooden staff with one simple lime-green diamond crystal is held firmly in the FAR/LEFT hand at the RIGHT waist; the NEAR/RIGHT hand at LEFT hip is empty and visible. Mask, one feather and crystal are the only distinctive ornaments. Staff top no higher than feather. Six-color low-detail ordinary enemy, not a boss.\nAction left-to-right: (1) neutral staff in LEFT hand at screen right; (2) raise that LEFT fist only to chest height, other hand at rear hip; (3) extend LEFT staff hand slightly toward RIGHT with a tiny flat green spark ATTACHED to crystal; (4) exact neutral stance. Staff never changes hands, both arms stay very short and connected, near RIGHT empty hand remains a visible fist. No detached magic projectile.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses, each centered in its own evenly spaced invisible column. Very wide EMPTY transparent gutters between poses. Whole body and equipment within each column. All face RIGHT; no flipping. Feet aligned except intentional motion. Same camera and scale across frames; never zoom to fit a pose.\nStyle: EXACTLY flat solid opaque spot colors #231B15, #70AA4D, #755395, #815337, #E5D7B1, #A3CE58; crisp thick outline and minimal detail matching reference. No gradients, highlights, shading, texture, glow, blur, shadow, ground, text, numbers, labels, grid or borders. Background genuinely transparent. No detached effects or particles.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-08633fb2-2219-455f-acce-5b7e9f548947.png"
+    },
+    {
+      "clip": "hit",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, goblin_shaman hit. Input image is the exact character reference: preserve identity, colors, costume and proportions.\nCharacter: a small green goblin shaman, exactly the same short compact two-head proportions as the goblin reference. Simple cream bone face mask with two small dark eye holes, one broad purple feather, short plain purple robe, two very short brown boots. A short straight wooden staff with one simple lime-green diamond crystal is held firmly in the FAR/LEFT hand at the RIGHT waist; the NEAR/RIGHT hand at LEFT hip is empty and visible. Mask, one feather and crystal are the only distinctive ornaments. Staff top no higher than feather. Six-color low-detail ordinary enemy, not a boss.\nAction left-to-right: Two damage reaction frames: (1) slightly recoil backward to LEFT, eyes blink closed; (2) recover to EXACT neutral reference stance. Keep body height and limb lengths. Do not introduce wounds, particles or new accessories.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses, each centered in its own evenly spaced invisible column. Very wide EMPTY transparent gutters between poses. Whole body and equipment within each column. All face RIGHT; no flipping. Feet aligned except intentional motion. Same camera and scale across frames; never zoom to fit a pose.\nStyle: EXACTLY flat solid opaque spot colors #231B15, #70AA4D, #755395, #815337, #E5D7B1, #A3CE58; crisp thick outline and minimal detail matching reference. No gradients, highlights, shading, texture, glow, blur, shadow, ground, text, numbers, labels, grid or borders. Background genuinely transparent. No detached effects or particles.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-0d2b14c1-fc65-44f9-bde3-6a07550e818e.png"
+    },
+    {
+      "clip": "die",
+      "count": 3,
+      "prompt": "Use case: identity-preserve. Asset: 3-frame transparent game sprite animation sheet, goblin_shaman die. Input image is the exact character reference: preserve identity, colors, costume and proportions.\nCharacter: a small green goblin shaman, exactly the same short compact two-head proportions as the goblin reference. Simple cream bone face mask with two small dark eye holes, one broad purple feather, short plain purple robe, two very short brown boots. A short straight wooden staff with one simple lime-green diamond crystal is held firmly in the FAR/LEFT hand at the RIGHT waist; the NEAR/RIGHT hand at LEFT hip is empty and visible. Mask, one feather and crystal are the only distinctive ornaments. Staff top no higher than feather. Six-color low-detail ordinary enemy, not a boss.\nAction left-to-right: Three death frames: (1) standing stagger slightly bowed but almost full neutral height; (2) bend knees and lower torso, feet anatomically connected; (3) lying on side at rest, head toward RIGHT, closed curved eyes. Maintain SAME body proportions, SAME limb count, no dismemberment, no gore. No ghost, skull, X eyes or disappearance.\nLayout: EXACTLY 3 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses, each centered in its own evenly spaced invisible column. Very wide EMPTY transparent gutters between poses. Whole body and equipment within each column. All face RIGHT; no flipping. Feet aligned except intentional motion. Same camera and scale across frames; never zoom to fit a pose.\nStyle: EXACTLY flat solid opaque spot colors #231B15, #70AA4D, #755395, #815337, #E5D7B1, #A3CE58; crisp thick outline and minimal detail matching reference. No gradients, highlights, shading, texture, glow, blur, shadow, ground, text, numbers, labels, grid or borders. Background genuinely transparent. No detached effects or particles.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-277252d2-c658-4d26-9872-e32b9ff877ef.png"
+    }
+  ],
+  "postprocess": {
+    "palette": [
+      "#231B15",
+      "#70AA4D",
+      "#755395",
+      "#815337",
+      "#E5D7B1",
+      "#A3CE58"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 256,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 192,
+    "max_frame_width_px": 181,
+    "normalization": "클립 안에서는 공통 배율을 적용하고, 기준 포즈 높이 150px로 생성 줌을 맞춤.",
+    "measurements": {
+      "idle": {
+        "scale": 0.2757352941176471,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              55,
+              42,
+              202,
+              192
+            ],
+            "source_bounds": [
+              202,
+              176,
+              735,
+              720
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              55,
+              47,
+              202,
+              192
+            ],
+            "source_bounds": [
+              1091,
+              194,
+              1623,
+              720
+            ]
+          }
+        ]
+      },
+      "enter": {
+        "scale": 0.25773195876288657,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              51,
+              39,
+              204,
+              192
+            ],
+            "source_bounds": [
+              159,
+              150,
+              752,
+              743
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              51,
+              42,
+              204,
+              192
+            ],
+            "source_bounds": [
+              1111,
+              164,
+              1706,
+              746
+            ]
+          }
+        ]
+      },
+      "walk": {
+        "scale": 0.33185840707964603,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              53,
+              42,
+              202,
+              192
+            ],
+            "source_bounds": [
+              81,
+              151,
+              528,
+              601
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              56,
+              42,
+              200,
+              193
+            ],
+            "source_bounds": [
+              626,
+              149,
+              1057,
+              601
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              52,
+              42,
+              204,
+              193
+            ],
+            "source_bounds": [
+              1147,
+              150,
+              1604,
+              602
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              57,
+              41,
+              200,
+              193
+            ],
+            "source_bounds": [
+              1698,
+              146,
+              2127,
+              601
+            ]
+          }
+        ]
+      },
+      "attack": {
+        "scale": 0.30927835051546393,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              57,
+              43,
+              200,
+              193
+            ],
+            "source_bounds": [
+              33,
+              115,
+              494,
+              597
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              53,
+              43,
+              203,
+              193
+            ],
+            "source_bounds": [
+              573,
+              116,
+              1057,
+              598
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              39,
+              42,
+              218,
+              192
+            ],
+            "source_bounds": [
+              1115,
+              114,
+              1692,
+              599
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              57,
+              42,
+              200,
+              192
+            ],
+            "source_bounds": [
+              1691,
+              114,
+              2153,
+              599
+            ]
+          }
+        ]
+      },
+      "hit": {
+        "scale": 0.27472527472527475,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              45,
+              42,
+              210,
+              192
+            ],
+            "source_bounds": [
+              171,
+              170,
+              772,
+              716
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              50,
+              42,
+              206,
+              192
+            ],
+            "source_bounds": [
+              1061,
+              168,
+              1627,
+              714
+            ]
+          }
+        ]
+      },
+      "die": {
+        "scale": 0.28735632183908044,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              67,
+              42,
+              188,
+              192
+            ],
+            "source_bounds": [
+              179,
+              108,
+              599,
+              630
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              65,
+              53,
+              191,
+              192
+            ],
+            "source_bounds": [
+              853,
+              146,
+              1289,
+              630
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              39,
+              96,
+              216,
+              192
+            ],
+            "source_bounds": [
+              1526,
+              324,
+              2140,
+              657
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "validation": {
+    "canonical_matches_unity": true,
+    "unity_prefab_wired": true,
+    "all_frames_displayed": true,
+    "walk_frames_observed": 4,
+    "facing_and_pool_reuse_checked": true,
+    "special_checked": false,
+    "typecheck": "passed",
+    "tests": "passed"
+  }
+}

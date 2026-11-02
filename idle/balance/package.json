@@ -1,0 +1,22 @@
+{
+  "name": "@idle/balance",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage --coverage.include=src/** --coverage.reporter=text --coverage.reporter=text-summary",
+    "start": "node run.mjs"
+  },
+  "dependencies": {
+    "@idle/big-number": "*",
+    "@idle/codes": "*",
+    "@idle/data-schema": "*",
+    "@idle/game-core": "*",
+    "@idle/server": "*"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5"
+  }
+}

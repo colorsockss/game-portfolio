@@ -1,0 +1,6 @@
+{
+  // Node에서만 도는 개발 도구다(run.mjs가 esbuild로 묶어 실행).
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": { "target": "ES2023", "lib": ["ES2023"], "types": ["node"] },
+  "include": ["src", "test"]
+}

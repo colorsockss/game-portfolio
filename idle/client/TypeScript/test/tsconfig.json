@@ -1,0 +1,9 @@
+{
+  // 테스트는 vitest로 Node에서 돌고, vitest 타입이 @types/node를 끌어온다. 테스트를 여기서 검사하면
+  // Node 전역이 ../tsconfig.json에 섞이지 않아, src/는 types/의 PuerTS 전역만 보게 된다.
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": { "types": ["node"] },
+  // 테스트 대상인 unity/ 코드를 위한 C# 선언. PuerTS 전역이 Node 전역과 충돌하므로
+  // ../types/runtime.d.ts는 넣지 않는다.
+  "include": [".", "../types/csharp.d.ts"]
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "clip": "attack",
+    "frameIndex": 2,
+    "prompt": "Use case: precise-object-edit. Asset: single transparent game sprite, one attack pose. Edit this exact right-facing flat-color hero. Keep the head, hair, eye, blue body, red cape/scarf, both feet and the ENTIRE horizontal sword with its LEFT gripping hand at screen RIGHT unchanged. Correct ONLY the empty RIGHT arm at the BACK/LEFT of the torso. The existing isolated brown crescent at left waist is anatomically wrong: replace it with a short connected arm. At screen LEFT, just below the scarf, show a small rounded grey shoulder plate, a very short upper arm angled backward-down toward the left hip, ONE bent elbow and a tiny grey wrist cuff, ending in one small rounded BROWN MITTEN fist tucked close beside the BACK hip. The empty fist is about the same size as the sword gripping fist, not a crescent, not a ball floating from the belt. The arm length from shoulder through elbow to wrist is short (less than half the head height). It swings slightly back while the LEFT sword arm thrusts forward; parts may be hidden behind torso but the visible shoulder/cuff/fist must form a credible connected arm. No second sword, no extra limbs or fingers. Maintain body rotation, same pose, same compact proportions and exact scale/framing. Strictly flat seven solid colors #231B15 outline, #815337 brown, #F2C691 skin, #3769AA blue, #C94943 red, #BEC9CC silver, #D5AA59 gold. No lighting, gradients, shading, textures, highlights, effects or text. True transparent background. One full body character only.",
+    "followupPrompt": "Use case: precise-object-edit. Keep this entire right-facing attack sprite EXACTLY unchanged except the empty arm on the LEFT edge of the torso. It currently has a brown shape halfway down the arm that looks like an extra hand. Fix that single problem: the little empty arm should be a grey shoulder plate, ONE SHORT GREY FOREARM ending directly in ONE BROWN FIST. Change the brown middle-arm segment to grey armor and merge the thin separate white wrist band into that single compact grey forearm. Keep a dark outline between the shoulder plate and forearm at the elbow. Exactly ONE brown shape on this empty arm: the bottom mitten at the left hip. The upper arm is partly hidden behind the blue torso and red cape. Keep the arm short and bent back; keep the fist, head, sword, left sword hand, body, legs, cape, colors, positions, scale, and transparent margins otherwise unchanged. No extra joint, no extra hand, no long arm. Flat solid colors only, no shading or gradients. True transparent background.",
+    "tool": "Codex image_gen (built-in)",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-b46efd1e-861e-43d6-a5b1-0cebce14e6f0.png",
+    "savedRaw": "art/source/actors/hero/joint-fix-2026-10-28/attack-3-generated.png",
+    "flatFrame": "art/source/actors/hero/joint-fix-2026-10-28/attack-3-flat.png",
+    "finalFrame": "art/source/actors/hero/joint-fix-2026-10-28/attack-3-256.png",
+    "scale": 0.1733102253032929,
+    "alignment": "기존 프레임의 머리카락 폭·가로 중심에 맞추고 접지선 y=192 사용",
+    "referenceHairBounds": [
+      66,
+      48,
+      166,
+      118
+    ],
+    "generatedHairBounds": [
+      332,
+      181,
+      909,
+      583
+    ],
+    "finalBounds": [
+      34,
+      42,
+      221,
+      192
+    ],
+    "alphaPreservedBeforeResize": true,
+    "palette": [
+      "#231B15",
+      "#815337",
+      "#F2C691",
+      "#3769AA",
+      "#C94943",
+      "#BEC9CC",
+      "#D5AA59"
+    ],
+    "otherFramesIdentical": true
+  },
+  {
+    "clip": "die",
+    "frameIndex": 1,
+    "prompt": "Use case: precise-object-edit. Asset: single transparent game sprite, middle death pose. Edit this exact right-facing hero. Preserve ALL details ABOVE the blue tunic's bottom hem: head size/position, closed eye, hair, torso leaning forward, red cape, both short arms and both hands, LEFT-hand lowered sword. Fix ONLY the legs below the tunic. Current image has THREE brown shoe-shaped masses and is wrong. Replace the whole lower body with a clear ONE-KNEE kneeling collapse, viewed from the side facing RIGHT. Exactly TWO short human legs and exactly TWO small brown boots. The NEAR/RIGHT leg bends forward (screen right), knee raised in front of pelvis, its short shin goes down to a single small brown boot planted flat on ground at screen right. The FAR/LEFT leg folds backward: its knee touches the ground beneath the pelvis, and its shin folds back toward screen LEFT with one small brown boot trailing behind on the ground. Dark brown/near-black trousers join each thigh to the pelvis directly under the blue hem. Knees are TROUSER color, NEVER brown boot shapes. Keep the limbs very short, stocky and chibi; no long thigh, no third leg, no middle boot, no kneeling on a detached foot. Lower the pelvis slightly to sell the collapse, and allow natural overlap of the far leg. The two boots must be visibly connected to the appropriate short legs. This is a weak one-knee fall, not a standing squat. Preserve sword geometry, head/body proportions, flat color palette and outline thickness. Exactly seven flat solid colors #231B15, #815337, #F2C691, #3769AA, #C94943, #BEC9CC, #D5AA59. No gradients, shading, highlights, texture, shadow, ground, labels or text. True transparent background. Single full-body character only.",
+    "followupPrompt": null,
+    "tool": "Codex image_gen (built-in)",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-32fcff42-439f-4583-8a2c-51a749a4d5be.png",
+    "savedRaw": "art/source/actors/hero/joint-fix-2026-10-28/die-2-generated.png",
+    "flatFrame": "art/source/actors/hero/joint-fix-2026-10-28/die-2-flat.png",
+    "finalFrame": "art/source/actors/hero/joint-fix-2026-10-28/die-2-256.png",
+    "scale": 0.16296296296296298,
+    "alignment": "기존 프레임의 머리카락 폭·가로 중심에 맞추고 접지선 y=192 사용",
+    "referenceHairBounds": [
+      93,
+      50,
+      181,
+      120
+    ],
+    "generatedHairBounds": [
+      447,
+      175,
+      987,
+      603
+    ],
+    "finalBounds": [
+      42,
+      43,
+      213,
+      192
+    ],
+    "alphaPreservedBeforeResize": true,
+    "palette": [
+      "#231B15",
+      "#815337",
+      "#F2C691",
+      "#3769AA",
+      "#C94943",
+      "#BEC9CC",
+      "#D5AA59"
+    ],
+    "otherFramesIdentical": true
+  }
+]

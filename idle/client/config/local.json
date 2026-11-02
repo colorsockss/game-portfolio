@@ -1,0 +1,1 @@
+{ "environment": "local", "server": "ws://localhost:8080", "patch": "http://localhost:8081/" }

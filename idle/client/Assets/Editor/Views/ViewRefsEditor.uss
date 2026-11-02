@@ -1,0 +1,251 @@
+/* The ViewRefs inspector (ViewRefsEditor.cs). Rules start with .view-refs so they win over the
+   editor theme's own field and button rules. Colors are translucent so they suit both themes. */
+
+.view-refs .view-refs__table {
+    margin-top: 2px;
+    border-width: 1px;
+    border-color: rgba(128, 128, 128, 0.35);
+    border-radius: 3px;
+}
+
+.view-refs .view-refs__header {
+    flex-direction: row;
+    padding: 3px 4px 3px 20px;
+    border-bottom-width: 1px;
+    border-color: rgba(128, 128, 128, 0.25);
+}
+
+.view-refs .view-refs__header Label {
+    font-size: 11px;
+    -unity-font-style: bold;
+    opacity: 0.6;
+}
+
+.view-refs .view-refs__key-column {
+    width: 130px;
+    flex-shrink: 0;
+}
+
+.view-refs .view-refs__rows {
+    padding: 2px 0;
+}
+
+.view-refs .view-refs__row {
+    flex-direction: row;
+    align-items: center;
+    min-height: 22px;
+    padding: 1px 2px;
+}
+
+.view-refs .view-refs__row--odd {
+    background-color: rgba(128, 128, 128, 0.07);
+}
+
+.view-refs .view-refs__row--list {
+    align-items: flex-start;
+}
+
+.view-refs .view-refs__handle {
+    width: 18px;
+    height: 20px;
+    -unity-text-align: middle-center;
+    opacity: 0.3;
+    cursor: move-arrow;
+}
+
+.view-refs .view-refs__row:hover > .view-refs__handle {
+    opacity: 0.8;
+}
+
+.view-refs .view-refs__key {
+    width: 130px;
+    margin: 0 4px 0 0;
+}
+
+.view-refs .view-refs__count {
+    padding-left: 3px;
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+.view-refs .view-refs__value {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0;
+}
+
+.view-refs .view-refs__remove {
+    width: 18px;
+    height: 18px;
+    margin: 1px 0 0 2px;
+    padding: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    opacity: 0;
+}
+
+.view-refs .view-refs__row:hover > .view-refs__remove,
+.view-refs .view-refs__item:hover > .view-refs__remove {
+    opacity: 0.6;
+}
+
+.view-refs .view-refs__remove:hover {
+    color: rgb(224, 82, 82);
+    opacity: 1;
+}
+
+.view-refs .view-refs__list {
+    flex-grow: 1;
+    flex-shrink: 1;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0);
+    border-radius: 2px;
+}
+
+.view-refs .view-refs__item {
+    flex-direction: row;
+    align-items: center;
+    min-height: 20px;
+}
+
+.view-refs .view-refs__index {
+    width: 22px;
+    padding-right: 4px;
+    font-size: 10px;
+    -unity-text-align: middle-right;
+    opacity: 0.45;
+    cursor: move-arrow;
+}
+
+.view-refs .view-refs__item:hover > .view-refs__index {
+    opacity: 0.9;
+}
+
+.view-refs .view-refs__list-footer {
+    flex-direction: row;
+    align-items: center;
+    min-height: 18px;
+    padding-left: 18px;
+}
+
+.view-refs .view-refs__link {
+    margin: 0;
+    padding: 0 4px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(76, 155, 232);
+}
+
+.view-refs .view-refs__link:hover {
+    background-color: rgba(76, 155, 232, 0.15);
+}
+
+.view-refs .view-refs__caption {
+    padding: 3px;
+    font-size: 10px;
+    -unity-text-align: middle-center;
+    opacity: 0.5;
+}
+
+.view-refs .view-refs__list-footer > .view-refs__caption {
+    -unity-text-align: middle-left;
+}
+
+.view-refs .view-refs__footer {
+    flex-direction: row;
+    align-items: center;
+    padding: 3px 4px;
+    border-top-width: 1px;
+    border-color: rgba(128, 128, 128, 0.25);
+}
+
+.view-refs .view-refs__footer > .view-refs__caption {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.view-refs .view-refs__caption--active {
+    color: rgb(76, 155, 232);
+    -unity-font-style: bold;
+    opacity: 1;
+}
+
+.view-refs .view-refs--drop-target {
+    border-color: rgb(58, 121, 187);
+    background-color: rgba(58, 121, 187, 0.1);
+}
+
+.view-refs .view-refs__marker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: rgb(58, 121, 187);
+    display: none;
+}
+
+.view-refs .view-refs__empty {
+    padding: 8px;
+    -unity-text-align: middle-center;
+    opacity: 0.5;
+}
+
+.view-refs .view-refs__type {
+    width: 18px;
+    height: 18px;
+    margin: 1px 0 0 2px;
+    padding: 0;
+    font-size: 10px;
+    -unity-text-align: middle-center;
+    border-width: 0;
+    border-radius: 3px;
+    background-color: rgba(128, 128, 128, 0.14);
+    opacity: 0.6;
+}
+
+.view-refs .view-refs__type:hover {
+    background-color: rgba(76, 155, 232, 0.3);
+    opacity: 1;
+}
+
+.view-refs .view-refs__button {
+    flex-direction: row;
+    align-items: center;
+    height: 20px;
+    margin: 0;
+    padding: 0 8px;
+    border-width: 0;
+    border-radius: 3px;
+    background-color: rgba(128, 128, 128, 0.14);
+}
+
+.view-refs .view-refs__button:hover {
+    background-color: rgba(128, 128, 128, 0.26);
+}
+
+.view-refs .view-refs__button:active {
+    background-color: rgba(128, 128, 128, 0.36);
+}
+
+.view-refs .view-refs__button--primary {
+    padding-left: 4px;
+    background-color: rgba(76, 155, 232, 0.16);
+}
+
+.view-refs .view-refs__button--primary Label {
+    color: rgb(76, 155, 232);
+}
+
+.view-refs .view-refs__button--primary:hover {
+    background-color: rgba(76, 155, 232, 0.28);
+}
+
+.view-refs .view-refs__button--done Label {
+    color: rgb(92, 184, 92);
+}
+
+.view-refs .view-refs__button-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+}

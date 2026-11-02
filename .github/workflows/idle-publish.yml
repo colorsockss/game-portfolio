@@ -1,0 +1,26 @@
+# 키우기: 올려 둔 패치 버전을 공개한다. 그 버전과 함께 돌 서버로 맞춘 뒤 채널 포인터를 옮긴다. 앞 버전이면 롤백이다. 일은 공용 워크플로(idle-release.yml)가 한다. 설계: idle/docs/superpowers/specs/2026-10-30-patch-design.md 4.12절.
+name: idle publish / rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 공개할 패치 버전(16자리 16진수)
+        type: string
+        required: true
+
+# 모든 내보내기 액션이 한 그룹이라 한 번에 하나씩 돈다. 앞 실행을 취소하면 반쯤 내보낸 채 멈추므로 기다린다.
+concurrency:
+  group: idle-live
+  cancel-in-progress: false
+
+permissions:
+  # GitHub Release와 태그를 만든다(APK).
+  contents: write
+
+jobs:
+  release:
+    uses: ./.github/workflows/idle-release.yml
+    with:
+      publish_version: ${{ inputs.version }}
+    secrets: inherit

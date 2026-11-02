@@ -1,0 +1,365 @@
+{
+  "actor": "rock_golem",
+  "name": "바위 골렘",
+  "date": "2026-10-28",
+  "creator": "colorsocks",
+  "tool": "Codex image_gen (built-in)",
+  "kind": "normal",
+  "gameSize": 1.05,
+  "direction": "right",
+  "design": "a compact ordinary rock golem built from a few large rounded gray stone blocks: head sunk directly into one squat torso, TWO short chunky arms with mitten-like rock fists, TWO stubby feet. Small simple cyan rectangular eyes on the RIGHT side of the head. One flat moss-green patch on upper head and one shoulder. Four flat colors. No neck, no cracks, no gravel, no runes, no crystal clusters, no armor, no extra rock layers. Simple mass-produced low-rank enemy, not a giant boss. Whole body faces RIGHT in three-quarter side view, hands close to torso.",
+  "reference": {
+    "path": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-0122bab5-6aff-44c8-b7f3-6c7faee7cd3b.png",
+    "prompt": "Use case: stylized-concept\nAsset type: production reference for one transparent 2D game actor.\nInput image: style reference ONLY; inherit compact proportions, thick clean contour and flat spot-color simplicity, not its species or equipment.\nSubject: a compact ordinary rock golem built from a few large rounded gray stone blocks: head sunk directly into one squat torso, TWO short chunky arms with mitten-like rock fists, TWO stubby feet. Small simple cyan rectangular eyes on the RIGHT side of the head. One flat moss-green patch on upper head and one shoulder. Four flat colors. No neck, no cracks, no gravel, no runes, no crystal clusters, no armor, no extra rock layers. Simple mass-produced low-rank enemy, not a giant boss. Whole body faces RIGHT in three-quarter side view, hands close to torso.\nComposition: exactly ONE full body, neutral stance, facing RIGHT, head to screen right, same side view as reference. Generous transparent margin, feet on one baseline. No ground or scenery.\nRendering: perfectly flat solid opaque color fields with antialiasing only along boundaries. Palette ONLY #26302D, #929C95, #6D8954, #75C7D1. No gradients, shading, highlights, texture, glow blur, shadows, labels or text. Keep appendage counts anatomically correct. True transparent background."
+  },
+  "clips": [
+    {
+      "clip": "idle",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, rock_golem idle. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a compact ordinary rock golem built from a few large rounded gray stone blocks: head sunk directly into one squat torso, TWO short chunky arms with mitten-like rock fists, TWO stubby feet. Small simple cyan rectangular eyes on the RIGHT side of the head. One flat moss-green patch on upper head and one shoulder. Four flat colors. No neck, no cracks, no gravel, no runes, no crystal clusters, no armor, no extra rock layers. Simple mass-produced low-rank enemy, not a giant boss. Whole body faces RIGHT in three-quarter side view, hands close to torso.\nAction left-to-right: Two idle frames: (1) neutral reference stance; (2) very subtle breathing squash, paws remain planted. Almost identical scale and posture.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #26302D, #929C95, #6D8954, #75C7D1. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-865b307f-a2c1-4c10-a48a-11678ba64e99.png"
+    },
+    {
+      "clip": "enter",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, rock_golem enter. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a compact ordinary rock golem built from a few large rounded gray stone blocks: head sunk directly into one squat torso, TWO short chunky arms with mitten-like rock fists, TWO stubby feet. Small simple cyan rectangular eyes on the RIGHT side of the head. One flat moss-green patch on upper head and one shoulder. Four flat colors. No neck, no cracks, no gravel, no runes, no crystal clusters, no armor, no extra rock layers. Simple mass-produced low-rank enemy, not a giant boss. Whole body faces RIGHT in three-quarter side view, hands close to torso.\nAction left-to-right: Two quick entry run frames: (1) compact running stride, slight forward lean; (2) opposite stride, facing right. Keep torso length and limbs short. Feet close to ground, no airborne flying pose.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #26302D, #929C95, #6D8954, #75C7D1. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-5e0671e7-976f-408d-b837-8e2589a40563.png"
+    },
+    {
+      "clip": "walk",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, rock_golem walk. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a compact ordinary rock golem built from a few large rounded gray stone blocks: head sunk directly into one squat torso, TWO short chunky arms with mitten-like rock fists, TWO stubby feet. Small simple cyan rectangular eyes on the RIGHT side of the head. One flat moss-green patch on upper head and one shoulder. Four flat colors. No neck, no cracks, no gravel, no runes, no crystal clusters, no armor, no extra rock layers. Simple mass-produced low-rank enemy, not a giant boss. Whole body faces RIGHT in three-quarter side view, hands close to torso.\nAction left-to-right: Four in-place walking loop frames: (1) contact left-near leg forward, (2) passing pose, (3) opposite contact right-far leg forward, (4) passing pose. Clear alternating little steps, compact torso stays SAME length. All limbs remain anatomically attached, no vanishing feet.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #26302D, #929C95, #6D8954, #75C7D1. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-493b6e87-a75f-438d-bbdc-6ac6f9618065.png"
+    },
+    {
+      "clip": "attack",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, rock_golem attack. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a compact ordinary rock golem built from a few large rounded gray stone blocks: head sunk directly into one squat torso, TWO short chunky arms with mitten-like rock fists, TWO stubby feet. Small simple cyan rectangular eyes on the RIGHT side of the head. One flat moss-green patch on upper head and one shoulder. Four flat colors. No neck, no cracks, no gravel, no runes, no crystal clusters, no armor, no extra rock layers. Simple mass-produced low-rank enemy, not a giant boss. Whole body faces RIGHT in three-quarter side view, hands close to torso.\nAction left-to-right: (1) neutral; (2) both SHORT fists pull close to chest; (3) short near fist punches down-forward RIGHT, other fist visible near body; (4) exact neutral. Both arms keep fixed short lengths, one elbow each, two feet remain planted. No debris or flying stones.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #26302D, #929C95, #6D8954, #75C7D1. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-ca507f2e-ac28-4616-9ddc-63f8aa5fa705.png"
+    },
+    {
+      "clip": "hit",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, rock_golem hit. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a compact ordinary rock golem built from a few large rounded gray stone blocks: head sunk directly into one squat torso, TWO short chunky arms with mitten-like rock fists, TWO stubby feet. Small simple cyan rectangular eyes on the RIGHT side of the head. One flat moss-green patch on upper head and one shoulder. Four flat colors. No neck, no cracks, no gravel, no runes, no crystal clusters, no armor, no extra rock layers. Simple mass-produced low-rank enemy, not a giant boss. Whole body faces RIGHT in three-quarter side view, hands close to torso.\nAction left-to-right: Two damage reaction frames: (1) slightly recoil backward to LEFT, eyes blink closed; (2) recover to EXACT neutral reference stance. Keep body height and limb lengths. Do not introduce wounds, particles or new accessories.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #26302D, #929C95, #6D8954, #75C7D1. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-28e33462-bc13-4f31-918e-85564b526e62.png"
+    },
+    {
+      "clip": "die",
+      "count": 3,
+      "prompt": "Use case: identity-preserve. Asset: 3-frame transparent game sprite animation sheet, rock_golem die. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a compact ordinary rock golem built from a few large rounded gray stone blocks: head sunk directly into one squat torso, TWO short chunky arms with mitten-like rock fists, TWO stubby feet. Small simple cyan rectangular eyes on the RIGHT side of the head. One flat moss-green patch on upper head and one shoulder. Four flat colors. No neck, no cracks, no gravel, no runes, no crystal clusters, no armor, no extra rock layers. Simple mass-produced low-rank enemy, not a giant boss. Whole body faces RIGHT in three-quarter side view, hands close to torso.\nAction left-to-right: Three death frames: (1) standing stagger slightly bowed but almost full neutral height; (2) bend knees and lower torso, feet anatomically connected; (3) lying on side at rest, head toward RIGHT, closed curved eyes. Maintain SAME body proportions, SAME limb count, no dismemberment, no gore. No ghost, skull, X eyes or disappearance.\nLayout: EXACTLY 3 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #26302D, #929C95, #6D8954, #75C7D1. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-824d9ec8-b099-4469-9cab-d869768c8c96.png"
+    }
+  ],
+  "postprocess": {
+    "palette": [
+      "#26302D",
+      "#929C95",
+      "#6D8954",
+      "#75C7D1"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 256,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 192,
+    "max_frame_width_px": 175,
+    "normalization": "클립 안에서는 공통 배율을 적용하고, 기준 포즈 높이 150px로 생성 줌을 맞춤.",
+    "measurements": {
+      "idle": {
+        "scale": 0.27223230490018147,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              55,
+              42,
+              202,
+              192
+            ],
+            "source_bounds": [
+              175,
+              193,
+              713,
+              744
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              56,
+              53,
+              200,
+              192
+            ],
+            "source_bounds": [
+              1066,
+              233,
+              1595,
+              744
+            ]
+          }
+        ]
+      },
+      "enter": {
+        "scale": 0.3184713375796178,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              47,
+              42,
+              210,
+              192
+            ],
+            "source_bounds": [
+              208,
+              227,
+              719,
+              697
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              48,
+              42,
+              208,
+              193
+            ],
+            "source_bounds": [
+              1103,
+              227,
+              1605,
+              698
+            ]
+          }
+        ]
+      },
+      "walk": {
+        "scale": 0.3811944091486658,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              53,
+              42,
+              202,
+              193
+            ],
+            "source_bounds": [
+              89,
+              179,
+              478,
+              572
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              53,
+              41,
+              204,
+              192
+            ],
+            "source_bounds": [
+              622,
+              178,
+              1015,
+              572
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              55,
+              42,
+              201,
+              193
+            ],
+            "source_bounds": [
+              1181,
+              178,
+              1560,
+              571
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              55,
+              41,
+              201,
+              193
+            ],
+            "source_bounds": [
+              1726,
+              176,
+              2105,
+              572
+            ]
+          }
+        ]
+      },
+      "attack": {
+        "scale": 0.3694581280788177,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              55,
+              42,
+              200,
+              193
+            ],
+            "source_bounds": [
+              51,
+              169,
+              441,
+              574
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              61,
+              42,
+              196,
+              193
+            ],
+            "source_bounds": [
+              627,
+              169,
+              989,
+              575
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              41,
+              43,
+              214,
+              193
+            ],
+            "source_bounds": [
+              1172,
+              171,
+              1638,
+              574
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              55,
+              42,
+              201,
+              193
+            ],
+            "source_bounds": [
+              1713,
+              169,
+              2106,
+              575
+            ]
+          }
+        ]
+      },
+      "hit": {
+        "scale": 0.2912621359223301,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              55,
+              41,
+              200,
+              192
+            ],
+            "source_bounds": [
+              183,
+              235,
+              681,
+              752
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              57,
+              42,
+              200,
+              192
+            ],
+            "source_bounds": [
+              1131,
+              237,
+              1622,
+              752
+            ]
+          }
+        ]
+      },
+      "die": {
+        "scale": 0.3232758620689655,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              54,
+              42,
+              202,
+              193
+            ],
+            "source_bounds": [
+              108,
+              153,
+              564,
+              617
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              54,
+              66,
+              202,
+              192
+            ],
+            "source_bounds": [
+              863,
+              229,
+              1319,
+              617
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              42,
+              99,
+              214,
+              193
+            ],
+            "source_bounds": [
+              1569,
+              331,
+              2098,
+              619
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "validation": {
+    "canonical_matches_unity": true,
+    "unity_prefab_wired": true,
+    "all_frames_displayed": true,
+    "walk_frames_observed": 4,
+    "facing_and_pool_reuse_checked": true,
+    "special_checked": false,
+    "typecheck": "passed",
+    "tests": "passed"
+  }
+}

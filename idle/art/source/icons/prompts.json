@@ -1,0 +1,195 @@
+{
+  "date": "2026-10-23",
+  "createdBy": "colorsocks",
+  "tool": "Codex image_gen",
+  "mode": "기본 내장 도구",
+  "scope": "art-prompts.md의 2. 아이콘 12장",
+  "postprocessing": {
+    "environment": "~/.venvs/art (Pillow 11.3.0)",
+    "steps": [
+      "생성 원본은 바이트 그대로 보존했습니다.",
+      "알파 16 초과 영역을 기준으로 투명 여백을 잘랐으며 그림 내부의 알파는 별도로 바꾸지 않았습니다.",
+      "원래 비율을 유지하며 긴 변을 224픽셀로 줄이고 256×256 투명 정사각형 가운데에 배치했습니다.",
+      "축소는 알파를 곱한 상태에서 LANCZOS로 처리한 뒤 RGBA PNG로 저장했습니다."
+    ],
+    "canvasSize": [
+      256,
+      256
+    ],
+    "contentMaxDimension": 224,
+    "minimumPadding": 16
+  },
+  "selected": [
+    {
+      "label": "골드",
+      "source": "currency_gold.png",
+      "output": "../../icons/currency_gold.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a small stack of shiny gold coins\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: gold and warm yellow\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. Coins have plain unmarked faces, no currency signs or engravings."
+    },
+    {
+      "label": "경험치",
+      "source": "currency_exp.png",
+      "output": "../../icons/currency_exp.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a glowing experience crystal orb\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: bright green\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. Keep the green orb body solid and clearly visible; only a compact glow close to its surface.\nCorrection: the orb is a bare floating green crystal sphere. Remove all gold, all metal, all casings, all supports, stands and pedestals. Only the green sphere itself and its compact green glow, using green shades and pale green highlights."
+    },
+    {
+      "label": "무기 슬롯",
+      "source": "slot_weapon.png",
+      "output": "../../icons/slot_weapon.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a simple sword silhouette (empty weapon slot marker)\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: light gray monochrome\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. Simple solid light-gray sword silhouette with minimal internal detail; strictly neutral grayscale.\nCorrection: this is an EMPTY SLOT SILHOUETTE, not a detailed weapon illustration. Render the entire sword as one flat solid light gray (#D8D8D8) silhouette with a clear sword-shaped outer contour. No blade facets, no beveled edges, no handle wraps, no interior linework, no metal reflections. The simple silhouette requirement overrides decorative cel shading."
+    },
+    {
+      "label": "방어구 슬롯",
+      "source": "slot_armor.png",
+      "output": "../../icons/slot_armor.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nAsset type: empty armor slot marker for a dark-themed mobile idle RPG, shown at about 90 px\nInput images: Image 1 is the armor icon to edit. Images 2 and 3 are the finished weapon and accessory slot markers, used only as flat light-gray style references.\nPrimary request: Remove ALL dark outlining and ALL interior lines from Image 1 to match the outline-free silhouettes in Images 2 and 3. Replace every dark stroke, including the outer border, shoulder separation seams and neckline line, with the same uniform light gray as the rest of the armor.\nComposition/framing: Preserve Image 1's exact chestplate and shoulder-pad outer shape, proportions and orientation. One centered icon.\nColor palette: a SINGLE flat light neutral gray fill, approximately #D8D8D8, matching the weapon and ring silhouettes.\nConstraints: NO outline, NO stroke, NO border, NO interior seams, NO neck oval line, NO shading, NO gradients, NO highlight, NO dark pixels anywhere on the armor. Merge shoulders and chest into one uninterrupted filled silhouette. Preserve transparent alpha outside the armor. Do not add new shapes or details. Keep the entire armor body solid and opaque. These outline-free single-color instructions override all general dark-outline and cel-shading style instructions above.",
+      "references": [
+        "rejected/slot_armor-02-outlined.png",
+        "../../icons/slot_weapon.png",
+        "../../icons/slot_accessory.png"
+      ],
+      "updated": "2026-10-23"
+    },
+    {
+      "label": "장신구 슬롯",
+      "source": "slot_accessory.png",
+      "output": "../../icons/slot_accessory.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "reference": "rejected/slot_accessory-01.png",
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a simple ring silhouette (empty accessory slot marker)\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: light gray monochrome\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. Simple solid light-gray ring silhouette with an open center and minimal internal detail; strictly neutral grayscale.\nThis is an EMPTY SLOT SILHOUETTE. A simple broad ring band with a single small faceted diamond-shaped silhouette at the top, all filled in flat light gray. Transparent open center. No engraved details or colored gemstone. Prioritize the simple ring contour over decorative shading.\nCorrection for Image 1: change ONLY the rendering of the existing ring into a FLAT SINGLE-COLOR SILHOUETTE. Every visible part of the ring and diamond must be filled with the SAME uniform light gray #D8D8D8, with no facets, no shading, no highlights, no outline stroke, no gradients, no depth. Keep the same ring-shaped outer silhouette and the transparent center hole. It must read like a simple flat placeholder pictogram. This single-color silhouette instruction overrides all shading and outline instructions above."
+    },
+    {
+      "label": "강화",
+      "source": "main_upgrade.png",
+      "output": "../../icons/main_upgrade.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a bold upward arrow with small sparkles\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: green and white\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. A simple thick upward arrow, with just a few compact four-point sparkles."
+    },
+    {
+      "label": "스킬",
+      "source": "main_skills.png",
+      "output": "../../icons/main_skills.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: an open spellbook with a glowing rune above it\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: blue and gold\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. The rune is an abstract geometric magical emblem, not a letter or character from any alphabet. Blank pages with no writing."
+    },
+    {
+      "label": "장비",
+      "source": "main_equipment.png",
+      "output": "../../icons/main_equipment.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a sword and a round shield crossed\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: steel gray and brown\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. The crossed sword and round shield form one compact icon group."
+    },
+    {
+      "label": "환생",
+      "source": "main_rebirth.png",
+      "output": "../../icons/main_rebirth.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a circular arrow wrapped in a phoenix flame\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: orange and red\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. A clear circular arrow with one readable arrowhead, surrounded by a stylized phoenix-shaped flame."
+    },
+    {
+      "label": "가방",
+      "source": "main_inventory.png",
+      "output": "../../icons/main_inventory.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a leather adventurer backpack\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: brown and tan\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. One compact leather backpack with straps and simple buckles, clearly readable at small size."
+    },
+    {
+      "label": "설정",
+      "source": "main_settings.png",
+      "output": "../../icons/main_settings.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a gear cog\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: light gray\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. One simple light-gray neutral grayscale gear cog with an open center and clearly separated broad teeth."
+    },
+    {
+      "label": "로그아웃",
+      "source": "main_logout.png",
+      "output": "../../icons/main_logout.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: an open wooden door with an arrow pointing out\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: brown and white\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. A bold white exit arrow pointing outward to the right through an open wooden door; no wall or floor."
+    }
+  ],
+  "unused": [
+    {
+      "source": "rejected/currency_exp-01.png",
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a glowing experience crystal orb\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: bright green\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. Keep the green orb body solid and clearly visible; only a compact glow close to its surface.",
+      "reason": "명세에 없는 금색 받침과 테두리가 생겨 제외했습니다."
+    },
+    {
+      "source": "rejected/slot_weapon-01.png",
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a simple sword silhouette (empty weapon slot marker)\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: light gray monochrome\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. Simple solid light-gray sword silhouette with minimal internal detail; strictly neutral grayscale.",
+      "reason": "빈 슬롯 표시로 쓰기에는 내부 묘사가 많아 단순한 실루엣으로 다시 생성했습니다."
+    },
+    {
+      "source": "rejected/slot_armor-01.png",
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a simple chest armor silhouette (empty armor slot marker)\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: light gray monochrome\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. Simple solid light-gray chest armor silhouette with minimal internal detail; strictly neutral grayscale.",
+      "reason": "빈 슬롯 표시로 쓰기에는 내부 묘사가 많아 단순한 실루엣으로 다시 생성했습니다."
+    },
+    {
+      "source": "rejected/slot_accessory-01.png",
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a simple ring silhouette (empty accessory slot marker)\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: light gray monochrome\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. Simple solid light-gray ring silhouette with an open center and minimal internal detail; strictly neutral grayscale.\nThis is an EMPTY SLOT SILHOUETTE. A simple broad ring band with a single small faceted diamond-shaped silhouette at the top, all filled in flat light gray. Transparent open center. No engraved details or colored gemstone. Prioritize the simple ring contour over decorative shading.",
+      "reason": "다른 빈 슬롯 표시와 맞추기 위해 명암을 제거한 단색 실루엣으로 다시 생성했습니다."
+    },
+    {
+      "source": "rejected/slot_armor-02-outlined.png",
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI icon for a dark-themed mobile idle RPG, shown at about 90 px\nPrimary request: a simple chest armor silhouette (empty armor slot marker)\nComposition/framing: single centered object, slight 3/4 view, object fills about 80% of the canvas, clear silhouette\nColor palette: light gray monochrome\nConstraints: transparent background; no background scene elements\nProduction constraints: One isolated icon only, no tile, no badge, no frame, no ground shadow. True transparent alpha outside the object, not a drawn checkerboard. Keep the object material solid and opaque. Crisp 2D cartoon illustration with bold clean outlines and simple cel shading, consistent with a mobile fantasy RPG icon set. Simple solid light-gray chest armor silhouette with minimal internal detail; strictly neutral grayscale.\nCorrection: this is an EMPTY SLOT SILHOUETTE, not a detailed armor illustration. Render a chestplate with broad shoulder pads as one flat solid light gray (#D8D8D8) silhouette. No interior seams, no bevels, no panels, no belt, no buckles, no metal reflections. A clear chest-armor outer contour with a small neck opening. The simple silhouette requirement overrides decorative cel shading.",
+      "reason": "사용자 요청에 따라 외곽선과 내부 경계선을 없애고 다른 장비 슬롯과 통일했습니다."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  // 테스트는 vitest로 Node에서 돌며, vitest의 타입이 @types/node를 끌어온다. 테스트를 여기서
+  // 검사하면 Node의 전역이 ../tsconfig.json에 들어가지 않아 src/가 호스트 API 없이 유지된다.
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": { "types": ["node"] },
+  "include": ["."]
+}

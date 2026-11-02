@@ -1,0 +1,80 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. 프로젝트: golden
+import { E_AbilityType } from '../ability-type';
+
+export interface IAbilityOwner {
+  get(type: E_AbilityType): number;
+}
+
+/** 공식을 부르는 쪽이 넘기는 입력. 공식이 읽는 입력을 넘기지 않으면 던진다. */
+export interface FormulaInput {}
+
+type FormulaFn = (caster: IAbilityOwner, target: IAbilityOwner, input: FormulaInput) => number;
+
+const minDamage = 1;
+const critMult = 1.5;
+
+function clamp(x: number, lo: number, hi: number): number {
+  return Math.min(Math.max(x, lo), hi);
+}
+
+function rand(...args: number[]): number {
+  if (args.length === 0) return Math.random();
+  if (args.length === 1) return Math.random() * args[0];
+  return args[0] + Math.random() * (args[1] - args[0]);
+}
+
+function randInt(lo: number, hi: number): number {
+  const a = Math.floor(lo);
+  const b = Math.floor(hi);
+  return a + Math.floor(Math.random() * (b - a + 1));
+}
+
+const base: FormulaFn = (caster, target, input) => {
+  const __caster_attack = caster.get(E_AbilityType.attack);
+  const __target_defense = target.get(E_AbilityType.defense);
+  const __result = Math.max(minDamage, (__caster_attack - __target_defense));
+  if (Formula.debug) {
+    console.log(`base(${__result}) = max(minDamage(${minDamage}), (caster.attack(${__caster_attack}) - target.defense(${__target_defense})))`);
+  }
+  return __result;
+};
+
+const shaped: FormulaFn = (caster, target, input) => {
+  const __t1 = Formula.get(E_AbilityType.base, caster, target, input);
+  const __target_defense = target.get(E_AbilityType.defense);
+  const __result = clamp(Math.floor((__t1 * critMult)), (-Math.abs(__target_defense)), Math.min(100, 200, 300));
+  if (Formula.debug) {
+    console.log(`shaped(${__result}) = clamp(floor((base(${__t1}) * critMult(${critMult}))), (-abs(target.defense(${__target_defense}))), min(100, 200, 300))`);
+  }
+  return __result;
+};
+
+const branchy: FormulaFn = (caster, target, input) => {
+  const __caster_attack = caster.get(E_AbilityType.attack);
+  const __target_defense = target.get(E_AbilityType.defense);
+  const __t1 = Formula.get(E_AbilityType.base, caster, target, input);
+  const __t2 = Formula.get(E_AbilityType.base, caster, target, input);
+  const __t3 = rand(1, 10);
+  const __t4 = randInt(1, 6);
+  const __result = ((((__caster_attack >= 10) && (!(__target_defense === 3))) || (__t1 !== 1)) ? ((-__t2) % 7) : (__t3 + (__t4 / 2)));
+  if (Formula.debug) {
+    console.log(`branchy(${__result}) = ((((caster.attack(${__caster_attack}) >= 10) && (!(target.defense(${__target_defense}) == 3))) || (base(${__t1}) != 1)) ? ((-base(${__t2})) % 7) : (rand(1, 10)(${__t3}) + (randInt(1, 6)(${__t4}) / 2)))`);
+  }
+  return __result;
+};
+
+export class Formula {
+  static debug = false;
+
+  private static readonly map = new Map<E_AbilityType, FormulaFn>([
+    [E_AbilityType.base, base],
+    [E_AbilityType.shaped, shaped],
+    [E_AbilityType.branchy, branchy],
+  ]);
+
+  static get(type: E_AbilityType, caster: IAbilityOwner, target: IAbilityOwner, input: FormulaInput = {}): number {
+    const fn = Formula.map.get(type);
+    if (!fn) throw new Error(`등록되지 않은 공식: ${type}`);
+    return fn(caster, target, input);
+  }
+}

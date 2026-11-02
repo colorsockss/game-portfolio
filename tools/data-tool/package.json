@@ -1,0 +1,30 @@
+{
+  "name": "@idle/data-tool",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Excel data/schema compiler for Node.js and Unity PuerTS",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "sheet-baker": "./src/cli.js"
+  },
+  "exports": "./src/index.js",
+  "scripts": {
+    "convert": "node src/cli.js",
+    "example": "node scripts/create-example.js && node src/cli.js sheets --out generated",
+    "test": "node --test test/*.test.js",
+    "check": "npm test"
+  },
+  "dependencies": {
+    "@msgpack/msgpack": "^3.1.2",
+    "exceljs": "4.4.0",
+    "fast-text-encoding": "^1.0.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "0.28.2",
+    "typescript": "^5.9.0"
+  }
+}

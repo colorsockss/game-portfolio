@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>단색 용사 · 고블린 궁수</title>
+<style>body{margin:24px;background:#f7f5ef;color:#302a23;font:15px system-ui}h1{font-size:22px}button,select{padding:8px 12px;margin:0 5px 6px 0;border:1px solid #b7ac9c;border-radius:8px;background:white;cursor:pointer}img{display:block;max-width:none}p{line-height:1.6}main{max-width:760px}.viewport{overflow:auto}</style>
+<main><h1>단색 용사 · 고블린 궁수</h1><p>용사는 왼손 검 기준 그림을 7색으로, 궁수는 초록 후드·짧은 활·화살통을 6색으로 정리했습니다.<br>각각 걷기 포함 6개 동작입니다. 용사 크기 1, 두 고블린은 0.75입니다.</p>
+<div id="buttons"></div><label>화면 너비 <select id="size"><option value="360">360px</option><option value="540">540px</option><option value="1080">1080px</option></select></label>
+<div class="viewport"><img id="clip" src="walk.gif" width="360" height="178" alt="실제 표시 배율로 비교하는 용사와 고블린 애니메이션"></div>
+<p>브라우저 배율 100%에서 게임 표시 크기로 보입니다. 정찰병은 비교용 대기 자세입니다.<br>등장은 궁수만, 시전은 용사만 재생합니다. 궁수의 이동에는 걷기를 사용합니다.</p>
+<p><a href="unity-archer-walk.png">실제 전투 걷기</a> · <a href="unity-archer-attack.png">궁수 공격</a> · <a href="unity-hero-attack.png">용사 공격</a></p></main>
+<script>let state='walk';const picture=document.querySelector('#clip'),size=document.querySelector('#size');function show(){const w=+size.value;picture.src=state+(w===360?'':'-'+w)+'.gif';picture.width=w;picture.height=Math.round(178*w/360)}for(const[id,label]of Object.entries({idle:'대기',walk:'걷기',enter:'등장',attack:'공격',cast:'시전',hit:'피격',die:'사망'})){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{state=id;show()};document.querySelector('#buttons').append(b)}size.onchange=show;</script></html>

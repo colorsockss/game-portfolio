@@ -1,0 +1,50 @@
+[
+  {
+    "key": "hero",
+    "name": "용사 (비교 기준)",
+    "size": 1,
+    "kind": "hero"
+  },
+  {
+    "key": "goblin_shaman",
+    "name": "고블린 주술사",
+    "size": 0.75,
+    "kind": "normal"
+  },
+  {
+    "key": "poison_slime",
+    "name": "독 슬라임",
+    "size": 0.5,
+    "kind": "normal"
+  },
+  {
+    "key": "rock_golem",
+    "name": "바위 골렘",
+    "size": 1.05,
+    "kind": "normal"
+  },
+  {
+    "key": "frost_wolf",
+    "name": "서리 늑대",
+    "size": 0.8,
+    "kind": "normal"
+  },
+  {
+    "key": "ogre_chief",
+    "name": "오우거 대장",
+    "size": 1.65,
+    "kind": "boss"
+  },
+  {
+    "key": "fire_dragon",
+    "name": "화염 드래곤",
+    "size": 1.9,
+    "kind": "boss"
+  },
+  {
+    "key": "spirit_wolf",
+    "name": "정령 늑대",
+    "size": 0.9,
+    "kind": "summon"
+  }
+]

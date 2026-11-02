@@ -1,0 +1,364 @@
+{
+  "actor": "poison_slime",
+  "name": "독 슬라임",
+  "date": "2026-10-28",
+  "creator": "colorsocks",
+  "tool": "Codex image_gen (built-in)",
+  "kind": "normal",
+  "gameSize": 0.5,
+  "direction": "right",
+  "design": "a tiny purple poison slime, a single low rounded dome with flat bottom, two tiny dark circular dot eyes near the right end of the body, gentle neutral expression like the reference green slime. One simple green poison patch along the bottom edge with TWO small attached rounded drip lobes; not separate puddles. ONLY purple body, green patch and dark outline/eyes, three spot colors. No mouth, eyebrows, fangs, spots, bubbles, highlights or ornamental protrusions. Lowest-rank ordinary enemy.",
+  "reference": {
+    "path": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-3837ad8e-17e9-4049-91d0-b0e4699987fd.png",
+    "prompt": "Use case: precise-object-edit. Preserve this exact tiny purple-green poison slime silhouette, right-side two dot eyes and the simple green lower band. Correct the body fill ONLY: the entire purple area must be ONE UNIFORM fully opaque solid purple #9561B7. Remove the dark central spot, transparent hole, swirled texture and all shading. No transparency inside the creature. The green band is one uniform #85B846, contour and eyes #231B15. Exactly THREE flat colors, no gradients, highlights or textures. Keep its friendly eyes and simple shape unchanged. True transparent background outside the silhouette, fully solid opaque interior."
+  },
+  "clips": [
+    {
+      "clip": "idle",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, poison_slime idle. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a tiny purple poison slime, a single low rounded dome with flat bottom, two tiny dark circular dot eyes near the right end of the body, gentle neutral expression like the reference green slime. One simple green poison patch along the bottom edge with TWO small attached rounded drip lobes; not separate puddles. ONLY purple body, green patch and dark outline/eyes, three spot colors. No mouth, eyebrows, fangs, spots, bubbles, highlights or ornamental protrusions. Lowest-rank ordinary enemy.\nAction left-to-right: Two idle frames: (1) neutral reference stance; (2) very subtle breathing squash, paws remain planted. Almost identical scale and posture.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #9561B7, #85B846. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-56bb4f0f-7de3-410c-af94-393b7527be60.png"
+    },
+    {
+      "clip": "enter",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, poison_slime enter. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a tiny purple poison slime, a single low rounded dome with flat bottom, two tiny dark circular dot eyes near the right end of the body, gentle neutral expression like the reference green slime. One simple green poison patch along the bottom edge with TWO small attached rounded drip lobes; not separate puddles. ONLY purple body, green patch and dark outline/eyes, three spot colors. No mouth, eyebrows, fangs, spots, bubbles, highlights or ornamental protrusions. Lowest-rank ordinary enemy.\nAction left-to-right: Two quick slithering entry frames: (1) slightly forward-leaning low dome, (2) slightly taller dome, with bottom touching baseline. No legs, arms, feet, detached slime drops, no flying.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #9561B7, #85B846. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-03f3ade8-108b-4cba-afd0-8a9ec2ddf182.png"
+    },
+    {
+      "clip": "walk",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, poison_slime walk. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a tiny purple poison slime, a single low rounded dome with flat bottom, two tiny dark circular dot eyes near the right end of the body, gentle neutral expression like the reference green slime. One simple green poison patch along the bottom edge with TWO small attached rounded drip lobes; not separate puddles. ONLY purple body, green patch and dark outline/eyes, three spot colors. No mouth, eyebrows, fangs, spots, bubbles, highlights or ornamental protrusions. Lowest-rank ordinary enemy.\nAction left-to-right: Four crawling loop frames: (1) rounded dome neutral, (2) gently squash shorter and wider, (3) raise slightly taller and narrower, (4) settle halfway to neutral. TWO tiny dot eyes near RIGHT and green bottom band follow body. NO arms, legs, feet, tentacles, separate drops. Modest 10% deformation, same body volume.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #9561B7, #85B846. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-4315404b-3486-4240-805f-c3dbf412d47a.png"
+    },
+    {
+      "clip": "attack",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, poison_slime attack. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a tiny purple poison slime, a single low rounded dome with flat bottom, two tiny dark circular dot eyes near the right end of the body, gentle neutral expression like the reference green slime. One simple green poison patch along the bottom edge with TWO small attached rounded drip lobes; not separate puddles. ONLY purple body, green patch and dark outline/eyes, three spot colors. No mouth, eyebrows, fangs, spots, bubbles, highlights or ornamental protrusions. Lowest-rank ordinary enemy.\nAction left-to-right: (1) neutral dome; (2) squat compress to prepare; (3) stretch slightly toward RIGHT to spit, tiny round mouth may open but NO separate projectile; (4) exact original dome. Keep TWO dot eyes and plain purple fill with green lower band; absolutely no arms or legs.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #9561B7, #85B846. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-244a1133-54f5-4c7f-9479-d378a1014807.png"
+    },
+    {
+      "clip": "hit",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, poison_slime hit. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a tiny purple poison slime, a single low rounded dome with flat bottom, two tiny dark circular dot eyes near the right end of the body, gentle neutral expression like the reference green slime. One simple green poison patch along the bottom edge with TWO small attached rounded drip lobes; not separate puddles. ONLY purple body, green patch and dark outline/eyes, three spot colors. No mouth, eyebrows, fangs, spots, bubbles, highlights or ornamental protrusions. Lowest-rank ordinary enemy.\nAction left-to-right: Two damage reaction frames: (1) slightly recoil backward to LEFT, eyes blink closed; (2) recover to EXACT neutral reference stance. Keep body height and limb lengths. Do not introduce wounds, particles or new accessories.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #9561B7, #85B846. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-0f59c419-6c40-4b1c-bad1-f109082bb365.png"
+    },
+    {
+      "clip": "die",
+      "count": 3,
+      "prompt": "Use case: identity-preserve. Asset: 3-frame transparent game sprite animation sheet, poison_slime die. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a tiny purple poison slime, a single low rounded dome with flat bottom, two tiny dark circular dot eyes near the right end of the body, gentle neutral expression like the reference green slime. One simple green poison patch along the bottom edge with TWO small attached rounded drip lobes; not separate puddles. ONLY purple body, green patch and dark outline/eyes, three spot colors. No mouth, eyebrows, fangs, spots, bubbles, highlights or ornamental protrusions. Lowest-rank ordinary enemy.\nAction left-to-right: Three death frames: (1) neutral height dome with eyes softly closed; (2) body collapses to a low wide mound, eyes closed; (3) one flat connected purple-green puddle, eyes closed. NO arms, legs, feet, droplets or particles. Body remains a single connected shape.\nLayout: EXACTLY 3 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #9561B7, #85B846. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-eb45d703-572d-4073-bf11-d0d95693efb9.png"
+    }
+  ],
+  "postprocess": {
+    "palette": [
+      "#231B15",
+      "#9561B7",
+      "#85B846"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 384,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 256,
+    "max_frame_width_px": 318,
+    "normalization": "클립 안에서는 공통 배율을 적용하고, 기준 포즈 높이 150px로 생성 줌을 맞춤.",
+    "measurements": {
+      "idle": {
+        "scale": 0.379746835443038,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              71,
+              105,
+              314,
+              256
+            ],
+            "source_bounds": [
+              95,
+              260,
+              733,
+              655
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              69,
+              124,
+              314,
+              256
+            ],
+            "source_bounds": [
+              1039,
+              309,
+              1682,
+              655
+            ]
+          }
+        ]
+      },
+      "enter": {
+        "scale": 0.4716981132075472,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              34,
+              129,
+              349,
+              256
+            ],
+            "source_bounds": [
+              128,
+              346,
+              795,
+              616
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              53,
+              106,
+              331,
+              256
+            ],
+            "source_bounds": [
+              1072,
+              298,
+              1662,
+              616
+            ]
+          }
+        ]
+      },
+      "walk": {
+        "scale": 0.6009438840722386,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              66,
+              106,
+              317,
+              256
+            ],
+            "source_bounds": [
+              52,
+              247,
+              469,
+              496
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              54,
+              140,
+              329,
+              256
+            ],
+            "source_bounds": [
+              594,
+              304,
+              1051,
+              496
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              72,
+              101,
+              313,
+              256
+            ],
+            "source_bounds": [
+              1164,
+              239,
+              1564,
+              496
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              66,
+              114,
+              319,
+              256
+            ],
+            "source_bounds": [
+              1705,
+              261,
+              2124,
+              496
+            ]
+          }
+        ]
+      },
+      "attack": {
+        "scale": 0.5617977528089888,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              68,
+              106,
+              315,
+              256
+            ],
+            "source_bounds": [
+              49,
+              238,
+              488,
+              504
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              68,
+              148,
+              317,
+              256
+            ],
+            "source_bounds": [
+              605,
+              316,
+              1047,
+              507
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              56,
+              128,
+              328,
+              256
+            ],
+            "source_bounds": [
+              1134,
+              275,
+              1618,
+              502
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              68,
+              106,
+              315,
+              256
+            ],
+            "source_bounds": [
+              1685,
+              237,
+              2124,
+              504
+            ]
+          }
+        ]
+      },
+      "hit": {
+        "scale": 0.42857142857142855,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              61,
+              105,
+              323,
+              255
+            ],
+            "source_bounds": [
+              119,
+              283,
+              731,
+              633
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              68,
+              105,
+              317,
+              255
+            ],
+            "source_bounds": [
+              1093,
+              282,
+              1672,
+              632
+            ]
+          }
+        ]
+      },
+      "die": {
+        "scale": 0.43352601156069365,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              68,
+              105,
+              316,
+              255
+            ],
+            "source_bounds": [
+              61,
+              196,
+              634,
+              542
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              67,
+              160,
+              317,
+              255
+            ],
+            "source_bounds": [
+              795,
+              323,
+              1372,
+              542
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              67,
+              211,
+              316,
+              257
+            ],
+            "source_bounds": [
+              1530,
+              444,
+              2103,
+              548
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "validation": {
+    "canonical_matches_unity": true,
+    "unity_prefab_wired": true,
+    "all_frames_displayed": true,
+    "walk_frames_observed": 4,
+    "facing_and_pool_reuse_checked": true,
+    "special_checked": false,
+    "typecheck": "passed",
+    "tests": "passed"
+  }
+}

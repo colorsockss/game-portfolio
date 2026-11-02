@@ -1,0 +1,26 @@
+[
+  {
+    "id": 7001,
+    "nameKey": "stat.attack",
+    "stat": "attack",
+    "amount": "5",
+    "maxStep": 100,
+    "note": "공격력 강화"
+  },
+  {
+    "id": 7002,
+    "nameKey": "stat.maxHp",
+    "stat": "maxHp",
+    "amount": "50",
+    "maxStep": 100,
+    "note": "체력 강화"
+  },
+  {
+    "id": 7003,
+    "nameKey": "stat.critChance",
+    "stat": "critChance",
+    "amount": "0.005",
+    "maxStep": 50,
+    "note": "치명 확률 강화. 영웅의 기본 0.15에 최대 +0.25"
+  }
+]

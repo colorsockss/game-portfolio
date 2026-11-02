@@ -1,0 +1,460 @@
+{
+  "actor": "ogre_chief",
+  "name": "오우거 대장",
+  "date": "2026-10-28",
+  "creator": "colorsocks",
+  "tool": "Codex image_gen (built-in)",
+  "kind": "boss",
+  "gameSize": 1.65,
+  "direction": "right",
+  "design": "a squat broad gray-green ogre chieftain BOSS facing RIGHT. Compact two-head-tall body, thick short limbs, very wide shoulders and belly. Two hero-scale identity features: a broad grey helmet with TWO ivory horns, and ONE large broad grey cleaver with brown handle held firmly in the FAR/LEFT hand at the RIGHT side of the body pointing diagonally up-right, tip below helmet top. One simple tan fur shoulder mantle, brown belt and loincloth, short brown boots, two small lower ivory tusks. The other RIGHT empty hand is near the back hip. Arms connected clearly with one elbow each, upperarm+forearm less than half head height. Larger silhouette and slightly more distinct costume parts than ordinary goblins, but no texture, studs, scratches or tiny details. Seven flat colors only.",
+  "reference": {
+    "path": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-2702bdec-882f-4cc3-9393-3f2f49b21bfa.png",
+    "prompt": "Use case: stylized-concept\nAsset type: one transparent production game-actor reference.\nInput is only a reference for compact simplified proportions, outline weight and flat color style, NOT species/equipment.\nSubject: a squat broad gray-green ogre chieftain BOSS facing RIGHT. Compact two-head-tall body, thick short limbs, very wide shoulders and belly. Two hero-scale identity features: a broad grey helmet with TWO ivory horns, and ONE large broad grey cleaver with brown handle held firmly in the NEAR/RIGHT hand in front of the body pointing diagonally up-right, tip below helmet top. One simple tan fur shoulder mantle, brown belt and loincloth, short brown boots, two small lower ivory tusks. The other LEFT empty hand is near the back hip. Arms connected clearly with one elbow each, upperarm+forearm less than half head height. Larger silhouette and slightly more distinct costume parts than ordinary goblins, but no texture, studs, scratches or tiny details. Seven flat colors only.\nComposition: EXACTLY ONE full-body actor facing RIGHT, head toward screen RIGHT, feet on common baseline; neutral pose and generous margin. No cropping.\nStyle: strictly flat solid opaque color fields. Palette only #231B15, #789267, #A6B2AF, #C8AD80, #815337, #E5D7B1, #C94943. No gradients, shading, highlights, textures, gloss or blurry glow. No text, labels, grid, scenery or ground shadow. True transparent background."
+  },
+  "clips": [
+    {
+      "clip": "idle",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, ogre_chief idle. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a squat broad gray-green ogre chieftain BOSS facing RIGHT. Compact two-head-tall body, thick short limbs, very wide shoulders and belly. Two hero-scale identity features: a broad grey helmet with TWO ivory horns, and ONE large broad grey cleaver with brown handle held firmly in the FAR/LEFT hand at the RIGHT side of the body pointing diagonally up-right, tip below helmet top. One simple tan fur shoulder mantle, brown belt and loincloth, short brown boots, two small lower ivory tusks. The other RIGHT empty hand is near the back hip. Arms connected clearly with one elbow each, upperarm+forearm less than half head height. Larger silhouette and slightly more distinct costume parts than ordinary goblins, but no texture, studs, scratches or tiny details. Seven flat colors only.\nAction left-to-right: Two idle frames: (1) neutral reference stance; (2) very subtle breathing squash, paws remain planted. Almost identical scale and posture.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #789267, #A6B2AF, #C8AD80, #815337, #E5D7B1, #C94943. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-d5a0c898-7243-4bd4-85c6-c932d7d22f0c.png"
+    },
+    {
+      "clip": "enter",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, ogre_chief enter. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a squat broad gray-green ogre chieftain BOSS facing RIGHT. Compact two-head-tall body, thick short limbs, very wide shoulders and belly. Two hero-scale identity features: a broad grey helmet with TWO ivory horns, and ONE large broad grey cleaver with brown handle held firmly in the FAR/LEFT hand at the RIGHT side of the body pointing diagonally up-right, tip below helmet top. One simple tan fur shoulder mantle, brown belt and loincloth, short brown boots, two small lower ivory tusks. The other RIGHT empty hand is near the back hip. Arms connected clearly with one elbow each, upperarm+forearm less than half head height. Larger silhouette and slightly more distinct costume parts than ordinary goblins, but no texture, studs, scratches or tiny details. Seven flat colors only.\nAction left-to-right: Two quick entry run frames: (1) compact running stride, slight forward lean; (2) opposite stride, facing right. Keep torso length and limbs short. Feet close to ground, no airborne flying pose.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #789267, #A6B2AF, #C8AD80, #815337, #E5D7B1, #C94943. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-fd9fb3ae-350d-4c31-bc43-ebad4f8b4e26.png"
+    },
+    {
+      "clip": "walk",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, ogre_chief walk. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a squat broad gray-green ogre chieftain BOSS facing RIGHT. Compact two-head-tall body, thick short limbs, very wide shoulders and belly. Two hero-scale identity features: a broad grey helmet with TWO ivory horns, and ONE large broad grey cleaver with brown handle held firmly in the FAR/LEFT hand at the RIGHT side of the body pointing diagonally up-right, tip below helmet top. One simple tan fur shoulder mantle, brown belt and loincloth, short brown boots, two small lower ivory tusks. The other RIGHT empty hand is near the back hip. Arms connected clearly with one elbow each, upperarm+forearm less than half head height. Larger silhouette and slightly more distinct costume parts than ordinary goblins, but no texture, studs, scratches or tiny details. Seven flat colors only.\nAction left-to-right: Four in-place walking loop frames: (1) contact left-near leg forward, (2) passing pose, (3) opposite contact right-far leg forward, (4) passing pose. Clear alternating little steps, compact torso stays SAME length. All limbs remain anatomically attached, no vanishing feet.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #789267, #A6B2AF, #C8AD80, #815337, #E5D7B1, #C94943. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-f551c360-666a-444b-a701-b5a9df0f6c17.png"
+    },
+    {
+      "clip": "attack",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, ogre_chief attack. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a squat broad gray-green ogre chieftain BOSS facing RIGHT. Compact two-head-tall body, thick short limbs, very wide shoulders and belly. Two hero-scale identity features: a broad grey helmet with TWO ivory horns, and ONE large broad grey cleaver with brown handle held firmly in the FAR/LEFT hand at the RIGHT side of the body pointing diagonally up-right, tip below helmet top. One simple tan fur shoulder mantle, brown belt and loincloth, short brown boots, two small lower ivory tusks. The other RIGHT empty hand is near the back hip. Arms connected clearly with one elbow each, upperarm+forearm less than half head height. Larger silhouette and slightly more distinct costume parts than ordinary goblins, but no texture, studs, scratches or tiny details. Seven flat colors only.\nAction left-to-right: (1) neutral LEFT-hand cleaver; (2) same LEFT arm draws cleaver back close to chest; (3) LEFT-hand cleaver swings horizontally toward RIGHT at waist height with one bent short elbow, RIGHT empty hand at rear hip; (4) exact reference neutral. Preserve BOTH hands and short arm length. Blade NEVER switches hands. No detached weapon, no effect arc.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #789267, #A6B2AF, #C8AD80, #815337, #E5D7B1, #C94943. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-50f193fb-c029-42f1-ba67-fb5a319aa0ee.png"
+    },
+    {
+      "clip": "hit",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, ogre_chief hit. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a squat broad gray-green ogre chieftain BOSS facing RIGHT. Compact two-head-tall body, thick short limbs, very wide shoulders and belly. Two hero-scale identity features: a broad grey helmet with TWO ivory horns, and ONE large broad grey cleaver with brown handle held firmly in the FAR/LEFT hand at the RIGHT side of the body pointing diagonally up-right, tip below helmet top. One simple tan fur shoulder mantle, brown belt and loincloth, short brown boots, two small lower ivory tusks. The other RIGHT empty hand is near the back hip. Arms connected clearly with one elbow each, upperarm+forearm less than half head height. Larger silhouette and slightly more distinct costume parts than ordinary goblins, but no texture, studs, scratches or tiny details. Seven flat colors only.\nAction left-to-right: Two damage reaction frames: (1) slightly recoil backward to LEFT, eyes blink closed; (2) recover to EXACT neutral reference stance. Keep body height and limb lengths. Do not introduce wounds, particles or new accessories.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #789267, #A6B2AF, #C8AD80, #815337, #E5D7B1, #C94943. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-88af86b1-23b4-462f-b4f1-7f401e0e5835.png"
+    },
+    {
+      "clip": "die",
+      "count": 3,
+      "prompt": "Use case: identity-preserve. Asset: 3-frame transparent game sprite animation sheet, ogre_chief die. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a squat broad gray-green ogre chieftain BOSS facing RIGHT. Compact two-head-tall body, thick short limbs, very wide shoulders and belly. Two hero-scale identity features: a broad grey helmet with TWO ivory horns, and ONE large broad grey cleaver with brown handle held firmly in the FAR/LEFT hand at the RIGHT side of the body pointing diagonally up-right, tip below helmet top. One simple tan fur shoulder mantle, brown belt and loincloth, short brown boots, two small lower ivory tusks. The other RIGHT empty hand is near the back hip. Arms connected clearly with one elbow each, upperarm+forearm less than half head height. Larger silhouette and slightly more distinct costume parts than ordinary goblins, but no texture, studs, scratches or tiny details. Seven flat colors only.\nAction left-to-right: Three death frames: (1) standing stagger slightly bowed but almost full neutral height; (2) bend knees and lower torso, feet anatomically connected; (3) lying on side at rest, head toward RIGHT, closed curved eyes. Maintain SAME body proportions, SAME limb count, no dismemberment, no gore. No ghost, skull, X eyes or disappearance.\nLayout: EXACTLY 3 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #789267, #A6B2AF, #C8AD80, #815337, #E5D7B1, #C94943. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-f09962e7-0084-439d-b25b-79cbe1b26ebe.png"
+    },
+    {
+      "clip": "special",
+      "count": 5,
+      "prompt": "Use case: identity-preserve. EXACT reference ogre, create a FIVE-FRAME boss special animation, ONE horizontal row, transparent, wide 3:1.\nThe cleaver MUST stay in the SAME hand as the reference in EVERY frame: the hand in FRONT of his belly, on SCREEN RIGHT. His empty back hand at SCREEN LEFT stays empty. NEVER put the cleaver behind his head or at screen left, NEVER switch hands. Arm lengths short and consistent.\nFrame 1: reference neutral, cleaver forward-right diagonally up.\nFrame 2: crouch slightly, lift SAME forward weapon fist just a little to chest height, cleaver vertical in FRONT of face at screen RIGHT. Back hand is visible empty fist at screen LEFT hip.\nFrame 3: crouch lower with SAME cleaver still upright in FRONT of face at screen RIGHT. Weapon hand remains chest height, never overhead or behind head.\nFrame 4: roar open mouth and slam SAME forward hand down and toward RIGHT, cleaver tip points down-right, empty rear fist remains at screen LEFT hip.\nFrame 5: EXACT reference neutral.\nPreserve helmet2horns, furmantle, beltloincloth,2boots,2SHORT arms,2hands. No additional equipment or effects. #231B15, #789267, #A6B2AF, #C8AD80, #815337, #E5D7B1, #C94943 opaque flat colors ONLY. NO shading, gradients, texture, lighting, glow, shadows, text, numbers, grid or labels.\nFive entire bodies SAME SCALE, very WIDE clear transparent gaps, all RIGHT facing.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-95d731d4-21ad-4fa6-a0e4-48e553bf83b4.png",
+      "previousAttempt": {
+        "clip": "special",
+        "count": 5,
+        "prompt": "Use case: identity-preserve. Asset: 5-frame transparent game sprite animation sheet, ogre_chief special. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a squat broad gray-green ogre chieftain BOSS facing RIGHT. Compact two-head-tall body, thick short limbs, very wide shoulders and belly. Two hero-scale identity features: a broad grey helmet with TWO ivory horns, and ONE large broad grey cleaver with brown handle held firmly in the FAR/LEFT hand at the RIGHT side of the body pointing diagonally up-right, tip below helmet top. One simple tan fur shoulder mantle, brown belt and loincloth, short brown boots, two small lower ivory tusks. The other RIGHT empty hand is near the back hip. Arms connected clearly with one elbow each, upperarm+forearm less than half head height. Larger silhouette and slightly more distinct costume parts than ordinary goblins, but no texture, studs, scratches or tiny details. Seven flat colors only.\nAction left-to-right: Five boss special attack frames: (1) exact neutral LEFT-hand cleaver; (2) knees bend and LEFT cleaver hand draws back at shoulder height; (3) tense charge in same short-arm pose, small flat red accent on belt only; (4) roar and slam LEFT-hand cleaver down toward RIGHT, fist at waist, RIGHT empty fist visible at rear hip; (5) exact neutral reference pose. BOTH arms short, blade ALWAYS in LEFT hand. No detached effects, no giant aura, no ground circle.\nLayout: EXACTLY 5 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #789267, #A6B2AF, #C8AD80, #815337, #E5D7B1, #C94943. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+        "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-8cf05806-7783-41fa-b973-8221e4d4a1e0.png"
+      }
+    }
+  ],
+  "postprocess": {
+    "palette": [
+      "#231B15",
+      "#789267",
+      "#A6B2AF",
+      "#C8AD80",
+      "#815337",
+      "#E5D7B1",
+      "#C94943"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 256,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 192,
+    "max_frame_width_px": 193,
+    "normalization": "클립 안에서는 공통 배율을 적용하고, 기준 포즈 높이 150px로 생성 줌을 맞춤.",
+    "measurements": {
+      "idle": {
+        "scale": 0.25510204081632654,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              40,
+              42,
+              216,
+              192
+            ],
+            "source_bounds": [
+              95,
+              145,
+              786,
+              733
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              41,
+              46,
+              216,
+              192
+            ],
+            "source_bounds": [
+              1024,
+              162,
+              1709,
+              733
+            ]
+          }
+        ]
+      },
+      "enter": {
+        "scale": 0.2742230347349177,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              39,
+              42,
+              218,
+              192
+            ],
+            "source_bounds": [
+              151,
+              181,
+              802,
+              727
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              41,
+              42,
+              216,
+              192
+            ],
+            "source_bounds": [
+              1090,
+              182,
+              1728,
+              729
+            ]
+          }
+        ]
+      },
+      "walk": {
+        "scale": 0.32397408207343414,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              43,
+              42,
+              212,
+              192
+            ],
+            "source_bounds": [
+              22,
+              132,
+              543,
+              594
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              43,
+              42,
+              212,
+              192
+            ],
+            "source_bounds": [
+              568,
+              127,
+              1087,
+              588
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              44,
+              41,
+              212,
+              193
+            ],
+            "source_bounds": [
+              1106,
+              128,
+              1624,
+              594
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              46,
+              41,
+              210,
+              192
+            ],
+            "source_bounds": [
+              1658,
+              126,
+              2163,
+              590
+            ]
+          }
+        ]
+      },
+      "attack": {
+        "scale": 0.3218884120171674,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              45,
+              42,
+              211,
+              193
+            ],
+            "source_bounds": [
+              28,
+              122,
+              541,
+              588
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              59,
+              42,
+              198,
+              192
+            ],
+            "source_bounds": [
+              590,
+              123,
+              1019,
+              588
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              41,
+              48,
+              216,
+              192
+            ],
+            "source_bounds": [
+              1091,
+              142,
+              1632,
+              588
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              47,
+              42,
+              209,
+              193
+            ],
+            "source_bounds": [
+              1661,
+              122,
+              2162,
+              588
+            ]
+          }
+        ]
+      },
+      "hit": {
+        "scale": 0.2782931354359926,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              33,
+              42,
+              223,
+              192
+            ],
+            "source_bounds": [
+              132,
+              186,
+              815,
+              723
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              41,
+              42,
+              215,
+              192
+            ],
+            "source_bounds": [
+              1077,
+              186,
+              1702,
+              725
+            ]
+          }
+        ]
+      },
+      "die": {
+        "scale": 0.2835538752362949,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              43,
+              42,
+              214,
+              192
+            ],
+            "source_bounds": [
+              80,
+              110,
+              681,
+              639
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              45,
+              58,
+              212,
+              192
+            ],
+            "source_bounds": [
+              795,
+              169,
+              1383,
+              640
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              33,
+              91,
+              224,
+              192
+            ],
+            "source_bounds": [
+              1470,
+              297,
+              2144,
+              653
+            ]
+          }
+        ]
+      },
+      "special": {
+        "scale": 0.390625,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              42,
+              41,
+              214,
+              192
+            ],
+            "source_bounds": [
+              14,
+              170,
+              451,
+              554
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              50,
+              52,
+              206,
+              192
+            ],
+            "source_bounds": [
+              465,
+              199,
+              862,
+              555
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              49,
+              63,
+              207,
+              193
+            ],
+            "source_bounds": [
+              908,
+              229,
+              1309,
+              558
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              39,
+              31,
+              217,
+              193
+            ],
+            "source_bounds": [
+              1337,
+              193,
+              1789,
+              604
+            ]
+          },
+          {
+            "frame": 5,
+            "bounds": [
+              45,
+              41,
+              213,
+              192
+            ],
+            "source_bounds": [
+              1743,
+              170,
+              2172,
+              554
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "validation": {
+    "canonical_matches_unity": true,
+    "unity_prefab_wired": true,
+    "all_frames_displayed": true,
+    "walk_frames_observed": 4,
+    "facing_and_pool_reuse_checked": true,
+    "special_checked": true,
+    "typecheck": "passed",
+    "tests": "passed"
+  }
+}

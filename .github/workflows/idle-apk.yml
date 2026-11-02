@@ -1,0 +1,31 @@
+# 키우기: APK를 빌드해 GitHub Release로 낸다. C# API가 바뀌었으면 그 API의 채널이 비어 있으므로 전체 패치와 서버를 함께 낸다. 일은 공용 워크플로(idle-release.yml)가 한다. 설계: idle/docs/superpowers/specs/2026-10-30-patch-design.md 4.12절.
+name: idle APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      full_patch:
+        description: 패치 네 단위와 서버도 이 커밋으로 함께(C# API가 바뀌었으면 켬)
+        type: boolean
+        default: false
+
+# 모든 내보내기 액션이 한 그룹이라 한 번에 하나씩 돈다. 앞 실행을 취소하면 반쯤 내보낸 채 멈추므로 기다린다.
+concurrency:
+  group: idle-live
+  cancel-in-progress: false
+
+permissions:
+  # GitHub Release와 태그를 만든다(APK).
+  contents: write
+
+jobs:
+  release:
+    uses: ./.github/workflows/idle-release.yml
+    with:
+      apk: true
+      game: ${{ inputs.full_patch }}
+      rules: ${{ inputs.full_patch }}
+      strings: ${{ inputs.full_patch }}
+      assets: ${{ inputs.full_patch }}
+      server: ${{ inputs.full_patch }}
+    secrets: inherit

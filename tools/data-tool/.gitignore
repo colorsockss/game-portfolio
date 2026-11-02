@@ -1,0 +1,43 @@
+# Node.js dependencies and local npm cache
+node_modules/
+.npm/
+
+# Sheet Baker generated data, code, and bundles
+/generated/
+/build/
+/dist/
+*.tsbuildinfo
+
+# Test output
+/.test-output/
+coverage/
+.nyc_output/
+
+# Logs and Node.js diagnostic reports
+*.log
+report.*.json
+
+# Local environment settings (keep shareable templates)
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+
+# Local IDE state and editor temporary files
+.idea/
+.vs/
+*.suo
+*.user
+*.swp
+*.swo
+*~
+
+# Excel temporary lock files (keep the source .xlsx workbooks)
+~$*
+
+# OS metadata
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,453 @@
+{
+  "actor": "hero",
+  "date": "2026-10-28",
+  "creator": "colorsocks",
+  "tool": "Codex image_gen",
+  "reference": {
+    "prompt": "Use case: stylized-concept\nAsset type: single transparent hero character reference for a tiny mobile RPG sprite\nInput image is the approved fourth hero concept. Preserve its exact identity, head-to-body ratio, RIGHT-facing profile, brown chunky hair silhouette, red scarf/cape, blue tunic, grey simple shoulder plate on near arm, brown boots and wide short sword held in the LEFT HAND (the far hand on screen RIGHT). The near/right hand on screen LEFT remains EMPTY and visible at the waist. Arms very short and natural. Feet are short and wide. No neck.\nChange only the rendering to completely flat solid color regions like a tiny printed game sticker. No gradients, no shading, no highlights, no light direction, no metal shine, no texture. Remove all internal hair highlight shapes and armor shine. Hair ONE brown shape. Blade ONE pale grey shape. Keep broad dark organic outlines and a single tiny dark oval eye. Preserve existing compact two-head proportions; don't make baby head overly huge.\nColor palette exactly: #231B15 outline; #815337 hair, gloves, boots and belt; #F2C691 skin; #3769AA blue tunic; #C94943 scarf and cape; #BEC9CC armor and blade; #D5AA59 sword guard. Seven flat spot colors.\nComposition: single full body facing RIGHT, feet same baseline, short sword diagonally up to right at relaxed waist height with tip no higher than face, hand unmistakably holding handle; empty near hand visible. Generous transparent margins.\nNo additional objects, no backdrop or shadow, no text, no logos, no watermark. Real transparent background.",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-5b77f64d-0176-4438-a617-ef2575b559f9.png"
+  },
+  "clips": [
+    {
+      "clip": "idle",
+      "count": 2,
+      "action": "breathing loop: 1 approved relaxed reference pose, sword diagonally up toward screen RIGHT held by far/LEFT hand at right waist, EMPTY near/right fist at LEFT hip; 2 body breathes slightly lower and wider, same short arm anatomy.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation strip, exact same HERO identity as reference image.\nReference is final flat color reference. Preserve brown chunky hair, single oval eye, red scarf and short cape, blue tunic, grey shoulder and wrist plates on NEAR/RIGHT arm on screen LEFT, brown mittens/boots, LEFT-HANDED short silver blade at screen RIGHT. Near/right empty fist, far/left sword fist. Compact TWO-head tall stocky proportions, NO neck, very short limbs.\nStyle: bold organic dark contour, perfectly flat color fields, seven solid colors only: #231B15 outline, #815337 brown, #F2C691 skin, #3769AA blue, #C94943 red, #BEC9CC grey, #D5AA59 gold. Absolutely no shading, shadows, gradients, highlights, texture, metal shine, extra details or decoration.\nFace RIGHT in every frame. Preserve sword hand, face and equipment consistently.\nPrimary request: idle animation in EXACTLY 2 separated frames in ONE HORIZONTAL ROW. breathing loop: 1 approved relaxed reference pose, sword diagonally up toward screen RIGHT held by far/LEFT hand at right waist, EMPTY near/right fist at LEFT hip; 2 body breathes slightly lower and wider, same short arm anatomy.\nComposition: wide landscape 2:1 canvas, equal-width cells, consistent scale across every frame (no zoom or shrinking). Generous transparent margins and gaps between full characters, every body/weapon entirely visible. Same floor baseline except small intentional walk rise. True transparent background, no shadow, no grid, no label, no text, no watermark.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-a8bd4a4c-d0aa-47f7-ba79-31bcc56a698d.png"
+    },
+    {
+      "clip": "walk",
+      "count": 4,
+      "action": "walk RIGHT IN PLACE: 1 near boot steps forward screen right, far boot behind screen left; 2 legs pass underneath with body a little raised; 3 far boot steps forward right, near boot behind left; 4 opposite passing pose. Exactly two short legs, modest alternate steps, slightly swinging empty near/right arm, cape moves subtly. Far/LEFT hand keeps sword out on screen RIGHT, no weapon switching, no long arms. Both hands remain visible when not occluded naturally.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation strip, exact same HERO identity as reference image.\nReference is final flat color reference. Preserve brown chunky hair, single oval eye, red scarf and short cape, blue tunic, grey shoulder and wrist plates on NEAR/RIGHT arm on screen LEFT, brown mittens/boots, LEFT-HANDED short silver blade at screen RIGHT. Near/right empty fist, far/left sword fist. Compact TWO-head tall stocky proportions, NO neck, very short limbs.\nStyle: bold organic dark contour, perfectly flat color fields, seven solid colors only: #231B15 outline, #815337 brown, #F2C691 skin, #3769AA blue, #C94943 red, #BEC9CC grey, #D5AA59 gold. Absolutely no shading, shadows, gradients, highlights, texture, metal shine, extra details or decoration.\nFace RIGHT in every frame. Preserve sword hand, face and equipment consistently.\nPrimary request: walk animation in EXACTLY 4 separated frames in ONE HORIZONTAL ROW. walk RIGHT IN PLACE: 1 near boot steps forward screen right, far boot behind screen left; 2 legs pass underneath with body a little raised; 3 far boot steps forward right, near boot behind left; 4 opposite passing pose. Exactly two short legs, modest alternate steps, slightly swinging empty near/right arm, cape moves subtly. Far/LEFT hand keeps sword out on screen RIGHT, no weapon switching, no long arms. Both hands remain visible when not occluded naturally.\nComposition: wide landscape 3:1 canvas, equal-width cells, consistent scale across every frame (no zoom or shrinking). Generous transparent margins and gaps between full characters, every body/weapon entirely visible. Same floor baseline except small intentional walk rise. True transparent background, no shadow, no grid, no label, no text, no watermark.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-ed1cbc0d-d31b-4bf6-a525-cffbfce35c4b.png"
+    },
+    {
+      "clip": "attack",
+      "count": 4,
+      "action": "LEFT-HANDED sword slash toward screen RIGHT: 1 left/far sword hand lifts the short blade beside right side of head, elbow bent, near/right empty hand low on left of torso; 2 left/far sword hand winds up a little higher, body coils, LEFT arm short and bent; 3 strike, body turns slightly into the attack toward RIGHT, LEFT sword hand reaches forward screen RIGHT with the short blade extending horizontally RIGHT at chest height, empty RIGHT hand moves backward and is naturally HIDDEN BEHIND the torso (not holding the sword); 4 recover to the EXACT reference neutral LEFT-HAND sword stance, near/right empty hand visible again. No near-arm sword, no swapping hands, exactly one sword. Keep blade length unchanged and arms short. NO swoosh effects; make motion read through pose. Frame4 head/feet height same as idle.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation strip, exact same HERO identity as reference image.\nReference is final flat color reference. Preserve brown chunky hair, single oval eye, red scarf and short cape, blue tunic, grey shoulder and wrist plates on NEAR/RIGHT arm on screen LEFT, brown mittens/boots, LEFT-HANDED short silver blade at screen RIGHT. Near/right empty fist, far/left sword fist. Compact TWO-head tall stocky proportions, NO neck, very short limbs.\nStyle: bold organic dark contour, perfectly flat color fields, seven solid colors only: #231B15 outline, #815337 brown, #F2C691 skin, #3769AA blue, #C94943 red, #BEC9CC grey, #D5AA59 gold. Absolutely no shading, shadows, gradients, highlights, texture, metal shine, extra details or decoration.\nFace RIGHT in every frame. Preserve sword hand, face and equipment consistently.\nPrimary request: attack animation in EXACTLY 4 separated frames in ONE HORIZONTAL ROW. LEFT-HANDED sword slash toward screen RIGHT: 1 left/far sword hand lifts the short blade beside right side of head, elbow bent, near/right empty hand low on left of torso; 2 left/far sword hand winds up a little higher, body coils, LEFT arm short and bent; 3 strike, body turns slightly into the attack toward RIGHT, LEFT sword hand reaches forward screen RIGHT with the short blade extending horizontally RIGHT at chest height, empty RIGHT hand moves backward and is naturally HIDDEN BEHIND the torso (not holding the sword); 4 recover to the EXACT reference neutral LEFT-HAND sword stance, near/right empty hand visible again. No near-arm sword, no swapping hands, exactly one sword. Keep blade length unchanged and arms short. NO swoosh effects; make motion read through pose. Frame4 head/feet height same as idle.\nComposition: wide landscape 3:1 canvas, equal-width cells, consistent scale across every frame (no zoom or shrinking). Generous transparent margins and gaps between full characters, every body/weapon entirely visible. Same floor baseline except small intentional walk rise. True transparent background, no shadow, no grid, no label, no text, no watermark.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-1d4260c7-4a0a-4561-8667-8994fe587c3e.png",
+      "correctionPrompt": "Use case: precise-object-edit\nEdit the provided four-frame hero attack strip. Preserve all four frames, colors, compact body, head, face, legs, sword length, transparent background and animation timing. Correct ONLY arm handedness in the THIRD frame (strike pose). The sword must remain in the FAR/LEFT hand, emerging from behind the RIGHT EDGE of the blue torso. Put the short sword forearm at the torso's far/right edge with a simple blue sleeve, not in front of the chest. REMOVE the large gray shoulder-pad shape currently covering the center of the chest in frame3. Show the smooth blue torso/side of red cape there instead. The empty NEAR/RIGHT arm goes backwards and is hidden behind the torso during the strike; its gray shoulder may be a small sliver at the REAR/LEFT edge only. Keep upper arm plus forearm naturally short, the glove at right chest edge. Body turns slightly toward attack RIGHT. Frames 1,2,4 unchanged, especially reference far left-hand sword position. Flat solid color fields, bold dark outline, no texture, no gradients, no text, no shadows. Exactly four separated figures in one horizontal row, retain full transparent margins.",
+      "rejectedOriginalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-1ad9f578-ab22-4d74-b2df-0a8ef00ed054.png"
+    },
+    {
+      "clip": "cast",
+      "count": 4,
+      "action": "cast with the EMPTY near/RIGHT hand while far/LEFT hand KEEPS HOLDING sword at right waist, blade angled down a little to clear spell. 1 lift empty right hand with one tiny flat gold four-point spark hovering above it; 2 near empty hand lifted, eyes closed, spark a little bigger; 3 near/right empty hand extends toward RIGHT in front of torso, ONE compact flat gold four-point burst from palm (no gradients), far/LEFT hand and sword lowered and partly behind torso; 4 return to exact reference neutral pose, empty right fist on LEFT hip, left sword hand on RIGHT. Keep head size/height constant, tiny effect never taller than head. No floating sword, no extra arm.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation strip, exact same HERO identity as reference image.\nReference is final flat color reference. Preserve brown chunky hair, single oval eye, red scarf and short cape, blue tunic, grey shoulder and wrist plates on NEAR/RIGHT arm on screen LEFT, brown mittens/boots, LEFT-HANDED short silver blade at screen RIGHT. Near/right empty fist, far/left sword fist. Compact TWO-head tall stocky proportions, NO neck, very short limbs.\nStyle: bold organic dark contour, perfectly flat color fields, seven solid colors only: #231B15 outline, #815337 brown, #F2C691 skin, #3769AA blue, #C94943 red, #BEC9CC grey, #D5AA59 gold. Absolutely no shading, shadows, gradients, highlights, texture, metal shine, extra details or decoration.\nFace RIGHT in every frame. Preserve sword hand, face and equipment consistently.\nPrimary request: cast animation in EXACTLY 4 separated frames in ONE HORIZONTAL ROW. cast with the EMPTY near/RIGHT hand while far/LEFT hand KEEPS HOLDING sword at right waist, blade angled down a little to clear spell. 1 lift empty right hand with one tiny flat gold four-point spark hovering above it; 2 near empty hand lifted, eyes closed, spark a little bigger; 3 near/right empty hand extends toward RIGHT in front of torso, ONE compact flat gold four-point burst from palm (no gradients), far/LEFT hand and sword lowered and partly behind torso; 4 return to exact reference neutral pose, empty right fist on LEFT hip, left sword hand on RIGHT. Keep head size/height constant, tiny effect never taller than head. No floating sword, no extra arm.\nComposition: wide landscape 3:1 canvas, equal-width cells, consistent scale across every frame (no zoom or shrinking). Generous transparent margins and gaps between full characters, every body/weapon entirely visible. Same floor baseline except small intentional walk rise. True transparent background, no shadow, no grid, no label, no text, no watermark.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-887248ec-8952-4277-846d-4566efc1988f.png",
+      "correctionPrompt": "Use case: precise-object-edit\nFix anatomy only in this four-frame casting animation of a hero facing RIGHT. Preserve identity, all colors, size, sword length, cape, head, pose sequence, transparent background and 4-frame layout. Frames ONE and TWO currently have THREE arms: a near arm resting at left hip, a raised far arm casting and another hidden sword hand. Correct to EXACTLY TWO arms. The NEAR/RIGHT arm with the big grey round shoulder plate must connect to the RAISED EMPTY casting hand, through one short grey forearm reaching diagonally across the blue chest. REMOVE the extra brown fist and forearm resting at the screen-left hip in those two frames. The FAR/LEFT arm remains on right edge of torso holding lowered sword, little brown hand just behind guard, no third arm. Frame3 already extends near/right empty hand and keeps sword in far/left hand lowered; preserve. Frame4 exact reference stance preserve. One small gold four-point spark per casting frame, flat colors without gradients or shine. Every frame EXACTLY TWO hands, one sword hand and one empty casting hand. No text/watermarks/shadow, true transparent background.",
+      "rejectedOriginalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-07112a28-aaf5-4610-8771-d6d291356a9a.png"
+    },
+    {
+      "clip": "hit",
+      "count": 2,
+      "action": "hurt reaction: 1 body recoils to LEFT, eye squints, sword securely held in same far/LEFT hand on screen RIGHT, near/right empty hand near left torso; 2 recover exactly reference pose. Short arms, two legs, no stretching.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation strip, exact same HERO identity as reference image.\nReference is final flat color reference. Preserve brown chunky hair, single oval eye, red scarf and short cape, blue tunic, grey shoulder and wrist plates on NEAR/RIGHT arm on screen LEFT, brown mittens/boots, LEFT-HANDED short silver blade at screen RIGHT. Near/right empty fist, far/left sword fist. Compact TWO-head tall stocky proportions, NO neck, very short limbs.\nStyle: bold organic dark contour, perfectly flat color fields, seven solid colors only: #231B15 outline, #815337 brown, #F2C691 skin, #3769AA blue, #C94943 red, #BEC9CC grey, #D5AA59 gold. Absolutely no shading, shadows, gradients, highlights, texture, metal shine, extra details or decoration.\nFace RIGHT in every frame. Preserve sword hand, face and equipment consistently.\nPrimary request: hit animation in EXACTLY 2 separated frames in ONE HORIZONTAL ROW. hurt reaction: 1 body recoils to LEFT, eye squints, sword securely held in same far/LEFT hand on screen RIGHT, near/right empty hand near left torso; 2 recover exactly reference pose. Short arms, two legs, no stretching.\nComposition: wide landscape 2:1 canvas, equal-width cells, consistent scale across every frame (no zoom or shrinking). Generous transparent margins and gaps between full characters, every body/weapon entirely visible. Same floor baseline except small intentional walk rise. True transparent background, no shadow, no grid, no label, no text, no watermark.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-63c718e2-7810-4a83-aa34-523ea21dba72.png"
+    },
+    {
+      "clip": "die",
+      "count": 3,
+      "action": "cartoon defeat: 1 standing stagger, tiny X eye, nearly full reference body height, left hand keeps sword; 2 body collapses and knees bend, cape falls behind; 3 lies on side facing RIGHT along ground, sword still in left hand lying beside body, cape attached. No gore, no floating objects; exactly two arms/two legs, same sword and head size.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation strip, exact same HERO identity as reference image.\nReference is final flat color reference. Preserve brown chunky hair, single oval eye, red scarf and short cape, blue tunic, grey shoulder and wrist plates on NEAR/RIGHT arm on screen LEFT, brown mittens/boots, LEFT-HANDED short silver blade at screen RIGHT. Near/right empty fist, far/left sword fist. Compact TWO-head tall stocky proportions, NO neck, very short limbs.\nStyle: bold organic dark contour, perfectly flat color fields, seven solid colors only: #231B15 outline, #815337 brown, #F2C691 skin, #3769AA blue, #C94943 red, #BEC9CC grey, #D5AA59 gold. Absolutely no shading, shadows, gradients, highlights, texture, metal shine, extra details or decoration.\nFace RIGHT in every frame. Preserve sword hand, face and equipment consistently.\nPrimary request: die animation in EXACTLY 3 separated frames in ONE HORIZONTAL ROW. cartoon defeat: 1 standing stagger, tiny X eye, nearly full reference body height, left hand keeps sword; 2 body collapses and knees bend, cape falls behind; 3 lies on side facing RIGHT along ground, sword still in left hand lying beside body, cape attached. No gore, no floating objects; exactly two arms/two legs, same sword and head size.\nComposition: wide landscape 3:1 canvas, equal-width cells, consistent scale across every frame (no zoom or shrinking). Generous transparent margins and gaps between full characters, every body/weapon entirely visible. Same floor baseline except small intentional walk rise. True transparent background, no shadow, no grid, no label, no text, no watermark.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-3fa51982-c71b-4db4-ab31-873023ee22ed.png"
+    }
+  ],
+  "display_size": 1,
+  "postprocess_approval": "사용자가 왼손 검 기준 그림을 단색으로 적용하도록 선택. 앞선 Pillow 평탄화 승인에 따라 원본과 알파를 보존하며 단색 처리.",
+  "postprocess": {
+    "palette": [
+      "#231B15",
+      "#815337",
+      "#F2C691",
+      "#3769AA",
+      "#C94943",
+      "#BEC9CC",
+      "#D5AA59"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 256,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 192,
+    "max_frame_width_px": 221,
+    "normalization": "클립마다 중립 기준 자세로 생성 줌을 맞추고 한 클립 안에는 공통 배율 사용. 걷기는 몸 높이 중간값으로 배율을 맞춤.",
+    "measurements": {
+      "idle": {
+        "scale": 0.24311183144246354,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              37,
+              42,
+              220,
+              192
+            ],
+            "source_bounds": [
+              119,
+              180,
+              872,
+              797
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              37,
+              51,
+              220,
+              192
+            ],
+            "source_bounds": [
+              933,
+              220,
+              1685,
+              802
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 7
+      },
+      "walk": {
+        "scale": 0.3460207612456747,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              39,
+              42,
+              216,
+              192
+            ],
+            "source_bounds": [
+              21,
+              166,
+              531,
+              598
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              41,
+              41,
+              215,
+              192
+            ],
+            "source_bounds": [
+              573,
+              161,
+              1075,
+              595
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              39,
+              42,
+              217,
+              193
+            ],
+            "source_bounds": [
+              1105,
+              166,
+              1616,
+              599
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              41,
+              41,
+              214,
+              192
+            ],
+            "source_bounds": [
+              1658,
+              161,
+              2157,
+              595
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 7
+      },
+      "attack": {
+        "scale": 0.3588516746411483,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              45,
+              34,
+              210,
+              193
+            ],
+            "source_bounds": [
+              27,
+              202,
+              484,
+              642
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              56,
+              16,
+              200,
+              193
+            ],
+            "source_bounds": [
+              555,
+              152,
+              954,
+              642
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              22,
+              44,
+              234,
+              192
+            ],
+            "source_bounds": [
+              1051,
+              232,
+              1639,
+              642
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              43,
+              42,
+              213,
+              193
+            ],
+            "source_bounds": [
+              1674,
+              224,
+              2145,
+              642
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 7
+      },
+      "cast": {
+        "scale": 0.35377358490566035,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              41,
+              42,
+              214,
+              192
+            ],
+            "source_bounds": [
+              24,
+              171,
+              511,
+              593
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              42,
+              41,
+              214,
+              193
+            ],
+            "source_bounds": [
+              559,
+              167,
+              1043,
+              594
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              38,
+              42,
+              218,
+              192
+            ],
+            "source_bounds": [
+              1112,
+              171,
+              1619,
+              593
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              43,
+              42,
+              214,
+              193
+            ],
+            "source_bounds": [
+              1668,
+              169,
+              2149,
+              593
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 7
+      },
+      "hit": {
+        "scale": 0.2546689303904924,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              33,
+              43,
+              224,
+              192
+            ],
+            "source_bounds": [
+              111,
+              192,
+              860,
+              777
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              37,
+              42,
+              219,
+              192
+            ],
+            "source_bounds": [
+              1016,
+              188,
+              1730,
+              777
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 7
+      },
+      "die": {
+        "scale": 0.30425963488843816,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              35,
+              42,
+              220,
+              192
+            ],
+            "source_bounds": [
+              67,
+              132,
+              673,
+              625
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              37,
+              63,
+              219,
+              192
+            ],
+            "source_bounds": [
+              789,
+              206,
+              1386,
+              629
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              19,
+              100,
+              238,
+              192
+            ],
+            "source_bounds": [
+              1441,
+              330,
+              2159,
+              631
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 7
+      }
+    },
+    "script": "/private/tmp/finish-archer-hero.py"
+  },
+  "verification": {
+    "unity": "6000.6.0f1",
+    "date": "2026-10-28",
+    "observed_frames": [
+      "hero_attack_0",
+      "hero_attack_1",
+      "hero_attack_2",
+      "hero_attack_3",
+      "hero_cast_0",
+      "hero_cast_1",
+      "hero_cast_2",
+      "hero_cast_3",
+      "hero_die_0",
+      "hero_die_1",
+      "hero_die_2",
+      "hero_hit_0",
+      "hero_hit_1",
+      "hero_idle_0",
+      "hero_idle_1",
+      "hero_walk_0",
+      "hero_walk_1",
+      "hero_walk_2",
+      "hero_walk_3"
+    ],
+    "runtime_note": "실제 전투. 이번 검증 실행에서만 튜토리얼 가림을 비활성화.",
+    "asset_frames_valid": true,
+    "attack_impact_index": 2,
+    "typecheck": "passed",
+    "tests": "passed",
+    "client_build": "passed",
+    "server_build": "passed"
+  }
+}

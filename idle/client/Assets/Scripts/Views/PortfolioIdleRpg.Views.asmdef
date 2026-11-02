@@ -1,0 +1,18 @@
+{
+    "name": "PortfolioIdleRpg.Views",
+    "rootNamespace": "PortfolioIdleRpg.Views",
+    "references": [
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
+        "LoopScrollRect.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

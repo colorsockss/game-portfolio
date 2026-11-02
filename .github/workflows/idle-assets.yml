@@ -1,0 +1,32 @@
+# 키우기: Addressables(에셋 번들과 카탈로그)를 패치로 낸다. Unity가 빌드한다. 일은 공용 워크플로(idle-release.yml)가 한다. 설계: idle/docs/superpowers/specs/2026-10-30-patch-design.md 4.12절.
+name: idle assets (Addressables)
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 올린 뒤 바로 공개(끄면 올리기만 하고, 공개·롤백 액션으로 나중에 공개)
+        type: boolean
+        default: true
+      base:
+        description: 고르지 않은 단위를 가져올 기준 버전(비우면 이 API 채널의 지금 버전)
+        type: string
+        default: ''
+
+# 모든 내보내기 액션이 한 그룹이라 한 번에 하나씩 돈다. 앞 실행을 취소하면 반쯤 내보낸 채 멈추므로 기다린다.
+concurrency:
+  group: idle-live
+  cancel-in-progress: false
+
+permissions:
+  # GitHub Release와 태그를 만든다(APK).
+  contents: write
+
+jobs:
+  release:
+    uses: ./.github/workflows/idle-release.yml
+    with:
+      assets: true
+      publish: ${{ inputs.publish }}
+      base: ${{ inputs.base }}
+    secrets: inherit

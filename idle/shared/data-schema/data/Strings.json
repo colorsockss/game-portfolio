@@ -1,0 +1,897 @@
+[
+  {
+    "id": "language.name",
+    "ko": "한국어",
+    "en": "English"
+  },
+  {
+    "id": "common.ok",
+    "ko": "확인",
+    "en": "OK"
+  },
+  {
+    "id": "common.cancel",
+    "ko": "취소",
+    "en": "Cancel"
+  },
+  {
+    "id": "common.close",
+    "ko": "닫기",
+    "en": "Close"
+  },
+  {
+    "id": "common.all",
+    "ko": "전체",
+    "en": "All"
+  },
+  {
+    "id": "menu.inventory",
+    "ko": "가방",
+    "en": "Bag"
+  },
+  {
+    "id": "menu.equipment",
+    "ko": "장비",
+    "en": "Gear"
+  },
+  {
+    "id": "menu.upgrade",
+    "ko": "강화",
+    "en": "Upgrade"
+  },
+  {
+    "id": "menu.skills",
+    "ko": "스킬",
+    "en": "Skills"
+  },
+  {
+    "id": "menu.rebirth",
+    "ko": "환생",
+    "en": "Rebirth"
+  },
+  {
+    "id": "menu.settings",
+    "ko": "설정",
+    "en": "Settings"
+  },
+  {
+    "id": "menu.logout",
+    "ko": "로그아웃",
+    "en": "Log out"
+  },
+  {
+    "id": "format.days",
+    "ko": "{days}일 {clock}",
+    "en": "{days}d {clock}"
+  },
+  {
+    "id": "login.title",
+    "ko": "Portfolio Idle RPG",
+    "en": "Portfolio Idle RPG"
+  },
+  {
+    "id": "login.button",
+    "ko": "로그인",
+    "en": "Log in"
+  },
+  {
+    "id": "login.idPlaceholder",
+    "ko": "아이디",
+    "en": "ID"
+  },
+  {
+    "id": "login.pending",
+    "ko": "로그인 중…",
+    "en": "Logging in…"
+  },
+  {
+    "id": "login.failed",
+    "ko": "로그인하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+    "en": "Couldn't log in. Please try again in a moment."
+  },
+  {
+    "id": "login.idRule",
+    "ko": "아이디는 영문 소문자, 숫자, _로 {min}~{max}자입니다.",
+    "en": "An ID is {min}–{max} lowercase letters, digits or _."
+  },
+  {
+    "id": "login.replaced",
+    "ko": "다른 곳에서 같은 아이디로 로그인했습니다.",
+    "en": "Someone logged in with this ID somewhere else."
+  },
+  {
+    "id": "login.expired",
+    "ko": "연결이 오래 끊겨 다시 로그인해야 합니다.",
+    "en": "You were disconnected for too long. Please log in again."
+  },
+  {
+    "id": "login.error",
+    "ko": "서버와 주고받지 못해 연결을 끊었습니다. 다시 로그인해 주세요.",
+    "en": "Lost contact with the server. Please log in again."
+  },
+  {
+    "id": "login.update",
+    "ko": "새 버전이 필요합니다.",
+    "en": "A new version is required."
+  },
+  {
+    "id": "main.title",
+    "ko": "{id}  Lv.{level}  {exp}",
+    "en": "{id}  Lv.{level}  {exp}"
+  },
+  {
+    "id": "main.maxLevel",
+    "ko": "MAX",
+    "en": "MAX"
+  },
+  {
+    "id": "main.stageLabel",
+    "ko": "현재 스테이지",
+    "en": "Current Stage"
+  },
+  {
+    "id": "main.boss",
+    "ko": "보스",
+    "en": "Boss"
+  },
+  {
+    "id": "main.bossChallenge",
+    "ko": "보스 도전",
+    "en": "Fight Boss"
+  },
+  {
+    "id": "main.nextStage",
+    "ko": "다음 스테이지",
+    "en": "Next Stage"
+  },
+  {
+    "id": "main.logoutConfirm",
+    "ko": "로그아웃할까요?",
+    "en": "Log out?"
+  },
+  {
+    "id": "battle.bossAppear",
+    "ko": "보스 등장!",
+    "en": "Boss incoming!"
+  },
+  {
+    "id": "battle.bossWin",
+    "ko": "보스 처치!",
+    "en": "Boss defeated!"
+  },
+  {
+    "id": "battle.bossLose",
+    "ko": "보스 실패",
+    "en": "Boss failed"
+  },
+  {
+    "id": "battle.stageClear",
+    "ko": "{stage} 클리어",
+    "en": "{stage} cleared"
+  },
+  {
+    "id": "battle.levelUp",
+    "ko": "레벨 업! Lv.{level}",
+    "en": "Level up! Lv.{level}"
+  },
+  {
+    "id": "battle.wave",
+    "ko": "웨이브 {wave}/{waves}",
+    "en": "Wave {wave}/{waves}"
+  },
+  {
+    "id": "inventory.currency",
+    "ko": "재화",
+    "en": "Currency"
+  },
+  {
+    "id": "inventory.material",
+    "ko": "재료",
+    "en": "Materials"
+  },
+  {
+    "id": "equipment.weapon",
+    "ko": "무기",
+    "en": "Weapon"
+  },
+  {
+    "id": "equipment.armor",
+    "ko": "방어구",
+    "en": "Armor"
+  },
+  {
+    "id": "equipment.accessory",
+    "ko": "장신구",
+    "en": "Accessory"
+  },
+  {
+    "id": "equipment.slot",
+    "ko": "슬롯 {slot}",
+    "en": "Slot {slot}"
+  },
+  {
+    "id": "equipment.worn",
+    "ko": "착용 중",
+    "en": "Equipped"
+  },
+  {
+    "id": "equipment.better",
+    "ko": "더 좋음",
+    "en": "Better"
+  },
+  {
+    "id": "equipment.enhanced",
+    "ko": "{name} +{step}",
+    "en": "{name} +{step}"
+  },
+  {
+    "id": "equipment.step",
+    "ko": "강화 {step}/{max}",
+    "en": "Enhance {step}/{max}"
+  },
+  {
+    "id": "equipment.enhance",
+    "ko": "강화",
+    "en": "Enhance"
+  },
+  {
+    "id": "equipment.merge",
+    "ko": "합성",
+    "en": "Merge"
+  },
+  {
+    "id": "equipment.mergeCount",
+    "ko": "같은 장비 {held}/{need}",
+    "en": "Same gear {held}/{need}"
+  },
+  {
+    "id": "equipment.mergeInto",
+    "ko": "합성하면 {name}",
+    "en": "Merges into {name}"
+  },
+  {
+    "id": "skills.slot",
+    "ko": "슬롯 {slot}",
+    "en": "Slot {slot}"
+  },
+  {
+    "id": "skills.empty",
+    "ko": "비어 있음",
+    "en": "Empty"
+  },
+  {
+    "id": "skills.level",
+    "ko": "Lv.{level}/{max}",
+    "en": "Lv.{level}/{max}"
+  },
+  {
+    "id": "skills.cost",
+    "ko": "{item} {amount}",
+    "en": "{amount} {item}"
+  },
+  {
+    "id": "skills.maxLevel",
+    "ko": "최대 레벨",
+    "en": "Max level"
+  },
+  {
+    "id": "skills.equipped",
+    "ko": "장착 중",
+    "en": "Equipped"
+  },
+  {
+    "id": "skills.notLearned",
+    "ko": "배우지 않음",
+    "en": "Not learned"
+  },
+  {
+    "id": "skills.equip",
+    "ko": "장착",
+    "en": "Equip"
+  },
+  {
+    "id": "skills.unequip",
+    "ko": "해제",
+    "en": "Unequip"
+  },
+  {
+    "id": "skills.learn",
+    "ko": "배우기",
+    "en": "Learn"
+  },
+  {
+    "id": "skills.levelUp",
+    "ko": "레벨업",
+    "en": "Level up"
+  },
+  {
+    "id": "stat.attack",
+    "ko": "공격",
+    "en": "ATK"
+  },
+  {
+    "id": "stat.defense",
+    "ko": "방어",
+    "en": "DEF"
+  },
+  {
+    "id": "stat.maxHp",
+    "ko": "HP",
+    "en": "HP"
+  },
+  {
+    "id": "stat.critChance",
+    "ko": "치명",
+    "en": "CRIT"
+  },
+  {
+    "id": "upgrade.level",
+    "ko": "Lv.{step}",
+    "en": "Lv.{step}"
+  },
+  {
+    "id": "upgrade.max",
+    "ko": "최대",
+    "en": "MAX"
+  },
+  {
+    "id": "rebirth.count",
+    "ko": "환생 {count}회",
+    "en": "Rebirths: {count}"
+  },
+  {
+    "id": "rebirth.rate",
+    "ko": "배율 ×{rate}",
+    "en": "Bonus ×{rate}"
+  },
+  {
+    "id": "rebirth.gain",
+    "ko": "Lv.{level}에서 환생하면 +{points}포인트, 배율 ×{from} → ×{to}",
+    "en": "Rebirth at Lv.{level}: +{points} points, bonus ×{from} → ×{to}"
+  },
+  {
+    "id": "rebirth.locked",
+    "ko": "Lv.{level}부터 환생할 수 있습니다.",
+    "en": "You can rebirth from Lv.{level}."
+  },
+  {
+    "id": "rebirth.resetLevel",
+    "ko": "레벨 {from} → 1",
+    "en": "Level {from} → 1"
+  },
+  {
+    "id": "rebirth.resetStage",
+    "ko": "스테이지 {from} → {to}",
+    "en": "Stage {from} → {to}"
+  },
+  {
+    "id": "rebirth.resetUpgrades",
+    "ko": "골드 강화 {steps}단계 → 0",
+    "en": "Gold upgrades {steps} → 0"
+  },
+  {
+    "id": "rebirth.resetGold",
+    "ko": "골드 {amount} → 0",
+    "en": "Gold {amount} → 0"
+  },
+  {
+    "id": "rebirth.keeps",
+    "ko": "스킬, 장비, 재료는 남고 배율은 능력치와 골드에 곱해집니다.",
+    "en": "Skills, gear and materials stay; the bonus multiplies your stats and gold."
+  },
+  {
+    "id": "rebirth.button",
+    "ko": "환생하기",
+    "en": "Rebirth"
+  },
+  {
+    "id": "rebirth.confirm",
+    "ko": "환생할까요? 레벨, 스테이지, 골드 강화가 처음으로 돌아갑니다.",
+    "en": "Rebirth? Your level, stages and gold upgrades start over."
+  },
+  {
+    "id": "settings.bgm",
+    "ko": "배경음",
+    "en": "Music"
+  },
+  {
+    "id": "settings.sfx",
+    "ko": "효과음",
+    "en": "Sound FX"
+  },
+  {
+    "id": "settings.mute",
+    "ko": "음소거",
+    "en": "Mute"
+  },
+  {
+    "id": "settings.frameRate",
+    "ko": "초당 프레임",
+    "en": "Frame rate"
+  },
+  {
+    "id": "settings.fps",
+    "ko": "{rate} FPS",
+    "en": "{rate} FPS"
+  },
+  {
+    "id": "settings.language",
+    "ko": "언어",
+    "en": "Language"
+  },
+  {
+    "id": "reward.title",
+    "ko": "오프라인 보상",
+    "en": "Offline Reward"
+  },
+  {
+    "id": "reward.claim",
+    "ko": "받기",
+    "en": "Claim"
+  },
+  {
+    "id": "reward.duration",
+    "ko": "{time} 동안",
+    "en": "Over {time}"
+  },
+  {
+    "id": "reward.level",
+    "ko": "Lv.{from} → Lv.{to}",
+    "en": "Lv.{from} → Lv.{to}"
+  },
+  {
+    "id": "reward.item",
+    "ko": "{name} +{amount}",
+    "en": "{name} +{amount}"
+  },
+  {
+    "id": "toast.invalidCommand",
+    "ko": "지금은 할 수 없습니다.",
+    "en": "You can't do that right now."
+  },
+  {
+    "id": "toast.unknownCommand",
+    "ko": "이 버전에서 쓸 수 없는 요청입니다.",
+    "en": "This version can't make that request."
+  },
+  {
+    "id": "toast.stageNotFound",
+    "ko": "없는 스테이지입니다.",
+    "en": "That stage doesn't exist."
+  },
+  {
+    "id": "toast.stageLocked",
+    "ko": "아직 열리지 않은 스테이지입니다.",
+    "en": "That stage isn't unlocked yet."
+  },
+  {
+    "id": "toast.equipmentNotFound",
+    "ko": "없는 장비입니다.",
+    "en": "That gear doesn't exist."
+  },
+  {
+    "id": "toast.equipmentMaxEnhance",
+    "ko": "더 강화할 수 없습니다.",
+    "en": "This gear is fully enhanced."
+  },
+  {
+    "id": "toast.equipmentNotMergeable",
+    "ko": "합성할 수 없는 장비입니다.",
+    "en": "This gear can't be merged."
+  },
+  {
+    "id": "toast.mergeMaterialsShort",
+    "ko": "같은 장비가 모자랍니다.",
+    "en": "Not enough of the same gear."
+  },
+  {
+    "id": "toast.statUpgradeNotFound",
+    "ko": "없는 강화입니다.",
+    "en": "That upgrade doesn't exist."
+  },
+  {
+    "id": "toast.statUpgradeMaxed",
+    "ko": "이미 최대 단계입니다.",
+    "en": "It's already at the max level."
+  },
+  {
+    "id": "toast.notEnoughGold",
+    "ko": "골드가 부족합니다.",
+    "en": "Not enough gold."
+  },
+  {
+    "id": "toast.skillNotFound",
+    "ko": "쓸 수 없는 스킬입니다.",
+    "en": "You can't use that skill."
+  },
+  {
+    "id": "toast.skillNotLearned",
+    "ko": "아직 배우지 않은 스킬입니다.",
+    "en": "You haven't learned that skill yet."
+  },
+  {
+    "id": "toast.skillSlotInvalid",
+    "ko": "없는 스킬 슬롯입니다.",
+    "en": "That skill slot doesn't exist."
+  },
+  {
+    "id": "toast.skillMaxLevel",
+    "ko": "이미 최대 레벨입니다.",
+    "en": "That skill is already at max level."
+  },
+  {
+    "id": "toast.skillCostShort",
+    "ko": "비용이 모자랍니다.",
+    "en": "You can't afford that."
+  },
+  {
+    "id": "toast.rebirthNotReady",
+    "ko": "아직 환생할 수 없습니다.",
+    "en": "You can't rebirth yet."
+  },
+  {
+    "id": "toast.cheatDisabled",
+    "ko": "개발 서버에서만 쓸 수 있습니다.",
+    "en": "Only available on a development server."
+  },
+  {
+    "id": "toast.refused",
+    "ko": "요청이 거절되었습니다.",
+    "en": "The request was refused."
+  },
+  {
+    "id": "crash.restart",
+    "ko": "문제가 생겼습니다. 다시 시작할까요?",
+    "en": "Something went wrong. Restart?"
+  },
+  {
+    "id": "loading.reconnecting",
+    "ko": "다시 연결하는 중…",
+    "en": "Reconnecting…"
+  },
+  {
+    "id": "loading.waiting",
+    "ko": "서버 응답을 기다리는 중…",
+    "en": "Waiting for the server…"
+  },
+  {
+    "id": "transition.checking",
+    "ko": "업데이트를 확인하는 중…",
+    "en": "Checking for updates…"
+  },
+  {
+    "id": "transition.downloading",
+    "ko": "업데이트를 받는 중… {received} / {total}",
+    "en": "Downloading the update… {received} / {total}"
+  },
+  {
+    "id": "transition.applying",
+    "ko": "업데이트를 적용하는 중…",
+    "en": "Applying the update…"
+  },
+  {
+    "id": "transition.updateRequired",
+    "ko": "새 버전이 필요합니다. 업데이트가 올라오면 다시 시도해 주세요.",
+    "en": "A new version is required. Try again once the update is out."
+  },
+  {
+    "id": "transition.failed",
+    "ko": "업데이트를 받지 못했습니다. 네트워크를 확인하고 다시 시도해 주세요.",
+    "en": "Could not download the update. Check your network and try again."
+  },
+  {
+    "id": "transition.loading",
+    "ko": "불러오는 중…",
+    "en": "Loading…"
+  },
+  {
+    "id": "tutorial.tapToContinue",
+    "ko": "화면을 누르면 계속합니다",
+    "en": "Tap to continue"
+  },
+  {
+    "id": "tutorial.welcome",
+    "ko": "어서 오세요! 영웅은 혼자서 몬스터를 사냥합니다.",
+    "en": "Welcome! Your hero hunts monsters on their own."
+  },
+  {
+    "id": "tutorial.firstClear",
+    "ko": "몬스터를 다섯 마리 잡으면 스테이지를 클리어하고 보상을 받습니다. 잠시 지켜보세요.",
+    "en": "Defeat five monsters to clear the stage and earn a reward. Watch for a moment."
+  },
+  {
+    "id": "tutorial.openEquipment",
+    "ko": "클리어 보상으로 무기를 받았습니다. 장비 버튼을 눌러 보세요.",
+    "en": "You got a weapon for the clear. Tap the Gear button."
+  },
+  {
+    "id": "tutorial.equipWeapon",
+    "ko": "받은 무기를 눌러 입으세요. 입은 장비의 능력치가 영웅에게 더해집니다.",
+    "en": "Tap the weapon to equip it. Equipped gear adds its stats to your hero."
+  },
+  {
+    "id": "tutorial.closeEquipment",
+    "ko": "닫기를 눌러 전투로 돌아가세요.",
+    "en": "Tap Close to return to battle."
+  },
+  {
+    "id": "tutorial.levelUp",
+    "ko": "몬스터를 잡을 때마다 경험치가 쌓여 레벨이 오릅니다. 레벨 5가 될 때까지 지켜보세요.",
+    "en": "Every monster you defeat gives EXP toward the next level. Watch until you reach level 5."
+  },
+  {
+    "id": "tutorial.openInventory",
+    "ko": "모은 재화와 재료는 가방에서 볼 수 있습니다. 가방 버튼을 눌러 보세요.",
+    "en": "Your currencies and materials are in the Bag. Tap the Bag button."
+  },
+  {
+    "id": "tutorial.closeInventory",
+    "ko": "닫기를 눌러 돌아가세요.",
+    "en": "Tap Close to go back."
+  },
+  {
+    "id": "tutorial.farewell",
+    "ko": "이제 혼자서도 잘할 수 있을 거예요. 스테이지를 하나씩 열어 가세요!",
+    "en": "You're ready to go on your own. Unlock the stages one by one!"
+  },
+  {
+    "id": "debug.toggle",
+    "ko": "DEV",
+    "en": "DEV"
+  },
+  {
+    "id": "debug.run",
+    "ko": "실행",
+    "en": "Run"
+  },
+  {
+    "id": "debug.placeholder",
+    "ko": "치트 한 줄",
+    "en": "Cheat line"
+  },
+  {
+    "id": "debug.usage",
+    "ko": "grant <아이템> [수량] · level <레벨> · unlock <스테이지> · time <분>",
+    "en": "grant <item> [amount] · level <level> · unlock <stage> · time <minutes>"
+  },
+  {
+    "id": "debug.unknown",
+    "ko": "모르는 치트: {line}. {usage}",
+    "en": "Unknown cheat: {line}. {usage}"
+  },
+  {
+    "id": "debug.sending",
+    "ko": "보내는 중: {line}",
+    "en": "Sending: {line}"
+  },
+  {
+    "id": "debug.refused",
+    "ko": "거절 {code}: {line}",
+    "en": "Refused {code}: {line}"
+  },
+  {
+    "id": "debug.applied",
+    "ko": "적용: {line}",
+    "en": "Applied: {line}"
+  },
+  {
+    "id": "debug.unreachable",
+    "ko": "서버에 닿지 않음: {line} ({error})",
+    "en": "Server unreachable: {line} ({error})"
+  },
+  {
+    "id": "hero.brave",
+    "ko": "용사",
+    "en": "Hero"
+  },
+  {
+    "id": "item.gold",
+    "ko": "골드",
+    "en": "Gold"
+  },
+  {
+    "id": "item.exp",
+    "ko": "경험치",
+    "en": "EXP"
+  },
+  {
+    "id": "item.oldSword",
+    "ko": "낡은 검",
+    "en": "Old Sword"
+  },
+  {
+    "id": "item.leatherArmor",
+    "ko": "가죽 갑옷",
+    "en": "Leather Armor"
+  },
+  {
+    "id": "item.copperRing",
+    "ko": "구리 반지",
+    "en": "Copper Ring"
+  },
+  {
+    "id": "item.ogreGreatsword",
+    "ko": "오우거 대검",
+    "en": "Ogre Greatsword"
+  },
+  {
+    "id": "item.frostArmor",
+    "ko": "서리 갑옷",
+    "en": "Frost Armor"
+  },
+  {
+    "id": "item.flameRing",
+    "ko": "화염 반지",
+    "en": "Flame Ring"
+  },
+  {
+    "id": "item.sharpSword",
+    "ko": "날 선 검",
+    "en": "Honed Sword"
+  },
+  {
+    "id": "item.studdedArmor",
+    "ko": "징 박은 갑옷",
+    "en": "Studded Armor"
+  },
+  {
+    "id": "item.silverRing",
+    "ko": "은 반지",
+    "en": "Silver Ring"
+  },
+  {
+    "id": "item.ogreWarblade",
+    "ko": "오우거 전쟁검",
+    "en": "Ogre Warblade"
+  },
+  {
+    "id": "item.glacierArmor",
+    "ko": "빙하 갑옷",
+    "en": "Glacier Armor"
+  },
+  {
+    "id": "item.blazeRing",
+    "ko": "업화 반지",
+    "en": "Blaze Ring"
+  },
+  {
+    "id": "stage.trainingMeadow",
+    "ko": "훈련의 초원",
+    "en": "Training Meadow"
+  },
+  {
+    "id": "stage.forestEntrance",
+    "ko": "숲의 입구",
+    "en": "Forest Entrance"
+  },
+  {
+    "id": "stage.goblinCamp",
+    "ko": "고블린 야영지",
+    "en": "Goblin Camp"
+  },
+  {
+    "id": "stage.ogreFortress",
+    "ko": "오우거의 요새",
+    "en": "Ogre Fortress"
+  },
+  {
+    "id": "stage.frozenPass",
+    "ko": "얼어붙은 고개",
+    "en": "Frozen Pass"
+  },
+  {
+    "id": "stage.dragonNest",
+    "ko": "화염 드래곤의 둥지",
+    "en": "Fire Dragon's Nest"
+  },
+  {
+    "id": "monster.greenSlime",
+    "ko": "초록 슬라임",
+    "en": "Green Slime"
+  },
+  {
+    "id": "monster.forestBoar",
+    "ko": "숲 멧돼지",
+    "en": "Forest Boar"
+  },
+  {
+    "id": "monster.goblinScout",
+    "ko": "고블린 정찰병",
+    "en": "Goblin Scout"
+  },
+  {
+    "id": "monster.goblinArcher",
+    "ko": "고블린 궁수",
+    "en": "Goblin Archer"
+  },
+  {
+    "id": "monster.goblinShaman",
+    "ko": "고블린 주술사",
+    "en": "Goblin Shaman"
+  },
+  {
+    "id": "monster.poisonSlime",
+    "ko": "독 슬라임",
+    "en": "Poison Slime"
+  },
+  {
+    "id": "monster.rockGolem",
+    "ko": "바위 골렘",
+    "en": "Rock Golem"
+  },
+  {
+    "id": "monster.ogreChief",
+    "ko": "오우거 대장",
+    "en": "Ogre Chief"
+  },
+  {
+    "id": "monster.frostWolf",
+    "ko": "서리 늑대",
+    "en": "Frost Wolf"
+  },
+  {
+    "id": "monster.fireDragon",
+    "ko": "화염 드래곤",
+    "en": "Fire Dragon"
+  },
+  {
+    "id": "skill.basicAttack",
+    "ko": "기본 공격",
+    "en": "Basic Attack"
+  },
+  {
+    "id": "skill.sharpClaws",
+    "ko": "날카로운 발톱",
+    "en": "Sharp Claws"
+  },
+  {
+    "id": "skill.toxicSlime",
+    "ko": "독성 점액",
+    "en": "Toxic Slime"
+  },
+  {
+    "id": "skill.rapidShot",
+    "ko": "연속 사격",
+    "en": "Rapid Shot"
+  },
+  {
+    "id": "skill.fireball",
+    "ko": "화염구",
+    "en": "Fireball"
+  },
+  {
+    "id": "skill.healingLight",
+    "ko": "치유의 빛",
+    "en": "Healing Light"
+  },
+  {
+    "id": "skill.earthSlam",
+    "ko": "대지 강타",
+    "en": "Earth Slam"
+  },
+  {
+    "id": "skill.frostBreath",
+    "ko": "서리 숨결",
+    "en": "Frost Breath"
+  },
+  {
+    "id": "skill.meteor",
+    "ko": "운석 낙하",
+    "en": "Meteor Fall"
+  },
+  {
+    "id": "skill.battleRoar",
+    "ko": "전투의 포효",
+    "en": "Battle Roar"
+  },
+  {
+    "id": "skill.summonWolf",
+    "ko": "늑대 소환",
+    "en": "Summon Wolf"
+  },
+  {
+    "id": "skill.shoot",
+    "ko": "활쏘기",
+    "en": "Shoot"
+  }
+]

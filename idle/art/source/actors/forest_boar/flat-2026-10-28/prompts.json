@@ -1,0 +1,389 @@
+{
+  "createdAt": "2026-10-28",
+  "createdBy": "colorsocks",
+  "tool": "Codex image_gen",
+  "actor": "forest_boar",
+  "reference": {
+    "prompt": "Use case: precise-object-edit\nAsset type: final ordinary forest boar game sprite reference.\nInput image: Image 1 is the approved boar design. Modify only the legs and mane.\nPrimary request: make all FOUR legs cuter: short plump rounded little legs, about 25% shorter than currently, with softly rounded bean-like feet and only gentle knee/hock bends. Preserve their anatomically correct attachment under shoulder and rump and the existing two overlapping pairs: near front, far front, near hind, far hind. All four feet remain separately visible. No sharp zigzag hocks, no long straight stilts, no extra legs, no four evenly spaced pegs. Keep the overall torso and head dimensions unchanged.\nMane: fill the existing short two-tuft ridge on the upper back with a solid DARK CHOCOLATE BROWN #523323, clearly distinct from the medium-brown body. Extend that dark fill only a small distance below the ridge as one compact mane patch. Keep the mane very small and simple. Do not add extra spikes or fur strands.\nKeep everything else exactly: left facing view, body proportions, short torso, lowered head, small ears, dot eye, snout, one small tusk, tiny tail, outline thickness. Flat unlit cartoon, no gradients or texture.\nPalette: outline #201B18; body #A96D47; underside/far legs #784A33; mane #523323; snout #EAC084; tusk #FFF0C5. Every region is a single uniform opaque fill. Edge antialiasing only.\nFull body centered on a truly transparent square background. No text, ground, shadow, labels or effects.",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-060faed0-73c0-4515-a16d-d9bd37036463.png"
+  },
+  "clips": [
+    {
+      "actor": "forest_boar",
+      "clip": "idle",
+      "count": 2,
+      "ref": "idle/art/source/actors/forest_boar/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact compact brown boar with FOUR short plump rounded legs, two near/far overlapping pairs, small two-tuft DARK chocolate mane patch, small tusk and dot eye. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Six solid colors only: dark outline #201B18, main body #A96D47, far legs/underside #784A33, distinct mane #523323, snout #EAC084, tusk #FFF0C5. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 2 sequential animation frames in ONE horizontal row for idle: breathing idle: frame 1 matches the reference's relaxed standing posture; frame 2 body compresses vertically by only 4%, feet stay planted. Same width and head position.\nComposition: 2 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-1e0e7f50-8c0a-45ac-a186-6c69ab1f67fe.png"
+    },
+    {
+      "actor": "forest_boar",
+      "clip": "walk",
+      "count": 4,
+      "ref": "idle/art/source/actors/forest_boar/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact compact brown boar with FOUR short plump rounded legs, two near/far overlapping pairs, small two-tuft DARK chocolate mane patch, small tusk and dot eye. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Six solid colors only: dark outline #201B18, main body #A96D47, far legs/underside #784A33, distinct mane #523323, snout #EAC084, tusk #FFF0C5. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 4 sequential animation frames in ONE horizontal row for walk: a calm walk in place, not running: frame 1 near front foot forward/left and near hind foot back/right, far pair opposite; frame 2 near front supports under shoulder and far front lifts to pass; frame 3 the opposite contact, near front swept back/right and near hind forward/left, far pair opposite; frame 4 near front is lifted, bent, returning forward/left while far front supports. Short stride, tiny head bob, body stays centered. All four poses must be distinct.\nComposition: 4 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-d5bb4b73-c670-4b46-9bdb-a4ef5e52880d.png"
+    },
+    {
+      "actor": "forest_boar",
+      "clip": "enter",
+      "count": 2,
+      "ref": "idle/art/source/actors/forest_boar/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact compact brown boar with FOUR short plump rounded legs, two near/far overlapping pairs, small two-tuft DARK chocolate mane patch, small tusk and dot eye. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Six solid colors only: dark outline #201B18, main body #A96D47, far legs/underside #784A33, distinct mane #523323, snout #EAC084, tusk #FFF0C5. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 2 sequential animation frames in ONE horizontal row for enter: a quick bounding approach loop in place toward LEFT: frame 1 front feet reach forward and hind feet push back; frame 2 all four legs are gathered close underneath. Head and torso size stay unchanged. Keep all four short legs.\nComposition: 2 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-0647010e-6993-4cf0-b23e-d9e03f8e977c.png"
+    },
+    {
+      "actor": "forest_boar",
+      "clip": "attack",
+      "count": 4,
+      "ref": "idle/art/source/actors/forest_boar/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact compact brown boar with FOUR short plump rounded legs, two near/far overlapping pairs, small two-tuft DARK chocolate mane patch, small tusk and dot eye. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Six solid colors only: dark outline #201B18, main body #A96D47, far legs/underside #784A33, distinct mane #523323, snout #EAC084, tusk #FFF0C5. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 4 sequential animation frames in ONE horizontal row for attack: a tusk charge toward LEFT in place: frame 1 small wind-up leaning back/right; frame 2 crouch with head low and weight on hind feet; frame 3 forceful forward/left lean with lowered tusk reaching farthest left, front feet forward and rear feet pushing; frame 4 recover upright. The third frame is the impact. Preserve the body length and short legs; no speed lines.\nComposition: 4 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-8957bb59-aaea-494b-87d0-ea542fd6d854.png"
+    },
+    {
+      "actor": "forest_boar",
+      "clip": "hit",
+      "count": 2,
+      "ref": "idle/art/source/actors/forest_boar/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact compact brown boar with FOUR short plump rounded legs, two near/far overlapping pairs, small two-tuft DARK chocolate mane patch, small tusk and dot eye. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Six solid colors only: dark outline #201B18, main body #A96D47, far legs/underside #784A33, distinct mane #523323, snout #EAC084, tusk #FFF0C5. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 2 sequential animation frames in ONE horizontal row for hit: being hit from LEFT: frame 1 recoil slightly backward/right, squeeze eye shut with one short curved line; frame 2 recover to reference pose with dot eye open. All four feet remain identifiable.\nComposition: 2 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-9cad2602-d655-4cc0-89e1-27a904efce27.png"
+    },
+    {
+      "actor": "forest_boar",
+      "clip": "die",
+      "count": 3,
+      "ref": "idle/art/source/actors/forest_boar/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact compact brown boar with FOUR short plump rounded legs, two near/far overlapping pairs, small two-tuft DARK chocolate mane patch, small tusk and dot eye. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Six solid colors only: dark outline #201B18, main body #A96D47, far legs/underside #784A33, distinct mane #523323, snout #EAC084, tusk #FFF0C5. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 3 sequential animation frames in ONE horizontal row for die: defeated: frame 1 stagger with one simple closed eye; frame 2 fold the short legs and lower the body halfway to the floor; frame 3 lie collapsed on belly and slightly on side, eye closed, feet tucked partly beneath, head still faces LEFT. Not gore, no stars, no icons, no detached body parts.\nComposition: 3 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-14ade377-8662-48a3-921b-c96da33a3922.png"
+    }
+  ],
+  "postprocessAuthorization": "이전 턴에서 승인한 Pillow 고정 팔레트 평탄화를 같은 스타일의 적용용 클립에 유지함.",
+  "postprocess": {
+    "palette": [
+      "#201B18",
+      "#A96D47",
+      "#784A33",
+      "#523323",
+      "#EAC084",
+      "#FFF0C5"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 384,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 256,
+    "max_frame_width_px": 281,
+    "normalization": "클립마다 기준 포즈로 생성 줌을 통일. 한 클립 안에서는 공통 배율 사용. 슬라임 걷기는 면적 중간값으로 줌을 맞춰 눌림·늘어남 보존.",
+    "measurements": {
+      "idle": {
+        "scale": 0.26881720430107525,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              63,
+              106,
+              322,
+              256
+            ],
+            "source_bounds": [
+              28,
+              102,
+              992,
+              660
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              62,
+              115,
+              322,
+              256
+            ],
+            "source_bounds": [
+              1070,
+              137,
+              2038,
+              660
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "walk": {
+        "scale": 0.4807692307692308,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              67,
+              106,
+              318,
+              256
+            ],
+            "source_bounds": [
+              7,
+              198,
+              528,
+              510
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              66,
+              107,
+              317,
+              256
+            ],
+            "source_bounds": [
+              556,
+              199,
+              1078,
+              510
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              68,
+              106,
+              317,
+              257
+            ],
+            "source_bounds": [
+              1092,
+              199,
+              1611,
+              511
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              67,
+              105,
+              317,
+              256
+            ],
+            "source_bounds": [
+              1639,
+              198,
+              2159,
+              513
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "enter": {
+        "scale": 0.28846153846153844,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              53,
+              106,
+              332,
+              253
+            ],
+            "source_bounds": [
+              55,
+              106,
+              1020,
+              614
+            ],
+            "hop_px": 3
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              60,
+              106,
+              324,
+              256
+            ],
+            "source_bounds": [
+              1186,
+              106,
+              2099,
+              626
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "attack": {
+        "scale": 0.4966887417218543,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              73,
+              100,
+              311,
+              256
+            ],
+            "source_bounds": [
+              42,
+              201,
+              521,
+              516
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              75,
+              124,
+              309,
+              256
+            ],
+            "source_bounds": [
+              566,
+              250,
+              1037,
+              515
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              63,
+              129,
+              321,
+              256
+            ],
+            "source_bounds": [
+              1080,
+              264,
+              1599,
+              520
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              76,
+              106,
+              309,
+              256
+            ],
+            "source_bounds": [
+              1662,
+              215,
+              2131,
+              517
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "hit": {
+        "scale": 0.2835538752362949,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              63,
+              102,
+              320,
+              256
+            ],
+            "source_bounds": [
+              112,
+              93,
+              1017,
+              636
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              63,
+              106,
+              321,
+              256
+            ],
+            "source_bounds": [
+              1158,
+              105,
+              2066,
+              634
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "die": {
+        "scale": 0.36764705882352944,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              67,
+              106,
+              317,
+              257
+            ],
+            "source_bounds": [
+              13,
+              156,
+              691,
+              564
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              71,
+              132,
+              313,
+              256
+            ],
+            "source_bounds": [
+              744,
+              234,
+              1400,
+              569
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              69,
+              143,
+              314,
+              257
+            ],
+            "source_bounds": [
+              1467,
+              257,
+              2130,
+              564
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      }
+    },
+    "script": "/private/tmp/finish-flat-monsters.py"
+  }
+}

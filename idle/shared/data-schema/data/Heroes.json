@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "nameKey": "hero.brave",
+    "attackIntervalSeconds": 1,
+    "critChance": 0.15,
+    "critMultiplier": 2,
+    "skillIds": [
+      1001,
+      1004,
+      1005,
+      1011,
+      1010,
+      1006
+    ],
+    "skillSlots": 3,
+    "moveSpeed": 2,
+    "clips": "hero",
+    "size": 1
+  }
+]

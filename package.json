@@ -1,0 +1,36 @@
+{
+  "name": "game-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "workspaces": [
+    "idle/shared/*",
+    "idle/client/TypeScript",
+    "idle/server",
+    "idle/integration",
+    "idle/balance",
+    "tools/*"
+  ],
+  "scripts": {
+    "setup": "npm run setup -w @idle/client",
+    "dev": "npm run dev -w @idle/client",
+    "build:dev": "npm run build:dev -w @idle/client",
+    "build:release": "npm run build:release -w @idle/client",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "node scripts/generate.mjs --check && node scripts/check-boundaries.mjs && npm test --workspaces --if-present",
+    "coverage": "npm run coverage --workspaces --if-present",
+    "generate": "node scripts/generate.mjs",
+    "balance": "node idle/balance/run.mjs",
+    "bench": "node idle/balance/run.mjs --bench",
+    "load": "node idle/server/tools/load.mjs"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "4.1.11",
+    "esbuild": "0.28.2",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "@idle/client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": ["./src/host/*.ts"],
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "setup": "node tools/install-puerts.mjs",
+    "sounds": "node tools/make-sounds.mjs",
+    "dev": "node tools/build.mjs development --watch",
+    "build:dev": "node tools/build.mjs development",
+    "build:release": "node tools/build.mjs release",
+    "serve:bundle": "node tools/serve.mjs dist/patch 8081",
+    "patch": "node tools/patch.mjs",
+    "typecheck": "tsc -p tsconfig.json && tsc -p test/tsconfig.json",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage --coverage.include=src/** --coverage.reporter=text --coverage.reporter=text-summary"
+  },
+  "dependencies": {
+    "@idle/big-number": "*",
+    "@idle/codes": "*",
+    "@idle/data-schema": "*",
+    "@idle/game-core": "*",
+    "@idle/protocol": "*",
+    "@preact/signals-core": "1.14.4",
+    "fast-text-encoding": "^1.0.6"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5"
+  }
+}

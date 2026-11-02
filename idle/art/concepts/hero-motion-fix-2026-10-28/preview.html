@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>용사 손·시전·사망 교정</title>
+<style>body{margin:24px;background:#f7f5ef;color:#302a23;font:15px system-ui}main{max-width:800px}h1{font-size:22px}p{line-height:1.6}button,select{padding:8px 11px;margin:0 5px 7px 0;border:1px solid #b7ac9c;border-radius:8px;background:white;cursor:pointer}button[aria-pressed=true]{background:#dce8d2}.viewport{overflow:auto}canvas{display:block}a{color:#315580}</style>
+<main><h1>용사 손·시전·사망 교정</h1>
+<p>공격 3프레임은 오른쪽 어깨·팔·주먹을 연결하고, 사망 2프레임은 앞발을 딛고 반대쪽 무릎을 짚도록 수정했습니다. 시전 손은 앞쪽이며 검은 왼손에 유지합니다.</p>
+<div id="states"></div><div><button id="play">일시정지</button><button id="prev">이전 프레임</button><button id="next">다음 프레임</button><span id="frame"></span></div>
+<label>화면 너비 <select id="size"><option>360</option><option>540</option><option>1080</option></select>px</label>
+<label>재생 속도 <select id="speed"><option value="1">게임 속도</option><option value="0.5">절반 속도</option><option value="0.25">4분의 1 속도</option></select></label>
+<div class="viewport"><canvas id="view" width="360" height="150" aria-label="오른쪽 원본과 왼쪽 반전"></canvas></div>
+<p id="note"></p><div class="viewport"><canvas id="strip" aria-label="전체 프레임 순서"></canvas></div>
+<p><img src="joint-before-after-360.png?v=knee-right-arm-20261028" width="360" height="246" alt="공격 3프레임과 사망 2프레임의 수정 전후, 몸 높이 64픽셀 기준"></p>
+<p>360픽셀 화면 기준 용사 몸 높이는 약 64픽셀입니다. 각 동작은 마지막 프레임을 잠시 유지한 뒤 반복합니다. 아래 프레임을 누르면 그 자세에서 멈춥니다.</p>
+<p><a href="../../source/actors/hero/prompts.json">내장 image_gen 프롬프트·후처리 기록</a> · <a href="../actor-facing-2026-10-28/preview.html">전체 배우 방향 비교</a></p></main>
+<script>
+const specs={attack:{label:'공격',count:4,fps:12,note:'2: 빈 오른손 주먹 · 3: 어깨·회색 팔·주먹 연결, 왼손 검 유지'},cast:{label:'시전',count:4,fps:10,note:'오른손은 몸 앞쪽, 왼손은 내려 든 검 손잡이에 유지'},die:{label:'사망',count:3,fps:10,note:'비틀거림 → 한쪽 무릎 짚기 → 옆으로 쓰러짐'}};
+const images={},canvas=document.querySelector('#view'),strip=document.querySelector('#strip'),size=document.querySelector('#size'),speed=document.querySelector('#speed');let state='attack',frame=0,playing=true,last=0;
+for(const key of Object.keys(specs)){const im=new Image();im.src=`../../actors/hero/${key}.png?v=knee-right-arm-20261028`;im.onload=draw;images[key]=im}
+function sprite(ctx,im,index,cx,baseline,scale,flip=false){const cell=im.naturalHeight,side=cell*scale;ctx.save();ctx.translate(cx,baseline-192*scale);ctx.scale(flip?-1:1,1);ctx.drawImage(im,index*cell,0,cell,cell,-side/2,0,side,side);ctx.restore()}
+function draw(){const ratio=+size.value/360,s=specs[state],im=images[state],ctx=canvas.getContext('2d');canvas.width=+size.value;canvas.height=Math.round(150*ratio);ctx.scale(ratio,ratio);ctx.fillStyle='#f2f0e9';ctx.fillRect(0,0,360,150);ctx.fillStyle='#302a23';ctx.font='13px system-ui';ctx.textAlign='center';ctx.fillText('원본 →',100,25);ctx.fillText('반전 ←',260,25);if(im?.naturalWidth){sprite(ctx,im,frame,100,123,64/150);sprite(ctx,im,frame,260,123,64/150,true)}strip.width=Math.round(s.count*112*ratio);strip.height=Math.round(144*ratio);const sc=strip.getContext('2d');sc.scale(ratio,ratio);sc.fillStyle='#f2f0e9';sc.fillRect(0,0,s.count*112,144);for(let i=0;i<s.count;i++){if(i===frame){sc.fillStyle='#dce8d2';sc.fillRect(i*112,0,110,144)}sc.fillStyle='#302a23';sc.font='12px system-ui';sc.textAlign='center';sc.fillText(`${i+1}프레임`,i*112+56,20);if(im?.naturalWidth)sprite(sc,im,i,i*112+56,126,64/150)}document.querySelector('#frame').textContent=`${frame+1} / ${s.count}`;document.querySelector('#note').textContent=s.note}
+function pause(){playing=false;document.querySelector('#play').textContent='재생'}
+for(const[id,s]of Object.entries(specs)){const b=document.createElement('button');b.textContent=s.label;b.dataset.state=id;b.setAttribute('aria-pressed',id===state);b.onclick=()=>{state=id;frame=0;last=performance.now();document.querySelectorAll('[data-state]').forEach(x=>x.setAttribute('aria-pressed',x===b));draw()};document.querySelector('#states').append(b)}
+document.querySelector('#play').onclick=()=>{playing=!playing;last=performance.now();document.querySelector('#play').textContent=playing?'일시정지':'재생'};
+document.querySelector('#prev').onclick=()=>{pause();frame=(frame+specs[state].count-1)%specs[state].count;draw()};document.querySelector('#next').onclick=()=>{pause();frame=(frame+1)%specs[state].count;draw()};strip.onclick=e=>{pause();frame=Math.min(specs[state].count-1,Math.floor(e.offsetX/(112*(+size.value/360))));draw()};size.onchange=draw;
+function tick(t){const s=specs[state],duration=(frame===s.count-1?700:1000/s.fps)/+speed.value;if(playing&&t-last>=duration){frame=(frame+1)%s.count;last=t;draw()}requestAnimationFrame(tick)}draw();requestAnimationFrame(tick);
+</script></html>

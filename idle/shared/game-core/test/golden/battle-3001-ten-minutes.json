@@ -1,0 +1,145 @@
+{
+  "events": "15640f31bb2e77eddda9eb8694bf397940c0cb98dd0e3f5b6063ee6d748cd2f7",
+  "counts": {
+    "waveStart": 50,
+    "spawn": 148,
+    "attack": 1826,
+    "death": 145,
+    "launch": 197,
+    "impact": 193,
+    "summon": 51,
+    "stageClear": 3,
+    "levelUp": 13,
+    "effectApply": 157,
+    "effectTick": 410,
+    "effectEnd": 74,
+    "expire": 50,
+    "retreat": 20,
+    "revive": 18,
+    "vanish": 4,
+    "bossStart": 1,
+    "bossEnd": 1
+  },
+  "lastBoundary": {
+    "tick": 5858,
+    "player": {
+      "battle": {
+        "mode": 0,
+        "at": 1585800,
+        "rng": 3955863985,
+        "hero": {
+          "hp": {
+            "m": 2.669999999999999,
+            "e": 2
+          },
+          "cooldowns": [
+            3,
+            50,
+            1,
+            31
+          ],
+          "effects": [],
+          "x": 0
+        },
+        "summons": [
+          {
+            "hp": {
+              "m": 3.1700000000000004,
+              "e": 2
+            },
+            "cooldowns": [
+              1
+            ],
+            "effects": [],
+            "x": 0,
+            "id": 377,
+            "summonId": 6001,
+            "by": 0,
+            "ticksLeft": 65
+          },
+          {
+            "hp": {
+              "m": 3.5100000000000002,
+              "e": 2
+            },
+            "cooldowns": [
+              2
+            ],
+            "effects": [],
+            "x": 0,
+            "id": 385,
+            "summonId": 6001,
+            "by": 0,
+            "ticksLeft": 166
+          }
+        ],
+        "waves": 3,
+        "autoBoss": false,
+        "nextId": 388,
+        "enemies": [],
+        "projectiles": [],
+        "wave": null,
+        "bossTicksLeft": null,
+        "reviveTicksLeft": null
+      },
+      "stage": {
+        "currentId": 3004,
+        "clearedIds": [
+          3001,
+          3002,
+          3003
+        ]
+      },
+      "profile": {
+        "loginId": "golden",
+        "level": 14
+      },
+      "items": {
+        "1": {
+          "m": 2.856,
+          "e": 3
+        },
+        "2": {
+          "m": 1.039,
+          "e": 3
+        }
+      },
+      "equipment": {
+        "nextId": 4,
+        "owned": {
+          "1": {
+            "itemId": 101,
+            "enhance": 0
+          },
+          "2": {
+            "itemId": 102,
+            "enhance": 0
+          },
+          "3": {
+            "itemId": 103,
+            "enhance": 0
+          }
+        },
+        "equipped": {}
+      },
+      "statUpgrades": {},
+      "skills": {
+        "equipped": {
+          "0": 1004,
+          "1": 1005,
+          "2": 1011
+        },
+        "levels": {
+          "1004": 1,
+          "1005": 1,
+          "1011": 1
+        }
+      },
+      "rebirth": {
+        "count": 0,
+        "points": 0
+      }
+    }
+  },
+  "signature": "[1600000,3004,[3001,3002,3003],14,{},{},[[1001,1],[1004,1],[1005,1],[1011,1]],0,0,2564310251,[0,0],[2,33,53,14],[],3.25,3,false,397,6,null,null,[],[],[]]"
+}

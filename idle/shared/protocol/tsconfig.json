@@ -1,0 +1,6 @@
+{
+  "extends": "../../tsconfig.base.json",
+  // game-core의 타입을 import하면 소스까지 딸려 오는데, 그 소스의 공식이 game-core가 types/에
+  // 선언한 console로 로그를 남긴다.
+  "include": ["src", "../game-core/types"]
+}

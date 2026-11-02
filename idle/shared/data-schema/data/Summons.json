@@ -1,0 +1,18 @@
+[
+  {
+    "id": 6001,
+    "maxHpRate": 0.5,
+    "attackRate": 0.3,
+    "defenseRate": 0.5,
+    "attackIntervalSeconds": 1,
+    "skillIds": [
+      1001
+    ],
+    "durationSeconds": 25,
+    "maxCount": 2,
+    "note": "정령 늑대: 영웅의 늑대 소환이 부른다",
+    "moveSpeed": 2.5,
+    "clips": "spirit_wolf",
+    "size": 0.9
+  }
+]

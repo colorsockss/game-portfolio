@@ -1,0 +1,83 @@
+[
+  {
+    "id": 1,
+    "textKey": "tutorial.welcome",
+    "target": null,
+    "unlockStageId": null,
+    "unlockLevel": null,
+    "equipSlot": null,
+    "opener": null
+  },
+  {
+    "id": 2,
+    "textKey": "tutorial.firstClear",
+    "target": null,
+    "unlockStageId": 3001,
+    "unlockLevel": null,
+    "equipSlot": null,
+    "opener": null
+  },
+  {
+    "id": 3,
+    "textKey": "tutorial.openEquipment",
+    "target": "main.equipmentButton",
+    "unlockStageId": null,
+    "unlockLevel": null,
+    "equipSlot": null,
+    "opener": null
+  },
+  {
+    "id": 4,
+    "textKey": "tutorial.equipWeapon",
+    "target": "equipment.items",
+    "unlockStageId": null,
+    "unlockLevel": null,
+    "equipSlot": 1,
+    "opener": "main.equipmentButton"
+  },
+  {
+    "id": 5,
+    "textKey": "tutorial.closeEquipment",
+    "target": "equipment.closeButton",
+    "unlockStageId": null,
+    "unlockLevel": null,
+    "equipSlot": null,
+    "opener": null
+  },
+  {
+    "id": 6,
+    "textKey": "tutorial.levelUp",
+    "target": null,
+    "unlockStageId": null,
+    "unlockLevel": 5,
+    "equipSlot": null,
+    "opener": null
+  },
+  {
+    "id": 7,
+    "textKey": "tutorial.openInventory",
+    "target": "main.inventoryButton",
+    "unlockStageId": null,
+    "unlockLevel": null,
+    "equipSlot": null,
+    "opener": null
+  },
+  {
+    "id": 8,
+    "textKey": "tutorial.closeInventory",
+    "target": "inventory.closeButton",
+    "unlockStageId": null,
+    "unlockLevel": null,
+    "equipSlot": null,
+    "opener": null
+  },
+  {
+    "id": 9,
+    "textKey": "tutorial.farewell",
+    "target": null,
+    "unlockStageId": null,
+    "unlockLevel": null,
+    "equipSlot": null,
+    "opener": null
+  }
+]

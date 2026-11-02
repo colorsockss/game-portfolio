@@ -1,0 +1,36 @@
+# 키우기: 패치 네 단위와 서버를 이 커밋으로 모두 내고, 원하면 APK도 낸다. 첫 출시나 큰 변경용이다. 일은 공용 워크플로(idle-release.yml)가 한다. 설계: idle/docs/superpowers/specs/2026-10-30-patch-design.md 4.12절.
+name: idle all
+
+on:
+  workflow_dispatch:
+    inputs:
+      apk:
+        description: APK도 빌드해 GitHub Release로 냄
+        type: boolean
+        default: true
+      publish:
+        description: 올린 뒤 바로 공개(끄면 올리기만 하고, 공개·롤백 액션으로 나중에 공개)
+        type: boolean
+        default: true
+
+# 모든 내보내기 액션이 한 그룹이라 한 번에 하나씩 돈다. 앞 실행을 취소하면 반쯤 내보낸 채 멈추므로 기다린다.
+concurrency:
+  group: idle-live
+  cancel-in-progress: false
+
+permissions:
+  # GitHub Release와 태그를 만든다(APK).
+  contents: write
+
+jobs:
+  release:
+    uses: ./.github/workflows/idle-release.yml
+    with:
+      game: true
+      rules: true
+      strings: true
+      assets: true
+      server: true
+      apk: ${{ inputs.apk }}
+      publish: ${{ inputs.publish }}
+    secrets: inherit

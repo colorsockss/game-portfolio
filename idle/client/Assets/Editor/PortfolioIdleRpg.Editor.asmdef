@@ -1,0 +1,30 @@
+{
+    "name": "PortfolioIdleRpg.Editor",
+    "rootNamespace": "PortfolioIdleRpg.Editor",
+    "references": [
+        "PortfolioIdleRpg.Views",
+        "PortfolioIdleRpg.Facades",
+        "PortfolioIdleRpg.Runtime",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
+        "Unity.2D.Sprite.Editor",
+        "LoopScrollRect.Runtime",
+        "com.tencent.puerts.core",
+        "com.tencent.puerts.core.Editor",
+        "com.tencent.puerts.v8.Editor",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

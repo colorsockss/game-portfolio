@@ -1,0 +1,27 @@
+// Formula Lab 프로젝트(data/formulas.json)의 능력치 및 공식 키.
+// formulas.ts는 그 프로젝트에서 생성되므로, 여기에 없는 키가 있으면 타입 검사가 실패한다.
+export enum E_AbilityType {
+  attack,
+  defense,
+  damage,
+  maxHp,
+  maxHpRate,
+  attackRate,
+  defenseRate,
+  summonMaxHp,
+  summonAttack,
+  summonDefense,
+  dotDamage,
+  heal,
+  shield,
+  statBuff,
+  elementMultiplier,
+  upgradeCost,
+  skillLevelRate,
+  skillMultiplier,
+  skillLevelCost,
+  enhanceCost,
+  enhanceStat,
+  rebirthPoints,
+  rebirthRate,
+}

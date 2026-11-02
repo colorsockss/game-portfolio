@@ -1,0 +1,36 @@
+# 키우기: 데이터 테이블(규칙 테이블과 문장·소리)을 패치로 낸다. 서버는 건드리지 않는다. 서버가 규칙 지문을 견주므로 규칙 테이블이
+# Live 서버와 다르면 이 커밋의 서버를 짝으로 적고 올리기만 한다. 그때는 idle server를 publish를 끈 채 돌린 뒤 idle publish /
+# rollback으로 서버와 패치를 함께 바꾼다. 문장·소리만 바뀌었으면 바로 공개된다. 일은 공용 워크플로(idle-release.yml)가 한다.
+# 설계: idle/docs/superpowers/specs/2026-10-30-patch-design.md 4.12절.
+name: idle data
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 올린 뒤 바로 공개(끄면 올리기만 함). 규칙 테이블이 Live 서버와 다르면 켜도 올리기만 하고, 서버를 올려 둔 뒤 공개·롤백 액션으로 함께 공개
+        type: boolean
+        default: true
+      base:
+        description: 고르지 않은 단위를 가져올 기준 버전(비우면 이 API 채널의 지금 버전)
+        type: string
+        default: ''
+
+# 모든 내보내기 액션이 한 그룹이라 한 번에 하나씩 돈다. 앞 실행을 취소하면 반쯤 내보낸 채 멈추므로 기다린다.
+concurrency:
+  group: idle-live
+  cancel-in-progress: false
+
+permissions:
+  # GitHub Release와 태그를 만든다(APK).
+  contents: write
+
+jobs:
+  release:
+    uses: ./.github/workflows/idle-release.yml
+    with:
+      rules: true
+      strings: true
+      publish: ${{ inputs.publish }}
+      base: ${{ inputs.base }}
+    secrets: inherit

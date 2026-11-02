@@ -1,0 +1,54 @@
+[
+  {
+    "id": 5001,
+    "speed": 20,
+    "note": "화살",
+    "clip": "arrow",
+    "color": [
+      0.95,
+      0.9,
+      0.75
+    ],
+    "size": 0.8,
+    "fromAbove": false
+  },
+  {
+    "id": 5002,
+    "speed": 10,
+    "note": "화염구",
+    "clip": "orb",
+    "color": [
+      1,
+      0.5,
+      0.15
+    ],
+    "size": 0.9,
+    "fromAbove": false
+  },
+  {
+    "id": 5003,
+    "speed": 8,
+    "note": "독 덩어리",
+    "clip": "blob",
+    "color": [
+      0.45,
+      0.9,
+      0.3
+    ],
+    "size": 0.8,
+    "fromAbove": false
+  },
+  {
+    "id": 5004,
+    "speed": 4,
+    "note": "운석: 느리게 떨어진다",
+    "clip": "rock",
+    "color": [
+      0.75,
+      0.35,
+      0.2
+    ],
+    "size": 1.4,
+    "fromAbove": true
+  }
+]

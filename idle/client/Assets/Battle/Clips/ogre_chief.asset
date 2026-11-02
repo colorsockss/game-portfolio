@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc0ed3baebca4c87b1dd3180ae8a538, type: 3}
+  m_Name: ogre_chief
+  m_EditorClassIdentifier: PortfolioIdleRpg.Views::PortfolioIdleRpg.Views.SpriteClipSet
+  _clips:
+  - Name: idle
+    Frames:
+    - {fileID: 1121270945, guid: 95ba017fe4be74550b435001fd50a664, type: 3}
+    - {fileID: 1326604813, guid: 95ba017fe4be74550b435001fd50a664, type: 3}
+    FramesPerSecond: 4
+    Loop: 1
+    ImpactFrame: -1
+  - Name: enter
+    Frames:
+    - {fileID: -1658241615, guid: 9d6cb00536d4b4179b1edddb85e2c2f3, type: 3}
+    - {fileID: -1537357397, guid: 9d6cb00536d4b4179b1edddb85e2c2f3, type: 3}
+    FramesPerSecond: 8
+    Loop: 1
+    ImpactFrame: -1
+  - Name: attack
+    Frames:
+    - {fileID: -880995543, guid: 51f42dbed843e407ab764c17dbc37e0d, type: 3}
+    - {fileID: 2099134166, guid: 51f42dbed843e407ab764c17dbc37e0d, type: 3}
+    - {fileID: 361537006, guid: 51f42dbed843e407ab764c17dbc37e0d, type: 3}
+    - {fileID: 1076485243, guid: 51f42dbed843e407ab764c17dbc37e0d, type: 3}
+    FramesPerSecond: 12
+    Loop: 0
+    ImpactFrame: 2
+  - Name: hit
+    Frames:
+    - {fileID: -279723723, guid: a78548d30a526439a89e8616516dd8d4, type: 3}
+    - {fileID: -137042220, guid: a78548d30a526439a89e8616516dd8d4, type: 3}
+    FramesPerSecond: 12
+    Loop: 0
+    ImpactFrame: -1
+  - Name: die
+    Frames:
+    - {fileID: -1665505921, guid: 06e0df0bfa70e4ff3be29c8423eeb458, type: 3}
+    - {fileID: 516348713, guid: 06e0df0bfa70e4ff3be29c8423eeb458, type: 3}
+    - {fileID: 2144550967, guid: 06e0df0bfa70e4ff3be29c8423eeb458, type: 3}
+    FramesPerSecond: 10
+    Loop: 0
+    ImpactFrame: -1
+  - Name: special
+    Frames:
+    - {fileID: 1447344841, guid: a05dba64235b24b6f836b8faf64eb29a, type: 3}
+    - {fileID: 747289456, guid: a05dba64235b24b6f836b8faf64eb29a, type: 3}
+    - {fileID: 1990961119, guid: a05dba64235b24b6f836b8faf64eb29a, type: 3}
+    - {fileID: -820378962, guid: a05dba64235b24b6f836b8faf64eb29a, type: 3}
+    - {fileID: 1735454456, guid: a05dba64235b24b6f836b8faf64eb29a, type: 3}
+    FramesPerSecond: 8
+    Loop: 0
+    ImpactFrame: 3
+  - Name: walk
+    Frames:
+    - {fileID: 81322329, guid: c1da5095f3bc14cad9be34481c5463c3, type: 3}
+    - {fileID: -2137681249, guid: c1da5095f3bc14cad9be34481c5463c3, type: 3}
+    - {fileID: 1489363581, guid: c1da5095f3bc14cad9be34481c5463c3, type: 3}
+    - {fileID: 2061408200, guid: c1da5095f3bc14cad9be34481c5463c3, type: 3}
+    FramesPerSecond: 8
+    Loop: 1
+    ImpactFrame: -1

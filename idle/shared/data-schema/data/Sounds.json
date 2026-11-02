@@ -1,0 +1,100 @@
+[
+  {
+    "id": "bgm.battle",
+    "channel": "bgm",
+    "clip": "Audio/Bgm/Battle",
+    "volume": 0.6,
+    "note": "훈련 초원·숲 입구의 전투"
+  },
+  {
+    "id": "bgm.fortress",
+    "channel": "bgm",
+    "clip": "Audio/Bgm/Fortress",
+    "volume": 0.6,
+    "note": "고블린 야영지·오우거 요새의 전투"
+  },
+  {
+    "id": "bgm.peak",
+    "channel": "bgm",
+    "clip": "Audio/Bgm/Peak",
+    "volume": 0.6,
+    "note": "얼어붙은 고개·용의 둥지의 전투"
+  },
+  {
+    "id": "sfx.hit",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Hit",
+    "volume": 0.5,
+    "note": "공격이 맞음"
+  },
+  {
+    "id": "sfx.crit",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Crit",
+    "volume": 0.7,
+    "note": "치명타"
+  },
+  {
+    "id": "sfx.kill",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Kill",
+    "volume": 0.6,
+    "note": "몬스터 처치"
+  },
+  {
+    "id": "sfx.boss",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Boss",
+    "volume": 0.8,
+    "note": "보스 등장"
+  },
+  {
+    "id": "sfx.clear",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Clear",
+    "volume": 0.8,
+    "note": "스테이지 클리어"
+  },
+  {
+    "id": "sfx.levelUp",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/LevelUp",
+    "volume": 0.8,
+    "note": "레벨 업"
+  },
+  {
+    "id": "sfx.click",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Click",
+    "volume": 0.5,
+    "note": "버튼·탭·목록의 칸·토글을 누름"
+  },
+  {
+    "id": "sfx.fire",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Fire",
+    "volume": 0.6,
+    "note": "불 속성 스킬"
+  },
+  {
+    "id": "sfx.ice",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Ice",
+    "volume": 0.6,
+    "note": "얼음 속성 스킬"
+  },
+  {
+    "id": "sfx.poison",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Poison",
+    "volume": 0.6,
+    "note": "독 속성 스킬"
+  },
+  {
+    "id": "sfx.holy",
+    "channel": "sfx",
+    "clip": "Audio/Sfx/Holy",
+    "volume": 0.6,
+    "note": "신성 속성 스킬"
+  }
+]

@@ -1,0 +1,384 @@
+{
+  "createdAt": "2026-10-28",
+  "createdBy": "colorsocks",
+  "tool": "Codex image_gen",
+  "actor": "green_slime",
+  "reference": {
+    "source": "../flat-master.png"
+  },
+  "clips": [
+    {
+      "actor": "green_slime",
+      "clip": "idle",
+      "count": 2,
+      "ref": "idle/art/source/actors/green_slime/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact simple round green dome slime with two tiny dark dot eyes and a low small front lobe. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Two solid colors only: all body #70C747; all outline and eyes #231B15. No highlight or shadow region. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 2 sequential animation frames in ONE horizontal row for idle: breathing: frame 1 the exact reference shape; frame 2 only 5% lower and slightly wider, maintaining volume, base touching the same baseline.\nComposition: 2 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-aca8f648-b08a-4c19-a5ef-680c31f95f02.png"
+    },
+    {
+      "actor": "green_slime",
+      "clip": "walk",
+      "count": 4,
+      "ref": "idle/art/source/actors/green_slime/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact simple round green dome slime with two tiny dark dot eyes and a low small front lobe. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Two solid colors only: all body #70C747; all outline and eyes #231B15. No highlight or shadow region. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 4 sequential animation frames in ONE horizontal row for walk: slow squash-and-stretch crawl in place to LEFT: frame 1 slightly compressed wide contact; frame 2 slightly taller and narrower; frame 3 compressed forward lean toward LEFT; frame 4 restore to almost the initial dome with a small lifted front lobe. Gentle small motion, same body volume.\nComposition: 4 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-16800bf9-ed9d-481f-ade5-0f83a5d61d1a.png"
+    },
+    {
+      "actor": "green_slime",
+      "clip": "enter",
+      "count": 2,
+      "ref": "idle/art/source/actors/green_slime/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact simple round green dome slime with two tiny dark dot eyes and a low small front lobe. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Two solid colors only: all body #70C747; all outline and eyes #231B15. No highlight or shadow region. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 2 sequential animation frames in ONE horizontal row for enter: quick hopping approach in place to LEFT: frame 1 compressed wide launch pose touching ground; frame 2 taller rounded airborne pose with the entire base lifted a little above the shared baseline. No legs and no effects.\nComposition: 2 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-dcc435af-7507-4dde-b456-a7e329bc8f58.png"
+    },
+    {
+      "actor": "green_slime",
+      "clip": "attack",
+      "count": 4,
+      "ref": "idle/art/source/actors/green_slime/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact simple round green dome slime with two tiny dark dot eyes and a low small front lobe. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Two solid colors only: all body #70C747; all outline and eyes #231B15. No highlight or shadow region. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 4 sequential animation frames in ONE horizontal row for attack: body-slam to LEFT in place: frame 1 lean back slightly to the right; frame 2 squat and widen to wind up; frame 3 stretch forward left as a blunt rounded horizontal bean striking LEFT, same body volume; frame 4 recover the original rounded dome. Third frame is impact. No teeth or mouth or spiky shapes.\nComposition: 4 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-4c1401b7-0b79-4e19-9d71-fd5a490b9f97.png"
+    },
+    {
+      "actor": "green_slime",
+      "clip": "hit",
+      "count": 2,
+      "ref": "idle/art/source/actors/green_slime/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact simple round green dome slime with two tiny dark dot eyes and a low small front lobe. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Two solid colors only: all body #70C747; all outline and eyes #231B15. No highlight or shadow region. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 2 sequential animation frames in ONE horizontal row for hit: being hit from LEFT: frame 1 lean and squash to the right with eyes as tiny short closed curves; frame 2 original reference shape with two tiny dot eyes.\nComposition: 2 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-24ab454e-97d7-446a-a2d7-7ad948d5d261.png"
+    },
+    {
+      "actor": "green_slime",
+      "clip": "die",
+      "count": 3,
+      "ref": "idle/art/source/actors/green_slime/flat-2026-10-28/reference-on-white.png",
+      "prompt": "Use case: stylized-concept\nAsset type: production 2D game sprite animation strip.\nInput image: Image 1 is the exact character model sheet. Its white backdrop is only for viewing; your output MUST have a genuinely transparent background.\nCharacter: the exact simple round green dome slime with two tiny dark dot eyes and a low small front lobe. Keep that identity and drawing style. Keep head, body, ears, face and appendages the same size and the SAME LEFT-facing near-side camera in all frames.\nRendering: flat unlit solid-color cartoon sprite, clean dark outlines. Two solid colors only: all body #70C747; all outline and eyes #231B15. No highlight or shadow region. No texture, gradients, shiny spots, soft shading or cast shadows.\nPrimary request: EXACTLY 3 sequential animation frames in ONE horizontal row for die: defeated: frame 1 original dome with eyes as simple closed short curves; frame 2 collapse to a low wide blob about half original height; frame 3 flatten into a low rounded puddle with eyes closed. Preserve approximate volume and width under 1.3 times original. No crosses, symbols, tears or effects.\nComposition: 3 equal-width cells, no visible dividers. One complete character per cell. Neutral body height about 55% of cell height, neutral body width about 75% of cell width, same camera zoom throughout. Center each character's torso horizontally in its own cell. All grounded feet/bases touch one common baseline at 78% cell height. Ample clear transparent space between frames and outside all edges. Do not cut off feet, tusk, tail, ears, silhouette or outlines. No text, labels, frame borders, floor line, ground, dust, effects, other objects or watermark. The character always faces LEFT.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-67b8fed9-8485-4906-866f-0a700e5a44ce.png"
+    }
+  ],
+  "postprocessAuthorization": "이전 턴에서 승인한 Pillow 고정 팔레트 평탄화를 같은 스타일의 적용용 클립에 유지함.",
+  "postprocess": {
+    "palette": [
+      "#231B15",
+      "#70C747"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 384,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 256,
+    "max_frame_width_px": 306,
+    "normalization": "클립마다 기준 포즈로 생성 줌을 통일. 한 클립 안에서는 공통 배율 사용. 슬라임 걷기는 면적 중간값으로 줌을 맞춰 눌림·늘어남 보존.",
+    "measurements": {
+      "idle": {
+        "scale": 0.2912621359223301,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              67,
+              106,
+              316,
+              256
+            ],
+            "source_bounds": [
+              107,
+              103,
+              961,
+              618
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              64,
+              122,
+              320,
+              256
+            ],
+            "source_bounds": [
+              1186,
+              158,
+              2065,
+              618
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 2
+      },
+      "walk": {
+        "scale": 0.5298474171313658,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              62,
+              117,
+              322,
+              256
+            ],
+            "source_bounds": [
+              32,
+              245,
+              522,
+              507
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              76,
+              88,
+              309,
+              256
+            ],
+            "source_bounds": [
+              594,
+              191,
+              1033,
+              507
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              56,
+              117,
+              328,
+              256
+            ],
+            "source_bounds": [
+              1097,
+              245,
+              1609,
+              507
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              72,
+              102,
+              313,
+              256
+            ],
+            "source_bounds": [
+              1676,
+              217,
+              2130,
+              507
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 2
+      },
+      "enter": {
+        "scale": 0.2994011976047904,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              69,
+              152,
+              315,
+              256
+            ],
+            "source_bounds": [
+              128,
+              318,
+              947,
+              665
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              81,
+              99,
+              304,
+              249
+            ],
+            "source_bounds": [
+              1113,
+              140,
+              1858,
+              641
+            ],
+            "hop_px": 7
+          }
+        ],
+        "palette_count_before_resize": 2
+      },
+      "attack": {
+        "scale": 0.5514705882352942,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              74,
+              91,
+              310,
+              256
+            ],
+            "source_bounds": [
+              64,
+              218,
+              491,
+              516
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              64,
+              133,
+              321,
+              256
+            ],
+            "source_bounds": [
+              563,
+              293,
+              1028,
+              516
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              41,
+              145,
+              343,
+              256
+            ],
+            "source_bounds": [
+              1078,
+              316,
+              1624,
+              516
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              74,
+              106,
+              310,
+              256
+            ],
+            "source_bounds": [
+              1693,
+              244,
+              2120,
+              516
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 2
+      },
+      "hit": {
+        "scale": 0.3480278422273782,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              55,
+              122,
+              330,
+              256
+            ],
+            "source_bounds": [
+              180,
+              217,
+              968,
+              600
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              60,
+              106,
+              324,
+              257
+            ],
+            "source_bounds": [
+              1236,
+              171,
+              1993,
+              602
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 2
+      },
+      "die": {
+        "scale": 0.3875968992248062,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              71,
+              105,
+              313,
+              256
+            ],
+            "source_bounds": [
+              41,
+              172,
+              662,
+              559
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              71,
+              154,
+              314,
+              257
+            ],
+            "source_bounds": [
+              770,
+              293,
+              1395,
+              556
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              71,
+              190,
+              312,
+              256
+            ],
+            "source_bounds": [
+              1509,
+              390,
+              2127,
+              558
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 2
+      }
+    },
+    "script": "/private/tmp/finish-flat-monsters.py"
+  }
+}

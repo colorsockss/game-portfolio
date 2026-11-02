@@ -1,0 +1,447 @@
+{
+  "actor": "goblin_archer",
+  "date": "2026-10-28",
+  "creator": "colorsocks",
+  "tool": "Codex image_gen",
+  "reference": {
+    "prompt": "Use case: stylized-concept\nAsset type: single transparent reference sprite for ordinary goblin archer in a 2D idle RPG.\nInput images: Image 1 is the approved goblin scout; preserve the species anatomy, head/body proportions, face, short limbs and contour weight. Create its archer variant with the following equipment changes.\nPrimary request: One small green goblin in a dark GREEN hood and short green tunic, holding a small wooden shortbow in the front/left hand with a plain brown quiver behind its shoulder. Remove the dagger completely. Face LEFT with the same blunt nose, tiny dot eyes, large green pointed ear and compact body as Image 1. No visible neck, very short legs, round brown boots. Front/left hand grips the bow at its CENTER grip. Other/right hand rests close to torso. Exactly two hands and two legs.\nBow construction: a simple wooden arc bulges toward screen LEFT, tips at top and bottom, thin cream bowstring is a straight line between those tips on the RIGHT side of the arc. Bow is shorter than torso-plus-head, not a giant longbow. Quiver is a plain small brown shape behind the back at screen-right, with two short arrow tails peeking out. No arrow nocked in idle pose. Keep a clear small transparent hole between bow and bowstring.\nStyle/medium: simple flat spot-color raster sprite matching Image 1; broad uniform shapes, minimal interior lines, low-rank ordinary enemy, readable at 48px body height.\nPalette: six colors only: #231B15 dark contour/eyes, #70AA4D skin, #3E6D42 hood/tunic, #815337 boots/quiver, #B98750 wooden bow, #E5D7B1 bowstring/arrow tails. No separate shade or highlight areas.\nComposition: one full body, LEFT-facing side view with the same mild three-quarter face as reference, neutral feet on same ground line, centered on square with generous margin.\nConstraints: true transparent background (do NOT copy reference white background); no gradient, texture, light, shadow or gloss; no text, no logo, no border, no ground shadow, no dagger, no fancy armor, no belts or buckles or extra pouches.",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-3cd32c80-1f46-4a35-9d65-472d1d93b8de.png"
+  },
+  "clips": [
+    {
+      "clip": "idle",
+      "count": 2,
+      "action": "breathing loop: 1 neutral stance from reference, both short legs grounded, bow relaxed angled at waist, empty drawing hand down; 2 torso settles slightly lower and wider with gentle breath, same feet and arm lengths.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation sprite strip of the SAME goblin archer as the input identity reference.\nStyle: exact same flat printed sticker art, broad dark organic contour, single uniform fill per material. Exactly six solid spot colors #231B15 outline, #70AA4D skin, #3E6D42 hood/tunic, #815337 boots/quiver, #B98750 wooden bow, #E5D7B1 string/arrows. No gradients, shadows, lighting, highlights or textures. Tiny dot eyes, huge green hood, blunt nose, one big ear, compact squat body, no neck and very short limbs. Ordinary low-rank enemy readable at 48px body height.\nFace LEFT every frame. Preserve identity, green hood tip, bow and quiver shapes and bow hand across frames. Bowstring visible thin light cream, transparent inside bow. Arrow tails only two in quiver, no embellishments.\nPrimary request: idle animation, EXACTLY 2 separate poses in ONE HORIZONTAL ROW. breathing loop: 1 neutral stance from reference, both short legs grounded, bow relaxed angled at waist, empty drawing hand down; 2 torso settles slightly lower and wider with gentle breath, same feet and arm lengths.\nComposition: wide landscape 2:1 canvas. Equal-width cells, identical camera scale and character size across all frames. Generous fully transparent gaps between figures and margins, no overlapping frames, no panel dividers, no labels. Entire body, bow and arrows visible in every frame. Ground baseline consistent except deliberate little hop. Truly transparent background including spaces between limbs. No text, watermark or ground shadow.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-ff84adef-e687-4a38-b44d-759785cf363c.png"
+    },
+    {
+      "clip": "walk",
+      "count": 4,
+      "action": "calm walking LEFT IN PLACE: 1 near boot forward on left and far boot back on right; 2 passing feet, body rises a little; 3 far boot forward left and near boot back right; 4 opposite passing feet. Exactly two short round boots, short legs. Clearly alternate legs; modest opposite empty-arm swing, bow stays same hand upright at waist and quiver stays on back. Not running.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation sprite strip of the SAME goblin archer as the input identity reference.\nStyle: exact same flat printed sticker art, broad dark organic contour, single uniform fill per material. Exactly six solid spot colors #231B15 outline, #70AA4D skin, #3E6D42 hood/tunic, #815337 boots/quiver, #B98750 wooden bow, #E5D7B1 string/arrows. No gradients, shadows, lighting, highlights or textures. Tiny dot eyes, huge green hood, blunt nose, one big ear, compact squat body, no neck and very short limbs. Ordinary low-rank enemy readable at 48px body height.\nFace LEFT every frame. Preserve identity, green hood tip, bow and quiver shapes and bow hand across frames. Bowstring visible thin light cream, transparent inside bow. Arrow tails only two in quiver, no embellishments.\nPrimary request: walk animation, EXACTLY 4 separate poses in ONE HORIZONTAL ROW. calm walking LEFT IN PLACE: 1 near boot forward on left and far boot back on right; 2 passing feet, body rises a little; 3 far boot forward left and near boot back right; 4 opposite passing feet. Exactly two short round boots, short legs. Clearly alternate legs; modest opposite empty-arm swing, bow stays same hand upright at waist and quiver stays on back. Not running.\nComposition: wide landscape 3:1 canvas. Equal-width cells, identical camera scale and character size across all frames. Generous fully transparent gaps between figures and margins, no overlapping frames, no panel dividers, no labels. Entire body, bow and arrows visible in every frame. Ground baseline consistent except deliberate little hop. Truly transparent background including spaces between limbs. No text, watermark or ground shadow.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-0590de0c-75c0-45ec-adfd-6d7ef7222514.png"
+    },
+    {
+      "clip": "enter",
+      "count": 2,
+      "action": "quick running LEFT IN PLACE: 1 compact eager small hop, near boot forward and far boot back, body leaning left a little; 2 landing with opposite short feet, little body bounce. Two short legs, two short arms; bow remains in same hand, quiver on back.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation sprite strip of the SAME goblin archer as the input identity reference.\nStyle: exact same flat printed sticker art, broad dark organic contour, single uniform fill per material. Exactly six solid spot colors #231B15 outline, #70AA4D skin, #3E6D42 hood/tunic, #815337 boots/quiver, #B98750 wooden bow, #E5D7B1 string/arrows. No gradients, shadows, lighting, highlights or textures. Tiny dot eyes, huge green hood, blunt nose, one big ear, compact squat body, no neck and very short limbs. Ordinary low-rank enemy readable at 48px body height.\nFace LEFT every frame. Preserve identity, green hood tip, bow and quiver shapes and bow hand across frames. Bowstring visible thin light cream, transparent inside bow. Arrow tails only two in quiver, no embellishments.\nPrimary request: enter animation, EXACTLY 2 separate poses in ONE HORIZONTAL ROW. quick running LEFT IN PLACE: 1 compact eager small hop, near boot forward and far boot back, body leaning left a little; 2 landing with opposite short feet, little body bounce. Two short legs, two short arms; bow remains in same hand, quiver on back.\nComposition: wide landscape 2:1 canvas. Equal-width cells, identical camera scale and character size across all frames. Generous fully transparent gaps between figures and margins, no overlapping frames, no panel dividers, no labels. Entire body, bow and arrows visible in every frame. Ground baseline consistent except deliberate little hop. Truly transparent background including spaces between limbs. No text, watermark or ground shadow.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-ec75d33f-721c-48bc-a1da-0d81438660c7.png"
+    },
+    {
+      "clip": "attack",
+      "count": 4,
+      "action": "shooting bow LEFT: 1 raise bow in left/front hand and bring right/drawing hand to the string; 2 left/front arm reaches gently left holding CENTER of bow, right hand draws string BACK to cheek on screen RIGHT, string becomes two taut diagonal lines converging at right hand, a short nocked arrow points LEFT; 3 RELEASE moment, arrow has just left and is ABSENT, bowstring returns straight, bow arm remains to LEFT and empty drawing hand recoils by cheek; 4 recover exactly reference neutral relaxed bow stance. Keep limbs SHORT. Bow arc convex to LEFT, string always on RIGHT, do not swap bow and drawing hands, no flying projectile.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation sprite strip of the SAME goblin archer as the input identity reference.\nStyle: exact same flat printed sticker art, broad dark organic contour, single uniform fill per material. Exactly six solid spot colors #231B15 outline, #70AA4D skin, #3E6D42 hood/tunic, #815337 boots/quiver, #B98750 wooden bow, #E5D7B1 string/arrows. No gradients, shadows, lighting, highlights or textures. Tiny dot eyes, huge green hood, blunt nose, one big ear, compact squat body, no neck and very short limbs. Ordinary low-rank enemy readable at 48px body height.\nFace LEFT every frame. Preserve identity, green hood tip, bow and quiver shapes and bow hand across frames. Bowstring visible thin light cream, transparent inside bow. Arrow tails only two in quiver, no embellishments.\nPrimary request: attack animation, EXACTLY 4 separate poses in ONE HORIZONTAL ROW. shooting bow LEFT: 1 raise bow in left/front hand and bring right/drawing hand to the string; 2 left/front arm reaches gently left holding CENTER of bow, right hand draws string BACK to cheek on screen RIGHT, string becomes two taut diagonal lines converging at right hand, a short nocked arrow points LEFT; 3 RELEASE moment, arrow has just left and is ABSENT, bowstring returns straight, bow arm remains to LEFT and empty drawing hand recoils by cheek; 4 recover exactly reference neutral relaxed bow stance. Keep limbs SHORT. Bow arc convex to LEFT, string always on RIGHT, do not swap bow and drawing hands, no flying projectile.\nComposition: wide landscape 3:1 canvas. Equal-width cells, identical camera scale and character size across all frames. Generous fully transparent gaps between figures and margins, no overlapping frames, no panel dividers, no labels. Entire body, bow and arrows visible in every frame. Ground baseline consistent except deliberate little hop. Truly transparent background including spaces between limbs. No text, watermark or ground shadow.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-131a5136-c3c4-40d2-b348-2e132def816a.png",
+      "correctionPrompt": "Use case: precise-object-edit\nReformat this goblin archer four-frame attack sheet ONLY by spacing. Preserve exactly all four poses, anatomy, bow/string/arrow, colors, identity and facing. The arrow in frame2 overlaps the horizontal footprint of frame1. Make all FOUR figures uniformly 15 percent smaller in the same wide canvas, centered in each of FOUR equal cells, leaving a generous completely empty transparent VERTICAL GAP between each whole figure including bows and arrows. Do not change individual poses or relative scale. EXACTLY four frames horizontally, true transparent background, no text, no grid, no shadows. Retain flat color style.",
+      "rejectedOriginalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-fd983536-0fef-47ba-b223-5d2899b79cc3.png"
+    },
+    {
+      "clip": "hit",
+      "count": 2,
+      "action": "hurt reaction: 1 recoil gently to screen RIGHT with squint eyes, shoulders leaning back, bow held securely same hand; 2 recover to neutral reference stance, normal dot eyes. Two short legs and two arms.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation sprite strip of the SAME goblin archer as the input identity reference.\nStyle: exact same flat printed sticker art, broad dark organic contour, single uniform fill per material. Exactly six solid spot colors #231B15 outline, #70AA4D skin, #3E6D42 hood/tunic, #815337 boots/quiver, #B98750 wooden bow, #E5D7B1 string/arrows. No gradients, shadows, lighting, highlights or textures. Tiny dot eyes, huge green hood, blunt nose, one big ear, compact squat body, no neck and very short limbs. Ordinary low-rank enemy readable at 48px body height.\nFace LEFT every frame. Preserve identity, green hood tip, bow and quiver shapes and bow hand across frames. Bowstring visible thin light cream, transparent inside bow. Arrow tails only two in quiver, no embellishments.\nPrimary request: hit animation, EXACTLY 2 separate poses in ONE HORIZONTAL ROW. hurt reaction: 1 recoil gently to screen RIGHT with squint eyes, shoulders leaning back, bow held securely same hand; 2 recover to neutral reference stance, normal dot eyes. Two short legs and two arms.\nComposition: wide landscape 2:1 canvas. Equal-width cells, identical camera scale and character size across all frames. Generous fully transparent gaps between figures and margins, no overlapping frames, no panel dividers, no labels. Entire body, bow and arrows visible in every frame. Ground baseline consistent except deliberate little hop. Truly transparent background including spaces between limbs. No text, watermark or ground shadow.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-db680a09-260f-4e03-af39-5b6ec3bb0d71.png"
+    },
+    {
+      "clip": "die",
+      "count": 3,
+      "action": "cartoon defeat: 1 standing stagger, small X eyes, body near normal height, bow same hand; 2 knees buckle and body tumbles toward ground; 3 lying on side along ground, tiny X eyes, short bow held beside body, quiver attached. No gore, no floating pieces; keep entire fallen character within last cell.",
+      "prompt": "Use case: stylized-concept\nAsset type: transparent 2D game animation sprite strip of the SAME goblin archer as the input identity reference.\nStyle: exact same flat printed sticker art, broad dark organic contour, single uniform fill per material. Exactly six solid spot colors #231B15 outline, #70AA4D skin, #3E6D42 hood/tunic, #815337 boots/quiver, #B98750 wooden bow, #E5D7B1 string/arrows. No gradients, shadows, lighting, highlights or textures. Tiny dot eyes, huge green hood, blunt nose, one big ear, compact squat body, no neck and very short limbs. Ordinary low-rank enemy readable at 48px body height.\nFace LEFT every frame. Preserve identity, green hood tip, bow and quiver shapes and bow hand across frames. Bowstring visible thin light cream, transparent inside bow. Arrow tails only two in quiver, no embellishments.\nPrimary request: die animation, EXACTLY 3 separate poses in ONE HORIZONTAL ROW. cartoon defeat: 1 standing stagger, small X eyes, body near normal height, bow same hand; 2 knees buckle and body tumbles toward ground; 3 lying on side along ground, tiny X eyes, short bow held beside body, quiver attached. No gore, no floating pieces; keep entire fallen character within last cell.\nComposition: wide landscape 3:1 canvas. Equal-width cells, identical camera scale and character size across all frames. Generous fully transparent gaps between figures and margins, no overlapping frames, no panel dividers, no labels. Entire body, bow and arrows visible in every frame. Ground baseline consistent except deliberate little hop. Truly transparent background including spaces between limbs. No text, watermark or ground shadow.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-f953e813-0921-4d6e-9411-c3ee22f0b8e4.png"
+    }
+  ],
+  "display_size": 0.75,
+  "postprocess_approval": "앞선 사용자 승인에 따라 Pillow로 색면 평탄화. 생성 원본과 알파 보존.",
+  "postprocess": {
+    "palette": [
+      "#231B15",
+      "#70AA4D",
+      "#3E6D42",
+      "#815337",
+      "#B98750",
+      "#E5D7B1"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 256,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 192,
+    "max_frame_width_px": 170,
+    "normalization": "클립마다 중립 기준 자세로 생성 줌을 맞추고 한 클립 안에는 공통 배율 사용. 걷기는 몸 높이 중간값으로 배율을 맞춤.",
+    "measurements": {
+      "idle": {
+        "scale": 0.2074688796680498,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              50,
+              41,
+              206,
+              192
+            ],
+            "source_bounds": [
+              85,
+              85,
+              838,
+              808
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              50,
+              47,
+              207,
+              192
+            ],
+            "source_bounds": [
+              941,
+              111,
+              1694,
+              808
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "walk": {
+        "scale": 0.3,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              53,
+              42,
+              203,
+              192
+            ],
+            "source_bounds": [
+              26,
+              120,
+              526,
+              619
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              53,
+              42,
+              202,
+              192
+            ],
+            "source_bounds": [
+              577,
+              117,
+              1072,
+              617
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              51,
+              42,
+              204,
+              192
+            ],
+            "source_bounds": [
+              1113,
+              118,
+              1621,
+              618
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              53,
+              42,
+              202,
+              192
+            ],
+            "source_bounds": [
+              1663,
+              114,
+              2159,
+              614
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "enter": {
+        "scale": 0.22189349112426035,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              49,
+              42,
+              207,
+              185
+            ],
+            "source_bounds": [
+              94,
+              103,
+              801,
+              743
+            ],
+            "hop_px": 8
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              51,
+              42,
+              206,
+              192
+            ],
+            "source_bounds": [
+              971,
+              104,
+              1672,
+              780
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "attack": {
+        "scale": 0.4065040650406504,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              57,
+              41,
+              200,
+              192
+            ],
+            "source_bounds": [
+              99,
+              163,
+              448,
+              532
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              47,
+              41,
+              207,
+              191
+            ],
+            "source_bounds": [
+              615,
+              163,
+              1007,
+              532
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              53,
+              41,
+              201,
+              192
+            ],
+            "source_bounds": [
+              1178,
+              163,
+              1542,
+              532
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              58,
+              41,
+              198,
+              192
+            ],
+            "source_bounds": [
+              1738,
+              163,
+              2084,
+              532
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "hit": {
+        "scale": 0.228310502283105,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              47,
+              52,
+              210,
+              193
+            ],
+            "source_bounds": [
+              151,
+              178,
+              860,
+              790
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              51,
+              42,
+              205,
+              193
+            ],
+            "source_bounds": [
+              1018,
+              125,
+              1692,
+              782
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      },
+      "die": {
+        "scale": 0.2835538752362949,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              51,
+              42,
+              206,
+              192
+            ],
+            "source_bounds": [
+              79,
+              118,
+              626,
+              647
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              55,
+              52,
+              200,
+              192
+            ],
+            "source_bounds": [
+              792,
+              153,
+              1301,
+              647
+            ],
+            "hop_px": 0
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              44,
+              84,
+              212,
+              192
+            ],
+            "source_bounds": [
+              1497,
+              266,
+              2089,
+              647
+            ],
+            "hop_px": 0
+          }
+        ],
+        "palette_count_before_resize": 6
+      }
+    },
+    "script": "/private/tmp/finish-archer-hero.py"
+  },
+  "verification": {
+    "unity": "6000.6.0f1",
+    "date": "2026-10-28",
+    "observed_frames": [
+      "goblin_archer_attack_0",
+      "goblin_archer_attack_1",
+      "goblin_archer_attack_2",
+      "goblin_archer_attack_3",
+      "goblin_archer_die_0",
+      "goblin_archer_die_1",
+      "goblin_archer_die_2",
+      "goblin_archer_hit_0",
+      "goblin_archer_hit_1",
+      "goblin_archer_idle_0",
+      "goblin_archer_idle_1",
+      "goblin_archer_walk_0",
+      "goblin_archer_walk_1",
+      "goblin_archer_walk_2",
+      "goblin_archer_walk_3"
+    ],
+    "runtime_note": "실제 전투. 이번 검증 실행에서만 튜토리얼 가림을 비활성화.",
+    "asset_frames_valid": true,
+    "attack_impact_index": 2,
+    "typecheck": "passed",
+    "tests": "passed",
+    "client_build": "passed",
+    "server_build": "passed",
+    "enter_note": "걷기 클립이 있어 실제 이동에는 enter를 재생하지 않음. 두 프레임은 에셋 참조와 미리보기로 확인."
+  },
+  "orientation": {
+    "source_generation": "left",
+    "final": "right",
+    "method": "각 정사각 프레임 내부만 수평 반전. 프레임 순서·알파·RGB 값을 그대로 유지.",
+    "previous_final": "idle/art/source/actors/goblin_archer/before-right-facing-2026-10-28",
+    "runtime": "ActorView.Setup의 facing < 0이면 SpriteRenderer.flipX = true"
+  },
+  "direction_verification": {
+    "observed_in_battle": [
+      "goblin_archer_attack_0:True",
+      "goblin_archer_attack_1:True",
+      "goblin_archer_attack_2:True",
+      "goblin_archer_attack_3:True",
+      "goblin_archer_die_0:True",
+      "goblin_archer_die_1:True",
+      "goblin_archer_die_2:True",
+      "goblin_archer_hit_0:True",
+      "goblin_archer_hit_1:True",
+      "goblin_archer_idle_0:True",
+      "goblin_archer_idle_1:True",
+      "goblin_archer_walk_0:True",
+      "goblin_archer_walk_1:True",
+      "goblin_archer_walk_2:True",
+      "goblin_archer_walk_3:True"
+    ],
+    "reused_actor_both_directions": true,
+    "ui_not_mirrored": true,
+    "typecheck": "passed",
+    "tests": "passed",
+    "client_build": "passed",
+    "unity_console_errors": 0
+  }
+}

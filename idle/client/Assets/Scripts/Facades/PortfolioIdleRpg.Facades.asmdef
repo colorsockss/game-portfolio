@@ -1,0 +1,22 @@
+{
+    "name": "PortfolioIdleRpg.Facades",
+    "rootNamespace": "PortfolioIdleRpg.Facades",
+    "references": [
+        "PortfolioIdleRpg.Views",
+        "com.tencent.puerts.core",
+        "Unity.TextMeshPro",
+        "Unity.InputSystem",
+        "UnityEngine.UI",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

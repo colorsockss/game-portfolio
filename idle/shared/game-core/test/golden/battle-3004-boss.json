@@ -1,0 +1,125 @@
+{
+  "events": "320224d43cf9c46ffc111101180cb9c047f9ed28217046c69ab791638f278c4f",
+  "effects": {
+    "effectApply 4002": 56,
+    "effectEnd 4002 expire": 19,
+    "effectApply 4003": 8,
+    "effectEnd 4003 expire": 8,
+    "effectApply 4005": 1,
+    "effectApply 4008": 1,
+    "effectApply 4009": 1,
+    "effectEnd 4009 expire": 1,
+    "effectEnd 4008 break": 1,
+    "effectApply 4001": 5,
+    "effectEnd 4001 expire": 4
+  },
+  "lastBoundary": {
+    "tick": 5971,
+    "player": {
+      "battle": {
+        "mode": 0,
+        "at": 1597100,
+        "rng": 469403350,
+        "hero": {
+          "hp": {
+            "m": 1.5790000000000026,
+            "e": 3
+          },
+          "cooldowns": [
+            10,
+            35,
+            33,
+            39
+          ],
+          "effects": [],
+          "x": 0
+        },
+        "summons": [
+          {
+            "hp": {
+              "m": 8.25,
+              "e": 2
+            },
+            "cooldowns": [
+              5
+            ],
+            "effects": [],
+            "x": 0,
+            "id": 478,
+            "summonId": 6001,
+            "by": 0,
+            "ticksLeft": 86
+          },
+          {
+            "hp": {
+              "m": 8.61,
+              "e": 2
+            },
+            "cooldowns": [
+              5
+            ],
+            "effects": [],
+            "x": 0,
+            "id": 487,
+            "summonId": 6001,
+            "by": 0,
+            "ticksLeft": 188
+          }
+        ],
+        "waves": 3,
+        "autoBoss": false,
+        "nextId": 494,
+        "enemies": [],
+        "projectiles": [],
+        "wave": null,
+        "bossTicksLeft": null,
+        "reviveTicksLeft": null
+      },
+      "stage": {
+        "currentId": 3004,
+        "clearedIds": [
+          3001,
+          3002,
+          3003
+        ]
+      },
+      "profile": {
+        "loginId": "golden",
+        "level": 20
+      },
+      "items": {
+        "1": {
+          "m": 7.366,
+          "e": 3
+        },
+        "2": {
+          "m": 3.181,
+          "e": 3
+        }
+      },
+      "equipment": {
+        "nextId": 1,
+        "owned": {},
+        "equipped": {}
+      },
+      "statUpgrades": {},
+      "skills": {
+        "equipped": {
+          "0": 1004,
+          "1": 1005,
+          "2": 1011
+        },
+        "levels": {
+          "1004": 1,
+          "1005": 1,
+          "1011": 1
+        }
+      },
+      "rebirth": {
+        "count": 0,
+        "points": 0
+      }
+    }
+  },
+  "signature": "[1600000,3004,[3001,3002,3003],20,{},{},[[1001,1],[1004,1],[1005,1],[1011,1]],0,0,1037297823,[1.5790000000000026,3],[10,7,5,11],[],4.950000000000002,3,false,497,null,null,[28,3],[[478,null,false,[8.12,2],[6],0,[],5.200000000000002,[0,6001,57]],[487,null,false,[8.61,2],[6],0,[],5.200000000000002,[0,6001,159]]],[[496,2006,false,[2.4,2],[7,52],0,[],8.120000000000008,null]],[]]"
+}

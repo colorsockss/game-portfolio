@@ -1,0 +1,560 @@
+{
+  "tool": "Codex image_gen",
+  "author": "colorsocks",
+  "reference": {
+    "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nAsset type: corrected hero reference sprite\nInput images: Image 1 is the character to preserve. Image 2 shows the desired VERY SHORT chunky arm proportions.\nPrimary request: move the sword into the character's ANATOMICAL RIGHT HAND and keep BOTH short arms and BOTH hands clearly visible.\nThe right arm is on the VIEWER'S LEFT, below the large near shoulder. Keep this arm short, as in Image 1: one small shoulder cap, ONE tiny sleeve/cuff, then a mitten hand close to the near hip, on the LEFT HALF of the belly. Do NOT extend the arm across the torso. No long forearm, no extra armor segments.\nThe right hand holds the sword in a LOW READY GUARD: hilt just in front of the near hip, blade extending to the RIGHT with only a shallow upward angle, across the lower chest and clear of the face. The short sword's tip stays below chin level. The blade points right; the ARM does not reach far to the right.\nThe LEFT arm on the VIEWER'S RIGHT stays short and visible, with its EMPTY mitten fist visible beside the far waist. Its hand must not touch the hilt or blade. Exactly TWO separate visible hands, one holding the sword and one empty. Both elbows stay close to the body.\nPreserve the exact existing hair, head, face, blue tunic, red scarf, boots, chunky proportions, thick black outline, simple flat shading and right-facing three-quarter stance. Whole character visible, transparent background, no effects or ground shadow.",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-c04b7b19-1207-480c-a9b9-913c05fa0b82.png",
+    "source": "reference.png"
+  },
+  "clips": [
+    {
+      "key": "idle",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact corrected hero. Preserve its design, big head, short stubby limbs, two visible hands, simple cartoon drawing, blue tunic, red scarf, brown hair and small gray armor.\nHand ownership stays FIXED: the NEAR anatomical RIGHT arm is on the VIEWER'S LEFT and holds the sword. The FAR anatomical LEFT arm is on the VIEWER'S RIGHT and has an EMPTY VISIBLE MITTEN HAND. BOTH arms and BOTH hands remain clearly visible in every pose. Never exchange the sword between hands.\nArm proportions: match the reference's tiny arms. Each is just one shoulder cap, one short cuff, one mitten, close to the body. No long forearms, no new armor segments, no stretching an arm across the whole body. In neutral stance the RIGHT sword fist stays near the viewer-left hip and the short blade crosses diagonally up-right below the chin. The LEFT empty fist stays visible beside the viewer-right waist, separate from the sword.\nComposition: one horizontal row of equal-width square cells, generous transparent gaps, same scale throughout, body centered in each cell, common boot baseline except falling. Full sword inside its cell. Stand at about 60% of cell height. Match the same three-quarter RIGHT-facing view. Transparent background; no labels, borders, ground shadow or extra effects.\n\nPrimary request: exactly TWO breathing IDLE frames. Frame 1 matches Image 1's pose. Frame 2 has a subtle 3% downward breath and slightly wider torso. BOTH tiny arms stay close to the waist. Near RIGHT hand stays at the viewer-left hip gripping the sword, far LEFT empty hand stays visible at the viewer-right waist. Preserve the same low sword angle and constant blade length in both frames. No arm extension or hand swap. 2:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-f6640eb2-4dfd-4d1a-907d-37f00741f5da.png",
+      "source": "idle.png",
+      "final": "../../../actors/hero/idle.png"
+    },
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nInput images: Image 1 is a four-frame transparent walking sprite sheet.\nPrimary request: Correct the BOOT DEPTH AND SHADING of the THIRD character only, leaving the rest of the image unchanged.\nOn character THREE, the big boot extending LEFT is the NEAR leg: give that left boot the light brown front-facing plane and lighter toe highlight. The boot extending RIGHT is the FAR leg: make that entire right boot deep dark brown with NO light toe patch or highlight, visibly behind the near shin. The near leftward shin overlaps across the top of the dark far rightward shin. This third character must have a LIGHT left boot and DARK right boot, the opposite of character ONE's dark left boot and light right boot.\nKeep the same short stubby leg lengths and foot baseline. Do not alter the other three characters. Do not alter any head, hair, eyes, scarf, body, arm, hand or sword. Same transparent background, four frames in one row, no text or grid.",
+      "originalPath": "~/.codex/generated_images/01a1678e-1918-7212-b32e-3253414d9be4/exec-dd8f56f6-10ad-44e2-a01d-1ae2c1661243.png",
+      "source": "walk.png",
+      "final": "../../../actors/hero/walk.png",
+      "referenceImages": [
+        "rejected/walk-03-contact-boot-depth.png"
+      ]
+    },
+    {
+      "key": "attack",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nAsset type: four-frame sword attack sprite strip\nInput images: Image 1 is the edit target.\nPrimary request: correct ONLY the THIRD frame's sword-swing biomechanics. Preserve frames 1, 2 and 4.\nTHIRD frame: rotate the hero's TORSO and SHOULDERS slightly toward the attack direction, image-RIGHT, changing the view from frontal three-quarter to a more side-on three-quarter. The hips and head follow the turn slightly. His anatomical RIGHT shoulder advances and his RIGHT sword hand moves FORWARD to the right, naturally extending the short arm. Blade horizontal to the right at the moment of impact. Body leans into the strike slightly.\nSimultaneously, his LEFT shoulder and LEFT hand swing BACKWARD, away from the strike, and are OCCLUDED BEHIND THE TORSO. In this impact frame the left hand must NOT be visible. This is natural occlusion caused by body rotation, not deleting an arm. Remove the current empty fist at viewer-right waist in frame 3. The near RIGHT arm must visibly connect to the sword grip. Keep anatomical arm length unchanged; use torso rotation and shoulder movement rather than stretching the arm.\nKeep the tiny limbs, head size, brown hair, red scarf, blue tunic, boots, blade size, outline, colors, scale and ground baseline. Same short sword stays in the same RIGHT hand across all four frames. The LEFT empty hand remains visible in unchanged frames 1, 2 and 4. At frame 4 return to original three-quarter low guard. Four isolated frames in one horizontal row with ample transparent gaps; no text, no effects, transparent background.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-e2e6b603-bf49-4b76-8d4a-11973c02e349.png",
+      "source": "attack.png",
+      "final": "../../../actors/hero/attack.png"
+    },
+    {
+      "key": "cast",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nAsset type: four-frame casting animation strip\nInput images: Image 1 is the edit target.\nPrimary request: fix only the canvas margins and spacing. The first hero's scarf is cropped at the left image boundary. Restore its complete pointed scarf tip and give every frame ample transparent space on BOTH sides.\nKeep all FOUR poses, sword in the near RIGHT hand at the viewer-left hip, spell in the far LEFT hand on viewer-right, both short arms, faces, outfits, colors, drawing style and spell sequence exactly the same.\nUniformly reduce all four whole figures and their effects by approximately 10% to make transparent padding around the sheet and gaps between cells. Do not change relative sizes or individual parts. Nothing may touch the canvas edge or the neighboring frame. One horizontal row of four frames, transparent background, no text or grid.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-377d5870-ad1a-4531-8b3e-57fa4443bb9a.png",
+      "source": "cast.png",
+      "final": "../../../actors/hero/cast.png"
+    },
+    {
+      "key": "hit",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact corrected hero. Preserve its design, big head, short stubby limbs, two visible hands, simple cartoon drawing, blue tunic, red scarf, brown hair and small gray armor.\nHand ownership stays FIXED: the NEAR anatomical RIGHT arm is on the VIEWER'S LEFT and holds the sword. The FAR anatomical LEFT arm is on the VIEWER'S RIGHT and has an EMPTY VISIBLE MITTEN HAND. BOTH arms and BOTH hands remain clearly visible in every pose. Never exchange the sword between hands.\nArm proportions: match the reference's tiny arms. Each is just one shoulder cap, one short cuff, one mitten, close to the body. No long forearms, no new armor segments, no stretching an arm across the whole body. In neutral stance the RIGHT sword fist stays near the viewer-left hip and the short blade crosses diagonally up-right below the chin. The LEFT empty fist stays visible beside the viewer-right waist, separate from the sword.\nComposition: one horizontal row of equal-width square cells, generous transparent gaps, same scale throughout, body centered in each cell, common boot baseline except falling. Full sword inside its cell. Stand at about 60% of cell height. Match the same three-quarter RIGHT-facing view. Transparent background; no labels, borders, ground shadow or extra effects.\n\nPrimary request: exactly TWO HIT reaction frames. Frame 1 recoils backward to image-left with a wince and squeezed-shut eyes, knees slightly bent, both boots planted. Frame 2 recovers to the upright reference stance.\nKeep the short NEAR RIGHT ARM holding the sword near the viewer-left hip in both frames; the low-guard blade follows the body's recoil, aimed generally to image-right below the face. Keep the empty LEFT mitten visible at the viewer-right waist in both frames. Do not swap hands or lengthen either arm. Exactly two short arms and two hands, one sword. No impact stars, blood or effects. 2:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-f818880e-b1ce-429f-94fe-d63855d85b0b.png",
+      "source": "hit.png",
+      "final": "../../../actors/hero/hit.png"
+    },
+    {
+      "key": "die",
+      "count": 3,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact corrected hero. Preserve its design, big head, short stubby limbs, two visible hands, simple cartoon drawing, blue tunic, red scarf, brown hair and small gray armor.\nHand ownership stays FIXED: the NEAR anatomical RIGHT arm is on the VIEWER'S LEFT and holds the sword. The FAR anatomical LEFT arm is on the VIEWER'S RIGHT and has an EMPTY VISIBLE MITTEN HAND. BOTH arms and BOTH hands remain clearly visible in every pose. Never exchange the sword between hands.\nArm proportions: match the reference's tiny arms. Each is just one shoulder cap, one short cuff, one mitten, close to the body. No long forearms, no new armor segments, no stretching an arm across the whole body. In neutral stance the RIGHT sword fist stays near the viewer-left hip and the short blade crosses diagonally up-right below the chin. The LEFT empty fist stays visible beside the viewer-right waist, separate from the sword.\nComposition: one horizontal row of equal-width square cells, generous transparent gaps, same scale throughout, body centered in each cell, common boot baseline except falling. Full sword inside its cell. Stand at about 60% of cell height. Match the same three-quarter RIGHT-facing view. Transparent background; no labels, borders, ground shadow or extra effects.\n\nPrimary request: exactly THREE defeated frames. Frame 1 staggers with bent knees and drooping head, curved closed eyes. Frame 2 collapses toward image-right onto one knee. Frame 3 lies flat horizontally, boots to image-left and head to image-right, eyes closed.\nThe anatomical RIGHT arm, nearest the viewer, keeps holding the sword in ALL frames. Keep the same SHORT upper arm and short cuff, no arm stretch. In frame 1 right fist remains near the viewer-left hip, blade lowers gently right; the empty LEFT hand is visible at the far waist. In frame 2 the empty LEFT hand reaches down briefly to brace, while RIGHT hand keeps the sword. In frame 3 the near RIGHT hand and sword rest on the ground in front of the chest, with the sword pointing right. For this fully prone pose only, the far LEFT arm may be naturally occluded by the body; do not force an extra hand into view.\nSame physical body and head size in all three poses, no enlarging the prone pose. One sword, constant length, never swap it to the other hand. All bodies contact the same ground line. No blood, X eyes, stars, or effects. 3:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-a2a365f4-c11a-49f5-b25f-a08e7f7c965d.png",
+      "source": "die.png",
+      "final": "../../../actors/hero/die.png"
+    }
+  ],
+  "rejected": [
+    {
+      "key": "attack",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact corrected hero. Preserve its design, big head, short stubby limbs, two visible hands, simple cartoon drawing, blue tunic, red scarf, brown hair and small gray armor.\nHand ownership stays FIXED: the NEAR anatomical RIGHT arm is on the VIEWER'S LEFT and holds the sword. The FAR anatomical LEFT arm is on the VIEWER'S RIGHT and has an EMPTY VISIBLE MITTEN HAND. BOTH arms and BOTH hands remain clearly visible in every pose. Never exchange the sword between hands.\nArm proportions: match the reference's tiny arms. Each is just one shoulder cap, one short cuff, one mitten, close to the body. No long forearms, no new armor segments, no stretching an arm across the whole body. In neutral stance the RIGHT sword fist stays near the viewer-left hip and the short blade crosses diagonally up-right below the chin. The LEFT empty fist stays visible beside the viewer-right waist, separate from the sword.\nComposition: one horizontal row of equal-width square cells, generous transparent gaps, same scale throughout, body centered in each cell, common boot baseline except falling. Full sword inside its cell. Stand at about 60% of cell height. Match the same three-quarter RIGHT-facing view. Transparent background; no labels, borders, ground shadow or extra effects.\n\nPrimary request: exactly FOUR sword-slash frames. Frame 1: the short NEAR RIGHT arm lifts the sword beside the viewer-left shoulder, windup. Frame 2: deeper windup with bent knees, same short arm beside the head. Frame 3: actual hit; that SAME right arm swings forward only as far as the MIDDLE of the torso, and the blade points horizontally RIGHT at full extension. The hand is near body center, never far beyond the viewer-right shoulder. Extend the short arm only to its natural length: shoulder plus one tiny cuff plus mitten. Frame 4: return to Image 1's low guard, right fist close to viewer-left hip and blade angled slightly up-right.\nThe FAR LEFT EMPTY FIST is clearly visible at the viewer-right waist in ALL FOUR frames, below the sword path, attached to its own very short arm. Do not hide or delete it. Two arms, two hands, one sword in every frame.\nKeep identical blade length, same squat body, stable head size, and no long arm or additional armor sections. All blade tips fit within cells; third-frame tip within 75% of body height from torso center. No slash trails. 4:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-8ccd684c-466c-4a1a-b5e2-947302cbb959.png"
+    },
+    {
+      "key": "attack",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nInput images: Image 1 is the attack strip to edit. Image 2 is the reference for tiny arm length.\nPrimary request: ONLY correct the right sword arm in frames ONE and TWO. It is too long. Shorten it strongly and BEND THE ELBOW TIGHTLY, bringing the sword fist close beside the lower viewer-left cheek. The fist should almost touch that cheek. The sword points up beside the head, but the arm is folded, not stretched diagonally outward.\nThe shoulder cap is beside the neck; the mitten fist is immediately above that shoulder cap; one tiny bent cuff connects them. Eliminate the long bare middle arm section. Shoulder-to-fist reach should be only about ONE MITTEN diameter, NOT a long straight line.\nKeep the sword itself the same size. Preserve frames 3 and 4 unchanged. Preserve the two visible hands in every frame, the EMPTY LEFT FIST at viewer-right waist, all faces, hair, clothes, colors, thick outline, head sizes, frame spacing and common feet baseline. Do not mirror. Four frames in one row, transparent background, no text.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-3bea17bb-5ae4-49b6-b4f5-e51f8ea55684.png"
+    },
+    {
+      "key": "cast",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact corrected hero. Preserve its design, big head, short stubby limbs, two visible hands, simple cartoon drawing, blue tunic, red scarf, brown hair and small gray armor.\nHand ownership stays FIXED: the NEAR anatomical RIGHT arm is on the VIEWER'S LEFT and holds the sword. The FAR anatomical LEFT arm is on the VIEWER'S RIGHT and has an EMPTY VISIBLE MITTEN HAND. BOTH arms and BOTH hands remain clearly visible in every pose. Never exchange the sword between hands.\nArm proportions: match the reference's tiny arms. Each is just one shoulder cap, one short cuff, one mitten, close to the body. No long forearms, no new armor segments, no stretching an arm across the whole body. In neutral stance the RIGHT sword fist stays near the viewer-left hip and the short blade crosses diagonally up-right below the chin. The LEFT empty fist stays visible beside the viewer-right waist, separate from the sword.\nComposition: one horizontal row of equal-width square cells, generous transparent gaps, same scale throughout, body centered in each cell, common boot baseline except falling. Full sword inside its cell. Stand at about 60% of cell height. Match the same three-quarter RIGHT-facing view. Transparent background; no labels, borders, ground shadow or extra effects.\n\nPrimary request: exactly FOUR CAST spell frames. In every frame the near anatomical RIGHT hand holds the sword close to the viewer-left hip; this right arm stays tiny and bent like Image 1. In frames 1-3 the blade is lowered gently down-right at waist level.\nFrame 1: far LEFT hand on viewer-right opens beside the far shoulder and gathers a small cyan light above its palm. Its elbow stays bent close to the body.\nFrame 2: eyes close, light grows above that same LEFT palm, RIGHT sword grip unchanged.\nFrame 3: compact pale cyan starburst from the LEFT palm toward the right, RIGHT sword grip unchanged.\nFrame 4: magic disappears; LEFT hand returns to its visible empty fist beside the far waist; RIGHT hand raises blade to Image 1's low guard.\nBOTH hands are visible here because both are actively used. Two short arms, one sword, no hand swap or stretched forearm. Same sword length and head size across all four cells. Spell is small and beside palm, no huge aura. 4:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-5f38f4a6-4fc0-433b-8131-77f1622ad8b7.png"
+    },
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view sprite animation strip for a mobile idle RPG battle\nInput images: Image 1 is the exact existing hero character reference. Image 2 is the existing two-frame idle sprite strip, for matching the simple drawing and character proportions, NOT the requested number of frames.\nPrimary request: Create ONLY a calm four-frame WALK cycle in place, facing right, for this exact young knight. Keep the reference's oversized head, very short stubby limbs, brown hair, two black oval eyes, blue tunic, red scarf, little gray shoulder armor and brown boots. Match the reference's bold black cartoon outlines and simple flat color shapes. The reference proportions take precedence over the generic head-size style note.\nAnimation, from left to right:\nFrame 1: contact pose, NEAR right foot stepped forward toward screen-right and touching the ground, FAR left foot back toward screen-left.\nFrame 2: passing pose, near right foot supports the body under the hip; far left knee bends slightly and the far foot lifts past it. The torso and head rise slightly.\nFrame 3: opposite contact pose, FAR left foot forward toward screen-right and touching the ground, NEAR right foot back toward screen-left. This is the opposite leg to frame 1.\nFrame 4: opposite passing pose, far left foot supports the body under the hip; near right knee bends slightly and the near foot lifts past it. The torso and head rise slightly. This loops smoothly into frame 1.\nHand ownership and proportions: The sword is held throughout by the NEAR anatomical RIGHT hand, located on the VIEWER'S LEFT side of the torso exactly as in the reference. Keep that upper arm and forearm short, bent close to the hip; the same mitten grips the brown sword handle. Keep the blade in the same relaxed low guard, diagonally up-right across the lower chest, below the chin. The FAR anatomical LEFT hand on the VIEWER'S RIGHT is empty and swings gently with walking. Do not swap hands, stretch arms or change the sword shape. The torso and head stay in the same right-facing three-quarter side view as the reference, with only subtle walking bob, not a fighting twist.\nComposition/framing: exactly FOUR distinct full-body frames, all four visible in one horizontal row, equal-width cells with generous transparent gutters. Same character scale, head size and camera in every frame. Planted feet share one flat ground baseline. Short calm steps; no running, no jumping. The hero stays in place horizontally. Keep every hair tip, scarf, boot and sword fully inside its own cell with generous margins. No overlap between frames.\nConstraints: actual transparent RGBA background; no frame borders, no grid lines, no ground shadow, no scene, no effects.",
+      "originalPath": "~/.codex/generated_images/01a1678e-1918-7212-b32e-3253414d9be4/exec-88c977c1-b105-4e33-9b58-2a58dbcf0034.png",
+      "source": "rejected/walk-01-repeated-steps.png",
+      "reason": "1·3번째와 2·4번째의 다리 자세가 반복됨",
+      "referenceImages": [
+        "reference.png",
+        "../../../actors/hero/idle.png"
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nAsset type: four-frame 2D walking sprite strip\nInput images: Image 1 is the existing four-frame walking strip to edit.\nPrimary request: Fix ONLY the LEG POSES in frames 3 and 4 to produce the opposite half of a four-beat walk. The current image mistakenly duplicates frame 1 in frame 3 and frame 2 in frame 4. Keep frames 1 and 2 unchanged. Keep all four heads, torsos, hands, swords, scarves and their positions unchanged.\nRequired corrected frame 3 (third character from left): same low contact height, but REVERSE the legs. The NEAR anatomical RIGHT leg with the lighter broad brown boot must sweep BACK toward screen-LEFT; the FAR anatomical LEFT leg with the darker narrow brown boot must reach FORWARD toward screen-RIGHT. Show the near shin overlapping IN FRONT of the far shin, clearly different from frame 1. The near boot is at the LEFT rear, pointing right but lifted at the heel; the far boot is at the RIGHT front, grounded on its heel. Short stubby legs.\nRequired corrected frame 4 (rightmost character): opposite passing pose. The FAR darker LEFT boot is the straight weight-bearing leg under the body, planted on the baseline. The NEAR lighter RIGHT boot bends and lifts FORWARD to screen-RIGHT, clearly visible in FRONT of the planted leg, with a transparent gap beneath this lifted boot. This must differ from frame 2, whose near boot is planted and whose far boot passes behind.\nInvariants: SAME right-facing three-quarter view, SAME tiny short arms, sword always held in the same near RIGHT hand on viewer-left, far LEFT empty hand on viewer-right. Same scale and head size, unchanged outlines and flat shading, four full characters in a horizontal row. Preserve current body bob and common planted-foot baseline. Real transparent background. No text, numbers, labels, borders, floor or shadows.",
+      "originalPath": "~/.codex/generated_images/01a1678e-1918-7212-b32e-3253414d9be4/exec-76afb99a-5c13-4044-9804-ed58f1aed45d.png",
+      "source": "rejected/walk-02-contact-leg-overlap.png",
+      "reason": "3번째 접지 자세에서 반대쪽 다리의 겹침이 불명확함",
+      "referenceImages": [
+        "rejected/walk-01-repeated-steps.png"
+      ]
+    },
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nAsset type: transparent four-frame walk animation\nInput images: Image 1 is the strip to edit.\nPrimary request: Change ONLY the two legs of the THIRD character from the left. Keep every pixel of the other three characters and all upper bodies visually unchanged. The third character's feet still copy the first character's feet, and need to represent the opposite step.\nFor the THIRD character ONLY: put the BROAD LIGHT-BROWN NEAR BOOT on the LEFT side, swept back toward screen-left, clearly large and visible. Put the SMALLER DARK-BROWN FAR BOOT on the RIGHT side, reaching forward and touching the ground, partly occluded at its top by the near leg. The near shin must run DIAGONALLY DOWN-LEFT IN FRONT OF the far shin. The lighter boot must be on the LEFT and the darker boot on the RIGHT in this third character. Reverse the brown shading ownership and leg overlap compared with the first character. Preserve exactly the same short cartoon leg lengths. Keep both planted-foot contact level and body height unchanged.\nPreserve: all four heads and faces, small arms, sword in near right hand at viewer-left hip, empty left hand on viewer-right, blue tunic, scarf, rightward facing direction, image dimensions, spacing, outlines, alpha transparency. Four frames in one row. No text, borders, marks, effects or shadow.",
+      "originalPath": "~/.codex/generated_images/01a1678e-1918-7212-b32e-3253414d9be4/exec-f8f270eb-1ac0-462e-93b2-ddbabf90d73d.png",
+      "source": "rejected/walk-03-contact-boot-depth.png",
+      "reason": "3번째 접지 자세에서 앞뒤 부츠의 명암 구분이 불명확함",
+      "referenceImages": [
+        "rejected/walk-02-contact-leg-overlap.png"
+      ]
+    }
+  ],
+  "history": [
+    "rejected/handedness-v1/prompts.json",
+    "rejected/handedness-v2/prompts.json"
+  ],
+  "revisionNotes": [
+    "오른손의 검 소유를 모든 클립에 고정합니다.",
+    "양팔은 짧게 유지하며 대기·복귀에서 왼손이 보입니다.",
+    "공격 3번째 프레임은 몸을 오른쪽으로 돌려 오른손을 내밀고 왼팔은 몸 뒤로 가립니다."
+  ],
+  "styleReference": "style-reference.png",
+  "conceptReference": "concept-reference.png",
+  "postprocess": {
+    "runtime": "~/.venvs/art (Pillow 11.3.0)",
+    "scriptLocation": "/private/tmp/finish-idle-hero.py",
+    "notes": [
+      "원본 PNG와 생성 알파를 보존했습니다. 알파 16을 기준으로 실루엣을 찾아 분리하고 외곽의 원래 알파도 포함했습니다.",
+      "클립별 생성 줌 차이는 중립 자세(대기 1, 공격 4, 시전 4, 피격 2)의 몸 높이를 768로 환산해 통일했습니다. 사망 시트는 대기 시트와 셀 해상도 비율로 맞췄습니다. 이후 하나의 공통 배율을 적용했고 같은 클립의 프레임별 크기는 따로 조절하지 않았습니다.",
+      "대기 첫 프레임의 머리부터 발끝까지 높이는 150픽셀입니다. 몸 중심은 x=128, 서 있는 프레임의 발끝은 y=192입니다.",
+      "사망 프레임은 넘어진 몸이 같은 바닥 줄에 닿도록 정렬했습니다.",
+      "RGBA는 premultiplied-alpha LANCZOS로 축소했습니다. 캐릭터 내부의 색과 알파를 다시 칠하지 않았습니다.",
+      "시안과 달랐던 초기 기준·대기, 검이 셀 범위를 벗어났던 공격 원본은 rejected/에 보존했습니다.",
+      "손 교정 전 전체 원본은 rejected/handedness-v1/, 팔이 길고 왼손이 가려졌던 중간 수정은 rejected/handedness-v2/에 보존했습니다.",
+      "검은 모든 동작에서 오른손이 잡습니다. 대기·복귀에서 왼손이 보이고, 공격 3번째 프레임은 몸이 오른쪽으로 회전하며 왼팔이 몸 뒤로 가려집니다."
+    ],
+    "measurements": {
+      "normalizedStandingBodyHeight": 768,
+      "commonScale": 0.1953125,
+      "clips": {
+        "idle": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "generationZoomNormalization": 1,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                75,
+                56,
+                797,
+                824
+              ],
+              "bodyCenterX": 503,
+              "groundY": 824,
+              "finalBounds": [
+                44,
+                42,
+                185,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                915,
+                87,
+                1668,
+                828
+              ],
+              "bodyCenterX": 1360,
+              "groundY": 828,
+              "finalBounds": [
+                41,
+                47,
+                188,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "attack": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "generationZoomNormalization": 1.424860853432282,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                10,
+                85,
+                505,
+                624
+              ],
+              "bodyCenterX": 281.5,
+              "groundY": 624,
+              "finalBounds": [
+                52,
+                41,
+                190,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                562,
+                111,
+                1086,
+                624
+              ],
+              "bodyCenterX": 836,
+              "groundY": 624,
+              "finalBounds": [
+                51,
+                49,
+                197,
+                192
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1090,
+                103,
+                1682,
+                625
+              ],
+              "bodyCenterX": 1300.5,
+              "groundY": 625,
+              "finalBounds": [
+                69,
+                46,
+                234,
+                192
+              ]
+            },
+            {
+              "frame": 4,
+              "sourceBounds": [
+                1649,
+                85,
+                2145,
+                624
+              ],
+              "bodyCenterX": 1938.5,
+              "groundY": 624,
+              "finalBounds": [
+                47,
+                41,
+                186,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            1024,
+            256
+          ]
+        },
+        "cast": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "generationZoomNormalization": 1.8461538461538463,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                66,
+                141,
+                478,
+                555
+              ],
+              "bodyCenterX": 284,
+              "groundY": 555,
+              "finalBounds": [
+                49,
+                42,
+                198,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                605,
+                141,
+                1047,
+                555
+              ],
+              "bodyCenterX": 816.5,
+              "groundY": 555,
+              "finalBounds": [
+                51,
+                42,
+                211,
+                192
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1139,
+                140,
+                1649,
+                555
+              ],
+              "bodyCenterX": 1353.5,
+              "groundY": 555,
+              "finalBounds": [
+                50,
+                42,
+                234,
+                192
+              ]
+            },
+            {
+              "frame": 4,
+              "sourceBounds": [
+                1697,
+                139,
+                2072,
+                555
+              ],
+              "bodyCenterX": 1922,
+              "groundY": 555,
+              "finalBounds": [
+                47,
+                41,
+                183,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            1024,
+            256
+          ]
+        },
+        "hit": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "generationZoomNormalization": 1.0756302521008403,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                117,
+                109,
+                809,
+                803
+              ],
+              "bodyCenterX": 571,
+              "groundY": 803,
+              "finalBounds": [
+                32,
+                46,
+                178,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                1010,
+                89,
+                1679,
+                803
+              ],
+              "bodyCenterX": 1408,
+              "groundY": 803,
+              "finalBounds": [
+                44,
+                42,
+                185,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "die": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "generationZoomNormalization": 1.2251381215469612,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                46,
+                79,
+                669,
+                643
+              ],
+              "bodyCenterX": 320,
+              "groundY": 643,
+              "finalBounds": [
+                62,
+                57,
+                212,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                751,
+                153,
+                1414,
+                639
+              ],
+              "bodyCenterX": 975.5,
+              "groundY": 639,
+              "finalBounds": [
+                74,
+                75,
+                233,
+                192
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1484,
+                294,
+                2164,
+                657
+              ],
+              "bodyCenterX": 1824,
+              "groundY": 648,
+              "finalBounds": [
+                46,
+                107,
+                209,
+                194
+              ]
+            }
+          ],
+          "finalSize": [
+            768,
+            256
+          ]
+        },
+        "walk": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "generationZoomNormalization": 1.5609756097560976,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                45,
+                119,
+                491,
+                611
+              ],
+              "bodyCenterX": 298,
+              "groundY": 611,
+              "finalBounds": [
+                51,
+                42,
+                187,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                591,
+                106,
+                1031,
+                604
+              ],
+              "bodyCenterX": 842.5,
+              "groundY": 604,
+              "finalBounds": [
+                51,
+                40,
+                186,
+                192
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1097,
+                118,
+                1552,
+                611
+              ],
+              "bodyCenterX": 1354,
+              "groundY": 611,
+              "finalBounds": [
+                49,
+                41,
+                188,
+                192
+              ]
+            },
+            {
+              "frame": 4,
+              "sourceBounds": [
+                1646,
+                109,
+                2091,
+                606
+              ],
+              "bodyCenterX": 1902.5,
+              "groundY": 606,
+              "finalBounds": [
+                50,
+                40,
+                186,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            1024,
+            256
+          ]
+        }
+      }
+    },
+    "walkAddition": {
+      "date": "2026-10-23",
+      "scriptLocation": "/private/tmp/finish-hero-walk.py",
+      "notes": [
+        "기존 기준 그림과 대기 클립을 참고해 걷기만 추가했습니다. 다른 클립은 수정하지 않았습니다.",
+        "걷기 접지 자세의 몸 높이 492픽셀을 기존 대기 150픽셀에 맞추는 배율을 네 프레임에 똑같이 적용했습니다. 중간 자세의 작은 상하 움직임은 유지했습니다.",
+        "파란 튜닉의 중심을 x=128에, 접지한 발끝을 y=192에 맞췄습니다. 프레임별 확대·축소는 하지 않았습니다.",
+        "투명한 간격에서 프레임을 잘랐으며, premultiplied-alpha LANCZOS 축소 외에 색이나 내부 알파를 보정하지 않았습니다.",
+        "오른손의 검, 짧은 양팔, 보이는 빈 왼손을 유지했습니다. 1·3번째는 반대쪽 발을 내디디며 2·4번째는 반대쪽 발을 들어 교차합니다.",
+        "최종 PNG와 대기 비교표, 160밀리초 간격의 4프레임 반복 미리보기를 확인했습니다. Unity에는 적용하지 않았습니다."
+      ]
+    }
+  }
+}

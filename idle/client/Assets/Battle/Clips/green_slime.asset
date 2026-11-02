@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc0ed3baebca4c87b1dd3180ae8a538, type: 3}
+  m_Name: green_slime
+  m_EditorClassIdentifier: PortfolioIdleRpg.Views::PortfolioIdleRpg.Views.SpriteClipSet
+  _clips:
+  - Name: idle
+    Frames:
+    - {fileID: 1365914381, guid: ed9f359b070af4c50b3ca5e550414997, type: 3}
+    - {fileID: -2105999839, guid: ed9f359b070af4c50b3ca5e550414997, type: 3}
+    FramesPerSecond: 4
+    Loop: 1
+    ImpactFrame: -1
+  - Name: enter
+    Frames:
+    - {fileID: 1719799177, guid: f9546ac1dc98042ad89be279e839e48f, type: 3}
+    - {fileID: -1771096358, guid: f9546ac1dc98042ad89be279e839e48f, type: 3}
+    FramesPerSecond: 8
+    Loop: 1
+    ImpactFrame: -1
+  - Name: attack
+    Frames:
+    - {fileID: 1589594496, guid: 4d1bf4e1c73714befab3220bd79c0e16, type: 3}
+    - {fileID: -1619207199, guid: 4d1bf4e1c73714befab3220bd79c0e16, type: 3}
+    - {fileID: -1832444, guid: 4d1bf4e1c73714befab3220bd79c0e16, type: 3}
+    - {fileID: -1517316320, guid: 4d1bf4e1c73714befab3220bd79c0e16, type: 3}
+    FramesPerSecond: 12
+    Loop: 0
+    ImpactFrame: 2
+  - Name: hit
+    Frames:
+    - {fileID: 1102151227, guid: 34260551e300b41fd9daa32760e845ac, type: 3}
+    - {fileID: 142929591, guid: 34260551e300b41fd9daa32760e845ac, type: 3}
+    FramesPerSecond: 12
+    Loop: 0
+    ImpactFrame: -1
+  - Name: die
+    Frames:
+    - {fileID: 1431715019, guid: 70cea4397767f43ad90eb9fdb028905d, type: 3}
+    - {fileID: 1564063251, guid: 70cea4397767f43ad90eb9fdb028905d, type: 3}
+    - {fileID: -2135417559, guid: 70cea4397767f43ad90eb9fdb028905d, type: 3}
+    FramesPerSecond: 10
+    Loop: 0
+    ImpactFrame: -1
+  - Name: walk
+    Frames:
+    - {fileID: -1537394093, guid: 34ebeddc346da44a2ae9f4f511adf67a, type: 3}
+    - {fileID: 368114862, guid: 34ebeddc346da44a2ae9f4f511adf67a, type: 3}
+    - {fileID: -1579411693, guid: 34ebeddc346da44a2ae9f4f511adf67a, type: 3}
+    - {fileID: 1145014414, guid: 34ebeddc346da44a2ae9f4f511adf67a, type: 3}
+    FramesPerSecond: 8
+    Loop: 1
+    ImpactFrame: -1

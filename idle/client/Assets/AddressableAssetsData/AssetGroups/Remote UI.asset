@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Remote UI
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Remote UI
+  m_GUID: 1b8326345c94b4eeeba258eda4caa1b1
+  m_SerializeEntries:
+  - m_GUID: 006564d476d8c445884d6cf3d3a27d52
+    m_Address: UI/SettingsScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06e37727251b342ec913621365d455b4
+    m_Address: UI/TutorialOverlay
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 100381200006742b0aab41d1b111ce6e
+    m_Address: UI/UpgradeCell
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d245dcdcb51749d2b5f0c80f57c7c08
+    m_Address: UI/CurrencyBar
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28f214e027961462c9046d65dd20cc8f
+    m_Address: UI/MainScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3481f66c3b5de4342a4a27e53c7d80ce
+    m_Address: UI/InventoryCell
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 390665f5d85e240f4a859e1e2fbdd2a1
+    m_Address: UI/LoginScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4eab7fe6a21ee46458465758b5b6904e
+    m_Address: UI/UpgradeScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69aec9b7afafc401cbda0be55c0d91c7
+    m_Address: UI/InventoryScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85c50668c1ae34ffbb2c1fa08c28200d
+    m_Address: UI/Toast
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f98927f3368044409001cb18c2f46ae
+    m_Address: UI/SettingsChannel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a01c08e634fa64f9c8a695e8d5cb9b93
+    m_Address: UI/SkillSlot
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6e5a705f53e14b7f831788c65c2b399
+    m_Address: UI/SkillScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9e2e2c25dcc249a8b690826e595bec2
+    m_Address: UI/CurrencySlot
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c26f074676355472797ce2ad5b6c733f
+    m_Address: UI/RewardPopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbfc93c157771430398c9146cbc969c8
+    m_Address: UI/SkillCell
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc93024f3ac07490585c943ee3dca745
+    m_Address: UI/RebirthScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cda9983e5f0d147bdbb859bda92af9b9
+    m_Address: UI/EquipmentCell
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef408546d51fe4e6da40e6535e6a4a09
+    m_Address: UI/ConfirmPopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0694e14e4cee4c42a7b58eafab4f35f
+    m_Address: UI/Loading
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f620076c6535e4f39b7924a1d2727073
+    m_Address: UI/EquipmentScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f82a787d7e12847deb607778a3ced16e
+    m_Address: UI/DebugOverlay
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d710ef75a68a64bf8b8e136563fc49b5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 1fece5349efa54f789f673741c913e86, type: 2}
+    - {fileID: 11400000, guid: 994c120cd321147d094b3088791a2455, type: 2}
+    m_SchemaDisplayOrder:
+    - Remote UI_BundledAssetGroupSchema
+    - Remote UI_ContentUpdateGroupSchema
+  m_IncludeInBuild: 1
+  m_IncludeInBuildMigrated: 1

@@ -1,0 +1,11 @@
+{
+    "EnvironmentName": "Development",
+    "DevelopmentOutputDirectory": "TypeScript/dist/development",
+    "DevelopmentBootModule": "boot.js",
+    "DevelopmentGameModule": "main.js",
+    "DevelopmentDebugPort": 9229,
+    "ReleaseBootDirectory": "TypeScript",
+    "ReleaseBootModule": "boot.mjs",
+    "ReleaseBundleDirectory": "TypeScript",
+    "ReleaseGameModule": "main.mjs"
+}

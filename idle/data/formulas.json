@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 3,
+  "name": "portfolio-idle-rpg",
+  "stats": [
+    {
+      "id": "89fe109d-e27b-48be-bfc5-207ee9082c86",
+      "key": "attack",
+      "defaults": {
+        "caster": 16.0,
+        "target": 12.0
+      },
+      "description": "공격력 (Monsters.attack)"
+    },
+    {
+      "id": "cb219b1c-a920-4af0-881d-4b35114c6f7b",
+      "key": "defense",
+      "defaults": {
+        "caster": 4.0,
+        "target": 3.0
+      },
+      "description": "방어력 (Monsters.defense)"
+    },
+    {
+      "id": "cde900bc-2974-4bb1-8d10-aece5c7dfe6a",
+      "key": "maxHp",
+      "defaults": {
+        "caster": 200.0,
+        "target": 60.0
+      },
+      "description": "최대 HP (HeroLevels.maxHp, Monsters.maxHp)"
+    },
+    {
+      "id": "6e5c9ab6-e628-4a9e-9773-27afe52f691b",
+      "key": "maxHpRate",
+      "defaults": {
+        "caster": 0.0,
+        "target": 0.5
+      },
+      "description": "소환수의 최대 HP 배율 (Summons.maxHpRate). 소환 공식의 target이 Summons 행이다"
+    },
+    {
+      "id": "365c525d-5202-4f60-b6b7-d8415ea6a7b5",
+      "key": "attackRate",
+      "defaults": {
+        "caster": 0.0,
+        "target": 0.3
+      },
+      "description": "소환수의 공격력 배율 (Summons.attackRate)"
+    },
+    {
+      "id": "426a85c7-58fd-4978-98b3-22cdf1d51b1e",
+      "key": "defenseRate",
+      "defaults": {
+        "caster": 0.0,
+        "target": 0.5
+      },
+      "description": "소환수의 방어력 배율 (Summons.defenseRate)"
+    }
+  ],
+  "constants": [
+    {
+      "id": "c8ec29e5-d460-44af-9ca1-f2bcb29d59c9",
+      "key": "minDamage",
+      "value": 1.0,
+      "description": "방어력이 공격력 이상이어도 들어가는 최소 피해"
+    },
+    {
+      "id": "ce2b8e79-5fad-43e8-8484-9dcb7879cc6d",
+      "key": "elementStrong",
+      "value": 1.5,
+      "description": "공격 속성이 방어 속성에 강할 때의 피해 배율"
+    },
+    {
+      "id": "a9ff5ea2-3ebe-48c3-8408-233c0b1bc0ca",
+      "key": "elementWeak",
+      "value": 0.75,
+      "description": "공격 속성이 방어 속성에 약할 때의 피해 배율"
+    },
+    {
+      "id": "65ace3d5-5a6b-4e97-b301-432f986acca0",
+      "key": "upgradeBaseCost",
+      "value": 100.0,
+      "description": "강화 0단계의 비용"
+    },
+    {
+      "id": "6be1948e-cfe4-456d-8f7b-5d385af711a8",
+      "key": "upgradeCostGrowth",
+      "value": 1.15,
+      "description": "강화 한 단계마다 비용에 곱하는 수"
+    },
+    {
+      "id": "abf3856b-9088-416c-872a-818854da6586",
+      "key": "skillRatePerLevel",
+      "value": 0.1,
+      "description": "스킬 레벨 하나마다 피해 배율·효과의 양·소환수 능력치에 더하는 비율 (1레벨이 1배)"
+    },
+    {
+      "id": "b76c4a99-7b8f-43e5-862d-21bfc2603712",
+      "key": "skillLevelBaseCost",
+      "value": 1000.0,
+      "description": "스킬을 1레벨에서 2레벨로 올리는 비용"
+    },
+    {
+      "id": "3bd40d55-ffc6-4e98-b1ed-e47501932cbd",
+      "key": "skillLevelCostGrowth",
+      "value": 1.6,
+      "description": "스킬 레벨 하나마다 레벨업 비용에 곱하는 수"
+    },
+    {
+      "id": "ac2aa321-a55f-43d1-8ad8-ddb224505cdc",
+      "key": "enhanceBaseCost",
+      "value": 500.0,
+      "description": "장비 강화 +0 → +1의 비용 (골드)"
+    },
+    {
+      "id": "b7844249-1d77-4af1-816e-2233101e2f6c",
+      "key": "enhanceCostGrowth",
+      "value": 1.5,
+      "description": "장비 강화 한 단계마다 비용에 곱하는 수"
+    },
+    {
+      "id": "353a6967-d595-4b4a-a0af-802dcda77c46",
+      "key": "enhanceStatPerStep",
+      "value": 0.2,
+      "description": "장비 강화 한 단계마다 더하는 기본 스탯의 비율"
+    },
+    {
+      "id": "1165fee8-50ad-47f4-b986-5ef26095f070",
+      "key": "rebirthMinLevel",
+      "value": 30.0,
+      "description": "환생할 수 있는 가장 낮은 영웅 레벨. 이 레벨에서 환생하면 1포인트"
+    },
+    {
+      "id": "4a9aeef4-4006-4a92-93fc-d8e9b1d07533",
+      "key": "rebirthRatePerPoint",
+      "value": 0.001,
+      "description": "환생 포인트 하나마다 영구 배율에 더하는 비율"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "a1bc8861-ed46-4ef1-ad2d-44d82f474b57",
+      "key": "power",
+      "value": 0.15,
+      "description": "효과의 계수 (Effects.power)"
+    },
+    {
+      "id": "7c3ce9fc-5a01-4300-821c-27f1ff468970",
+      "key": "elementAdvantage",
+      "value": 0.0,
+      "description": "공격 속성이 방어 속성에 강하면 1, 약하면 -1, 아니면 0"
+    },
+    {
+      "id": "dc613c52-95cf-4fbe-86d4-45c2915075f5",
+      "key": "step",
+      "value": 10.0,
+      "description": "강화 단계 (0부터, 정수)"
+    },
+    {
+      "id": "b4b47995-b637-4ccc-8dbb-d58aee3bd3ca",
+      "key": "skillLevel",
+      "value": 5.0,
+      "description": "스킬 레벨 (1부터, 정수). 몬스터와 소환수의 스킬은 1"
+    },
+    {
+      "id": "6fcd23c4-e3c2-49f9-807e-cc0cff439b65",
+      "key": "powerMultiplier",
+      "value": 1.8,
+      "description": "스킬의 피해 배율 (Skills.powerMultiplier)"
+    },
+    {
+      "id": "660f2de1-cda9-4b24-83b5-6abc4a97d45f",
+      "key": "base",
+      "value": 5.0,
+      "description": "강화 전 스탯 (Items의 attack·defense·maxHp)"
+    },
+    {
+      "id": "d20f0d2d-1a7d-4f87-af78-abda23b3ceb9",
+      "key": "level",
+      "value": 40.0,
+      "description": "영웅 레벨 (1부터, 정수)"
+    },
+    {
+      "id": "309cc7c4-6700-484f-913c-b49a836beafc",
+      "key": "points",
+      "value": 10.0,
+      "description": "쌓은 환생 포인트 (0부터, 정수)"
+    }
+  ],
+  "formulas": [
+    {
+      "id": "d97c8a7d-5589-403b-919f-b4234cae92f1",
+      "key": "damage",
+      "expression": "max(minDamage, caster.attack - target.defense)",
+      "description": "기본 피해량 (샘플)"
+    },
+    {
+      "id": "9ec4786c-d1ad-4f0a-b384-2f282f9b22ce",
+      "key": "summonMaxHp",
+      "expression": "caster.maxHp * target.maxHpRate * skillLevelRate",
+      "description": "소환수의 최대 HP. caster는 소환자의 효과 전 능력치, target은 Summons 행, skillLevel은 소환 스킬의 레벨이고 코드가 내림한다"
+    },
+    {
+      "id": "43a4bda7-f35e-4b40-a8d3-12621107b63d",
+      "key": "summonAttack",
+      "expression": "caster.attack * target.attackRate * skillLevelRate",
+      "description": "소환수의 공격력 (summonMaxHp와 같은 입력)"
+    },
+    {
+      "id": "28182211-ba96-4a0f-bc2b-89f2b139d8a9",
+      "key": "summonDefense",
+      "expression": "caster.defense * target.defenseRate * skillLevelRate",
+      "description": "소환수의 방어력 (summonMaxHp와 같은 입력)"
+    },
+    {
+      "id": "c877c601-a8f8-458a-8b4c-d5e5d91cd878",
+      "key": "dotDamage",
+      "expression": "floor(caster.attack * power * skillLevelRate)",
+      "description": "지속 피해 한 번의 양 (Effects.kind = damage). 걸 때 시전자와 건 스킬의 레벨로 정하고 방어를 무시한다"
+    },
+    {
+      "id": "9c89bfe8-539a-46d2-8af4-69ad4a5d9ab4",
+      "key": "heal",
+      "expression": "floor(caster.attack * power * skillLevelRate)",
+      "description": "회복 한 번의 양 (Effects.kind = heal). 걸 때 시전자와 건 스킬의 레벨로 정한다"
+    },
+    {
+      "id": "2a9c7583-660c-4c09-b2d9-f6054ae8b578",
+      "key": "shield",
+      "expression": "floor(caster.attack * power * skillLevelRate)",
+      "description": "보호막의 흡수량 (Effects.kind = shield). 걸 때 시전자와 건 스킬의 레벨로 정한다"
+    },
+    {
+      "id": "81f63ed8-d846-46d7-a43d-81a68c935fae",
+      "key": "statBuff",
+      "expression": "power * skillLevelRate",
+      "description": "능력치 효과의 비율 (Effects.kind = stat, 0.3 = +30%). 걸 때 정한다. caster는 시전자, target은 효과를 받는 전투원, skillLevel은 건 스킬의 레벨"
+    },
+    {
+      "id": "5e43f6f2-38f3-4625-b184-7a3f260321d1",
+      "key": "elementMultiplier",
+      "expression": "elementAdvantage > 0 ? elementStrong : elementAdvantage < 0 ? elementWeak : 1",
+      "description": "속성 상성 피해 배율. 몬스터에 속성이 생기면 피해에 곱한다(아직 쓰지 않음)"
+    },
+    {
+      "id": "e64f3a2a-87c6-4a7c-94fc-c36077b3cffe",
+      "key": "upgradeCost",
+      "expression": "floor(upgradeBaseCost * pow(upgradeCostGrowth, step))",
+      "description": "강화 비용 (66·68에서 씀): 단계마다 upgradeCostGrowth배"
+    },
+    {
+      "id": "ad1608a6-1d0a-49cf-b976-40851e24b1e0",
+      "key": "skillLevelRate",
+      "expression": "1 + skillRatePerLevel * (skillLevel - 1)",
+      "description": "스킬 레벨의 배율 (1레벨이 1). 피해 배율(skillMultiplier), 효과의 양, 소환수 능력치가 곱한다"
+    },
+    {
+      "id": "a9de8442-36e9-4614-83aa-5d33a2b5af8c",
+      "key": "skillMultiplier",
+      "expression": "powerMultiplier * skillLevelRate",
+      "description": "레벨을 반영한 스킬의 피해 배율. 코드가 기본 피해(damage)에 곱한다(치명이면 치명 배율도 곱한다)"
+    },
+    {
+      "id": "61b03248-f415-4fef-8115-819d1ab4de7b",
+      "key": "skillLevelCost",
+      "expression": "floor(skillLevelBaseCost * pow(skillLevelCostGrowth, skillLevel - 1))",
+      "description": "스킬 레벨을 하나 올리는 비용 (Skills.costItemId 아이템). skillLevel은 올리기 전 레벨"
+    },
+    {
+      "id": "617aa222-bb28-4f93-8920-10da4ef41a91",
+      "key": "enhanceCost",
+      "expression": "floor(enhanceBaseCost * pow(enhanceCostGrowth, step))",
+      "description": "장비 강화 비용 (골드, Constants.goldItemId). step은 지금 단계이고 이 비용으로 한 단계 오른다"
+    },
+    {
+      "id": "9b41e101-3c9c-40d9-af52-8b1f1605d916",
+      "key": "enhanceStat",
+      "expression": "floor(base * (1 + enhanceStatPerStep * step))",
+      "description": "강화한 장비의 스탯 하나. base는 Items의 열, step은 강화 단계"
+    },
+    {
+      "id": "39cbc03a-d7df-49b4-a71a-9093ba797d5a",
+      "key": "rebirthPoints",
+      "expression": "level >= rebirthMinLevel ? pow(level - rebirthMinLevel + 1, 2) : 0",
+      "description": "이 레벨(확정한 영웅 레벨)에서 환생하면 받는 포인트. 0이면 환생할 수 없다"
+    },
+    {
+      "id": "c5fc8669-dbfa-4892-8c02-caefbd3df974",
+      "key": "rebirthRate",
+      "expression": "1 + rebirthRatePerPoint * points",
+      "description": "쌓은 환생 포인트의 영구 배율 (0포인트가 정확히 1). 영웅의 공격·방어·최대 HP와 처치·클리어 보상의 수량(장비는 빼고)에 곱한다"
+    }
+  ],
+  "exportSettings": {
+    "abilityTypeImport": "./ability-type.js",
+    "numeric": "big",
+    "bigImport": "@idle/big-number"
+  },
+  "previewSettings": {
+    "script": "../balance/run.mjs",
+    "args": [
+      "--preview"
+    ],
+    "fields": [
+      {
+        "key": "stageId",
+        "value": 3003.0,
+        "description": "스테이지 (Stages.id)"
+      },
+      {
+        "key": "level",
+        "value": 10.0,
+        "description": "영웅 레벨 (장비 없음)"
+      },
+      {
+        "key": "seconds",
+        "value": 60.0,
+        "description": "돌릴 시간 (초, 최대 86400)"
+      },
+      {
+        "key": "seed",
+        "value": 1.0,
+        "description": "전투 난수 시드 (uint32)"
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+# Unity 규칙은 idle/client/.gitignore에 있다(Unity 프로젝트 루트에 고정되어 있다).
+
+# OS
+.DS_Store
+
+# JetBrains IDE 설정(idle/client/는 Rider, 저장소 전체는 WebStorm)
+.idea/
+
+# Node 의존성(npm 워크스페이스, 저장소 루트에 설치된다)
+node_modules/
+npm-debug.log*
+
+# 로컬 비밀 값(서버 자격 증명, API 키). 예시 파일만 커밋한다
+.env
+.env.*
+!.env.example
+
+# 생성된 빌드 결과물
+/idle/client/TypeScript/dist/
+/idle/server/dist/
+/tools/*/dist/
+/idle/shared/*/dist/
+
+# 밸런스 시뮬레이션의 CSV(npm run balance)
+/idle/balance/out/
+
+# 게임 서버의 로컬 SQLite 데이터베이스(npm start -w @idle/server)
+/idle/server/*.sqlite
+/idle/server/*.sqlite-*

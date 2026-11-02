@@ -1,0 +1,365 @@
+{
+  "actor": "spirit_wolf",
+  "name": "정령 늑대",
+  "date": "2026-10-28",
+  "creator": "colorsocks",
+  "tool": "Codex image_gen (built-in)",
+  "kind": "summon",
+  "gameSize": 0.9,
+  "direction": "right",
+  "design": "a small compact spirit wolf ally facing RIGHT, made of flat pale-cyan and mint spot colors. Short stocky torso, chunky short muzzle, two triangular ears, one tiny dark dot eye, a simple mint chest field and one broad flame-like tail curving to LEFT. Exactly FOUR short paws with near/far pairs correctly connected to shoulders/hips; far legs muted teal, no toes. Spectral identity comes from cyan contour and broad flowing tail shape, NOT from blurry glow, transparency gradients or particles. Tiny friendly magical ally with the same simple outline and compressed proportions as the boar style reference, clearly a wolf. Four solid colors, no fur detail or jewelry.",
+  "reference": {
+    "path": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-f4e692e8-82a5-45ef-9bbc-8b25b679541a.png",
+    "prompt": "Use case: stylized-concept\nAsset type: one transparent production game-actor reference.\nInput is only a reference for compact simplified proportions, outline weight and flat color style, NOT species/equipment.\nSubject: a small compact spirit wolf ally facing RIGHT, made of flat pale-cyan and mint spot colors. Short stocky torso, chunky short muzzle, two triangular ears, one tiny dark dot eye, a simple mint chest field and one broad flame-like tail curving to LEFT. Exactly FOUR short paws with near/far pairs correctly connected to shoulders/hips; far legs muted teal, no toes. Spectral identity comes from cyan contour and broad flowing tail shape, NOT from blurry glow, transparency gradients or particles. Tiny friendly magical ally with the same simple outline and compressed proportions as the boar style reference, clearly a wolf. Four solid colors, no fur detail or jewelry.\nComposition: EXACTLY ONE full-body actor facing RIGHT, head toward screen RIGHT, feet on common baseline; neutral pose and generous margin. No cropping.\nStyle: strictly flat solid opaque color fields. Palette only #245966, #9BD9E5, #D6F3ED, #4E9EAD. No gradients, shading, highlights, textures, gloss or blurry glow. No text, labels, grid, scenery or ground shadow. True transparent background."
+  },
+  "clips": [
+    {
+      "clip": "idle",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, spirit_wolf idle. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a small compact spirit wolf ally facing RIGHT, made of flat pale-cyan and mint spot colors. Short stocky torso, chunky short muzzle, two triangular ears, one tiny dark dot eye, a simple mint chest field and one broad flame-like tail curving to LEFT. Exactly FOUR short paws with near/far pairs correctly connected to shoulders/hips; far legs muted teal, no toes. Spectral identity comes from cyan contour and broad flowing tail shape, NOT from blurry glow, transparency gradients or particles. Tiny friendly magical ally with the same simple outline and compressed proportions as the boar style reference, clearly a wolf. Four solid colors, no fur detail or jewelry.\nAction left-to-right: Two idle frames: (1) neutral reference stance; (2) very subtle breathing squash, paws remain planted. Almost identical scale and posture.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #245966, #9BD9E5, #D6F3ED, #4E9EAD. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-e0b8aecb-f528-42c6-b621-3c42f7c96e3d.png"
+    },
+    {
+      "clip": "enter",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, spirit_wolf enter. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a small compact spirit wolf ally facing RIGHT, made of flat pale-cyan and mint spot colors. Short stocky torso, chunky short muzzle, two triangular ears, one tiny dark dot eye, a simple mint chest field and one broad flame-like tail curving to LEFT. Exactly FOUR short paws with near/far pairs correctly connected to shoulders/hips; far legs muted teal, no toes. Spectral identity comes from cyan contour and broad flowing tail shape, NOT from blurry glow, transparency gradients or particles. Tiny friendly magical ally with the same simple outline and compressed proportions as the boar style reference, clearly a wolf. Four solid colors, no fur detail or jewelry.\nAction left-to-right: Two quick entry run frames: (1) compact running stride, slight forward lean; (2) opposite stride, facing right. Keep torso length and limbs short. Feet close to ground, no airborne flying pose.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #245966, #9BD9E5, #D6F3ED, #4E9EAD. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-3e9b2194-059e-4a06-a998-d0485396a9a3.png"
+    },
+    {
+      "clip": "walk",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, spirit_wolf walk. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a small compact spirit wolf ally facing RIGHT, made of flat pale-cyan and mint spot colors. Short stocky torso, chunky short muzzle, two triangular ears, one tiny dark dot eye, a simple mint chest field and one broad flame-like tail curving to LEFT. Exactly FOUR short paws with near/far pairs correctly connected to shoulders/hips; far legs muted teal, no toes. Spectral identity comes from cyan contour and broad flowing tail shape, NOT from blurry glow, transparency gradients or particles. Tiny friendly magical ally with the same simple outline and compressed proportions as the boar style reference, clearly a wolf. Four solid colors, no fur detail or jewelry.\nAction left-to-right: Four in-place walking loop frames: (1) contact left-near leg forward, (2) passing pose, (3) opposite contact right-far leg forward, (4) passing pose. Clear alternating little steps, compact torso stays SAME length. All limbs remain anatomically attached, no vanishing feet.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #245966, #9BD9E5, #D6F3ED, #4E9EAD. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-f42ae05f-7487-4668-ab6a-cd4153080230.png"
+    },
+    {
+      "clip": "attack",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, spirit_wolf attack. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a small compact spirit wolf ally facing RIGHT, made of flat pale-cyan and mint spot colors. Short stocky torso, chunky short muzzle, two triangular ears, one tiny dark dot eye, a simple mint chest field and one broad flame-like tail curving to LEFT. Exactly FOUR short paws with near/far pairs correctly connected to shoulders/hips; far legs muted teal, no toes. Spectral identity comes from cyan contour and broad flowing tail shape, NOT from blurry glow, transparency gradients or particles. Tiny friendly magical ally with the same simple outline and compressed proportions as the boar style reference, clearly a wolf. Four solid colors, no fur detail or jewelry.\nAction left-to-right: (1) neutral four-paw stance; (2) slight crouch; (3) small forward leap and bite to RIGHT, FOUR SHORT legs correctly attached, compact body same length; (4) exact neutral. Tail maintains broad simple flowing shape. No duplicate legs or human arms, no glow or loose particles.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #245966, #9BD9E5, #D6F3ED, #4E9EAD. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-bc784a26-7ee3-40fc-a4e4-fe4883adb182.png"
+    },
+    {
+      "clip": "hit",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, spirit_wolf hit. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a small compact spirit wolf ally facing RIGHT, made of flat pale-cyan and mint spot colors. Short stocky torso, chunky short muzzle, two triangular ears, one tiny dark dot eye, a simple mint chest field and one broad flame-like tail curving to LEFT. Exactly FOUR short paws with near/far pairs correctly connected to shoulders/hips; far legs muted teal, no toes. Spectral identity comes from cyan contour and broad flowing tail shape, NOT from blurry glow, transparency gradients or particles. Tiny friendly magical ally with the same simple outline and compressed proportions as the boar style reference, clearly a wolf. Four solid colors, no fur detail or jewelry.\nAction left-to-right: Two damage reaction frames: (1) slightly recoil backward to LEFT, eyes blink closed; (2) recover to EXACT neutral reference stance. Keep body height and limb lengths. Do not introduce wounds, particles or new accessories.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #245966, #9BD9E5, #D6F3ED, #4E9EAD. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-19567ef3-33d5-4824-81b4-65128b852879.png"
+    },
+    {
+      "clip": "die",
+      "count": 3,
+      "prompt": "Use case: identity-preserve. Asset: 3-frame transparent game sprite animation sheet, spirit_wolf die. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a small compact spirit wolf ally facing RIGHT, made of flat pale-cyan and mint spot colors. Short stocky torso, chunky short muzzle, two triangular ears, one tiny dark dot eye, a simple mint chest field and one broad flame-like tail curving to LEFT. Exactly FOUR short paws with near/far pairs correctly connected to shoulders/hips; far legs muted teal, no toes. Spectral identity comes from cyan contour and broad flowing tail shape, NOT from blurry glow, transparency gradients or particles. Tiny friendly magical ally with the same simple outline and compressed proportions as the boar style reference, clearly a wolf. Four solid colors, no fur detail or jewelry.\nAction left-to-right: Three death frames: (1) nearly full-height standing stagger, head lowers a little; (2) fold FOUR SHORT legs under torso into lying sphinx pose, paws still connected; (3) lie on side with FOUR paws neatly folded, head remains RIGHT, closed curved eye. Preserve short torso, muzzle, two ears and tail. No detached body parts, no extra limbs, no blood or ghost.\nLayout: EXACTLY 3 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #245966, #9BD9E5, #D6F3ED, #4E9EAD. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-2dd8646d-745f-4fae-bdf3-7306d3c7766a.png"
+    }
+  ],
+  "postprocess": {
+    "palette": [
+      "#245966",
+      "#9BD9E5",
+      "#D6F3ED",
+      "#4E9EAD"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 384,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 256,
+    "max_frame_width_px": 289,
+    "normalization": "클립 안에서는 공통 배율을 적용하고, 기준 포즈 높이 150px로 생성 줌을 맞춤.",
+    "measurements": {
+      "idle": {
+        "scale": 0.3640776699029126,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              49,
+              106,
+              336,
+              257
+            ],
+            "source_bounds": [
+              54,
+              249,
+              839,
+              661
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              49,
+              106,
+              334,
+              256
+            ],
+            "source_bounds": [
+              976,
+              251,
+              1755,
+              661
+            ]
+          }
+        ]
+      },
+      "enter": {
+        "scale": 0.3768844221105528,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              52,
+              105,
+              332,
+              256
+            ],
+            "source_bounds": [
+              92,
+              267,
+              833,
+              665
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              51,
+              105,
+              332,
+              256
+            ],
+            "source_bounds": [
+              979,
+              267,
+              1721,
+              665
+            ]
+          }
+        ]
+      },
+      "walk": {
+        "scale": 0.4909983633387889,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              72,
+              106,
+              313,
+              256
+            ],
+            "source_bounds": [
+              49,
+              233,
+              541,
+              539
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              77,
+              108,
+              307,
+              256
+            ],
+            "source_bounds": [
+              602,
+              236,
+              1071,
+              537
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              72,
+              106,
+              311,
+              256
+            ],
+            "source_bounds": [
+              1116,
+              234,
+              1603,
+              539
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              74,
+              106,
+              311,
+              256
+            ],
+            "source_bounds": [
+              1668,
+              232,
+              2151,
+              538
+            ]
+          }
+        ]
+      },
+      "attack": {
+        "scale": 0.5208333333333334,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              66,
+              105,
+              317,
+              256
+            ],
+            "source_bounds": [
+              41,
+              246,
+              522,
+              536
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              62,
+              114,
+              322,
+              256
+            ],
+            "source_bounds": [
+              571,
+              264,
+              1069,
+              536
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              54,
+              112,
+              331,
+              256
+            ],
+            "source_bounds": [
+              1087,
+              208,
+              1619,
+              484
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              66,
+              106,
+              319,
+              256
+            ],
+            "source_bounds": [
+              1671,
+              248,
+              2157,
+              536
+            ]
+          }
+        ]
+      },
+      "hit": {
+        "scale": 0.3393665158371041,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              75,
+              99,
+              309,
+              257
+            ],
+            "source_bounds": [
+              81,
+              244,
+              768,
+              707
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              63,
+              106,
+              321,
+              257
+            ],
+            "source_bounds": [
+              974,
+              265,
+              1733,
+              707
+            ]
+          }
+        ]
+      },
+      "die": {
+        "scale": 0.373134328358209,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              73,
+              106,
+              311,
+              257
+            ],
+            "source_bounds": [
+              50,
+              175,
+              686,
+              577
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              76,
+              126,
+              308,
+              256
+            ],
+            "source_bounds": [
+              784,
+              226,
+              1404,
+              573
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              67,
+              144,
+              317,
+              257
+            ],
+            "source_bounds": [
+              1474,
+              274,
+              2142,
+              573
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "validation": {
+    "canonical_matches_unity": true,
+    "unity_prefab_wired": true,
+    "all_frames_displayed": true,
+    "walk_frames_observed": 4,
+    "facing_and_pool_reuse_checked": true,
+    "special_checked": false,
+    "typecheck": "passed",
+    "tests": "passed"
+  }
+}

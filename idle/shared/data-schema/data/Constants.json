@@ -1,0 +1,19 @@
+[
+  {
+    "heroId": 1,
+    "expItemId": 2,
+    "offlineCapHours": 12,
+    "equipmentCap": 100,
+    "reviveSeconds": 3,
+    "hitSfx": "sfx.hit",
+    "critSfx": "sfx.crit",
+    "killSfx": "sfx.kill",
+    "bossSfx": "sfx.boss",
+    "clearSfx": "sfx.clear",
+    "levelUpSfx": "sfx.levelUp",
+    "clickSfx": "sfx.click",
+    "goldItemId": 1,
+    "meleeRange": 1,
+    "spawnDistance": 5.5
+  }
+]

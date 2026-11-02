@@ -1,0 +1,453 @@
+{
+  "actor": "fire_dragon",
+  "name": "화염 드래곤",
+  "date": "2026-10-28",
+  "creator": "colorsocks",
+  "tool": "Codex image_gen (built-in)",
+  "kind": "boss",
+  "gameSize": 1.9,
+  "direction": "right",
+  "design": "a broad chunky red fire dragon BOSS, standing on exactly TWO short thick hind legs, facing RIGHT. Large compact horned head, no long neck, squat red belly with ONE orange belly field, two short forearms with mitten-like claws, TWO broad folded wings (near wing fully visible, far wing partly occluded), two cream horns and short cream claws. Wing membranes ONE flat orange shape with at most one dark structural line. Thick tail curves to LEFT with a plain pointed red tip. Horned head and broad wings are the two large identity elements. Wings stay below head top in neutral pose. Friendly fierce simplified game creature, not realistic reptile; no scales, no segmented belly lines, no spiky fringe, no realistic muscles or gloss. Six flat colors.",
+  "reference": {
+    "path": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-aa829e8d-aec6-45c9-8aee-de35372e7e10.png",
+    "prompt": "Use case: stylized-concept. Create a NEW single 2D cartoon game sprite. The supplied white wolf is only the flat-color, bold-outline style reference. Draw a chunky RED DRAGON BOSS facing RIGHT, standing on TWO short thick back legs, with TWO short forearms, TWO cream horns, TWO broad folded wings, a short thick tail curving left, one orange belly field, one orange field inside each wing. No long neck. Big head, broad body. The tail ends in a simple pointed red tip: NO FIRE, NO FLAMES. Tiny dark oval eye and cheeky frown. Six opaque flat spot colors only: dark #231B15 contour; red #C94943 body; orange #E99D46 belly and wing membranes; cream #E5D7B1 horns and claws; dark red #8E373E far wing; gold #E6BC55 small accents. NO luminous parts, NO glow, NO aura, NO shadow, NO lights, NO shading, NO gradients, NO smoke. Every exterior pixel beyond the crisp dark contour must be fully transparent. Full body entirely visible with generous transparent margin, no ground, no backdrop, no labels. This is a clean flat printed sticker, not a rendered or illuminated dragon."
+  },
+  "clips": [
+    {
+      "clip": "idle",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, fire_dragon idle. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a broad chunky red fire dragon BOSS, standing on exactly TWO short thick hind legs, facing RIGHT. Large compact horned head, no long neck, squat red belly with ONE orange belly field, two short forearms with mitten-like claws, TWO broad folded wings (near wing fully visible, far wing partly occluded), two cream horns and short cream claws. Wing membranes ONE flat orange shape with at most one dark structural line. Thick tail curves to LEFT with a plain pointed red tip. Horned head and broad wings are the two large identity elements. Wings stay below head top in neutral pose. Friendly fierce simplified game creature, not realistic reptile; no scales, no segmented belly lines, no spiky fringe, no realistic muscles or gloss. Six flat colors.\nAction left-to-right: Two idle frames: (1) neutral reference stance; (2) very subtle breathing squash, paws remain planted. Almost identical scale and posture.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #C94943, #E99D46, #E5D7B1, #8E373E, #E6BC55. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-d31128c4-b182-4da5-94d2-ba33423f01bb.png"
+    },
+    {
+      "clip": "enter",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, fire_dragon enter. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a broad chunky red fire dragon BOSS, standing on exactly TWO short thick hind legs, facing RIGHT. Large compact horned head, no long neck, squat red belly with ONE orange belly field, two short forearms with mitten-like claws, TWO broad folded wings (near wing fully visible, far wing partly occluded), two cream horns and short cream claws. Wing membranes ONE flat orange shape with at most one dark structural line. Thick tail curves to LEFT with a plain pointed red tip. Horned head and broad wings are the two large identity elements. Wings stay below head top in neutral pose. Friendly fierce simplified game creature, not realistic reptile; no scales, no segmented belly lines, no spiky fringe, no realistic muscles or gloss. Six flat colors.\nAction left-to-right: Two quick entry run frames: (1) compact running stride, slight forward lean; (2) opposite stride, facing right. Keep torso length and limbs short. Feet close to ground, no airborne flying pose.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #C94943, #E99D46, #E5D7B1, #8E373E, #E6BC55. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-4e6945fc-6094-4bf4-b516-ed97ea063740.png"
+    },
+    {
+      "clip": "walk",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, fire_dragon walk. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a broad chunky red fire dragon BOSS, standing on exactly TWO short thick hind legs, facing RIGHT. Large compact horned head, no long neck, squat red belly with ONE orange belly field, two short forearms with mitten-like claws, TWO broad folded wings (near wing fully visible, far wing partly occluded), two cream horns and short cream claws. Wing membranes ONE flat orange shape with at most one dark structural line. Thick tail curves to LEFT with a plain pointed red tip. Horned head and broad wings are the two large identity elements. Wings stay below head top in neutral pose. Friendly fierce simplified game creature, not realistic reptile; no scales, no segmented belly lines, no spiky fringe, no realistic muscles or gloss. Six flat colors.\nAction left-to-right: Four in-place walking loop frames: (1) contact left-near leg forward, (2) passing pose, (3) opposite contact right-far leg forward, (4) passing pose. Clear alternating little steps, compact torso stays SAME length. All limbs remain anatomically attached, no vanishing feet.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #C94943, #E99D46, #E5D7B1, #8E373E, #E6BC55. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-34ed8a04-e2d3-406c-8713-fb4852720c39.png"
+    },
+    {
+      "clip": "attack",
+      "count": 4,
+      "prompt": "Use case: identity-preserve. Asset: 4-frame transparent game sprite animation sheet, fire_dragon attack. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a broad chunky red fire dragon BOSS, standing on exactly TWO short thick hind legs, facing RIGHT. Large compact horned head, no long neck, squat red belly with ONE orange belly field, two short forearms with mitten-like claws, TWO broad folded wings (near wing fully visible, far wing partly occluded), two cream horns and short cream claws. Wing membranes ONE flat orange shape with at most one dark structural line. Thick tail curves to LEFT with a plain pointed red tip. Horned head and broad wings are the two large identity elements. Wings stay below head top in neutral pose. Friendly fierce simplified game creature, not realistic reptile; no scales, no segmented belly lines, no spiky fringe, no realistic muscles or gloss. Six flat colors.\nAction left-to-right: (1) neutral standing; (2) bend one SHORT forearm at chest; (3) claw swipe that forearm toward RIGHT with bent short elbow, other forearm visible near chest; (4) exact reference neutral. TWO hind legs, TWO forearms, TWO wings throughout, short compact torso, no fire breath or separate effect.\nLayout: EXACTLY 4 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #C94943, #E99D46, #E5D7B1, #8E373E, #E6BC55. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-6925f11f-ce33-4489-ac22-c32f9a524c30.png"
+    },
+    {
+      "clip": "hit",
+      "count": 2,
+      "prompt": "Use case: identity-preserve. Asset: 2-frame transparent game sprite animation sheet, fire_dragon hit. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a broad chunky red fire dragon BOSS, standing on exactly TWO short thick hind legs, facing RIGHT. Large compact horned head, no long neck, squat red belly with ONE orange belly field, two short forearms with mitten-like claws, TWO broad folded wings (near wing fully visible, far wing partly occluded), two cream horns and short cream claws. Wing membranes ONE flat orange shape with at most one dark structural line. Thick tail curves to LEFT with a plain pointed red tip. Horned head and broad wings are the two large identity elements. Wings stay below head top in neutral pose. Friendly fierce simplified game creature, not realistic reptile; no scales, no segmented belly lines, no spiky fringe, no realistic muscles or gloss. Six flat colors.\nAction left-to-right: Two damage reaction frames: (1) slightly recoil backward to LEFT, eyes blink closed; (2) recover to EXACT neutral reference stance. Keep body height and limb lengths. Do not introduce wounds, particles or new accessories.\nLayout: EXACTLY 2 separate full-body poses in ONE HORIZONTAL ROW, wide 2:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #C94943, #E99D46, #E5D7B1, #8E373E, #E6BC55. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-9eb67024-6e58-41ac-83fa-0c89d249a179.png"
+    },
+    {
+      "clip": "die",
+      "count": 3,
+      "prompt": "Use case: identity-preserve. Asset: 3-frame transparent game sprite animation sheet, fire_dragon die. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a broad chunky red fire dragon BOSS, standing on exactly TWO short thick hind legs, facing RIGHT. Large compact horned head, no long neck, squat red belly with ONE orange belly field, two short forearms with mitten-like claws, TWO broad folded wings (near wing fully visible, far wing partly occluded), two cream horns and short cream claws. Wing membranes ONE flat orange shape with at most one dark structural line. Thick tail curves to LEFT with a plain pointed red tip. Horned head and broad wings are the two large identity elements. Wings stay below head top in neutral pose. Friendly fierce simplified game creature, not realistic reptile; no scales, no segmented belly lines, no spiky fringe, no realistic muscles or gloss. Six flat colors.\nAction left-to-right: Three death frames: (1) standing stagger slightly bowed but almost full neutral height; (2) bend knees and lower torso, feet anatomically connected; (3) lying on side at rest, head toward RIGHT, closed curved eyes. Maintain SAME body proportions, SAME limb count, no dismemberment, no gore. No ghost, skull, X eyes or disappearance.\nLayout: EXACTLY 3 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #C94943, #E99D46, #E5D7B1, #8E373E, #E6BC55. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-568e090d-8219-4635-9e14-5de9f5e26b7b.png"
+    },
+    {
+      "clip": "special",
+      "count": 5,
+      "prompt": "Use case: identity-preserve. Asset: 5-frame transparent game sprite animation sheet, fire_dragon special. Input image is the EXACT character reference: preserve identity, colors, anatomy and proportions.\nCharacter: a broad chunky red fire dragon BOSS, standing on exactly TWO short thick hind legs, facing RIGHT. Large compact horned head, no long neck, squat red belly with ONE orange belly field, two short forearms with mitten-like claws, TWO broad folded wings (near wing fully visible, far wing partly occluded), two cream horns and short cream claws. Wing membranes ONE flat orange shape with at most one dark structural line. Thick tail curves to LEFT with a plain pointed red tip. Horned head and broad wings are the two large identity elements. Wings stay below head top in neutral pose. Friendly fierce simplified game creature, not realistic reptile; no scales, no segmented belly lines, no spiky fringe, no realistic muscles or gloss. Six flat colors.\nAction left-to-right: Five boss meteor-summoning animation frames, WITHOUT drawing any meteors/projectiles: (1) exact neutral; (2) inhale with head rising slightly; (3) spread two broad wings and crouch; (4) roar upward-right with open mouth and wings open, same two short forearms and two grounded hind legs; (5) exact neutral, wings folded again. Same compact short-necked body size all frames. NO glow, smoke, aura, flames or separate projectiles.\nLayout: EXACTLY 5 separate full-body poses in ONE HORIZONTAL ROW, wide 3:1 canvas. Equal-size poses centered in evenly spaced invisible columns. Very wide EMPTY transparent gutters between poses. Entire body, tail, wings and equipment inside each column. All face RIGHT; no flipping. Same camera and scale across all frames; never enlarge smaller poses. Keep legs short and clearly attached to torso.\nRendering: EXACT flat opaque spot colors #231B15, #C94943, #E99D46, #E5D7B1, #8E373E, #E6BC55. Crisp thick contour, minimal detail matching reference. NO gradients, lighting, highlights, shading, textures, glow, blur, shadows, ground, text, numbers, labels, grid, borders or detached effects. Background genuinely transparent, fully opaque interiors.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-46cc679b-11a8-4aef-b0c7-b82ae59b30b1.png"
+    }
+  ],
+  "postprocess": {
+    "palette": [
+      "#231B15",
+      "#C94943",
+      "#E99D46",
+      "#E5D7B1",
+      "#8E373E",
+      "#E6BC55"
+    ],
+    "alpha_preserved_before_resize": true,
+    "frame_size": 384,
+    "body_height_px": 150,
+    "pixels_per_unit": 150,
+    "baseline_px": 256,
+    "max_frame_width_px": 251,
+    "normalization": "클립 안에서는 공통 배율을 적용하고, 기준 포즈 높이 150px로 생성 줌을 맞춤.",
+    "measurements": {
+      "idle": {
+        "scale": 0.30425963488843816,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              77,
+              106,
+              307,
+              256
+            ],
+            "source_bounds": [
+              64,
+              198,
+              818,
+              691
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              73,
+              114,
+              310,
+              256
+            ],
+            "source_bounds": [
+              957,
+              225,
+              1735,
+              690
+            ]
+          }
+        ]
+      },
+      "enter": {
+        "scale": 0.3282275711159737,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              67,
+              103,
+              316,
+              256
+            ],
+            "source_bounds": [
+              68,
+              221,
+              825,
+              685
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              72,
+              106,
+              312,
+              257
+            ],
+            "source_bounds": [
+              1017,
+              227,
+              1745,
+              684
+            ]
+          }
+        ]
+      },
+      "walk": {
+        "scale": 0.4195804195804196,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              80,
+              106,
+              304,
+              257
+            ],
+            "source_bounds": [
+              14,
+              182,
+              545,
+              539
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              81,
+              106,
+              304,
+              257
+            ],
+            "source_bounds": [
+              570,
+              180,
+              1099,
+              538
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              83,
+              106,
+              301,
+              257
+            ],
+            "source_bounds": [
+              1111,
+              182,
+              1629,
+              539
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              83,
+              106,
+              300,
+              256
+            ],
+            "source_bounds": [
+              1653,
+              181,
+              2169,
+              539
+            ]
+          }
+        ]
+      },
+      "attack": {
+        "scale": 0.43478260869565216,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              85,
+              106,
+              299,
+              256
+            ],
+            "source_bounds": [
+              27,
+              192,
+              516,
+              538
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              84,
+              105,
+              300,
+              255
+            ],
+            "source_bounds": [
+              571,
+              191,
+              1065,
+              538
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              88,
+              104,
+              297,
+              256
+            ],
+            "source_bounds": [
+              1118,
+              190,
+              1600,
+              540
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              86,
+              105,
+              300,
+              255
+            ],
+            "source_bounds": [
+              1655,
+              193,
+              2145,
+              538
+            ]
+          }
+        ]
+      },
+      "hit": {
+        "scale": 0.30120481927710846,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              85,
+              101,
+              300,
+              256
+            ],
+            "source_bounds": [
+              69,
+              205,
+              783,
+              718
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              79,
+              106,
+              304,
+              256
+            ],
+            "source_bounds": [
+              1008,
+              221,
+              1752,
+              719
+            ]
+          }
+        ]
+      },
+      "die": {
+        "scale": 0.3232758620689655,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              79,
+              106,
+              305,
+              257
+            ],
+            "source_bounds": [
+              39,
+              130,
+              737,
+              594
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              89,
+              129,
+              294,
+              257
+            ],
+            "source_bounds": [
+              781,
+              200,
+              1414,
+              593
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              79,
+              157,
+              305,
+              256
+            ],
+            "source_bounds": [
+              1461,
+              287,
+              2157,
+              592
+            ]
+          }
+        ]
+      },
+      "special": {
+        "scale": 0.5514705882352942,
+        "frames": [
+          {
+            "frame": 1,
+            "bounds": [
+              80,
+              106,
+              304,
+              256
+            ],
+            "source_bounds": [
+              9,
+              245,
+              415,
+              516
+            ]
+          },
+          {
+            "frame": 2,
+            "bounds": [
+              84,
+              96,
+              299,
+              256
+            ],
+            "source_bounds": [
+              457,
+              228,
+              846,
+              517
+            ]
+          },
+          {
+            "frame": 3,
+            "bounds": [
+              70,
+              85,
+              314,
+              256
+            ],
+            "source_bounds": [
+              887,
+              213,
+              1328,
+              522
+            ]
+          },
+          {
+            "frame": 4,
+            "bounds": [
+              70,
+              84,
+              315,
+              256
+            ],
+            "source_bounds": [
+              1294,
+              206,
+              1737,
+              517
+            ]
+          },
+          {
+            "frame": 5,
+            "bounds": [
+              83,
+              106,
+              303,
+              256
+            ],
+            "source_bounds": [
+              1773,
+              245,
+              2172,
+              517
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "validation": {
+    "canonical_matches_unity": true,
+    "unity_prefab_wired": true,
+    "all_frames_displayed": true,
+    "walk_frames_observed": 4,
+    "facing_and_pool_reuse_checked": true,
+    "special_checked": true,
+    "typecheck": "passed",
+    "tests": "passed"
+  }
+}

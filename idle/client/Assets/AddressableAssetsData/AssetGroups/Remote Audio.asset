@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Remote Audio
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Remote Audio
+  m_GUID: 1c6a9fc04bdfb4d27ba45abe09231ea9
+  m_SerializeEntries:
+  - m_GUID: 1e67d62120f8c47ec85ffcb4247cb851
+    m_Address: Audio/Sfx/Kill
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b9220e80487e4d69b00d2587fc56dbc
+    m_Address: Audio/Sfx/LevelUp
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2fd68032e70f3462e8589bd1657372d2
+    m_Address: Audio/Sfx/Crit
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31d559323b77849aca76bf38c2a022d8
+    m_Address: Audio/Sfx/Hit
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4df8366d3121d43ccabcda1748b8a8da
+    m_Address: Audio/Sfx/Poison
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6048cd44ff5214936b3e8562fbdd9a81
+    m_Address: Audio/Sfx/Boss
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7245955ae8d3f408689e20918085ac6e
+    m_Address: Audio/Sfx/Ice
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ccf4756c486d4c4b80a5df2cabf95d5
+    m_Address: Audio/Sfx/Fire
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0879b9275b3d4a0f87fe348f027a389
+    m_Address: Audio/Bgm/Battle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b924ba4dc2c904a9dbc357ca97797ab2
+    m_Address: Audio/Bgm/Peak
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfee095114f874c20a519934ea1b1da8
+    m_Address: Audio/Sfx/Clear
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d294b8487131d4dc583e54d96bb039b0
+    m_Address: Audio/Sfx/Holy
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9aef708fa66d4a9d891b11e32031d85
+    m_Address: Audio/Sfx/Click
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fda4993fccf8a41d5994e3c6989c25c6
+    m_Address: Audio/Bgm/Fortress
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d710ef75a68a64bf8b8e136563fc49b5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c2f59d94be21d4ed48b9812296efb830, type: 2}
+    - {fileID: 11400000, guid: 9f7a91786e1a248a1836217a77d8b9b1, type: 2}
+    m_SchemaDisplayOrder:
+    - Remote Audio_BundledAssetGroupSchema
+    - Remote Audio_ContentUpdateGroupSchema
+  m_IncludeInBuild: 1
+  m_IncludeInBuildMigrated: 1

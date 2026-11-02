@@ -1,0 +1,39 @@
+# 타입 검사와 전체 테스트(생성 파일 검사, import 경계 검사, 서버·클라이언트 번들 포함)를 돌린다.
+# 실행 시간과 LFS 사용량은 MANUAL.md의 "CI"에 있다.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# 같은 PR(또는 브랜치)에 새 커밋이 오면 이전 실행을 취소해 무료 시간을 아낀다.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    # 멈춘 테스트가 기본 한도(360분)까지 무료 시간을 쓰지 않게 한다.
+    timeout-minutes: 10
+    steps:
+      # lfs가 꺼져 있으면 LFS 파일은 포인터로만 받는다.
+      - uses: actions/checkout@v7
+      # 테스트가 읽는 LFS 파일은 generate --check의 xlsx뿐이다. Unity 에셋 등 나머지는 받지 않는다.
+      # LFS 필터가 설정되지 않은 저장소에서는 pull이 받기만 하고 파일을 바꾸지 않으므로 먼저 설치한다.
+      - run: |
+          git lfs install --local
+          git lfs pull --include="idle/data/*.xlsx"
+      # node:sqlite를 쓰므로 로컬과 같은 버전으로 고정한다.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22.14.0
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test

@@ -1,0 +1,55 @@
+{
+  "checks": 76,
+  "heroFrames": 19,
+  "directions": [
+    1,
+    -1,
+    0,
+    1
+  ],
+  "frameSize": 256,
+  "pixelsPerUnit": 150,
+  "attackImpactIndex": 2,
+  "castImpactIndex": 2,
+  "observedInBattle": [
+    "hero_hit_1",
+    "hero_hit_0",
+    "hero_attack_0",
+    "hero_attack_1",
+    "hero_attack_2",
+    "hero_attack_3",
+    "hero_idle_0",
+    "hero_idle_1",
+    "hero_cast_0",
+    "hero_cast_1",
+    "hero_cast_2",
+    "hero_cast_3",
+    "hero_walk_0",
+    "hero_walk_1",
+    "hero_walk_2",
+    "hero_walk_3",
+    "hero_die_0",
+    "hero_die_1",
+    "hero_die_2"
+  ],
+  "sourceAndInstalledPngMatch": true,
+  "unchangedIdleWalkHitAndSpriteMeta": true,
+  "typecheck": "passed",
+  "test": "passed",
+  "unityConsoleErrors": 0,
+  "unityConsoleWarnings": 0,
+  "sha256": {
+    "attack": "5d47fd80cd22c7b61e6d0ed29c8a7f463ea2990db4d84b46e79f6f65b560e8e4",
+    "cast": "e73decd7c2e3dafbad6250cd82cdf6cdec3d6089bdae5aa2d553feaee6a89ddd",
+    "die": "d6364bfd9764d4a76ced96340e9b21b6526a022bf2bb3bff22d2b8848f1a7b38"
+  },
+  "unexpectedHeroFlipInBattle": false,
+  "frameAdvanceProof": {
+    "initialValue": 1266,
+    "value": 1272,
+    "framesObserved": 2,
+    "met": true
+  },
+  "restoredPreviousLoginAndFont": true,
+  "playModeStopped": true
+}

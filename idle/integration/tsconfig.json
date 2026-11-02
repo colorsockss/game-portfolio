@@ -1,0 +1,7 @@
+{
+  // 클라이언트의 TS 코어를 서버의 같은 프로세스 안 테스트 서버에 붙여 Node에서 도는 테스트. 클라이언트와
+  // 서버가 서로 의존하지 않도록 여기에 둔다.
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": { "target": "ES2023", "lib": ["ES2023"], "types": ["node"] },
+  "include": ["test"]
+}

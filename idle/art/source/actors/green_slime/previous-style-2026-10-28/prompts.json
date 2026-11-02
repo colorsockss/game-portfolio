@@ -1,0 +1,437 @@
+{
+  "actor": "green_slime",
+  "tool": "Codex image_gen",
+  "author": "colorsocks",
+  "reference": {
+    "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nInput images: Image 1 is the edit target.\nPrimary request: change ONLY the slime silhouette proportions to be a much ROUNDer, more compact jelly dome. Body width should be just 1.2 times its height, almost circular, with a small flat contact patch below. The current wide flattened spread must become a round bouncy blob, leaving room to stretch during animation.\nKeep the exact green palette, thick black outline, simple two black oval eyes on the LEFT-facing surface, pale highlight patches, darker green shadow patch and cute minimal style. No added limbs, ears, accessories or facial features. Single character, centered with generous clear margins, entire outline visible, no shadow or scene. True transparent background.",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-a22d7747-430e-4f8e-9418-bdf9feada0b8.png",
+    "source": "reference.png"
+  },
+  "rejectedReference": {
+    "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view monster sprite reference for a mobile idle RPG battle\nInput images: Image 1 is a STYLE reference only. Match its thick near-black outline, extremely simple cute shapes, bold flat colors and restrained shading. Do not copy the human, clothes or weapon.\nPrimary request: a small round GREEN SLIME with big cute simple black oval eyes and a glossy jelly body, in a relaxed idle pose. One continuous soft domed blob, slightly wider than tall, with a gently flattened bottom resting on the ground. No limbs, no accessories. The face is placed on the LEFT-facing surface of the blob, eyes clearly looking to image-LEFT toward an opponent.\nStyle: same simple chibi cartoon world as Image 1. Bright grass green main fill, one darker green hard-edged shadow patch along the lower-right, one pale green highlight patch near the upper-left to suggest jelly gloss. Strong clean dark contour, very few interior details, opaque body color with actual transparent canvas. No realistic glass or 3D rendering, gradients, internal bubbles, scenery, particles or ground shadow.\nComposition/framing: single full body, side-view facing LEFT, centered with a clear margin all around, bottom on one flat baseline, nothing cropped.\nConstraints: transparent background; no ground shadow, no props on the ground, no effects, no text.",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-f2b2042c-b60a-42a2-b45e-eb96ab710630.png",
+    "source": "rejected/reference-wide.png"
+  },
+  "clips": [
+    {
+      "key": "idle",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D monster sprite animation strip\nInput images: Image 1 is the exact GREEN SLIME reference. Keep the same compact rounded green jelly, two simple black oval eyes on the LEFT-facing surface, thick black outline, pale highlight and darker green shadow patch. It belongs to a simple flat cartoon game. No limbs, mouth, accessories, details, realistic rendering or texture.\nAnimation consistency: every frame is the SAME amount of jelly at the SAME camera zoom. The body may squash and stretch, but do not change its overall volume, eye design, green palette, outline weight or left-facing direction. Eyes and highlight follow the body deformation naturally.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. Body center at cell center, ample transparent space between frames and at sheet edges, every full silhouette inside its own cell. Reference neutral body height is 60% of a square cell, width 72%. Common imaginary ground baseline at 78% of cell height. No labels, frame lines, props, particles, ground shadow or visible floor. True transparent background.\n\nPrimary request: TWO frames of a breathing idle loop. Frame 1 is the exact neutral rounded reference pose. Frame 2 is just 5% lower and 5% wider, a tiny jelly breathing squash, with eyes remaining open. Both bottoms contact the SAME ground baseline. No hop and no tilt. Keep a nearly round body, not a wide puddle. 2:1 canvas with two square cells.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-639c2f7a-a676-43b1-8fe3-8ff5af71459d.png",
+      "source": "idle.png",
+      "final": "../../../actors/green_slime/idle.png"
+    },
+    {
+      "key": "enter",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D monster sprite animation strip\nInput images: Image 1 is the exact GREEN SLIME reference. Keep the same compact rounded green jelly, two simple black oval eyes on the LEFT-facing surface, thick black outline, pale highlight and darker green shadow patch. It belongs to a simple flat cartoon game. No limbs, mouth, accessories, details, realistic rendering or texture.\nAnimation consistency: every frame is the SAME amount of jelly at the SAME camera zoom. The body may squash and stretch, but do not change its overall volume, eye design, green palette, outline weight or left-facing direction. Eyes and highlight follow the body deformation naturally.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. Body center at cell center, ample transparent space between frames and at sheet edges, every full silhouette inside its own cell. Reference neutral body height is 60% of a square cell, width 72%. Common imaginary ground baseline at 78% of cell height. No labels, frame lines, props, particles, ground shadow or visible floor. True transparent background.\n\nPrimary request: TWO frames of a bouncy HOPPING ENTER loop moving toward image-LEFT. Frame 1 is a grounded push-off squash, about 15% shorter and 12% wider than the neutral reference, face still on the left. Frame 2 is a rounded upward stretch tilted slightly LEFT, about 10% taller and correspondingly narrower, airborne with its underside a small distance above the same imaginary ground baseline. Eyes stay the same open black ovals. No detached jelly drops, no dust, no trails or ground shadow. The hop comes from the whole blob deforming, not legs. Keep equal volume and equal camera zoom. 2:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-a94c5d5c-3135-4809-a4d2-8a4c73114727.png",
+      "source": "enter.png",
+      "final": "../../../actors/green_slime/enter.png"
+    },
+    {
+      "key": "walk",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view sprite animation strip for a mobile idle RPG battle\nInput images: Image 1 is the existing GREEN SLIME character reference. Preserve its exact design: compact rounded lime-green jelly body, thick near-black outline, two simple black oval eyes placed on the LEFT-facing side, large pale highlight and tiny secondary highlight at upper left, one darker green shadow at lower right. No mouth, limbs or accessories.\nPrimary request: exactly FOUR frames of a CALM WALK LOOP IN PLACE facing LEFT. This legless creature walks by a mild squash-and-stretch crawl with a gentle weight ripple from rear/right to front/left. It stays close to the ground. The game moves the actor, so do not translate the actor across the sheet.\nFrame 1, first contact beat: gently squashed to about 90% of its neutral height and 106% width, soft leading left edge presses the ground, upper dome tilts very slightly left.\nFrame 2, first passing beat: body rises and gathers to about 104% neutral height and 97% width, rear/right side draws inward while the leading left side stays planted; dome is softly upright.\nFrame 3, second contact beat: settles to about 92% neutral height and 105% width, a subtly different low contour as the weight ripple reaches the left/front; the dome leans left a little more than in frame 1.\nFrame 4, second passing beat: returns to the original neutral rounded height and width, soft weight shift back toward center, preparing to loop directly into frame 1. Keep the exact neutral body proportions from Image 1 for this frame.\nAll four poses must be recognizably different but subtle and calm, with the SAME jelly volume, camera zoom, eye sizes and outline weight. Both eyes remain open, and the face remains directed to the LEFT throughout. No exaggerated jumping, no attack pose.\nComposition/framing: exactly 4 full bodies in ONE horizontal row of equal-width square cells on a wide canvas, ample transparent separation. Neutral body height about 60% of each cell, width about 77%. Body center at cell center, lower contact point at the same 78% cell-height baseline in every frame. Nothing cropped. Preserve four poses as a cyclic sequence, no duplicate stills.\nConstraints: real transparent background; no floor, ground shadow, frame border, grid, motion lines, droplets, detached parts, effects, labels, text or symbols.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-60c46efc-2392-46e6-a18e-f4545ef62ae1.png",
+      "source": "walk.png",
+      "final": "../../../actors/green_slime/walk.png"
+    },
+    {
+      "key": "attack",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D monster sprite animation strip\nInput images: Image 1 is the exact GREEN SLIME reference. Keep the same compact rounded green jelly, two simple black oval eyes on the LEFT-facing surface, thick black outline, pale highlight and darker green shadow patch. It belongs to a simple flat cartoon game. No limbs, mouth, accessories, details, realistic rendering or texture.\nAnimation consistency: every frame is the SAME amount of jelly at the SAME camera zoom. The body may squash and stretch, but do not change its overall volume, eye design, green palette, outline weight or left-facing direction. Eyes and highlight follow the body deformation naturally.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. Body center at cell center, ample transparent space between frames and at sheet edges, every full silhouette inside its own cell. Reference neutral body height is 60% of a square cell, width 72%. Common imaginary ground baseline at 78% of cell height. No labels, frame lines, props, particles, ground shadow or visible floor. True transparent background.\n\nPrimary request: FOUR frames of a lunging BODY SLAM toward image-LEFT.\nFrame 1: slight wind-up, upper jelly leans backward to image-right while the face still looks left.\nFrame 2: deeper grounded anticipation, squashed down about 25% and slightly wider, storing spring energy. Same simple eyes, mildly determined.\nFrame 3: the HIT at full extension — whole blob lunges and leans clearly to image-LEFT, face on the leading left side; body is stretched horizontally LEFT to about 125% of neutral width and compressed to about 80% of neutral height. One connected blob, no arms, no separate tail. The leftmost leading edge is the striking surface.\nFrame 4: recovery to the original neutral rounded pose, eyes relaxed. This frame matches Image 1's standing height and width.\nConserve the amount of jelly and match eye size and line thickness across all frames. Keep grounded contact baseline the same. Neutral height 60% of cell, maximum stretched width below 90% of cell. No contact effects or motion trails. 4:1 wide canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-e3478ba6-f669-4c98-8d6d-6950ad4f997e.png",
+      "source": "attack.png",
+      "final": "../../../actors/green_slime/attack.png"
+    },
+    {
+      "key": "hit",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D monster sprite animation strip\nInput images: Image 1 is the exact GREEN SLIME reference. Keep the same compact rounded green jelly, two simple black oval eyes on the LEFT-facing surface, thick black outline, pale highlight and darker green shadow patch. It belongs to a simple flat cartoon game. No limbs, mouth, accessories, details, realistic rendering or texture.\nAnimation consistency: every frame is the SAME amount of jelly at the SAME camera zoom. The body may squash and stretch, but do not change its overall volume, eye design, green palette, outline weight or left-facing direction. Eyes and highlight follow the body deformation naturally.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. Body center at cell center, ample transparent space between frames and at sheet edges, every full silhouette inside its own cell. Reference neutral body height is 60% of a square cell, width 72%. Common imaginary ground baseline at 78% of cell height. No labels, frame lines, props, particles, ground shadow or visible floor. True transparent background.\n\nPrimary request: TWO HIT reaction frames. Frame 1 recoils away from a hit coming from image-LEFT: upper jelly bends back toward image-RIGHT while the lower body stays planted, squeezing the eyes shut in a wince with simple curved strokes. Keep one continuous blob, no detached drops. Frame 2 returns toward the neutral compact rounded reference shape with eyes reopening. Face still belongs on the LEFT-facing surface in both frames. Frame 2 matches the reference's neutral standing height. The whole mass stays recognizable and the same volume. Same ground baseline. No impact flashes, stars, text or particles. 2:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-94303cf8-cf19-4240-91b6-94c8817015dd.png",
+      "source": "hit.png",
+      "final": "../../../actors/green_slime/hit.png"
+    },
+    {
+      "key": "die",
+      "count": 3,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D monster sprite animation strip\nInput images: Image 1 is the exact GREEN SLIME reference. Keep the same compact rounded green jelly, two simple black oval eyes on the LEFT-facing surface, thick black outline, pale highlight and darker green shadow patch. It belongs to a simple flat cartoon game. No limbs, mouth, accessories, details, realistic rendering or texture.\nAnimation consistency: every frame is the SAME amount of jelly at the SAME camera zoom. The body may squash and stretch, but do not change its overall volume, eye design, green palette, outline weight or left-facing direction. Eyes and highlight follow the body deformation naturally.\nLayout: exactly the requested number of frames in ONE horizontal row of equal-width square cells. Body center at cell center, ample transparent space between frames and at sheet edges, every full silhouette inside its own cell. Reference neutral body height is 60% of a square cell, width 72%. Common imaginary ground baseline at 78% of cell height. No labels, frame lines, props, particles, ground shadow or visible floor. True transparent background.\n\nPrimary request: THREE consecutive DEFEATED frames of the same green slime, one horizontal row.\nFrame 1: staggering and wobbling, still at the original neutral body height and roughly neutral width. Eyes are two tiny tired curved strokes, face still toward image-LEFT.\nFrame 2: body collapsing into a low squat shape, about half the original height, a little wider. Eyes stay shut.\nFrame 3: fully defeated, lying as a flat rounded jelly puddle on the ground, about one-quarter of neutral height and at most 130% of neutral width. Closed curved eyes are still visible near the left side. This is still the same green jelly and black outline.\nKeep the same imaginary ground contact baseline in all three frames. No separate droplets, particles, ghost, bones, symbols, words, crosses or ground shadow. Whole silhouette contained within each square cell, width under 90% of cell. Equal camera zoom in all three frames. 3:1 canvas.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-e6db58af-e3dd-46f8-bd3a-a71857968b14.png",
+      "source": "die.png",
+      "final": "../../../actors/green_slime/die.png"
+    }
+  ],
+  "styleReference": "../hero/reference.png",
+  "postprocess": {
+    "runtime": "~/.venvs/art (Pillow 11.3.0)",
+    "scriptLocation": "/private/tmp/finish-green-slime.py",
+    "notes": [
+      "원본 PNG는 그대로 보존했습니다. 알파 16을 기준으로 연결된 몸을 찾아 나누고, 원래 가장자리 알파가 포함되도록 4픽셀 여유를 두고 잘랐습니다.",
+      "생성 줌은 중립 자세(대기 1, 공격 4, 피격 2, 사망 1)의 높이로 클립 전체를 통일했습니다. 등장은 대기와 같은 해상도와 줌을 사용합니다. 그 뒤 모든 프레임에 공통 배율을 적용했으며 프레임별 크기를 따로 맞추지 않았습니다.",
+      "대기 첫 몸 높이는 150픽셀, 몸 중심은 x=128, 접지선은 y=192입니다. 등장 2는 원본의 점프 높이만큼 떠 있습니다.",
+      "premultiplied-alpha LANCZOS로 줄였으며 캐릭터 내부의 색과 알파를 다시 칠하지 않았습니다.",
+      "처음의 넓은 기준은 늘어나는 동작이 256픽셀 칸을 벗어나므로 rejected/reference-wide.png에 보존하고 둥근 기준으로 수정했습니다.",
+      "최종 투명 시트는 6개, 총 17프레임이며 왼쪽을 봅니다. 공격 3이 몸통 박치기의 타격 자세입니다.",
+      "걷기 4프레임을 추가했습니다. 걷기 4의 중립 높이를 기존 대기의 생성 좌표로 환산한 뒤 기존 공통 배율을 적용했습니다. 네 프레임은 모두 x=128 중심, y=192 접지선이며 같은 배율로 줄였습니다. 기존 5개 클립은 수정하지 않았습니다.",
+      "걷기는 몸을 조금 눌렀다 펴며 기어가는 4박자 반복입니다. 다리가 없고, 등장보다 변형이 작으며 공중으로 뛰지 않습니다."
+    ],
+    "measurements": {
+      "normalizedStandingBodyHeight": 544,
+      "commonScale": 0.2757352941176471,
+      "clips": {
+        "idle": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "generationZoomNormalization": 1.0,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                98,
+                205,
+                800,
+                749
+              ],
+              "finalBounds": [
+                31,
+                42,
+                225,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                963,
+                264,
+                1699,
+                749
+              ],
+              "finalBounds": [
+                27,
+                58,
+                230,
+                192
+              ],
+              "airbornePixels": 0
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "enter": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "generationZoomNormalization": 1,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                136,
+                350,
+                874,
+                776
+              ],
+              "finalBounds": [
+                26,
+                74,
+                230,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                1045,
+                104,
+                1640,
+                737
+              ],
+              "finalBounds": [
+                46,
+                6,
+                210,
+                181
+              ],
+              "airbornePixels": 11
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "attack": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "generationZoomNormalization": 1.6,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                78,
+                178,
+                492,
+                547
+              ],
+              "finalBounds": [
+                37,
+                30,
+                220,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                576,
+                296,
+                1046,
+                548
+              ],
+              "finalBounds": [
+                24,
+                80,
+                232,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1106,
+                283,
+                1629,
+                546
+              ],
+              "finalBounds": [
+                12,
+                75,
+                243,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 4,
+              "sourceBounds": [
+                1696,
+                208,
+                2110,
+                548
+              ],
+              "finalBounds": [
+                36,
+                41,
+                219,
+                192
+              ],
+              "airbornePixels": 0
+            }
+          ],
+          "finalSize": [
+            1024,
+            256
+          ]
+        },
+        "hit": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "generationZoomNormalization": 1.1380753138075315,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                223,
+                221,
+                812,
+                712
+              ],
+              "finalBounds": [
+                35,
+                37,
+                220,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                1002,
+                236,
+                1619,
+                714
+              ],
+              "finalBounds": [
+                31,
+                41,
+                225,
+                192
+              ],
+              "airbornePixels": 0
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "die": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "generationZoomNormalization": 1.268065268065268,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                95,
+                151,
+                648,
+                580
+              ],
+              "finalBounds": [
+                31,
+                41,
+                225,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                792,
+                284,
+                1377,
+                578
+              ],
+              "finalBounds": [
+                25,
+                88,
+                230,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1511,
+                403,
+                2114,
+                578
+              ],
+              "finalBounds": [
+                22,
+                130,
+                234,
+                192
+              ],
+              "airbornePixels": 0
+            }
+          ],
+          "finalSize": [
+            768,
+            256
+          ]
+        },
+        "walk": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "generationZoomNormalization": 1.6534954407294833,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                39,
+                250,
+                517,
+                532
+              ],
+              "finalBounds": [
+                18,
+                63,
+                237,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                605,
+                188,
+                1025,
+                535
+              ],
+              "finalBounds": [
+                32,
+                34,
+                223,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1121,
+                238,
+                1591,
+                535
+              ],
+              "finalBounds": [
+                21,
+                56,
+                236,
+                192
+              ],
+              "airbornePixels": 0
+            },
+            {
+              "frame": 4,
+              "sourceBounds": [
+                1696,
+                206,
+                2123,
+                535
+              ],
+              "finalBounds": [
+                31,
+                41,
+                226,
+                192
+              ],
+              "airbornePixels": 0
+            }
+          ],
+          "finalSize": [
+            1024,
+            256
+          ]
+        }
+      }
+    },
+    "walkScriptLocation": "/private/tmp/finish-green-slime-walk.py"
+  }
+}

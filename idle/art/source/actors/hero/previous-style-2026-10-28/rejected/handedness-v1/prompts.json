@@ -1,0 +1,412 @@
+{
+  "tool": "Codex image_gen",
+  "author": "colorsocks",
+  "reference": {
+    "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: style-transfer\nAsset type: 2D game hero reference sprite\nInput images: Image 1 is the exact desired drawing style and simplification level. Study only this character's visual design.\nPrimary request: redraw this little swordsman as a young brave knight with short BROWN hair, a BLUE tunic over minimal light gray steel armor, a RED scarf and a short sword in the right hand. Turn him to face RIGHT in a side-view idle stance for a side-scrolling game.\nStyle priority: faithfully match Image 1. Extremely simple, squat, cute chibi doodle with a large rounded head and tiny chunky body, very short stubby legs, mitten hands, tiny solid black oval eye, almost no facial features. The head including hair is roughly half the standing height, as in Image 1. Thick near-black slightly irregular outlines, simple compact shapes and very few interior lines. Each material is a flat color with at most one small hard-edged shadow patch. Minimal light gray armor is only a plain small shoulder shape; the blue shirt is the dominant torso shape.\nComposition: single whole character centered, sword and scarf fully visible, boots on one baseline. Transparent background.\nAvoid: glossy armor, shiny metal reflections, realistic anatomy, modeled volume, gradients, rim lighting, soft shading, texture, thin lines, detailed hair strands, elaborate equipment, knee plates, belts with buckles, rivets, segmented gauntlets, white sticker border, shadow under feet. No text or extra objects. Match the reference's simplicity, not a polished 3D mobile game render.",
+    "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-ceccc839-6354-4e5c-bdc7-6d462b192161.png",
+    "source": "reference.png"
+  },
+  "clips": [
+    {
+      "key": "idle",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact hero model. Keep the same simple flat chibi drawing, thick black outlines, big head, very short legs, mitten hands, brown hair, blue tunic, red scarf, small gray shoulder armor and short sword. No new details.\nComposition: ONE horizontal row of equal-width square cells. Entire character and sword in each cell with generous transparent gaps. Every pose looks RIGHT. Same head and body size in all frames. Boots aligned to one ground baseline. Transparent background with no grid, no labels, no shadow. Render as simple inked cartoon color shapes, no glossy 3D surfaces.\nProduction scale: each square cell uses the same zoom; a standing body occupies exactly 58.6% of cell height from hair tip to boot soles; boots at 75% of cell height. Leave transparent space around the small character; do not zoom to fill the sheet.\n\nPrimary request: exactly TWO frames of a breathing IDLE loop. Frame 1 neutral standing, short sword in right hand angled up toward the right. Frame 2 subtly squashes downward and widens by only 3%, knees bend a little; boots stay planted. No walking or big pose changes. 2:1 canvas, two square cells.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-0f2b99d1-610f-4c4b-8bd4-eb573779c5d0.png",
+      "source": "idle.png",
+      "final": "../../../actors/hero/idle.png"
+    },
+    {
+      "key": "attack",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nAsset type: 4-frame game sprite animation strip\nInput images: Image 1 is the hero design reference. Image 2 is the attack strip to correct.\nPrimary request: preserve the exact FOUR attack poses, drawing style and colors of Image 2, but make the reaching right arm and sword in the THIRD frame much shorter so the hit pose fits the square sprite cell when the BODY is centered.\nOnly change: in frame 3 shorten the extended arm by about 30% and the blade by about 30%. Keep the arm and sword pointing horizontally RIGHT at full extension. The hero must have a stubby mitten arm like the reference, not a long human forearm. Blade tip must be no further from torso center than 75% of the standing character height. Keep one sword only. Frame 1 windup, frame 2 deeper windup, frame 3 hit, frame 4 recovery.\nLayout: four equal-width cells, body torso center exactly in middle of each cell, equal camera zoom, ample transparent gap between frames. Do not shift the third body left to fit the sword. Everything fully contained. Same thick black line, big head, flat brown hair, blue tunic, red scarf. Transparent background, no ground shadow, no effects, no labels.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-75bd4264-3430-4d52-a908-5fe37f33779b.png",
+      "source": "attack.png",
+      "final": "../../../actors/hero/attack.png"
+    },
+    {
+      "key": "cast",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact hero model. Keep the same simple flat chibi drawing, thick black outlines, big head, very short legs, mitten hands, brown hair, blue tunic, red scarf, small gray shoulder armor and short sword. No new details.\nComposition: ONE horizontal row of equal-width square cells. Entire character and sword in each cell with generous transparent gaps. Every pose looks RIGHT. Same head and body size in all frames. Boots aligned to one ground baseline. Transparent background with no grid, no labels, no shadow. Render as simple inked cartoon color shapes, no glossy 3D surfaces.\nProduction scale: each square cell uses the same zoom; a standing body occupies exactly 58.6% of cell height from hair tip to boot soles; boots at 75% of cell height. Leave transparent space around the small character; do not zoom to fill the sheet.\n\nPrimary request: exactly FOUR frames casting a small light spell, left to right. Frame 1 raises the free left hand toward the RIGHT, a small cyan light gathers above its palm. Frame 2 closes eyes and the cyan light grows. Frame 3 the spell ACTIVATES: a compact bright pale cyan four-point burst just beyond the palm, pointing right. Frame 4 the light vanishes and the hero returns to the normal idle stance with sword angled up. The RIGHT hand always holds the short sword, lowered beside the body for the first three frames. Keep one sword only, don't replace the sword with magic. Same design and proportions in all frames. Spell is small, hard-edged flat cartoon shapes, no huge aura, no projectile, no effects around the feet. Wide horizontal 4:1 canvas, four square cells with generous transparent gaps.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-7673f8de-210b-47c5-9212-f7c3bc51d701.png",
+      "source": "cast.png",
+      "final": "../../../actors/hero/cast.png"
+    },
+    {
+      "key": "hit",
+      "count": 2,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact hero model. Keep the same simple flat chibi drawing, thick black outlines, big head, very short legs, mitten hands, brown hair, blue tunic, red scarf, small gray shoulder armor and short sword. No new details.\nComposition: ONE horizontal row of equal-width square cells. Entire character and sword in each cell with generous transparent gaps. Every pose looks RIGHT. Same head and body size in all frames. Boots aligned to one ground baseline. Transparent background with no grid, no labels, no shadow. Render as simple inked cartoon color shapes, no glossy 3D surfaces.\nProduction scale: each square cell uses the same zoom; a standing body occupies exactly 58.6% of cell height from hair tip to boot soles; boots at 75% of cell height. Leave transparent space around the small character; do not zoom to fill the sheet.\n\nPrimary request: exactly TWO frames of getting HIT. Frame 1 recoils and leans backward to the LEFT, eyes squeezed shut in a wince, face still looking RIGHT, both boots planted, knees bent. The right hand still holds the short sword, now angled outward to the right as the body recoils. Frame 2 recovers toward upright, eyes begin opening, sword returns toward its normal angle. Clear recoil, no blood, no impact icons or stars. Match the big rounded head and stubby body from the reference. 2:1 canvas, two square cells.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-6772cc9f-865c-4a4b-a1b7-e0fc5ba39775.png",
+      "source": "hit.png",
+      "final": "../../../actors/hero/hit.png"
+    },
+    {
+      "key": "die",
+      "count": 3,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact hero model. Keep the same simple flat chibi drawing, thick black outlines, big head, very short legs, mitten hands, brown hair, blue tunic, red scarf, small gray shoulder armor and short sword. No new details.\nComposition: ONE horizontal row of equal-width square cells. Entire character and sword in each cell with generous transparent gaps. Every pose looks RIGHT. Same head and body size in all frames. Boots aligned to one ground baseline. Transparent background with no grid, no labels, no shadow. Render as simple inked cartoon color shapes, no glossy 3D surfaces.\nProduction scale: each square cell uses the same zoom; a standing body occupies exactly 58.6% of cell height from hair tip to boot soles; boots at 75% of cell height. Leave transparent space around the small character; do not zoom to fill the sheet.\n\nPrimary request: exactly THREE frames of being defeated, left to right. Frame 1 staggering, knees buckling and drooping head with curved closed dizzy eyes. Frame 2 collapsing forward toward RIGHT, on one knee, torso tilted forward. Frame 3 lying completely FLAT on the ground, body horizontal, boots to the LEFT, head to the RIGHT, eyes closed, sword resting beside the right hand. Ground baseline remains identical in all three cells. No gore, no letters or X eyes, no stars or gravestones. Preserve the exact same head size, body size and short sword; the fallen pose must not be scaled up to fill its cell. Wide 3:1 canvas, three square cells with transparent gaps.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-360c8349-69ea-4ec7-9ee2-30be2261a270.png",
+      "source": "die.png",
+      "final": "../../../actors/hero/die.png"
+    }
+  ],
+  "rejected": [
+    {
+      "key": "reference",
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view game character sprite reference for a mobile idle RPG battle\nInput images: Image 1 is a VISUAL CHARACTER CONCEPT reference only. Ignore all written content, captions, names, categories and chart layout. Use only the characters' simple rounded fantasy designs, chunky silhouettes, bold nearly black outlines, dot-like eyes and restrained flat colors.\nPrimary request: a young brave knight with short brown hair, a blue tunic over light steel armor, a red scarf and a short sword in the right hand, standing in a relaxed idle pose\nComposition/framing: full body, strict side view facing right, centered, feet on one flat baseline, nothing cropped\nConstraints: transparent background; no ground shadow, no props on the ground, no effects\nCharacter design: one single cute compact knight, head about one third of total body height, large simple visible black oval eye in profile, tiny nose, short rounded brown hair tufts, red scarf tied at neck with a short tail behind to the left, simple steel shoulder plate and bracers over a blue tunic, brown belt and squat brown boots. Small short steel sword with a simple brown grip and gray guard, held in the visible right hand, forward and slightly down. Empty left hand. No helmet, no shield, no cloak, no emblems or accessory objects. Keep the armor and hair very simple, like the small characters in the concept reference, not a detailed rendered illustration.\nProduction constraints: one complete right-facing SIDE PROFILE character only, facing image-right with eye and nose also pointing image-right; no front-facing or three-quarter pose, no multiple views. Crisp thick dark outline, large flat color areas, no texture or gradients. Preserve real transparent alpha outside the character.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-7bb6cbeb-b9ad-46b0-85c5-4a6920400b0c.png"
+    },
+    {
+      "key": "idle",
+      "count": 2,
+      "description": "breathing idle loop: frame 1 neutral, frame 2 slightly lower and wider",
+      "extra": "Both frames keep the sword in the same relaxed forward-upward angle as Image 1. Frame 2 compresses the torso and bends knees only slightly (about 3%), with both boots still planted.",
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D side-view sprite animation strip for a mobile idle RPG battle\nInput images: Image 1: character reference; keep the exact same design, colors, proportions and outline\nPrimary request: breathing idle loop: frame 1 neutral, frame 2 slightly lower and wider for the character in Image 1\nComposition/framing: exactly 2 frames in one horizontal row, equal-width cells, generous empty space between frames so they never touch or overlap; same scale in every frame; feet on the same horizontal baseline in every frame except when falling; strict side view facing right\nConstraints: transparent background; no frame borders, no grid lines; no ground shadow\nAnimation details: Both frames keep the sword in the same relaxed forward-upward angle as Image 1. Frame 2 compresses the torso and bends knees only slightly (about 3%), with both boots still planted.\nProduction layout: a wide 3:1 aspect ratio canvas, conceptually 3000 by 1000 pixels, across ALL clips regardless of frame count. Exactly 2 equal-width cells along this single row. Fixed camera zoom: the standing crown-to-sole body height is about 600 pixels on this conceptual canvas (60% of canvas height), NOT the full height. Ground baseline is y=800 (80% canvas height). Body center is at the middle of each cell, independent of sword or effects. Keep the entire weapon and any effect inside its own cell, including the fully extended sword. The hero has the same physical body and head size in every frame, no resizing to fit each pose, no duplicate characters within a cell. No hidden background, no text or numbering. Match the simple rounded reference exactly.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-35e74708-a89c-49b2-9e1a-e6f364c32bf9.png"
+    },
+    {
+      "key": "attack",
+      "count": 4,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: 2D mobile RPG animation strip\nInput images: Image 1 is the exact hero model. Keep the same simple flat chibi drawing, thick black outlines, big head, very short legs, mitten hands, brown hair, blue tunic, red scarf, small gray shoulder armor and short sword. No new details.\nComposition: ONE horizontal row of equal-width square cells. Entire character and sword in each cell with generous transparent gaps. Every pose looks RIGHT. Same head and body size in all frames. Boots aligned to one ground baseline. Transparent background with no grid, no labels, no shadow. Render as simple inked cartoon color shapes, no glossy 3D surfaces.\nProduction scale: each square cell uses the same zoom; a standing body occupies exactly 58.6% of cell height from hair tip to boot soles; boots at 75% of cell height. Leave transparent space around the small character; do not zoom to fill the sheet.\n\nPrimary request: exactly FOUR frames of a sword slash, from left to right. Frame 1: wind-up, sword pulled back above shoulder. Frame 2: deeper wind-up, knees bent, sword back overhead. Frame 3: HIT POSE, sword arm and blade extended fully to the RIGHT horizontally at chest level, leaning slightly forward. Frame 4: recovery, sword returns to relaxed upward angle. Keep sword in right hand. Only one sword per frame. NO slash effects or trails. All four heads the exact same size. Wide horizontal 4:1 canvas, four square cells with full transparent margins.",
+      "originalPath": "~/.codex/generated_images/01a16723-1d25-7c92-90bb-550505547d2d/exec-91c2b6fc-52f7-4a9e-8bdb-593f061d3c79.png"
+    }
+  ],
+  "styleReference": "style-reference.png",
+  "conceptReference": "concept-reference.png",
+  "postprocess": {
+    "runtime": "~/.venvs/art (Pillow 11.3.0)",
+    "scriptLocation": "/private/tmp/finish-idle-hero.py",
+    "notes": [
+      "원본 PNG와 생성 알파를 보존했습니다. 알파 16을 기준으로 실루엣을 찾아 분리하고 외곽의 원래 알파도 포함했습니다.",
+      "생성기가 출력한 서로 다른 해상도는 각 시트의 셀 너비를 1024로 환산하여 통일했습니다. 이후 모든 클립과 프레임에 하나의 공통 배율을 적용했습니다.",
+      "대기 첫 프레임의 머리부터 발끝까지 높이는 150픽셀입니다. 몸 중심은 x=128, 서 있는 프레임의 발끝은 y=192입니다.",
+      "사망 프레임은 넘어진 몸이 같은 바닥 줄에 닿도록 정렬했습니다.",
+      "RGBA는 premultiplied-alpha LANCZOS로 축소했습니다. 캐릭터 내부의 색과 알파를 다시 칠하지 않았습니다.",
+      "시안과 달랐던 초기 기준·대기, 검이 셀 범위를 벗어났던 공격 원본은 rejected/에 보존했습니다."
+    ],
+    "measurements": {
+      "normalizedCellWidth": 1024,
+      "commonScale": 0.18968122718978103,
+      "clips": {
+        "idle": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "resolutionNormalization": 1.1544532130777903,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                83,
+                114,
+                850,
+                799
+              ],
+              "bodyCenterX": 447,
+              "groundY": 799,
+              "finalBounds": [
+                48,
+                42,
+                216,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                930,
+                162,
+                1691,
+                798
+              ],
+              "bodyCenterX": 1298,
+              "groundY": 798,
+              "finalBounds": [
+                47,
+                52,
+                214,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "attack": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "resolutionNormalization": 1.8858195211786373,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                56,
+                154,
+                497,
+                591
+              ],
+              "bodyCenterX": 291,
+              "groundY": 591,
+              "finalBounds": [
+                44,
+                35,
+                202,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                576,
+                148,
+                1043,
+                592
+              ],
+              "bodyCenterX": 804,
+              "groundY": 592,
+              "finalBounds": [
+                46,
+                32,
+                214,
+                192
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1061,
+                168,
+                1605,
+                592
+              ],
+              "bodyCenterX": 1279,
+              "groundY": 592,
+              "finalBounds": [
+                50,
+                40,
+                245,
+                192
+              ]
+            },
+            {
+              "frame": 4,
+              "sourceBounds": [
+                1682,
+                147,
+                2140,
+                593
+              ],
+              "bodyCenterX": 1913,
+              "groundY": 593,
+              "finalBounds": [
+                45,
+                32,
+                210,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            1024,
+            256
+          ]
+        },
+        "cast": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "resolutionNormalization": 1.8858195211786373,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                39,
+                142,
+                514,
+                580
+              ],
+              "bodyCenterX": 296.5,
+              "groundY": 580,
+              "finalBounds": [
+                36,
+                35,
+                207,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                584,
+                142,
+                1075,
+                580
+              ],
+              "bodyCenterX": 839,
+              "groundY": 580,
+              "finalBounds": [
+                36,
+                35,
+                212,
+                192
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1106,
+                140,
+                1633,
+                580
+              ],
+              "bodyCenterX": 1363.5,
+              "groundY": 580,
+              "finalBounds": [
+                36,
+                34,
+                224,
+                192
+              ]
+            },
+            {
+              "frame": 4,
+              "sourceBounds": [
+                1679,
+                140,
+                2140,
+                579
+              ],
+              "bodyCenterX": 1909,
+              "groundY": 579,
+              "finalBounds": [
+                45,
+                34,
+                211,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            1024,
+            256
+          ]
+        },
+        "hit": {
+          "sourceSize": [
+            1774,
+            887
+          ],
+          "resolutionNormalization": 1.1544532130777903,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                90,
+                132,
+                936,
+                803
+              ],
+              "bodyCenterX": 512.5,
+              "groundY": 803,
+              "finalBounds": [
+                35,
+                45,
+                221,
+                192
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                933,
+                120,
+                1742,
+                803
+              ],
+              "bodyCenterX": 1317,
+              "groundY": 803,
+              "finalBounds": [
+                44,
+                42,
+                222,
+                192
+              ]
+            }
+          ],
+          "finalSize": [
+            512,
+            256
+          ]
+        },
+        "die": {
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "resolutionNormalization": 1.4143646408839778,
+          "frames": [
+            {
+              "frame": 1,
+              "sourceBounds": [
+                48,
+                106,
+                664,
+                621
+              ],
+              "bodyCenterX": 281,
+              "groundY": 611,
+              "finalBounds": [
+                65,
+                56,
+                231,
+                195
+              ]
+            },
+            {
+              "frame": 2,
+              "sourceBounds": [
+                762,
+                178,
+                1368,
+                623
+              ],
+              "bodyCenterX": 969.5,
+              "groundY": 611,
+              "finalBounds": [
+                72,
+                76,
+                235,
+                196
+              ]
+            },
+            {
+              "frame": 3,
+              "sourceBounds": [
+                1476,
+                275,
+                2136,
+                628
+              ],
+              "bodyCenterX": 1806,
+              "groundY": 607,
+              "finalBounds": [
+                39,
+                103,
+                217,
+                198
+              ]
+            }
+          ],
+          "finalSize": [
+            768,
+            256
+          ]
+        }
+      }
+    }
+  }
+}

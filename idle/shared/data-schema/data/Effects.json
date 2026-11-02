@@ -1,0 +1,118 @@
+[
+  {
+    "id": 4001,
+    "kind": "damage",
+    "durationSeconds": 4,
+    "maxStacks": 3,
+    "stat": null,
+    "tickSeconds": 1,
+    "power": 0.15000000596046448,
+    "effectIds": null,
+    "note": "독: 겹마다 1초에 공격력의 15%"
+  },
+  {
+    "id": 4002,
+    "kind": "damage",
+    "durationSeconds": 3,
+    "maxStacks": 1,
+    "stat": null,
+    "tickSeconds": 0.5,
+    "power": 0.11999999731779099,
+    "effectIds": null,
+    "note": "화상: 0.5초마다 공격력의 12%"
+  },
+  {
+    "id": 4003,
+    "kind": "stun",
+    "durationSeconds": 1.5,
+    "maxStacks": 1,
+    "stat": null,
+    "tickSeconds": null,
+    "power": null,
+    "effectIds": null,
+    "note": "기절"
+  },
+  {
+    "id": 4004,
+    "kind": "stat",
+    "durationSeconds": 4,
+    "maxStacks": 1,
+    "stat": "attackInterval",
+    "tickSeconds": null,
+    "power": 0.5,
+    "effectIds": null,
+    "note": "둔화: 공격 간격 +50%"
+  },
+  {
+    "id": 4005,
+    "kind": "stat",
+    "durationSeconds": 10,
+    "maxStacks": 1,
+    "stat": "attack",
+    "tickSeconds": null,
+    "power": 0.30000001192092896,
+    "effectIds": null,
+    "note": "공격력 +30%"
+  },
+  {
+    "id": 4006,
+    "kind": "heal",
+    "durationSeconds": 0,
+    "maxStacks": 1,
+    "stat": null,
+    "tickSeconds": 1,
+    "power": 1.5,
+    "effectIds": null,
+    "note": "즉시 회복: 공격력의 150%"
+  },
+  {
+    "id": 4007,
+    "kind": "heal",
+    "durationSeconds": 5,
+    "maxStacks": 1,
+    "stat": null,
+    "tickSeconds": 1,
+    "power": 0.20000000298023224,
+    "effectIds": null,
+    "note": "지속 회복: 1초마다 공격력의 20%"
+  },
+  {
+    "id": 4008,
+    "kind": "shield",
+    "durationSeconds": 8,
+    "maxStacks": 1,
+    "stat": null,
+    "tickSeconds": null,
+    "power": 2,
+    "effectIds": null,
+    "note": "보호막: 공격력의 200% 흡수"
+  },
+  {
+    "id": 4009,
+    "kind": "cleanse",
+    "durationSeconds": 3,
+    "maxStacks": 1,
+    "stat": null,
+    "tickSeconds": null,
+    "power": null,
+    "effectIds": [
+      4001,
+      4002,
+      4003,
+      4004,
+      4010
+    ],
+    "note": "정화: 해로운 효과를 풀고 3초 동안 막음"
+  },
+  {
+    "id": 4010,
+    "kind": "stat",
+    "durationSeconds": 4,
+    "maxStacks": 1,
+    "stat": "moveSpeed",
+    "tickSeconds": null,
+    "power": -0.5,
+    "effectIds": null,
+    "note": "둔화(이동): 이동 속도 −50%"
+  }
+]

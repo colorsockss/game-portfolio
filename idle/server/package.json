@@ -1,0 +1,31 @@
+{
+  "name": "@idle/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./save": "./src/save.ts",
+    "./testing": "./src/testing.ts",
+    "./transport": "./src/transport.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage --coverage.include=src/** --coverage.reporter=text --coverage.reporter=text-summary",
+    "build": "node tools/build.mjs",
+    "start": "node --enable-source-maps dist/main.mjs"
+  },
+  "dependencies": {
+    "@idle/big-number": "*",
+    "@idle/codes": "*",
+    "@idle/data-schema": "*",
+    "@idle/game-core": "*",
+    "@idle/protocol": "*",
+    "@msgpack/msgpack": "^3.1.2",
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "@types/ws": "8.18.2"
+  }
+}

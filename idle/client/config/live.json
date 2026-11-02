@@ -1,0 +1,1 @@
+{ "environment": "live", "server": "wss://idle.dennou.cloud", "patch": "https://idle.dennou.cloud/patch/" }

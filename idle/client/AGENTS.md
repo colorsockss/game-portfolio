@@ -1,0 +1,49 @@
+# idle/client/ (Unity + PuerTS)
+
+Unity 6000.6 + PuerTS 3.0.3 프로젝트 루트입니다. 게임 로직은 `TypeScript/`에 있고, C#은 부트스트랩과 엔진 브리지만 맡습니다.
+
+- C#에 게임 로직과 상태를 두지 않습니다. TS가 부르는 API는 `Assets/Scripts/Facades/`에 단순한 타입(int, string, bool, `ArrayBuffer`)으로 만들고 `[Preserve]`를 붙입니다. Facade는 TS가 부르는 얇은 API만 두고, 엔진 작업은 internal 클래스(`UiRoot`, `WorldRoot` 등)로 나눕니다.
+- `Assets/Scripts`는 asmdef로 나뉩니다: `Runtime`(스크립트 환경의 생성·Tick·재시작·정리) → `Facades`(TS가 부르는 엔진 기능) → `Views`(프리팹 컴포넌트). 반대 방향 참조는 컴파일되지 않습니다. Runtime만 부르는 Facades 멤버는 `internal`(InternalsVisibleTo)로 두고, 정리는 `FacadeLifecycle.Shutdown()`에 더합니다.
+- 전투 월드(배우, 데미지 글자, 무대)는 `WorldFacade`로 올립니다. TS가 `Create`/`SetActive`/`Destroy`로 프리팹 인스턴스를 만들고 없애며, 월드 루트와 카메라는 `WorldRoot`가 가집니다. 카메라의 흔들림과 히트스톱(`Shake`, `HitStop`)은 카메라의 `HitFeel`이 하고, 히트스톱은 `Time.timeScale`을 0으로 두므로 전투 연출은 deltaTime으로, 멈춘 동안에도 움직여야 하는 것(페이드, 팝업, 흔들림)은 unscaled 시간으로 움직입니다. UI 캔버스는 `UiFacade`이고 전투 월드와 섞지 않습니다.
+- 애니메이션은 Views 컴포넌트(`ActorView`, `SpriteAnimator`, `EffectIcons`, `ProjectileView`, `FloatingText`)의 `Update`에서 합니다. 배우 몸의 프레임은 `SpriteAnimator`가 클립 묶음(`SpriteClipSet`)에서 넣고, 움직임은 짧은 보간입니다. TS는 `Attack(clip, impactSeconds)`, `Hit(hpRatio)`처럼 상태를 바꾸는 호출만 하고 프레임마다 위치나 프레임을 밀지 않습니다. 전투 규칙은 C#이 모르고 보이는 모양(클립 묶음, 위치, 색, 크기, HP 비율)만 쥡니다.
+- C#이 JS 함수를 쥐지 않습니다(재시작 때 스크립트 환경을 새로 만듦). 이벤트는 큐에 쌓고 TS가 `Poll`로 가져갑니다. 백그라운드 스레드에서 JS나 Unity API를 부르지 않습니다.
+- TS가 쓰는 public 타입은 `PortfolioIdleRpg.Facades`·`PortfolioIdleRpg.Views` 네임스페이스에 둡니다. C# API를 바꾸면 Unity가 `TypeScript/types/csharp.d.ts`를 다시 생성합니다(API가 바뀌면 자동, 수동은 `Tools/TypeScript/Generate Typings`, 배치는 `-executeMethod PortfolioIdleRpg.Editor.TypeScriptTypings.Generate`). 손으로 고치지 않고 생성 결과를 함께 커밋합니다.
+- Player 설정의 `runInBackground`가 켜져 있어서, 에디터 창에 포커스가 없어도 플레이 모드가 멈추지 않습니다(PC 빌드도 비활성 창에서 계속 돕니다). 끄면 포커스를 잃을 때 플레이어 루프가 멈춰 로그인 같은 진행이 멈춥니다.
+- `Packages/core`, `Packages/v8`(PuerTS)는 저장소에 없고 `npm run setup`(`TypeScript/tools/install-puerts.mjs`)이 공식 릴리스에서 받습니다. 이 둘과 `Library/`, `*.csproj` 같은 생성물은 고치지 않습니다.
+- `Assets/Gen/`은 IL2CPP 플레이어가 쓰는 PuerTS의 C++ 연결 코드이고 `Tools/TypeScript/Generate IL2CPP Bridge`(`Assets/Editor/TypeScript/PuertsIl2cpp.cs`, 배치는 `-executeMethod PortfolioIdleRpg.Editor.PuertsIl2cpp.Generate`)가 만듭니다. 생성물이라 손으로 고치지 않고, C# API(파사드, 뷰 컴포넌트)를 바꾸면 다시 만들어 함께 커밋합니다. 연결 코드는 에디터에 올라온 어셈블리를 모두 훑어서, 에디터 전용 패키지가 더해지면 같은 C#이어도 diff가 생깁니다(2026-11-02 gRPC). TS가 직접 부르는 엔진 타입(`TypeScript/src/unity/binding/components.ts`의 `UnityTypes`와 그 이벤트)을 더하면 `TypeScriptTypings.cs`의 `[Binding]`에도 넣고 다시 만듭니다. 그 목록이 `Assets/Gen/link.xml`이 되어 IL2CPP가 C#에서 부르지 않는 엔진 멤버를 잘라내지 않습니다. 빠지면 에디터에서는 돌고 기기에서만 `… is not a function`이 나고(2026-11-02 `RemoveListener`), 테스트 `il2cpp-preserve`가 막습니다. PuerTS 3.0.3이 Unity 6000.6의 IL2CPP에서 없어진 `il2cpp::vm::Object::Unbox`를 부르므로 이 메뉴가 `Object::GetRawData`로 바꾸고, 빌드 전 검사(`PuertsIl2cppValidation`)가 그것을 확인합니다.
+- `Assets/`의 파일은 `.meta`와 함께 커밋하고 GUID를 바꾸지 않습니다. Unity 없이 추가한 파일은 `.meta`가 없다고 알립니다. 문서는 `Assets/`에 두지 않습니다.
+- 앱에는 패치를 마칠 때까지 필요한 것만 들고 나머지는 패치로 받습니다(MANUAL의 패치). TS는 부트 번들(`Resources/TypeScript/boot.mjs`, `npm run build:release`의 출력이라 커밋하지 않음)과 게임 번들(받음)로 나뉘고, 런타임이 부트를 먼저 띄운 뒤 부트가 `RuntimeFacade.StartGame`을 부르면 게임으로 바꿉니다. 재시작은 늘 부트부터입니다.
+  - 에셋은 패치 뒤에 쓰는 것을 `Assets/Remote/`에, 부트(패치 화면)가 쓰는 것만 `Assets/Resources/`에 둡니다. 키는 둘 다 그 아래 경로(`UI/MainScreen`)라 TS는 어디에 있는지 모르고, 옮겨도 키는 그대로입니다. `Assets/Remote`의 바로 아래 폴더 하나가 Addressables 원격 그룹 하나이고, 그룹과 주소는 `RemoteContent.Sync`(`Tools/Addressables/Sync Remote Groups`)가 폴더에서 맞추며 에셋이 바뀌면 저절로 다시 맞추므로 Groups 창에서 손으로 고치지 않습니다. 에셋을 패치에 넣으려면 `Tools/Addressables/Build Remote Content` 뒤에 `npm run build:release`를 합니다.
+  - 에디터에서 Release로 Android용 번들을 불러오면 셰이더가 맞지 않아 분홍으로 보입니다. 화면은 Development나 기기에서 확인합니다.
+  - 패치는 로컬 버킷(`TypeScript/dist/patch/`, Live VPS의 패치 폴더와 같은 레이아웃)에 더합니다. 다시 쓰는 것은 채널 포인터(`channels/Android/<API 지문>.json`)뿐이고, 버전 폴더(`v/<버전>/`)와 에셋 번들(`aa/Android/`)은 한 번 쓰면 고치지 않습니다. C#의 public API를 바꾸면 API 지문이 바뀌므로 `build:release`를 다시 해야 플레이어를 빌드할 수 있고, 그 패치는 같은 API의 새 앱과 함께 냅니다.
+  - Live 내보내기는 단위 액션(`.github/workflows/idle-*.yml`)으로 하고, 일은 공용 워크플로 `idle-release.yml`에만 둡니다. 규칙 테이블은 서버와 함께 공개하되 따로 올립니다(`idle data` → `idle server`를 `publish` 없이 → `idle publish / rollback`), `idle/shared/`를 바꾼 게임 TS는 서버와, C# API를 바꾼 APK는 전체 패치와 함께 냅니다. 액션 이름(`name:`)은 영어입니다. 사용법은 [docs/release.md](../docs/release.md)에 있고, 워크플로를 바꾸면 함께 고칩니다.
+- 앱이 붙는 게임 서버와 패치 버킷은 `config/local.json`·`live.json`(앱 설정)에만 적고 코드에 주소를 두지 않습니다. 플레이어 빌드가 고른 것(`-idleEnvironment`, 없으면 `local`)을 `Resources/AppConfig.json`으로 넣고(커밋하지 않음), 에디터는 늘 `local.json`을 읽습니다. 주소는 비밀이 아니고, 비밀값은 GitHub Secrets에만 둡니다.
+- 씬·프리팹·`.asset`을 손으로 고쳤다면 Unity에서 열어 보기 전까지는 확인되지 않은 변경입니다.
+- 전투 프리팹(`Remote/Battle/Actor`, `Projectile`, `DamageText`, `Stage`)은 `Tools/Battle/Build Prefabs`(`Assets/Editor/Battle/BattlePrefabs.cs`)가 코드로 만들고, 그 전에 배우와 발사체의 클립 묶음(`Assets/Battle/Clips`, `ActorClips.cs`)과 스테이지 배경(`Assets/Battle/Backgrounds`, `Backgrounds.cs`)을 다시 만듭니다. 그림이 있는 12개 묶음(영웅, 일반 몬스터 8종, 보스 2종, 정령 늑대)은 `Assets/Battle/Actors/묶음 이름/클립 이름.png`(정사각 프레임을 가로로 이은 한 장: 영웅·고블린 3종·골렘·오우거 256×256, 슬라임 2종·멧돼지·늑대 2종·드래곤 384×384)를 `ActorArt.cs`가 임포트하고 잘라서 쓰므로, 그림을 바꾸면 파일만 바꾸고 다시 빌드합니다. `special.png`가 있는 폴더에는 보스 전용 5프레임 클립도 더합니다. 모든 배우 원본은 오른쪽을 보고, `ActorView.Setup`의 `facing`이 음수면 몸의 `SpriteRenderer.flipX`로 반전합니다(HP 바·효과는 그대로). 그림이 없는 묶음은 코드로 그린 임시 클립이고, 그 하위 에셋(텍스처, 스프라이트)은 다시 그릴 때마다 fileID가 바뀌므로 그 변경(`monster`, `boss`, `summon`, `projectiles`)은 커밋하지 않고 되돌립니다. 원본의 방향처럼 실제 그림 내용이 바뀐 묶음은 새 에셋을 유지합니다. 구조를 바꾸려면 이 스크립트를 고치고 다시 실행합니다(같은 경로를 덮어쓰므로 GUID가 그대로입니다).
+- UI 프리팹(`Remote/UI/`, 패치 화면의 둘은 `Resources/UI/`)도 모두 `Tools/UI/` 메뉴의 빌더(`Assets/Editor/UI/`)가 코드로 만듭니다. 메인과 로그인(`ScreenPrefabs.cs`)도 손으로 고치지 않습니다.
+  - 색, 글꼴 크기, 간격, 9-slice 스프라이트는 테마 에셋(`Assets/Editor/UI/UiTheme.asset`, `UiTheme.cs`) 하나에서 읽습니다. 빌더에 색이나 크기 상수를 새로 두지 않습니다.
+  - UI 그림은 `Assets/UI/Sprites/`에 둡니다. 이 폴더를 통째로 SpriteAtlas(`Assets/UI/Ui.spriteatlasv2`, 회전·타이트 패킹 끔)가 묶으므로 그림을 더해도 아틀라스를 고치지 않습니다. 9-slice 테두리는 그림의 임포트 설정(`.meta`)에 있습니다. 아이콘은 `Assets/UI/Sprites/Icons/`이고 파일 이름이 `Items.icon`의 이름입니다. 임포트 설정과 묶음(`Assets/UI/Icons.asset`)은 `UiIcons.cs`가 맞추므로 손으로 고치지 않고, 빌더가 아이콘 칸을 놓을 때는 `UiIcons.Add`(이름으로 고름)나 `UiIcons.AddFixed`(정해진 그림)를 씁니다. 원본과 출처는 `idle/art/`와 [docs/art.md](../docs/art.md)에 있습니다.
+  - 부트의 패치 화면(앱에 드는 `TransitionScreen`, `NoticePopup`)이 쓰는 그림(버튼, 패널, 게이지)은 `Assets/UI/BootSprites/`에 두고 그 폴더를 따로 묶는 아틀라스(`Assets/UI/Boot.spriteatlasv2`, 같은 설정)가 있어서, 앱에는 이 작은 아틀라스만 듭니다. 그림 하나는 한 아틀라스에만 둡니다. 패치 화면이 새 그림을 쓰면 BootSprites에, 아니면 Sprites에 둡니다.
+  - 버튼 종류, 뱃지, 탭 막대, 팝업 틀, 게이지, 토글, 슬라이더, 입력란은 공용 부품(`Assets/UI/Parts/`, `Tools/UI/Build Parts`의 `UiParts.cs`)이고, 화면은 `UiParts.Add…`로 중첩 프리팹을 넣습니다. 부품을 고치고 다시 빌드하면 모든 화면이 바뀝니다.
+  - 팝업은 `UiSpec.Popup(이름, 너비, 높이)`에 머리(`Header`), 글자(`Text`), 탭(`Tabs`), 줄(`Row`, `Stack`), 목록(`List`), 본문(`Body`), 아래 버튼(`Footer`), 아래쪽에 고정한 판(`Dock`, 장비의 강화·합성 패널)을 위에서부터 쌓는 명세로 적습니다. 명세가 ViewRefs 항목 이름을 정하고 TS 뷰가 그 이름으로 바인딩하므로, 옮기거나 고칠 때 항목 이름을 바꾸지 않습니다.
+- 디버그 오버레이(`Remote/UI/DebugOverlay`)는 개발 빌드(`BUILD_MODE`)에서만 열립니다.
+- 튜토리얼 오버레이(`Remote/UI/TutorialOverlay`)가 비출 대상은 다른 뷰의 ViewRefs 항목 이름이라(`main.equipmentButton`), 항목 이름을 바꾸면 `idle/data/TutorialSteps.xlsx`의 `target`도 바꿉니다.
+- 빌더는 프리팹을 `PrefabUtility.SaveAsPrefabAsset` 대신 `PrefabIds.Save`(UI 빌더는 `UiPrefabs.Save`)로 저장합니다. Unity는 덮어쓸 때 오브젝트를 이름으로만 맞춰서 이름이 겹치는 오브젝트(버튼마다 있는 `Text (TMP)`, 칸마다 있는 `Name`)의 fileID를 매번 새로 만드는데, `PrefabIds`가 계층 경로와 컴포넌트 종류로 지난 파일의 fileID를 되돌립니다. 그래서 빌더를 다시 돌려도 내용이 바뀐 프리팹만 diff에 나오고, 중첩 프리팹이 가리키는 fileID도 그대로입니다.
+- UI 빌더를 모두 다시 돌릴 때는 `Tools/UI/Build All Prefabs`(`Assets/Editor/UI/AllUiPrefabs.cs`)가 부품 → 위젯 → 메인·로그인 → 가방 → 장비 → 강화 → 스킬 → 환생 → 설정 → 튜토리얼 → 디버그 순서로 부릅니다. 뒤 빌더가 앞 빌더의 결과를 쓰므로, 새 UI 빌더를 만들면 여기에 순서를 맞춰 더합니다.
+- 프리팹에 화면 글자를 적지 않습니다. 빌더는 버튼 이름, 제목 같은 고정 글자를 비워 두고 그 `TMP_Text`를 ViewRefs 항목(`…Label`)으로 내놓으며, TS 뷰의 바인딩 표가 `label("키")`로 지금 언어의 문장을 채웁니다(키는 `idle/data/Strings.xlsx`).
+- 스크롤 목록과 그리드는 LoopScrollRect(UPM git 패키지, MIT, `Packages/manifest.json`이 커밋 해시로 고정) 위의 `ScrollList`로 만듭니다. 칸 하나가 원소 하나이고, 명세의 `List`(세로 목록, 칸 높이는 칸의 `LayoutElement`)나 `Grid`(열 수 고정)로 놓습니다. 스크롤러의 콜백은 TS API에 들지 않게 `ScrollList`의 private 클래스에 둡니다. 저장소를 공개할 것이라 Asset Store 에셋처럼 재배포할 수 없는 소스를 넣지 않습니다.
+
+## C# 코딩 규칙
+
+Microsoft의 [식별자 이름](https://learn.microsoft.com/ko-kr/dotnet/csharp/fundamentals/coding-style/identifier-names)과 [코딩 규칙](https://learn.microsoft.com/ko-kr/dotnet/csharp/fundamentals/coding-style/coding-conventions)을 따릅니다.
+
+- **이름**: 형식·네임스페이스·메서드·속성·이벤트·public 필드·상수는 PascalCase, 인터페이스는 `I` 접두사, 매개 변수와 지역 변수는 camelCase입니다. private·internal 인스턴스 필드는 `_camelCase`, 정적 필드(`static readonly` 포함)는 `s_camelCase`, `[ThreadStatic]`은 `t_camelCase`입니다. 약어와 한 글자 이름(루프 카운터 제외)은 쓰지 않습니다.
+- **언어**: `string`·`int` 같은 키워드를 씁니다. `var`는 오른쪽에서 형식이 분명할 때(`new`, 캐스트, 리터럴)만 쓰고, `foreach` 변수는 형식을 적습니다. 짧은 연결은 문자열 보간, 처리할 수 있는 예외만 `catch`, `Dispose`만 하는 `finally`는 `using` 선언으로 씁니다. 정적 멤버는 클래스 이름으로 부르고, `using` 지시문은 네임스페이스 바깥에 둡니다.
+- **모양**: 공백 4칸, Allman 중괄호, 한 줄에 문장·선언 하나, 메서드·속성 사이 빈 줄, 복합 조건은 괄호로 구분합니다.
+- **주석**: 클래스·메서드·필드와 public 멤버는 `/// <summary>` XML 주석으로 설명하고, 짧은 설명은 `//`로 따로 한 줄에 둡니다(줄 끝 주석·`/* */` 금지). `//` 뒤에 공백 하나, 문장은 마침표로 끝냅니다. 주석은 한국어입니다.
+- **예외**:
+  - Unity는 C# 9.0이라 파일 범위 네임스페이스, 원시 문자열, `required`, 컬렉션 식, 기본 생성자는 쓰지 않습니다.
+  - 줄 길이는 65자가 아니라 주변 코드처럼 대략 100자입니다.
+  - Unity 메시지 메서드(`Start`, `Update` 등)는 Unity가 정한 이름 그대로입니다.
+  - 정리 후 다시 던지는 `catch { …; throw; }`와, 잡지 않으면 앱이 죽거나 이벤트를 잃는 스레드 경계의 `catch`는 이유를 주석으로 남기고 씁니다.
+- **직렬화 필드 이름을 바꿀 때**: `[FormerlySerializedAs("옛이름")]`을 붙이고, 그 필드를 담은 프리팹·씬·에셋을 Unity에서 다시 직렬화하고, 에디터 코드의 `FindProperty` 문자열도 바꿉니다. `JsonUtility`로 읽는 필드는 JSON 키와 그 파일을 쓰는 코드를 함께 바꿉니다. TS가 부르는 public API의 이름을 바꾸면 TS 쪽과 `csharp.d.ts`도 함께 바꿉니다.

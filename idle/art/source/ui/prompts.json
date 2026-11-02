@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-23",
+  "createdBy": "colorsocks",
+  "tool": "Codex image_gen",
+  "mode": "기본 내장 도구",
+  "scope": "art-prompts.md의 1. UI 테마 기본 6장",
+  "postprocessing": {
+    "environment": "~/.venvs/art (Pillow 11.3.0)",
+    "approval": "사용자가 Pillow로 중앙 채움과 가장자리 알파를 보정해 완성하는 것을 승인했습니다.",
+    "steps": [
+      "생성 원본은 바이트 그대로 보존했습니다.",
+      "알파 128 초과 영역을 기준으로 여백을 잘랐습니다.",
+      "버튼·패널·입력란의 중앙 구멍을 메우고 복원 경계를 매끄럽게 연결했습니다.",
+      "나머지 그림은 낮은 알파 잡음과 불필요한 내부 반투명을 보정했습니다.",
+      "RGB를 같은 값으로 맞춰 무채색으로 정규화했습니다.",
+      "알파를 곱한 상태에서 LANCZOS로 최종 크기로 줄인 뒤 RGBA PNG로 저장했습니다."
+    ],
+    "nineSliceBorderPixels": {
+      "left": 32,
+      "bottom": 32,
+      "right": 32,
+      "top": 32
+    },
+    "centerRgba": {
+      "button.png": [
+        238,
+        238,
+        238,
+        255
+      ],
+      "panel.png": [
+        232,
+        232,
+        232,
+        255
+      ],
+      "input.png": [
+        226,
+        226,
+        226,
+        255
+      ]
+    }
+  },
+  "selected": [
+    {
+      "source": "button.png",
+      "output": "../../ui/button.png",
+      "size": [
+        128,
+        128
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI sprite for a dark-themed mobile RPG; the game tints it with theme colors at runtime\nPrimary request: rounded rectangle button with a soft bevel, light top highlight, slightly darker bottom edge\nComposition/framing: front view, centered, fills the canvas with a small even margin\nColor palette: white and light gray only, no hue (the game multiplies a color over it)\nConstraints: 9-slice: all decoration within the outer 25% border, center flat and even; transparent background\nProduction constraints: The UI-specific monochrome palette overrides the general style palette and dark outline rule. Use only white and light neutral gray, with no black or colored outline. True transparent alpha background, not a checkerboard drawing; no cast shadow outside the shape. One isolated sprite only. Square 1:1 overall shape with rounded corners. The central 50% in both axes must be one completely uniform flat light-gray or white opaque fill, with no gradient, texture, lighting or decoration in that center. Restrict every bevel, outline, highlight and shadow to the outer 25% border so it can be 9-sliced."
+    },
+    {
+      "source": "panel.png",
+      "output": "../../ui/panel.png",
+      "size": [
+        128,
+        128
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI sprite for a dark-themed mobile RPG; the game tints it with theme colors at runtime\nPrimary request: rounded rectangle panel with a thin inner frame line\nComposition/framing: front view, centered, fills the canvas with a small even margin\nColor palette: white and light gray only, no hue (the game multiplies a color over it)\nConstraints: 9-slice: all decoration within the outer 25% border, center flat and even; transparent background\nProduction constraints: The UI-specific monochrome palette overrides the general style palette and dark outline rule. Use only white and light neutral gray, with no black or colored outline. True transparent alpha background, not a checkerboard drawing; no cast shadow outside the shape. One isolated sprite only. Square 1:1 overall shape with rounded corners. The central 50% in both axes must be one completely uniform flat light-gray or white opaque fill, with no gradient, texture, lighting or decoration in that center. Restrict every bevel, outline, highlight and shadow to the outer 25% border so it can be 9-sliced.\nThe panel is a filled solid pale-gray (#D0D0D0) plaque with a thin light gray inner line. It has a completely solid opaque interior surface, not an open frame. Transparent pixels only outside the silhouette."
+    },
+    {
+      "source": "gauge.png",
+      "output": "../../ui/gauge.png",
+      "size": [
+        256,
+        32
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI sprite for a dark-themed mobile RPG; the game tints it with theme colors at runtime\nPrimary request: horizontal progress bar fill with a glossy top highlight\nComposition/framing: front view, centered, fills the canvas with a small even margin\nColor palette: white and light gray only, no hue (the game multiplies a color over it)\nConstraints: wide horizontal bar, about 8:1, flat ends; transparent background\nProduction constraints: The UI-specific monochrome palette overrides the general style palette and dark outline rule. Use only white and light neutral gray, with no black or colored outline. True transparent alpha background, not a checkerboard drawing; no cast shadow outside the shape. One isolated sprite only."
+    },
+    {
+      "source": "dot.png",
+      "output": "../../ui/dot.png",
+      "size": [
+        64,
+        64
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI sprite for a dark-themed mobile RPG; the game tints it with theme colors at runtime\nPrimary request: small round dot with subtle shading\nComposition/framing: front view, centered, fills the canvas with a small even margin\nColor palette: white and light gray only, no hue (the game multiplies a color over it)\nConstraints: perfect circle; transparent background\nProduction constraints: The UI-specific monochrome palette overrides the general style palette and dark outline rule. Use only white and light neutral gray, with no black or colored outline. True transparent alpha background, not a checkerboard drawing; no cast shadow outside the shape. One isolated sprite only."
+    },
+    {
+      "source": "check.png",
+      "output": "../../ui/check.png",
+      "size": [
+        64,
+        64
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI sprite for a dark-themed mobile RPG; the game tints it with theme colors at runtime\nPrimary request: bold check mark\nComposition/framing: front view, centered, fills the canvas with a small even margin\nColor palette: white and light gray only, no hue (the game multiplies a color over it)\nConstraints: single check mark only; transparent background\nProduction constraints: The UI-specific monochrome palette overrides the general style palette and dark outline rule. Use only white and light neutral gray, with no black or colored outline. True transparent alpha background, not a checkerboard drawing; no cast shadow outside the shape. One isolated sprite only."
+    },
+    {
+      "source": "input.png",
+      "output": "../../ui/input.png",
+      "size": [
+        128,
+        128
+      ],
+      "transparent_background": true,
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI sprite for a dark-themed mobile RPG; the game tints it with theme colors at runtime\nPrimary request: inset rounded rectangle text field with a faint inner shadow at the top\nComposition/framing: front view, centered, fills the canvas with a small even margin\nColor palette: white and light gray only, no hue (the game multiplies a color over it)\nConstraints: 9-slice: all decoration within the outer 25% border, center flat and even; transparent background\nProduction constraints: The UI-specific monochrome palette overrides the general style palette and dark outline rule. Use only white and light neutral gray, with no black or colored outline. True transparent alpha background, not a checkerboard drawing; no cast shadow outside the shape. One isolated sprite only. Square 1:1 overall shape with rounded corners. The central 50% in both axes must be one completely uniform flat light-gray or white opaque fill, with no gradient, texture, lighting or decoration in that center. Restrict every bevel, outline, highlight and shadow to the outer 25% border so it can be 9-sliced.\nThe center is an actual solid opaque light gray surface. Only pixels outside the exterior rounded boundary should be transparent; the inset center is not a hole. Keep the inset rim shallow and thin."
+    }
+  ],
+  "unused": [
+    {
+      "file": "rejected/button-02.png",
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI sprite for a dark-themed mobile RPG; the game tints it with theme colors at runtime\nPrimary request: rounded rectangle button with a soft bevel, light top highlight, slightly darker bottom edge\nComposition/framing: front view, centered, fills the canvas with a small even margin\nColor palette: white and light gray only, no hue (the game multiplies a color over it)\nConstraints: 9-slice: all decoration within the outer 25% border, center flat and even; transparent background\nProduction constraints: The UI-specific monochrome palette overrides the general style palette and dark outline rule. Use only white and light neutral gray, with no black or colored outline. True transparent alpha background, not a checkerboard drawing; no cast shadow outside the shape. One isolated sprite only. Square 1:1 overall shape with rounded corners. The central 50% in both axes must be one completely uniform flat light-gray or white opaque fill, with no gradient, texture, lighting or decoration in that center. Restrict every bevel, outline, highlight and shadow to the outer 25% border so it can be 9-sliced.\nCritical correction: the entire button face is a solid, fully opaque light neutral gray (#D0D0D0) tile, never hollow or see-through. Alpha 255 at every interior pixel, especially the large flat center. Transparency exists ONLY outside the external rounded silhouette. The center is flat solid light gray. Keep the existing softly beveled button design.",
+      "transparent_background": true,
+      "reason": "중앙 알파 누락이 해결되지 않아 최종본에 쓰지 않았습니다."
+    },
+    {
+      "file": "rejected/button-03-edit.png",
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: precise-object-edit\nAsset type: a square, filled game UI button sprite in neutral grayscale\nInput images: Image 1: edit target, a rounded bevel button with an incorrect transparent hole\nPrimary request: Repair the transparency only. Fill ALL of the missing interior, including the irregular dark/transparent patch, with a completely flat, solid opaque white face. This is a SOLID BUTTON, with a filled blank white face, not a frame. Preserve the rounded-square outside outline and shallow edge bevel. Remove the stray matte speckles outside the button. Interior pixels must be alpha 255.\nComposition/framing: same centered square sprite\nColor palette: white and light neutral gray only, no hue; the game multiplies a theme color over it\nConstraints: true transparent background ONLY outside the rounded-square silhouette; the entire inner face is solid white with no hole; all decoration within the outer 25% border; no text, no letters, no numbers, no logos, no watermark. Keep the flat central face filled opaque.\n",
+      "reference": "rejected/button-02.png",
+      "transparent_background": true,
+      "reason": "중앙 알파 누락이 해결되지 않아 최종본에 쓰지 않았습니다."
+    },
+    {
+      "file": "rejected/button-04-matte.png",
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI sprite for a dark-themed mobile RPG; the game tints it with theme colors at runtime\nPrimary request: rounded rectangle button with a soft bevel, light top highlight, slightly darker bottom edge\nComposition/framing: front view, centered, fills the canvas with a small even margin\nColor palette: white and light gray only, no hue (the game multiplies a color over it)\nConstraints: 9-slice: all decoration within the outer 25% border, center flat and even; transparent background\nProduction constraints: The UI-specific monochrome palette overrides the general style palette and dark outline rule. Use only white and light neutral gray, with no black or colored outline. True transparent alpha background, not a checkerboard drawing; no cast shadow outside the shape. One isolated sprite only. Square 1:1 overall shape with rounded corners. The central 50% in both axes must be one completely uniform flat light-gray or white opaque fill, with no gradient, texture, lighting or decoration in that center. Restrict every bevel, outline, highlight and shadow to the outer 25% border so it can be 9-sliced.\nCritical correction: the entire button face is a solid, fully opaque light neutral gray (#D0D0D0) tile, never hollow or see-through. Alpha 255 at every interior pixel, especially the large flat center. Transparency exists ONLY outside the external rounded silhouette. The center is flat solid light gray. Keep the existing softly beveled button design.\nTransparency extraction guidance: Render the white/light-gray solid filled button against a vivid pure magenta (#FF00FF) temporary outside matte, with ZERO magenta inside the button. Then remove ONLY the external magenta matte to true transparent alpha. The flat white/light-gray center is opaque foreground material that MUST survive. Use a narrow bevel within 8% of each edge and a large absolutely flat solid white face. Delivered output is a single transparent PNG with fully opaque button face.",
+      "transparent_background": true,
+      "reason": "중앙 알파 누락이 해결되지 않아 최종본에 쓰지 않았습니다."
+    },
+    {
+      "file": "rejected/button-05-flat.png",
+      "prompt": "Style/medium: 2D mobile idle RPG game art; clean cartoon style with bold dark outlines, flat cel shading with one shadow tone and one highlight tone; slightly chunky proportions (head about one third of body height for humanoids); silhouette readable at small size\nColor palette: saturated but not neon; 3-5 main colors per subject\nLighting/mood: soft light from the top left; cheerful fantasy\nConstraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature\n\nUse case: stylized-concept\nAsset type: game UI sprite for a dark-themed mobile RPG; the game tints it with theme colors at runtime\nPrimary request: rounded rectangle button with a soft bevel, light top highlight, slightly darker bottom edge\nComposition/framing: front view, centered, fills the canvas with a small even margin\nColor palette: white and light gray only, no hue (the game multiplies a color over it)\nConstraints: 9-slice: all decoration within the outer 25% border, center flat and even; transparent background\nVisual construction: draw a simple FILLED WHITE SQUARE WITH ROUNDED CORNERS, like a blank solid white keyboard key seen directly from above. Completely flat opaque white face covering 90% of its width and height. Only a tiny light-gray 3-pixel beveled edge is visible. White solid button, no recessed well, no cavity, no inset center, no frame, no border-shaped object. Crisp flat 2D cartoon art, not 3D rendering, not glass, not metallic. Keep the full blank white face opaque.",
+      "transparent_background": true,
+      "reason": "중앙 알파 누락이 해결되지 않아 최종본에 쓰지 않았습니다."
+    }
+  ]
+}

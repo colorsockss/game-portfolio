@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-28",
+  "revision": "knee-right-arm",
+  "changedFrames": [
+    "attack:3",
+    "die:2"
+  ],
+  "unchangedFrameCount": 17,
+  "sourceAndInstalledPngMatch": true,
+  "spriteMetadataUnchanged": true,
+  "controlledFrames": [
+    "hero_attack_2",
+    "hero_die_1"
+  ],
+  "checks": 6,
+  "directions": [
+    1,
+    -1,
+    1
+  ],
+  "attackImpactIndex": 2,
+  "observedInBattle": [
+    "hero_attack_2"
+  ],
+  "unexpectedHeroFlipInBattle": false,
+  "frameAdvanceProof": {
+    "initialValue": 2805,
+    "value": 2811,
+    "framesObserved": 2,
+    "met": true
+  },
+  "unityConsoleErrors": 0,
+  "unityConsoleWarnings": 0,
+  "typecheck": "passed",
+  "test": "passed",
+  "restoredPreviousLoginAndFont": true,
+  "playModeStopped": true,
+  "sha256": {
+    "attack": "96b383df7fa56072c270ecb71bd59e9b2c21e0cc0b241f90c25ab37e849e258c",
+    "die": "8d3cb0fc606581f5addf4e5968dc911a33f5335bd283df3967eaf711f496b008"
+  },
+  "previousVerification": "art/source/actors/hero/before-knee-and-right-hand-fix-2026-10-28/verification.json"
+}
