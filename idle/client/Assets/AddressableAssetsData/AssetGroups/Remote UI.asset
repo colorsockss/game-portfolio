@@ -51,8 +51,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - remote
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3553829119f624c8ebbb610eaa9b998a
+    m_Address: UI/SkillBarSlot
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 390665f5d85e240f4a859e1e2fbdd2a1
     m_Address: UI/LoginScreen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - remote
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cfbf285540694b9fab317750d4dc24a
+    m_Address: UI/LoadoutSlot
     m_ReadOnly: 0
     m_SerializedLabels:
     - remote

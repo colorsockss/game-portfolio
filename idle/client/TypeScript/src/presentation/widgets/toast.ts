@@ -7,8 +7,9 @@ export interface ToastViewModel {
   readonly notices: Listen<string>;
 }
 
-// 플레이어가 알 만한 거절만 따로 말한다. 세션의 거절은 연결이 끝나 로그인 화면이 이유를 보인다.
-const REFUSED: Partial<Record<GameErrorCode, TextKey>> = {
+// 플레이어가 알 만한 거절만 따로 말한다. 세션의 거절은 연결이 끝나 로그인 화면이 이유를 보인다. null은 알리지 않는다:
+// 튜토리얼 스텝의 거절은 플레이어가 한 일이 아니라 화면이 서버보다 앞서간 것이고, 튜토리얼이 서버의 스텝으로 돌아와 다시 본다.
+const REFUSED: Partial<Record<GameErrorCode, TextKey | null>> = {
   [GameErrorCode.InvalidCommand]: "toast.invalidCommand",
   [GameErrorCode.UnknownCommand]: "toast.unknownCommand",
   [GameErrorCode.StageNotFound]: "toast.stageNotFound",
@@ -25,6 +26,8 @@ const REFUSED: Partial<Record<GameErrorCode, TextKey>> = {
   [GameErrorCode.SkillSlotInvalid]: "toast.skillSlotInvalid",
   [GameErrorCode.SkillMaxLevel]: "toast.skillMaxLevel",
   [GameErrorCode.SkillCostShort]: "toast.skillCostShort",
+  [GameErrorCode.TutorialStepNotCurrent]: null,
+  [GameErrorCode.TutorialStepUnmet]: null,
   [GameErrorCode.RebirthNotReady]: "toast.rebirthNotReady",
   [GameErrorCode.CheatDisabled]: "toast.cheatDisabled",
 };
@@ -32,6 +35,9 @@ const REFUSED: Partial<Record<GameErrorCode, TextKey>> = {
 /** 거절된 커맨드를 토스트로 알린다. 문장은 알리는 때의 언어다. */
 export function createToastViewModel(events: AppEvents, t: Translate): ToastViewModel {
   return {
-    notices: show => events.on("refused", ({ error }) => show(t(REFUSED[error.code] ?? "toast.refused"))),
+    notices: show => events.on("refused", ({ error }) => {
+      const key = REFUSED[error.code];
+      if (key !== null) show(t(key ?? "toast.refused"));
+    }),
   };
 }

@@ -19,7 +19,8 @@
     "range": 1,
     "radius": 0,
     "condition": "always",
-    "conditionValue": null
+    "conditionValue": null,
+    "icon": "skill_slash"
   },
   {
     "id": 1002,
@@ -41,7 +42,8 @@
     "range": 1,
     "radius": 0,
     "condition": "always",
-    "conditionValue": null
+    "conditionValue": null,
+    "icon": null
   },
   {
     "id": 1003,
@@ -65,7 +67,8 @@
     "range": 3,
     "radius": 0,
     "condition": "always",
-    "conditionValue": null
+    "conditionValue": null,
+    "icon": null
   },
   {
     "id": 1004,
@@ -87,7 +90,8 @@
     "range": 3.5,
     "radius": 0,
     "condition": "always",
-    "conditionValue": null
+    "conditionValue": null,
+    "icon": "skill_volley"
   },
   {
     "id": 1005,
@@ -111,7 +115,8 @@
     "range": 3,
     "radius": 1,
     "condition": "always",
-    "conditionValue": null
+    "conditionValue": null,
+    "icon": "skill_fireball"
   },
   {
     "id": 1006,
@@ -136,7 +141,8 @@
     "range": 3,
     "radius": 0,
     "condition": "hurt",
-    "conditionValue": 0.7
+    "conditionValue": 0.7,
+    "icon": "skill_heal"
   },
   {
     "id": 1007,
@@ -160,7 +166,8 @@
     "range": 1.5,
     "radius": 1.5,
     "condition": "always",
-    "conditionValue": null
+    "conditionValue": null,
+    "icon": null
   },
   {
     "id": 1008,
@@ -185,7 +192,8 @@
     "range": 2,
     "radius": 1,
     "condition": "always",
-    "conditionValue": null
+    "conditionValue": null,
+    "icon": null
   },
   {
     "id": 1009,
@@ -209,7 +217,8 @@
     "range": 4.5,
     "radius": 2,
     "condition": "always",
-    "conditionValue": null
+    "conditionValue": null,
+    "icon": null
   },
   {
     "id": 1010,
@@ -235,7 +244,8 @@
     "range": 2,
     "radius": 0,
     "condition": "crowd",
-    "conditionValue": 1
+    "conditionValue": 1,
+    "icon": "skill_roar"
   },
   {
     "id": 1011,
@@ -257,7 +267,8 @@
     "range": 4,
     "radius": 0,
     "condition": "crowd",
-    "conditionValue": 1
+    "conditionValue": 1,
+    "icon": "skill_wolf"
   },
   {
     "id": 1012,
@@ -279,6 +290,7 @@
     "range": 3,
     "radius": 0,
     "condition": "always",
-    "conditionValue": null
+    "conditionValue": null,
+    "icon": null
   }
 ]

@@ -625,13 +625,13 @@ describe("stat upgrades", () => {
     const connection = rpc.connect(peer());
     await call(connection, Opcode.AuthLogin, "login", { loginId: "hero" });
 
-    const first = await call(connection, Opcode.StatUpgrade, "1", { upgradeId: 7001 });
+    const first = await call(connection, Opcode.StatUpgrade, "1", { upgradeId: 7001, steps: 1 });
     expect(first).toMatchObject({
       code: ResultCode.Ok, sync: { revision: 2, changes: { items: { 1: Big.from(100) }, statUpgrades: { 7001: 1 }, battle: { at: time } } },
     });
-    expect(await call(connection, Opcode.StatUpgrade, "1", { upgradeId: 7001 })).toEqual({ ...(first as object), serverTime: time });
-    expect(await call(connection, Opcode.StatUpgrade, "2", { upgradeId: 7001 })).toMatchObject(notEnoughGold);
-    expect(await call(connection, Opcode.StatUpgrade, "3", { upgradeId: 1 }))
+    expect(await call(connection, Opcode.StatUpgrade, "1", { upgradeId: 7001, steps: 1 })).toEqual({ ...(first as object), serverTime: time });
+    expect(await call(connection, Opcode.StatUpgrade, "2", { upgradeId: 7001, steps: 1 })).toMatchObject(notEnoughGold);
+    expect(await call(connection, Opcode.StatUpgrade, "3", { upgradeId: 1, steps: 1 }))
       .toMatchObject({ code: ResultCode.Rejected, error: { code: GameErrorCode.StatUpgradeNotFound } });
     expect(await saved()).toMatchObject({ revision: 2, player: { items: { 1: Big.from(100) }, statUpgrades: { 7001: 1 } } });
   });
@@ -647,13 +647,13 @@ describe("stat upgrades", () => {
     let release!: () => void;
     const hold = new Promise<void>(resolve => (release = resolve));
     held.hold = hold;
-    const first = call(old, Opcode.StatUpgrade, "1", { upgradeId: 7001 });
+    const first = call(old, Opcode.StatUpgrade, "1", { upgradeId: 7001, steps: 1 });
     await vi.waitFor(() => expect(held.waiting).toBe(1));
     held.hold = undefined;
     const resumed = rpc.connect(peer("new"));
     await call(resumed, Opcode.AuthResume, "resume", { token: login.body.session.token });
     held.hold = hold;
-    const second = call(resumed, Opcode.StatUpgrade, "2", { upgradeId: 7001 });
+    const second = call(resumed, Opcode.StatUpgrade, "2", { upgradeId: 7001, steps: 1 });
     await vi.waitFor(() => expect(held.waiting).toBe(2));
     held.hold = undefined;
     release();

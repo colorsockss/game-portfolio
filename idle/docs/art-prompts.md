@@ -278,3 +278,69 @@ Constraints: no characters, no creatures; opaque background
 |---|---|---|---|
 | `battle_boss.png` | 보스 도전 | a horned helmet over two crossed swords | red and steel |
 | `battle_next.png` | 다음 스테이지 | a double chevron arrow pointing right | blue and white |
+
+## 6. UI 개편 그림체 (78)
+
+메인 화면을 슬레이어 키우기식으로 바꾸면서 UI 틀은 첨부 레퍼런스의 그림체(짙은 외곽선, 크림색 판, 아래 턱이 있는 버튼, 등급 색 칸)로 스크립트가 그렸고, 아이콘은 같은 그림체의 임시 SVG입니다([art.md](art.md)의 1·2). 이 절은 그 임시 아이콘과 지금 도트 배경을 Codex로 다시 그리는 프롬프트입니다. 이 절의 그림에는 공통 스타일 대신 아래 **UI 개편 스타일**을 붙입니다.
+
+```text
+UI 개편 스타일:
+Style/medium: 2D casual mobile RPG game art in the style of cute modern idle games; flat color fills with exactly one darker shadow tone and one small highlight; thick uniform dark navy-purple outline (#2B2236) around every shape, about 6% of the icon width; rounded chunky shapes; no gradients, no texture, no painterly rendering
+Color palette: saturated candy colors; the outline color is always #2B2236
+Lighting/mood: highlight on the top-left of each shape; cheerful
+Constraints: no text, no letters, no numbers, no logos or trademarks, no watermark, no signature
+```
+
+### 아이콘 28장
+
+```text
+idle/docs/art-prompts.md의 "6. UI 개편 그림체"의 아이콘 표를 차례로 만들어라. 명세는 "UI 개편 스타일" 블록 뒤에 아래 틀의 <...>를 표의 값으로 채운다. 지금 임시 그림(idle/art/icons/<파일>)을 함께 보고 같은 물체와 색을 지킨다. 후처리: 투명 여백을 잘라 내고, 정사각형 가운데 224×224 안에 비율을 지켜 넣은 256×256 PNG로 idle/art/icons/<파일>에 덮어쓴다. 생성 원본은 idle/art/source/icons/ui-redesign/에 둔다.
+```
+
+```text
+Use case: stylized-concept
+Asset type: game UI icon for a cute mobile idle RPG, shown at 60-110 px on cream and navy panels
+Primary request: <그림>
+Composition/framing: single centered object, front or slight 3/4 view, object fills about 85% of the canvas, bold readable silhouette
+Color palette: <색> with the #2B2236 outline
+Constraints: transparent background; no background elements; no drop shadow outside the outline
+```
+
+| 파일(`idle/art/icons/`) | 그림 | 색 |
+|---|---|---|
+| `currency_gold.png` | a single fat gold coin with an inner ring | gold yellow and orange |
+| `currency_exp.png` | a round glowing experience orb | bright green |
+| `slot_weapon.png` | a short sword pointing up-right with a gold cross guard | white steel, gold, brown grip |
+| `slot_armor.png` | a chest armor plate with shoulder guards | light steel blue |
+| `slot_accessory.png` | a gold ring with a cyan gem | gold and cyan |
+| `main_upgrade.png` | a bold upward arrow | lime green |
+| `main_skills.png` | an open spellbook with a small cyan sparkle above | white pages, blue cover, cyan |
+| `main_equipment.png` | a short sword pointing up-right with a gold cross guard | white steel, gold, brown grip |
+| `main_inventory.png` | a rounded leather backpack with a gold buckle | brown and gold |
+| `main_rebirth.png` | a circular arrow with a small flame in the middle | orange and yellow |
+| `main_settings.png` | a six-tooth gear cog | light gray |
+| `main_logout.png` | a wooden door with a white arrow pointing out | brown and white |
+| `stat_attack.png` | a short sword pointing up-right with a red cross guard | white steel, red |
+| `stat_maxHp.png` | a plump heart | pink red |
+| `stat_critChance.png` | a lightning bolt | yellow |
+| `skill_slash.png` | a curved white slash arc with a sword hilt | white, cyan, gold |
+| `skill_volley.png` | two arrows flying diagonally side by side | wood brown and steel |
+| `skill_fireball.png` | a fireball with a yellow core | orange and yellow |
+| `skill_heal.png` | a plus sign with a soft glow | light green |
+| `skill_roar.png` | two stacked upward chevrons (power-up) | red |
+| `skill_wolf.png` | a wolf paw print | ice blue |
+| `ui_level.png` | a five-pointed star badge | yellow |
+| `ui_boss.png` | a cute skull | white |
+| `ui_prev.png` | a triangle arrow pointing left | white |
+| `ui_next.png` | a triangle arrow pointing right | white |
+| `ui_lock.png` | a padlock | gold |
+| `ui_close.png` | a round close button with a bold black X in the middle | red |
+| `ui_spinner.png` | a loading ring: a thick open circle arc with a small white dot at its leading end | yellow |
+
+### 스테이지 배경 6장
+
+5의 "스테이지 배경" 표와 틀을 그대로 쓰되, 공통 스타일 대신 UI 개편 스타일을 붙이고 다음을 더합니다. 메인 화면은 배경의 위에서 30%–62% 사이만 보이고, 배우는 그 안의 46%–60%에 섭니다. 그래서 지평선은 위에서 35–40%, 그 아래는 고르고 넓은 땅이고, 랜드마크는 지평선 근처와 양 끝에 둡니다. 후처리는 5와 같습니다(768×1344, `idle/art/backgrounds/<key>.png`). 그림이 들어오면 `client/Assets/Battle/Backgrounds/`의 코드로 그린 그림을 바꿉니다(`Backgrounds.cs`, 백로그 65).
+
+```text
+Additional constraints for the background: outlines on large shapes only (hills, trees, rocks, walls), thinner than the icon outline; ground with a few simple flat patches, no busy detail where the characters stand; slightly lower saturation than the characters
+```

@@ -35,6 +35,14 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>파티클의 그리는 순서. 발사체(5) 위, 글자(10) 아래다.</summary>
         private const int ParticleOrder = 6;
 
+        /// <summary>무대를 덮는 막의 그리는 순서. 파티클(6) 위, 글자(10) 아래라서 배너는 막 위에 보인다.</summary>
+        private const int CoverOrder = 8;
+
+        /// <summary>
+        /// 막의 한 변(유닛). 카메라가 보이는 넓이(세로 10유닛 남짓)와 흔들림, 전투 띠에 맞춰 옮겨 간 자리를 다 덮도록 넉넉히 둔다.
+        /// </summary>
+        private const float CoverSize = 100f;
+
         /// <summary>
         /// 클립 묶음과 배경을 그리고 Actor.prefab, Projectile.prefab, DamageText.prefab, Stage.prefab을 만들거나 덮어쓴다.
         /// </summary>
@@ -165,8 +173,9 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// 루트에 ViewRefs와 StageView를 두고 배경(SpriteRenderer)과 파티클(ParticleSystem)을 자식으로 둔 무대 프리팹을
-        /// 만든다. ViewRefs 항목은 stage다. 파티클은 배경과 같은 스프라이트 재질로 흰 사각형을 그린다.
+        /// 루트에 ViewRefs와 StageView를 두고 배경(SpriteRenderer), 파티클(ParticleSystem), 막(SpriteRenderer)을 자식으로
+        /// 둔 무대 프리팹을 만든다. ViewRefs 항목은 stage다. 파티클은 배경과 같은 스프라이트 재질로 흰 사각형을 그린다. 막의
+        /// 도형 스프라이트는 StageView가 실행 중에 넣는다.
         /// </summary>
         /// <param name="backgrounds">StageView가 이름으로 고르는 배경. 0번이 기본이다.</param>
         private static void BuildStage(Sprite[] backgrounds)
@@ -181,6 +190,8 @@ namespace PortfolioIdleRpg.Editor
                 Vector2 tile = backgrounds[0].bounds.size;
                 background.size = new Vector2(3f * tile.x, tile.y);
                 ParticleSystem particles = AddParticles(root.transform, background.sharedMaterial);
+                SpriteRenderer cover = AddSprite(root.transform, "Cover", Color.clear, CoverOrder);
+                cover.transform.localScale = new Vector3(CoverSize, CoverSize, 1f);
 
                 var view = root.GetComponent<StageView>();
                 var serialized = new SerializedObject(view);
@@ -190,6 +201,7 @@ namespace PortfolioIdleRpg.Editor
                 for (int i = 0; i < backgrounds.Length; i++)
                     sprites.GetArrayElementAtIndex(i).objectReferenceValue = backgrounds[i];
                 serialized.FindProperty("_particles").objectReferenceValue = particles;
+                serialized.FindProperty("_cover").objectReferenceValue = cover;
                 serialized.ApplyModifiedPropertiesWithoutUndo();
 
                 SetRefs(root.GetComponent<ViewRefs>(), ("stage", view));

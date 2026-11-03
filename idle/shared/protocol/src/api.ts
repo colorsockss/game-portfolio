@@ -7,7 +7,7 @@ import type { Session } from "./account.js";
  * PlayerSnapshot, StateSync, GameError)의 모양이 바뀌면 올린다. 클라이언트가 예측에 쓰는 규칙이 바뀌어
  * 옛 클라이언트의 예측이 서버와 어긋날 때도 올린다. 다른 버전의 클라이언트는 업데이트해야 한다.
  */
-export const PROTOCOL_VERSION = 20;
+export const PROTOCOL_VERSION = 21;
 
 export interface LoginResult {
   readonly snapshot: PlayerSnapshot;

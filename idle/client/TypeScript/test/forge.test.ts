@@ -63,12 +63,7 @@ test("a row names its step and shows the enhanced stats, and a higher step of wh
 test("the forge shows the chosen piece's step and cost, and enhances it while the shown gold lasts", () => {
   const t = setUp({ nextId: 2, owned: { 1: { itemId: SWORD, enhance: 0 } }, equipped: {} }, 1000);
   const { forge } = t.vm;
-  expect(forge.visible.value).toBe(false);
-  expect(forge.canEnhance.value).toBe(false);
-  forge.enhance();
-  expect(t.sent).toEqual([]);
-
-  t.entry(1).select();
+  // 입은 것이 없으면 처음 가진 장비를 골라 둔다.
   expect(t.entry(1).selected).toBe(true);
   expect([forge.visible.value, forge.name.value, forge.detail.value, forge.step.value]).toEqual([true, "낡은 검", "무기 · 공격 +5", "강화 0/10"]);
   expect(forge.enhanceCost.value).toEqual(Big.from(500));
@@ -116,4 +111,8 @@ test("the forge lets go of a piece that is gone", () => {
   t.entry(1).select();
   t.state.player.value = { ...t.player(), equipment: { nextId: 2, owned: {}, equipped: {} } };
   expect([t.vm.forge.visible.value, t.vm.forge.name.value, t.vm.forge.canMerge.value]).toEqual([false, "", false]);
+  // 고른 것이 없으면 보내지 않는다.
+  t.vm.forge.enhance();
+  t.vm.forge.merge();
+  expect(t.sent).toEqual([]);
 });

@@ -18,6 +18,12 @@ namespace PortfolioIdleRpg.Editor
     /// </summary>
     public static class WidgetPrefabs
     {
+        /// <summary>재화 칸의 너비.</summary>
+        private const float SlotWidth = 330f;
+
+        /// <summary>재화 칸의 높이. 아이콘이 이만한 정사각형이다.</summary>
+        private const float SlotHeight = 84f;
+
         /// <summary>위젯 프리팹을 모두 만든다.</summary>
         [MenuItem("Tools/UI/Build Widget Prefabs")]
         public static void Build()
@@ -34,7 +40,10 @@ namespace PortfolioIdleRpg.Editor
             Debug.Log($"[UI] Built the widget prefabs in {UiPrefabs.Folder}");
         }
 
-        /// <summary>재화 바의 한 칸(이름표나 아이콘, 굴러가는 수량)을 만든다. 재화 바의 ViewList가 이것을 틀로 복제한다.</summary>
+        /// <summary>
+        /// 재화 바의 한 칸(어두운 알약, 왼쪽에 걸친 아이콘이나 이름표, 굴러가는 수량)을 만든다. 재화 바의 ViewList가 이것을 틀로
+        /// 복제한다.
+        /// </summary>
         /// <param name="theme">테마.</param>
         /// <returns>저장한 프리팹.</returns>
         private static GameObject BuildCurrencySlot(UiTheme theme)
@@ -43,22 +52,28 @@ namespace PortfolioIdleRpg.Editor
                 "CurrencySlot", typeof(RectTransform), typeof(LayoutElement), typeof(ViewRefs));
             try
             {
-                ((RectTransform)root.transform).sizeDelta = new Vector2(460f, 120f);
+                ((RectTransform)root.transform).sizeDelta = new Vector2(SlotWidth, SlotHeight);
                 var element = root.GetComponent<LayoutElement>();
-                element.preferredWidth = 460f;
-                element.preferredHeight = 120f;
+                element.preferredWidth = SlotWidth;
+                element.preferredHeight = SlotHeight;
 
-                TMP_Text label = UiPrefabs.AddText(root.transform, "Name", TextStyle.Label, Vector2.zero, Vector2.up);
-                label.rectTransform.offsetMax = new Vector2(120f, 0f);
+                // 알약은 칸의 위아래를 조금 비워 아이콘이 알약 밖으로 걸친다.
+                Image pill = UiParts.AddFrame(root.transform, "Pill", theme.PillSprite, theme.Pill);
+                UiPrefabs.Stretch(pill.rectTransform, new Vector2(20f, 8f), new Vector2(0f, -8f));
+                TMP_Text label = UiPrefabs.AddText(root.transform, "Name", TextStyle.Small, Vector2.zero, Vector2.up);
+                label.rectTransform.offsetMin = new Vector2(36f, 0f);
+                label.rectTransform.offsetMax = new Vector2(130f, 0f);
+                label.alignment = TextAlignmentOptions.MidlineLeft;
                 // 재화 바는 이름 대신 아이콘을, 장비의 능력치 칸은 아이콘 없이 이름을 보인다(같은 자리).
                 IconView icon = UiIcons.Add(root.transform, "Icon");
-                UiPrefabs.Place(icon, new Vector2(0f, 0.5f), new Vector2(20f, 0f), new Vector2(80f, 80f));
+                UiPrefabs.Place(icon, new Vector2(0f, 0.5f), Vector2.zero, new Vector2(SlotHeight, SlotHeight));
 
-                TMP_Text amount = UiPrefabs.AddText(root.transform, "Amount", 52f, Vector2.zero, Vector2.one);
-                amount.rectTransform.offsetMin = new Vector2(140f, 0f);
+                TMP_Text amount = UiPrefabs.AddText(root.transform, "Amount", 40f, Vector2.zero, Vector2.one);
+                amount.rectTransform.offsetMin = new Vector2(110f, 0f);
+                amount.rectTransform.offsetMax = new Vector2(-24f, 0f);
                 amount.text = "0";
                 amount.color = theme.Gold;
-                amount.alignment = TextAlignmentOptions.Right;
+                amount.alignment = TextAlignmentOptions.MidlineRight;
                 var rolling = amount.gameObject.AddComponent<RollingText>();
                 UiPrefabs.SetField(rolling, "_label", amount);
 
@@ -86,7 +101,7 @@ namespace PortfolioIdleRpg.Editor
                 typeof(ViewList), typeof(ViewRefs));
             try
             {
-                UiPrefabs.Place(root.transform, new Vector2(1f, 0.5f), Vector2.zero, new Vector2(460f, 120f));
+                UiPrefabs.Place(root.transform, new Vector2(1f, 0.5f), Vector2.zero, new Vector2(SlotWidth, SlotHeight));
                 var layout = root.GetComponent<HorizontalLayoutGroup>();
                 layout.spacing = theme.Spacing;
                 layout.childAlignment = TextAnchor.MiddleRight;
@@ -113,8 +128,8 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>묻는 말과 취소·확인 버튼을 가진 팝업을 만든다.</summary>
         private static void BuildConfirmPopup() =>
             UiSpec.Popup("ConfirmPopup", 840f, 520f)
-                .Footer(120f, ("cancel", ButtonStyle.Secondary, 360f), ("ok", ButtonStyle.Secondary, 360f))
-                .Body("messageText", TextStyle.Body, TextAlignmentOptions.Center)
+                .Footer(120f, ("cancel", ButtonStyle.Secondary, 340f), ("ok", ButtonStyle.Positive, 340f))
+                .Body("messageText", TextStyle.Ink, TextAlignmentOptions.Center)
                 .Save();
 
         /// <summary>
@@ -123,8 +138,8 @@ namespace PortfolioIdleRpg.Editor
         /// </summary>
         private static void BuildNoticePopup() =>
             UiSpec.Popup("NoticePopup", 840f, 520f)
-                .Footer(120f, ("ok", ButtonStyle.Secondary, 360f))
-                .Body("messageText", TextStyle.Body, TextAlignmentOptions.Center)
+                .Footer(120f, ("ok", ButtonStyle.Positive, 360f))
+                .Body("messageText", TextStyle.Ink, TextAlignmentOptions.Center)
                 .Save(inApp: true);
 
         /// <summary>제목, 모은 시간, 오른 레벨, 받은 아이템 줄과 받기 버튼을 가진 보상 팝업을 만든다.</summary>
@@ -133,14 +148,14 @@ namespace PortfolioIdleRpg.Editor
             UiSpec.Popup("RewardPopup", 900f, 1000f)
                 .Space(20f)
                 .Text("titleLabel", TextStyle.Title, 100f)
-                .Text("durationText", TextStyle.Label, 70f, gap: 0f)
-                .Text("levelText", TextStyle.Body, 80f, gap: 10f, configure: text =>
+                .Text("durationText", TextStyle.InkLabel, 70f, gap: 0f)
+                .Text("levelText", TextStyle.Ink, 80f, gap: 10f, configure: text =>
                 {
                     text.fontSize = 52f;
-                    text.color = theme.Good;
+                    text.color = theme.GoodInk;
                 })
-                .Footer(130f, ("ok", ButtonStyle.Secondary, 400f))
-                .Body("itemsText", TextStyle.Body, TextAlignmentOptions.Top)
+                .Footer(130f, ("ok", ButtonStyle.Positive, 400f))
+                .Body("itemsText", TextStyle.Ink, TextAlignmentOptions.Top)
                 .Save();
 
         /// <summary>
@@ -162,7 +177,7 @@ namespace PortfolioIdleRpg.Editor
                 group.blocksRaycasts = false;
                 group.interactable = false;
                 var background = root.GetComponent<Image>();
-                background.color = theme.Notice;
+                UiParts.Paint(background, theme.PillSprite, theme.Pill);
                 background.raycastTarget = false;
 
                 TMP_Text label = UiPrefabs.AddText(root.transform, "Text", theme.LabelSize, Vector2.zero, Vector2.one);
@@ -182,7 +197,8 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// 위쪽 막대 아래에 뜨는 로딩 표시(도는 사각형과 문구)를 만든다. 그동안의 탭은 UI 캔버스의 차단막이 막으므로
+        /// 메인 화면의 스테이지 막대 바로 아래에 뜨는 로딩 표시(도는 노란 고리 아이콘 ui_spinner와 문구)를 만든다. 스테이지 이름과
+        /// 화살표를 가리지 않는다. 그동안의 탭은 UI 캔버스의 차단막이 막으므로
         /// 탭을 받지 않는다.
         /// </summary>
         /// <param name="theme">테마.</param>
@@ -192,20 +208,20 @@ namespace PortfolioIdleRpg.Editor
             try
             {
                 UiPrefabs.Place(
-                    root.transform, new Vector2(0.5f, 1f), new Vector2(0f, -200f), new Vector2(700f, 90f));
+                    root.transform, new Vector2(0.5f, 1f),
+                    new Vector2(0f, -(ScreenPrefabs.HudHeight + ScreenPrefabs.StageBarHeight + 16f)), new Vector2(720f, 100f));
                 var background = root.GetComponent<Image>();
-                background.color = theme.Notice;
+                UiParts.Paint(background, theme.PillSprite, theme.Pill);
                 background.raycastTarget = false;
 
-                Image spinner = UiPrefabs.AddImage(root.transform, "Spinner", theme.Text);
-                spinner.raycastTarget = false;
-                UiPrefabs.Place(spinner, new Vector2(0f, 0.5f), new Vector2(60f, 0f), new Vector2(44f, 44f));
+                Image spinner = UiIcons.AddFixed(root.transform, "Spinner", UiIcons.Get("ui_spinner"));
+                UiPrefabs.Place(spinner, new Vector2(0f, 0.5f), new Vector2(66f, 0f), new Vector2(76f, 76f));
                 // 가운데를 축으로 돈다.
                 spinner.rectTransform.pivot = new Vector2(0.5f, 0.5f);
                 spinner.gameObject.AddComponent<Spinner>();
 
-                TMP_Text message = UiPrefabs.AddText(root.transform, "Message", 36f, Vector2.zero, Vector2.one);
-                message.rectTransform.offsetMin = new Vector2(110f, 0f);
+                TMP_Text message = UiPrefabs.AddText(root.transform, "Message", 38f, Vector2.zero, Vector2.one);
+                message.rectTransform.offsetMin = new Vector2(124f, 0f);
                 message.rectTransform.offsetMax = new Vector2(-theme.Padding, 0f);
                 message.alignment = TextAlignmentOptions.Left;
 
@@ -237,7 +253,7 @@ namespace PortfolioIdleRpg.Editor
                 group.blocksRaycasts = false;
                 group.interactable = false;
                 var background = root.GetComponent<Image>();
-                background.color = theme.Panel;
+                background.color = theme.Backdrop;
                 background.raycastTarget = false;
 
                 TMP_Text message = UiPrefabs.AddText(root.transform, "Message", TextStyle.Label, Vector2.zero, Vector2.one);
@@ -246,8 +262,7 @@ namespace PortfolioIdleRpg.Editor
                 message.textWrappingMode = TextWrappingModes.Normal;
 
                 (Image track, Image fill) = UiParts.AddGauge(root.transform, "ProgressBar");
-                track.color = theme.Surface;
-                UiPrefabs.Place(track, new Vector2(0.5f, 0.5f), new Vector2(0f, -80f), new Vector2(720f, 16f));
+                UiPrefabs.Place(track, new Vector2(0.5f, 0.5f), new Vector2(0f, -80f), new Vector2(720f, 40f));
                 track.gameObject.SetActive(false);
 
                 var fade = root.GetComponent<Fade>();

@@ -1,0 +1,41 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>아이콘 굽기</title>
+<style>body{margin:16px;background:#3a3150;color:#fff;font:14px system-ui}figure{display:inline-block;margin:6px;text-align:center}canvas{width:96px;height:96px;background:#4a4166;border-radius:8px}</style>
+<p>icons.svg의 기호를 256×256 PNG로 굽습니다(그림은 가운데 224×224). 이 폴더를 HTTP로 열고 그림을 눌러 받습니다. <code>?save</code>를 붙이면 같은 서버의 <code>POST /save/이름</code>으로 보냅니다.</p>
+<div id="out"></div>
+<script>
+// 기호 하나를 독립 SVG로 만들어 캔버스에 그린다.
+async function render(symbol) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${symbol.getAttribute('viewBox')}" width="224" height="224">${symbol.innerHTML}</svg>`;
+  const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+  const image = new Image();
+  await new Promise((resolve, reject) => { image.onload = resolve; image.onerror = reject; image.src = url; });
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 256;
+  canvas.getContext('2d').drawImage(image, 16, 16, 224, 224);
+  URL.revokeObjectURL(url);
+  return canvas;
+}
+
+(async () => {
+  const text = await (await fetch('icons.svg')).text();
+  const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+  const save = new URLSearchParams(location.search).has('save');
+  const saved = [];
+  for (const symbol of doc.querySelectorAll('symbol')) {
+    const canvas = await render(symbol);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${symbol.id}.png`;
+    link.append(canvas);
+    const figure = document.createElement('figure');
+    figure.append(link, Object.assign(document.createElement('figcaption'), { textContent: symbol.id }));
+    document.querySelector('#out').append(figure);
+    if (save) {
+      await fetch(`/save/${symbol.id}`, { method: 'POST', body: blob });
+      saved.push(symbol.id);
+    }
+  }
+  document.title = save ? `saved ${saved.length}` : 'ready';
+})();
+</script></html>

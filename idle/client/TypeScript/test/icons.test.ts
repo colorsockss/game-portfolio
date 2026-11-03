@@ -10,3 +10,10 @@ test("every item's icon has its picture in the UI icon folder", () => {
     expect(existsSync(new URL(`../../Assets/UI/Sprites/Icons/${row.icon}.png`, import.meta.url)), `${row.id} ${row.icon}`).toBe(true);
   }
 });
+
+test("every skill's icon has its picture in the UI icon folder", () => {
+  for (const row of data.skills.values()) {
+    if (row.icon === null) continue;
+    expect(existsSync(new URL(`../../Assets/UI/Sprites/Icons/${row.icon}.png`, import.meta.url)), `${row.id} ${row.icon}`).toBe(true);
+  }
+});

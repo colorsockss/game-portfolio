@@ -22,7 +22,7 @@ import {
 } from "./view-models/equipment.js";
 import { createInventoryViewModel, type InventoryViewModel } from "./view-models/inventory.js";
 import { createLoginViewModel, type LoginViewModel } from "./view-models/login.js";
-import { createMainViewModel, type MainViewModel } from "./view-models/main.js";
+import { createMainViewModel, type MainTab, type MainViewModel } from "./view-models/main.js";
 import { createRebirthViewModel, type RebirthViewModel } from "./view-models/rebirth.js";
 import { createSettingsViewModel, type SettingsViewModel } from "./view-models/settings.js";
 import { createSkillsViewModel, type SkillsViewModel } from "./view-models/skills.js";
@@ -39,15 +39,15 @@ import type { World, WorldView } from "./world/world.js";
 export interface Views {
   readonly login: View<LoginViewModel>;
   readonly main: View<MainViewModel>;
-  /** 메인 화면 위에 팝업으로 여는 가방. */
+  /** 메인 화면의 가방 탭이 아래 판으로 여는 가방. */
   readonly inventory: View<InventoryViewModel>;
-  /** 메인 화면 위에 팝업으로 여는 장비. */
+  /** 메인 화면의 장비 탭이 아래 판으로 여는 장비. */
   readonly equipment: View<EquipmentViewModel>;
-  /** 메인 화면 위에 팝업으로 여는 골드 능력치 강화. */
+  /** 메인 화면의 강화 탭이 아래 판으로 여는 골드 능력치 강화. */
   readonly upgrade: View<UpgradeViewModel>;
-  /** 메인 화면 위에 팝업으로 여는 스킬(배우기, 장착, 레벨업). */
+  /** 메인 화면의 스킬 탭이 아래 판으로 여는 스킬(배우기, 장착, 레벨업). */
   readonly skills: View<SkillsViewModel>;
-  /** 메인 화면 위에 팝업으로 여는 환생. 누르면 확인 팝업으로 묻는다. */
+  /** 메인 화면의 환생 탭이 아래 판으로 여는 환생. 누르면 확인 팝업으로 묻는다. */
   readonly rebirth: View<RebirthViewModel>;
   /** 메인 화면 위에 팝업으로 여는 설정. */
   readonly settings: View<SettingsViewModel>;
@@ -118,22 +118,9 @@ export function createScreens(
   // 튜토리얼의 대상은 화면 이름(Views의 키)으로 적으므로 그 뷰의 프리팹으로 바꾼다. 전투 월드는 UI 뷰가 아니다.
   const prefabs = Object.fromEntries(Object.entries(views).map(([key, view]) => [key, "prefab" in view ? view.prefab : undefined]));
 
-  // 메인 화면 위의 팝업은 메인 화면과 함께 닫힌다. 닫기(보상은 확인) 버튼과 뒤로 가기가 닫는다. 장비의 뱃지는 메인 화면의
-  // 장비 버튼과 같은 트리이고, 설정에서 바꾼 것은 설정 서비스가 저장하며 소리는 오디오가 바로 따라간다.
+  // 메인 화면 위의 팝업은 메인 화면과 함께 닫힌다. 닫기(보상은 확인) 버튼과 뒤로 가기가 닫는다. 설정에서 바꾼 것은 설정
+  // 서비스가 저장하며 소리는 오디오가 바로 따라간다.
   const popups = {
-    inventory: (owner: Scope) =>
-      popup(show, views.inventory, owner, close => createInventoryViewModel({ data, t, items: battle.items, close })),
-    equipment: (owner: Scope, badges: EquipmentBadges) =>
-      popup(show, views.equipment, owner, close =>
-        createEquipmentViewModel({ state, data, t, battle, progress, badges, logger, close })),
-    upgrade: (owner: Scope) =>
-      popup(show, views.upgrade, owner, close => createUpgradeViewModel({ state, data, t, battle, progress, logger, close })),
-    skills: (owner: Scope) =>
-      popup(show, views.skills, owner, close => createSkillsViewModel({ state, data, t, battle, progress, logger, close })),
-    rebirth: (owner: Scope) =>
-      popup(show, views.rebirth, owner, close => createRebirthViewModel({
-        state, data, t, battle, progress, logger, confirm: message => confirm(show, views.confirm, owner, message), close,
-      })),
     settings: (owner: Scope) =>
       popup(show, views.settings, owner, close => createSettingsViewModel({
         settings, t, languageNames, account, confirm: message => confirm(show, views.confirm, owner, message), close,
@@ -141,6 +128,57 @@ export function createScreens(
     reward: (owner: Scope, reward: OfflineRewarded) =>
       popup(show, views.reward, owner, close => createRewardViewModel({ data, t, reward, close })),
   };
+
+  // 메인 화면의 아래 탭이 여는 판. 판은 화면 레이어에 열려 전투와 메인 화면을 가리지 않고, 판에는 닫기 버튼이 없어 같은
+  // 탭이나 뒤로 가기가 판을 닫아 장착 현황 판으로 돌아간다(`close`). 장비의 뱃지는 메인 화면의 장비 탭과 같은 트리다. 판이
+  // 열리면(또는 열지 못하면) 이행한다.
+  const sheets: Record<MainTab, (owner: Scope, close: () => void, badges: EquipmentBadges) => Promise<unknown>> = {
+    upgrade: (owner, close) =>
+      show(views.upgrade, createUpgradeViewModel({ state, data, t, battle, progress, logger, close }), owner, { back: close }),
+    skills: (owner, close) =>
+      show(views.skills, createSkillsViewModel({ state, data, t, battle, progress, logger, close }), owner, { back: close }),
+    equipment: (owner, close, badges) =>
+      show(
+        views.equipment, createEquipmentViewModel({ state, data, t, battle, progress, badges, logger, close }), owner, { back: close },
+      ),
+    inventory: (owner, close) =>
+      show(views.inventory, createInventoryViewModel({ data, t, items: battle.items, close }), owner, { back: close }),
+    rebirth: (owner, close) =>
+      show(views.rebirth, createRebirthViewModel({
+        state, data, t, battle, progress, logger, confirm: message => confirm(show, views.confirm, owner, message), close,
+      }), owner, { back: close }),
+  };
+
+  // 고른 탭의 판을 열어 두고, 탭이 바뀌면 새 판을 연다. 앞 판은 새 판이 다 열린 뒤에 닫아(그때 보이는 판도 알림), 판을
+  // 불러오는 동안 아래 영역이 비어 깜빡이지 않게 한다. 불러오는 사이 탭이 또 바뀌면 그 판은 열지 않는다. 탭을 끄면 바로
+  // 닫는다(장착 현황 판은 메인 화면에 이미 있다). 메인 화면이 닫히면 함께 닫는다.
+  function openSheets(vm: MainViewModel, badges: EquipmentBadges, owner: Scope): void {
+    let shown: Scope | undefined;
+    let opening: Scope | undefined;
+    owner.add(() => {
+      opening?.dispose();
+      shown?.dispose();
+    });
+    owner.add(vm.tab.subscribe(tab => {
+      opening?.dispose();
+      opening = undefined;
+      if (tab === null) {
+        shown?.dispose();
+        shown = undefined;
+        vm.sheetShown(null);
+        return;
+      }
+      const next = (opening = createScope());
+      // 열지 못한 판(오류는 show가 남김)도 앞 판을 닫고 그 탭으로 둔다. 앞 판이 남아 고른 탭과 어긋나지 않게 한다.
+      void sheets[tab](next, vm.closeTab, badges).then(() => {
+        if (opening !== next || next.disposed) return;
+        opening = undefined;
+        shown?.dispose();
+        shown = next;
+        vm.sheetShown(tab);
+      });
+    }));
+  }
 
   // 메인 화면이 열려 있는 동안 보이는 전투의 스테이지 BGM(Stages의 bgm)을 튼다. 스테이지가 바뀌어 곡이 바뀌면 바꾼다.
   function playStageBgm(owner: Scope): void {
@@ -199,16 +237,10 @@ export function createScreens(
       // 메인 화면은 전투의 스냅숏으로 수치를 만들고, 전투 월드는 연출자에게서 지시를 받는다.
       const badges = createEquipmentBadges({ state, data });
       const vm = createMainViewModel({
-        state, data, t, battle,
-        openInventory: () => void popups.inventory(scope),
-        openEquipment: () => void popups.equipment(scope, badges),
-        openUpgrade: () => void popups.upgrade(scope),
-        openSkills: () => void popups.skills(scope),
-        openRebirth: () => void popups.rebirth(scope),
-        equipmentBadge: badges.any,
-        openSettings: () => void popups.settings(scope),
+        state, data, t, battle, equipmentBadge: badges.any, openSettings: () => void popups.settings(scope),
       });
       transition.reveal(show(views.main, vm, scope), scope);
+      openSheets(vm, badges, scope);
       playStageBgm(scope);
       scope.add(events.on("offlineReward", reward => void popups.reward(scope, reward)));
       openTutorial(scope);

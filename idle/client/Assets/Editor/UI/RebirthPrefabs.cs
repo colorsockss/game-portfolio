@@ -25,20 +25,20 @@ namespace PortfolioIdleRpg.Editor
 
         /// <summary>
         /// 위에서부터 환생 횟수, 지금 배율, 받을 것(여러 줄)을 쌓고, 아래쪽에 환생 버튼과 그 위의 "남는 것" 문구를 두며, 그
-        /// 사이를 처음으로 돌아가는 것의 목록(여러 줄 본문)이 채우는 팝업이다.
+        /// 사이를 처음으로 돌아가는 것의 목록(여러 줄 본문)이 채우는 아래 판(큰 판)이다.
         /// </summary>
         private static void BuildScreen()
         {
             // 배율은 재화처럼 골드 색으로 보인다.
             Color gold = UiTheme.Load().Gold;
-            UiSpec spec = UiSpec.Popup("RebirthScreen", 960f, 1150f)
+            UiSpec spec = UiSpec.Sheet("RebirthScreen", ScreenPrefabs.SheetHeight("rebirth"))
                 .Header()
-                .Text("countText", TextStyle.Body, 60f)
+                .Text("countText", TextStyle.Ink, 60f)
                 .Text("rateText", TextStyle.Large, 90f, configure: text => text.color = gold)
-                .Text("gainText", TextStyle.Body, 120f, configure: text => text.textWrappingMode = TextWrappingModes.Normal)
+                .Text("gainText", TextStyle.Ink, 120f, configure: text => text.textWrappingMode = TextWrappingModes.Normal)
                 .Footer(130f, ("rebirth", ButtonStyle.Danger, 640f));
             spec.Dock("keeps", 110f, dock => AddKeeps(spec, dock))
-                .Body("resetsText", TextStyle.Body, TextAlignmentOptions.Center)
+                .Body("resetsText", TextStyle.Ink, TextAlignmentOptions.Center)
                 .Save();
         }
 
@@ -47,9 +47,8 @@ namespace PortfolioIdleRpg.Editor
         /// <param name="dock">채울 판.</param>
         private static void AddKeeps(UiSpec spec, RectTransform dock)
         {
-            TMP_Text keeps = UiPrefabs.AddText(dock, "Keeps", TextStyle.Small, Vector2.zero, Vector2.one);
+            TMP_Text keeps = UiPrefabs.AddText(dock, "Keeps", TextStyle.InkSmall, Vector2.zero, Vector2.one);
             keeps.textWrappingMode = TextWrappingModes.Normal;
-            keeps.color = spec.Theme.Muted;
             spec.Ref("keepsLabel", keeps);
         }
     }

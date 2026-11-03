@@ -301,7 +301,7 @@ test("an upgrade during a fight goes on with the same enemies where they were, w
   t.frames(AT, time);
   while (t.battle.snapshot.value!.enemies.length === 0) t.frames((time += 100), time);
   const before = t.battle.snapshot.value!.enemies;
-  const upgraded = applyCommand(t.player(), { type: Opcode.StatUpgrade, upgradeId: 7001 }, { now: time, data });
+  const upgraded = applyCommand(t.player(), { type: Opcode.StatUpgrade, upgradeId: 7001, steps: 1 }, { now: time, data });
   if (!upgraded.ok) throw new Error(upgraded.error.message);
   t.setPlayer(upgraded.state);
   // 능력치가 바뀌어 길이 달라지므로 화면은 reset으로 맞추지만, 장면은 그대로다.

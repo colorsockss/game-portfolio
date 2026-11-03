@@ -1,5 +1,5 @@
 import { Big } from "@idle/big-number";
-import type { GameData, SkillsRow } from "@idle/data-schema";
+import { SkillElement, type GameData, type SkillsRow } from "@idle/data-schema";
 import { equippableSkills, heroRow, isEquipped, skillLevel, skillLevelCost } from "@idle/game-core";
 import { computed, signal, type ReadonlySignal } from "@preact/signals-core";
 import type { BattleService } from "../../application/battle/battle.js";
@@ -8,6 +8,16 @@ import type { Progress } from "../../application/progress/progress.js";
 import type { AppState } from "../../application/state/app-state.js";
 import { formatBig } from "../format/big.js";
 import type { Translate } from "../text.js";
+
+const ELEMENTS = Object.values(SkillElement);
+
+/**
+ * 스킬 칸의 속성 색 번호: SkillElement의 선언 순서(Enums.xlsx)에 1을 더한 것. 0번은 비었거나 배우지 않은 칸이다. 색표는 UI
+ * 빌더가 테마(UiTheme.Elements)에서 같은 순서로 넣는다.
+ */
+export function elementTint(element: SkillElement): number {
+  return ELEMENTS.indexOf(element) + 1;
+}
 
 /** 스킬 슬롯 하나(Heroes.skillSlots개). 누르면 고른 슬롯이 되고, 목록에서 장착하는 스킬이 그 슬롯에 들어간다. */
 export interface SkillSlot {
@@ -18,6 +28,10 @@ export interface SkillSlot {
   readonly name: string;
   /** "Lv.3/10". 비었으면 비어 있다. */
   readonly level: string;
+  /** 장착한 스킬의 아이콘 이름(Skills.icon). 비었으면 비어 있다. */
+  readonly icon: string;
+  /** 장착한 스킬의 속성 색 번호(elementTint). 비었으면 0이다. */
+  readonly tint: number;
   readonly empty: boolean;
   readonly selected: boolean;
   select(): void;
@@ -31,6 +45,10 @@ export interface SkillEntry {
   /** Skills 테이블의 이름(지금 언어). */
   readonly name: string;
   readonly learned: boolean;
+  /** 아이콘 이름(Skills.icon). 없으면 비어 있다. */
+  readonly icon: string;
+  /** 속성 색 번호(elementTint). 배우지 않았으면 0(잠긴 칸)이다. */
+  readonly tint: number;
   /** "Lv.3/10". 배우지 않았으면 비어 있다. */
   readonly level: string;
   /** 다음에 낼 비용: 배우지 않았으면 배우는 비용, 배웠으면 다음 레벨의 비용("골드 1.6K"). 최대 레벨이면 "최대 레벨"이다. */
@@ -93,6 +111,8 @@ export function createSkillsViewModel({ state, data, t, battle, progress, logger
         label: t("skills.slot", { slot: slot + 1 }),
         name: row ? t(row.nameKey) : t("skills.empty"),
         level: row ? levelText(skillLevel(held, row.id), row) : "",
+        icon: row?.icon ?? "",
+        tint: row ? elementTint(row.element) : 0,
         empty: row === undefined,
         selected: selected.value === slot,
         select: () => void (selected.value = slot),
@@ -116,6 +136,8 @@ export function createSkillsViewModel({ state, data, t, battle, progress, logger
         skillId: row.id,
         name: t(row.nameKey),
         learned,
+        icon: row.icon ?? "",
+        tint: learned ? elementTint(row.element) : 0,
         level: learned ? levelText(level, row) : "",
         cost: cost === undefined
           ? t("skills.maxLevel")

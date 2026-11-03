@@ -61,8 +61,8 @@ test("any changed value deep in the state changes the fingerprint", () => {
 test("a command applied to the same state at the same time gives the same fingerprint", () => {
   const state = { ...player(), items: { 1: { m: 1, e: 6 } } };
   const now = AT + 31_234;
-  const once = applyCommand(state, { type: Opcode.StatUpgrade, upgradeId: 7002 }, { now, data });
-  const again = applyCommand(reversed(state) as PlayerState, { type: Opcode.StatUpgrade, upgradeId: 7002 }, { now, data });
+  const once = applyCommand(state, { type: Opcode.StatUpgrade, upgradeId: 7002, steps: 1 }, { now, data });
+  const again = applyCommand(reversed(state) as PlayerState, { type: Opcode.StatUpgrade, upgradeId: 7002, steps: 1 }, { now, data });
   if (!once.ok || !again.ok) throw new Error("The upgrade was refused.");
   expect(playerFingerprint(again.state)).toBe(playerFingerprint(once.state));
 });

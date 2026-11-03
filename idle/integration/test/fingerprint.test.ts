@@ -51,8 +51,8 @@ test("commands are confirmed by fingerprint alone, and the client ends on the se
   const { server, wire, app, account } = await start();
   const { cmd } = app.progress;
   for (const sent of [
-    cmd.StatUpgrade({ upgradeId: 7001 }), cmd.ItemEquip({ equipmentId: 1 }), cmd.ItemEnhance({ equipmentId: 1 }),
-    cmd.StageSelect({ stageId: 3002 }), cmd.BattleSettle({}), cmd.StatUpgrade({ upgradeId: 7002 }),
+    cmd.StatUpgrade({ upgradeId: 7001, steps: 1 }), cmd.ItemEquip({ equipmentId: 1 }), cmd.ItemEnhance({ equipmentId: 1 }),
+    cmd.StageSelect({ stageId: 3002 }), cmd.BattleSettle({}), cmd.StatUpgrade({ upgradeId: 7002, steps: 1 }),
   ]) {
     expect(await sent).toBeUndefined();
   }
@@ -71,14 +71,14 @@ test("a save changed elsewhere in between makes the fingerprint differ, and the 
   const before = (await server.store.load(account.id))!;
   expect(await server.store.save(account.id, { ...before.player, tutorial: { stepId: 7 } }, before.revision, Date.now())).toBeTruthy();
 
-  expect(await app.progress.cmd.StatUpgrade({ upgradeId: 7001 })).toBeUndefined();
+  expect(await app.progress.cmd.StatUpgrade({ upgradeId: 7001, steps: 1 })).toBeUndefined();
   expect(wire.ops.filter(op => op === Opcode.StateFetch)).toHaveLength(1);
   const saved = (await server.store.load(account.id))!;
   expect(saved.player.tutorial).toEqual({ stepId: 7 });
   expect(app.state.player.value).toEqual(saved.player);
 
   // 맞춘 뒤로는 다시 지문만으로 확정한다.
-  expect(await app.progress.cmd.StatUpgrade({ upgradeId: 7002 })).toBeUndefined();
+  expect(await app.progress.cmd.StatUpgrade({ upgradeId: 7002, steps: 1 })).toBeUndefined();
   expect(wire.ops.filter(op => op === Opcode.StateFetch)).toHaveLength(1);
   expect(app.state.player.value).toEqual((await server.store.load(account.id))!.player);
 });

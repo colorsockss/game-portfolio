@@ -110,8 +110,10 @@ export type Direction =
   | { type: "revive" }
   /** 한 프레임에 여러 개(보스 처치, 클리어, 다음 웨이브)가 와도 뷰가 차례로 띄운다. */
   | { type: "banner"; text: string }
-  /** 스테이지를 깨고 다음 스테이지로 넘어가 배경이 바뀐다. 배경은 그 스테이지의 그림 이름이다. */
+  /** 스테이지를 깨고 다음 스테이지로 넘어가 배경이 바뀐다. 배경은 그 스테이지의 그림 이름이다. 무대가 검게 덮였다가 바뀐 배경으로 걷힌다. */
   | { type: "background"; background: string }
+  /** 무대를 잠깐 `color`로 다 덮었다가 걷는다(보스전의 시작과 실패). 글자는 막 위에 보인다. */
+  | { type: "cover"; color: Color }
   /** 영웅 머리 위에 뜨는 레벨업 글자. 같은 프레임의 클리어 배너와 겹치지 않게 배너와 따로 둔다. */
   | { type: "levelUp"; text: string }
   /** 월드를 잠깐 멈춘다(치명타, 보스 처치). 연달아 오면 엔진이 거른다. */
@@ -180,6 +182,10 @@ const SPARK_COLORS: Readonly<Record<SkillElement, Color>> = {
 };
 
 /** 완성된 배우 그림에는 색을 입히지 않고, 그림이 없는 묶음에만 임시 몸의 색을 입힌다. */
+// 보스전이 시작하면 무대를 검붉게, 보스에게 지면 검게 다 덮었다가 걷는다. 배너는 막 위에 뜬다.
+const BOSS_COVER: Color = [0.22, 0.02, 0.02];
+const BOSS_LOSE_COVER: Color = [0, 0, 0];
+
 const BOSS_LOOK: ActorLook = { clips: "boss", color: [0.9, 0.2, 0.2], size: 1.6 };
 /** Projectiles에 없는 발사체. */
 const UNKNOWN_PROJECTILE: ProjectileLook = { clip: "orb", color: [0.8, 0.8, 0.8], size: 0.8, fromAbove: false };
@@ -334,10 +340,15 @@ export function createBattleDirector({ battle, data, t, audio }: BattleDirectorO
       case "revive":
         return [{ type: "revive" }];
       // 아래 셋은 영웅을 최대 HP로 되돌린다(보스에게 쓰러졌으면 일으킨다). 이벤트가 따로 없으므로 다시 세운다.
+      // 보스를 이기면 쓰러뜨리는 타격감과 다음 스테이지로 가는 배경 전환이 이어지므로 덮지 않는다.
       case "bossStart":
-        return [{ type: "banner", text: t("battle.bossAppear") }, { type: "revive" }];
+        return [{ type: "cover", color: BOSS_COVER }, { type: "banner", text: t("battle.bossAppear") }, { type: "revive" }];
       case "bossEnd":
-        return [{ type: "banner", text: t(event.win ? "battle.bossWin" : "battle.bossLose") }, { type: "revive" }];
+        return [
+          ...(event.win ? [] : [{ type: "cover", color: BOSS_LOSE_COVER } as const]),
+          { type: "banner", text: t(event.win ? "battle.bossWin" : "battle.bossLose") },
+          { type: "revive" },
+        ];
       case "stageClear": {
         const stage = data.stages.get(event.stageId);
         const next = event.nextId === null ? undefined : data.stages.get(event.nextId);

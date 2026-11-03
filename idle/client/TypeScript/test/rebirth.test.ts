@@ -27,7 +27,7 @@ const NOW = 1_000_000;
 const GOLD = data.constants.goldItemId;
 
 describe("rebirth screen", () => {
-  // 마지막 스테이지에서 골드 강화를 18단계 올린 영웅.
+  // 마지막 스테이지에서 성장(골드 강화)을 18단계 올린 영웅.
   function setUp(level: number, rebirth: RebirthState = NO_REBIRTH) {
     const base = {
       profile: { loginId: "hero", level }, items: { [GOLD]: Big.from(12_345) }, equipment: NO_EQUIPMENT,
@@ -87,7 +87,7 @@ describe("rebirth screen", () => {
   test("lists what starts over: the level, the stage, the gold upgrade steps and the gold shown", () => {
     const t = setUp(47);
     expect(t.vm.resets.value.split("\n")).toEqual([
-      "레벨 47 → 1", "스테이지 화염 드래곤의 둥지 → 훈련의 초원", "골드 강화 18단계 → 0", "골드 12.3K → 0",
+      "레벨 47 → 1", "스테이지 화염 드래곤의 둥지 → 훈련의 초원", "성장 18단계 → 0", "골드 12.3K → 0",
     ]);
     t.items.value = { [GOLD]: Big.from(20_000) };
     expect(t.vm.resets.value.split("\n").at(-1)).toBe("골드 20K → 0");
@@ -105,7 +105,7 @@ describe("rebirth screen", () => {
     const t = setUp(50, { count: 1, points: 441 });
     t.answer(false);
     await t.vm.rebirth();
-    expect(t.asked).toEqual(["환생할까요? 레벨, 스테이지, 골드 강화가 처음으로 돌아갑니다."]);
+    expect(t.asked).toEqual(["환생할까요? 레벨, 스테이지, 성장이 처음으로 돌아갑니다."]);
     expect(t.sent).toEqual([]);
 
     t.answer(true);

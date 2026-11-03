@@ -9,7 +9,7 @@ const data = await loadGameData(table => readFileSync(new URL(`../../../shared/d
 
 test("a key becomes the sentence of the language with its named arguments filled in", () => {
   const { t, language } = texts(data);
-  expect(t("common.close")).toBe("닫기");
+  expect(t("common.empty")).toBe("비어 있음");
   expect(t("battle.levelUp", { level: 12 })).toBe("레벨 업! Lv.12");
   expect(t("login.idRule", { min: 4, max: 16 })).toBe("아이디는 영문 소문자, 숫자, _로 4~16자입니다.");
   language.value = "en";

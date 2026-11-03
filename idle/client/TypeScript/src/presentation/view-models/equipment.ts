@@ -88,15 +88,25 @@ export function createEquipmentBadges({ state, data }: { readonly state: AppStat
   return { better, slots, any: anyOf(Object.values(slots)) };
 }
 
-/** 장비 목록의 칸 하나. */
+/** 장비 그리드의 칸 하나. */
 export interface EquipmentEntry {
-  /** 장비(인스턴스) ID. 누르면 이 장비를 입거나 벗는다. */
+  /** 장비(인스턴스) ID. */
   readonly equipmentId: number;
   readonly worn: boolean;
+  /** 입은 것보다 좋은 장비(뱃지의 잎)인지. 칸의 빨간 점이다. */
+  readonly better: boolean;
   /** 고른 장비(강화·합성 패널의 장비)인지. */
   readonly selected: boolean;
   /** 아이콘 이름(Items.icon). */
   readonly icon: string;
+  /** 칸의 등급 색 번호(Items.grade). */
+  readonly tint: number;
+  /** 강화 단계. 예: "+3"(+0이면 비어 있다). */
+  readonly level: string;
+  /** 같은 장비의 수 / 합성에 드는 수의 비율(0~1). 다음 장비가 없으면 0이다. */
+  readonly count: number;
+  /** "2/3"(같은 장비의 수/합성에 드는 수). 다음 장비가 없으면 비어 있다. */
+  readonly countText: string;
   /** Items 테이블의 이름(지금 언어)과 강화 단계. 예: "낡은 검 +3"(+0이면 이름만). */
   readonly name: string;
   /** 슬롯과 강화 단계를 반영해 더하는 스탯. 예: "무기 · 공격 +8". */
@@ -107,6 +117,8 @@ export interface EquipmentEntry {
   toggle(): void;
   /** 이 장비를 강화·합성 패널에 고른다. */
   select(): void;
+  /** 칸을 누른다: 고르고, 입지 않은 것이면 입는다. 벗기는 패널의 버튼이 한다. */
+  tap(): void;
 }
 
 /** 고른 장비의 강화와 합성. 고른 장비가 없으면 글자는 비고 버튼은 꺼진다. */
@@ -131,6 +143,8 @@ export interface ForgeViewModel {
   readonly canMerge: ReadonlySignal<boolean>;
   /** 입었는지. 패널의 착용 버튼이 쓴다. */
   readonly worn: ReadonlySignal<boolean>;
+  /** 패널의 착용 버튼 글자: 입었으면 "해제", 아니면 "장착". */
+  readonly toggleLabel: ReadonlySignal<string>;
   /** 고른 장비를 입거나 벗는다(칸의 toggle과 같다). */
   toggle(): void;
   /** 한 단계 강화한다. 거절은 토스트(refused)가 알린다. */
@@ -147,8 +161,16 @@ export interface EquipmentViewModel {
   readonly tabs: Tabs<EquipSlot | null>;
   /** 고른 슬롯의 가진 장비를 슬롯, 아이템 ID, 장비 ID 순서로. */
   readonly entries: ReadonlySignal<readonly EquipmentEntry[]>;
-  /** 칸의 select()로 고른 장비의 강화·합성. 처음에는 고른 것이 없다. */
+  /** 칸의 select()로 고른 장비의 강화·합성. 처음에는 입은 장비(없으면 처음 가진 장비)를 골라 둔다. */
   readonly forge: ForgeViewModel;
+  /** 입은 것보다 좋은 장비가 있는 슬롯이 있다. */
+  readonly canEquipBest: ReadonlySignal<boolean>;
+  /** 슬롯마다 가장 좋은 장비(다른 어느 것보다 나쁘지 않은 것)를 입는다. */
+  equipBest(): void;
+  /** 재료가 모인 장비가 있다. */
+  readonly canMergeAll: ReadonlySignal<boolean>;
+  /** 재료가 모인 장비를 남김없이 합성한다. 합성한 결과로 다시 모이면 그것도 합성한다. */
+  mergeAll(): void;
   close(): void;
 }
 
@@ -178,6 +200,9 @@ function detailOf(piece: Piece, t: Translate): string {
 const nameOf = ({ row, enhance }: Piece, t: Translate) =>
   enhance === 0 ? t(row.nameKey) : t("equipment.enhanced", { name: t(row.nameKey), step: enhance });
 
+/** 일괄 합성이 한 번에 보내는 최대 합성 수. 거절되어 상태가 그대로면 그 전에 멈춘다. */
+const MAX_MERGES = 50;
+
 export function createEquipmentViewModel(
   { state, data, t, battle, progress, badges, logger, close }: EquipmentViewModelOptions,
 ): EquipmentViewModel {
@@ -201,7 +226,17 @@ export function createEquipmentViewModel(
   const wornIds = computed((): ReadonlySet<number> => new Set(Object.values(equipment.value?.equipped ?? {})));
   const toggle = (equipmentId: number) =>
     sent(wornIds.value.has(equipmentId) ? progress.cmd.ItemUnequip({ equipmentId }) : progress.cmd.ItemEquip({ equipmentId }));
-  const selectedId = signal<number | null>(null);
+  // 패널이 비지 않게 처음에는 입은 장비(슬롯 순서), 입은 것이 없으면 처음 가진 장비를 골라 둔다.
+  const held = equipment.peek();
+  const selectedId = signal<number | null>(
+    held ? (Object.values(held.equipped)[0] ?? (Object.keys(held.owned).map(Number)[0] ?? null)) : null,
+  );
+  // 아이템마다 가진 수. 합성 재료 막대가 쓴다.
+  const counts = computed(() => {
+    const found = new Map<number, number>();
+    for (const instance of Object.values(equipment.value?.owned ?? {})) found.set(instance.itemId, (found.get(instance.itemId) ?? 0) + 1);
+    return found;
+  });
 
   const entries = computed(() => {
     const held = equipment.value;
@@ -218,16 +253,59 @@ export function createEquipmentViewModel(
     return shown.map(({ equipmentId, piece }): EquipmentEntry => {
       const on = worn.has(equipmentId);
       const mark = on ? t("equipment.worn") : better.has(equipmentId) ? t("equipment.better") : "";
+      const held = counts.value.get(piece.row.id) ?? 0;
+      const need = piece.row.mergeItemId === null ? 0 : piece.row.mergeCount ?? 0;
       return {
-        equipmentId, worn: on, selected: selectedId.value === equipmentId, icon: piece.row.icon, name: nameOf(piece, t), detail: detailOf(piece, t),
-        state: mark,
+        equipmentId, worn: on, better: better.has(equipmentId), selected: selectedId.value === equipmentId, icon: piece.row.icon,
+        tint: piece.row.grade ?? 0, level: piece.enhance === 0 ? "" : `+${piece.enhance}`,
+        count: need > 0 ? Math.min(1, held / need) : 0, countText: need > 0 ? `${held}/${need}` : "",
+        name: nameOf(piece, t), detail: detailOf(piece, t), state: mark,
         toggle: () => toggle(equipmentId),
         select: () => void (selectedId.value = equipmentId),
+        tap: () => {
+          selectedId.value = equipmentId;
+          if (!on) toggle(equipmentId);
+        },
       };
     });
   });
 
+  // 슬롯마다 입은 것보다 좋은 장비 중 다른 어느 후보보다 나쁘지 않은 것. 입은 것이 가장 좋으면 그 슬롯은 없다.
+  const bestIds = computed(() => {
+    const held = equipment.value;
+    if (!held) return [];
+    return SLOTS.flatMap(slot => {
+      const wornId = held.equipped[slot];
+      let bestId = wornId;
+      let best = wornId === undefined ? undefined : pieceOf(held.owned[wornId], data);
+      for (const [key, instance] of Object.entries(held.owned)) {
+        const piece = pieceOf(instance, data);
+        if (piece?.row.slot === slot && isBetter(piece, best)) [bestId, best] = [Number(key), piece];
+      }
+      return bestId !== undefined && bestId !== wornId ? [bestId] : [];
+    });
+  });
+  const mergeable = () => {
+    const held = equipment.value;
+    return held && Object.keys(held.owned).map(Number).find(id => mergeMaterials(held, id, data) !== undefined);
+  };
+
   return {
+    canEquipBest: computed(() => bestIds.value.length > 0),
+    equipBest: () => {
+      for (const equipmentId of bestIds.peek()) sent(progress.cmd.ItemEquip({ equipmentId }));
+    },
+    canMergeAll: computed(() => mergeable() !== undefined),
+    // 커맨드는 화면에 즉시 적용되므로 보낼 때마다 다음 재료를 다시 찾는다. 거절되어 같은 장비가 다시 나오면 멈춘다.
+    mergeAll: () => {
+      const tried = new Set<number>();
+      for (let i = 0; i < MAX_MERGES; i++) {
+        const equipmentId = mergeable();
+        if (equipmentId === undefined || tried.has(equipmentId)) return;
+        tried.add(equipmentId);
+        sent(progress.cmd.ItemMerge({ equipmentId }));
+      }
+    },
     stats: STATS.map(({ stat, label }) => ({
       name: computed(() => t(label)),
       icon: "",
@@ -283,6 +361,7 @@ function createForge({ equipment, wornIds, selectedId, data, t, battle, progress
       return id !== null && piece.value !== undefined && mergeMaterials(equipment.value!, id, data) !== undefined;
     }),
     worn: computed(() => selectedId.value !== null && wornIds.value.has(selectedId.value)),
+    toggleLabel: computed(() => t(selectedId.value !== null && wornIds.value.has(selectedId.value) ? "equipment.unequip" : "equipment.equip")),
     toggle: withSelected(toggle),
     enhance: withSelected(equipmentId => sent(progress.cmd.ItemEnhance({ equipmentId }))),
     // 커맨드는 화면에 즉시 적용되므로, 보내기 전의 다음 ID가 곧 결과의 ID다.

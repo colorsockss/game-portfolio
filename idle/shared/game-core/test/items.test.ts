@@ -7,7 +7,7 @@ import { addReward, grant, NO_ITEMS, type Holdings, type ItemAmounts } from "../
 
 const loaded = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
 const row = (id: number, change: Partial<ItemsRow>): [number, ItemsRow] =>
-  [id, { id, nameKey: "item.gold", cap: null, note: null, kind: ItemKind.Material, slot: null, attack: null, defense: null, maxHp: null, enhanceMax: null, mergeItemId: null, mergeCount: null, icon: "", ...change }];
+  [id, { id, nameKey: "item.gold", cap: null, note: null, kind: ItemKind.Material, slot: null, attack: null, defense: null, maxHp: null, enhanceMax: null, mergeItemId: null, mergeCount: null, icon: "", grade: null, ...change }];
 // 지금 데이터에는 상한이 있는 재료와 장비, 슬롯이 없는 장비가 없으므로 더한다.
 const STONE = 3;
 const RING = 900;

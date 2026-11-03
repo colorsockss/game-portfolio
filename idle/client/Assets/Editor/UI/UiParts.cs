@@ -100,6 +100,62 @@ namespace PortfolioIdleRpg.Editor
         internal static TMP_InputField AddInput(Transform parent, string name) =>
             Instantiate("Input", parent, name).GetComponent<TMP_InputField>();
 
+        /// <summary>테마 그림(칸, 줄, 띠, 알약)을 입힌 이미지를 놓는다. 탭은 받지 않는다. 자리는 부르는 쪽이 정한다.</summary>
+        /// <param name="parent">부모.</param>
+        /// <param name="name">오브젝트 이름.</param>
+        /// <param name="sprite">테마의 스프라이트.</param>
+        /// <param name="color">곱할 색.</param>
+        /// <returns>이미지.</returns>
+        internal static Image AddFrame(Transform parent, string name, Sprite sprite, Color color)
+        {
+            Image image = UiPrefabs.AddImage(parent, name, color);
+            Paint(image, sprite, color);
+            image.raycastTarget = false;
+            return image;
+        }
+
+        /// <summary>
+        /// 아래 판(UiSpec.Sheet)과 메인 화면의 장착 현황 판이 쓰는 면: 아래 탭 바로 위에서 <paramref name="height"/>만큼
+        /// 올라오는 크림색 면 하나(Surface)다. 아래 영역의 어두운 바탕 위에 테두리 카드를 한 겹 더 두지 않고 면이 곧 바탕이며,
+        /// 위아래 경계는 영웅 띠와 아래 탭 막대의 외곽선이 맡는다. 면은 양옆으로 세이프 에어리어 밖까지 늘이고 탭을 받아 뒤의
+        /// 전투가 눌리지 않게 한다. 내용은 돌려준 칸(세이프 에어리어 너비)에 놓는다.
+        /// </summary>
+        /// <param name="parent">부모(화면의 루트).</param>
+        /// <param name="theme">테마.</param>
+        /// <param name="name">오브젝트 이름.</param>
+        /// <param name="height">판 높이.</param>
+        /// <returns>내용을 놓을 칸.</returns>
+        internal static RectTransform AddSheet(Transform parent, UiTheme theme, string name, float height)
+        {
+            RectTransform sheet = UiPrefabs.AddRect(parent, name);
+            sheet.anchorMin = Vector2.zero;
+            sheet.anchorMax = Vector2.right;
+            sheet.pivot = new Vector2(0.5f, 0f);
+            sheet.offsetMin = new Vector2(0f, ScreenPrefabs.NavHeight);
+            sheet.offsetMax = new Vector2(0f, ScreenPrefabs.NavHeight + height);
+            Image surface = UiPrefabs.AddImage(sheet, "Surface", theme.Sheet);
+            surface.raycastTarget = true;
+            UiPrefabs.Stretch(surface.rectTransform, new Vector2(-UiPrefabs.BleedMargin, 0f), new Vector2(UiPrefabs.BleedMargin, 0f));
+            return sheet;
+        }
+
+        /// <summary>그래픽에 번호로 색을 고르는 TintView를 붙인다(장비 등급, 스킬 속성). 처음에는 0번 색이다.</summary>
+        /// <param name="graphic">색을 입힐 그래픽.</param>
+        /// <param name="colors">번호 순서의 색(테마의 색표).</param>
+        /// <returns>TintView.</returns>
+        internal static TintView AddTint(Graphic graphic, Color[] colors)
+        {
+            graphic.color = colors[0];
+            var tint = graphic.gameObject.AddComponent<TintView>();
+            var serialized = new SerializedObject(tint);
+            SerializedProperty list = serialized.FindProperty("_colors");
+            list.arraySize = colors.Length;
+            for (var i = 0; i < colors.Length; i++)
+                list.GetArrayElementAtIndex(i).colorValue = colors[i];
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            return tint;
+        }
+
         /// <summary>부품 프리팹의 인스턴스를 부모 아래에 놓는다.</summary>
         /// <param name="part">부품 이름.</param>
         /// <param name="parent">부모.</param>
@@ -141,11 +197,11 @@ namespace PortfolioIdleRpg.Editor
             }
         }
 
-        /// <summary>바탕 이미지에 테마의 스프라이트를 입힌다. 스프라이트가 없으면 사각형이다.</summary>
+        /// <summary>바탕 이미지에 테마의 스프라이트를 입힌다. 9-slice 테두리가 있으면 늘인다. 스프라이트가 없으면 사각형이다.</summary>
         /// <param name="image">이미지.</param>
         /// <param name="sprite">스프라이트.</param>
         /// <param name="color">색.</param>
-        private static void Paint(Image image, Sprite sprite, Color color)
+        internal static void Paint(Image image, Sprite sprite, Color color)
         {
             image.sprite = sprite;
             image.type = (sprite != null) && (sprite.border != Vector4.zero) ? Image.Type.Sliced : Image.Type.Simple;
@@ -163,7 +219,14 @@ namespace PortfolioIdleRpg.Editor
             var button = root.AddComponent<Button>();
             button.targetGraphic = image;
             button.colors = theme.ButtonColors;
-            UiPrefabs.AddText(root.transform, "Text (TMP)", theme.BodySize, Vector2.zero, Vector2.one).color = theme.Text;
+            TMP_Text label = UiPrefabs.AddText(root.transform, "Text (TMP)", theme.BodySize, Vector2.zero, Vector2.one);
+            label.color = theme.Text;
+            // 아래 턱만큼 글자를 올려 윗면의 가운데에 둔다.
+            label.rectTransform.offsetMin = new Vector2(12f, 10f);
+            label.rectTransform.offsetMax = new Vector2(-12f, 0f);
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 24f;
+            label.fontSizeMax = theme.BodySize;
         });
 
         /// <summary>오른쪽 위 모서리에서 조금 바깥으로 나온 빨간 점. 꺼 둔 채로 두고 TypeScript가 켠다.</summary>
@@ -174,20 +237,24 @@ namespace PortfolioIdleRpg.Editor
             Paint(dot, theme.DotSprite, theme.Badge);
             dot.type = Image.Type.Simple;
             dot.raycastTarget = false;
-            UiPrefabs.Place(dot, Vector2.one, new Vector2(10f, 10f), new Vector2(40f, 40f));
+            UiPrefabs.Place(dot, Vector2.one, new Vector2(12f, 12f), new Vector2(46f, 46f));
             root.SetActive(false);
         });
 
         /// <summary>
-        /// 가로로 탭을 고르게 나눠 놓는 탭 막대. 탭은 꺼 둔 틀 버튼을 TypeScript가 정한 수만큼 복제한 것이고, 고른 탭은 누를
-        /// 수 없게 되어 비활성 색(틀의 바탕색 그대로)으로 밝게 보인다. 틀에는 꺼 둔 알림 뱃지가 있어 탭마다 복제된다.
+        /// 세그먼트 탭 막대: 어두운 홈 안에 탭을 고르게 나눠 붙인다. 탭은 꺼 둔 틀 버튼을 TypeScript가 정한 수만큼 복제한 것이고,
+        /// 고른 탭은 누를 수 없게 되어 비활성 색(주황)의 납작한 칸으로 채워지며, 나머지는 칸이 투명해 홈 위의 글자만 보인다.
+        /// 버튼처럼 떠 있지 않아 고르는 탭으로 읽힌다. 틀에는 꺼 둔 알림 뱃지가 있어 탭마다 복제된다.
         /// </summary>
         /// <param name="theme">테마.</param>
         private static void BuildTabBar(UiTheme theme) => Save("TabBar", root =>
         {
             ((RectTransform)root.transform).sizeDelta = new Vector2(900f, theme.TabHeight);
+            var track = root.AddComponent<Image>();
+            Paint(track, theme.PillSprite, theme.Pill);
             var layout = root.AddComponent<HorizontalLayoutGroup>();
-            layout.spacing = theme.Spacing;
+            layout.padding = new RectOffset(7, 7, 7, 7);
+            layout.spacing = 4f;
             layout.childControlWidth = true;
             layout.childControlHeight = true;
             layout.childForceExpandWidth = true;
@@ -196,18 +263,22 @@ namespace PortfolioIdleRpg.Editor
             var template = new GameObject("TabTemplate", typeof(RectTransform), typeof(Image), typeof(Button));
             template.transform.SetParent(root.transform, false);
             var image = template.GetComponent<Image>();
-            Paint(image, theme.ButtonSprite, theme.Accent);
+            Paint(image, theme.ChipSprite, Color.white);
             var button = template.GetComponent<Button>();
             button.targetGraphic = image;
             ColorBlock colors = theme.ButtonColors;
-            colors.normalColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-            colors.highlightedColor = new Color(0.65f, 0.65f, 0.65f, 1f);
-            colors.pressedColor = new Color(0.8f, 0.8f, 0.8f, 1f);
+            // 고르지 않은 탭은 칸이 보이지 않고, 누르는 동안만 옅게 비친다.
+            colors.normalColor = new Color(1f, 1f, 1f, 0f);
+            colors.highlightedColor = new Color(1f, 1f, 1f, 0f);
+            colors.pressedColor = new Color(1f, 1f, 1f, 0.25f);
             // 누른 뒤에도 선택 상태로 밝게 남지 않게 보통 색과 같게 둔다.
             colors.selectedColor = colors.normalColor;
-            colors.disabledColor = Color.white;
+            colors.disabledColor = theme.Accent;
             button.colors = colors;
-            UiPrefabs.AddText(template.transform, "Text (TMP)", theme.BodySize, Vector2.zero, Vector2.one).color = theme.Text;
+            TMP_Text label = UiPrefabs.AddText(template.transform, "Text (TMP)", theme.LabelSize, Vector2.zero, Vector2.one);
+            label.color = theme.Text;
+            label.rectTransform.offsetMin = new Vector2(8f, 2f);
+            label.rectTransform.offsetMax = new Vector2(-8f, 0f);
             AddBadge(template.transform);
             template.SetActive(false);
 
@@ -233,17 +304,20 @@ namespace PortfolioIdleRpg.Editor
             UiPrefabs.SetField(motion, "_panel", panel.rectTransform);
         });
 
-        /// <summary>왼쪽부터 채우는 게이지: 막대와 그 안을 채우는 Filled 이미지. 처음에는 비어 있고 탭을 받지 않는다.</summary>
+        /// <summary>
+        /// 왼쪽부터 채우는 게이지: 어두운 알약 막대와 그 안(외곽선 안쪽)을 채우는 Filled 이미지. 처음에는 비어 있고 탭을 받지
+        /// 않는다. 높이는 놓는 쪽이 정한다.
+        /// </summary>
         /// <param name="theme">테마.</param>
         private static void BuildGauge(UiTheme theme) => Save("Gauge", root =>
         {
-            ((RectTransform)root.transform).sizeDelta = new Vector2(520f, 14f);
+            ((RectTransform)root.transform).sizeDelta = new Vector2(520f, 40f);
             var track = root.AddComponent<Image>();
-            track.color = theme.Panel;
+            Paint(track, theme.PillSprite, theme.Pill);
             track.raycastTarget = false;
             Image fill = UiPrefabs.AddImage(root.transform, "Fill", theme.Good);
             fill.raycastTarget = false;
-            UiPrefabs.Stretch(fill.rectTransform, Vector2.zero, Vector2.zero);
+            UiPrefabs.Stretch(fill.rectTransform, new Vector2(5f, 5f), new Vector2(-5f, -5f));
             // Filled는 스프라이트가 있어야 채운다.
             fill.sprite = theme.GaugeSprite;
             fill.type = Image.Type.Filled;
@@ -260,8 +334,8 @@ namespace PortfolioIdleRpg.Editor
         private static void BuildToggle(UiTheme theme) => Save("Toggle", root =>
         {
             ((RectTransform)root.transform).sizeDelta = new Vector2(240f, 150f);
-            Image box = UiPrefabs.AddImage(root.transform, "Background", theme.Surface);
-            Paint(box, theme.ButtonSprite, theme.Surface);
+            Image box = UiPrefabs.AddImage(root.transform, "Background", theme.Positive);
+            Paint(box, theme.TileSprite, theme.Positive);
             UiPrefabs.Place(box, new Vector2(0f, 0.5f), Vector2.zero, new Vector2(70f, 70f));
             Image check = UiPrefabs.AddImage(box.transform, "Checkmark", theme.Text);
             check.sprite = theme.CheckSprite;
@@ -271,7 +345,7 @@ namespace PortfolioIdleRpg.Editor
             TMP_Text label = UiPrefabs.AddText(root.transform, "Label", theme.LabelSize, Vector2.zero, Vector2.one);
             label.rectTransform.offsetMin = new Vector2(90f, 0f);
             label.alignment = TextAlignmentOptions.MidlineLeft;
-            label.color = theme.Text;
+            theme.Inked(label, theme.Ink);
             // 글자를 눌러도 토글되게 글자가 탭을 받는다. 탭은 부모의 Toggle로 올라간다.
             label.raycastTarget = true;
 
@@ -283,18 +357,23 @@ namespace PortfolioIdleRpg.Editor
         });
 
         /// <summary>
-        /// 0~1의 볼륨 슬라이더: 가운데 30% 높이의 막대와 채움, 동그란 손잡이. 키보드·게임패드로는 움직이지 않게 해서, 값은
+        /// 0~1의 볼륨 슬라이더: 가운데 40% 높이의 알약 막대와 채움, 동그란 손잡이. 키보드·게임패드로는 움직이지 않게 해서, 값은
         /// 놓을 때(Released) 저장된다.
         /// </summary>
         /// <param name="theme">테마.</param>
         private static void BuildSlider(UiTheme theme) => Save("Slider", root =>
         {
             ((RectTransform)root.transform).sizeDelta = new Vector2(420f, 70f);
-            Image background = UiPrefabs.AddImage(root.transform, "Background", theme.Surface);
+            Image background = UiPrefabs.AddImage(root.transform, "Background", theme.Pill);
+            Paint(background, theme.PillSprite, theme.Pill);
             SetBand(background.rectTransform);
             RectTransform fillArea = UiPrefabs.AddRect(root.transform, "Fill Area");
             SetBand(fillArea);
+            // 막대의 외곽선 안쪽만 채운다.
+            fillArea.offsetMin = new Vector2(5f, 5f);
+            fillArea.offsetMax = new Vector2(-5f, -5f);
             Image fill = UiPrefabs.AddImage(fillArea, "Fill", theme.Accent);
+            fill.sprite = theme.GaugeSprite;
             UiPrefabs.Stretch(fill.rectTransform, Vector2.zero, Vector2.zero);
             // 손잡이의 가운데가 양 끝에 닿도록 손잡이 폭의 절반만큼 안쪽에서 움직인다.
             RectTransform handleArea = UiPrefabs.AddRect(root.transform, "Handle Slide Area");
@@ -315,12 +394,12 @@ namespace PortfolioIdleRpg.Editor
             slider.navigation = new Navigation { mode = Navigation.Mode.None };
         });
 
-        /// <summary>슬라이더 높이의 가운데 30%를 가로로 채운다(막대와 채움).</summary>
+        /// <summary>슬라이더 높이의 가운데 40%를 가로로 채운다(막대와 채움).</summary>
         /// <param name="rect">막대나 채움 영역.</param>
         private static void SetBand(RectTransform rect)
         {
-            rect.anchorMin = new Vector2(0f, 0.35f);
-            rect.anchorMax = new Vector2(1f, 0.65f);
+            rect.anchorMin = new Vector2(0f, 0.3f);
+            rect.anchorMax = new Vector2(1f, 0.7f);
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
         }

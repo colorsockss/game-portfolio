@@ -1,0 +1,302 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UI 개편 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+/* 시안의 색. 게임에서는 UiTheme 에셋의 값이 된다. */
+:root{--ol:#2b2236;--navy:#232640;--navy2:#1b1d33;--cream:#f7ecd5;--cream2:#fff8e8;--wood:#8a5634;--wood2:#6b3f24}
+*{box-sizing:border-box}
+body{margin:0;padding:24px 16px 48px;background:#ece7dc;color:#2b2723;font:15px/1.6 system-ui,sans-serif}
+h1{font-size:24px;margin:0 0 6px}h2{font-size:19px;margin:36px 0 10px}p{margin:6px 0}
+.lead{max-width:980px}
+.board{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;margin-top:18px}
+.col{width:432px;max-width:100%}
+.cap{font-weight:700;margin:0 0 8px}
+.notes{margin:10px 0 0;padding-left:18px;font-size:14px}
+.notes li{margin:3px 0}
+/* 휴대폰 한 대 = 기준 화면 1080×1920의 0.4배 */
+.phone{position:relative;width:432px;height:768px;overflow:hidden;border-radius:26px;background:var(--navy2);box-shadow:0 0 0 6px #1a1a22,0 14px 30px rgba(0,0,0,.3);font-family:Jua,system-ui,sans-serif;color:#fff;user-select:none}
+.phone.shot{background:#000}.phone.shot img{width:100%;height:100%;object-fit:cover;object-position:top}
+.abs{position:absolute}
+/* 외곽선 글자: 사방 2px + 아래 그림자 */
+.o{color:#fff;text-shadow:0 2px 0 var(--ol),2px 0 0 var(--ol),-2px 0 0 var(--ol),0 -2px 0 var(--ol),1.5px 1.5px 0 var(--ol),-1.5px 1.5px 0 var(--ol),1.5px -1.5px 0 var(--ol),-1.5px -1.5px 0 var(--ol),0 4px 0 var(--ol)}
+.o.y{color:#ffe14a}.o.g{color:#9dff6a}.o.p{color:#ffb3c0}
+svg.i{width:100%;height:100%;display:block;overflow:visible}
+/* 버튼: 두꺼운 외곽선, 위 광택, 아래 턱 */
+.btn{position:absolute;display:flex;align-items:center;justify-content:center;gap:4px;border:3px solid var(--ol);border-radius:12px;background:var(--c);box-shadow:inset 0 -6px 0 var(--d),inset 0 3px 0 rgba(255,255,255,.5),0 3px 0 rgba(0,0,0,.35);font-size:17px;padding-bottom:3px}
+.btn.g{--c:#6fd94a;--d:#3f9a27}.btn.y{--c:#ffcc33;--d:#d68f12}.btn.r{--c:#ff5a6e;--d:#c42e45}.btn.b{--c:#4aa8ff;--d:#2a6bc9}.btn.n{--c:#b9bfcc;--d:#858c9e}
+.btn .ic{width:20px;height:20px;flex:none}
+/* 등급 칸 */
+.tile{position:absolute;border:3px solid var(--ol);border-radius:12px;background:linear-gradient(180deg,var(--c) 0 58%,var(--d) 58%);box-shadow:inset 0 3px 0 rgba(255,255,255,.45),0 2px 0 rgba(0,0,0,.3)}
+.g1{--c:#c3c9d6;--d:#a3abbb}.g2{--c:#8fdd5e;--d:#6cc23d}.g3{--c:#63b8ff;--d:#3f95e8}.g4{--c:#c483ff;--d:#a35ce8}.g5{--c:#ffc23f;--d:#f29d16}.g0{--c:#5a5f7d;--d:#4a4e6a}
+.tile .ic{position:absolute;inset:14%}
+.tile .lv{position:absolute;left:3px;top:0;font-size:13px}
+.tile .cnt{position:absolute;left:5px;right:5px;bottom:4px;height:11px;border-radius:6px;background:#2b2236;border:2px solid var(--ol);overflow:hidden}
+.tile .cnt i{display:block;height:100%;background:#9dff6a}
+.tile .cnt b{position:absolute;inset:-4px 0 0;font:11px Jua;text-align:center;color:#fff;text-shadow:0 1px 0 #000}
+.tag{position:absolute;right:-6px;top:-7px;min-width:20px;height:20px;padding:0 4px;border:2.5px solid var(--ol);border-radius:10px;background:#4aa8ff;font-size:12px;line-height:15px;text-align:center}
+.dot{position:absolute;right:-5px;top:-5px;width:18px;height:18px;border:2.5px solid var(--ol);border-radius:50%;background:#ff4d5e;font-size:11px;line-height:13px;text-align:center}
+/* 위쪽 HUD */
+.hud{left:0;right:0;top:0;height:60px;background:var(--navy);border-bottom:3px solid var(--ol)}
+.lvbadge{left:8px;top:8px;width:44px;height:44px}
+.lvbadge b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:17px;padding-top:3px}
+.name{left:58px;top:7px;font-size:16px}
+.bar{position:absolute;height:16px;border:2.5px solid var(--ol);border-radius:9px;background:#3a3150;overflow:hidden;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.bar i{display:block;height:100%;background:linear-gradient(180deg,#b6ff8a 0 35%,#5fd442 35%)}
+.bar.hp i{background:linear-gradient(180deg,#ff9aa6 0 35%,#ff4d5e 35%)}
+.bar b{position:absolute;inset:-3px 0 0;text-align:center;font:12px Jua}
+.pill{position:absolute;height:30px;border:2.5px solid var(--ol);border-radius:16px;background:#3a3150;font-size:16px;line-height:24px;text-align:right;padding-right:10px}
+.pill .ic{position:absolute;left:-10px;top:-6px;width:36px;height:36px}
+.gear{right:8px;top:10px;width:40px;height:40px;border-radius:11px}
+/* 스테이지 막대 */
+.stage{left:0;right:0;top:60px;height:50px;background:linear-gradient(180deg,#2c2f4f,#262944)}
+.ribbon{left:50%;transform:translateX(-50%);top:4px;padding:0 16px;height:24px;font-size:16px;white-space:nowrap}
+.track{left:96px;right:96px;top:30px;height:14px}
+.track .line{position:absolute;left:6px;right:20px;top:4px;height:6px;border-radius:3px;background:#15172a}
+.track .line i{display:block;height:100%;width:60%;border-radius:3px;background:#ffd23f}
+.track .wp{position:absolute;top:0;width:14px;height:14px;border:2.5px solid var(--ol);border-radius:50%;background:#53587a}
+.track .wp.on{background:#ffd23f}
+.track .boss{position:absolute;right:-6px;top:-9px;width:30px;height:30px;border:2.5px solid var(--ol);border-radius:50%;background:#ff5a6e;padding:3px}
+.bossbtn{right:8px;top:12px;width:80px;height:34px;font-size:14px}
+/* 전투 */
+.world{left:0;right:0;top:110px;height:276px;overflow:hidden}
+.world svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.actor{position:absolute;background-repeat:no-repeat}
+.hpb{position:absolute;height:9px;border:2px solid var(--ol);border-radius:5px;background:#3a3150;overflow:hidden}
+.hpb i{display:block;height:100%;background:#ff4d5e}.hpb.me i{background:#6fd94a}
+.dmg{position:absolute;font-size:22px}.dmg.crit{font-size:30px}
+.wave{left:50%;top:10px;transform:translateX(-50%);font-size:15px;padding:2px 12px;border-radius:12px;background:rgba(27,29,51,.55)}
+/* 영웅 띠(나무): 왼쪽 능력치, 오른쪽 장착 스킬 */
+.strip{left:0;right:0;top:386px;height:66px;background:linear-gradient(180deg,#9a6440 0 50%,var(--wood) 50%);border-top:3px solid var(--ol);border-bottom:3px solid var(--ol)}
+.stat{position:absolute;height:24px;border:2.5px solid var(--ol);border-radius:12px;background:#3a2318;font-size:15px;line-height:18px;padding:0 9px 0 26px}
+.stat .ic{position:absolute;left:-8px;top:-6px;width:30px;height:30px}
+.sk{top:6px;width:50px;height:50px}
+.cool{position:absolute;inset:0;border-radius:9px;background:conic-gradient(rgba(20,18,35,.72) var(--p),transparent 0)}
+.cool b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px}
+/* 아래 내용 판 */
+.panel{position:absolute;left:8px;right:8px;top:466px;height:224px;background:var(--cream);border:3px solid var(--ol);border-radius:16px;box-shadow:inset 0 0 0 3px var(--cream2),0 4px 0 rgba(0,0,0,.35);color:#4a3426}
+.ptitle{position:absolute;left:12px;top:-14px;height:28px;padding:0 14px;border:3px solid var(--ol);border-radius:10px;background:#ff8a3d;font-size:16px;line-height:21px}
+.seg{position:absolute;right:10px;top:8px;display:flex;border:2.5px solid var(--ol);border-radius:10px;overflow:hidden;background:#e3d3b4}
+.seg span{width:42px;height:22px;font-size:13px;line-height:22px;text-align:center;color:#8a7258}
+.seg span.on{background:#4aa8ff;color:#fff;text-shadow:0 1px 0 var(--ol)}
+.rows{position:absolute;left:8px;right:8px;top:38px}
+.row{position:relative;height:50px;margin-bottom:6px;background:var(--cream2);border:2.5px solid #d9c3a0;border-radius:12px}
+.row .tile{left:4px;top:3px;width:40px;height:40px;border-radius:10px}
+.row .nm{position:absolute;left:52px;top:4px;font-size:16px;color:#4a3426}
+.row .lvl{display:inline-block;margin-left:6px;padding:0 6px;border-radius:7px;background:#4a3426;color:#fff;font-size:12px;line-height:18px;vertical-align:2px}
+.row .val{position:absolute;left:52px;top:24px;font-size:14px;color:#7a6450}
+.row .val em{font-style:normal;color:#3aa52a}
+.row .btn{right:4px;top:3px;width:104px;height:40px;font-size:16px}
+.hint{position:absolute;right:150px;top:11px;font-size:12px;color:#9a8468}
+/* 아래 탭 */
+.nav{left:0;right:0;bottom:0;height:72px;background:var(--navy);border-top:3px solid var(--ol)}
+.tab{position:absolute;top:6px;width:80px;height:60px;border-radius:12px}
+.tab .ic{position:absolute;left:50%;top:2px;width:38px;height:38px;transform:translateX(-50%);opacity:.75}
+.tab span{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-size:13px;color:#a9afcc}
+.tab.on{top:-12px;height:80px;border:3px solid var(--ol);background:linear-gradient(180deg,#ffd75a,#ffb52e);box-shadow:inset 0 -5px 0 #e08e12,0 3px 0 rgba(0,0,0,.35)}
+.tab.on .ic{top:6px;width:48px;height:48px;opacity:1}
+.tab.on span{bottom:6px;font-size:15px;color:#fff;text-shadow:0 2px 0 var(--ol),2px 0 0 var(--ol),-2px 0 0 var(--ol),0 -2px 0 var(--ol)}
+.tab .dot{right:10px;top:-2px}
+/* 장비 판 */
+.slots{position:absolute;left:10px;right:10px;top:38px;height:64px}
+.slots .tile{top:0;width:62px;height:62px}
+.slots .cap2{position:absolute;top:64px;width:62px;text-align:center;font-size:12px;color:#7a6450}
+.grid{position:absolute;left:10px;right:10px;top:132px}
+.grid .tile{width:52px;height:52px;border-radius:11px}
+.sel{outline:3px solid #ff8a3d;outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:10px;font-size:13px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:16px;height:16px;border:2px solid var(--ol);border-radius:5px;background:var(--c)}
+table{border-collapse:collapse;margin-top:8px;max-width:980px;width:100%;background:#fffdf8}
+th,td{border:1px solid #cbbfa9;padding:6px 9px;text-align:left;vertical-align:top;font-size:14px}
+th{background:#f3eadb}
+a{color:#315580}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<!-- 시안용 아이콘. 게임 아이콘은 같은 그림체로 따로 만든다. -->
+<symbol id="coin" viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#ffcc33" stroke="#2b2236" stroke-width="5"/><circle cx="32" cy="32" r="14" fill="none" stroke="#e39a12" stroke-width="5"/><path d="M19 24a15 15 0 0 1 10-9" stroke="#fff8" stroke-width="5" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="orb" viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#5fdc6a" stroke="#2b2236" stroke-width="5"/><circle cx="32" cy="32" r="12" fill="#a8f59a"/><path d="M19 24a15 15 0 0 1 10-9" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="sword" viewBox="0 0 64 64"><path d="M47 8h9v9L31 42l-9-9z" fill="#eef3fb" stroke="#2b2236" stroke-width="4.5" stroke-linejoin="round"/><path d="M51 13L29 35" stroke="#b9c6da" stroke-width="3" stroke-linecap="round"/><path d="M16 32l16 16" stroke="#2b2236" stroke-width="12" stroke-linecap="round"/><path d="M16 32l16 16" stroke="#ffb02e" stroke-width="4" stroke-linecap="round"/><path d="M23 41l-9 9" stroke="#2b2236" stroke-width="10" stroke-linecap="round"/><path d="M23 41l-9 9" stroke="#b07444" stroke-width="3" stroke-linecap="round"/><circle cx="12" cy="52" r="5" fill="#ffb02e" stroke="#2b2236" stroke-width="4"/></symbol>
+<symbol id="heart" viewBox="0 0 64 64"><path d="M32 55C14 43 7 33 7 23a12 12 0 0 1 25-5 12 12 0 0 1 25 5c0 10-7 20-25 32z" fill="#ff5a6e" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/><path d="M15 22a7 7 0 0 1 8-7" stroke="#fffa" stroke-width="4.5" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="bolt" viewBox="0 0 64 64"><path d="M37 5L13 36h15l-6 23 26-33H33z" fill="#ffd93a" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/></symbol>
+<symbol id="armor" viewBox="0 0 64 64"><path d="M21 9l11 6 11-6 13 8-5 13-5-2v25H18V28l-5 2-5-13z" fill="#9fc3e8" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/><path d="M32 17v34" stroke="#6f93bd" stroke-width="4"/></symbol>
+<symbol id="ring" viewBox="0 0 64 64"><circle cx="32" cy="39" r="16" fill="none" stroke="#2b2236" stroke-width="13"/><circle cx="32" cy="39" r="16" fill="none" stroke="#ffcf4a" stroke-width="5"/><path d="M23 12h18l5 7-14 12-14-12z" fill="#4ad6ff" stroke="#2b2236" stroke-width="4.5" stroke-linejoin="round"/></symbol>
+<symbol id="bag" viewBox="0 0 64 64"><path d="M22 20a10 10 0 0 1 20 0" fill="none" stroke="#2b2236" stroke-width="10"/><path d="M22 20a10 10 0 0 1 20 0" fill="none" stroke="#b07444" stroke-width="3"/><rect x="9" y="21" width="46" height="36" rx="11" fill="#d58b4f" stroke="#2b2236" stroke-width="5"/><path d="M9 33h46" stroke="#2b2236" stroke-width="4"/><rect x="27" y="29" width="10" height="10" rx="2" fill="#ffcf4a" stroke="#2b2236" stroke-width="3.5"/></symbol>
+<symbol id="book" viewBox="0 0 64 64"><path d="M8 16q12-7 24 2v37q-12-8-24-2z" fill="#fff" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/><path d="M56 16q-12-7-24 2v37q12-8 24-2z" fill="#dfeaff" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/><path d="M32 0l3.5 7.5L43 11l-7.5 3.5L32 22l-3.5-7.5L21 11l7.5-3.5z" fill="#4ad6ff" stroke="#2b2236" stroke-width="3" stroke-linejoin="round"/></symbol>
+<symbol id="up" viewBox="0 0 64 64"><path d="M32 5l23 25H43v27H21V30H9z" fill="#6fd94a" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/><path d="M27 34v17" stroke="#c4f7a6" stroke-width="4" stroke-linecap="round"/></symbol>
+<symbol id="rebirth" viewBox="0 0 64 64"><path d="M51 33a19 19 0 1 1-7-15" fill="none" stroke="#2b2236" stroke-width="13" stroke-linecap="round"/><path d="M51 33a19 19 0 1 1-7-15" fill="none" stroke="#ff7a3a" stroke-width="5" stroke-linecap="round"/><path d="M37 8l16 3-4 16z" fill="#ff7a3a" stroke="#2b2236" stroke-width="4.5" stroke-linejoin="round"/><path d="M32 24c5 5 6 9 3 13a6 6 0 0 1-9-3c0-3 2-4 3-7 1 2 2 3 3-3z" fill="#ffd93a" stroke="#2b2236" stroke-width="3.5" stroke-linejoin="round"/></symbol>
+<symbol id="gear" viewBox="0 0 64 64"><g fill="#c4ccdc" stroke="#2b2236" stroke-width="4.5" stroke-linejoin="round"><rect x="26" y="3" width="12" height="15" rx="3"/><rect x="26" y="3" width="12" height="15" rx="3" transform="rotate(60 32 32)"/><rect x="26" y="3" width="12" height="15" rx="3" transform="rotate(120 32 32)"/><rect x="26" y="3" width="12" height="15" rx="3" transform="rotate(180 32 32)"/><rect x="26" y="3" width="12" height="15" rx="3" transform="rotate(240 32 32)"/><rect x="26" y="3" width="12" height="15" rx="3" transform="rotate(300 32 32)"/><circle cx="32" cy="32" r="19"/></g><circle cx="32" cy="32" r="8" fill="#2b2236"/></symbol>
+<symbol id="skull" viewBox="0 0 64 64"><path d="M32 8c-14 0-22 9-22 21 0 7 3 11 8 14v10h28V43c5-3 8-7 8-14 0-12-8-21-22-21z" fill="#fff" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/><circle cx="23" cy="31" r="6" fill="#2b2236"/><circle cx="41" cy="31" r="6" fill="#2b2236"/><path d="M28 53v-7M36 53v-7" stroke="#2b2236" stroke-width="4"/></symbol>
+<symbol id="star" viewBox="0 0 64 64"><path d="M32 4l8 17 18 2-13 13 4 19-17-9-17 9 4-19L6 23l18-2z" fill="#ffd23f" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/></symbol>
+<symbol id="fire" viewBox="0 0 64 64"><path d="M38 6c-3 10 15 13 11 30a18 18 0 1 1-34-6c3-6 8-4 8 2 0-10 7-14 15-26z" fill="#ff7a3a" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/><circle cx="32" cy="41" r="9" fill="#ffd93a"/></symbol>
+<symbol id="paw" viewBox="0 0 64 64"><g fill="#bfe6ff" stroke="#2b2236" stroke-width="4.5"><ellipse cx="32" cy="43" rx="14" ry="12"/><circle cx="14" cy="28" r="6.5"/><circle cx="24" cy="16" r="6.5"/><circle cx="40" cy="16" r="6.5"/><circle cx="50" cy="28" r="6.5"/></g></symbol>
+<symbol id="arrows" viewBox="0 0 64 64"><g stroke-linecap="round"><path d="M8 38L38 8" stroke="#2b2236" stroke-width="10"/><path d="M8 38L38 8" stroke="#c98a55" stroke-width="3.5"/><path d="M22 54L52 24" stroke="#2b2236" stroke-width="10"/><path d="M22 54L52 24" stroke="#c98a55" stroke-width="3.5"/></g><g fill="#eef3fb" stroke="#2b2236" stroke-width="4" stroke-linejoin="round"><path d="M31 5h12v12z"/><path d="M45 21h12v12z"/></g></symbol>
+<symbol id="roar" viewBox="0 0 64 64"><g fill="#ff5a6e" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"><path d="M10 32L32 12l22 20v11L32 24 10 43z"/><path d="M10 50l22-20 22 20v10L32 41 10 60z"/></g></symbol>
+<symbol id="heal" viewBox="0 0 64 64"><path d="M24 7h16v17h17v16H40v17H24V40H7V24h17z" fill="#7be36a" stroke="#2b2236" stroke-width="5" stroke-linejoin="round"/><path d="M29 12v14" stroke="#d2ffc4" stroke-width="4" stroke-linecap="round"/></symbol>
+<symbol id="lock" viewBox="0 0 64 64"><path d="M21 29v-7a11 11 0 0 1 22 0v7" fill="none" stroke="#2b2236" stroke-width="6"/><rect x="13" y="28" width="38" height="28" rx="7" fill="#ffcf4a" stroke="#2b2236" stroke-width="5"/><circle cx="32" cy="41" r="4" fill="#2b2236"/></symbol>
+</defs></svg>
+
+<h1>UI 개편 시안 — 슬레이어 키우기식 UX + 첨부 그림체</h1>
+<p class="lead">왼쪽이 지금 화면(10월 28일 Unity 캡처)이고, 오른쪽 셋이 개편안입니다. 용사·몬스터는 게임의 실제 그림이고, 배경·아이콘·글꼴은 그림체를 보이려는 시안용입니다. 휴대폰 한 대가 기준 화면 1080×1920의 0.4배입니다.</p>
+
+<div class="board" id="board"></div>
+
+<h2>슬레이어 키우기에서 가져올 UX</h2>
+<table>
+<tr><th>지금</th><th>문제</th><th>개편</th></tr>
+<tr><td>강화·스킬·장비·가방·환생이 화면을 덮는 팝업</td><td>방치형의 핵심인 "전투를 보면서 키우기"가 안 됨. 열고 닫는 데 탭 두 번</td><td>아래 탭 + 아래 판. 판은 화면 아래 40%에만 열리고 전투는 늘 보임. 고른 탭을 다시 누르면 판이 접혀 전투가 커짐</td></tr>
+<tr><td>스테이지 이름과 "0/3" 글자만</td><td>얼마나 남았는지, 보스가 언제인지 안 보임</td><td>위쪽 스테이지 막대: 웨이브 점 → 보스 해골, 다 차면 "보스 도전" 버튼이 막대 옆에서 깜빡임. 스테이지 이름을 누르면 스테이지 목록</td></tr>
+<tr><td>영웅 HP는 머리 위 작은 막대뿐</td><td>지금 강한지 약한지 판단할 근거가 없음</td><td>전투 아래 능력치 띠: HP 막대, 공격, 치명. 강화하면 띠의 수치가 바로 오르며 반짝임</td></tr>
+<tr><td>장착 스킬이 전투 중에 안 보임</td><td>스킬을 배우고 장착한 효과를 체감할 수 없음</td><td>스킬 바: 장착한 스킬 세 칸과 재사용 대기 시계</td></tr>
+<tr><td>강화는 한 번 누르면 한 단계</td><td>골드가 쌓이면 수십 번 눌러야 함</td><td>×1·×10·×100 배수, 길게 누르면 연속 강화, "지금 → 다음" 수치, 못 사는 줄은 회색 버튼</td></tr>
+<tr><td>장비는 글자 목록과 별도 강화·합성 판</td><td>무엇이 좋은지 한눈에 안 보임</td><td>등급 색 칸 그리드, 강화 수치·합성 개수 막대·착용 표시, "일괄 장착"·"일괄 합성"</td></tr>
+<tr><td>스킬은 글자 목록</td><td>스킬을 구분할 수 없음</td><td>속성 색 아이콘 칸, 잠긴 스킬은 자물쇠, 고른 스킬의 설명과 레벨업·장착</td></tr>
+</table>
+
+<h2>그림체 규칙(첨부 이미지 기준)</h2>
+<table>
+<tr><th>요소</th><th>규칙</th></tr>
+<tr><td>외곽선</td><td>모든 버튼·칸·패널·아이콘에 짙은 남보라(#2B2236) 외곽선. 기준 화면에서 7~8px</td></tr>
+<tr><td>버튼</td><td>채도 높은 단색 + 위 광택 + 아래 턱(같은 색의 어두운 단). 초록 = 사기/진행, 노랑 = 강조(보스, 합성), 빨강 = 위험(환생), 파랑 = 장착, 회색 = 비활성</td></tr>
+<tr><td>패널</td><td>크림색 판 + 갈색 글자, 제목은 주황 꼬리표. 위쪽 HUD와 아래 탭은 짙은 남색, 능력치 띠는 나무색</td></tr>
+<tr><td>등급</td><td>일반 회색 → 고급 초록 → 희귀 파랑 → 영웅 보라 → 전설 주황. 칸의 아래 42%를 어둡게</td></tr>
+<tr><td>글자</td><td>둥글고 굵은 한글 글꼴(시안은 OFL인 Jua) + 외곽선과 아래 그림자. 수치는 흰색, 강조는 노랑·초록</td></tr>
+<tr><td>아이콘·배경</td><td>배우(용사·몬스터)와 같은 평면 색면 + 외곽선. 지금 아이콘은 사실적인 그림이라 배우와 어긋남. 배경은 지금 24픽셀 도트라 배우와 어긋남</td></tr>
+</table>
+<div class="legend"><span><i style="--c:#c3c9d6"></i>일반</span><span><i style="--c:#8fdd5e"></i>고급</span><span><i style="--c:#63b8ff"></i>희귀</span><span><i style="--c:#c483ff"></i>영웅</span><span><i style="--c:#ffc23f"></i>전설</span></div>
+<p style="margin-top:14px"><a href="../../../docs/art.md">그림 목록과 출처</a></p>
+
+<script>
+// 휴대폰 화면을 만든다. 같은 HUD·전투·아래 탭에 판만 바꿔 끼운다.
+const ic = (id, cls = 'ic') => `<svg class="i ${cls}"><use href="#${id}"/></svg>`;
+
+// 배우: 몸 높이 150픽셀로 맞춘 원본을 같은 배율로 줄이고, 발(프레임의 groundRatio)을 땅에 맞춘다.
+const HERO_BODY = 66;
+const actors = [
+  { key: 'hero', frame: 256, ground: 193 / 256, size: 1, x: 70, flip: false, hp: .74, me: true },
+  { key: 'goblin_scout', frame: 256, ground: 193 / 256, size: .75, x: 250, flip: true, hp: .55 },
+  { key: 'forest_boar', frame: 384, ground: 257 / 384, size: .65, x: 318, flip: true, hp: 1 },
+  { key: 'green_slime', frame: 384, ground: 257 / 384, size: .45, x: 380, flip: true, hp: .3 },
+];
+const GROUND_Y = 228;
+
+function world() {
+  const bodies = actors.map(a => {
+    const side = a.frame * HERO_BODY * a.size / 152;
+    const top = GROUND_Y - a.ground * side;
+    const body = HERO_BODY * a.size;
+    return `<div class="actor" data-key="${a.key}" style="left:${a.x - side / 2}px;top:${top}px;width:${side}px;height:${side}px;background-image:url(../../actors/${a.key}/idle.png);background-size:${side * 2}px ${side}px;${a.flip ? 'transform:scaleX(-1)' : ''}"></div>
+      <div class="hpb ${a.me ? 'me' : ''}" style="left:${a.x - 24}px;top:${GROUND_Y - body - 18}px;width:48px"><i style="width:${a.hp * 100}%"></i></div>`;
+  }).join('');
+  return `<div class="abs world">
+    <svg class="bg" viewBox="0 0 432 272" preserveAspectRatio="none">
+      <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd3ff"/><stop offset="1" stop-color="#d9f3ff"/></linearGradient></defs>
+      <rect width="432" height="272" fill="url(#sky)"/>
+      <g fill="#fff" stroke="#2b2236" stroke-width="3"><path d="M40 52a14 14 0 0 1 26-6 11 11 0 0 1 18 9H34a6 6 0 0 1 6-3z"/><path d="M300 38a15 15 0 0 1 28-6 12 12 0 0 1 20 10h-54a7 7 0 0 1 6-4z"/></g>
+      <path d="M0 150Q60 96 120 130T250 112T380 120T432 108V272H0z" fill="#86c96b" stroke="#2b2236" stroke-width="3"/>
+      <g stroke="#2b2236" stroke-width="3"><circle cx="40" cy="150" r="26" fill="#4fa34a"/><circle cx="72" cy="158" r="20" fill="#5bb352"/><circle cx="350" cy="146" r="28" fill="#4fa34a"/><circle cx="392" cy="156" r="22" fill="#5bb352"/><rect x="36" y="168" width="8" height="16" fill="#8a5634"/><rect x="346" y="166" width="8" height="18" fill="#8a5634"/></g>
+      <path d="M0 196Q110 184 216 192T432 190V272H0z" fill="#6dbb4a" stroke="#2b2236" stroke-width="3"/>
+      <path d="M0 214Q120 204 230 212T432 210V272H0z" fill="#d9b27a" stroke="#2b2236" stroke-width="3"/>
+      <g fill="#c79c62"><ellipse cx="90" cy="244" rx="10" ry="3"/><ellipse cx="250" cy="252" rx="14" ry="3.5"/><ellipse cx="380" cy="240" rx="8" ry="2.5"/></g>
+    </svg>
+    ${bodies}
+    <div class="abs dmg o" style="left:222px;top:96px">128</div>
+    <div class="abs dmg crit o y" style="left:300px;top:118px">1.2K!</div>
+    <div class="abs dmg o g" style="left:52px;top:84px;font-size:18px">+40</div>
+  </div>`;
+}
+
+function hud() {
+  return `<div class="abs hud">
+    <div class="abs lvbadge">${ic('star', '')}<b class="o">12</b></div>
+    <div class="abs name o">artbow1028</div>
+    <div class="bar" style="left:58px;top:33px;width:130px"><i style="width:42%"></i><b class="o">42%</b></div>
+    <div class="pill" style="left:212px;top:15px;width:110px">${ic('coin')}<span class="o y">12.4K</span></div>
+    <div class="btn n gear">${ic('gear')}</div>
+  </div>
+  <div class="abs stage">
+    <div class="abs ribbon o">1-2 숲의 입구 ▾</div>
+    <div class="abs track"><div class="line"><i></i></div>
+      <div class="wp on" style="left:0"></div><div class="wp on" style="left:30%"></div><div class="wp" style="left:60%"></div>
+      <div class="boss">${ic('skull', '')}</div></div>
+    <div class="btn y bossbtn"><span class="o">보스 도전</span></div>
+  </div>`;
+}
+
+function strip() {
+  return `<div class="abs strip">
+    <div class="stat" style="left:16px;top:5px;width:226px">${ic('heart')}<div class="bar hp" style="left:24px;top:1px;right:4px;height:16px;border-width:2px"><i style="width:74%"></i><b class="o">1.02K / 1.38K</b></div></div>
+    <div class="stat o y" style="left:16px;top:34px;width:104px">${ic('sword')}397</div>
+    <div class="stat o" style="left:138px;top:34px;width:104px">${ic('bolt')}6.5%</div>
+    ${[['arrows', 'g3', 0], ['fire', 'g5', 62], ['paw', 'g4', 0]].map(([id, g, p], i) =>
+      `<div class="tile ${g} sk" style="left:${260 + i * 56}px">${ic(id)}${p ? `<div class="cool" style="--p:${p}%"><b class="o">3</b></div>` : ''}</div>`).join('')}
+  </div>`;
+}
+
+function nav(on) {
+  const tabs = [['upgrade', 'up', '강화'], ['skills', 'book', '스킬'], ['equipment', 'sword', '장비'], ['inventory', 'bag', '가방'], ['rebirth', 'rebirth', '환생']];
+  return `<div class="abs nav">${tabs.map(([key, id, name], i) =>
+    `<div class="tab ${key === on ? 'on' : ''}" style="left:${6 + i * 84}px">${ic(id)}<span>${name}</span>${key === 'equipment' && on !== 'equipment' ? '<div class="dot o">!</div>' : ''}</div>`).join('')}</div>`;
+}
+
+const panels = {
+  upgrade: `<div class="panel"><div class="ptitle o">능력치 강화</div>
+    <div class="seg"><span class="on">×1</span><span>×10</span><span>×100</span></div>
+    <div class="rows">
+      <div class="row"><div class="tile g5">${ic('sword')}</div><div class="nm">공격<span class="lvl">Lv.12</span></div><div class="val">+60 → <em>+65</em></div><div class="btn g">${ic('coin')}<span class="o">1.2K</span></div></div>
+      <div class="row"><div class="tile g2">${ic('heart')}</div><div class="nm">HP<span class="lvl">Lv.8</span></div><div class="val">+400 → <em>+450</em></div><div class="btn g">${ic('coin')}<span class="o">860</span></div></div>
+      <div class="row"><div class="tile g3">${ic('bolt')}</div><div class="nm">치명<span class="lvl">Lv.3</span></div><div class="val">+1.5% → <em>+2.0%</em></div><div class="btn n">${ic('coin')}<span class="o">18.5K</span></div></div>
+    </div><div class="hint">길게 눌러 연속 강화</div></div>`,
+  equipment: `<div class="panel"><div class="ptitle o">장비</div>
+    <div class="btn g" style="right:112px;top:6px;width:94px;height:30px;font-size:14px"><span class="o">일괄 장착</span></div>
+    <div class="btn y" style="right:10px;top:6px;width:94px;height:30px;font-size:14px"><span class="o">일괄 합성</span></div>
+    <div class="slots">
+      <div class="tile g4" style="left:40px">${ic('sword')}<div class="lv o">+7</div></div><div class="cap2" style="left:40px">무기</div>
+      <div class="tile g3" style="left:156px">${ic('armor')}<div class="lv o">+4</div></div><div class="cap2" style="left:156px">방어구</div>
+      <div class="tile g2" style="left:272px">${ic('ring')}<div class="lv o">+2</div></div><div class="cap2" style="left:272px">장신구</div>
+    </div>
+    <div class="grid">${[
+      ['g4', 'sword', '+7', 1, 1, 'E'], ['g3', 'armor', '+4', 2, 3, 'E'], ['g2', 'ring', '+2', 1, 3, 'E'], ['g3', 'ring', '', 1, 3, '!'], ['g2', 'sword', '+1', 3, 3, ''], ['g1', 'armor', '', 2, 3, ''],
+    ].map(([g, id, lv, have, need, tag], i) => `<div class="tile ${g} ${i === 3 ? 'sel' : ''}" style="left:${i * 64}px;top:0">${ic(id)}<div class="lv o">${lv}</div>
+      <div class="cnt"><i style="width:${Math.min(1, have / need) * 100}%;${have >= need ? 'background:#ffd23f' : ''}"></i><b>${have}/${need}</b></div>
+      ${tag === 'E' ? '<div class="tag o">E</div>' : tag === '!' ? '<div class="dot o">!</div>' : ''}</div>`).join('')}</div>
+  </div>`,
+  skills: `<div class="panel"><div class="ptitle o">스킬</div>
+    <div class="abs" style="right:12px;top:8px;font-size:13px;color:#7a6450">장착 3/3 · 쓰는 순서는 왼쪽부터</div>
+    <div class="grid" style="top:38px">${[
+      ['arrows', 'g3', 'Lv.4', 'E'], ['fire', 'g5', 'Lv.2', 'E'], ['paw', 'g4', 'Lv.1', 'E'], ['roar', 'g2', 'Lv.1', ''], ['heal', 'g1', '', 'L'], ['sword', 'g1', 'Lv.6', ''],
+    ].map(([id, g, lv, tag], i) => `<div class="tile ${tag === 'L' ? 'g0' : g} ${i === 1 ? 'sel' : ''}" style="left:${i * 64}px;top:0">${ic(id)}${tag === 'L' ? `<div style="position:absolute;inset:0;border-radius:9px;background:rgba(27,29,51,.55)"></div><svg class="i" style="position:absolute;left:12px;top:10px;width:24px;height:24px"><use href="#lock"/></svg>` : ''}<div class="lv o">${lv}</div>${tag === 'E' ? '<div class="tag o">E</div>' : ''}</div>`).join('')}</div>
+    <div class="abs" style="left:10px;right:10px;top:104px;height:84px;border-radius:12px;background:var(--cream2);border:2.5px solid #d9c3a0">
+      <div class="tile g5" style="left:6px;top:8px;width:62px;height:62px">${ic('fire')}</div>
+      <div class="abs" style="left:78px;top:6px;font-size:17px">화염구 <span style="font-size:13px;color:#a06a3a">Lv.2/10</span></div>
+      <div class="abs" style="left:78px;top:30px;right:120px;font-size:12px;line-height:1.35;color:#7a6450">불덩이를 던져 적 하나에 공격의 240% 피해. 재사용 대기 6초</div>
+      <div class="btn g" style="right:6px;top:6px;width:104px;height:36px;font-size:15px">${ic('coin')}<span class="o">2.4K</span></div>
+      <div class="btn b" style="right:6px;top:44px;width:104px;height:32px;font-size:14px"><span class="o">장착 해제</span></div>
+    </div>
+  </div>`,
+};
+
+function phone(panel) {
+  return `<div class="phone">${world()}${hud()}${strip()}${panels[panel]}${nav(panel)}</div>`;
+}
+
+const columns = [
+  { title: '지금', html: '<div class="phone shot"><img src="../hero-archer-2026-10-28/unity-hero-attack.png" alt="지금의 메인 화면"></div>',
+    notes: ['메뉴가 모두 화면을 덮는 팝업', '스테이지 진행이 "0/3" 글자뿐', '회색 9-slice와 사실적인 아이콘, 도트 배경이 배우의 그림체와 어긋남'] },
+  { title: '개편 — 강화 탭', html: phone('upgrade'),
+    notes: ['위: 레벨·경험치·골드·설정', '스테이지 막대: 웨이브 점 → 보스, 보스 도전 버튼', '전투 아래 능력치 띠와 스킬 바', '아래 판: ×1·×10·×100, 길게 눌러 연속 강화'] },
+  { title: '개편 — 장비 탭', html: phone('equipment'),
+    notes: ['슬롯 셋과 등급 색 칸', '칸마다 강화 수치, 합성 개수 막대, 착용(E)', '더 좋은 장비는 빨간 점, 일괄 장착·합성'] },
+  { title: '개편 — 스킬 탭', html: phone('skills'),
+    notes: ['속성 색 스킬 칸, 잠긴 스킬은 자물쇠', '고른 스킬의 설명, 레벨업 비용, 장착·해제', '장착한 셋은 전투 아래 스킬 바에 그대로'] },
+];
+document.querySelector('#board').innerHTML = columns.map(c =>
+  `<div class="col"><p class="cap">${c.title}</p>${c.html}<ul class="notes">${c.notes.map(n => `<li>${n}</li>`).join('')}</ul></div>`).join('');
+
+// 대기 두 프레임을 번갈아 보인다.
+let frame = 0;
+setInterval(() => {
+  frame ^= 1;
+  document.querySelectorAll('.actor').forEach(el => { el.style.backgroundPositionX = frame ? '100%' : '0'; });
+}, 260);
+</script></html>

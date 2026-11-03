@@ -29,7 +29,7 @@ import {
   type Boundary,
 } from "../src/battle/simulation.js";
 import { BattleMode, HERO_ID, type EffectState, type SummonState } from "../src/battle/state.js";
-import { abilityOwner, heroStats, monsterStats, summonStats, type CombatStats } from "../src/battle/stats.js";
+import { abilityOwner, applyModifiers, heroStats, monsterStats, summonStats, type CombatStats } from "../src/battle/stats.js";
 import { Formula } from "../src/formulas.js";
 import type { ItemAmounts } from "../src/items.js";
 import { NO_EQUIPMENT } from "../src/equipment.js";
@@ -1469,7 +1469,14 @@ describe("snapshot", () => {
       autoBoss: true,
       hasBoss: true,
       bossTicksLeft: toTicks(300),
-      hero: { level: 1, hp: hero.maxHp, maxHp: hero.maxHp, down: false, effects: [], x: 0, moving: false },
+      hero: {
+        level: 1, hp: hero.maxHp, maxHp: hero.maxHp, down: false, effects: [], x: 0, moving: false, attack: hero.attack, critChance: hero.critChance,
+        // 보스는 다음 틱부터 대상이라 아직 차례가 없어 새 사냥의 대기 그대로다.
+        skills: [1004, 1005].map(skillId => {
+          const ticks = toTicks(data.skills.get(skillId)!.cooldownSeconds);
+          return { skillId, cooldownTicks: ticks, readyInTicks: ticks };
+        }),
+      },
       enemies: [{ id: 1, monsterId: 2008, boss: true, hp: statsOf(2008).maxHp, maxHp: statsOf(2008).maxHp, effects: [], x: 1, moving: false }],
       summons: [],
       projectiles: [],
@@ -1495,6 +1502,50 @@ describe("snapshot", () => {
     const { hero: shownHero, enemies, summons } = battle.snapshot();
     const target = [{ id: HERO_ID, ...shownHero }, ...enemies, ...summons].find(fighter => fighter.id === applied.id)!;
     expect(target.effects).toContainEqual({ effectId: applied.effectId, stacks: applied.stacks, ticksLeft: applied.ticksLeft });
+  });
+
+  test("lists the equipped skills in slot order, each counting down to ready after it is used", () => {
+    // 슬라임도 영웅도 쓰러지지 않아 재사용 대기가 매 틱 흐른다. 슬롯은 Heroes.skillIds(1004, 1005)와 거꾸로 장착한다.
+    const gameData: GameData = {
+      ...data,
+      monsters: patch(data.monsters, 2001, { maxHp: Big.from(1e9) }),
+      heroLevels: patch(data.heroLevels, 1, { maxHp: Big.from(1e12) }),
+    };
+    const skills: SkillsState = { equipped: { 0: 1005, 1: 1004 }, levels: { 1004: 1, 1005: 1 } };
+    const battle = startBattle(input({ data: gameData, skills, cooldowns: [0, 0, 0] }));
+    const fireball = toTicks(data.skills.get(1005)!.cooldownSeconds);
+    const arrow = toTicks(data.skills.get(1004)!.cooldownSeconds);
+    expect(battle.snapshot().hero.skills).toEqual([
+      { skillId: 1005, cooldownTicks: fireball, readyInTicks: 0 },
+      { skillId: 1004, cooldownTicks: arrow, readyInTicks: 0 },
+    ]);
+    // 둘 다 준비된 첫 차례에는 앞 슬롯만 쓰고, 뒤 슬롯은 준비된 채 다음 차례를 기다린다.
+    const used = (skillId: number) => (event: BattleEvent) => event.type === "attack" && event.by === HERO_ID && event.skillId === skillId;
+    runUntil(battle, used(1005));
+    const first = battle.tick;
+    expect(battle.snapshot().hero.skills.map(skill => skill.readyInTicks)).toEqual([fireball, 0]);
+    for (let left = fireball - 1; left > 0; left--) {
+      battle.advance(battle.tick + 1);
+      expect(battle.snapshot().hero.skills[0].readyInTicks).toBe(left);
+    }
+    // 0이 되는 차례에 다시 쓴다.
+    expect(run(battle, first + fireball).some(used(1005))).toBe(true);
+  });
+
+  test("shows the hero's attack and crit chance as the battle uses them, stat effects included", () => {
+    expect(startBattle(input()).snapshot().hero).toMatchObject({ attack: hero.attack, critChance: hero.critChance });
+
+    // 1010은 사거리 안에 적이 오면 자신에게 공격력 +30%(4005)를 건다.
+    const gameData: GameData = { ...data, heroes: patch(data.heroes, 1, { skillIds: [1001, 1010] }) };
+    const battle = startBattle(input({ data: gameData, skills: { equipped: { 0: 1010 }, levels: { 1010: 1 } }, cooldowns: [0, 0] }));
+    const onHero = (type: "effectApply" | "effectEnd") => (event: BattleEvent) => event.type === type && event.id === HERO_ID && event.effectId === 4005;
+    runUntil(battle, onHero("effectApply"));
+    const { amount } = battle.checkpoint().player.battle.hero.effects.find(effect => effect.effectId === 4005)!;
+    const buffed = applyModifiers(hero, [{ stat: Stat.Attack, percent: Big.toNumber(amount) }]);
+    expect(Big.gt(buffed.attack, hero.attack)).toBe(true);
+    expect(battle.snapshot().hero).toMatchObject({ attack: buffed.attack, critChance: hero.critChance });
+    runUntil(battle, onHero("effectEnd"));
+    expect(battle.snapshot().hero.attack).toEqual(hero.attack);
   });
 });
 

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace PortfolioIdleRpg.Facades
 {
     /// <summary>
-    /// 화면 크기나 세이프 에어리어가 바뀌면 알린다. UI 캔버스(UiRoot)와 월드 카메라(WorldRoot)가 화면에 맞출 때 쓴다.
+    /// 화면 크기나 세이프 에어리어가 바뀌면 알린다. UI 캔버스(UiRoot)가 화면에 맞출 때 쓴다.
     /// 회전, 창 크기, 에디터의 Game 뷰와 Device Simulator가 바꾼다. 프레임마다 값 둘을 비교할 뿐이다.
     /// </summary>
     internal sealed class ScreenWatcher : MonoBehaviour

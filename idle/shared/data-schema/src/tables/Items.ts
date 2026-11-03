@@ -1,7 +1,7 @@
 // sheet-baker가 자동 생성한 파일. 직접 수정하지 마세요.
 // sheet-baker가 검증하고 정규화한 데이터를 읽는다. 데이터와 코드는 함께 다시 생성한다.
 import { Big } from '@idle/big-number';
-import type { EquipSlot, ItemKind } from './Enums.js';
+import type { EquipSlot, Grade, ItemKind } from './Enums.js';
 import type { StringsId } from './Strings.js';
 import { readMessagePack } from './runtime/messagepack.js';
 
@@ -32,6 +32,8 @@ export interface ItemsRow {
   "mergeCount": number | null;
   // 인덱스 12: 가방 칸, 장비 줄, 재화 칸의 아이콘 그림 이름(클라이언트 Assets/UI/Sprites/Icons의 파일 이름). 장비 그림이 생기기 전에는 슬롯 그림(slot_weapon 등)
   "icon": string;
+  // 인덱스 13: 장비 등급 (Enums의 Grade). 아이템 칸의 테두리 색. 장비만 적고, 장비는 꼭 적는다
+  "grade": Grade | null;
 }
 
 export async function deserializeItemsMessagePack(bytes: Uint8Array | ArrayBuffer): Promise<Map<number, ItemsRow>> {
@@ -51,6 +53,7 @@ export async function deserializeItemsMessagePack(bytes: Uint8Array | ArrayBuffe
       "mergeItemId": row[10] as number | null,
       "mergeCount": row[11] as number | null,
       "icon": row[12] as string,
+      "grade": row[13] as Grade | null,
     };
     result.set(record.id, record);
   }

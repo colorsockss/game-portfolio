@@ -163,6 +163,17 @@ export interface ProjectileSnapshot {
   ticksLeft: number;
 }
 
+/**
+ * 영웅이 장착해 쓰는 스킬 하나의 재사용 대기. `readyInTicks`는 다시 쓸 수 있을 때까지 남은 틱이고 0이면 준비됐다. 대기는 맞설
+ * 상대가 있고 기절하지 않은 틱에만 흐른다. 준비됐어도 대상이나 조건이 맞지 않으면 쓰지 않고 기다린다.
+ */
+export interface SkillSnapshot {
+  skillId: number;
+  /** 쓴 뒤 다시 기다리는 틱. */
+  cooldownTicks: number;
+  readyInTicks: number;
+}
+
 export interface BattleSnapshot {
   stageId: number;
   mode: BattleMode;
@@ -172,7 +183,19 @@ export interface BattleSnapshot {
   hasBoss: boolean;
   /** 보스 제한 시간까지 남은 틱. 보스 중이 아니거나 제한이 없으면 null. */
   bossTicksLeft: number | null;
-  hero: Place & { level: number; hp: Big; maxHp: Big; down: boolean; effects: EffectSnapshot[] };
+  hero: Place & {
+    level: number;
+    hp: Big;
+    maxHp: Big;
+    down: boolean;
+    effects: EffectSnapshot[];
+    /** 지금 공격력. 걸린 능력치 효과를 얹은, 전투가 피해 공식에 쓰는 값이다. */
+    attack: Big;
+    /** 지금 치명 확률(0..1). 걸린 능력치 효과를 얹은 값이다. */
+    critChance: number;
+    /** 장착한 스킬(기본 공격 빼고)을 전투가 고르는 순서(슬롯 순서)로. 피해·효과·소환이 없는 스킬은 전투가 쓰지 않으므로 없다. */
+    skills: SkillSnapshot[];
+  };
   /** 살아 있는 적 몬스터. 나온 순서(id 오름차순)다. 적의 소환수는 `summons`에 있다. */
   enemies: EnemySnapshot[];
   /** 살아 있는 소환수(아군 먼저, 각각 나온 순서). */
@@ -1239,6 +1262,10 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
       bossTicksLeft: deadline === null ? null : deadline - tick,
       hero: {
         level: profile.level, hp: hero.hp, maxHp: hero.fighter.stats.maxHp, down: reviveAt !== null, effects: effectSnapshots(hero), ...place(hero),
+        attack: hero.fighter.stats.attack,
+        critChance: hero.fighter.stats.critChance,
+        // 0번은 기본 공격이다. 대기는 쓴 틱에 cooldown이 되고 차례마다 하나씩 줄어 0인 틱에 다시 쓴다.
+        skills: hero.fighter.attacks.slice(1).map((attack, i) => ({ skillId: attack.skillId, cooldownTicks: attack.cooldown, readyInTicks: hero.cooldowns[i + 1] })),
       },
       enemies: enemies.flatMap(enemy => enemy.row === null ? [] : [{
         id: enemy.id,

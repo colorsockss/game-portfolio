@@ -23,6 +23,7 @@ export {
   type EnemySnapshot,
   type Hit,
   type ProjectileSnapshot,
+  type SkillSnapshot,
   type SummonSnapshot,
 } from "./battle/simulation.js";
 export {
@@ -47,7 +48,7 @@ export { grant, NO_ITEMS, type Holdings, type ItemAmounts } from "./items.js";
 export { Formula, type IAbilityOwner } from "./formulas.js";
 export { playerFingerprint, type PlayerSnapshot, type StateSync } from "./snapshot.js";
 export { NO_REBIRTH, rebirthPoints, rebirthRate, type RebirthState } from "./rebirth.js";
-export { NO_STAT_UPGRADES, statUpgradeCost, type StatUpgradeState } from "./stat-upgrade.js";
+export { MAX_STAT_UPGRADE_STEPS, NO_STAT_UPGRADES, statUpgradeBatch, statUpgradeCost, type StatUpgradeState } from "./stat-upgrade.js";
 export {
   equippableSkills,
   heroRow,

@@ -19,6 +19,19 @@ export enum EquipSlot {
   Accessory = 3,
 }
 
+export enum Grade {
+  // 일반
+  Common = 1,
+  // 고급
+  Uncommon = 2,
+  // 희귀
+  Rare = 3,
+  // 영웅
+  Epic = 4,
+  // 전설
+  Legendary = 5,
+}
+
 export enum SoundChannel {
   // 배경 음악. 반복하고 하나만 돈다
   Bgm = "bgm",

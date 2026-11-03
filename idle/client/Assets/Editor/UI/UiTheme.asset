@@ -12,42 +12,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fada102a107a4e16a380cbe2ba95245, type: 3}
   m_Name: UiTheme
   m_EditorClassIdentifier: PortfolioIdleRpg.Editor::PortfolioIdleRpg.Editor.UiTheme
-  Panel: {r: 0.105882354, g: 0.12156863, b: 0.16470589, a: 1}
-  Surface: {r: 0.14901961, g: 0.17254902, b: 0.23137255, a: 1}
-  Dim: {r: 0, g: 0, b: 0, a: 0.6}
-  Notice: {r: 0, g: 0, b: 0, a: 0.75}
-  Accent: {r: 0.25, g: 0.42, b: 0.75, a: 1}
-  Primary: {r: 0.239, g: 0.494, b: 0.949, a: 1}
-  Positive: {r: 0.27, g: 0.55, b: 0.38, a: 1}
-  Danger: {r: 0.85, g: 0.27, b: 0.27, a: 1}
-  Badge: {r: 0.93, g: 0.26, b: 0.26, a: 1}
+  Backdrop: {r: 0.106, g: 0.114, b: 0.2, a: 1}
+  Bar: {r: 0.204, g: 0.227, b: 0.408, a: 1}
+  Wood: {r: 0.69, g: 0.455, b: 0.275, a: 1}
+  Panel: {r: 1, g: 1, b: 1, a: 1}
+  Sheet: {r: 0.9647059, g: 0.91764706, b: 0.8235294, a: 1}
+  Cell: {r: 1, g: 1, b: 1, a: 1}
+  Pill: {r: 1, g: 1, b: 1, a: 1}
+  Dim: {r: 0.05, g: 0.04, b: 0.1, a: 0.65}
+  Notice: {r: 0.106, g: 0.114, b: 0.2, a: 0.88}
+  Accent: {r: 1, g: 0.54, b: 0.24, a: 1}
+  Primary: {r: 0.36, g: 0.71, b: 1, a: 1}
+  Secondary: {r: 0.72, g: 0.76, b: 0.84, a: 1}
+  Positive: {r: 0.5, g: 0.9, b: 0.31, a: 1}
+  Danger: {r: 1, g: 0.39, b: 0.47, a: 1}
+  Special: {r: 1, g: 0.82, b: 0.25, a: 1}
+  Badge: {r: 1, g: 0.3, b: 0.37, a: 1}
   Text: {r: 1, g: 1, b: 1, a: 1}
-  Muted: {r: 0.6627451, g: 0.69411767, b: 0.7607843, a: 1}
-  Gold: {r: 0.9607843, g: 0.77254903, b: 0.25882354, a: 1}
-  Good: {r: 0.4, g: 1, b: 0.5, a: 1}
+  Muted: {r: 0.69, g: 0.72, b: 0.84, a: 1}
+  Ink: {r: 0.35, g: 0.24, b: 0.17, a: 1}
+  InkMuted: {r: 0.6, g: 0.52, b: 0.41, a: 1}
+  Rule: {r: 0.6, g: 0.52, b: 0.41, a: 0.4}
+  Gold: {r: 1, g: 0.88, b: 0.29, a: 1}
+  Good: {r: 0.62, g: 1, b: 0.42, a: 1}
+  GoodInk: {r: 0.23, g: 0.65, b: 0.16, a: 1}
   Highlight: {r: 1, g: 0.82, b: 0.25, a: 1}
+  Hp: {r: 1, g: 0.36, b: 0.43, a: 1}
   InputBackground: {r: 1, g: 1, b: 1, a: 1}
-  InputText: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  InputText: {r: 0.23, g: 0.18, b: 0.16, a: 1}
+  Grades:
+  - {r: 0.62, g: 0.66, b: 0.76, a: 1}
+  - {r: 0.76, g: 0.79, b: 0.84, a: 1}
+  - {r: 0.56, g: 0.87, b: 0.37, a: 1}
+  - {r: 0.39, g: 0.72, b: 1, a: 1}
+  - {r: 0.77, g: 0.51, b: 1, a: 1}
+  - {r: 1, g: 0.76, b: 0.25, a: 1}
+  Elements:
+  - {r: 0.35, g: 0.37, b: 0.49, a: 1}
+  - {r: 0.62, g: 0.69, b: 0.8, a: 1}
+  - {r: 0.68, g: 0.5, b: 0.95, a: 1}
+  - {r: 1, g: 0.6, b: 0.3, a: 1}
+  - {r: 0.45, g: 0.82, b: 1, a: 1}
+  - {r: 1, g: 0.85, b: 0.35, a: 1}
   ButtonSprite: {fileID: 21300000, guid: 81df3ba1ad9d94f71bd663c97ba71aed, type: 3}
   PanelSprite: {fileID: 21300000, guid: 3d1dbe9bb9f4a41cb9d6a18d2c9e09ff, type: 3}
+  TileSprite: {fileID: 21300000, guid: 047f7778e0c3fb2fdfd29ba267d04dca, type: 3}
+  SlotSprite: {fileID: 21300000, guid: 160553a0074e9b909c0f5024e6cb9ae3, type: 3}
+  ChipSprite: {fileID: 21300000, guid: 9a7f8a635b17e8fccd8094a6021ed647, type: 3}
+  RaysSprite: {fileID: 21300000, guid: c458949ad3e651fd74680df990cf6e5f, type: 3}
+  CellSprite: {fileID: 21300000, guid: 7d2b09c501041d8a403be8a12f4dc1dc, type: 3}
+  BandSprite: {fileID: 21300000, guid: 8d2fafe30d42127e89928703f81c0324, type: 3}
+  PillSprite: {fileID: 21300000, guid: f545a087ad322f3726cb5da570063ea6, type: 3}
   GaugeSprite: {fileID: 21300000, guid: c375a41e069f54db6946d8c066c9a4c5, type: 3}
   DotSprite: {fileID: 21300000, guid: 2b4add0f148ef43eb9d99229da8fb6e3, type: 3}
   CheckSprite: {fileID: 21300000, guid: 9dd2ad08bfcce497d85ed8edf03c7651, type: 3}
   InputSprite: {fileID: 21300000, guid: 8c80cc81f01ed4628952ab130c9191c9, type: 3}
+  InkMaterial: {fileID: 2100000, guid: 74fbe0b939ccf4fb4bd1ab9c54af35cb, type: 2}
   TitleSize: 56
   BodySize: 44
-  LabelSize: 40
+  LabelSize: 38
   SmallSize: 32
   LargeSize: 76
-  Spacing: 20
+  Spacing: 16
   Padding: 30
-  HeaderHeight: 140
-  TabHeight: 100
+  HeaderHeight: 110
+  TabHeight: 90
   ButtonColors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.96, g: 0.96, b: 0.96, a: 1}
+    m_PressedColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.62, g: 0.62, b: 0.66, a: 1}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0.08

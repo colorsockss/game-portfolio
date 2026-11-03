@@ -36,15 +36,20 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>패널 아래쪽에서 쓴 높이(버튼 줄).</summary>
         private float _bottom;
 
+        /// <summary>아래 판인지. 아래 판은 같은 탭이나 뒤로 가기로 닫으므로 머리에 닫기 버튼이 없다.</summary>
+        private readonly bool _sheet;
+
         /// <summary>명세를 시작한다.</summary>
         /// <param name="root">프리팹의 루트.</param>
         /// <param name="panel">쌓는 패널.</param>
         /// <param name="theme">테마.</param>
-        private UiSpec(GameObject root, RectTransform panel, UiTheme theme)
+        /// <param name="sheet">아래 판인지.</param>
+        private UiSpec(GameObject root, RectTransform panel, UiTheme theme, bool sheet)
         {
             _root = root;
             _panel = panel;
             _theme = theme;
+            _sheet = sheet;
         }
 
         /// <summary>테마.</summary>
@@ -66,24 +71,60 @@ namespace PortfolioIdleRpg.Editor
             var root = new GameObject(name, typeof(RectTransform), typeof(ViewRefs));
             UiPrefabs.Stretch((RectTransform)root.transform, Vector2.zero, Vector2.zero);
             RectTransform panel = UiParts.AddPopupFrame(root.transform, new Vector2(width, height));
-            return new UiSpec(root, panel, UiTheme.Load());
+            return new UiSpec(root, panel, UiTheme.Load(), false);
         }
 
         /// <summary>
-        /// 위쪽 머리: 왼쪽 제목과 오른쪽 닫기 버튼. 둘 다 글자가 비어 있고 항목 titleLabel, closeButton, closeLabel이 된다.
+        /// 메인 화면의 아래 탭 위에 붙는 판(아래 판)을 시작한다. 팝업과 달리 화면을 덮는 바탕이 없어 전투와 메인 화면이 그대로
+        /// 보이고 눌리며, 판은 아래 탭 바로 위에서 <paramref name="height"/>만큼 올라오는 크림색 면이다(<see cref="UiParts.AddSheet"/>).
+        /// 아래 판은 화면 레이어에 열리고, 다른 탭을 누르면 바뀌며, 같은 탭이나 뒤로 가기로 닫는다(presentation/screens.ts).
+        /// </summary>
+        /// <param name="name">프리팹 이름.</param>
+        /// <param name="height">판 높이.</param>
+        /// <returns>명세.</returns>
+        internal static UiSpec Sheet(string name, float height)
+        {
+            UiTheme theme = UiTheme.Load();
+            var root = new GameObject(name, typeof(RectTransform), typeof(ViewRefs));
+            UiPrefabs.Stretch((RectTransform)root.transform, Vector2.zero, Vector2.zero);
+            // 판 밖의 탭은 받지 않고 판 안의 탭은 면이 막아 뒤의 전투 화면이 눌리지 않게 한다.
+            return new UiSpec(root, UiParts.AddSheet(root.transform, theme, "Panel", height), theme, true);
+        }
+
+        /// <summary>닫기 버튼(빨간 동그라미 안의 X 아이콘)의 한 변.</summary>
+        private const float CloseSize = 84f;
+
+        /// <summary>
+        /// 위쪽 머리: 왼쪽의 제목 글자(판 위의 글자, 버튼처럼 보이지 않게 바탕이 없음)와 그 아래 구분선. 팝업은 오른쪽에 닫기
+        /// 버튼(글자 없이 빨간 동그라미 안의 X 아이콘 ui_close)이 있고, 아래 판은 같은 탭이나 뒤로 가기로 닫으므로 없다. 제목
+        /// 글자는 비어 있고 항목 titleLabel(팝업은 closeButton도)이 된다.
         /// </summary>
         /// <returns>명세.</returns>
         internal UiSpec Header()
         {
-            TMP_Text title = UiPrefabs.AddText(_panel, "Title", TextStyle.Title, new Vector2(0f, 1f), Vector2.one);
-            title.rectTransform.offsetMin = new Vector2(_theme.Padding, -_theme.HeaderHeight);
-            title.rectTransform.offsetMax = new Vector2(-170f, 0f);
+            TMP_Text title = UiPrefabs.AddText(_panel, "Title", TextStyle.Ink, new Vector2(0f, 1f), Vector2.one);
+            title.rectTransform.offsetMin = new Vector2(_theme.Padding + 8f, -(_theme.HeaderHeight - 8f));
+            title.rectTransform.offsetMax = new Vector2(-_theme.Padding, -8f);
             title.alignment = TextAlignmentOptions.MidlineLeft;
-
-            Button close = UiParts.AddButton(_panel, "CloseButton", ButtonStyle.Secondary);
-            UiPrefabs.Place(close, Vector2.one, new Vector2(-_theme.Padding, -20f), new Vector2(160f, 100f));
+            title.fontSize = _theme.TitleSize;
+            Image rule = UiPrefabs.AddImage(_panel, "TitleRule", _theme.Rule);
+            rule.raycastTarget = false;
+            rule.rectTransform.anchorMin = new Vector2(0f, 1f);
+            rule.rectTransform.anchorMax = Vector2.one;
+            rule.rectTransform.offsetMin = new Vector2(_theme.Padding, -_theme.HeaderHeight);
+            rule.rectTransform.offsetMax = new Vector2(-_theme.Padding, -(_theme.HeaderHeight - 4f));
+            Ref("titleLabel", title);
             _top = _theme.HeaderHeight;
-            return Ref("titleLabel", title).Ref("closeButton", close).Ref("closeLabel", UiPrefabs.LabelOf(close));
+            if (_sheet)
+                return this;
+
+            Image icon = UiIcons.AddFixed(_panel, "CloseButton", UiIcons.Get("ui_close"));
+            UiPrefabs.Place(icon, Vector2.one, new Vector2(-(_theme.Padding - 6f), -(_theme.HeaderHeight - CloseSize) / 2f), new Vector2(CloseSize, CloseSize));
+            icon.raycastTarget = true;
+            var close = icon.gameObject.AddComponent<Button>();
+            close.targetGraphic = icon;
+            close.colors = _theme.ButtonColors;
+            return Ref("closeButton", close);
         }
 
         /// <summary>위쪽에 빈 자리를 더 둔다(묶음 사이).</summary>

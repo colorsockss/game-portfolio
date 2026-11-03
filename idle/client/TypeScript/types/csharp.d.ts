@@ -1,5 +1,5 @@
 // idle/client/Assets/Editor/TypeScript/TypeScriptTypings.cs가 생성한 파일. 직접 고치지 않는다.
-// API 지문: e5faea2da3ac68a5
+// API 지문: ea2aebf778c9e3fd
 
     declare namespace CS {
     //keep type incompatibility / 此属性保持类型不兼容
@@ -1188,6 +1188,17 @@
             public Revive ($hpRatio: number) : void
             public constructor ()
         }
+        class BattleFrame extends UnityEngine.MonoBehaviour
+        {
+            protected [__keep_incompatibility]: never;
+            public constructor ()
+        }
+        class DockView extends UnityEngine.MonoBehaviour
+        {
+            protected [__keep_incompatibility]: never;
+            public Show ($key: string) : void
+            public constructor ()
+        }
         class EffectIcons extends UnityEngine.MonoBehaviour
         {
             protected [__keep_incompatibility]: never;
@@ -1240,6 +1251,14 @@
         {
             protected [__keep_incompatibility]: never;
             public get Released(): UnityEngine.Events.UnityEvent;
+            public constructor ()
+        }
+        class RepeatButton extends UnityEngine.MonoBehaviour implements UnityEngine.EventSystems.IPointerUpHandler, UnityEngine.EventSystems.IEventSystemHandler, UnityEngine.EventSystems.IPointerExitHandler, UnityEngine.EventSystems.IPointerDownHandler
+        {
+            protected [__keep_incompatibility]: never;
+            public OnPointerDown ($eventData: UnityEngine.EventSystems.PointerEventData) : void
+            public OnPointerUp ($eventData: UnityEngine.EventSystems.PointerEventData) : void
+            public OnPointerExit ($eventData: UnityEngine.EventSystems.PointerEventData) : void
             public constructor ()
         }
         class RollingText extends UnityEngine.MonoBehaviour
@@ -1297,6 +1316,7 @@
         {
             protected [__keep_incompatibility]: never;
             public Show ($background: string) : void
+            public Cover ($r: number, $g: number, $b: number) : void
             public Scroll ($distance: number, $seconds: number) : void
             public Burst ($x: number, $y: number, $r: number, $g: number, $b: number, $count: number, $size: number) : void
             public constructor ()
@@ -1309,6 +1329,12 @@
             public Select ($index: number) : void
             public GetClickEvent ($index: number) : UnityEngine.Events.UnityEvent
             public GetBadge ($index: number) : UnityEngine.GameObject
+            public constructor ()
+        }
+        class TintView extends UnityEngine.MonoBehaviour
+        {
+            protected [__keep_incompatibility]: never;
+            public Show ($index: number) : void
             public constructor ()
         }
         class Toast extends UnityEngine.MonoBehaviour

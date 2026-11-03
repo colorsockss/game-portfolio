@@ -21,8 +21,8 @@ namespace PortfolioIdleRpg.Editor
         private static readonly Color s_panelColor = new Color(0f, 0f, 0f, 0.85f);
 
         /// <summary>
-        /// 왼쪽 아래의 DEV 버튼과 그것이 펼치는 패널(FPS, 서버 시간, 스크롤되는 상태 덤프, 치트 입력란과 실행 버튼, 결과)을
-        /// 만든다. 버튼은 메인 화면 아래쪽 버튼 줄보다 아래의 띠에 두어 팝업 제목이나 위쪽 막대를 가리지 않는다. 루트는 탭을
+        /// 왼쪽 위의 DEV 버튼과 그것이 펼치는 패널(FPS, 서버 시간, 스크롤되는 상태 덤프, 치트 입력란과 실행 버튼, 결과)을
+        /// 만든다. 버튼은 메인 화면의 스테이지 막대 아래 전투 위에 두어 아래 판이나 위쪽 HUD를 가리지 않는다. 루트는 탭을
         /// 받지 않아서, 접혀 있으면 버튼 밖의 탭은 아래 화면에 닿는다. 펼친 패널은 탭을 막는다.
         /// </summary>
         [MenuItem("Tools/UI/Build Debug Prefabs")]
@@ -35,8 +35,8 @@ namespace PortfolioIdleRpg.Editor
                 UiPrefabs.Stretch((RectTransform)root.transform, Vector2.zero, Vector2.zero);
 
                 Button toggle = UiParts.AddButton(root.transform, "ToggleButton", ButtonStyle.Secondary);
-                // 메인 화면 아래쪽 버튼 줄(아래에서 40–150)의 첫 버튼을 가리지 않게 그 위에 둔다.
-                UiPrefabs.Place(toggle, Vector2.zero, new Vector2(20f, 165f), new Vector2(140f, 70f));
+                // 메인 화면의 아래 판과 영웅 띠를 가리지 않게 위쪽 HUD와 스테이지 막대 아래 왼쪽에 둔다.
+                UiPrefabs.Place(toggle, Vector2.up, new Vector2(20f, -ScreenPrefabs.HudHeight - 140f), new Vector2(140f, 70f));
 
                 Image panel = UiPrefabs.AddImage(root.transform, "Panel", s_panelColor);
                 UiPrefabs.Stretch(panel.rectTransform, new Vector2(20f, 320f), new Vector2(-20f, -320f));
@@ -135,7 +135,7 @@ namespace PortfolioIdleRpg.Editor
             rect.pivot = Vector2.zero;
             rect.offsetMin = new Vector2(20f, 140f);
             rect.offsetMax = new Vector2(-260f, 240f);
-            field.GetComponent<Image>().color = theme.Surface;
+            field.GetComponent<Image>().color = theme.Backdrop;
             field.textComponent.fontSize = 36f;
             field.textComponent.color = theme.Text;
             var placeholder = (TMP_Text)field.placeholder;

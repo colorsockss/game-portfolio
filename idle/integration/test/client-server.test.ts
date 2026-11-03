@@ -70,7 +70,7 @@ test("a stat upgrade applies at once and the server confirms the gold, step and 
   await app.account.login("hero");
   const before = app.state.player.value!;
 
-  const sent = app.progress.cmd.StatUpgrade({ upgradeId: 7001 });
+  const sent = app.progress.cmd.StatUpgrade({ upgradeId: 7001, steps: 1 });
   const predicted = app.state.player.value!;
   expect(predicted.statUpgrades).toEqual({ 7001: 1 });
   expect(predicted.items[1]).toEqual(Big.from(100));
@@ -84,7 +84,7 @@ test("a stat upgrade applies at once and the server confirms the gold, step and 
   expect(heroStats(saved.player, data).attack).toEqual(Big.add(heroStats(before, data).attack, 5));
 
   // 다음 단계는 클라이언트의 규칙이 먼저 거절해 서버로 가지 않는다.
-  expect(await app.progress.cmd.StatUpgrade({ upgradeId: 7001 })).toMatchObject({ code: GameErrorCode.NotEnoughGold });
+  expect(await app.progress.cmd.StatUpgrade({ upgradeId: 7001, steps: 1 })).toMatchObject({ code: GameErrorCode.NotEnoughGold });
   expect((await server.store.load(account.id))!.revision).toBe(2);
 });
 

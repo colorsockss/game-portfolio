@@ -102,9 +102,11 @@ export interface ProjectileTarget {
   Fizzle(): void;
 }
 
-/** 전투 월드의 배경과 파티클(idle/client/Assets/Scripts/Views/StageView.cs). */
+/** 전투 월드의 배경과 파티클, 장면이 바뀔 때 무대를 덮는 막(idle/client/Assets/Scripts/Views/StageView.cs). */
 export interface StageTarget {
+  /** 처음이면 바로 보이고, 보이던 배경과 다르면 무대를 검게 덮은 순간에 바꾼다. */
   Show(background: string): void;
+  Cover(r: number, g: number, b: number): void;
   Scroll(distance: number, seconds: number): void;
   Burst(x: number, y: number, r: number, g: number, b: number, count: number, size: number): void;
 }
@@ -112,6 +114,22 @@ export interface StageTarget {
 /** 이름으로 고른 아이콘을 보이는 UI 이미지(idle/client/Assets/Scripts/Views/IconView.cs). 빈 이름이나 없는 이름이면 숨는다. */
 export interface IconTarget {
   Show(name: string): void;
+}
+
+/**
+ * 번호로 고른 색을 입히는 UI 그래픽(idle/client/Assets/Scripts/Views/TintView.cs). 색표(장비 등급, 스킬 속성)는 빌더가 테마에서
+ * 넣고, 범위 밖 번호는 0번 색이다.
+ */
+export interface TintTarget {
+  Show(index: number): void;
+}
+
+/**
+ * 이름으로 고른 높이로 옮기는 UI(idle/client/Assets/Scripts/Views/DockView.cs). 이름과 높이는 빌더가 넣고, 없는 이름은 0번
+ * 높이다.
+ */
+export interface DockTarget {
+  Show(key: string): void;
 }
 
 /** 전투 월드에 떠오르는 글자(idle/client/Assets/Scripts/Views/FloatingText.cs). `size`는 크기 배율이다. */
@@ -141,6 +159,8 @@ export interface UnityTypes {
   "PortfolioIdleRpg.Views.FloatingText": FloatingTextTarget;
   "PortfolioIdleRpg.Views.StageView": StageTarget;
   "PortfolioIdleRpg.Views.IconView": IconTarget;
+  "PortfolioIdleRpg.Views.TintView": TintTarget;
+  "PortfolioIdleRpg.Views.DockView": DockTarget;
   "PortfolioIdleRpg.Views.ScrollList": ListTarget;
   "PortfolioIdleRpg.Views.TabBar": TabBarTarget;
   "UnityEngine.UI.Toggle": ToggleTarget;

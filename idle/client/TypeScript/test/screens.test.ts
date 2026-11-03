@@ -10,7 +10,7 @@ import { createEventBus, type AppEventMap } from "../src/application/events.js";
 import { createScope, type Scope } from "../src/application/scope.js";
 import { createAppState, type AppStateValues } from "../src/application/state/app-state.js";
 import { createScreens, showOverlays, type Views } from "../src/presentation/screens.js";
-import type { OpenView, ShownView, UiStack, View } from "../src/presentation/ui/ui-stack.js";
+import type { OpenOptions, OpenView, ShownView, UiStack, View } from "../src/presentation/ui/ui-stack.js";
 import type { EquipmentViewModel } from "../src/presentation/view-models/equipment.js";
 import type { InventoryViewModel } from "../src/presentation/view-models/inventory.js";
 import type { LoginViewModel } from "../src/presentation/view-models/login.js";
@@ -29,11 +29,11 @@ const { strings } = await loadGameData(table => readFileSync(new URL(`../../../s
 const views: Views = {
   login: { prefab: "UI/LoginScreen", layer: "screen", bind() {} },
   main: { prefab: "UI/MainScreen", layer: "screen", bind() {} },
-  inventory: { prefab: "UI/InventoryScreen", layer: "popup", bind() {} },
-  equipment: { prefab: "UI/EquipmentScreen", layer: "popup", bind() {} },
-  upgrade: { prefab: "UI/UpgradeScreen", layer: "popup", bind() {} },
-  skills: { prefab: "UI/SkillScreen", layer: "popup", bind() {} },
-  rebirth: { prefab: "UI/RebirthScreen", layer: "popup", bind() {} },
+  inventory: { prefab: "UI/InventoryScreen", layer: "screen", bind() {} },
+  equipment: { prefab: "UI/EquipmentScreen", layer: "screen", bind() {} },
+  upgrade: { prefab: "UI/UpgradeScreen", layer: "screen", bind() {} },
+  skills: { prefab: "UI/SkillScreen", layer: "screen", bind() {} },
+  rebirth: { prefab: "UI/RebirthScreen", layer: "screen", bind() {} },
   settings: { prefab: "UI/SettingsScreen", layer: "popup", bind() {} },
   battle: { bind: vi.fn() },
   confirm: { prefab: "UI/ConfirmPopup", layer: "popup", bind() {} },
@@ -144,56 +144,92 @@ describe("screens", () => {
     expect(second.disposed).toBe(true);
   });
 
-  test("the main screen opens the inventory as a popup owned by the main state, and the inventory closes itself", async () => {
-    const shown: { view: View<unknown>; vm: unknown; owner: unknown; options: unknown }[] = [];
-    const close = vi.fn();
+  test("a main tab opens its screen as a sheet and another tab replaces it; the same tab, closing or the back key folds it", async () => {
+    const shown: { view: View<unknown>; vm: unknown; owner: Scope; options: OpenOptions | undefined }[] = [];
     const t = setUp(async (view, vm, owner, options) => {
       shown.push({ view: view as View<unknown>, vm, owner, options });
-      return { close, scope: createScope() } as unknown as OpenView;
-    });
-    const scope = createScope();
-    t.screens.main!(scope);
-    (shown[0].vm as MainViewModel).openInventory();
-    expect(shown[1]).toMatchObject({ view: views.inventory, owner: scope });
-
-    const inventory = shown[1].vm as InventoryViewModel;
-    expect(inventory.slots.value).toEqual([]);
-    await vi.waitFor(() => {
-      inventory.close();
-      expect(close).toHaveBeenCalledOnce();
-    });
-  });
-
-  test("the main screen opens the stat upgrades as a popup owned by the main state", () => {
-    const shown: { view: View<unknown>; vm: unknown; owner: unknown }[] = [];
-    const t = setUp(async (view, vm, owner) => {
-      shown.push({ view: view as View<unknown>, vm, owner });
       return { close: vi.fn(), scope: createScope() } as unknown as OpenView;
     });
+    const settle = () => new Promise(resolve => setTimeout(resolve, 0));
     const scope = createScope();
     t.screens.main!(scope);
-    (shown[0].vm as MainViewModel).openUpgrade();
-    expect(shown[1]).toMatchObject({ view: views.upgrade, owner: scope });
+    const main = shown[0].vm as MainViewModel;
+    // 처음에는 탭이 모두 꺼져 판이 없다(장착 현황 판은 메인 화면의 것).
+    expect(shown).toHaveLength(1);
+
+    main.toggle("inventory");
+    expect(shown[1].view).toBe(views.inventory);
+    const inventory = shown[1].vm as InventoryViewModel;
+    expect(inventory.slots.value).toEqual([]);
+    // 판은 메인 화면 스코프 아래의 따로 닫히는 스코프에 열린다.
+    expect([shown[1].owner === scope, shown[1].owner.disposed]).toEqual([false, false]);
+
+    await settle();
+    expect(main.sheet.value).toBe("inventory");
+
+    // 새 판이 열린 뒤에 앞 판을 닫는다.
+    main.toggle("upgrade");
+    expect(shown[2].view).toBe(views.upgrade);
+    expect([shown[1].owner.disposed, main.sheet.value]).toEqual([false, "inventory"]);
+    await settle();
+    expect([shown[1].owner.disposed, main.sheet.value]).toEqual([true, "upgrade"]);
+    // 열린 탭을 다시 누르면 판을 바로 닫는다.
+    main.toggle("upgrade");
+    expect([main.tab.value, main.sheet.value, shown[2].owner.disposed, shown]).toEqual([null, null, true, expect.any(Array)]);
+    expect(shown).toHaveLength(3);
+
+    main.toggle("equipment");
+    expect(shown[3].view).toBe(views.equipment);
+    const equipment = shown[3].vm as EquipmentViewModel;
+    expect(equipment.entries.value).toEqual([]);
+    equipment.close();
+    expect([main.tab.value, shown[3].owner.disposed]).toEqual([null, true]);
+
+    // 뒤로 가기도 판을 닫는다.
+    main.toggle("inventory");
+    shown[4].options!.back!();
+    expect([main.tab.value, shown[4].owner.disposed]).toEqual([null, true]);
+
+    // 메인 화면이 닫히면 열린 판도 닫힌다.
+    main.toggle("upgrade");
+    await settle();
+    scope.dispose();
+    expect(shown[5].owner.disposed).toBe(true);
   });
 
-  test("the main screen opens equipment as a popup owned by the main state, and it closes itself", async () => {
-    const shown: { view: View<unknown>; vm: unknown; owner: unknown; options: unknown }[] = [];
-    const close = vi.fn();
-    const t = setUp(async (view, vm, owner, options) => {
-      shown.push({ view: view as View<unknown>, vm, owner, options });
-      return { close, scope: createScope() } as unknown as OpenView;
-    });
+  test("a sheet still loading when the tab changes again is dropped, and the shown sheet stays until the newest one opens", async () => {
+    const opens: { view: View<unknown>; vm: unknown; owner: Scope; open: () => void }[] = [];
+    const t = setUp((view, vm, owner) => new Promise(resolve => {
+      opens.push({
+        view: view as View<unknown>, vm, owner, open: () => resolve({ close: vi.fn(), scope: createScope() } as unknown as OpenView),
+      });
+    }));
+    const settle = () => new Promise(resolve => setTimeout(resolve, 0));
     const scope = createScope();
     t.screens.main!(scope);
-    (shown[0].vm as MainViewModel).openEquipment();
-    expect(shown[1]).toMatchObject({ view: views.equipment, owner: scope });
+    const main = opens[0].vm as MainViewModel;
 
-    const equipment = shown[1].vm as EquipmentViewModel;
-    expect(equipment.entries.value).toEqual([]);
-    await vi.waitFor(() => {
-      equipment.close();
-      expect(close).toHaveBeenCalledOnce();
-    });
+    main.toggle("inventory");
+    opens[1].open();
+    await settle();
+    expect(main.sheet.value).toBe("inventory");
+    // 성장 판을 불러오는 사이 장비 탭을 눌렀다. 성장 판은 열지 않고, 장비 판이 열릴 때까지 가방 판이 남는다.
+    main.toggle("upgrade");
+    main.toggle("equipment");
+    expect([opens[2].view, opens[2].owner.disposed, opens[3].view]).toEqual([views.upgrade, true, views.equipment]);
+    opens[2].open();
+    await settle();
+    expect([opens[1].owner.disposed, main.sheet.value]).toEqual([false, "inventory"]);
+    opens[3].open();
+    await settle();
+    expect([opens[1].owner.disposed, opens[3].owner.disposed, main.sheet.value]).toEqual([true, false, "equipment"]);
+
+    // 메인 화면이 닫힌 뒤에 열린 판은 보이는 판이 되지 않는다.
+    main.toggle("inventory");
+    scope.dispose();
+    opens[4].open();
+    await settle();
+    expect([opens[4].owner.disposed, main.sheet.value]).toEqual([true, "equipment"]);
   });
 
   test("the main screen opens settings as a popup owned by the main state, which change the device settings", async () => {

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { Big } from "@idle/big-number";
 import { EquipSlot, ItemKind, loadGameData, SoundChannel, type GameData, type StringsId } from "@idle/data-schema";
-import { BattleMode, freshBattle, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, type BattleSnapshot, type ItemAmounts, type PlayerState, startSkills } from "@idle/game-core";
+import { BattleMode, freshBattle, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, statUpgradeBatch, TICK_MS, type BattleSnapshot, type ItemAmounts, type PlayerState, startSkills } from "@idle/game-core";
 import { computed, signal, type Signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
 import type { EventSource, TextTarget } from "../src/unity/binding/components.js";
@@ -16,7 +16,7 @@ import { active, button, input, text, view } from "../src/unity/binding/view.js"
 import type { Commands } from "../src/application/progress/progress.js";
 import { createEquipmentBadges, createEquipmentViewModel } from "../src/presentation/view-models/equipment.js";
 import { createInventoryViewModel } from "../src/presentation/view-models/inventory.js";
-import { createMainViewModel } from "../src/presentation/view-models/main.js";
+import { createMainViewModel, type MainTab } from "../src/presentation/view-models/main.js";
 import { equipmentView } from "../src/unity/views/equipment.js";
 import { upgradeView } from "../src/unity/views/upgrade.js";
 import { skillsView } from "../src/unity/views/skills.js";
@@ -33,6 +33,7 @@ import { createSettingsViewModel } from "../src/presentation/view-models/setting
 import { createAudio } from "../src/presentation/audio/audio.js";
 import { anyOf } from "../src/presentation/widgets/badge.js";
 import { createTranslate, languageNames, type Translate } from "../src/presentation/text.js";
+import { formatBig } from "../src/presentation/format/big.js";
 import { texts } from "./support/text.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../../shared/data-schema/data/${table}.bytes`, import.meta.url)));
@@ -72,7 +73,8 @@ function fakeEvent<A extends unknown[] = []>() {
     AddListener: call => void listeners.add(call),
     RemoveListener: call => void listeners.delete(call),
   };
-  return { event, listeners, fire: (...args: A) => listeners.forEach(call => call(...args)) };
+  // UnityEvent처럼 낼 때의 리스너만 부른다. 리스너가 칸을 다시 바인딩해 새로 더한 리스너는 다음 번부터 불린다.
+  return { event, listeners, fire: (...args: A) => [...listeners].forEach(call => call(...args)) };
 }
 
 /**
@@ -435,7 +437,9 @@ describe("main screen", () => {
   };
   const player: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
 
-  const hero = { level: 3, hp: Big.from(50), maxHp: Big.from(100), down: false, effects: [], x: -2, moving: false };
+  const hero = {
+    level: 3, hp: Big.from(50), maxHp: Big.from(100), down: false, effects: [], x: -2, moving: false, attack: Big.from(10), critChance: 0, skills: [],
+  };
   const monster = { id: 1, monsterId: 2001, boss: false, hp: Big.from(5000), maxHp: Big.from(10_000), effects: [], x: 1, moving: false };
 
   function snapshot(overrides: Partial<BattleSnapshot> = {}): BattleSnapshot {
@@ -447,9 +451,10 @@ describe("main screen", () => {
 
   function fakeMainPrefab() {
     const text = () => ({ text: "" });
+    const active = () => ({ active: false, SetActive(on: boolean) { this.active = on; } });
     const button = () => {
       const clicked = fakeEvent();
-      const gameObject = { active: true, SetActive: (active: boolean) => void (gameObject.active = active) };
+      const gameObject = { active: true, SetActive: (on: boolean) => void (gameObject.active = on) };
       return { interactable: true, onClick: clicked.event, gameObject, click: clicked.fire, listeners: clicked.listeners };
     };
     // 재화 바는 중첩 프리팹이라 자기 ViewRefs를 가지고, 그 ViewList가 재화마다 칸을 복제한다.
@@ -459,16 +464,51 @@ describe("main screen", () => {
       slots.push(slot);
       return { nameText: [Kind.Object, slot.name], icon: [Kind.Object, slot.icon], amountText: [Kind.Object, slot.amount] };
     });
+    // 영웅 띠의 스킬 칸.
+    const skillSlots: { icon: ReturnType<typeof fakeIcon>; tint: { index: number }; fill: { fillAmount: number }; seconds: { text: string } }[] = [];
+    const skills = fakeList(slot => {
+      const cell = { icon: fakeIcon(), tint: { index: -1 }, fill: { fillAmount: -1 }, seconds: text() };
+      skillSlots[slot] = cell;
+      return {
+        icon: [Kind.Object, cell.icon], tint: [Kind.Object, { Show: (index: number) => void (cell.tint.index = index) }],
+        cooldownFill: [Kind.Object, cell.fill], cooldownText: [Kind.Object, cell.seconds],
+      };
+    });
+    const tabs = Object.fromEntries(
+      ["upgrade", "skills", "equipment", "inventory", "rebirth"].flatMap(key => [[`${key}Button`, button()], [`${key}Selected`, active()]]),
+    ) as Record<`${MainTab}Button`, ReturnType<typeof button>> & Record<`${MainTab}Selected`, ReturnType<typeof active>>;
+    // 장착 현황 판의 칸.
+    const loadoutCells = () => {
+      const cells: { tint: { index: number }; icon: ReturnType<typeof fakeIcon>; level: { text: string }; name: { text: string }; open: ReturnType<typeof button> }[] = [];
+      const list = fakeList(slot => {
+        const cell = { tint: { index: -1 }, icon: fakeIcon(), level: text(), name: text(), open: button() };
+        cells[slot] = cell;
+        return {
+          tint: [Kind.Object, { Show: (index: number) => void (cell.tint.index = index) }], icon: [Kind.Object, cell.icon],
+          levelText: [Kind.Object, cell.level], nameText: [Kind.Object, cell.name], openButton: [Kind.Object, cell.open],
+        };
+      });
+      return { cells, list };
+    };
+    const loadoutEquipment = loadoutCells();
+    const loadoutSkills = loadoutCells();
     const parts = {
-      titleText: text(), expBar: { fillAmount: -1 }, currencyBar: fakeRefs({ currencies: [Kind.Object, currencies.target] }),
-      stageText: text(), wavesText: text(), bossTimeText: text(),
-      nextStageButton: button(), inventoryButton: button(), equipmentButton: button(), upgradeButton: button(), skillsButton: button(), rebirthButton: button(),
-      bossButton: button(),
-      equipmentBadge: { active: false, SetActive(active: boolean) { this.active = active; } }, settingsButton: button(),
+      levelText: text(), nameText: text(), expBar: { fillAmount: -1 }, expText: text(),
+      currencyBar: fakeRefs({ currencies: [Kind.Object, currencies.target] }), settingsButton: button(),
+      stageText: text(), prevStageButton: button(), nextStageButton: button(), stageProgress: { fillAmount: -1 },
+      wavesText: text(), bossTimeText: text(), bossButton: button(), bossGlow: active(),
+      heroStrip: { key: "?", Show(key: string) { this.key = key; } },
+      homePanel: active(), loadoutEquipment: loadoutEquipment.list.target, loadoutSkills: loadoutSkills.list.target,
+      hpBar: { fillAmount: -1 }, hpText: text(), attackText: text(), critText: text(), skills: skills.target,
+      ...tabs,
+      equipmentBadge: active(),
     };
     const labels: Record<string, TextTarget> = {};
     const source = fakeRefs(Object.fromEntries(Object.entries(parts).map(([name, part]) => [name, [Kind.Object, part]])), labels);
-    return { source, slots, labels, get goldText() { return slots[0].amount; }, ...parts };
+    return {
+      source, slots, skillSlots, skillCalls: skills.calls, labels, get goldText() { return slots[0].amount; },
+      equipmentCells: loadoutEquipment.cells, skillCells: loadoutSkills.cells, ...parts,
+    };
   }
 
   function setUp(first: BattleSnapshot | null = snapshot({ waves: 2 }), translate: Translate = t) {
@@ -479,22 +519,12 @@ describe("main screen", () => {
     // 보이는 보유량도 테스트가 정한다.
     const items = signal<ItemAmounts>(player.items);
     const bossChallenge = vi.fn();
-    const openInventory = vi.fn();
-    const openEquipment = vi.fn();
-    const openUpgrade = vi.fn();
-    const openSkills = vi.fn();
-    const openRebirth = vi.fn();
     const openSettings = vi.fn();
     // 장비 뱃지는 테스트가 정한다.
     const equipmentBadge = signal(false);
     const vm = createMainViewModel({
       state, data, t: translate,
       battle: { selectStage: stageId => void selected.push(stageId), bossChallenge, snapshot: shown, items },
-      openInventory,
-      openEquipment,
-      openUpgrade,
-      openSkills,
-      openRebirth,
       equipmentBadge,
       openSettings,
     });
@@ -502,15 +532,13 @@ describe("main screen", () => {
     const scope = createScope();
     mainView.bind(scope, prefab.source as unknown as ViewRoot, vm, fakeContext(translate));
     const hudNow = () => [vm.hud.waves.value, vm.hud.bossTime.value, vm.hud.canChallenge.value];
-    return {
-      state, selected, vm, shown, items, hudNow, bossChallenge, openInventory, openEquipment, openUpgrade, openSkills, openRebirth, openSettings, equipmentBadge,
-      prefab, scope,
-    };
+    const header = () => [prefab.levelText.text, prefab.nameText.text, prefab.expText.text];
+    return { state, selected, vm, shown, items, hudNow, header, bossChallenge, openSettings, equipmentBadge, prefab, scope };
   }
 
   test("shows the save and follows it", () => {
     const t = setUp();
-    expect(t.prefab.titleText.text).toBe("hero  Lv.3  0%");
+    expect(t.header()).toEqual(["3", "hero", "0%"]);
     expect(t.prefab.expBar.fillAmount).toBe(0);
     // 재화는 골드 하나이고(경험치는 경험치 막대가 보인다) 이름 대신 아이콘이다. 처음 골드는 굴리지 않고 보인다.
     expect(t.prefab.slots.map(slot => [slot.icon.shown, slot.name.text])).toEqual([["currency_gold", ""]]);
@@ -523,28 +551,28 @@ describe("main screen", () => {
     expect(t.prefab.goldText.shown()).toBe("0");
     // 3레벨의 요구량은 144다.
     t.items.value = { 2: Big.from(72) };
-    expect(t.prefab.titleText.text).toBe("hero  Lv.3  50%");
+    expect(t.header()).toEqual(["3", "hero", "50%"]);
     expect(t.prefab.expBar.fillAmount).toBe(0.5);
     // 골드가 그대로면 다시 굴리지 않는다.
     expect(t.prefab.goldText.calls).toHaveLength(3);
   });
 
-  test("switching the language redraws the open screen: its fixed labels, the title, the stage and the HUD", () => {
+  test("switching the language redraws the open screen: its fixed labels, the stage and the HUD", () => {
     const { t: translate, language } = texts(data);
     const t = setUp(snapshot({ mode: BattleMode.Boss, bossTicksLeft: 864_010 }), translate);
     expect(t.prefab.labels.inventoryLabel.text).toBe("가방");
-    expect(t.prefab.labels.bossLabel.text).toBe("보스 도전");
+    expect(t.prefab.labels.loadoutSkillsLabel.text).toBe("스킬");
     expect(t.prefab.stageText.text).toBe("훈련의 초원");
     expect([t.prefab.wavesText.text, t.prefab.bossTimeText.text]).toEqual(["보스", "1일 00:00:01"]);
 
     language.value = "en";
     expect(Object.fromEntries(Object.entries(t.prefab.labels).map(([name, label]) => [name, label.text]))).toEqual({
-      stageLabel: "Current Stage", nextStageLabel: "Next Stage", inventoryLabel: "Bag", equipmentLabel: "Gear", upgradeLabel: "Upgrade", skillsLabel: "Skills", rebirthLabel: "Rebirth",
-      bossLabel: "Fight Boss",
+      upgradeLabel: "Growth", skillsLabel: "Skills", equipmentLabel: "Gear", inventoryLabel: "Bag", rebirthLabel: "Rebirth",
+      loadoutEquipmentLabel: "Gear", loadoutSkillsLabel: "Skills",
     });
     expect(t.prefab.stageText.text).toBe("Training Meadow");
     expect([t.prefab.wavesText.text, t.prefab.bossTimeText.text]).toEqual(["Boss", "1d 00:00:01"]);
-    expect(t.prefab.titleText.text).toBe("hero  Lv.3  0%");
+    expect(t.header()).toEqual(["3", "hero", "0%"]);
 
     // 닫힌 화면은 따라가지 않는다.
     t.scope.dispose();
@@ -552,78 +580,127 @@ describe("main screen", () => {
     expect(t.prefab.labels.inventoryLabel.text).toBe("Bag");
   });
 
-  test("the title follows the shown battle's level and shows MAX at the last level", () => {
+  test("the level and exp follow the shown battle's level and show MAX at the last level", () => {
     const t = setUp();
     t.items.value = { 2: Big.from(43) };
     // 레벨은 보이는 전투를 따른다. 4레벨의 요구량은 172다.
     t.shown.value = snapshot({ hero: { ...hero, level: 4 } });
-    expect(t.prefab.titleText.text).toBe("hero  Lv.4  25%");
+    expect(t.header()).toEqual(["4", "hero", "25%"]);
     t.shown.value = snapshot({ hero: { ...hero, level: 50 } });
-    expect(t.prefab.titleText.text).toBe("hero  Lv.50  MAX");
+    expect(t.header()).toEqual(["50", "hero", "MAX"]);
     expect(t.prefab.expBar.fillAmount).toBe(1);
     // 보이는 전투가 없으면 저장된 레벨이다.
     t.shown.value = undefined;
-    expect(t.prefab.titleText.text).toBe("hero  Lv.3  29%");
+    expect(t.header()).toEqual(["3", "hero", "29%"]);
+    // 경계 전에 요구량을 넘게 모아도 100%에서 멈춘다.
+    t.items.value = { 2: Big.from(1000) };
+    expect([t.header()[2], t.prefab.expBar.fillAmount]).toEqual(["100%", 1]);
   });
 
-  test("its buttons select the next unlocked stage, wrapping after the last, and log out once confirmed", async () => {
+  test("its arrows move through the unlocked stages both ways, wrapping at the ends", () => {
     const t = setUp();
     // 아무것도 클리어하지 않았으면 3001만 열려 있어 옮길 곳이 없다.
-    expect(t.prefab.nextStageButton.gameObject.active).toBe(false);
+    expect([t.prefab.prevStageButton.gameObject.active, t.prefab.nextStageButton.gameObject.active]).toEqual([false, false]);
 
     // 3001–3003을 클리어해 3004까지 열렸다.
     const at = (currentId: number) => ({ ...player, stage: { currentId, clearedIds: [3001, 3002, 3003] } });
     t.state.player.value = at(3002);
-    expect(t.prefab.nextStageButton.gameObject.active).toBe(true);
+    expect([t.prefab.prevStageButton.gameObject.active, t.prefab.nextStageButton.gameObject.active]).toEqual([true, true]);
     t.prefab.nextStageButton.click();
+    t.prefab.prevStageButton.click();
     t.state.player.value = at(3004);
     t.prefab.nextStageButton.click();
-    expect(t.selected).toEqual([3003, 3001]);
+    t.state.player.value = at(3001);
+    t.prefab.prevStageButton.click();
+    expect(t.selected).toEqual([3003, 3001, 3001, 3004]);
 
     // 3006은 3005를 클리어해도 15레벨이 되어야 열린다. 레벨은 보이는 전투를 따른다.
     t.state.player.value = { ...player, stage: { currentId: 3005, clearedIds: [3001, 3002, 3003, 3004, 3005] } };
     t.prefab.nextStageButton.click();
     t.shown.value = snapshot({ hero: { ...hero, level: 15 } });
     t.prefab.nextStageButton.click();
-    expect(t.selected.slice(2)).toEqual([3001, 3006]);
-
-    t.prefab.inventoryButton.click();
-    expect(t.openInventory).toHaveBeenCalledOnce();
-    t.prefab.equipmentButton.click();
-    expect(t.openEquipment).toHaveBeenCalledOnce();
-    t.prefab.upgradeButton.click();
-    expect(t.openUpgrade).toHaveBeenCalledOnce();
-    t.prefab.skillsButton.click();
-    expect(t.openSkills).toHaveBeenCalledOnce();
-    t.prefab.rebirthButton.click();
-    expect(t.openRebirth).toHaveBeenCalledOnce();
-    t.prefab.settingsButton.click();
-    expect(t.openSettings).toHaveBeenCalledOnce();
-    // 장비 버튼의 뱃지는 뱃지 트리의 뿌리를 따른다.
-    expect(t.prefab.equipmentBadge.active).toBe(false);
-    t.equipmentBadge.value = true;
-    expect(t.prefab.equipmentBadge.active).toBe(true);
+    expect(t.selected.slice(4)).toEqual([3001, 3006]);
 
     t.scope.dispose();
     expect(t.prefab.nextStageButton.listeners.size).toBe(0);
   });
 
-  test("it shows the battle HUD and offers the boss challenge only while it can be taken", () => {
+  test("the tabs start folded with the loadout showing; a tab lights at once, and the loadout and hero strip follow the sheet once it shows", () => {
     const t = setUp();
+    const lit = () => (["upgrade", "skills", "equipment", "inventory", "rebirth"] as const).filter(key => t.prefab[`${key}Selected`].active);
+    const bottom = () => [t.prefab.homePanel.active, t.prefab.heroStrip.key];
+    // 영웅 띠는 보이는 판의 이름(없으면 빈 이름)의 자리로 옮겨 간다.
+    expect([t.vm.tab.value, lit(), ...bottom()]).toEqual([null, [], true, ""]);
+    t.prefab.equipmentButton.click();
+    // 판을 불러오는 동안에는 장착 현황 판과 띠가 그대로다.
+    expect([t.vm.tab.value, lit(), ...bottom()]).toEqual(["equipment", ["equipment"], true, ""]);
+    t.vm.sheetShown("equipment");
+    expect(bottom()).toEqual([false, "equipment"]);
+    t.prefab.upgradeButton.click();
+    expect([t.vm.tab.value, lit(), ...bottom()]).toEqual(["upgrade", ["upgrade"], false, "equipment"]);
+    t.vm.sheetShown("upgrade");
+    expect(bottom()).toEqual([false, "upgrade"]);
+    t.prefab.upgradeButton.click();
+    t.vm.sheetShown(null);
+    expect([t.vm.tab.value, lit(), ...bottom()]).toEqual([null, [], true, ""]);
+    t.prefab.rebirthButton.click();
+    t.vm.closeTab();
+    expect([t.vm.tab.value, lit()]).toEqual([null, []]);
+
+    t.prefab.settingsButton.click();
+    expect(t.openSettings).toHaveBeenCalledOnce();
+    // 장비 탭의 뱃지는 뱃지 트리의 뿌리를 따른다.
+    expect(t.prefab.equipmentBadge.active).toBe(false);
+    t.equipmentBadge.value = true;
+    expect(t.prefab.equipmentBadge.active).toBe(true);
+  });
+
+  test("the hero strip shows HP, attack and crit, and the skill bar counts the equipped skills' cooldowns down", () => {
+    const skill = (skillId: number, readyInTicks: number) => ({ skillId, cooldownTicks: 40, readyInTicks });
+    const t = setUp(snapshot({ hero: { ...hero, attack: Big.from(1234), critChance: 0.065, skills: [skill(1005, 0), skill(1004, 30)] } }));
+    expect([t.prefab.hpBar.fillAmount, t.prefab.hpText.text, t.prefab.attackText.text, t.prefab.critText.text])
+      .toEqual([0.5, "50 / 100", "1.2K", "6.5%"]);
+    // 칸은 슬롯 순서이고 속성 색 번호는 SkillElement의 선언 순서에 1을 더한 것이다(불 3, 물리 1).
+    const bar = () => t.prefab.skillSlots.map(slot => [slot.icon.shown, slot.tint.index, slot.fill.fillAmount, slot.seconds.text]);
+    expect(bar()).toEqual([["skill_fireball", 3, 0, ""], ["skill_volley", 1, 0.75, `${Math.ceil((30 * TICK_MS) / 1000)}`]]);
+
+    // 재사용 대기만 흐르면 칸을 다시 만들지 않고 칸의 신호가 따라간다.
+    const counted = t.prefab.skillCalls.length;
+    t.shown.value = snapshot({ hero: { ...hero, skills: [skill(1005, 40), skill(1004, 0)] } });
+    expect(bar()).toEqual([["skill_fireball", 3, 1, `${Math.ceil((40 * TICK_MS) / 1000)}`], ["skill_volley", 1, 0, ""]]);
+    expect(t.prefab.skillCalls.length).toBe(counted);
+
+    // 전투가 없으면 띠가 빈다.
+    t.shown.value = undefined;
+    expect([t.prefab.hpBar.fillAmount, t.prefab.hpText.text, t.prefab.skillSlots.length]).toEqual([0, "", 2]);
+  });
+
+  test("the stage bar fills with the waves and stays full during the boss", () => {
+    const t = setUp();
+    expect(t.prefab.stageProgress.fillAmount).toBeCloseTo(2 / 3);
+    t.shown.value = snapshot({ mode: BattleMode.Boss, bossTicksLeft: 290 });
+    expect(t.prefab.stageProgress.fillAmount).toBe(1);
+    t.shown.value = undefined;
+    expect(t.prefab.stageProgress.fillAmount).toBe(0);
+  });
+
+  test("it shows the battle HUD, and the boss skull is pressable and glowing only while the boss can be challenged", () => {
+    const t = setUp();
+    const skull = () => [t.prefab.bossButton.interactable, t.prefab.bossGlow.active];
     expect(t.prefab.wavesText.text).toBe("2/3");
     expect(t.prefab.bossTimeText.text).toBe("");
-    expect(t.prefab.bossButton.gameObject.active).toBe(false);
+    expect(skull()).toEqual([false, false]);
 
     t.shown.value = snapshot({ waves: 3, autoBoss: false });
     expect(t.prefab.wavesText.text).toBe("3/3");
-    expect(t.prefab.bossButton.gameObject.active).toBe(true);
+    expect(skull()).toEqual([true, true]);
     t.prefab.bossButton.click();
     expect(t.bossChallenge).toHaveBeenCalledTimes(1);
 
     t.shown.value = snapshot({ mode: BattleMode.Boss, bossTicksLeft: 290 });
     expect(t.prefab.wavesText.text).toBe("보스");
     expect(t.prefab.bossTimeText.text).toBe("00:29");
-    expect(t.prefab.bossButton.gameObject.active).toBe(false);
+    expect(skull()).toEqual([false, false]);
 
     t.scope.dispose();
     expect(t.prefab.bossButton.listeners.size).toBe(0);
@@ -634,14 +711,37 @@ describe("main screen", () => {
     expect(t.hudNow()).toEqual(["", "", false]);
   });
 
-  test("when the battle snapshot goes away the HUD empties and the boss button hides", () => {
+  test("when the battle snapshot goes away the HUD empties and the boss skull stops glowing", () => {
     const t = setUp(snapshot({ waves: 3, autoBoss: false }));
     expect(t.hudNow()).toEqual(["3/3", "", true]);
-    expect(t.prefab.bossButton.gameObject.active).toBe(true);
+    expect([t.prefab.bossButton.interactable, t.prefab.bossGlow.active]).toEqual([true, true]);
 
     t.shown.value = undefined;
     expect(t.hudNow()).toEqual(["", "", false]);
-    expect(t.prefab.bossButton.gameObject.active).toBe(false);
+    expect([t.prefab.bossButton.interactable, t.prefab.bossGlow.active]).toEqual([false, false]);
+  });
+
+  test("the loadout shows what is equipped and each slot opens its menu", () => {
+    const t = setUp();
+    // 장비는 아무것도 입지 않았고, 새 계정은 연속 사격·화염구·늑대 소환을 장착한 채 시작한다.
+    expect(t.prefab.equipmentCells.map(cell => [cell.icon.shown, cell.tint.index, cell.level.text, cell.name.text])).toEqual([
+      ["slot_weapon", 0, "", "비어 있음"], ["slot_armor", 0, "", "비어 있음"], ["slot_accessory", 0, "", "비어 있음"],
+    ]);
+    expect(t.prefab.skillCells.map(cell => [cell.icon.shown, cell.tint.index, cell.level.text])).toEqual([
+      ["skill_volley", 1, "Lv.1"], ["skill_fireball", 3, "Lv.1"], ["skill_wolf", 1, "Lv.1"],
+    ]);
+
+    // 낡은 검(+2, 일반)을 입으면 칸이 바뀐다.
+    const equipment = { nextId: 2, owned: { 1: { itemId: 101, enhance: 2 } }, equipped: { 1: 1 } };
+    t.state.player.value = { ...player, equipment };
+    expect([t.prefab.equipmentCells[0].icon.shown, t.prefab.equipmentCells[0].tint.index, t.prefab.equipmentCells[0].level.text, t.prefab.equipmentCells[0].name.text])
+      .toEqual(["slot_weapon", 1, "+2", "낡은 검"]);
+
+    t.prefab.equipmentCells[1].open.click();
+    expect(t.vm.tab.value).toBe("equipment");
+    t.vm.closeTab();
+    t.prefab.skillCells[0].open.click();
+    expect(t.vm.tab.value).toBe("skills");
   });
 
   test("the HUD shows the wave count while hunting and the countdown during a boss, and changes with the snapshot", () => {
@@ -710,11 +810,11 @@ describe("inventory screen", () => {
   // 재료 탭을 보려고 재료 하나와 그 이름을 더한 데이터. 지금 Items에는 재화(골드, 경험치)뿐이다.
   const withStone: GameData = {
     ...data,
-    items: new Map([...data.items, [STONE, { id: STONE, nameKey: STONE_KEY, cap: null, note: null, kind: ItemKind.Material, slot: null, attack: null, defense: null, maxHp: null, enhanceMax: null, mergeItemId: null, mergeCount: null, icon: "stone" }]]),
+    items: new Map([...data.items, [STONE, { id: STONE, nameKey: STONE_KEY, cap: null, note: null, kind: ItemKind.Material, slot: null, attack: null, defense: null, maxHp: null, enhanceMax: null, mergeItemId: null, mergeCount: null, icon: "stone", grade: null }]]),
     strings: new Map([...data.strings, [STONE_KEY, { id: STONE_KEY, ko: "강화석", en: "Upgrade Stone" }]]),
   };
 
-  function setUp(first: ItemAmounts, fields = ["icon", "nameText", "amountText"]) {
+  function setUp(first: ItemAmounts, fields = ["icon", "nameText", "amountText", "tint"]) {
     const items = signal<ItemAmounts>(first);
     const close = vi.fn();
     const vm = createInventoryViewModel({ data: withStone, t: texts(withStone).t, items, close });
@@ -736,24 +836,25 @@ describe("inventory screen", () => {
       Select: (index: number) => void tabCalls.push(`select ${index}`),
       GetClickEvent: (index: number) => tabClicks[index].event,
     };
-    const clicked = fakeEvent();
-    const closeButton = { interactable: true, onClick: clicked.event, gameObject: { SetActive() {} } };
     const scope = createScope();
-    const refs = fakeRefs({ tabs: [Kind.Object, tabs], items: [Kind.Object, list.target], closeButton: [Kind.Object, closeButton] });
+    const refs = fakeRefs({ tabs: [Kind.Object, tabs], items: [Kind.Object, list.target] });
     const context = fakeContext();
     inventoryView.bind(scope, refs as unknown as ViewRoot, vm, context);
     const counts = list.calls;
     return {
-      items, close, vm, calls, counts, list, tabCalls, tabClicks, scope, context, clickClose: clicked.fire, listeners: clicked.listeners,
+      items, close, vm, calls, counts, list, tabCalls, tabClicks, scope, context,
     };
   }
 
   test("lists what is held in item ID order with the table's names, leaving out what is empty", () => {
     const t = setUp({ 2: Big.from(1_500), 1: Big.from(12_345), 9: Big.ZERO });
-    expect(t.vm.slots.value).toEqual([{ icon: "currency_gold", name: "골드", amount: "12.3K" }, { icon: "currency_exp", name: "경험치", amount: "1.5K" }]);
+    expect(t.vm.slots.value).toEqual([
+      { icon: "currency_gold", name: "골드", amount: "12.3K", tint: 0 }, { icon: "currency_exp", name: "경험치", amount: "1.5K", tint: 0 },
+    ]);
     expect(t.counts).toEqual(["count 2"]);
     expect(t.calls).toEqual([
-      "0 icon currency_gold", "0 nameText 골드", "0 amountText 12.3K", "1 icon currency_exp", "1 nameText 경험치", "1 amountText 1.5K",
+      "0 icon currency_gold", "0 nameText 골드", "0 amountText 12.3K", "0 tint 0",
+      "1 icon currency_exp", "1 nameText 경험치", "1 amountText 1.5K", "1 tint 0",
     ]);
   });
 
@@ -761,16 +862,16 @@ describe("inventory screen", () => {
     const t = setUp({ 1: Big.from(12_345), 2: Big.from(1_500) });
     t.calls.length = 0;
     t.items.value = { 1: Big.from(12_345), 2: Big.from(2_000) };
-    expect(t.calls).toEqual(["1 icon currency_exp", "1 nameText 경험치", "1 amountText 2K"]);
+    expect(t.calls).toEqual(["1 icon currency_exp", "1 nameText 경험치", "1 amountText 2K", "1 tint 0"]);
     t.items.value = { 2: Big.from(2_000) };
     expect(t.counts).toEqual(["count 2", "count 1"]);
-    expect(t.calls.slice(3)).toEqual(["0 icon currency_exp", "0 nameText 경험치", "0 amountText 2K"]);
+    expect(t.calls.slice(4)).toEqual(["0 icon currency_exp", "0 nameText 경험치", "0 amountText 2K", "0 tint 0"]);
     // 스크롤해서 칸을 다시 쓰면 그 칸을 그 원소로 다시 잇는다. 같은 원소를 다시 알리면 그대로다.
     t.list.show(0, 0);
-    expect(t.calls).toHaveLength(6);
+    expect(t.calls).toHaveLength(8);
     t.items.value = { 1: Big.from(5), 2: Big.from(2_000) };
     t.list.show(1, 0);
-    expect(t.calls.slice(-3)).toEqual(["1 icon currency_gold", "1 nameText 골드", "1 amountText 5"]);
+    expect(t.calls.slice(-4)).toEqual(["1 icon currency_gold", "1 nameText 골드", "1 amountText 5", "1 tint 0"]);
 
     t.scope.dispose();
     const written = t.calls.length;
@@ -793,10 +894,10 @@ describe("inventory screen", () => {
     t.tabClicks[2].fire();
     expect(t.context.pressed).toHaveBeenCalledOnce();
     expect(t.vm.tabs.selected.value).toBe(ItemKind.Material);
-    expect(t.vm.slots.value).toEqual([{ icon: "stone", name: "강화석", amount: "3" }]);
+    expect(t.vm.slots.value).toEqual([{ icon: "stone", name: "강화석", amount: "3", tint: 0 }]);
     expect(t.tabCalls.at(-1)).toBe("select 2");
     expect(t.counts.at(-1)).toBe("count 1");
-    expect(t.calls.slice(-3)).toEqual(["0 icon stone", "0 nameText 강화석", "0 amountText 3"]);
+    expect(t.calls.slice(-4)).toEqual(["0 icon stone", "0 nameText 강화석", "0 amountText 3", "0 tint 0"]);
 
     t.vm.tabs.select(ItemKind.Currency);
     expect(t.vm.slots.value.map(slot => slot.name)).toEqual(["골드", "경험치"]);
@@ -810,14 +911,11 @@ describe("inventory screen", () => {
     error.mockRestore();
   });
 
-  test("its close button closes it, and closing stops listening to the tabs", () => {
+  test("closing stops listening to the tabs", () => {
     const t = setUp({});
     expect(t.calls).toEqual([]);
     expect(t.counts).toEqual([]);
-    t.clickClose();
-    expect(t.close).toHaveBeenCalledOnce();
     t.scope.dispose();
-    expect(t.listeners.size).toBe(0);
     expect(t.tabClicks.every(click => click.listeners.size === 0)).toBe(true);
   });
 });
@@ -857,21 +955,28 @@ describe("equipment screen", () => {
       stats.push(stat);
       return { nameText: [Kind.Object, stat.name], icon: [Kind.Object, stat.icon], amountText: [Kind.Object, stat.amount] };
     });
-    // 장비 칸: 아이콘, 글자 셋, 칸 전체의 버튼, 오른쪽 끝의 강화 버튼.
-    const cells: { icon: ReturnType<typeof fakeIcon>; texts: { text: string }[]; click: ReturnType<typeof fakeEvent>; forge: ReturnType<typeof fakeEvent> }[] = [];
+    // 장비 칸: 등급 색 칸의 아이콘, 강화 단계, 합성 재료 막대와 수, 착용·더 좋음·고름 표시, 칸 전체의 버튼.
+    const shownFlag = () => ({ active: true, SetActive(active: boolean) { this.active = active; } });
+    const cells: {
+      icon: ReturnType<typeof fakeIcon>; tint: { index: number }; level: { text: string }; countBar: ReturnType<typeof shownFlag>;
+      count: { fillAmount: number }; countText: { text: string };
+      worn: ReturnType<typeof shownFlag>; better: ReturnType<typeof shownFlag>; selected: ReturnType<typeof shownFlag>; click: ReturnType<typeof fakeEvent>;
+    }[] = [];
     const list = fakeList(() => {
-      const cell = { icon: fakeIcon(), texts: [{ text: "" }, { text: "" }, { text: "" }], click: fakeEvent(), forge: fakeEvent() };
+      const cell = {
+        icon: fakeIcon(), tint: { index: -1 }, level: { text: "" }, countBar: shownFlag(), count: { fillAmount: -1 }, countText: { text: "" },
+        worn: shownFlag(), better: shownFlag(), selected: shownFlag(), click: fakeEvent(),
+      };
       cells.push(cell);
-      const [name, detail, state] = cell.texts;
       return {
-        icon: [Kind.Object, cell.icon], nameText: [Kind.Object, name], detailText: [Kind.Object, detail], stateText: [Kind.Object, state],
+        icon: [Kind.Object, cell.icon], tint: [Kind.Object, { Show: (index: number) => void (cell.tint.index = index) }],
+        levelText: [Kind.Object, cell.level], countBar: [Kind.Object, cell.countBar], countFill: [Kind.Object, cell.count],
+        countText: [Kind.Object, cell.countText],
+        wornMark: [Kind.Object, cell.worn], betterBadge: [Kind.Object, cell.better], selectedMark: [Kind.Object, cell.selected],
         selectButton: [Kind.Object, { interactable: true, onClick: cell.click.event, gameObject: { SetActive() {} } }],
-        forgeButton: [Kind.Object, { interactable: true, onClick: cell.forge.event, gameObject: { SetActive() {} } }],
-        forgeLabel: [Kind.Object, { text: "" }],
       };
     });
-    // 강화·합성 패널.
-    const shownFlag = () => ({ active: true, SetActive(active: boolean) { this.active = active; } });
+    // 강화·합성 패널과 머리의 일괄 버튼.
     const forgeButton = () => {
       const click = fakeEvent();
       return { click, target: { interactable: true, onClick: click.event, gameObject: { SetActive() {} } } };
@@ -879,9 +984,12 @@ describe("equipment screen", () => {
     const forge = {
       panel: shownFlag(), mergeRow: shownFlag(), name: { text: "" }, step: { text: "" }, detail: { text: "" },
       cost: fakeRollingText(), mergeCount: { text: "" }, mergeInto: { text: "" }, enhance: forgeButton(), merge: forgeButton(),
+      equip: forgeButton(), equipBest: forgeButton(), mergeAll: forgeButton(),
     };
-    // 칸 번호가 원소 번호인 목록이라 보이는 칸의 글자가 곧 목록이다.
-    const shown = () => cells.slice(0, list.cells.length).map(cell => cell.texts.map(text => text.text));
+    // 칸 번호가 원소 번호인 목록이라 보이는 칸이 곧 목록이다: 아이콘, 등급 색, 강화 단계, 재료 수, 착용(E), 더 좋음(!).
+    const shown = () => cells.slice(0, list.cells.length).map(cell => [
+      cell.icon.shown, cell.tint.index, cell.level.text, cell.countText.text, cell.worn.active ? "E" : "", cell.better.active ? "!" : "",
+    ]);
     const tabClicks = [fakeEvent(), fakeEvent(), fakeEvent(), fakeEvent()];
     // 탭 틀의 뱃지. 탭마다 하나다.
     const tabBadges = tabClicks.map(() => ({ active: false, SetActive(active: boolean) { this.active = active; } }));
@@ -890,33 +998,34 @@ describe("equipment screen", () => {
       GetClickEvent: (index: number) => tabClicks[index].event,
       GetBadge: (index: number) => tabBadges[index],
     };
-    const closeClick = fakeEvent();
-    const closeButton = { interactable: true, onClick: closeClick.event, gameObject: { SetActive() {} } };
     const scope = createScope();
     const refs = fakeRefs({
       stats: [Kind.Object, statList.target], tabs: [Kind.Object, tabs], items: [Kind.Object, list.target],
-      closeButton: [Kind.Object, closeButton],
       forgePanel: [Kind.Object, forge.panel], forgeNameText: [Kind.Object, forge.name], forgeStepText: [Kind.Object, forge.step],
       forgeDetailText: [Kind.Object, forge.detail], enhanceCostText: [Kind.Object, forge.cost],
       enhanceButton: [Kind.Object, forge.enhance.target], mergeRow: [Kind.Object, forge.mergeRow],
       mergeCountText: [Kind.Object, forge.mergeCount], mergeIntoText: [Kind.Object, forge.mergeInto],
-      mergeButton: [Kind.Object, forge.merge.target],
+      mergeButton: [Kind.Object, forge.merge.target], equipToggleButton: [Kind.Object, forge.equip.target],
+      equipBestButton: [Kind.Object, forge.equipBest.target], mergeAllButton: [Kind.Object, forge.mergeAll.target],
     });
     const context = fakeContext();
     equipmentView.bind(scope, refs as unknown as ViewRoot, vm, context);
     const click = (index: number) => cells[index].click.fire();
     return {
       state, snapshot, vm, badges, sent, logger, close, stats, shown, cells, list, tabClicks, tabBadges, context, scope, click, forge, items,
-      refuse: () => void (refuse = true), clickClose: closeClick.fire,
+      refuse: () => void (refuse = true),
     };
   }
 
-  test("a cell's enhance button picks it for the forge panel, which shows its step and cost and sends enhance and merge", () => {
+  test("tapping a cell picks it for the forge panel, which shows its step and cost and sends enhance and merge", () => {
     const t = setUp();
-    // 처음에는 고른 것이 없어 패널이 숨는다.
-    expect(t.forge.panel.active).toBe(false);
+    // 처음에는 입은 장비(낡은 검)를 골라 두어 패널이 보인다.
+    expect([t.forge.panel.active, t.forge.name.text, t.cells[0].selected.active]).toEqual([true, "낡은 검", true]);
     t.items.value = { [data.constants.goldItemId]: Big.from(1_000_000) };
-    t.cells[0].forge.fire();
+    // 입은 칸을 누르면 고르기만 한다.
+    t.click(0);
+    expect(t.sent).toEqual([]);
+    expect(t.cells[0].selected.active).toBe(true);
     expect(t.forge.panel.active).toBe(true);
     expect([t.forge.name.text, t.forge.step.text, t.forge.detail.text]).toEqual([t.vm.forge.name.value, t.vm.forge.step.value, t.vm.forge.detail.value]);
     expect(t.forge.name.text).toBe("낡은 검");
@@ -927,9 +1036,10 @@ describe("equipment screen", () => {
     expect([t.forge.mergeRow.active, t.forge.merge.target.interactable]).toEqual([true, false]);
     t.forge.enhance.click.fire();
     expect(t.sent).toEqual(["enhance 1"]);
-    // 칸 전체를 누르는 것은 여전히 입고 벗기다(튜토리얼의 착용).
+    // 입지 않은 칸을 누르면 고르고 입는다(튜토리얼의 착용).
     t.click(1);
     expect(t.sent).toEqual(["enhance 1", "equip 2"]);
+    expect(t.forge.name.text).toBe("오우거 대검");
   });
 
   test("lists what is owned by slot and item with what it adds, marking what is worn and what is better", () => {
@@ -939,11 +1049,13 @@ describe("equipment screen", () => {
       ["오우거 대검", "무기 · 공격 +25", "더 좋음"],
       ["가죽 갑옷", "방어구 · 방어 +3 · HP +30", "더 좋음"],
     ]);
+    // 칸은 등급 색(낡은 검·가죽 갑옷은 일반 1, 오우거 대검은 희귀 3)과 합성 재료(셋 중 하나)를 보인다.
     expect(t.shown()).toEqual([
-      ["낡은 검", "무기 · 공격 +5", "착용 중"],
-      ["오우거 대검", "무기 · 공격 +25", "더 좋음"],
-      ["가죽 갑옷", "방어구 · 방어 +3 · HP +30", "더 좋음"],
+      ["slot_weapon", 1, "", "1/3", "E", ""],
+      ["slot_weapon", 3, "", "1/3", "", "!"],
+      ["slot_armor", 1, "", "1/3", "", "!"],
     ]);
+    expect(t.cells.slice(0, 3).map(cell => cell.count.fillAmount)).toEqual([1 / 3, 1 / 3, 1 / 3]);
   });
 
   test("the stats are the hero's with what is worn, and roll when what is worn or the shown level changes", () => {
@@ -953,7 +1065,7 @@ describe("equipment screen", () => {
     t.state.player.value = { ...player, equipment: { ...player.equipment, equipped: { 1: 2, 2: 3 } } };
     expect(t.stats.map(stat => stat.amount.shown())).toEqual(["45", "8", "230"]);
     expect(t.stats[0].amount.calls.at(-1)?.[0]).toBe("Roll");
-    expect(t.shown().map(([, , state]) => state)).toEqual(["", "착용 중", "착용 중"]);
+    expect(t.shown().map(([, , , , worn]) => worn)).toEqual(["", "E", "E"]);
 
     // 레벨은 보이는 전투를 따른다(2레벨: HP 224, 공격 22, 방어 6).
     t.snapshot.value = { hero: { level: 2 } } as BattleSnapshot;
@@ -965,20 +1077,38 @@ describe("equipment screen", () => {
     t.tabClicks[2].fire();
     expect(t.vm.entries.value.map(entry => entry.name)).toEqual(["가죽 갑옷"]);
     expect(t.list.calls.at(-1)).toBe("count 1");
-    expect(t.shown()).toEqual([["가죽 갑옷", "방어구 · 방어 +3 · HP +30", "더 좋음"]]);
+    expect(t.shown()).toEqual([["slot_armor", 1, "", "1/3", "", "!"]]);
   });
 
-  test("clicking a cell takes off what is worn and wears the rest, and a lost request is only logged", async () => {
+  test("tapping a cell wears what is not worn, the forge button takes it off, and a lost request is only logged", async () => {
     const t = setUp();
     t.click(0);
     t.click(1);
-    expect(t.sent).toEqual(["unequip 1", "equip 2"]);
-    // 칸을 누를 때마다 소리가 난다.
-    expect(t.context.pressed).toHaveBeenCalledTimes(2);
+    expect(t.sent).toEqual(["equip 2"]);
+    // 고른 것이 입은 것이면 패널의 버튼이 벗긴다. 이 테스트의 커맨드는 상태를 바꾸지 않아 1이 입은 채다.
+    t.click(0);
+    expect(t.vm.forge.toggleLabel.value).toBe("해제");
+    t.forge.equip.click.fire();
+    expect(t.sent).toEqual(["equip 2", "unequip 1"]);
+    // 누를 때마다 소리가 난다.
+    expect(t.context.pressed).toHaveBeenCalledTimes(4);
     t.refuse();
     t.click(2);
     await vi.waitFor(() => expect(t.logger.warn).toHaveBeenCalledOnce());
     expect(t.sent.at(-1)).toBe("equip 3");
+  });
+
+  test("equip best wears the best of each slot, and merge all merges what has its materials", () => {
+    const t = setUp();
+    expect([t.forge.equipBest.target.interactable, t.forge.mergeAll.target.interactable]).toEqual([true, false]);
+    t.forge.equipBest.click.fire();
+    expect(t.sent).toEqual(["equip 2", "equip 3"]);
+
+    // 낡은 검을 셋 모으면 합성할 수 있다. 이 테스트의 커맨드는 상태를 바꾸지 않아 같은 재료가 다시 나오면 멈춘다.
+    t.state.player.value = { ...player, equipment: { nextId: 4, owned: { 1: owned[1], 2: { itemId: 101, enhance: 0 }, 3: { itemId: 101, enhance: 0 } }, equipped: {} } };
+    expect(t.forge.mergeAll.target.interactable).toBe(true);
+    t.forge.mergeAll.click.fire();
+    expect(t.sent.slice(2).filter(sent => sent.startsWith("merge"))).toHaveLength(1);
   });
 
   test("the badge tree lights a slot tab for better equipment and the root for any slot, and goes out once it is worn", () => {
@@ -1026,19 +1156,18 @@ describe("equipment screen", () => {
     const refs = fakeRefs({
       stats: [Kind.Object, stats.target],
       tabs: [Kind.Object, tabs], items: [Kind.Object, list.target],
-      closeButton: [Kind.Object, { interactable: true, onClick: fakeEvent().event, gameObject: { SetActive() {} } }],
       ...Object.fromEntries(["forgePanel", "mergeRow"].map(name => [name, [Kind.Object, { SetActive() {} }]])),
       ...Object.fromEntries(["forgeNameText", "forgeStepText", "forgeDetailText", "mergeCountText", "mergeIntoText"].map(name => [name, [Kind.Object, { text: "" }]])),
       enhanceCostText: [Kind.Object, fakeRollingText()],
-      ...Object.fromEntries(["enhanceButton", "mergeButton"].map(name => [name, [Kind.Object, { interactable: true, onClick: fakeEvent().event, gameObject: { SetActive() {} } }]])),
+      ...Object.fromEntries(["enhanceButton", "mergeButton", "equipToggleButton", "equipBestButton", "mergeAllButton"].map(
+        name => [name, [Kind.Object, { interactable: true, onClick: fakeEvent().event, gameObject: { SetActive() {} } }]],
+      )),
     });
     expect(() => equipmentView.bind(createScope(), refs as unknown as ViewRoot, vm, fakeContext())).toThrow("The tab 전체 has no badge.");
   });
 
-  test("its close button closes it, and closing stops listening to the list and its cells", () => {
+  test("closing stops listening to the list and its cells", () => {
     const t = setUp();
-    t.clickClose();
-    expect(t.close).toHaveBeenCalledOnce();
     t.scope.dispose();
     expect(t.list.listeners.size).toBe(0);
     expect(t.cells.every(cell => cell.click.listeners.size === 0)).toBe(true);
@@ -1159,7 +1288,7 @@ describe("settings screen", () => {
     expect(t.tabCalls).toEqual(["0 30 FPS", "1 60 FPS", "select 1"]);
     expect(t.languages.calls).toEqual(["0 한국어", "1 English", "select 0"]);
     expect(Object.fromEntries(Object.entries(t.labels).map(([name, label]) => [name, label.text]))).toEqual({
-      titleLabel: "설정", closeLabel: "닫기", frameRateLabel: "초당 프레임", languageLabel: "언어", logoutLabel: "로그아웃",
+      titleLabel: "설정", frameRateLabel: "초당 프레임", languageLabel: "언어", logoutLabel: "로그아웃",
     });
   });
 
@@ -1250,43 +1379,69 @@ describe("upgrade screen", () => {
   };
   const player: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
 
-  test("each row shows its upgrade and its next cost on the button, enabled only when the shown gold covers it", () => {
+  function setUp(gold: number) {
     const state = createAppState({ flow: "main", player });
-    const items = signal<ItemAmounts>({ [data.constants.goldItemId]: Big.from(100) });
-    const sent: number[] = [];
-    const cmd = { StatUpgrade: async ({ upgradeId }: { upgradeId: number }) => void sent.push(upgradeId) } as unknown as Commands;
+    const items = signal<ItemAmounts>({ [data.constants.goldItemId]: Big.from(gold) });
+    const sent: [number, number][] = [];
+    const cmd = {
+      StatUpgrade: async ({ upgradeId, steps }: { upgradeId: number; steps: number }) => void sent.push([upgradeId, steps]),
+    } as unknown as Commands;
     const logger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
     const close = vi.fn();
     const vm = createUpgradeViewModel({ state, data, t, battle: { items }, progress: { cmd }, logger, close });
-    // 강화 칸: 글자 넷(이름, 단계, 더한 양, 버튼 글자인 비용)과 강화 버튼.
-    const cells: { texts: { text: string }[]; click: ReturnType<typeof fakeEvent>; button: { interactable: boolean } }[] = [];
+    // 강화 칸: 아이콘, 글자 다섯(이름, 단계, 지금 양, 올린 뒤의 양, 버튼 글자인 비용)과 강화 버튼.
+    const cells: { icon: ReturnType<typeof fakeIcon>; texts: { text: string }[]; click: ReturnType<typeof fakeEvent>; button: { interactable: boolean } }[] = [];
     const list = fakeList(() => {
       const click = fakeEvent();
-      const cell = { texts: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }], click, button: { interactable: true, onClick: click.event, gameObject: { SetActive() {} } } };
+      const cell = {
+        icon: fakeIcon(), texts: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }, { text: "" }], click,
+        button: { interactable: true, onClick: click.event, gameObject: { SetActive() {} } },
+      };
       cells.push(cell);
-      const [name, level, bonus, cost] = cell.texts;
+      const [name, level, bonus, next, cost] = cell.texts;
       return {
-        nameText: [Kind.Object, name], levelText: [Kind.Object, level], bonusText: [Kind.Object, bonus], costText: [Kind.Object, cost],
-        upgradeButton: [Kind.Object, cell.button],
+        icon: [Kind.Object, cell.icon], nameText: [Kind.Object, name], levelText: [Kind.Object, level], bonusText: [Kind.Object, bonus],
+        nextText: [Kind.Object, next], costText: [Kind.Object, cost], upgradeButton: [Kind.Object, cell.button],
       };
     });
-    const closeClick = fakeEvent();
-    const refs = fakeRefs({ items: [Kind.Object, list.target], closeButton: [Kind.Object, { interactable: true, onClick: closeClick.event, gameObject: { SetActive() {} } }] });
+    const tabClicks = [fakeEvent(), fakeEvent(), fakeEvent()];
+    const tabLabels: string[] = [];
+    const tabs = {
+      SetCount() {}, SetLabel: (index: number, label: string) => void (tabLabels[index] = label), Select() {},
+      GetClickEvent: (index: number) => tabClicks[index].event,
+    };
+    const refs = fakeRefs({ multipliers: [Kind.Object, tabs], items: [Kind.Object, list.target] });
     upgradeView.bind(createScope(), refs as unknown as ViewRoot, vm, fakeContext());
+    const rows = () => cells.map(cell => [cell.icon.shown, ...cell.texts.map(text => text.text)]);
+    return { items, sent, close, cells, rows, tabClicks, tabLabels };
+  }
 
+  test("each row shows its upgrade and its next cost on the button, enabled only when the shown gold covers it", () => {
+    const t = setUp(100);
     // 치명 확률(7003)은 최대 단계라 누를 수 없다.
-    expect(cells.map(cell => cell.texts.map(text => text.text))).toEqual([
-      ["공격", "Lv.0", "+0", "100"], ["HP", "Lv.0", "+0", "100"], ["치명", "Lv.50", "+25%", "최대"],
+    expect(t.rows()).toEqual([
+      ["stat_attack", "공격", "Lv.0", "+0", "→ +5", "100"], ["stat_maxHp", "HP", "Lv.0", "+0", "→ +50", "100"],
+      ["stat_critChance", "치명", "Lv.50", "+25%", "", "최대"],
     ]);
-    expect(cells.map(cell => cell.button.interactable)).toEqual([true, true, false]);
-    cells[0].click.fire();
-    expect(sent).toEqual([7001]);
+    expect(t.cells.map(cell => cell.button.interactable)).toEqual([true, true, false]);
+    t.cells[0].click.fire();
+    expect(t.sent).toEqual([[7001, 1]]);
 
-    // 보이는 골드가 모자라면 모든 버튼이 꺼진다.
-    items.value = { [data.constants.goldItemId]: Big.from(99) };
-    expect(cells.map(cell => cell.button.interactable)).toEqual([false, false, false]);
-    closeClick.fire();
-    expect(close).toHaveBeenCalledOnce();
+    // 보이는 골드가 모자라면 모든 버튼이 꺼진다. 비용은 한 단계의 비용을 보인다.
+    t.items.value = { [data.constants.goldItemId]: Big.from(99) };
+    expect(t.cells.map(cell => cell.button.interactable)).toEqual([false, false, false]);
+    expect(t.rows()[0].at(-1)).toBe("100");
+  });
+
+  test("the multiplier tabs buy up to that many steps, as many as the shown gold covers, by the command's own rule", () => {
+    const t = setUp(1000);
+    expect(t.tabLabels).toEqual(["×1", "×10", "×100"]);
+    t.tabClicks[1].fire();
+    const batch = statUpgradeBatch(0, 100, Big.from(1000), 10);
+    expect(batch.steps).toBeGreaterThan(1);
+    expect(t.rows()[0]).toEqual(["stat_attack", "공격", "Lv.0", "+0", `→ +${5 * batch.steps}`, formatBig(batch.cost)]);
+    t.cells[0].click.fire();
+    expect(t.sent).toEqual([[7001, 10]]);
   });
 });
 
@@ -1318,41 +1473,57 @@ describe("skill screen", () => {
     const logger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
     const vm = createSkillsViewModel({ state, data, t, battle: { items }, progress: { cmd }, logger, close: vi.fn() });
 
-    const slots: { texts: { text: string }[]; mark: { active: boolean; SetActive(active: boolean): void }; select: ReturnType<typeof fakeButton> }[] = [];
+    // 아이콘 칸과 속성 색. 칸마다 마지막으로 보인 것을 기억한다.
+    const tile = () => {
+      const shown = { icon: "", tint: -1 };
+      return { shown, icon: { Show: (name: string) => void (shown.icon = name) }, tint: { Show: (index: number) => void (shown.tint = index) } };
+    };
+    const slots: {
+      texts: { text: string }[]; tile: ReturnType<typeof tile>; mark: { active: boolean; SetActive(active: boolean): void }; select: ReturnType<typeof fakeButton>;
+    }[] = [];
     const slotList = fakeList(() => {
-      const slot = { texts: [{ text: "" }, { text: "" }, { text: "" }], mark: { active: false, SetActive(active: boolean) { this.active = active; } }, select: fakeButton() };
+      const slot = {
+        texts: [{ text: "" }, { text: "" }, { text: "" }], tile: tile(), mark: { active: false, SetActive(active: boolean) { this.active = active; } },
+        select: fakeButton(),
+      };
       slots.push(slot);
       const [labelText, nameText, levelText] = slot.texts;
       return {
         labelText: [Kind.Object, labelText], nameText: [Kind.Object, nameText], levelText: [Kind.Object, levelText],
+        icon: [Kind.Object, slot.tile.icon], tint: [Kind.Object, slot.tile.tint],
         selectedMark: [Kind.Object, slot.mark], selectButton: [Kind.Object, slot.select.target],
       };
     });
-    type Row = { texts: { text: string }[]; buttons: Record<"learn" | "equip" | "unequip" | "levelUp", ReturnType<typeof fakeButton>> };
+    type Row = {
+      texts: { text: string }[]; tile: ReturnType<typeof tile>; buttons: Record<"learn" | "equip" | "unequip" | "levelUp", ReturnType<typeof fakeButton>>;
+    };
     const rows: Row[] = [];
     const skillList = fakeList(() => {
       const cell: Row = {
-        texts: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }],
+        texts: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }], tile: tile(),
         buttons: { learn: fakeButton(), equip: fakeButton(), unequip: fakeButton(), levelUp: fakeButton() },
       };
       rows.push(cell);
       const [nameText, levelText, stateText, costText] = cell.texts;
       const label = () => [Kind.Object, { text: "" }] as [Kind, unknown];
       return {
-        nameText: [Kind.Object, nameText], levelText: [Kind.Object, levelText], stateText: [Kind.Object, stateText], costText: [Kind.Object, costText],
+        icon: [Kind.Object, cell.tile.icon], tint: [Kind.Object, cell.tile.tint], nameText: [Kind.Object, nameText], levelText: [Kind.Object, levelText], stateText: [Kind.Object, stateText], costText: [Kind.Object, costText],
         learnButton: [Kind.Object, cell.buttons.learn.target], equipButton: [Kind.Object, cell.buttons.equip.target],
         unequipButton: [Kind.Object, cell.buttons.unequip.target], levelUpButton: [Kind.Object, cell.buttons.levelUp.target],
         learnLabel: label(), equipLabel: label(), unequipLabel: label(), levelUpLabel: label(),
       };
     });
-    const close = fakeButton();
-    const refs = fakeRefs({ slots: [Kind.Object, slotList.target], skills: [Kind.Object, skillList.target], closeButton: [Kind.Object, close.target] });
+    const refs = fakeRefs({ slots: [Kind.Object, slotList.target], skills: [Kind.Object, skillList.target] });
     skillsView.bind(createScope(), refs as unknown as ViewRoot, vm, fakeContext());
 
     // 새 계정은 속사·화염구·늑대 소환을 세 슬롯에 장착하고, 첫 슬롯을 고른 채 연다.
     expect(slots.map(slot => [...slot.texts.map(text => text.text), slot.mark.active])).toEqual([
       ["슬롯 1", vm.slots.value[0].name, "Lv.1/10", true], ["슬롯 2", vm.slots.value[1].name, "Lv.1/10", false], ["슬롯 3", vm.slots.value[2].name, "Lv.1/10", false],
     ]);
+    // 슬롯과 줄의 칸은 스킬 아이콘과 속성 색(SkillElement 선언 순서 + 1)이고, 배우지 않은 스킬은 잠긴 색(0)이다.
+    expect(slots.map(slot => slot.tile.shown)).toEqual(vm.slots.value.map(slot => ({ icon: slot.icon, tint: slot.tint })));
+    expect(slots[1].tile.shown).toEqual({ icon: "skill_fireball", tint: 3 });
+    expect(rows.map(row => row.tile.shown.tint).slice(3)).toEqual([0, 0]);
     const visible = (row: Row) => Object.entries(row.buttons).filter(([, button]) => button.target.gameObject.active).map(([name]) => name);
     // 장착한 스킬은 해제와 레벨업, 배우지 않은 스킬은 배우기만 보인다.
     expect(rows.map(visible)).toEqual([["unequip", "levelUp"], ["unequip", "levelUp"], ["unequip", "levelUp"], ["learn"], ["learn"]]);
@@ -1398,7 +1569,6 @@ describe("rebirth screen", () => {
     const refs = fakeRefs({
       countText: [Kind.Object, texts.count], rateText: [Kind.Object, texts.rate], gainText: [Kind.Object, texts.gain],
       resetsText: [Kind.Object, texts.resets], rebirthButton: [Kind.Object, rebirthButton],
-      closeButton: [Kind.Object, { interactable: true, onClick: fakeEvent().event, gameObject: { SetActive() {} } }],
     });
     rebirthView.bind(createScope(), refs as unknown as ViewRoot, vm, fakeContext());
     return { texts, rebirthButton, click, sent, confirm };
@@ -1414,10 +1584,10 @@ describe("rebirth screen", () => {
     const t = setUp(40);
     // (40 − 29)² = 121포인트, 배율 1 + 0.001 × 121.
     expect(t.texts.gain.text).toBe("Lv.40에서 환생하면 +121포인트, 배율 ×1.00 → ×1.12");
-    expect(t.texts.resets.text.split("\n")).toEqual(["레벨 40 → 1", "스테이지 훈련의 초원 → 훈련의 초원", "골드 강화 5단계 → 0", "골드 1.2K → 0"]);
+    expect(t.texts.resets.text.split("\n")).toEqual(["레벨 40 → 1", "스테이지 훈련의 초원 → 훈련의 초원", "성장 5단계 → 0", "골드 1.2K → 0"]);
     expect(t.rebirthButton.interactable).toBe(true);
     t.click.fire();
     await vi.waitFor(() => expect(t.sent).toEqual([{}]));
-    expect(t.confirm).toHaveBeenCalledWith("환생할까요? 레벨, 스테이지, 골드 강화가 처음으로 돌아갑니다.");
+    expect(t.confirm).toHaveBeenCalledWith("환생할까요? 레벨, 스테이지, 성장이 처음으로 돌아갑니다.");
   });
 });

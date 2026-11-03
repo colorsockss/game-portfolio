@@ -76,7 +76,7 @@ exports[`SkillUnequip request keeps its bytes 1`] = `"83a26f70cd0192a26964a23136
 
 exports[`StageSelect request keeps its bytes 1`] = `"83a26f7064a26964a134a4626f647981a773746167654964cd0bba"`;
 
-exports[`StatUpgrade request keeps its bytes 1`] = `"83a26f70cd012ca26964a23133a4626f647981a9757067726164654964cd1b59"`;
+exports[`StatUpgrade request keeps its bytes 1`] = `"83a26f70cd012ca26964a23133a4626f647982a9757067726164654964cd1b59a573746570730a"`;
 
 exports[`StateFetch request keeps its bytes 1`] = `"83a26f7004a26964a23230a4626f647980"`;
 

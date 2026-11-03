@@ -20,8 +20,9 @@
 
 | 묶음 | 백로그 | 개수 |
 |---|---|---|
-| UI 테마 | 55 | 6장(원하면 4장 더) |
-| 아이콘 | 55 | 12장 |
+| UI 테마 | 55, 78 | 13장(스크립트) |
+| 아이콘 | 55, 78 | 28장(임시 SVG, Codex로 다시 그릴 것) |
+| 글꼴 | 78 | Jua 1개 |
 | 영웅 | 62 | 1명, 19프레임 |
 | 몬스터·보스·소환수 | 63 | 11종, 197프레임 |
 | 원하면 더 그릴 것 | | 발사체 8프레임, 배경 6장, 아이콘 28장 |
@@ -50,56 +51,54 @@
 
 150픽셀 정규화는 애니메이션 원본을 정렬하는 규칙이고, 전장의 표시 크기는 `Monsters.size`(비면 일반 1, 보스 1.6)가 정합니다. 그래서 원본 규격과 표시 크기를 구분합니다. 용사 1유닛은 기준 화면 1080×1920에서 192픽셀입니다(`WorldRoot`의 직교 카메라 반높이 5, `ActorArt`의 PPU 150). 1 : 0.45 : 0.65를 적용하면 몸 높이가 1080픽셀 화면에서 192·86·125픽셀, 360픽셀 화면에서 64·29·42픽셀입니다.
 
-## 1. UI 테마 (55)
+## 1. UI 테마 (55, 78)
 
 `Assets/Editor/UI/UiTheme.asset`의 스프라이트입니다. 바꾼 뒤 `Tools/UI/Build All Prefabs`가 모든 화면에 넣습니다.
 
-| 그림 | 모양 | 쓰는 곳 | 지금 | 만든 사람 | 도구 |
+2026-11-03에 첨부 레퍼런스의 그림체(짙은 남보라 외곽선 `#2B2236`, 위가 밝고 아래가 어두운 두 단 면, 버튼의 아래 턱, 크림색 판)로 바꿨습니다. 기하 도형이라 생성하지 않고 스크립트([draw.py](../art/source/ui-kit/draw.py))가 4배로 그려 줄입니다. `python draw.py idle/art/ui`로 [최종 PNG](../art/ui/)를 다시 만들고, 9-slice 테두리(스크립트의 `BORDERS`)는 Unity `.meta`의 `spriteBorder`에 같은 값으로 적었습니다. 회색조 그림에는 테마 색이 곱해지고, 크림색 판·줄·알약은 색을 넣어 그려 흰색을 곱합니다. 부트의 패치 화면이 쓰는 버튼·판·게이지·알약은 `Assets/UI/BootSprites/`에, 나머지는 `Assets/UI/Sprites/`에 있습니다.
+
+| 그림 | 크기, 9-slice(왼·아래·오른·위) | 쓰는 곳 | 지금 | 만든 사람 | 도구 |
 |---|---|---|---|---|---|
-| 버튼 바탕 | 9-slice | 버튼, 탭, 토글 상자, 로그인 카드 | 완료 | colorsocks | Codex image_gen |
-| 패널 바탕 | 9-slice | 팝업, 카드, 대사 창 | 완료 | colorsocks | Codex image_gen |
-| 게이지 채움 | 가로로 채워짐 | 경험치, 진행 막대 | 완료 | colorsocks | Codex image_gen |
-| 동그라미 | | 알림 뱃지, 슬라이더 손잡이 | 완료 | colorsocks | Codex image_gen |
-| 체크 표시 | | 토글 | 완료 | colorsocks | Codex image_gen |
-| 입력란 바탕 | 9-slice | 로그인 ID 입력 | 완료 | colorsocks | Codex image_gen |
+| `button.png` 버튼 | 128², 36·44·36·36 | 버튼, 탭, 고른 아래 탭(누르는 것에만) | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `panel.png` 크림색 판 | 128², 40·44·40·40 | 팝업, 대사 창, 로그인 카드(아래 판은 테두리 없는 크림색 면이라 쓰지 않음) | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `tile.png` 누르는 칸 | 128², 36·40·36·36 | 장비 칸(등급 색), 스킬 슬롯(속성 색). 볼록하다 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `slot.png` 보기만 하는 칸 | 128², 30·30·30·36 | 강화·스킬 줄의 아이콘, 영웅 띠의 스킬, 가방 칸(장착 현황 칸은 누르므로 볼록한 칸). 위쪽 안에 그림자가 진 오목한 칸이라 버튼과 구별된다 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `chip.png` 세그먼트 칸 | 96², 26 | 고르는 탭(장비 슬롯, 가방 종류, 강화 배수, 설정)의 고른 칸. 아래 턱 없이 납작하고 주황을 입는다 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `rays.png` 빛살 | 256² | 도전할 수 있는 보스 해골 뒤에서 도는 활성 효과(노랑) | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `cell.png` 판 안의 줄 | 96², 28 | 강화·스킬 줄, 강화·합성 패널 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `band.png` 띠 | 32×64, 0·10·0·10 | 위쪽 HUD, 아래 탭 막대, 영웅 띠 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `track.png` 어두운 알약 | 64×32, 18·14·18·14 | 재화·능력치 알약, 게이지 바탕, 세그먼트 탭의 홈, 토스트, 로딩 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `gauge.png` 게이지 채움 | 256×32 | 경험치, HP, 웨이브 진행, 합성 재료 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `dot.png` 동그라미 | 64² | 알림 뱃지, 슬라이더 손잡이 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `check.png` 체크 | 64² | 토글 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
+| `input.png` 입력란 | 128², 32 | 로그인 ID 입력 | 완료 | colorsocks | 스크립트(Claude Code, draw.py) |
 
-2026-10-23에 기본 6장을 제작했습니다. [최종 PNG](../art/ui/)는 `button.png`·`panel.png`·`input.png`가 128×128, `gauge.png`가 256×32, `dot.png`·`check.png`가 64×64입니다. 버튼·패널·입력란의 9-slice 경계는 사방 32픽셀이며 중앙 64×64는 불투명한 단색입니다. 같은 날 Unity에 넣었습니다(`client/Assets/UI/Sprites/`, 테마 `UiTheme.asset`, 아틀라스 `Assets/UI/Ui.spriteatlasv2`). 앱에 드는 패치 화면이 쓰는 `button.png`·`panel.png`·`gauge.png`는 2026-10-30에 `client/Assets/UI/BootSprites/`(아틀라스 `Boot.spriteatlasv2`)로 옮겼습니다. 로그인, 메인, 설정, 확인 팝업, 튜토리얼 대사 창에서 보이는 것을 플레이 모드로 확인했습니다.
+2026-10-23에 Codex image_gen으로 만든 앞 그림체의 6장은 [이전 최종본](../art/source/ui/previous-style-2026-10-23/)과 [생성 원본·프롬프트](../art/source/ui/prompts.json)로 보존했습니다.
 
-[생성 원본](../art/source/ui/)과 [실제로 사용한 프롬프트·후처리 기록](../art/source/ui/prompts.json)을 보존했습니다. 재생성에서도 중앙이 투명하게 지워져, 사용자 승인 후 저장소 밖 Pillow 환경에서 최종본의 중앙 채움과 가장자리 알파를 보정하고 무채색·최종 크기를 맞췄습니다. 쓰지 않은 버튼 재생성본은 원본 폴더의 `rejected/`에 있습니다.
+2026-11-03 개편의 [시안](../art/concepts/ui-redesign-2026-11-03/preview.html)과 [Unity 전후 비교](../art/concepts/ui-redesign-2026-11-03/unity-before-after.png), 화면별 캡처를 같은 폴더에 보존했습니다. 캡처는 개편 중의 화면이라 이후의 다듬기(탭 판의 닫기 버튼과 테두리 제거, "성장" 이름 등)는 들어 있지 않습니다.
 
-원하면 따로 그릴 수 있습니다. 그리면 테마에 칸을 더합니다.
+### 글꼴
 
-| 그림 | 지금 대신하는 것 | 만든 사람 | 도구 |
+| 글꼴 | 라이선스 | 출처 | 쓰는 곳 |
 |---|---|---|---|
-| 버튼 눌림 | 버튼 바탕의 색 변화 | | |
-| 버튼 비활성 | 버튼 바탕의 색 변화 | | |
-| 탭 | 버튼 바탕 | | |
-| 팝업 틀 | 패널 바탕 | | |
+| Jua Regular(`client/Assets/Fonts/Jua/Jua-Regular.ttf`, 2,119,352B, SHA-256 `769677ae…268279f898`) | SIL OFL 1.1([전문](../art/fonts/Jua-OFL.txt)) | Google Fonts 저장소 `ofl/jua`(2026-11-03에 받음) | 모든 UI 글자와 전투의 피해 숫자. TMP 동적 에셋 `Jua SDF`(`Tools/UI/Build Font`)가 TMP 기본 글꼴이고, 기본 재질은 외곽선·아래 그림자, 크림색 판 위는 잉크 재질 |
 
-## 2. 아이콘 (55)
+Jua에 없는 기호(×, →, · 등)는 런타임 대체 글꼴(Noto Sans KR, `KoreanFontFallback`)이 그립니다.
 
-게임에는 모두 들어갔습니다. 메인 버튼은 글자 위에 아이콘이 있고, 재화와 장비 슬롯 아이콘은 `Items.icon`이 골라 위쪽 재화 칸, 가방 칸, 장비 줄에 보입니다. 메인 버튼의 높이는 기준 화면에서 110픽셀입니다.
+## 2. 아이콘 (55, 78)
+
+2026-11-03에 배우와 같은 평면 색면 + 짙은 외곽선 그림체의 임시 아이콘 26장으로 바꿨습니다(같은 날 팝업의 닫기 버튼 `ui_close`와 로딩 고리 `ui_spinner`를 더해 28장). [SVG 원본](../art/source/ui-kit/icons.svg)의 기호 하나가 아이콘 하나이고, [render.html](../art/source/ui-kit/render.html)을 HTTP로 열어 256×256 PNG(그림은 가운데 224×224)로 구워 [최종 PNG](../art/icons/)와 `client/Assets/UI/Sprites/Icons/`에 넣었습니다. 파일 이름이 아이콘 이름입니다. Codex로 같은 그림체를 다시 그리면 이 파일들을 바꿉니다([art-prompts.md](art-prompts.md)의 6).
 
 | 묶음 | 아이콘 | 지금 | 만든 사람 | 도구 |
 |---|---|---|---|---|
-| 재화 | 골드 | 완료 | colorsocks | Codex image_gen |
-| 재화 | 경험치 | 완료 | colorsocks | Codex image_gen |
-| 장비 슬롯 | 무기 | 완료 | colorsocks | Codex image_gen |
-| 장비 슬롯 | 방어구 | 완료 | colorsocks | Codex image_gen |
-| 장비 슬롯 | 장신구 | 완료 | colorsocks | Codex image_gen |
-| 메인 버튼 | 강화 | 완료 | colorsocks | Codex image_gen |
-| 메인 버튼 | 스킬 | 완료 | colorsocks | Codex image_gen |
-| 메인 버튼 | 장비 | 완료 | colorsocks | Codex image_gen |
-| 메인 버튼 | 환생 | 완료 | colorsocks | Codex image_gen |
-| 메인 버튼 | 가방 | 완료 | colorsocks | Codex image_gen |
-| 메인 버튼 | 설정 | 완료 | colorsocks | Codex image_gen |
-| 메인 버튼 | 로그아웃 | 완료 | colorsocks | Codex image_gen |
+| 재화 | `currency_gold`, `currency_exp` | 임시 | colorsocks | SVG(Claude Code) |
+| 장비 슬롯(장비 칸도 같이 씀) | `slot_weapon`, `slot_armor`, `slot_accessory` | 임시 | colorsocks | SVG(Claude Code) |
+| 아래 탭·설정 | `main_upgrade`, `main_skills`, `main_equipment`, `main_inventory`, `main_rebirth`, `main_settings`, `main_logout` | 임시 | colorsocks | SVG(Claude Code) |
+| 강화 줄·영웅 띠 | `stat_attack`, `stat_maxHp`, `stat_critChance` | 임시 | colorsocks | SVG(Claude Code) |
+| 스킬(`Skills.icon`) | `skill_slash`, `skill_volley`, `skill_fireball`, `skill_heal`, `skill_roar`, `skill_wolf` | 임시 | colorsocks | SVG(Claude Code) |
+| HUD·스테이지 막대·팝업·로딩 | `ui_level`, `ui_boss`, `ui_prev`, `ui_next`, `ui_lock`, `ui_close`, `ui_spinner` | 임시 | colorsocks | SVG(Claude Code) |
 
-2026-10-23에 12장을 제작했습니다. [최종 PNG](../art/icons/)는 모두 256×256 RGBA이며, 비율을 유지한 그림을 긴 변 224픽셀로 줄여 가운데에 두었습니다. 투명 여백을 자르는 것 외에 내부 알파를 별도로 보정하지 않았습니다. 최종본과 90픽셀 미리보기를 직접 확인했습니다. 같은 날 Unity에 넣고(`client/Assets/UI/Sprites/Icons/`, 128픽셀로 줄여 임포트) 메인, 가방, 장비 화면에서 플레이 모드로 확인했습니다.
-
-[생성 원본](../art/source/icons/)과 [실제로 사용한 프롬프트·후처리 기록](../art/source/icons/prompts.json)을 보존했습니다. 경험치 구슬의 불필요한 받침을 없애고 빈 장비 슬롯 그림을 단순하게 만들기 위해 다시 생성했으며, 쓰지 않은 원본은 `rejected/`에 있습니다.
-
-방어구 슬롯의 외곽선과 어깨·목 경계선도 없애, 무기·장신구 슬롯과 같은 밝은 회색 실루엣으로 통일했습니다. 수정 전 원본은 `rejected/slot_armor-02-outlined.png`에 보존했습니다.
+2026-10-23에 Codex image_gen으로 만든 앞 그림체의 12장은 [이전 최종본](../art/source/icons/previous-style-2026-10-23/)과 [생성 원본·프롬프트](../art/source/icons/prompts.json)로 보존했습니다. 사실적인 질감이라 배우의 평면 그림체와 어긋나서 바꿨습니다.
 
 ## 원본 방향 통일과 용사 팔 교정 (2026-10-28)
 

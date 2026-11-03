@@ -75,7 +75,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.105882354, g: 0.12156863, b: 0.16470589, a: 1}
+  m_Color: {r: 0.106, g: 0.114, b: 0.2, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -213,15 +213,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 95b25a57a08db4efeadb58435ca74568, type: 2}
+  m_sharedMaterial: {fileID: -4622767535662766216, guid: 95b25a57a08db4efeadb58435ca74568, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 0.6627451, g: 0.69411767, b: 0.7607843, a: 1}
+  m_fontColor: {r: 0.69, g: 0.72, b: 0.84, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -291,18 +291,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1285187767451685210}
     m_Modifications:
-    - target: {fileID: 2228886792700239993, guid: b6cf111ee5aba41deb3df9e56fef2712, type: 3}
-      propertyPath: m_Color.b
-      value: 0.23137255
-      objectReference: {fileID: 0}
-    - target: {fileID: 2228886792700239993, guid: b6cf111ee5aba41deb3df9e56fef2712, type: 3}
-      propertyPath: m_Color.g
-      value: 0.17254902
-      objectReference: {fileID: 0}
-    - target: {fileID: 2228886792700239993, guid: b6cf111ee5aba41deb3df9e56fef2712, type: 3}
-      propertyPath: m_Color.r
-      value: 0.14901961
-      objectReference: {fileID: 0}
     - target: {fileID: 2707051199234187571, guid: b6cf111ee5aba41deb3df9e56fef2712, type: 3}
       propertyPath: m_Name
       value: ProgressBar
@@ -341,7 +329,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6387868824376386851, guid: b6cf111ee5aba41deb3df9e56fef2712, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 16
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 6387868824376386851, guid: b6cf111ee5aba41deb3df9e56fef2712, type: 3}
       propertyPath: m_LocalPosition.x

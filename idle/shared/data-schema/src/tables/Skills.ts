@@ -47,6 +47,8 @@ export interface SkillsRow {
   "condition": SkillCondition;
   // 인덱스 20: 조건의 값. hurt는 HP 비율(0.7 = 70% 이하), crowd는 적의 수
   "conditionValue": number | null;
+  // 인덱스 21: 스킬 칸의 아이콘 그림 이름(클라이언트 Assets/UI/Sprites/Icons의 파일 이름). 영웅의 스킬만 적고, 비우면 아이콘이 없다
+  "icon": string | null;
 }
 
 export async function deserializeSkillsMessagePack(bytes: Uint8Array | ArrayBuffer): Promise<Map<number, SkillsRow>> {
@@ -73,6 +75,7 @@ export async function deserializeSkillsMessagePack(bytes: Uint8Array | ArrayBuff
       "radius": row[18] as number,
       "condition": row[19] as SkillCondition,
       "conditionValue": row[20] as number | null,
+      "icon": row[21] as string | null,
     };
     result.set(record.id, record);
   }

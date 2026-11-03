@@ -19,7 +19,6 @@ export const settingsView = view<SettingsViewModel>("UI/SettingsScreen", {
   closeButton: button(vm => vm.close()),
   titleLabel: label("menu.settings"),
   logoutLabel: label("menu.logout"),
-  closeLabel: label("common.close"),
   frameRateLabel: label("settings.frameRate"),
   languageLabel: label("settings.language"),
 }, "popup");

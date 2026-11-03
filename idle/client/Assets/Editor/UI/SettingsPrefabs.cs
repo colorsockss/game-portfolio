@@ -47,7 +47,7 @@ namespace PortfolioIdleRpg.Editor
                 ((RectTransform)root.transform).sizeDelta = new Vector2(900f, RowHeight);
                 root.GetComponent<LayoutElement>().preferredHeight = RowHeight;
 
-                TMP_Text label = UiPrefabs.AddText(root.transform, "Name", TextStyle.Label, Vector2.zero, Vector2.up);
+                TMP_Text label = UiPrefabs.AddText(root.transform, "Name", TextStyle.Ink, Vector2.zero, Vector2.up);
                 label.fontSize = LabelSize;
                 label.rectTransform.offsetMax = new Vector2(200f, 0f);
                 label.alignment = TextAlignmentOptions.MidlineLeft;
@@ -84,10 +84,10 @@ namespace PortfolioIdleRpg.Editor
                 .Header()
                 .Stack("channels", channel, RowHeight, 2)
                 .Space(20f)
-                .Text("frameRateLabel", TextStyle.Label, 80f, alignment: TextAlignmentOptions.MidlineLeft, configure: Big)
+                .Text("frameRateLabel", TextStyle.Ink, 80f, alignment: TextAlignmentOptions.MidlineLeft, configure: Big)
                 .Tabs("frameRates")
                 .Space(20f)
-                .Text("languageLabel", TextStyle.Label, 80f, alignment: TextAlignmentOptions.MidlineLeft, configure: Big)
+                .Text("languageLabel", TextStyle.Ink, 80f, alignment: TextAlignmentOptions.MidlineLeft, configure: Big)
                 .Tabs("languages")
                 .Footer(120f, ("logout", ButtonStyle.Danger, 400f))
                 .Save();

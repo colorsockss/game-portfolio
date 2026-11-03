@@ -231,7 +231,7 @@ export const battleView = {
       switch (direction.type) {
         case "reset": {
           // 처음이 아니면 장면이 이어지는 경우가 많다(강화·착용 뒤, 서버의 확정이 조금 다름). 그래서 남아 있는 배우와 발사체는 그대로
-          // 두고 HP와 자리만 맞추며, 사라진 것은 거두고 새로 생긴 것만 세운다.
+          // 두고 HP와 자리만 맞추며, 사라진 배우는 흐려지며 물러나고(스테이지 이동이면 무대가 덮이는 동안) 새로 생긴 것만 세운다.
           (await stage)?.Show(direction.background);
           const before = heroX;
           heroX = direction.hero.x;
@@ -255,11 +255,7 @@ export const battleView = {
           }
           const staying = new Set([...direction.enemies, ...direction.summons].map(({ id }) => id));
           for (const side of [enemies, allies]) {
-            for (const [id, standing] of side) {
-              if (staying.has(id)) continue;
-              side.delete(id);
-              actors.release(standing.pooled);
-            }
+            for (const id of side.keys()) if (!staying.has(id)) remove(id, "Leave");
           }
           const flying = new Set(direction.projectiles.map(({ id }) => id));
           for (const [id, shots] of flights) {
@@ -385,6 +381,11 @@ export const battleView = {
         case "background":
           (await stage)?.Show(direction.background);
           return;
+        case "cover": {
+          const [r, g, b] = direction.color;
+          (await stage)?.Cover(r, g, b);
+          return;
+        }
         case "levelUp":
           await float(direction.text, LEVEL_UP_COLOR, LEVEL_UP.size, HERO_X, LEVEL_UP.y);
           return;

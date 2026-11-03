@@ -12,7 +12,7 @@ import { applyCommand } from "../src/commands/index.js";
 import { NO_EQUIPMENT } from "../src/equipment.js";
 import { NO_REBIRTH } from "../src/rebirth.js";
 import { startSkills } from "../src/skills.js";
-import { NO_STAT_UPGRADES, statUpgradeCost } from "../src/stat-upgrade.js";
+import { NO_STAT_UPGRADES, statUpgradeBatch, statUpgradeCost } from "../src/stat-upgrade.js";
 import type { PlayerState } from "../src/state.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
@@ -37,8 +37,8 @@ function player(gold: number, statUpgrades = NO_STAT_UPGRADES): PlayerState {
   return { ...base, battle: freshBattle(base, data, AT), tutorial: { stepId: null } };
 }
 
-const upgrade = (state: PlayerState, upgradeId: unknown, now = AT + 100) =>
-  applyCommand(state, { type: Opcode.StatUpgrade, upgradeId } as Command, { now, data });
+const upgrade = (state: PlayerState, upgradeId: unknown, now = AT + 100, steps: unknown = 1) =>
+  applyCommand(state, { type: Opcode.StatUpgrade, upgradeId, steps } as Command, { now, data });
 
 function upgraded(result: ReturnType<typeof applyCommand>): PlayerState {
   if (!result.ok) throw new Error(result.error.message);
@@ -52,6 +52,18 @@ describe("statUpgradeCost", () => {
     // 공격의 마지막 단계(99 → 100)와 치명의 마지막 단계(49 → 50)의 비트. 호스트가 달라도 같아야 한다.
     expect(statUpgradeCost(99)).toEqual({ m: 1.02114213, e: 8 });
     expect(statUpgradeCost(49)).toEqual({ m: 9.4231, e: 4 });
+  });
+});
+
+describe("statUpgradeBatch", () => {
+  test("buys as many of the wanted steps as maxStep and the gold allow, adding up each step's cost", () => {
+    // 100 + 115 + 132 = 347.
+    expect(statUpgradeBatch(0, 100, Big.from(1000), 3)).toEqual({ steps: 3, cost: Big.from(347) });
+    expect(statUpgradeBatch(0, 100, Big.from(347), 10)).toEqual({ steps: 3, cost: Big.from(347) });
+    expect(statUpgradeBatch(0, 100, Big.from(346), 10)).toEqual({ steps: 2, cost: Big.from(215) });
+    expect(statUpgradeBatch(48, 50, Big.from(1e30), 100)).toEqual({ steps: 2, cost: Big.floor(Big.add(statUpgradeCost(48), statUpgradeCost(49))) });
+    expect(statUpgradeBatch(50, 50, Big.from(1e30), 100)).toEqual({ steps: 0, cost: Big.ZERO });
+    expect(statUpgradeBatch(0, 100, Big.from(99), 1)).toEqual({ steps: 0, cost: Big.ZERO });
   });
 });
 
@@ -104,6 +116,42 @@ describe("StatUpgrade", () => {
     expect(upgrade(player(1e30, { [CRIT]: 60 }), CRIT)).toMatchObject({ ok: false, error: { code: GameErrorCode.StatUpgradeMaxed } });
     const last = upgraded(upgrade(player(1e30, { [CRIT]: 49 }), CRIT));
     expect(last.statUpgrades[CRIT]).toBe(50);
+  });
+
+  test("steps raises several levels at once and pays their summed cost", () => {
+    const now = AT + 100;
+    const after = upgraded(upgrade(player(1000), ATTACK, now, 3));
+    expect(after.statUpgrades).toEqual({ [ATTACK]: 3 });
+    expect(after.items[GOLD]).toEqual(Big.from(1000 - 347));
+    expect(heroStats(after, data).attack).toEqual(Big.add(heroStats(settle(player(1000), data, now), data).attack, 15));
+  });
+
+  test("steps stops early at maxStep", () => {
+    const after = upgraded(upgrade(player(1e30, { [CRIT]: 45 }), CRIT, AT + 100, 100));
+    expect(after.statUpgrades[CRIT]).toBe(50);
+  });
+
+  test("steps stops early when the gold runs out mid-batch and keeps the rest", () => {
+    // 100 + 115 = 215은 낼 수 있고 셋째 단계(132)는 모자라다.
+    const after = upgraded(upgrade(player(300), ATTACK, AT + 100, 10));
+    expect(after.statUpgrades).toEqual({ [ATTACK]: 2 });
+    expect(after.items[GOLD]).toEqual(Big.from(85));
+  });
+
+  test("steps is refused only when not even one level can be bought", () => {
+    expect(upgrade(player(99), ATTACK, AT + 100, 100)).toMatchObject({ ok: false, error: { code: GameErrorCode.NotEnoughGold } });
+    expect(upgrade(player(1e30, { [CRIT]: 50 }), CRIT, AT + 100, 10))
+      .toMatchObject({ ok: false, error: { code: GameErrorCode.StatUpgradeMaxed } });
+  });
+
+  test("steps that is not an integer from 1 to 100 is refused with InvalidCommand", () => {
+    for (const steps of [0, 101, 1.5, -1, NaN, Infinity, "10", null]) {
+      expect(upgrade(player(1000), ATTACK, AT + 100, steps)).toMatchObject({ ok: false, error: { code: GameErrorCode.InvalidCommand } });
+    }
+    // steps가 빠진 옛 요청.
+    expect(applyCommand(player(1000), { type: Opcode.StatUpgrade, upgradeId: ATTACK } as Command, { now: AT + 100, data }))
+      .toMatchObject({ ok: false, error: { code: GameErrorCode.InvalidCommand } });
+    expect(upgraded(upgrade(player(1e30), ATTACK, AT + 100, 100)).statUpgrades[ATTACK]).toBe(100);
   });
 
   test("an upgrade that is not in the table is refused, whatever arrives from the network", () => {

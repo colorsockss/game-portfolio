@@ -115,7 +115,7 @@ describe("toast", () => {
     const command = { type: Opcode.StageSelect, stageId: 9 } as const;
     events.emit("refused", { command, error: { code: GameErrorCode.StageNotFound, message: "" } });
     events.emit("refused", { command, error: { code: 999 as GameErrorCode, message: "" } });
-    events.emit("refused", { command: { type: Opcode.StatUpgrade, upgradeId: 7001 }, error: { code: GameErrorCode.NotEnoughGold, message: "" } });
+    events.emit("refused", { command: { type: Opcode.StatUpgrade, upgradeId: 7001, steps: 1 }, error: { code: GameErrorCode.NotEnoughGold, message: "" } });
     for (const code of [
       GameErrorCode.SkillNotFound, GameErrorCode.SkillNotLearned, GameErrorCode.SkillSlotInvalid, GameErrorCode.SkillMaxLevel, GameErrorCode.SkillCostShort,
     ]) {
@@ -123,7 +123,7 @@ describe("toast", () => {
     }
     expect(shown).toEqual([
       "없는 스테이지입니다.", "요청이 거절되었습니다.", "골드가 부족합니다.",
-      "쓸 수 없는 스킬입니다.", "아직 배우지 않은 스킬입니다.", "없는 스킬 슬롯입니다.", "이미 최대 레벨입니다.", "비용이 모자랍니다.",
+      "영웅이 쓸 수 없는 스킬입니다.", "아직 배우지 않은 스킬입니다.", "없는 스킬 슬롯입니다.", "이미 최대 레벨입니다.", "재화가 부족합니다.",
     ]);
 
     scope.dispose();
@@ -139,7 +139,7 @@ describe("toast", () => {
     for (const code of [GameErrorCode.EquipmentMaxEnhance, GameErrorCode.EquipmentNotMergeable, GameErrorCode.MergeMaterialsShort]) {
       events.emit("refused", { command, error: { code, message: "" } });
     }
-    expect(shown).toEqual(["더 강화할 수 없습니다.", "합성할 수 없는 장비입니다.", "같은 장비가 모자랍니다."]);
+    expect(shown).toEqual(["이미 최대로 강화한 장비입니다.", "더 높은 등급으로 합성할 수 없는 장비입니다.", "합성할 같은 장비가 부족합니다."]);
   });
 
   test("a refused rebirth says the hero cannot rebirth yet", () => {
@@ -147,7 +147,18 @@ describe("toast", () => {
     const shown: string[] = [];
     createToastViewModel(events, t).notices(text => void shown.push(text));
     events.emit("refused", { command: { type: Opcode.Rebirth }, error: { code: GameErrorCode.RebirthNotReady, message: "" } });
-    expect(shown).toEqual(["아직 환생할 수 없습니다."]);
+    expect(shown).toEqual(["아직 환생할 수 있는 레벨이 아닙니다."]);
+  });
+
+  test("a refused tutorial step says nothing, since the tutorial goes back to the server's step on its own", () => {
+    const events = createEventBus<AppEventMap>(console);
+    const shown: string[] = [];
+    createToastViewModel(events, t).notices(text => void shown.push(text));
+    const command = { type: Opcode.TutorialAdvance, stepId: 6 } as const;
+    for (const code of [GameErrorCode.TutorialStepNotCurrent, GameErrorCode.TutorialStepUnmet]) {
+      events.emit("refused", { command, error: { code, message: "" } });
+    }
+    expect(shown).toEqual([]);
   });
 });
 

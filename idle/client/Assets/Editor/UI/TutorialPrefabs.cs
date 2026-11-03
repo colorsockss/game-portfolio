@@ -134,13 +134,13 @@ namespace PortfolioIdleRpg.Editor
             rect.anchoredPosition = new Vector2((40f - right) / 2f, -200f);
             rect.sizeDelta = new Vector2(-(40f + right), 300f);
 
-            TMP_Text text = UiPrefabs.AddText(dialog.transform, "Text", TextStyle.Body, Vector2.zero, Vector2.one);
+            TMP_Text text = UiPrefabs.AddText(dialog.transform, "Text", TextStyle.Ink, Vector2.zero, Vector2.one);
             text.rectTransform.offsetMin = new Vector2(40f, 80f);
             text.rectTransform.offsetMax = new Vector2(-40f, -30f);
             text.alignment = TextAlignmentOptions.TopLeft;
             text.textWrappingMode = TextWrappingModes.Normal;
 
-            TMP_Text hint = UiPrefabs.AddText(dialog.transform, "Hint", TextStyle.Small, Vector2.zero, new Vector2(1f, 0f));
+            TMP_Text hint = UiPrefabs.AddText(dialog.transform, "Hint", TextStyle.InkSmall, Vector2.zero, new Vector2(1f, 0f));
             hint.rectTransform.offsetMin = new Vector2(40f, 20f);
             hint.rectTransform.offsetMax = new Vector2(-40f, 70f);
             hint.alignment = TextAlignmentOptions.BottomRight;

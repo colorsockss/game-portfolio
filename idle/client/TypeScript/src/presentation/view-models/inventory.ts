@@ -21,6 +21,8 @@ export interface ItemSlot {
   readonly name: string;
   /** 큰 수 표기의 수량. */
   readonly amount: string;
+  /** 칸의 등급 색 번호(Items.grade). 등급이 없는 재화와 재료는 0이다. */
+  readonly tint: number;
 }
 
 /** 가방 화면: 보이는 보유량의 아이템을 고른 종류 탭에서 칸마다 하나씩. */
@@ -50,7 +52,7 @@ export function createInventoryViewModel({ data, t, items, close }: InventoryVie
       return Object.entries(items.value).flatMap(([id, amount]) => {
         const row = data.items.get(Number(id));
         if (Big.sign(amount) <= 0 || (kind !== null && row?.kind !== kind)) return [];
-        return [{ icon: row?.icon ?? "", name: row ? t(row.nameKey) : id, amount: formatBig(amount) }];
+        return [{ icon: row?.icon ?? "", name: row ? t(row.nameKey) : id, amount: formatBig(amount), tint: row?.grade ?? 0 }];
       });
     }),
     close,

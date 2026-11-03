@@ -25,7 +25,7 @@ const data = await loadGameData(table => readFileSync(new URL(`../../../shared/d
 const { t } = texts(data);
 
 // 배포 데이터의 스텝: 1 누름, 2 3001 클리어, 3 main.equipmentButton 누름, 4 equipment.items 무기 착용,
-// 5 equipment.closeButton 누름, 6 레벨 5, 7 main.inventoryButton 누름, 8 inventory.closeButton 누름, 9 누름(끝).
+// 5 main.equipmentButton 다시 누름(닫기), 6 레벨 5, 7 main.inventoryButton 누름, 8 main.inventoryButton 다시 누름(닫기), 9 누름(끝).
 const prefabs = { main: "UI/MainScreen", equipment: "UI/EquipmentScreen", inventory: "UI/InventoryScreen", reward: "UI/RewardPopup" };
 const screen = (prefab: string): ShownView => ({ prefab, layer: "screen", root: { prefab } as unknown as ViewRoot });
 const popup = (prefab: string): ShownView => ({ prefab, layer: "popup", root: { prefab } as unknown as ViewRoot });
@@ -168,8 +168,11 @@ describe("tutorial view model", () => {
     t.shown.value = [main];
     expect(t.vm.target.value).toEqual({ root: main.root, name: "equipmentButton" });
 
-    // 닫기 스텝인데 뒤로 가기로 팝업을 이미 닫았다.
+    // 아래 판에는 닫기 버튼이 없어 닫기 스텝은 같은 탭을 한 번 더 누르게 비춘다. 대상의 화면이 없으면(전환 중) 화면을 덮고
+    // 아무 데나 누르면 넘어간다.
     const closing = setUp(5);
+    expect(closing.vm.target.value).toEqual({ root: main.root, name: "equipmentButton" });
+    closing.shown.value = [];
     expect(closing.vm.target.value).toBeNull();
     expect(closing.vm.covering.value).toBe(true);
     closing.vm.tap();

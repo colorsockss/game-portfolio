@@ -12,7 +12,8 @@
     "enhanceMax": null,
     "mergeItemId": null,
     "mergeCount": null,
-    "icon": "currency_gold"
+    "icon": "currency_gold",
+    "grade": null
   },
   {
     "id": 2,
@@ -27,7 +28,8 @@
     "enhanceMax": null,
     "mergeItemId": null,
     "mergeCount": null,
-    "icon": "currency_exp"
+    "icon": "currency_exp",
+    "grade": null
   },
   {
     "id": 101,
@@ -42,7 +44,8 @@
     "enhanceMax": 10,
     "mergeItemId": 107,
     "mergeCount": 3,
-    "icon": "slot_weapon"
+    "icon": "slot_weapon",
+    "grade": 1
   },
   {
     "id": 102,
@@ -57,7 +60,8 @@
     "enhanceMax": 10,
     "mergeItemId": 108,
     "mergeCount": 3,
-    "icon": "slot_armor"
+    "icon": "slot_armor",
+    "grade": 1
   },
   {
     "id": 103,
@@ -72,7 +76,8 @@
     "enhanceMax": 10,
     "mergeItemId": 109,
     "mergeCount": 3,
-    "icon": "slot_accessory"
+    "icon": "slot_accessory",
+    "grade": 1
   },
   {
     "id": 104,
@@ -87,7 +92,8 @@
     "enhanceMax": 10,
     "mergeItemId": 110,
     "mergeCount": 3,
-    "icon": "slot_weapon"
+    "icon": "slot_weapon",
+    "grade": 3
   },
   {
     "id": 105,
@@ -102,7 +108,8 @@
     "enhanceMax": 10,
     "mergeItemId": 111,
     "mergeCount": 3,
-    "icon": "slot_armor"
+    "icon": "slot_armor",
+    "grade": 3
   },
   {
     "id": 106,
@@ -117,7 +124,8 @@
     "enhanceMax": 10,
     "mergeItemId": 112,
     "mergeCount": 3,
-    "icon": "slot_accessory"
+    "icon": "slot_accessory",
+    "grade": 3
   },
   {
     "id": 107,
@@ -132,7 +140,8 @@
     "enhanceMax": 20,
     "mergeItemId": null,
     "mergeCount": 3,
-    "icon": "slot_weapon"
+    "icon": "slot_weapon",
+    "grade": 2
   },
   {
     "id": 108,
@@ -147,7 +156,8 @@
     "enhanceMax": 20,
     "mergeItemId": null,
     "mergeCount": 3,
-    "icon": "slot_armor"
+    "icon": "slot_armor",
+    "grade": 2
   },
   {
     "id": 109,
@@ -162,7 +172,8 @@
     "enhanceMax": 20,
     "mergeItemId": null,
     "mergeCount": 3,
-    "icon": "slot_accessory"
+    "icon": "slot_accessory",
+    "grade": 2
   },
   {
     "id": 110,
@@ -177,7 +188,8 @@
     "enhanceMax": 20,
     "mergeItemId": null,
     "mergeCount": 3,
-    "icon": "slot_weapon"
+    "icon": "slot_weapon",
+    "grade": 4
   },
   {
     "id": 111,
@@ -192,7 +204,8 @@
     "enhanceMax": 20,
     "mergeItemId": null,
     "mergeCount": 3,
-    "icon": "slot_armor"
+    "icon": "slot_armor",
+    "grade": 4
   },
   {
     "id": 112,
@@ -207,6 +220,7 @@
     "enhanceMax": 20,
     "mergeItemId": null,
     "mergeCount": 3,
-    "icon": "slot_accessory"
+    "icon": "slot_accessory",
+    "grade": 4
   }
 ]

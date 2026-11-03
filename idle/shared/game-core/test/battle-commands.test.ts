@@ -429,7 +429,7 @@ describe("upgrades during a fight", () => {
     const state = { ...player(3003), items: { [GOLD]: Big.from(100_000) } };
     const now = hurtInFight(state);
     const settled = settleAt(state, now);
-    const upgraded = apply(state, { type: Opcode.StatUpgrade, upgradeId: 7002 }, now);
+    const upgraded = apply(state, { type: Opcode.StatUpgrade, upgradeId: 7002, steps: 1 }, now);
     const gained = Big.sub(heroStats(upgraded, data).maxHp, heroStats(settled, data).maxHp);
     expect(Big.toNumber(gained)).toBe(50);
     expect(upgraded.battle.hero.hp).toEqual(Big.add(settled.battle.hero.hp, gained));
@@ -444,7 +444,7 @@ describe("upgrades during a fight", () => {
     const settled = settleAt(state, now);
     expect(settled.battle.enemies).toEqual([expect.objectContaining({ boss: true })]);
     expect(settled.battle.bossTicksLeft).not.toBeNull();
-    const upgraded = apply(state, { type: Opcode.StatUpgrade, upgradeId: 7001 }, now);
+    const upgraded = apply(state, { type: Opcode.StatUpgrade, upgradeId: 7001, steps: 1 }, now);
     expect(upgraded.battle).toEqual(settled.battle);
     expect(Big.gt(heroStats(upgraded, data).attack, heroStats(settled, data).attack)).toBe(true);
   });

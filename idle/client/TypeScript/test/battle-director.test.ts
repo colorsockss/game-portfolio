@@ -11,7 +11,9 @@ import { texts } from "./support/text.js";
 const data = await loadGameData(table => readFileSync(new URL(`../../../shared/data-schema/data/${table}.bytes`, import.meta.url)));
 const STAGE = 3001;
 
-const hero = { level: 1, hp: Big.from(50), maxHp: Big.from(100), down: false, effects: [], x: -2, moving: false };
+const hero = {
+  level: 1, hp: Big.from(50), maxHp: Big.from(100), down: false, effects: [], x: -2, moving: false, attack: Big.from(10), critChance: 0, skills: [],
+};
 const monster = { id: 1, monsterId: 1, boss: false, hp: Big.from(5000), maxHp: Big.from(10_000), effects: [], x: 1, moving: false };
 const second = { ...monster, id: 2, monsterId: 2, maxHp: Big.from(400) };
 
@@ -271,11 +273,14 @@ test("deaths, revival, bosses, cleared stages and level-ups become directions an
     HERO_HURT,
     { type: "retreat" },
     { type: "revive" },
-    // 보스 시작, 보스 종료(승패 모두), 클리어, 레벨업은 영웅을 최대 HP로 되돌리므로 글자 뒤에 다시 세운다.
+    // 보스 시작, 보스 종료(승패 모두), 클리어, 레벨업은 영웅을 최대 HP로 되돌리므로 글자 뒤에 다시 세운다. 보스전이 시작하면
+    // 무대를 검붉게, 지면 검게 다 덮었다가 걷는다. 이기면 덮지 않는다.
+    { type: "cover", color: [0.22, 0.02, 0.02] },
     { type: "banner", text: "보스 등장!" },
     { type: "revive" },
     { type: "banner", text: "보스 처치!" },
     { type: "revive" },
+    { type: "cover", color: [0, 0, 0] },
     { type: "banner", text: "보스 실패" },
     { type: "revive" },
     { type: "banner", text: `${stage} 클리어` },
@@ -296,14 +301,15 @@ test("the hero stands again at full HP when a boss starts and after it falls to 
   real.advance(100, event => events.push(event));
   const directions = setUp(real.snapshot()).frame({ events });
 
-  // revive는 뷰가 영웅을 HP 비율 1로 세우는 지시다.
-  expect(directions.slice(0, 2)).toEqual([{ type: "banner", text: "보스 등장!" }, { type: "revive" }]);
+  // revive는 뷰가 영웅을 HP 비율 1로 세우는 지시다. 보스전의 시작과 실패는 무대를 덮었다가 걷는다.
+  expect(directions.slice(0, 3)).toEqual([{ type: "cover", color: [0.22, 0.02, 0.02] }, { type: "banner", text: "보스 등장!" }, { type: "revive" }]);
   const death = directions.findIndex(direction => direction.type === "death" && direction.id === HERO_ID);
   expect(death).toBeGreaterThan(0);
-  expect(directions.slice(death, death + 5)).toEqual([
+  expect(directions.slice(death, death + 6)).toEqual([
     { type: "death", id: HERO_ID },
     HERO_HURT,
     { type: "retreat" },
+    { type: "cover", color: [0, 0, 0] },
     { type: "banner", text: "보스 실패" },
     { type: "revive" },
   ]);

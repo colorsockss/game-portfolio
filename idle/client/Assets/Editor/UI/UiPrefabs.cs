@@ -91,9 +91,13 @@ namespace PortfolioIdleRpg.Editor
         internal static TMP_Text AddText(
             Transform parent, string name, TextStyle style, Vector2 anchorMin, Vector2 anchorMax)
         {
-            (float size, Color color) = UiTheme.Load().Of(style);
+            UiTheme theme = UiTheme.Load();
+            (float size, Color color) = theme.Of(style);
             TMP_Text text = AddText(parent, name, size, anchorMin, anchorMax);
-            text.color = color;
+            if (UiTheme.IsInk(style))
+                theme.Inked(text, color);
+            else
+                text.color = color;
             return text;
         }
 

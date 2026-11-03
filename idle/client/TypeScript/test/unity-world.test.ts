@@ -112,8 +112,12 @@ test("a reset stands the hero and the enemies at their x, the enemies in lanes i
 
   t.log.length = 0;
   await t.frame({ type: "reset", background: "lava", hero: { look: HERO, hpRatio: 0, down: true, x: -2 }, enemies: [], summons: [], projectiles: [] });
-  // 세운 영웅은 다시 세우지 않는다. 쓰러졌으면 쓰러뜨리고, 사라진 적은 풀로 돌아간다.
-  expect(t.log).toEqual(["stage1.Show(lava)", "actor1.Die()", "actor2.setActive(false)", "actor3.setActive(false)"]);
+  // 세운 영웅은 다시 세우지 않는다. 쓰러졌으면 쓰러뜨리고, 사라진 적은 흐려지며 물러나 0.3초 뒤에 풀로 돌아간다.
+  expect(t.log).toEqual(["stage1.Show(lava)", "actor1.Die()", "actor2.Leave()", "actor3.Leave()"]);
+  t.log.length = 0;
+  t.clock.now += 300;
+  await t.frame();
+  expect(t.log).toEqual(["actor2.setActive(false)", "actor3.setActive(false)"]);
 });
 
 test("a later reset keeps the actors and shots still there, moving them to their x and setting their HP, and stands only new ones", async () => {
@@ -126,9 +130,10 @@ test("a later reset keeps the actors and shots still there, moving them to their
     enemies: [{ id: 1, look: SLIME, boss: false, hpRatio: 0.25, x: 1.2 }, { id: 9, look: SLIME, boss: false, hpRatio: 1, x: 3.5 }],
     summons: [], projectiles: [{ id: 5, by: HERO_ID, targets: [1], look: ARROW, flightSeconds: 0.1 }],
   });
+  // 적 9는 물러나는 적 2(actor3)가 아직 풀에 돌아오지 않아 새 배우(actor4)에 선다.
   expect(t.log).toEqual([
-    "stage1.Show(meadow)", "actor1.SetHp(0.8)", "actor3.setActive(false)", "actor2.SetHp(0.25)",
-    "actor3.setActive(true)", "actor3.Setup(monster, 0.3, 0.8, 0.4, 1, -1)", "actor3.Place(3.5, 0.9)", "actor3.Revive(1)",
+    "stage1.Show(meadow)", "actor1.SetHp(0.8)", "actor3.Leave()", "actor2.SetHp(0.25)",
+    "actor4.setActive(true)", "actor4.Setup(monster, 0.3, 0.8, 0.4, 1, -1)", "actor4.Place(3.5, 0.9)", "actor4.Revive(1)",
   ]);
 });
 
@@ -246,6 +251,12 @@ test("a background direction changes the stage's picture", async () => {
   const t = setUp();
   await t.frame({ type: "background", background: "forest" });
   expect(t.log).toContain("stage1.Show(forest)");
+});
+
+test("a cover direction covers the stage in its color for a moment", async () => {
+  const t = setUp();
+  await t.frame({ type: "cover", color: [0.22, 0.02, 0.02] });
+  expect(t.log).toContain("stage1.Cover(0.22, 0.02, 0.02)");
 });
 
 test("a level-up floats in green above the hero, higher than a banner", async () => {

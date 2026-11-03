@@ -63,8 +63,9 @@ const messages = {
   "Rejected TutorialStepNotCurrent response": {
     id: "12", serverTime: 1000, code: ResultCode.Rejected, error: { code: GameErrorCode.TutorialStepNotCurrent, message: "x" },
   },
-  // 강화는 강화 ID를 보내고, 단계는 강화 ID를 키로 하는 맵이다(키는 MessagePack에서 문자열). 낸 골드는 items로 함께 온다.
-  "StatUpgrade request": { op: Opcode.StatUpgrade, id: "13", body: { upgradeId: 7001 } },
+  // 강화는 강화 ID와 올릴 단계 수(1–100)를 보내고, 단계는 강화 ID를 키로 하는 맵이다(키는 MessagePack에서 문자열). 낸 골드는 items로
+  // 함께 온다.
+  "StatUpgrade request": { op: Opcode.StatUpgrade, id: "13", body: { upgradeId: 7001, steps: 10 } },
   "Ok command response with stat upgrade sync": {
     id: "13", serverTime: 1000, code: ResultCode.Ok, body: null,
     sync: { revision: 7, changes: { items: { 1: { m: 9, e: 2 } }, statUpgrades: { 7001: 1, 7003: 12 } } },

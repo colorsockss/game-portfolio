@@ -38,7 +38,7 @@
   {
     "id": 5,
     "textKey": "tutorial.closeEquipment",
-    "target": "equipment.closeButton",
+    "target": "main.equipmentButton",
     "unlockStageId": null,
     "unlockLevel": null,
     "equipSlot": null,
@@ -65,7 +65,7 @@
   {
     "id": 8,
     "textKey": "tutorial.closeInventory",
-    "target": "inventory.closeButton",
+    "target": "main.inventoryButton",
     "unlockStageId": null,
     "unlockLevel": null,
     "equipSlot": null,

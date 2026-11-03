@@ -18,13 +18,13 @@ namespace PortfolioIdleRpg.Editor
     public static class InventoryPrefabs
     {
         /// <summary>그리드의 열 수.</summary>
-        private const int Columns = 4;
+        private const int Columns = 5;
 
-        /// <summary>칸의 너비와 높이.</summary>
-        private const float SlotSize = 210f;
+        /// <summary>칸(등급 칸)의 한 변.</summary>
+        private const float SlotSize = 176f;
 
-        /// <summary>칸 위쪽 아이콘의 한 변.</summary>
-        private const float IconSize = 110f;
+        /// <summary>칸 아래 이름 줄의 높이.</summary>
+        private const float NameHeight = 44f;
 
         /// <summary>InventoryCell.prefab을 만든 뒤 그것을 쓰는 InventoryScreen.prefab을 만든다.</summary>
         [MenuItem("Tools/UI/Build Inventory Prefabs")]
@@ -36,24 +36,36 @@ namespace PortfolioIdleRpg.Editor
             Debug.Log($"[UI] Built the inventory prefabs in {UiPrefabs.Folder}");
         }
 
-        /// <summary>그리드의 칸 프리팹을 만든다. 칸의 ViewRefs 항목은 아이콘, 이름, 수량이다.</summary>
+        /// <summary>
+        /// 그리드의 칸 프리팹을 만든다: 등급 색 칸 안의 아이콘과 오른쪽 아래 수량, 칸 아래의 이름. ViewRefs 항목은 아이콘,
+        /// 이름, 수량, 칸의 등급 색(tint)이다.
+        /// </summary>
         /// <returns>저장한 프리팹의 ViewRefs.</returns>
         private static ViewRefs BuildCell()
         {
-            var root = new GameObject("InventoryCell", typeof(RectTransform), typeof(Image), typeof(ViewRefs));
+            UiTheme theme = UiTheme.Load();
+            var root = new GameObject("InventoryCell", typeof(RectTransform), typeof(ViewRefs));
             try
             {
-                ((RectTransform)root.transform).sizeDelta = new Vector2(SlotSize, SlotSize);
-                root.GetComponent<Image>().color = UiTheme.Load().Surface;
-                // 위에 아이콘, 그 아래에 이름과 수량. 장비 그림이 생기기 전에는 같은 슬롯의 장비가 같은 아이콘이라 이름이 가른다.
-                IconView icon = UiIcons.Add(root.transform, "Icon");
-                UiPrefabs.Place(icon, new Vector2(0.5f, 1f), new Vector2(0f, -12f), new Vector2(IconSize, IconSize));
-                TMP_Text itemName = UiPrefabs.AddText(
-                    root.transform, "Name", 30f, new Vector2(0f, 0.22f), new Vector2(1f, 0.42f));
-                TMP_Text amount = UiPrefabs.AddText(root.transform, "Amount", 36f, Vector2.zero, new Vector2(1f, 0.22f));
-                amount.fontStyle = FontStyles.Bold;
+                ((RectTransform)root.transform).sizeDelta = new Vector2(SlotSize, SlotSize + NameHeight);
+                Image tile = UiParts.AddFrame(root.transform, "Tile", theme.SlotSprite, theme.Grades[0]);
+                UiPrefabs.Place(tile, new Vector2(0.5f, 1f), Vector2.zero, new Vector2(SlotSize, SlotSize));
+                TintView tint = UiParts.AddTint(tile, theme.Grades);
+                IconView icon = UiIcons.Add(tile.transform, "Icon");
+                UiPrefabs.Stretch(icon.GetComponent<RectTransform>(), new Vector2(26f, 26f), new Vector2(-26f, -26f));
+                TMP_Text amount = UiPrefabs.AddText(tile.transform, "Amount", 38f, Vector2.zero, Vector2.one);
+                amount.rectTransform.offsetMin = new Vector2(10f, 8f);
+                amount.rectTransform.offsetMax = new Vector2(-14f, 0f);
+                amount.alignment = TextAlignmentOptions.BottomRight;
+                // 장비 그림이 생기기 전에는 같은 슬롯의 장비가 같은 아이콘이라 이름이 가른다.
+                TMP_Text itemName = UiPrefabs.AddText(root.transform, "Name", TextStyle.InkSmall, Vector2.zero, new Vector2(1f, 0f));
+                itemName.rectTransform.offsetMax = new Vector2(0f, NameHeight);
+                itemName.fontSize = 28f;
+                itemName.enableAutoSizing = true;
+                itemName.fontSizeMin = 20f;
+                itemName.fontSizeMax = 28f;
                 UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(), ("icon", icon), ("nameText", itemName), ("amountText", amount));
+                    root.GetComponent<ViewRefs>(), ("icon", icon), ("nameText", itemName), ("amountText", amount), ("tint", tint));
 
                 GameObject saved = UiPrefabs.Save(root, "InventoryCell");
                 return saved.GetComponent<ViewRefs>();
@@ -65,15 +77,14 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// 화면을 덮는 어두운 바탕 위에 제목, 닫기 버튼, 탭 막대, 그리드를 담은 패널을 둔 팝업 프리팹을 만든다.
-        /// 바탕이 터치를 받아 메인 화면의 버튼이 눌리지 않는다.
+        /// 메인 화면 아래 탭 위의 큰 판(제목, 탭 막대, 그리드)을 만든다.
         /// </summary>
         /// <param name="cell">그리드의 칸 프리팹.</param>
         private static void BuildScreen(ViewRefs cell) =>
-            UiSpec.Popup("InventoryScreen", 960f, 1400f)
+            UiSpec.Sheet("InventoryScreen", ScreenPrefabs.SheetHeight("inventory"))
                 .Header()
                 .Tabs("tabs")
-                .Grid("items", cell, new Vector2(SlotSize, SlotSize), Columns)
+                .Grid("items", cell, new Vector2(SlotSize, SlotSize + NameHeight), Columns)
                 .Save();
     }
 }

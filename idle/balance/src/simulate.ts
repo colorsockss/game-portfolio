@@ -156,7 +156,7 @@ function purchases(state: PlayerState, data: GameData): Purchase[] {
   for (const row of [...data.statUpgrades.values()].sort((a, b) => a.id - b.id)) {
     const step = state.statUpgrades[row.id] ?? 0;
     if (step < row.maxStep) {
-      found.push({ itemId: data.constants.goldItemId, cost: statUpgradeCost(step), command: { type: Opcode.StatUpgrade, upgradeId: row.id } });
+      found.push({ itemId: data.constants.goldItemId, cost: statUpgradeCost(step), command: { type: Opcode.StatUpgrade, upgradeId: row.id, steps: 1 } });
     }
   }
   const { skills } = state;

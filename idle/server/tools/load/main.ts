@@ -277,7 +277,7 @@ function cycle(plan: Plan): () => Request {
         return [Opcode.BattleSettle, {}];
       case 1:
       case 4:
-        return [Opcode.StatUpgrade, { upgradeId: plan.upgrades[upgrade++ % plan.upgrades.length] }];
+        return [Opcode.StatUpgrade, { upgradeId: plan.upgrades[upgrade++ % plan.upgrades.length], steps: 1 }];
       case 2:
       case 5:
         return [Opcode.ItemEnhance, { equipmentId: plan.gear[enhance++ % plan.gear.length] }];

@@ -22,10 +22,12 @@ import {
   bindText,
   bindToast,
   bindToggle,
+  bindValue,
 } from "./bind.js";
 import type {
   ActiveTarget,
   ButtonTarget,
+  DockTarget,
   FadeTarget,
   FillTarget,
   IconTarget,
@@ -36,6 +38,7 @@ import type {
   SpotlightTarget,
   TabBarTarget,
   TextTarget,
+  TintTarget,
   ToastTarget,
   ToggleTarget,
 } from "./components.js";
@@ -82,6 +85,16 @@ export function text<VM>(get: (vm: VM) => ReadonlySignal<string> | string): Bind
 /** 아이콘 이름(Items.icon)의 그림을 아이콘 칸(IconView)에 보인다. 빈 이름이면 칸이 숨는다. */
 export function icon<VM>(get: (vm: VM) => string): Binder<VM> {
   return { kind: Kind.Object, bind: (_scope, target, vm) => (target as IconTarget).Show(get(vm)) };
+}
+
+/** 색 번호(장비 등급, 스킬 속성)의 색을 그래픽(TintView)에 입힌다. 색표는 빌더가 테마에서 넣는다. */
+export function tint<VM>(get: (vm: VM) => number): Binder<VM> {
+  return { kind: Kind.Object, bind: (_scope, target, vm) => (target as TintTarget).Show(get(vm)) };
+}
+
+/** 이름으로 고른 자리로 UI를 옮긴다(DockView). 이름마다의 높이는 빌더가 넣는다. */
+export function dock<VM>(get: (vm: VM) => ReadonlySignal<string>): Binder<VM> {
+  return { kind: Kind.Object, bind: (scope, target, vm) => bindValue(scope, get(vm), key => (target as DockTarget).Show(key)) };
 }
 
 /**

@@ -15,14 +15,19 @@
     "en": "Cancel"
   },
   {
-    "id": "common.close",
-    "ko": "닫기",
-    "en": "Close"
-  },
-  {
     "id": "common.all",
     "ko": "전체",
     "en": "All"
+  },
+  {
+    "id": "common.empty",
+    "ko": "비어 있음",
+    "en": "Empty"
+  },
+  {
+    "id": "common.level",
+    "ko": "Lv.{level}",
+    "en": "Lv.{level}"
   },
   {
     "id": "menu.inventory",
@@ -36,8 +41,8 @@
   },
   {
     "id": "menu.upgrade",
-    "ko": "강화",
-    "en": "Upgrade"
+    "ko": "성장",
+    "en": "Growth"
   },
   {
     "id": "menu.skills",
@@ -106,18 +111,13 @@
   },
   {
     "id": "login.error",
-    "ko": "서버와 주고받지 못해 연결을 끊었습니다. 다시 로그인해 주세요.",
-    "en": "Lost contact with the server. Please log in again."
+    "ko": "서버와 통신하다 문제가 생겨 연결이 끊겼습니다. 다시 로그인해 주세요.",
+    "en": "Something went wrong talking to the server. Please log in again."
   },
   {
     "id": "login.update",
-    "ko": "새 버전이 필요합니다.",
-    "en": "A new version is required."
-  },
-  {
-    "id": "main.title",
-    "ko": "{id}  Lv.{level}  {exp}",
-    "en": "{id}  Lv.{level}  {exp}"
+    "ko": "새 버전이 필요합니다. 앱을 업데이트해 주세요.",
+    "en": "A new version is required. Please update the app."
   },
   {
     "id": "main.maxLevel",
@@ -125,24 +125,9 @@
     "en": "MAX"
   },
   {
-    "id": "main.stageLabel",
-    "ko": "현재 스테이지",
-    "en": "Current Stage"
-  },
-  {
     "id": "main.boss",
     "ko": "보스",
     "en": "Boss"
-  },
-  {
-    "id": "main.bossChallenge",
-    "ko": "보스 도전",
-    "en": "Fight Boss"
-  },
-  {
-    "id": "main.nextStage",
-    "ko": "다음 스테이지",
-    "en": "Next Stage"
   },
   {
     "id": "main.logoutConfirm",
@@ -250,6 +235,26 @@
     "en": "Merges into {name}"
   },
   {
+    "id": "equipment.equipBest",
+    "ko": "일괄 장착",
+    "en": "Equip Best"
+  },
+  {
+    "id": "equipment.mergeAll",
+    "ko": "일괄 합성",
+    "en": "Merge All"
+  },
+  {
+    "id": "equipment.equip",
+    "ko": "장착",
+    "en": "Equip"
+  },
+  {
+    "id": "equipment.unequip",
+    "ko": "해제",
+    "en": "Unequip"
+  },
+  {
     "id": "skills.slot",
     "ko": "슬롯 {slot}",
     "en": "Slot {slot}"
@@ -335,6 +340,16 @@
     "en": "MAX"
   },
   {
+    "id": "upgrade.times",
+    "ko": "×{count}",
+    "en": "×{count}"
+  },
+  {
+    "id": "upgrade.holdHint",
+    "ko": "버튼을 길게 누르면 계속 올립니다",
+    "en": "Hold a button to keep leveling up"
+  },
+  {
     "id": "rebirth.count",
     "ko": "환생 {count}회",
     "en": "Rebirths: {count}"
@@ -366,8 +381,8 @@
   },
   {
     "id": "rebirth.resetUpgrades",
-    "ko": "골드 강화 {steps}단계 → 0",
-    "en": "Gold upgrades {steps} → 0"
+    "ko": "성장 {steps}단계 → 0",
+    "en": "Growth {steps} → 0"
   },
   {
     "id": "rebirth.resetGold",
@@ -386,8 +401,8 @@
   },
   {
     "id": "rebirth.confirm",
-    "ko": "환생할까요? 레벨, 스테이지, 골드 강화가 처음으로 돌아갑니다.",
-    "en": "Rebirth? Your level, stages and gold upgrades start over."
+    "ko": "환생할까요? 레벨, 스테이지, 성장이 처음으로 돌아갑니다.",
+    "en": "Rebirth? Your level, stages and growth start over."
   },
   {
     "id": "settings.bgm",
@@ -466,33 +481,33 @@
   },
   {
     "id": "toast.equipmentNotFound",
-    "ko": "없는 장비입니다.",
-    "en": "That gear doesn't exist."
+    "ko": "가지고 있지 않은 장비입니다.",
+    "en": "You don't have that gear."
   },
   {
     "id": "toast.equipmentMaxEnhance",
-    "ko": "더 강화할 수 없습니다.",
-    "en": "This gear is fully enhanced."
+    "ko": "이미 최대로 강화한 장비입니다.",
+    "en": "This gear is already fully enhanced."
   },
   {
     "id": "toast.equipmentNotMergeable",
-    "ko": "합성할 수 없는 장비입니다.",
-    "en": "This gear can't be merged."
+    "ko": "더 높은 등급으로 합성할 수 없는 장비입니다.",
+    "en": "This gear can't be merged any higher."
   },
   {
     "id": "toast.mergeMaterialsShort",
-    "ko": "같은 장비가 모자랍니다.",
-    "en": "Not enough of the same gear."
+    "ko": "합성할 같은 장비가 부족합니다.",
+    "en": "Not enough of the same gear to merge."
   },
   {
     "id": "toast.statUpgradeNotFound",
-    "ko": "없는 강화입니다.",
-    "en": "That upgrade doesn't exist."
+    "ko": "없는 성장 항목입니다.",
+    "en": "That growth stat doesn't exist."
   },
   {
     "id": "toast.statUpgradeMaxed",
-    "ko": "이미 최대 단계입니다.",
-    "en": "It's already at the max level."
+    "ko": "이미 최대 단계까지 성장했습니다.",
+    "en": "That stat is already at its max level."
   },
   {
     "id": "toast.notEnoughGold",
@@ -501,8 +516,8 @@
   },
   {
     "id": "toast.skillNotFound",
-    "ko": "쓸 수 없는 스킬입니다.",
-    "en": "You can't use that skill."
+    "ko": "영웅이 쓸 수 없는 스킬입니다.",
+    "en": "Your hero can't use that skill."
   },
   {
     "id": "toast.skillNotLearned",
@@ -521,13 +536,13 @@
   },
   {
     "id": "toast.skillCostShort",
-    "ko": "비용이 모자랍니다.",
-    "en": "You can't afford that."
+    "ko": "재화가 부족합니다.",
+    "en": "You don't have enough to pay for that."
   },
   {
     "id": "toast.rebirthNotReady",
-    "ko": "아직 환생할 수 없습니다.",
-    "en": "You can't rebirth yet."
+    "ko": "아직 환생할 수 있는 레벨이 아닙니다.",
+    "en": "You haven't reached the rebirth level yet."
   },
   {
     "id": "toast.cheatDisabled",
@@ -611,8 +626,8 @@
   },
   {
     "id": "tutorial.closeEquipment",
-    "ko": "닫기를 눌러 전투로 돌아가세요.",
-    "en": "Tap Close to return to battle."
+    "ko": "장비 탭을 한 번 더 눌러 닫으세요.",
+    "en": "Tap the Gear tab again to close it."
   },
   {
     "id": "tutorial.levelUp",
@@ -626,8 +641,8 @@
   },
   {
     "id": "tutorial.closeInventory",
-    "ko": "닫기를 눌러 돌아가세요.",
-    "en": "Tap Close to go back."
+    "ko": "가방 탭을 한 번 더 눌러 닫으세요.",
+    "en": "Tap the Bag tab again to close it."
   },
   {
     "id": "tutorial.farewell",

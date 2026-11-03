@@ -8,9 +8,9 @@ using Object = UnityEngine.Object;
 namespace PortfolioIdleRpg.Editor
 {
     /// <summary>
-    /// 골드 능력치 강화 화면의 프리팹(Remote/UI/UpgradeScreen, UpgradeCell)을 테마, 부품, 팝업 명세로 만든다. 메인 화면의
-    /// 강화 버튼은 ScreenPrefabs가 만든다. 다시 실행하면 같은 경로를 덮어쓰므로 GUID와 fileID가 그대로다. 배치 모드에서는
-    /// 다음을 쓴다.
+    /// 골드 능력치 강화 화면의 프리팹(Remote/UI/UpgradeScreen, UpgradeCell)을 테마, 부품, 판 명세로 만든다. 메인 화면 아래 탭
+    /// 위의 작은 판이고, 머리에 ×1·×10·×100 배수 탭이 있다. 메인 화면의 강화 탭은 ScreenPrefabs가 만든다. 다시 실행하면 같은
+    /// 경로를 덮어쓰므로 GUID와 fileID가 그대로다. 배치 모드에서는 다음을 쓴다.
     /// <code>
     /// Unity -batchmode -quit -projectPath client
     ///   -executeMethod PortfolioIdleRpg.Editor.UpgradePrefabs.Build
@@ -19,10 +19,19 @@ namespace PortfolioIdleRpg.Editor
     public static class UpgradePrefabs
     {
         /// <summary>목록 칸의 높이.</summary>
-        private const float CellHeight = 150f;
+        private const float CellHeight = 120f;
+
+        /// <summary>칸 왼쪽 아이콘 칸의 한 변.</summary>
+        private const float TileSize = 96f;
+
+        /// <summary>칸의 글자가 시작하는 자리(아이콘 칸 오른쪽).</summary>
+        private const float TextLeft = 130f;
 
         /// <summary>칸 오른쪽의 강화 버튼 너비.</summary>
-        private const float ButtonWidth = 240f;
+        private const float ButtonWidth = 250f;
+
+        /// <summary>머리의 배수 탭 막대 너비. 제목의 오른쪽에 들어간다.</summary>
+        private const float MultiplierWidth = 400f;
 
         /// <summary>UpgradeCell.prefab과 그것을 쓰는 UpgradeScreen.prefab을 만든다.</summary>
         [MenuItem("Tools/UI/Build Upgrade Prefabs")]
@@ -34,8 +43,8 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// 목록의 칸 프리팹을 만든다. 칸의 ViewRefs 항목은 이름(왼쪽 위), 단계(왼쪽 아래), 더한 양(가운데)과
-        /// 오른쪽의 강화 버튼, 그 글자(다음 비용)다.
+        /// 목록의 칸 프리팹(크림색 줄)을 만든다. ViewRefs 항목은 아이콘(왼쪽 칸), 이름과 단계(위 줄), 지금 더한 양과 강화 뒤의
+        /// 양(아래 줄), 오른쪽의 강화 버튼과 그 글자(고른 배수의 비용)다. 버튼은 길게 누르면 되풀이해 눌린다(RepeatButton).
         /// </summary>
         /// <returns>저장한 프리팹의 ViewRefs.</returns>
         private static ViewRefs BuildCell()
@@ -49,30 +58,46 @@ namespace PortfolioIdleRpg.Editor
                 root.GetComponent<LayoutElement>().preferredHeight = CellHeight;
 
                 var background = root.GetComponent<Image>();
-                background.color = theme.Surface;
+                UiParts.Paint(background, theme.CellSprite, theme.Cell);
+                background.raycastTarget = false;
                 var cell = root.GetComponent<ViewRefs>();
 
-                TMP_Text upgradeName = UiPrefabs.AddText(
-                    background.transform, "Name", 44f, new Vector2(0f, 0.5f), new Vector2(0.45f, 1f));
-                upgradeName.rectTransform.offsetMin = new Vector2(30f, 0f);
-                upgradeName.alignment = TextAlignmentOptions.BottomLeft;
-                upgradeName.fontStyle = FontStyles.Bold;
-                TMP_Text level = UiPrefabs.AddText(
-                    background.transform, "Level", 34f, Vector2.zero, new Vector2(0.45f, 0.5f));
-                level.rectTransform.offsetMin = new Vector2(30f, 0f);
-                level.alignment = TextAlignmentOptions.TopLeft;
-                level.color = theme.Muted;
-                TMP_Text bonus = UiPrefabs.AddText(
-                    background.transform, "Bonus", 40f, new Vector2(0.45f, 0f), new Vector2(0.7f, 1f));
-                bonus.alignment = TextAlignmentOptions.Center;
-                bonus.color = theme.Good;
+                Image tile = UiParts.AddFrame(background.transform, "Tile", theme.SlotSprite, theme.Secondary);
+                UiPrefabs.Place(tile, new Vector2(0f, 0.5f), new Vector2(14f, 0f), new Vector2(TileSize, TileSize));
+                IconView icon = UiIcons.Add(tile.transform, "Icon");
+                UiPrefabs.Stretch((RectTransform)icon.transform, new Vector2(14f, 18f), new Vector2(-14f, -10f));
 
-                Button upgrade = UiParts.AddButton(background.transform, "UpgradeButton", ButtonStyle.Primary);
-                UiPrefabs.Place(upgrade, new Vector2(1f, 0.5f), new Vector2(-20f, 0f), new Vector2(ButtonWidth, 110f));
+                TMP_Text upgradeName = UiPrefabs.AddText(
+                    background.transform, "Name", TextStyle.Ink, new Vector2(0f, 0.5f), new Vector2(0.3f, 1f));
+                upgradeName.rectTransform.offsetMin = new Vector2(TextLeft, 0f);
+                upgradeName.alignment = TextAlignmentOptions.BottomLeft;
+                upgradeName.fontSize = 40f;
+                TMP_Text level = UiPrefabs.AddText(
+                    background.transform, "Level", TextStyle.InkLabel, new Vector2(0.3f, 0.5f), new Vector2(0.62f, 1f));
+                level.alignment = TextAlignmentOptions.BottomLeft;
+                level.fontSize = 32f;
+                TMP_Text bonus = UiPrefabs.AddText(
+                    background.transform, "Bonus", TextStyle.InkLabel, Vector2.zero, new Vector2(0.3f, 0.5f));
+                bonus.rectTransform.offsetMin = new Vector2(TextLeft, 0f);
+                bonus.alignment = TextAlignmentOptions.TopLeft;
+                bonus.fontSize = 32f;
+                TMP_Text next = UiPrefabs.AddText(
+                    background.transform, "Next", TextStyle.Ink, new Vector2(0.3f, 0f), new Vector2(0.62f, 0.5f));
+                next.alignment = TextAlignmentOptions.TopLeft;
+                next.fontSize = 32f;
+                next.color = theme.GoodInk;
+
+                Button upgrade = UiParts.AddButton(background.transform, "UpgradeButton", ButtonStyle.Positive);
+                UiPrefabs.Place(upgrade, new Vector2(1f, 0.5f), new Vector2(-12f, 2f), new Vector2(ButtonWidth, 96f));
+                upgrade.gameObject.AddComponent<RepeatButton>();
+                Image coin = UiIcons.AddFixed(upgrade.transform, "Coin", UiIcons.Get("currency_gold"));
+                UiPrefabs.Place(coin, new Vector2(0f, 0.5f), new Vector2(14f, 5f), new Vector2(54f, 54f));
+                TMP_Text cost = UiPrefabs.LabelOf(upgrade);
+                cost.rectTransform.offsetMin = new Vector2(70f, 10f);
 
                 UiPrefabs.SetRefs(
-                    cell, ("nameText", upgradeName), ("levelText", level), ("bonusText", bonus),
-                    ("upgradeButton", upgrade), ("costText", UiPrefabs.LabelOf(upgrade)));
+                    cell, ("icon", icon), ("nameText", upgradeName), ("levelText", level), ("bonusText", bonus),
+                    ("nextText", next), ("upgradeButton", upgrade), ("costText", cost));
 
                 GameObject saved = UiPrefabs.Save(root, "UpgradeCell");
                 return saved.GetComponent<ViewRefs>();
@@ -83,12 +108,21 @@ namespace PortfolioIdleRpg.Editor
             }
         }
 
-        /// <summary>화면을 덮는 어두운 바탕 위에 제목, 닫기 버튼, 강화 목록을 담은 패널을 둔 팝업 프리팹을 만든다.</summary>
+        /// <summary>
+        /// 메인 화면 아래 탭 위의 작은 판을 만든다: 머리(제목, 배수 탭), 길게 누르기 안내, 강화 목록. 배수 탭은 항목
+        /// multipliers, 안내는 holdHintLabel이다.
+        /// </summary>
         /// <param name="cell">목록의 칸 프리팹.</param>
-        private static void BuildScreen(ViewRefs cell) =>
-            UiSpec.Popup("UpgradeScreen", 960f, 1100f)
-                .Header()
+        private static void BuildScreen(ViewRefs cell)
+        {
+            UiSpec spec = UiSpec.Sheet("UpgradeScreen", ScreenPrefabs.SheetHeight("upgrade")).Header();
+            TabBar multipliers = UiParts.AddTabs(spec.Panel, "Multipliers");
+            UiPrefabs.Place(
+                multipliers, Vector2.one, new Vector2(-spec.Theme.Padding, -16f), new Vector2(MultiplierWidth, 82f));
+            spec.Ref("multipliers", multipliers)
+                .Text("holdHintLabel", TextStyle.InkSmall, 36f, gap: 0f, alignment: TextAlignmentOptions.MidlineRight)
                 .List("items", cell)
                 .Save();
+        }
     }
 }
