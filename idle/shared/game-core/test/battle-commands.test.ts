@@ -5,39 +5,26 @@ import { loadGameData } from "@idle/data-schema";
 import { describe, expect, test } from "vitest";
 import { MAX_SETTLE_TICKS, TICK_MS, toTicks } from "../src/battle/constants.js";
 import { offlineReward } from "../src/battle/offline.js";
-import { freshBattle, playerBattle } from "../src/battle/settle.js";
+import { playerBattle } from "../src/battle/settle.js";
 import { initialCooldowns, type Battle, type BattleEvent } from "../src/battle/simulation.js";
 import { BattleMode } from "../src/battle/state.js";
 import { heroStats } from "../src/battle/stats.js";
 import type { Command } from "../src/command.js";
 import { applyCommand } from "../src/commands/index.js";
-import { NO_EQUIPMENT } from "../src/equipment.js";
-import { NO_REBIRTH } from "../src/rebirth.js";
-import { NO_STAT_UPGRADES } from "../src/stat-upgrade.js";
 import { equippableSkills, skillLevelCost, startSkills } from "../src/skills.js";
 import { grant } from "../src/items.js";
 import { levelUp } from "../src/level.js";
 import type { PlayerState } from "../src/state.js";
+import { accepted, testPlayer } from "../src/testing.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
 const EXP = data.constants.expItemId;
 const AT = 1_000_000;
 
-function player(stageId = 3001, level = 1): PlayerState {
-  const base = {
-    profile: { loginId: "hero", level },
-    items: {},
-    equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data),
-    stage: { currentId: stageId, clearedIds: [] },
-  };
-  return { ...base, battle: freshBattle(base, data, AT), tutorial: { stepId: null } };
-}
+const player = (stageId = 3001, level = 1) =>
+  testPlayer(data, AT, { profile: { loginId: "hero", level }, stage: { currentId: stageId, clearedIds: [] } });
 
-function apply(state: PlayerState, command: Command, now: number): PlayerState {
-  const result = applyCommand(state, command, { now, data });
-  if (!result.ok) throw new Error(result.error.message);
-  return result.state;
-}
+const apply = (state: PlayerState, command: Command, now: number) => accepted(applyCommand(state, command, { now, data }));
 
 const settleAt = (state: PlayerState, now: number) => apply(state, { type: Opcode.BattleSettle }, now);
 const challengeAt = (state: PlayerState, now: number) => apply(state, { type: Opcode.BossChallenge }, now);
@@ -212,10 +199,6 @@ describe("equipment", () => {
     applyCommand(state, { type: Opcode.ItemEquip, equipmentId } as Command, { now, data });
   const unequip = (state: PlayerState, equipmentId: unknown, now: number) =>
     applyCommand(state, { type: Opcode.ItemUnequip, equipmentId } as Command, { now, data });
-  const worn = (result: ReturnType<typeof applyCommand>) => {
-    if (!result.ok) throw new Error(result.error.message);
-    return result.state;
-  };
   // 낡은 검 둘(1, 2)과 가죽 갑옷(3)을 가지고 3002에서 웨이브 2로 사냥하고 있다.
   const base = player(3002);
   const state: PlayerState = {
@@ -227,7 +210,7 @@ describe("equipment", () => {
   test("wearing settles to now and the fight goes on with the new stats", () => {
     const now = fighting(state);
     const settled = settleAt(state, now);
-    const equipped = worn(equip(state, 1, now));
+    const equipped = accepted(equip(state, 1, now));
     expect(equipped.equipment).toEqual({ ...settled.equipment, equipped: { 1: 1 } });
     expect(heroStats(equipped, data).attack).toEqual(Big.add(heroStats(settled, data).attack, 5));
     // 싸우던 적과 웨이브, 영웅의 HP·재사용 대기·자리는 그대로다(낡은 검은 최대 HP를 바꾸지 않는다).
@@ -237,26 +220,26 @@ describe("equipment", () => {
   });
 
   test("wearing into a full slot swaps, and wearing what is worn only settles", () => {
-    const first = worn(equip(state, 1, AT + 100));
-    const swapped = worn(equip(first, 2, AT + 200));
+    const first = accepted(equip(state, 1, AT + 100));
+    const swapped = accepted(equip(first, 2, AT + 200));
     expect(swapped.equipment.equipped).toEqual({ 1: 2 });
-    expect(worn(equip(swapped, 3, AT + 300)).equipment.equipped).toEqual({ 1: 2, 2: 3 });
+    expect(accepted(equip(swapped, 3, AT + 300)).equipment.equipped).toEqual({ 1: 2, 2: 3 });
     // 이미 입었으면 정산만 한다.
-    expect(worn(equip(swapped, 2, AT + 300))).toEqual(settleAt(swapped, AT + 300));
+    expect(accepted(equip(swapped, 2, AT + 300))).toEqual(settleAt(swapped, AT + 300));
   });
 
   test("taking off goes on with the new stats, cutting HP to a lower maximum, and taking off what is not worn only settles", () => {
-    const wearing = worn(equip(worn(equip(state, 1, AT + 100)), 3, AT + 200));
+    const wearing = accepted(equip(accepted(equip(state, 1, AT + 100)), 3, AT + 200));
     // 가죽 갑옷을 벗으면 최대 HP가 준다.
-    const bare = worn(unequip(wearing, 3, AT + 300));
+    const bare = accepted(unequip(wearing, 3, AT + 300));
     expect(Big.lt(heroStats(bare, data).maxHp, heroStats(wearing, data).maxHp)).toBe(true);
     expect(bare.battle.hero.hp).toEqual(heroStats(bare, data).maxHp);
-    const off = worn(unequip(wearing, 1, AT + 300));
+    const off = accepted(unequip(wearing, 1, AT + 300));
     expect(off.equipment.equipped).toEqual({ 2: 3 });
     expect(off.battle.at).toBe(AT + 300);
     expect(off.battle.hero.hp).toEqual(heroStats(off, data).maxHp);
-    expect(worn(unequip(off, 1, AT + 300))).toBe(off);
-    expect(worn(unequip(off, 2, AT + 300))).toBe(off);
+    expect(accepted(unequip(off, 1, AT + 300))).toBe(off);
+    expect(accepted(unequip(off, 2, AT + 300))).toBe(off);
   });
 
   test("equipment that is not owned is refused, whatever arrives from the network", () => {
@@ -269,7 +252,7 @@ describe("equipment", () => {
   test("equipment the same settle has just paid can be worn", () => {
     // 3001의 클리어(약 13초)가 낡은 검을 준다.
     const fresh = player();
-    const equipped = worn(equip(fresh, 1, AT + 30_000));
+    const equipped = accepted(equip(fresh, 1, AT + 30_000));
     expect(equipped.equipment).toEqual({ nextId: 2, owned: { 1: { itemId: 101, enhance: 0 } }, equipped: { 1: 1 } });
     expect(equip(fresh, 1, AT + 100)).toMatchObject({ ok: false, error: { code: GameErrorCode.EquipmentNotFound } });
   });
@@ -282,17 +265,13 @@ describe("skills", () => {
   const equip = (state: PlayerState, slot: unknown, skillId: unknown, now: number) => send(state, { type: Opcode.SkillEquip, slot, skillId }, now);
   const unequip = (state: PlayerState, skillId: unknown, now: number) => send(state, { type: Opcode.SkillUnequip, skillId }, now);
   const levelUp = (state: PlayerState, skillId: unknown, now: number) => send(state, { type: Opcode.SkillLevelUp, skillId }, now);
-  const done = (result: ReturnType<typeof applyCommand>) => {
-    if (!result.ok) throw new Error(result.error.message);
-    return result.state;
-  };
   const refused = (code: GameErrorCode) => ({ ok: false, error: { code } });
   // 경험치처럼 double로 정확히 뺀 값.
   const left = (held: Big, cost: Big) => Big.from(Big.toNumber(held) - Big.toNumber(cost));
   // 새 계정처럼 1004, 1005, 1011을 배워 장착하고 골드 10000을 가지고 3002에서 웨이브 2로 사냥하고 있다.
   const base = player(3002);
   const state: PlayerState = { ...base, items: { [GOLD]: Big.from(10_000) }, battle: { ...base.battle, waves: 2, autoBoss: false } };
-  const learned = (skillId: number) => done(learn(state, skillId, AT + 100));
+  const learned = (skillId: number) => accepted(learn(state, skillId, AT + 100));
 
   test("a new account has learned and equipped the equippable skills in Heroes.skillIds order up to the slot count, at level 1", () => {
     expect(startSkills(data)).toEqual({ equipped: { 0: 1004, 1: 1005, 2: 1011 }, levels: { 1004: 1, 1005: 1, 1011: 1 } });
@@ -302,12 +281,12 @@ describe("skills", () => {
   test("learning pays Skills.learnCost from the settled gold, does not equip and keeps the settled battle", () => {
     const now = AT + 30_000;
     const settled = settleAt(state, now);
-    const roar = done(learn(state, 1010, now));
+    const roar = accepted(learn(state, 1010, now));
     expect(roar.skills).toEqual({ ...settled.skills, levels: { ...settled.skills.levels, 1010: 1 } });
     expect(roar.items[GOLD]).toEqual(left(settled.items[GOLD], data.skills.get(1010)!.learnCost!));
     expect(roar.battle).toEqual(settled.battle);
     // 이미 배웠으면 확정만 하고 다시 내지 않는다.
-    expect(done(learn(roar, 1010, now))).toEqual(roar);
+    expect(accepted(learn(roar, 1010, now))).toEqual(roar);
     const short = { ...state, items: { [GOLD]: Big.from(10) } };
     expect(learn(short, 1010, AT + 100)).toMatchObject(refused(GameErrorCode.SkillCostShort));
   });
@@ -315,14 +294,14 @@ describe("skills", () => {
   test("only learned skills are equipped or leveled up", () => {
     expect(equip(state, 0, 1010, AT + 100)).toMatchObject(refused(GameErrorCode.SkillNotLearned));
     expect(levelUp(state, 1010, AT + 100)).toMatchObject(refused(GameErrorCode.SkillNotLearned));
-    expect(done(equip(learned(1010), 0, 1010, AT + 200)).skills.equipped).toEqual({ 0: 1010, 1: 1005, 2: 1011 });
+    expect(accepted(equip(learned(1010), 0, 1010, AT + 200)).skills.equipped).toEqual({ 0: 1010, 1: 1005, 2: 1011 });
   });
 
   test("equipping settles to now and the fight goes on, keeping the cooldowns of the skills still used and starting a new one from the top", () => {
     const roar = learned(1010);
     const now = fighting(roar);
     const settled = settleAt(roar, now);
-    const equipped = done(equip(roar, 1, 1010, now));
+    const equipped = accepted(equip(roar, 1, 1010, now));
     expect(equipped.skills).toEqual({ ...settled.skills, equipped: { 0: 1004, 1: 1010, 2: 1011 } });
     expect(heroStats(equipped, data).skills.map(skill => skill.id)).toEqual([1001, 1004, 1010, 1011]);
     // 공격 목록이 [1001, 1004, 1005, 1011]에서 [1001, 1004, 1010, 1011]로 바뀐다.
@@ -334,23 +313,23 @@ describe("skills", () => {
   });
 
   test("equipping a skill from another slot swaps the two, and equipping what is there only settles", () => {
-    expect(done(equip(state, 0, 1011, AT + 100)).skills.equipped).toEqual({ 0: 1011, 1: 1005, 2: 1004 });
+    expect(accepted(equip(state, 0, 1011, AT + 100)).skills.equipped).toEqual({ 0: 1011, 1: 1005, 2: 1004 });
     const emptied = { ...state, skills: { ...state.skills, equipped: { 0: 1004, 2: 1011 } } };
-    expect(done(equip(emptied, 1, 1011, AT + 100)).skills.equipped).toEqual({ 0: 1004, 1: 1011 });
-    expect(done(equip(state, 2, 1011, AT + 100))).toEqual(settleAt(state, AT + 100));
+    expect(accepted(equip(emptied, 1, 1011, AT + 100)).skills.equipped).toEqual({ 0: 1004, 1: 1011 });
+    expect(accepted(equip(state, 2, 1011, AT + 100))).toEqual(settleAt(state, AT + 100));
   });
 
   test("unequipping empties its slot and the fight goes on without it, and unequipping what is not equipped only settles", () => {
     const now = AT + 30_000;
     const settled = settleAt(state, now);
-    const off = done(unequip(state, 1005, now));
+    const off = accepted(unequip(state, 1005, now));
     expect(off.skills).toEqual({ ...state.skills, equipped: { 0: 1004, 2: 1011 } });
     expect(heroStats(off, data).skills.map(skill => skill.id)).toEqual([1001, 1004, 1011]);
     const [basic, rapid, , wolf] = settled.battle.hero.cooldowns;
     expect(off.battle).toEqual({ ...settled.battle, hero: { ...settled.battle.hero, cooldowns: [basic, rapid, wolf] } });
-    expect(done(unequip(off, 1005, now))).toEqual(off);
+    expect(accepted(unequip(off, 1005, now))).toEqual(off);
     // 빈 슬롯에는 다시 장착할 수 있고, 배운 것과 레벨은 그대로다.
-    expect(done(equip(off, 1, 1005, now)).skills).toEqual(state.skills);
+    expect(accepted(equip(off, 1, 1005, now)).skills).toEqual(state.skills);
   });
 
   test("a slot or skill that cannot be used is refused, whatever arrives from the network", () => {
@@ -368,18 +347,18 @@ describe("skills", () => {
   test("leveling up an equipped skill pays skillLevelCost from the settled gold and the fight goes on", () => {
     const now = AT + 30_000;
     const settled = settleAt(state, now);
-    const leveled = done(levelUp(state, 1005, now));
+    const leveled = accepted(levelUp(state, 1005, now));
     expect(leveled.skills.levels).toEqual({ 1004: 1, 1005: 2, 1011: 1 });
     expect(leveled.items[GOLD]).toEqual(left(settled.items[GOLD], skillLevelCost(1)));
     expect(leveled.battle).toEqual(settled.battle);
-    const again = done(levelUp(leveled, 1005, now));
+    const again = accepted(levelUp(leveled, 1005, now));
     expect(again.skills.levels[1005]).toBe(3);
     expect(again.items[GOLD]).toEqual(left(leveled.items[GOLD], skillLevelCost(2)));
   });
 
   test("leveling up a learned skill that is not equipped keeps the settled battle", () => {
     const roar = learned(1010);
-    const leveled = done(levelUp(roar, 1010, AT + 30_000));
+    const leveled = accepted(levelUp(roar, 1010, AT + 30_000));
     const settled = settleAt(roar, AT + 30_000);
     expect(leveled.skills).toEqual({ ...settled.skills, levels: { ...settled.skills.levels, 1010: 2 } });
     expect(leveled.battle).toEqual(settled.battle);
@@ -391,7 +370,7 @@ describe("skills", () => {
     expect(levelUp(short, 1004, AT + 1000)).toMatchObject(refused(GameErrorCode.SkillCostShort));
     const max = data.skills.get(1004)!.maxLevel;
     const top = { ...state, items: { [GOLD]: Big.from(1e12) }, skills: { ...state.skills, levels: { ...state.skills.levels, 1004: max - 1 } } };
-    const topped = done(levelUp(top, 1004, AT + 100));
+    const topped = accepted(levelUp(top, 1004, AT + 100));
     expect(topped.skills.levels[1004]).toBe(max);
     expect(levelUp(topped, 1004, AT + 100)).toMatchObject(refused(GameErrorCode.SkillMaxLevel));
   });
@@ -400,7 +379,7 @@ describe("skills", () => {
     // 3001의 클리어 보상이 골드 30을 주므로, 비용에서 20 모자란 계정은 클리어 뒤에 올릴 수 있다.
     const fresh = { ...player(), items: { [GOLD]: Big.sub(skillLevelCost(1), 20) } };
     expect(levelUp(fresh, 1004, AT + 100)).toMatchObject(refused(GameErrorCode.SkillCostShort));
-    expect(done(levelUp(fresh, 1004, AT + 30_000)).skills.levels[1004]).toBe(2);
+    expect(accepted(levelUp(fresh, 1004, AT + 30_000)).skills.levels[1004]).toBe(2);
   });
 
   test("every skill the hero can equip has a learning cost and the item that pays it", () => {

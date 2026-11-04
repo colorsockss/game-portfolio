@@ -1,10 +1,8 @@
 import { readFileSync } from "node:fs";
 import { GameErrorCode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
-import {
-  afterStep, freshBattle, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, startSkills, tutorialStep, waitsForTap,
-  type BattleSnapshot, type GameError, type PlayerState,
-} from "@idle/game-core";
+import { afterStep, tutorialStep, waitsForTap, type BattleSnapshot, type GameError, type PlayerState } from "@idle/game-core";
+import { testPlayer } from "@idle/game-core/testing";
 import { signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
 import type { Commands } from "../src/application/progress/progress.js";
@@ -33,8 +31,8 @@ const main = screen(prefabs.main);
 const flush = () => new Promise(resolve => setTimeout(resolve, 0));
 
 function setUp(stepId: number | null, changes: Partial<PlayerState> = {}) {
-  const base = { profile: { loginId: "hero", level: 1 }, items: {}, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data), stage: { currentId: 3001, clearedIds: [] } };
-  const state = createAppState({ flow: "main", player: { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId }, ...changes } });
+  // `changes`는 전투를 시작한 뒤에 덮는다.
+  const state = createAppState({ flow: "main", player: { ...testPlayer(data, 0, { tutorial: { stepId } }), ...changes } });
   const snapshot = signal<BattleSnapshot | undefined>(undefined);
   const shown = signal<readonly ShownView[]>([main]);
   const clear = signal(true);

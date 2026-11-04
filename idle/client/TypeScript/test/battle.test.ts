@@ -3,9 +3,9 @@ import { Big } from "@idle/big-number";
 import { Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
 import {
-  applyCommand, BattleMode, freshBattle, HOUR, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, offlineReward, playerBattle, settle, startSkills,
-  type Battle, type BattleEvent, type Command, type GameError, type PlayerState,
+  applyCommand, BattleMode, HOUR, offlineReward, playerBattle, settle, type Battle, type BattleEvent, type Command, type GameError, type PlayerState,
 } from "@idle/game-core";
+import { accepted, testPlayer } from "@idle/game-core/testing";
 import { expect, test, vi } from "vitest";
 import { createBattle, type ShownEvent } from "../src/application/battle/battle.js";
 import { createEventBus, type AppEventMap, type OfflineRewarded } from "../src/application/events.js";
@@ -28,15 +28,8 @@ vi.mock("@idle/game-core", async importOriginal => {
 const data = await loadGameData(table => readFileSync(new URL(`../../../shared/data-schema/data/${table}.bytes`, import.meta.url)));
 const AT = 1_000_000;
 
-function player(stageId = 3001, at = AT, level = 1): PlayerState {
-  const base = {
-    profile: { loginId: "hero", level },
-    items: {},
-    equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data),
-    stage: { currentId: stageId, clearedIds: [] },
-  };
-  return { ...base, battle: freshBattle(base, data, at), tutorial: { stepId: null } };
-}
+const player = (stageId = 3001, at = AT, level = 1) =>
+  testPlayer(data, at, { profile: { loginId: "hero", level }, stage: { currentId: stageId, clearedIds: [] } });
 
 // 3004에서 다음에 나올 것이 보스인 저장 데이터. 1레벨 영웅은 틱 61에 쓰러져 지고, 20레벨은 틱 102에 이긴다.
 function bossFight(level = 1): PlayerState {
@@ -301,9 +294,7 @@ test("an upgrade during a fight goes on with the same enemies where they were, w
   t.frames(AT, time);
   while (t.battle.snapshot.value!.enemies.length === 0) t.frames((time += 100), time);
   const before = t.battle.snapshot.value!.enemies;
-  const upgraded = applyCommand(t.player(), { type: Opcode.StatUpgrade, upgradeId: 7001, steps: 1 }, { now: time, data });
-  if (!upgraded.ok) throw new Error(upgraded.error.message);
-  t.setPlayer(upgraded.state);
+  t.setPlayer(accepted(applyCommand(t.player(), { type: Opcode.StatUpgrade, upgradeId: 7001, steps: 1 }, { now: time, data })));
   // 능력치가 바뀌어 길이 달라지므로 화면은 reset으로 맞추지만, 장면은 그대로다.
   expect(t.frames(time, time)).toEqual([reset(0)]);
   expect(t.battle.snapshot.value!.enemies).toEqual(before);

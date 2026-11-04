@@ -3,15 +3,12 @@ import { Big } from "@idle/big-number";
 import { GameErrorCode, Opcode } from "@idle/codes";
 import { ItemKind, Stat, loadGameData } from "@idle/data-schema";
 import { describe, expect, test } from "vitest";
-import { freshBattle } from "../src/battle/settle.js";
 import { heroStats } from "../src/battle/stats.js";
 import type { Command } from "../src/command.js";
 import { applyCommand } from "../src/commands/index.js";
 import { enhanceCost, equipmentStat, mergeMaterials, NO_EQUIPMENT, type EquipmentState } from "../src/equipment.js";
-import { NO_REBIRTH } from "../src/rebirth.js";
-import { startSkills } from "../src/skills.js";
-import { NO_STAT_UPGRADES } from "../src/stat-upgrade.js";
 import type { PlayerState } from "../src/state.js";
+import { accepted, testPlayer } from "../src/testing.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
 const GOLD = data.constants.goldItemId;
@@ -22,21 +19,11 @@ const ARMOR = 102;
 const row = (id: number) => data.items.get(id)!;
 
 // 3002에서 사냥하는 영웅. 처치와 클리어가 아직 없는 시각(AT + 100)에 커맨드를 보내면 정산이 아무것도 바꾸지 않는다.
-function player(equipment: EquipmentState, gold = 0): PlayerState {
-  const base = {
-    profile: { loginId: "hero", level: 1 }, items: { [GOLD]: Big.from(gold) }, equipment, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data),
-    stage: { currentId: 3002, clearedIds: [3001] },
-  };
-  return { ...base, battle: freshBattle(base, data, AT), tutorial: { stepId: null } };
-}
+const player = (equipment: EquipmentState, gold = 0) =>
+  testPlayer(data, AT, { items: { [GOLD]: Big.from(gold) }, equipment, stage: { currentId: 3002, clearedIds: [3001] } });
 
 const send = (state: PlayerState, type: Opcode.ItemEnhance | Opcode.ItemMerge, equipmentId: unknown, now = AT + 99) =>
   applyCommand(state, { type, equipmentId } as Command, { now, data });
-
-function applied(result: ReturnType<typeof applyCommand>): PlayerState {
-  if (!result.ok) throw new Error(result.error.message);
-  return result.state;
-}
 
 test("the enhance cost grows by enhanceCostGrowth every step from enhanceBaseCost", () => {
   expect([0, 1, 2, 5, 9, 19].map(step => Big.toNumber(enhanceCost(step)))).toEqual([500, 750, 1125, 3796, 19221, 1108418]);
@@ -74,7 +61,7 @@ describe("enhancing", () => {
 
   test("pays the step's gold and raises the step, leaving the battle alone for what is not worn", () => {
     const state = player({ nextId: 3, owned, equipped: {} }, 600);
-    const after = applied(send(state, Opcode.ItemEnhance, 1));
+    const after = accepted(send(state, Opcode.ItemEnhance, 1));
     expect(after.items[GOLD]).toEqual(Big.from(100));
     expect(after.equipment.owned).toEqual({ ...owned, 1: { itemId: SWORD, enhance: 1 } });
     expect(after.battle).toBe(state.battle);
@@ -82,7 +69,7 @@ describe("enhancing", () => {
 
   test("goes on with the new stats from now when the piece is worn", () => {
     const state = player({ nextId: 3, owned, equipped: { 1: 1 } }, 600);
-    const after = applied(send(state, Opcode.ItemEnhance, 1, AT + 200));
+    const after = accepted(send(state, Opcode.ItemEnhance, 1, AT + 200));
     expect(after.battle.at).toBe(AT + 200);
     expect(after.battle.hero.hp).toEqual(heroStats(after, data).maxHp);
     expect(heroStats(after, data).attack).toEqual(Big.add(heroStats(state, data).attack, 1));
@@ -101,7 +88,7 @@ describe("enhancing", () => {
     // 3002의 첫 처치(몇 초 안)가 골드를 준다. 정산 전 보유량은 0이다.
     const state = player({ nextId: 2, owned: { 1: { itemId: SWORD, enhance: 0 } }, equipped: {} }, 499);
     expect(send(state, Opcode.ItemEnhance, 1)).toMatchObject({ ok: false, error: { code: GameErrorCode.NotEnoughGold } });
-    expect(applied(send(state, Opcode.ItemEnhance, 1, AT + 60_000)).equipment.owned[1].enhance).toBe(1);
+    expect(accepted(send(state, Opcode.ItemEnhance, 1, AT + 60_000)).equipment.owned[1].enhance).toBe(1);
   });
 });
 
@@ -128,7 +115,7 @@ describe("merging", () => {
 
   test("makes one piece of the next grade at +0 under a new id, keeping what is worn", () => {
     const state = player(equipment);
-    const after = applied(send(state, Opcode.ItemMerge, 2));
+    const after = accepted(send(state, Opcode.ItemMerge, 2));
     expect(after.equipment).toEqual({
       nextId: 7,
       owned: { 1: { itemId: SWORD, enhance: 2 }, 5: { itemId: ARMOR, enhance: 0 }, 6: { itemId: SHARP_SWORD, enhance: 0 } },
@@ -139,7 +126,7 @@ describe("merging", () => {
 
   test("wears the result in the slot of a worn material and goes on with it from now", () => {
     const state = player(equipment);
-    const after = applied(send(state, Opcode.ItemMerge, 1, AT + 200));
+    const after = accepted(send(state, Opcode.ItemMerge, 1, AT + 200));
     expect(after.equipment.equipped).toEqual({ 1: 6, 2: 5 });
     expect(after.equipment.owned[6]).toEqual({ itemId: SHARP_SWORD, enhance: 0 });
     expect(Object.keys(after.equipment.owned)).toEqual(["2", "5", "6"]);

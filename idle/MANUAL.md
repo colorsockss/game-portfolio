@@ -990,7 +990,7 @@ C#이 JS를 부르는 곳은 PuerTS의 Tick과 화면이 등록한 UnityEvent �
 
 ## 테스트
 
-테스트는 워크스페이스마다 `test/`에 vitest로 두고(data-tool은 `node --test`), `npm test`가 생성 파일과 import 경계를 검사한 뒤 모두 돌립니다. 한쪽만 보는 테스트는 그 워크스페이스에, 클라이언트와 서버를 붙이는 테스트는 `integration/`에 둡니다. 화면 연출, 프리팹, C#은 Unity에서만 확인합니다.
+테스트는 워크스페이스마다 `test/`에 vitest로 두고(data-tool은 `node --test`), `npm test`가 생성 파일과 import 경계를 검사한 뒤 모두 돌립니다. 한쪽만 보는 테스트는 그 워크스페이스에, 클라이언트와 서버를 붙이는 테스트는 `integration/`에 둡니다. 화면 연출, 프리팹, C#은 Unity에서만 확인합니다. 테스트의 계정은 `@idle/game-core/testing`의 `testPlayer(data, at, changes)`(튜토리얼을 마치고 첫 스테이지에서 사냥하는 1레벨 영웅에 바꿀 슬라이스만 덮고, 전투는 그 슬라이스로 `at`에 새로 시작)로 만들고, 받아들여져야 할 커맨드 결과는 `accepted(applyCommand(…))`로 꺼냅니다. 그래서 `PlayerState`에 슬라이스를 더하면 테스트 계정은 `game-core/src/testing.ts` 한 곳만 고칩니다. 저장 마이그레이션의 기대값과 와이어 스냅숏처럼 모양 자체를 보는 테스트는 그대로 적습니다.
 
 | 어디서 | 무엇을 |
 | --- | --- |

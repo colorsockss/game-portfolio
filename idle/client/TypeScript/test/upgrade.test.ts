@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { Big } from "@idle/big-number";
 import { loadGameData } from "@idle/data-schema";
-import { freshBattle, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, startSkills, type ItemAmounts, type PlayerState } from "@idle/game-core";
+import type { ItemAmounts } from "@idle/game-core";
+import { testPlayer } from "@idle/game-core/testing";
 import { signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
 import type { Commands } from "../src/application/progress/progress.js";
@@ -14,15 +15,7 @@ const { t } = texts(data);
 const GOLD = data.constants.goldItemId;
 
 describe("upgrade screen", () => {
-  const base = {
-    profile: { loginId: "hero", level: 1 },
-    items: {},
-    equipment: NO_EQUIPMENT,
-    statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH,
-    skills: startSkills(data),
-    stage: { currentId: 3001, clearedIds: [] },
-  };
-  const player: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
+  const player = testPlayer(data, 0);
 
   function setUp(gold = 0) {
     const state = createAppState({ flow: "main", player });

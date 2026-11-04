@@ -2,27 +2,16 @@ import { readFileSync } from "node:fs";
 import { loadGameData } from "@idle/data-schema";
 import { Opcode } from "@idle/codes";
 import { expect, test } from "vitest";
-import { freshBattle, playerBattle } from "../src/battle/settle.js";
+import { playerBattle } from "../src/battle/settle.js";
 import { applyCommand } from "../src/commands/index.js";
-import { NO_EQUIPMENT } from "../src/equipment.js";
-import { NO_REBIRTH } from "../src/rebirth.js";
 import { playerFingerprint } from "../src/snapshot.js";
-import { startSkills } from "../src/skills.js";
-import { NO_STAT_UPGRADES } from "../src/stat-upgrade.js";
 import type { PlayerState } from "../src/state.js";
+import { accepted, testPlayer } from "../src/testing.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
 const AT = 1_000_000;
 
-function player(): PlayerState {
-  const base = {
-    profile: { loginId: "hero", level: 3 },
-    items: {},
-    equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data),
-    stage: { currentId: 3001, clearedIds: [] },
-  };
-  return { ...base, battle: freshBattle(base, data, AT), tutorial: { stepId: null } };
-}
+const player = () => testPlayer(data, AT, { profile: { loginId: "hero", level: 3 } });
 
 // 키를 거꾸로 다시 만든 깊은 사본. 저장 데이터를 풀어 만든 객체처럼 값은 같고 키 순서가 다르다.
 function reversed(value: unknown): unknown {
@@ -61,10 +50,9 @@ test("any changed value deep in the state changes the fingerprint", () => {
 test("a command applied to the same state at the same time gives the same fingerprint", () => {
   const state = { ...player(), items: { 1: { m: 1, e: 6 } } };
   const now = AT + 31_234;
-  const once = applyCommand(state, { type: Opcode.StatUpgrade, upgradeId: 7002, steps: 1 }, { now, data });
-  const again = applyCommand(reversed(state) as PlayerState, { type: Opcode.StatUpgrade, upgradeId: 7002, steps: 1 }, { now, data });
-  if (!once.ok || !again.ok) throw new Error("The upgrade was refused.");
-  expect(playerFingerprint(again.state)).toBe(playerFingerprint(once.state));
+  const once = accepted(applyCommand(state, { type: Opcode.StatUpgrade, upgradeId: 7002, steps: 1 }, { now, data }));
+  const again = accepted(applyCommand(reversed(state) as PlayerState, { type: Opcode.StatUpgrade, upgradeId: 7002, steps: 1 }, { now, data }));
+  expect(playerFingerprint(again)).toBe(playerFingerprint(once));
 });
 
 test("the fingerprint of a fixed state stays fixed, so client and server agree across builds", () => {

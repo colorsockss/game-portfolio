@@ -3,7 +3,7 @@ import { Big } from "@idle/big-number";
 import { GameErrorCode, Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
 import { describe, expect, test } from "vitest";
-import { freshBattle, playerBattle, settle } from "../src/battle/settle.js";
+import { playerBattle, settle } from "../src/battle/settle.js";
 import { initialCooldowns } from "../src/battle/simulation.js";
 import { BattleMode, HERO_ID } from "../src/battle/state.js";
 import { heroStats } from "../src/battle/stats.js";
@@ -11,6 +11,7 @@ import { applyCommand } from "../src/commands/index.js";
 import { NO_REBIRTH, rebirthPoints, rebirthRate, type RebirthState } from "../src/rebirth.js";
 import { startSkills } from "../src/skills.js";
 import type { PlayerState } from "../src/state.js";
+import { accepted, testPlayer } from "../src/testing.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
 const GOLD = data.constants.goldItemId;
@@ -20,7 +21,7 @@ const SWORD = { itemId: 104, enhance: 7 };
 
 // 마지막 스테이지까지 클리어하고 오우거 대검 +7을 입고 골드 강화와 스킬 레벨을 올린 영웅. 튜토리얼은 마쳤다.
 function player(level: number, rebirth: RebirthState = NO_REBIRTH, stageId = 3006): PlayerState {
-  const base = {
+  const state = testPlayer(data, AT, {
     profile: { loginId: "hero", level },
     items: { [GOLD]: Big.from(5000), [EXP]: Big.from(1234) },
     equipment: { nextId: 2, owned: { 1: SWORD }, equipped: { 1: 1 } },
@@ -28,16 +29,11 @@ function player(level: number, rebirth: RebirthState = NO_REBIRTH, stageId = 300
     skills: { ...startSkills(data), levels: { 1004: 5, 1005: 3, 1011: 1 } },
     rebirth,
     stage: { currentId: stageId, clearedIds: [3001, 3002, 3003, 3004, 3005] },
-  };
-  return { ...base, battle: { ...freshBattle(base, data, AT), waves: 2, nextId: 40 }, tutorial: { stepId: null } };
+  });
+  return { ...state, battle: { ...state.battle, waves: 2, nextId: 40 } };
 }
 
 const rebirth = (state: PlayerState, now = AT) => applyCommand(state, { type: Opcode.Rebirth }, { now, data });
-
-function reborn(result: ReturnType<typeof applyCommand>): PlayerState {
-  if (!result.ok) throw new Error(result.error.message);
-  return result.state;
-}
 
 describe("rebirth formulas", () => {
   test("points are (level − 30 + 1)² from level 30 and none below", () => {
@@ -54,7 +50,7 @@ describe("rebirth formulas", () => {
 describe("Rebirth", () => {
   test("starts the level, stages, gold upgrades, gold and EXP over, keeps skills, gear and the tutorial, and adds the points", () => {
     const state = player(47, { count: 1, points: 441 });
-    const after = reborn(rebirth(state));
+    const after = accepted(rebirth(state));
     expect(after.profile).toEqual({ loginId: "hero", level: 1 });
     expect(after.stage).toEqual({ currentId: 3001, clearedIds: [] });
     expect(after.statUpgrades).toEqual({});
@@ -74,7 +70,7 @@ describe("Rebirth", () => {
 
   test("other items stay; only gold and EXP start over", () => {
     const state = { ...player(40), items: { [GOLD]: Big.from(10), [EXP]: Big.from(20), 999: Big.from(3) } };
-    expect(reborn(rebirth(state)).items).toEqual({ 999: Big.from(3) });
+    expect(accepted(rebirth(state)).items).toEqual({ 999: Big.from(3) });
   });
 
   test("refuses below the rebirth level", () => {
@@ -89,13 +85,13 @@ describe("Rebirth", () => {
     expect(rebirth(state, AT)).toMatchObject({ ok: false, error: { code: GameErrorCode.RebirthNotReady } });
     const now = AT + 60_000;
     expect(settle(state, data, now).profile.level).toBe(30);
-    expect(reborn(rebirth(state, now)).rebirth).toEqual({ count: 1, points: 1 });
+    expect(accepted(rebirth(state, now)).rebirth).toEqual({ count: 1, points: 1 });
   });
 
   test("a second rebirth needs the level again and adds its own points", () => {
-    const once = reborn(rebirth(player(50)));
+    const once = accepted(rebirth(player(50)));
     expect(rebirth(once, AT + 1000)).toMatchObject({ ok: false, error: { code: GameErrorCode.RebirthNotReady } });
-    const again = reborn(rebirth({ ...once, profile: { ...once.profile, level: 40 } }, AT + 1000));
+    const again = accepted(rebirth({ ...once, profile: { ...once.profile, level: 40 } }, AT + 1000));
     expect(again.rebirth).toEqual({ count: 2, points: 441 + 121 });
   });
 });

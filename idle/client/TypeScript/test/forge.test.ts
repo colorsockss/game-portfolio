@@ -2,9 +2,8 @@ import { readFileSync } from "node:fs";
 import { Big } from "@idle/big-number";
 import { Opcode } from "@idle/codes";
 import { EquipSlot, loadGameData } from "@idle/data-schema";
-import {
-  applyCommand, freshBattle, NO_REBIRTH, NO_STAT_UPGRADES, startSkills, type BattleSnapshot, type EquipmentState, type ItemAmounts, type PlayerState,
-} from "@idle/game-core";
+import { applyCommand, type BattleSnapshot, type EquipmentState, type ItemAmounts, type PlayerState } from "@idle/game-core";
+import { testPlayer } from "@idle/game-core/testing";
 import { signal } from "@preact/signals-core";
 import { expect, test, vi } from "vitest";
 import type { Commands } from "../src/application/progress/progress.js";
@@ -17,12 +16,9 @@ const { t } = texts(data);
 const GOLD = data.constants.goldItemId;
 
 function setUp(equipment: EquipmentState, gold = 0) {
-  const base = {
-    profile: { loginId: "hero", level: 1 }, items: { [GOLD]: Big.from(gold) }, equipment, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data),
-    stage: { currentId: 3001, clearedIds: [] },
-  };
-  const state = createAppState({ flow: "main", player: { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } } });
-  const items = signal<ItemAmounts>(base.items);
+  const player = testPlayer(data, 0, { items: { [GOLD]: Big.from(gold) }, equipment });
+  const state = createAppState({ flow: "main", player });
+  const items = signal<ItemAmounts>(player.items);
   const sent: string[] = [];
   // progress처럼 규칙을 바로 화면의 저장 데이터에 적용하고, 거절은 오류로 이행한다.
   const send = (type: Opcode) => async ({ equipmentId }: { equipmentId: number }) => {

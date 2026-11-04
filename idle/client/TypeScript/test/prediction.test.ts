@@ -1,22 +1,15 @@
 import { readFileSync } from "node:fs";
 import { Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
-import {
-  applyCommand, freshBattle, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, playerFingerprint, type PlayerState, startSkills,
-} from "@idle/game-core";
+import { applyCommand, playerFingerprint } from "@idle/game-core";
+import { accepted, testPlayer } from "@idle/game-core/testing";
 import { expect, test, vi } from "vitest";
 import { confirm, predict } from "../src/domain/progress/prediction.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../../shared/data-schema/data/${table}.bytes`, import.meta.url)));
 
 // 3002와 3003으로 옮길 수 있게 둘의 선행 스테이지를 클리어해 둔다.
-const base = {
-  profile: { loginId: "hero", level: 1 },
-  items: {},
-  equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data),
-  stage: { currentId: 3001, clearedIds: [3001, 3002] },
-};
-const save: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
+const save = testPlayer(data, 0, { stage: { currentId: 3001, clearedIds: [3001, 3002] } });
 
 const select = (stageId: number) => ({ command: { type: Opcode.StageSelect, stageId } as const, now: 0 });
 
@@ -47,11 +40,10 @@ test("confirm ignores an answer at or below the confirmed revision", () => {
 });
 
 test("confirm takes the expected state when its fingerprint is the server's, and gives up when it is not or the rules refuse", () => {
-  const result = applyCommand(save, select(3002).command, { now: 0, data });
-  if (!result.ok) throw new Error(result.error.message);
+  const selected = accepted(applyCommand(save, select(3002).command, { now: 0, data }));
   const confirmed = { player: save, revision: 2 };
-  const sync = { revision: 3, fingerprint: playerFingerprint(result.state) };
-  expect(confirm(confirmed, sync, () => result.state)).toEqual({ player: result.state, revision: 3 });
-  expect(confirm(confirmed, { ...sync, fingerprint: sync.fingerprint + 1 }, () => result.state)).toBeUndefined();
+  const sync = { revision: 3, fingerprint: playerFingerprint(selected) };
+  expect(confirm(confirmed, sync, () => selected)).toEqual({ player: selected, revision: 3 });
+  expect(confirm(confirmed, { ...sync, fingerprint: sync.fingerprint + 1 }, () => selected)).toBeUndefined();
   expect(confirm(confirmed, sync, () => undefined)).toBeUndefined();
 });

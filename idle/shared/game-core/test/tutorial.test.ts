@@ -2,13 +2,10 @@ import { readFileSync } from "node:fs";
 import { GameErrorCode, Opcode } from "@idle/codes";
 import { EquipSlot, loadGameData, type GameData } from "@idle/data-schema";
 import { describe, expect, test } from "vitest";
-import { freshBattle, settle } from "../src/battle/settle.js";
+import { settle } from "../src/battle/settle.js";
 import { applyCommand } from "../src/commands/index.js";
-import { NO_EQUIPMENT } from "../src/equipment.js";
-import { NO_REBIRTH } from "../src/rebirth.js";
-import { NO_STAT_UPGRADES } from "../src/stat-upgrade.js";
-import { startSkills } from "../src/skills.js";
 import type { PlayerState } from "../src/state.js";
+import { accepted, testPlayer } from "../src/testing.js";
 import { MINUTE, SECOND } from "../src/time.js";
 import { startTutorial, tutorialStep, waitsForTap } from "../src/tutorial.js";
 
@@ -29,9 +26,9 @@ function step(id: number, condition: Partial<Record<"unlockStageId" | "unlockLev
   return { id, textKey: "tutorial.welcome" as const, target: null, opener: null, unlockStageId: null, unlockLevel: null, equipSlot: null, ...condition };
 }
 
+// `changes`는 전투를 시작한 뒤에 덮는다.
 function player(stepId: number | null, changes: Partial<PlayerState> = {}): PlayerState {
-  const base = { profile: { loginId: "hero", level: 1 }, items: {}, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data), stage: { currentId: 3001, clearedIds: [] } };
-  return { ...base, battle: freshBattle(base, data, AT), tutorial: { stepId }, ...changes };
+  return { ...testPlayer(data, AT, { tutorial: { stepId } }), ...changes };
 }
 
 function advance(state: PlayerState, stepId: unknown, now = AT) {
@@ -68,9 +65,8 @@ test("only the current step advances: skipping ahead, sending a finished step ag
   expect(advance(player(2), 1)).toMatchObject(notCurrent);
   for (const garbage of ["1", null, undefined, 1.5, {}]) expect(advance(player(1), garbage)).toMatchObject(notCurrent);
   // 같은 스텝을 두 번 보내면(다른 요청 id) 두 번째는 거절된다.
-  const once = advance(player(1), 1);
-  if (!once.ok) throw new Error("the first advance should pass");
-  expect(advance(once.state, 1)).toMatchObject(notCurrent);
+  const once = accepted(advance(player(1), 1));
+  expect(advance(once, 1)).toMatchObject(notCurrent);
 });
 
 test("a stage step waits for the clear, seen through the settle at now", () => {

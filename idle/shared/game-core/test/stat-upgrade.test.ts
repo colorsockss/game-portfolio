@@ -3,17 +3,15 @@ import { Big } from "@idle/big-number";
 import { GameErrorCode, Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
 import { describe, expect, test } from "vitest";
-import { freshBattle, playerBattle, settle } from "../src/battle/settle.js";
+import { playerBattle, settle } from "../src/battle/settle.js";
 import { initialCooldowns } from "../src/battle/simulation.js";
 import { BattleMode } from "../src/battle/state.js";
 import { heroStats } from "../src/battle/stats.js";
 import type { Command } from "../src/command.js";
 import { applyCommand } from "../src/commands/index.js";
-import { NO_EQUIPMENT } from "../src/equipment.js";
-import { NO_REBIRTH } from "../src/rebirth.js";
-import { startSkills } from "../src/skills.js";
 import { NO_STAT_UPGRADES, statUpgradeBatch, statUpgradeCost } from "../src/stat-upgrade.js";
 import type { PlayerState } from "../src/state.js";
+import { accepted, testPlayer } from "../src/testing.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
 const GOLD = data.constants.goldItemId;
@@ -24,26 +22,10 @@ const ATTACK = 7001;
 const HP = 7002;
 const CRIT = 7003;
 
-function player(gold: number, statUpgrades = NO_STAT_UPGRADES): PlayerState {
-  const base = {
-    profile: { loginId: "hero", level: 1 },
-    items: { [GOLD]: Big.from(gold) },
-    equipment: NO_EQUIPMENT,
-    statUpgrades,
-    skills: startSkills(data),
-    rebirth: NO_REBIRTH,
-    stage: { currentId: 3001, clearedIds: [] },
-  };
-  return { ...base, battle: freshBattle(base, data, AT), tutorial: { stepId: null } };
-}
+const player = (gold: number, statUpgrades = NO_STAT_UPGRADES) => testPlayer(data, AT, { items: { [GOLD]: Big.from(gold) }, statUpgrades });
 
 const upgrade = (state: PlayerState, upgradeId: unknown, now = AT + 100, steps: unknown = 1) =>
   applyCommand(state, { type: Opcode.StatUpgrade, upgradeId, steps } as Command, { now, data });
-
-function upgraded(result: ReturnType<typeof applyCommand>): PlayerState {
-  if (!result.ok) throw new Error(result.error.message);
-  return result.state;
-}
 
 describe("statUpgradeCost", () => {
   test("is the upgradeCost formula: floor(100 × 1.15^step) with Big.pow's bits on every host", () => {
@@ -72,7 +54,7 @@ describe("StatUpgrade", () => {
     const state = player(1000);
     const now = AT + 100;
     const settled = settle(state, data, now);
-    const after = upgraded(upgrade(state, ATTACK, now));
+    const after = accepted(upgrade(state, ATTACK, now));
     expect(after.statUpgrades).toEqual({ [ATTACK]: 1 });
     expect(after.items[GOLD]).toEqual(Big.from(900));
     const hero = heroStats(after, data);
@@ -86,13 +68,13 @@ describe("StatUpgrade", () => {
     expect(after.stage).toBe(state.stage);
 
     // 단계마다 비용이 오른다: 115, 그다음 132.
-    const twice = upgraded(upgrade(upgraded(upgrade(after, ATTACK, now + 100)), HP, now + 200));
+    const twice = accepted(upgrade(accepted(upgrade(after, ATTACK, now + 100)), HP, now + 200));
     expect(twice.statUpgrades).toEqual({ [ATTACK]: 2, [HP]: 1 });
     expect(twice.items[GOLD]).toEqual(Big.from(900 - 115 - 100));
   });
 
   test("gold exactly the cost is enough and leaves none; one short is refused with NotEnoughGold and changes nothing", () => {
-    expect(upgraded(upgrade(player(100), CRIT)).items[GOLD]).toEqual(Big.ZERO);
+    expect(accepted(upgrade(player(100), CRIT)).items[GOLD]).toEqual(Big.ZERO);
     expect(upgrade(player(99), CRIT)).toMatchObject({ ok: false, error: { code: GameErrorCode.NotEnoughGold } });
     expect(upgrade(player(0), CRIT)).toMatchObject({ ok: false, error: { code: GameErrorCode.NotEnoughGold } });
     const state = player(114, { [HP]: 1 });
@@ -106,7 +88,7 @@ describe("StatUpgrade", () => {
     const banked = settle(state, data, now).items[GOLD];
     expect(Big.gte(banked, 100)).toBe(true);
     expect(upgrade(state, ATTACK, AT + 100)).toMatchObject({ ok: false, error: { code: GameErrorCode.NotEnoughGold } });
-    expect(upgraded(upgrade(state, ATTACK, now)).items[GOLD]).toEqual(Big.from(Big.toNumber(banked) - 100));
+    expect(accepted(upgrade(state, ATTACK, now)).items[GOLD]).toEqual(Big.from(Big.toNumber(banked) - 100));
   });
 
   test("an upgrade at its max step is refused with StatUpgradeMaxed whatever the gold", () => {
@@ -114,26 +96,26 @@ describe("StatUpgrade", () => {
     expect(upgrade(state, CRIT)).toMatchObject({ ok: false, error: { code: GameErrorCode.StatUpgradeMaxed } });
     // 기획이 최대 단계를 낮춰 이미 넘은 단계도 더 오르지 않는다.
     expect(upgrade(player(1e30, { [CRIT]: 60 }), CRIT)).toMatchObject({ ok: false, error: { code: GameErrorCode.StatUpgradeMaxed } });
-    const last = upgraded(upgrade(player(1e30, { [CRIT]: 49 }), CRIT));
+    const last = accepted(upgrade(player(1e30, { [CRIT]: 49 }), CRIT));
     expect(last.statUpgrades[CRIT]).toBe(50);
   });
 
   test("steps raises several levels at once and pays their summed cost", () => {
     const now = AT + 100;
-    const after = upgraded(upgrade(player(1000), ATTACK, now, 3));
+    const after = accepted(upgrade(player(1000), ATTACK, now, 3));
     expect(after.statUpgrades).toEqual({ [ATTACK]: 3 });
     expect(after.items[GOLD]).toEqual(Big.from(1000 - 347));
     expect(heroStats(after, data).attack).toEqual(Big.add(heroStats(settle(player(1000), data, now), data).attack, 15));
   });
 
   test("steps stops early at maxStep", () => {
-    const after = upgraded(upgrade(player(1e30, { [CRIT]: 45 }), CRIT, AT + 100, 100));
+    const after = accepted(upgrade(player(1e30, { [CRIT]: 45 }), CRIT, AT + 100, 100));
     expect(after.statUpgrades[CRIT]).toBe(50);
   });
 
   test("steps stops early when the gold runs out mid-batch and keeps the rest", () => {
     // 100 + 115 = 215은 낼 수 있고 셋째 단계(132)는 모자라다.
-    const after = upgraded(upgrade(player(300), ATTACK, AT + 100, 10));
+    const after = accepted(upgrade(player(300), ATTACK, AT + 100, 10));
     expect(after.statUpgrades).toEqual({ [ATTACK]: 2 });
     expect(after.items[GOLD]).toEqual(Big.from(85));
   });
@@ -151,7 +133,7 @@ describe("StatUpgrade", () => {
     // steps가 빠진 옛 요청.
     expect(applyCommand(player(1000), { type: Opcode.StatUpgrade, upgradeId: ATTACK } as Command, { now: AT + 100, data }))
       .toMatchObject({ ok: false, error: { code: GameErrorCode.InvalidCommand } });
-    expect(upgraded(upgrade(player(1e30), ATTACK, AT + 100, 100)).statUpgrades[ATTACK]).toBe(100);
+    expect(accepted(upgrade(player(1e30), ATTACK, AT + 100, 100)).statUpgrades[ATTACK]).toBe(100);
   });
 
   test("an upgrade that is not in the table is refused, whatever arrives from the network", () => {

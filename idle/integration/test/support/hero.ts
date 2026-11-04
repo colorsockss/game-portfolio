@@ -1,5 +1,6 @@
 import type { GameData } from "@idle/data-schema";
-import { freshBattle, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, startSkills, type PlayerState } from "@idle/game-core";
+import type { PlayerState } from "@idle/game-core";
+import { testPlayer } from "@idle/game-core/testing";
 import type { createTestServer } from "@idle/server/testing";
 
 /**
@@ -12,9 +13,5 @@ export async function createHero(
   changes: Partial<Pick<PlayerState, "profile" | "items" | "equipment" | "statUpgrades" | "skills">> = {},
 ): Promise<void> {
   const now = Date.now();
-  const base = {
-    profile: { loginId: "hero", level: 1 }, items: {}, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, skills: startSkills(data),
-    rebirth: NO_REBIRTH, stage: { currentId: 3001, clearedIds: [3001, 3002] }, ...changes,
-  };
-  await server.store.createAccount("hero", { ...base, battle: freshBattle(base, data, now), tutorial: { stepId: null } }, now);
+  await server.store.createAccount("hero", testPlayer(data, now, { stage: { currentId: 3001, clearedIds: [3001, 3002] }, ...changes }), now);
 }

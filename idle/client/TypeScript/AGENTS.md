@@ -46,7 +46,7 @@ PuerTS V8에서 도는 클라이언트 로직입니다. esbuild가 두 프로그
 
 ## 테스트
 
-- 안쪽 층은 가짜 포트로, 화면은 일반 객체 바인딩 대상으로 검증합니다(`test/mvvm.test.ts`). 상태는 `createAppState({ flow: "main", player })`로 시작합니다.
+- 안쪽 층은 가짜 포트로, 화면은 일반 객체 바인딩 대상으로 검증합니다(`test/mvvm.test.ts`). 상태는 `createAppState({ flow: "main", player })`로 시작하고, 계정은 `testPlayer`(`@idle/game-core/testing`)로 만듭니다.
 - 전투 서비스 테스트는 프레임을 2초(`CATCH_UP_TICKS`, 20틱) 이하씩 진행합니다. 그보다 크게 밀면 이벤트 없이 따라잡고 `reset` 하나만 냅니다.
 - `test/build.test.ts`가 실제 번들을 PuerTS처럼 실행합니다. 부팅 로그를 바꾸면 기대값도 바꿉니다.
 - 서버 로직과 붙이는 테스트는 `integration/`에 둡니다.

@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import { Big } from "@idle/big-number";
 import { Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
-import { applyCommand, freshBattle, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, type Command, type ItemAmounts, type PlayerState, type SkillsState } from "@idle/game-core";
+import { applyCommand, type Command, type ItemAmounts, type SkillsState } from "@idle/game-core";
+import { testPlayer } from "@idle/game-core/testing";
 import { signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
 import type { Commands } from "../src/application/progress/progress.js";
@@ -18,8 +19,7 @@ describe("skills screen", () => {
   // 새 계정처럼 연속 사격, 화염구, 늑대 소환을 배워 장착하고 연속 사격만 3레벨인 영웅. 전투의 포효와 치유의 빛은 배우지 않았다.
   const DEFAULT: SkillsState = { equipped: { 0: 1004, 1: 1005, 2: 1011 }, levels: { 1004: 3, 1005: 1, 1011: 1 } };
   function setUp(skills: SkillsState = DEFAULT, gold = 1000) {
-    const base = { profile: { loginId: "hero", level: 1 }, items: {}, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills, stage: { currentId: 3001, clearedIds: [] } };
-    const player: PlayerState = { ...base, items: { 1: Big.from(gold) }, battle: freshBattle(base, data, NOW), tutorial: { stepId: null } };
+    const player = testPlayer(data, NOW, { items: { 1: Big.from(gold) }, skills });
     const state = createAppState({ flow: "main", player });
     const items = signal<ItemAmounts>(player.items);
     const sent: Command[] = [];

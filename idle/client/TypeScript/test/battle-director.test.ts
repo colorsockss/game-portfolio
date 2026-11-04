@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { Big } from "@idle/big-number";
 import { loadGameData, SoundChannel, type SoundsId } from "@idle/data-schema";
-import { BattleMode, freshBattle, HERO_ID, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, playerBattle, type BattleSnapshot, startSkills } from "@idle/game-core";
+import { BattleMode, HERO_ID, playerBattle, type BattleSnapshot } from "@idle/game-core";
+import { testPlayer } from "@idle/game-core/testing";
 import { signal } from "@preact/signals-core";
 import { expect, test } from "vitest";
 import type { ShownEvent, UpcomingAttack } from "../src/application/battle/battle.js";
@@ -294,8 +295,8 @@ test("deaths, revival, bosses, cleared stages and level-ups become directions an
 
 test("the hero stands again at full HP when a boss starts and after it falls to the boss", () => {
   // 3004의 보스를 1레벨 영웅으로 상대하면 틱 66에 쓰러져 진다. 시뮬레이션의 이벤트를 그대로 넘긴다.
-  const base = { profile: { loginId: "hero", level: 1 }, items: {}, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data), stage: { currentId: 3004, clearedIds: [] } };
-  const state = { ...base, battle: { ...freshBattle(base, data, 1_000_000), mode: BattleMode.Boss, waves: 3 }, tutorial: { stepId: null } };
+  const base = testPlayer(data, 1_000_000, { stage: { currentId: 3004, clearedIds: [] } });
+  const state = { ...base, battle: { ...base.battle, mode: BattleMode.Boss, waves: 3 } };
   const real = playerBattle(state, data);
   const events: ShownEvent[] = [];
   real.advance(100, event => events.push(event));

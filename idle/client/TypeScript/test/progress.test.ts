@@ -1,9 +1,8 @@
 import { readFileSync } from "node:fs";
 import { GameErrorCode, Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
-import {
-  applyCommand, freshBattle, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, playerFingerprint, type Command, type PlayerSnapshot, type PlayerState, startSkills,
-} from "@idle/game-core";
+import { applyCommand, playerFingerprint, type Command, type PlayerSnapshot, type PlayerState } from "@idle/game-core";
+import { accepted, testPlayer } from "@idle/game-core/testing";
 import { MAX_UNANSWERED_COMMANDS } from "@idle/protocol";
 import { expect, test } from "vitest";
 import type { CommandOutcome, GameServer } from "../src/application/ports.js";
@@ -14,13 +13,7 @@ import { createAppState } from "../src/application/state/app-state.js";
 const data = await loadGameData(table => readFileSync(new URL(`../../../shared/data-schema/data/${table}.bytes`, import.meta.url)));
 
 // 3002와 3003으로 옮길 수 있게 둘의 선행 스테이지를 클리어해 둔다.
-const base = {
-  profile: { loginId: "hero", level: 1 },
-  items: {},
-  equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data),
-  stage: { currentId: 3001, clearedIds: [3001, 3002] },
-};
-const player: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
+const player = testPlayer(data, 0, { stage: { currentId: 3001, clearedIds: [3001, 3002] } });
 
 interface Sent {
   readonly command: Command;
@@ -74,11 +67,7 @@ function fingerprinted(revision: number, state: PlayerState): CommandOutcome {
 }
 
 // 확정한 저장 데이터에 커맨드를 그 시각으로 적용한 결과(서버가 확정할 것).
-function applied(state: PlayerState, command: Command, time: number): PlayerState {
-  const result = applyCommand(state, command, { now: time, data });
-  if (!result.ok) throw new Error(result.error.message);
-  return result.state;
-}
+const applied = (state: PlayerState, command: Command, time: number) => accepted(applyCommand(state, command, { now: time, data }));
 
 const settle = { type: Opcode.BattleSettle } as const;
 const flush = () => new Promise(resolve => setTimeout(resolve, 0));
@@ -87,7 +76,7 @@ function rejected(code: GameErrorCode): CommandOutcome {
   return { ok: false, error: { code, message: "" } };
 }
 
-const at = (currentId: number) => ({ stage: { ...base.stage, currentId } });
+const at = (currentId: number) => ({ stage: { ...player.stage, currentId } });
 
 test("shows a command at once and settles it with the server's changes", async () => {
   const t = setUp();

@@ -8,10 +8,7 @@ import { expect, test } from "vitest";
 import { MAX_SETTLE_TICKS } from "../src/battle/constants.js";
 import { freshBattle } from "../src/battle/settle.js";
 import { startBattle, type BattleEvent } from "../src/battle/simulation.js";
-import { NO_EQUIPMENT } from "../src/equipment.js";
-import { NO_REBIRTH } from "../src/rebirth.js";
-import { NO_STAT_UPGRADES } from "../src/stat-upgrade.js";
-import { startSkills } from "../src/skills.js";
+import { testPlayer } from "../src/testing.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
 const AT = 1_000_000;
@@ -19,7 +16,7 @@ const AT = 1_000_000;
 // 새 계정의 사냥(3001, 1레벨, 레벨업 있음). 10분 안에 클리어, 레벨업, 쓰러짐과 부활, 범위 공격, 효과(화상, 독, 기절),
 // 발사체(착탄과 사라짐), 소환수(소환과 만료)가 모두 나온다.
 function start() {
-  const player = { profile: { loginId: "golden", level: 1 }, items: {}, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data), stage: { currentId: 3001, clearedIds: [] } };
+  const player = testPlayer(data, AT, { profile: { loginId: "golden", level: 1 } });
   return startBattle({ player: { ...player, battle: freshBattle(player, data, AT, 777) }, data });
 }
 
@@ -57,9 +54,7 @@ test("ten minutes yield the recorded digest, last boundary and state", async () 
 // 12레벨 영웅의 3004(사냥 웨이브 하나 뒤 보스 오우거 족장). 족장의 함성(공격력 강화, 보호막, 정화)과 대지 강타(기절)가
 // 나오고 보호막이 깨진다.
 test("a boss fight yields the recorded digest and state", async () => {
-  const player = {
-    profile: { loginId: "golden", level: 12 }, items: {}, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data), stage: { currentId: 3004, clearedIds: [3001, 3002, 3003] },
-  };
+  const player = testPlayer(data, AT, { profile: { loginId: "golden", level: 12 }, stage: { currentId: 3004, clearedIds: [3001, 3002, 3003] } });
   const battle = startBattle({ player: { ...player, battle: { ...freshBattle(player, data, AT, 777), waves: 3 } }, data });
   const hash = createHash("sha256");
   const effects: Record<string, number> = {};

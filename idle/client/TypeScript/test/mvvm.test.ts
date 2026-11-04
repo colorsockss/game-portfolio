@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { Big } from "@idle/big-number";
 import { EquipSlot, ItemKind, loadGameData, SoundChannel, type GameData, type StringsId } from "@idle/data-schema";
-import { BattleMode, freshBattle, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, statUpgradeBatch, TICK_MS, type BattleSnapshot, type ItemAmounts, type PlayerState, startSkills } from "@idle/game-core";
+import { BattleMode, statUpgradeBatch, TICK_MS, type BattleSnapshot, type ItemAmounts } from "@idle/game-core";
+import { testPlayer } from "@idle/game-core/testing";
 import { computed, signal, type Signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
 import type { EventSource, TextTarget } from "../src/unity/binding/components.js";
@@ -429,13 +430,7 @@ describe("reading ViewRefs", () => {
 });
 
 describe("main screen", () => {
-  const base = {
-    profile: { loginId: "hero", level: 3 },
-    items: { 1: Big.from(12_345) },
-    equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data),
-    stage: { currentId: 3001, clearedIds: [] },
-  };
-  const player: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
+  const player = testPlayer(data, 0, { profile: { loginId: "hero", level: 3 }, items: { 1: Big.from(12_345) } });
 
   const hero = {
     level: 3, hp: Big.from(50), maxHp: Big.from(100), down: false, effects: [], x: -2, moving: false, attack: Big.from(10), critChance: 0, skills: [],
@@ -923,14 +918,7 @@ describe("inventory screen", () => {
 describe("equipment screen", () => {
   // 낡은 검(1, 공격 +5)을 입고 오우거 대검(2, 공격 +25)과 가죽 갑옷(3, 방어 +3, HP +30)을 가진 1레벨 영웅.
   const owned = { 1: { itemId: 101, enhance: 0 }, 2: { itemId: 104, enhance: 0 }, 3: { itemId: 102, enhance: 0 } };
-  const base = {
-    profile: { loginId: "hero", level: 1 },
-    items: {},
-    equipment: { nextId: 4, owned, equipped: { 1: 1 } },
-    statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data),
-    stage: { currentId: 3001, clearedIds: [] },
-  };
-  const player: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
+  const player = testPlayer(data, 0, { equipment: { nextId: 4, owned, equipped: { 1: 1 } } });
 
   function setUp() {
     const state = createAppState({ flow: "main", player });
@@ -1368,16 +1356,7 @@ describe("settings screen", () => {
 });
 
 describe("upgrade screen", () => {
-  const base = {
-    profile: { loginId: "hero", level: 1 },
-    items: {},
-    equipment: NO_EQUIPMENT,
-    statUpgrades: { 7003: 50 },
-    skills: startSkills(data),
-    rebirth: NO_REBIRTH,
-    stage: { currentId: 3001, clearedIds: [] },
-  };
-  const player: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
+  const player = testPlayer(data, 0, { statUpgrades: { 7003: 50 } });
 
   function setUp(gold: number) {
     const state = createAppState({ flow: "main", player });
@@ -1446,16 +1425,7 @@ describe("upgrade screen", () => {
 });
 
 describe("skill screen", () => {
-  const base = {
-    profile: { loginId: "hero", level: 1 },
-    items: {},
-    equipment: NO_EQUIPMENT,
-    statUpgrades: NO_STAT_UPGRADES,
-    skills: startSkills(data),
-    rebirth: NO_REBIRTH,
-    stage: { currentId: 3001, clearedIds: [] },
-  };
-  const player: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
+  const player = testPlayer(data, 0);
   const fakeButton = () => {
     const click = fakeEvent();
     return { click, target: { interactable: true, onClick: click.event, gameObject: { active: true, SetActive(active: boolean) { this.active = active; } } } };
@@ -1544,16 +1514,9 @@ describe("skill screen", () => {
 
 describe("rebirth screen", () => {
   function setUp(level: number) {
-    const base = {
-      profile: { loginId: "hero", level },
-      items: { [data.constants.goldItemId]: Big.from(1234) },
-      equipment: NO_EQUIPMENT,
-      statUpgrades: { 7001: 3, 7002: 2 },
-      skills: startSkills(data),
-      rebirth: NO_REBIRTH,
-      stage: { currentId: 3001, clearedIds: [] },
-    };
-    const player: PlayerState = { ...base, battle: freshBattle(base, data, 0), tutorial: { stepId: null } };
+    const player = testPlayer(data, 0, {
+      profile: { loginId: "hero", level }, items: { [data.constants.goldItemId]: Big.from(1234) }, statUpgrades: { 7001: 3, 7002: 2 },
+    });
     const state = createAppState({ flow: "main", player });
     const sent: object[] = [];
     const cmd = { Rebirth: async (fields: object) => void sent.push(fields) } as unknown as Commands;

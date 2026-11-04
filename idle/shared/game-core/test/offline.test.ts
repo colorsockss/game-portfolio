@@ -5,17 +5,13 @@ import { loadGameData } from "@idle/data-schema";
 import { expect, test } from "vitest";
 import { MAX_SETTLE_TICKS, TICK_MS } from "../src/battle/constants.js";
 import { offlineReward } from "../src/battle/offline.js";
-import { freshBattle } from "../src/battle/settle.js";
 import { startBattle } from "../src/battle/simulation.js";
 import { BattleMode } from "../src/battle/state.js";
 import { heroStats } from "../src/battle/stats.js";
 import { applyCommand } from "../src/commands/index.js";
-import { NO_EQUIPMENT } from "../src/equipment.js";
-import { NO_REBIRTH } from "../src/rebirth.js";
-import { NO_STAT_UPGRADES } from "../src/stat-upgrade.js";
-import { startSkills } from "../src/skills.js";
 import { NO_ITEMS, type ItemAmounts } from "../src/items.js";
 import type { PlayerState } from "../src/state.js";
+import { accepted, testPlayer } from "../src/testing.js";
 import { HOUR } from "../src/time.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
@@ -24,12 +20,8 @@ const OFFLINE_CAP = data.constants.offlineCapHours * HOUR;
 const AT = 1_000_000;
 const SAMPLE_MS = MAX_SETTLE_TICKS * TICK_MS;
 
-function player(stageId = 3002, level = 1): PlayerState {
-  const base = {
-    profile: { loginId: "hero", level }, items: {}, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data), stage: { currentId: stageId, clearedIds: [] },
-  };
-  return { ...base, battle: freshBattle(base, data, AT), tutorial: { stepId: null } };
-}
+const player = (stageId = 3002, level = 1) =>
+  testPlayer(data, AT, { profile: { loginId: "hero", level }, stage: { currentId: stageId, clearedIds: [] } });
 
 // 체크포인트에서 이어지는 사냥(보스 도전, 클리어, 레벨업 없이)의 MAX_SETTLE_TICKS 동안 번 것.
 function hunted(state: PlayerState): ItemAmounts {
@@ -45,11 +37,7 @@ function hunted(state: PlayerState): ItemAmounts {
 const scaled = (earned: ItemAmounts, scale: number) =>
   Object.fromEntries(Object.entries(earned).map(([id, amount]) => [id, Big.floor(Big.mul(amount, scale))]));
 
-function settleAt(state: PlayerState, now: number): PlayerState {
-  const result = applyCommand(state, { type: Opcode.BattleSettle }, { now, data });
-  if (!result.ok) throw new Error(result.error.message);
-  return result.state;
-}
+const settleAt = (state: PlayerState, now: number) => accepted(applyCommand(state, { type: Opcode.BattleSettle }, { now, data }));
 
 test("the offline reward is the sampled hunt scaled to the time away", () => {
   const state = player();

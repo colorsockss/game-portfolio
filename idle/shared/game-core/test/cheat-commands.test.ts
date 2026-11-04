@@ -4,13 +4,10 @@ import { GameErrorCode, Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
 import { expect, test } from "vitest";
 import { offlineReward } from "../src/battle/offline.js";
-import { freshBattle, settle } from "../src/battle/settle.js";
+import { settle } from "../src/battle/settle.js";
 import type { Command } from "../src/command.js";
 import { applyCommand } from "../src/commands/index.js";
-import { NO_EQUIPMENT } from "../src/equipment.js";
-import { NO_REBIRTH } from "../src/rebirth.js";
-import { NO_STAT_UPGRADES } from "../src/stat-upgrade.js";
-import { startSkills } from "../src/skills.js";
+import { accepted, testPlayer } from "../src/testing.js";
 import { HOUR, MINUTE } from "../src/time.js";
 import { isUnlocked } from "../src/unlock.js";
 import type { PlayerState } from "../src/state.js";
@@ -21,16 +18,9 @@ const OFFLINE_CAP = data.constants.offlineCapHours * HOUR;
 const AT = 100 * HOUR;
 const NOW = AT + 30_000;
 
-function player(): PlayerState {
-  const base = { profile: { loginId: "hero", level: 1 }, items: {}, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data), stage: { currentId: 3001, clearedIds: [] } };
-  return { ...base, battle: freshBattle(base, data, AT), tutorial: { stepId: null } };
-}
+const player = () => testPlayer(data, AT);
 
-function apply(state: PlayerState, command: Command, now = NOW): PlayerState {
-  const result = applyCommand(state, command, { now, data });
-  if (!result.ok) throw new Error(result.error.message);
-  return result.state;
-}
+const apply = (state: PlayerState, command: Command, now = NOW) => accepted(applyCommand(state, command, { now, data }));
 
 function refused(command: Command): GameErrorCode | undefined {
   const result = applyCommand(player(), command, { now: NOW, data });

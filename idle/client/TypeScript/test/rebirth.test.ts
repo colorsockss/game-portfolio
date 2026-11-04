@@ -2,18 +2,8 @@ import { readFileSync } from "node:fs";
 import { Big } from "@idle/big-number";
 import { Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
-import {
-  applyCommand,
-  freshBattle,
-  NO_EQUIPMENT,
-  NO_REBIRTH,
-  startSkills,
-  type BattleSnapshot,
-  type Command,
-  type ItemAmounts,
-  type PlayerState,
-  type RebirthState,
-} from "@idle/game-core";
+import { applyCommand, NO_REBIRTH, type BattleSnapshot, type Command, type ItemAmounts, type RebirthState } from "@idle/game-core";
+import { testPlayer } from "@idle/game-core/testing";
 import { signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
 import type { Commands } from "../src/application/progress/progress.js";
@@ -29,12 +19,11 @@ const GOLD = data.constants.goldItemId;
 describe("rebirth screen", () => {
   // 마지막 스테이지에서 성장(골드 강화)을 18단계 올린 영웅.
   function setUp(level: number, rebirth: RebirthState = NO_REBIRTH) {
-    const base = {
-      profile: { loginId: "hero", level }, items: { [GOLD]: Big.from(12_345) }, equipment: NO_EQUIPMENT,
-      statUpgrades: { 7001: 10, 7002: 5, 7003: 3 }, skills: startSkills(data), rebirth,
+    const player = testPlayer(data, NOW, {
+      profile: { loginId: "hero", level }, items: { [GOLD]: Big.from(12_345) },
+      statUpgrades: { 7001: 10, 7002: 5, 7003: 3 }, rebirth,
       stage: { currentId: 3006, clearedIds: [3001, 3002, 3003, 3004, 3005] },
-    };
-    const player: PlayerState = { ...base, battle: freshBattle(base, data, NOW), tutorial: { stepId: null } };
+    });
     const state = createAppState({ flow: "main", player });
     const snapshot = signal<BattleSnapshot | undefined>(undefined);
     const items = signal<ItemAmounts>(player.items);
