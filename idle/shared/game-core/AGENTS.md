@@ -10,4 +10,4 @@
 - 규칙 위반은 `fail(code, message)`로 돌려줍니다. throw는 버그일 때만 씁니다.
 - 네트워크 입력은 각 핸들러가 검증합니다.
 - 시각은 `ctx.now`로만 받고, 큰 수는 `Big`으로 계산합니다.
-- `src/formulas.ts`는 생성 파일입니다. 공식 key는 `E_AbilityType`에 있어야 합니다. 공식은 `Big` 코드라 `pow`는 `Big.pow`(정수 지수)이고 비결정적인 함수는 내보내기가 거절합니다. 공식의 입력(`FormulaInput`, 예: 효과의 `power`)은 `Formula.get`의 마지막 인자로 넘깁니다.
+- `src/formulas.ts`와 `src/ability-type.ts`(`E_AbilityType`)는 `formulas.json`의 생성 파일입니다. 공식은 `Big` 코드라 `pow`는 `Big.pow`(정수 지수)이고 비결정적인 함수는 내보내기가 거절합니다. 공식의 입력(`FormulaInput`, 예: 효과의 `power`)은 `Formula.get`의 마지막 인자로 넘깁니다.

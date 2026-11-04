@@ -35,7 +35,7 @@ npm run generate    # 게임의 data/ → 생성 파일
 
 ## 생성 파일
 
-`idle/shared/data-schema/src/tables/`, `idle/shared/data-schema/data/`, `idle/shared/game-core/src/formulas.ts`는 `npm run generate`의 출력입니다. 직접 고치지 않고 원본(`idle/data/`)과 함께 커밋합니다.
+`idle/shared/data-schema/src/tables/`, `idle/shared/data-schema/data/`, `idle/shared/game-core/src/formulas.ts`, `idle/shared/game-core/src/ability-type.ts`는 `npm run generate`의 출력입니다. 직접 고치지 않고 원본(`idle/data/`)과 함께 커밋합니다.
 
 ## 스타일
 
