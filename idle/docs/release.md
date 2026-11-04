@@ -81,7 +81,7 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 
 부트 번들(앱에 드는 TS)과 APK를 빌드해 GitHub Release(태그 `idle-android-b<번호>`, 제목 `idle aos build <번호>`)로 냅니다. APK는 늘 공개를 함께 합니다.
 
-- 번호는 지금까지의 `idle-android-b<번호>` 태그에서 가장 큰 것의 다음입니다(Number the APK 단계). 이 번호가 versionCode, 버전 이름(`0.1.<번호>`), 태그, Release 제목에 함께 쓰이므로, 어느 액션(`idle APK`, `idle all`)에서 내도 저장소 전체에서 늘고 앞의 APK 위에 덮어 설치됩니다. 2026-11-02에 공개 저장소로 옮기며 1부터 다시 시작했고(10절), 지금 마지막은 1(`idle aos build 1`, `c7922ad`)입니다. 옛 저장소의 빌드가 깔린 기기는 지우고 설치합니다(저장 데이터는 서버에 있음).
+- 번호는 지금까지의 `idle-android-b<번호>` 태그에서 가장 큰 것의 다음입니다(Number the APK 단계). 이 번호가 versionCode, 버전 이름(`0.1.<번호>`), 태그, Release 제목에 함께 쓰이므로, 어느 액션(`idle APK`, `idle all`)에서 내도 저장소 전체에서 늘고 앞의 APK 위에 덮어 설치됩니다. 2026-11-02에 공개 저장소로 옮기며 1부터 다시 시작했고(10절), 지금 마지막은 3(`idle aos build 3`, `7a11323`)입니다. 2는 `b28f37e`입니다. 옛 저장소의 빌드가 깔린 기기는 지우고 설치합니다(저장 데이터는 서버에 있음).
 
 - `full_patch`를 끄면 APK만 냅니다. 채널은 그대로이고, Release 본문에 지금 Live 패치 버전을 적습니다. C# API가 Live와 같을 때만 됩니다(다르면 기준 버전 받기에서 `No patch is published for API …`로 멈춤).
 - C# API가 바뀌었으면 `full_patch`를 켭니다. 새 API의 채널에는 아직 버전이 없으므로 패치 네 단위와 서버를 모두 이번 커밋에서 냅니다. Unity는 한 번만 띄워 에셋과 APK를 함께 빌드합니다(`PlayerBuild.BuildForCi`).
@@ -100,7 +100,7 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 
 ### 3.7 `idle all`
 
-패치 네 단위와 서버를 모두 이번 커밋에서 내고, `apk`를 켜면 APK도 냅니다. 첫 출시나 여러 단위가 함께 바뀐 큰 변경용입니다. 공개 저장소의 첫 실행(2026-11-02, 41457129314)이 지금 Live의 서버 `c7922ad`, 패치 `28b79e6cf1b7cff3`, APK `idle aos build 1`을 냈습니다.
+패치 네 단위와 서버를 모두 이번 커밋에서 내고, `apk`를 켜면 APK도 냅니다. 첫 출시나 여러 단위가 함께 바뀐 큰 변경용입니다. 공개 저장소의 첫 실행(2026-11-02, 41457129314)이 서버 `c7922ad`, 패치 `28b79e6cf1b7cff3`, APK `idle aos build 1`을 냈고, 지금 Live는 2026-11-03 실행(41637742941)이 UI 개편(`7a11323`, 프로토콜 21, C# API `ea2aebf778c9e3fd`)으로 낸 서버 `7a11323`, 패치 `87f85487cfbb28b0`, APK `idle aos build 3`입니다. 프로토콜이 바뀌어 옛 앱(빌드 1·2)은 연결이 4000으로 닫히고 업데이트 안내를 봅니다.
 
 ## 4. 공용 워크플로의 단계
 
@@ -194,6 +194,7 @@ ssh -i ~/Keys/idle-deploy deploy@idle.dennou.cloud 'readlink /srv/idle/server/cu
 | `idle server`, `publish` 끔(41398784285) | 3분 6초 | 서버를 올려 두기만 함 |
 | `idle APK`(41412647184, Library 캐시 있음) | 18분 51초 | Build the APK 11분 48초(캐시 없을 때 42분 46초), Library 받기 54초·저장 57초, 디스크 정리 1분 58초 |
 | `idle all` + APK(41457129314, 2026-11-02, 공개 저장소의 4 vCPU 러너, Library 캐시 없음) | 27분 19초 | Build the APK 21분 41초(2 vCPU에서 42분 46초), 디스크 정리 1분 46초, 테스트 53초 |
+| `idle all` + APK(41637742941, 2026-11-03, 4 vCPU, Library 캐시 있음) | 11분 36초 | Build the APK 6분 19초, 디스크 정리 1분 41초, 테스트 53초, Library 받기 27초·저장 37초 |
 
 Unity를 쓰지 않는 액션은 약 3분이고, Library 캐시가 APK 빌드를 42분 46초에서 11분 48초로 줄였습니다.
 
@@ -232,7 +233,7 @@ Unity를 쓰지 않는 액션은 약 3분이고, Library 캐시가 APK 빌드를
 | Unity 이미지 받기에서 `no space left on device` | 러너 디스크가 모자람(Library 캐시를 풀면 약 8 GB를 더 씀) | 2026-11-02에 지우는 도구를 늘리고 스왑을 `/mnt`로 옮겼음. 다시 나면 Free disk space 단계의 `df`를 보고 더 지움 |
 | 기기에서만 `TypeError: … is not a function` | IL2CPP가 TS만 부르는 엔진 멤버를 잘라냄 | 그 타입을 `TypeScriptTypings.cs`의 `[Binding]`에 넣고 Tools/TypeScript/Generate IL2CPP Bridge로 `link.xml`을 다시 만든 뒤 APK를 다시 냄(`client/AGENTS.md`) |
 | `ssh: connect to host … Connection timed out` | 러너가 VPS 22번에 붙지 못함(2026-11-02에 한 번, 원인은 못 찾음) | 15초씩 네 번까지 다시 붙고 안 되면 그 단계가 멈춤. 계속되면 VPS의 `sudo ufw status verbose`와 hPanel 방화벽을 봄 |
-| Unity가 `exit 137` | 커널이 Unity를 죽임 | 2026-10-31에는 GameCI의 기본 빌드 스크립트가 원인이었고 우리 빌드 메서드로 피했음. 실패하면 "Report memory" 단계의 기록을 봄 |
+| Unity가 `exit 137` | 커널이 Unity를 죽임 | 2026-10-31에는 GameCI의 기본 빌드 스크립트가 원인이었고 우리 빌드 메서드로 피했음. 2026-11-03 `idle all`(41623858841)도 Unity를 연 지 2초 만에 `Begin MonoManager ReloadAssembly` 바로 뒤에서 죽었는데, 메모리가 14.6 GB 남았고 OOM 기록도 없었으며 같은 입력으로 다시 돌리자 지나갔음(41637742941). 실패하면 "Report memory" 단계의 기록을 보고, 메모리 문제가 아니면 다시 돌림 |
 | Unity 활성화 실패 | 계정 로그인이 안 됨 | `UNITY_EMAIL`·`UNITY_PASSWORD`를 확인(2단계 인증이 막는지는 확인하지 못함) |
 
 ## 9. 알려진 문제와 확인하지 못한 것
