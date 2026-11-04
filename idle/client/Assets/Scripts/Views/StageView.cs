@@ -4,8 +4,8 @@ using UnityEngine.Scripting;
 namespace PortfolioIdleRpg.Views
 {
     /// <summary>
-    /// 전투 월드의 무대: 배우 뒤의 배경 그림과, 맞거나 쓰러질 때 튀는 파티클. 배경은 그림을 가로로 이어 그린 것(Tiled)이고
-    /// 영웅이 걸은 만큼 왼쪽으로 흐른다. 파티클은 파티클 시스템 하나가 자리마다 내뿜으므로 터질 때마다 오브젝트를 만들거나
+    /// 전투 월드의 무대: 배우 뒤의 배경 그림과, 맞거나 쓰러질 때 튀는 파티클. 배경은 원경(하늘과 먼 풍경)과 근경(땅)
+    /// 두 겹을 가로로 이어 그린 것(Tiled)이고, 근경은 영웅이 걸은 만큼, 원경은 그보다 느리게 왼쪽으로 흐른다. 파티클은 파티클 시스템 하나가 자리마다 내뿜으므로 터질 때마다 오브젝트를 만들거나
     /// 풀에서 꺼내지 않는다. 배경이 흐르는 동안 파티클과 땅을 따르는 글자(FloatingText)도 같은 거리만큼 옮긴다. 언제 무엇을
     /// 보일지는 TypeScript가 정한다. 장면이 바뀌는 때는 무대를 막으로 다 덮었다가 걷는다. 배경이 바뀌면(맵 이동) 검게 다 덮은
     /// 순간에 그림을 바꾸고, Cover(보스전)는 그림을 두고 정한 색으로 덮는다. 막은 월드 시간으로 흘러 히트스톱 동안 함께 멈춘다.
@@ -22,13 +22,24 @@ namespace PortfolioIdleRpg.Views
         /// <summary>막이 다 걷히는 데 걸리는 시간(초).</summary>
         private const float LightenSeconds = 0.45f;
 
-        /// <summary>배경 그림을 보이는 렌더러. 배우보다 아래에 그려진다.</summary>
-        [SerializeField]
-        private SpriteRenderer _background;
+        /// <summary>원경이 근경보다 몇 배 느리게 흐르는지.</summary>
+        private const float FarSlowdown = 2f;
 
-        /// <summary>Show가 이름(스프라이트 이름)으로 고르는 배경 그림. 0번은 이름이 맞는 것이 없을 때 쓴다.</summary>
+        /// <summary>배경 원경을 보이는 렌더러. 근경보다 아래에 그려진다.</summary>
         [SerializeField]
-        private Sprite[] _backgrounds;
+        private SpriteRenderer _far;
+
+        /// <summary>배경 근경을 보이는 렌더러. 배우보다 아래에 그려진다.</summary>
+        [SerializeField]
+        private SpriteRenderer _near;
+
+        /// <summary>Show가 고르는 원경. _nears와 같은 차례다.</summary>
+        [SerializeField]
+        private Sprite[] _fars;
+
+        /// <summary>Show가 이름(스프라이트 이름)으로 고르는 근경. 0번은 이름이 맞는 것이 없을 때 쓴다.</summary>
+        [SerializeField]
+        private Sprite[] _nears;
 
         /// <summary>Burst가 내뿜는 파티클 시스템. 퍼지는 방향과 속도, 수명, 줄어듦은 시스템의 설정이다.</summary>
         [SerializeField]
@@ -44,8 +55,11 @@ namespace PortfolioIdleRpg.Views
         /// <summary>처음 배경을 보였는지. 처음은 덮지 않고 바로 보인다.</summary>
         private bool _shown;
 
-        /// <summary>막이 다 덮으면 바꿀 배경 그림. null이면 바꿀 것이 없다.</summary>
-        private Sprite _pending;
+        /// <summary>지금 보이는 배경의 번호.</summary>
+        private int _picture;
+
+        /// <summary>막이 다 덮으면 바꿀 배경의 번호. -1이면 바꿀 것이 없다.</summary>
+        private int _pending = -1;
 
         /// <summary>막이 덮이는 중인지.</summary>
         private bool _darkening;
@@ -82,21 +96,21 @@ namespace PortfolioIdleRpg.Views
         [Preserve]
         public void Show(string background)
         {
-            if (_backgrounds.Length == 0)
+            if (_nears.Length == 0)
                 return;
-            Sprite shown = _backgrounds[0];
-            foreach (Sprite sprite in _backgrounds)
+            var shown = 0;
+            for (var i = 0; i < _nears.Length; i++)
             {
-                if (sprite.name == background)
-                    shown = sprite;
+                if (_nears[i].name == background)
+                    shown = i;
             }
             if (!_shown)
             {
                 _shown = true;
-                _background.sprite = shown;
+                SetPicture(shown);
                 return;
             }
-            Sprite next = (_pending != null) ? _pending : _background.sprite;
+            int next = (_pending >= 0) ? _pending : _picture;
             if (shown == next)
                 return;
             _pending = shown;
@@ -121,7 +135,8 @@ namespace PortfolioIdleRpg.Views
         [Preserve]
         public void Scroll(float distance, float seconds)
         {
-            _scrollFrom = Mathf.Repeat(Scrolled(), TileWidth());
+            // 원경이 한 장 흐르는 거리로 접어야 두 겹 모두 접힐 때 튀지 않는다.
+            _scrollFrom = Mathf.Repeat(Scrolled(), TileWidth() * FarSlowdown);
             _scrollTo = _scrollFrom + distance;
             _scrollSeconds = seconds;
             _scrollElapsed = 0f;
@@ -166,12 +181,34 @@ namespace PortfolioIdleRpg.Views
             _scrollElapsed += Time.deltaTime;
             if (_scrollElapsed >= _scrollSeconds)
                 _scrollSeconds = 0f;
-            MoveGround(before - Scrolled());
-            // 이어 그린 그림이 가운데에서 반 장 넘게 밀리지 않게 한 장의 너비로 접는다.
+            float scrolled = Scrolled();
+            MoveGround(before - scrolled);
             float width = TileWidth();
-            Vector3 position = _background.transform.localPosition;
-            position.x = -(Mathf.Repeat(Scrolled() + (width / 2f), width) - (width / 2f));
-            _background.transform.localPosition = position;
+            Place(_near, scrolled, width);
+            Place(_far, scrolled / FarSlowdown, width);
+        }
+
+        /// <summary>
+        /// 배경 한 겹을 <paramref name="distance"/>만큼 흐른 자리에 둔다. 이어 그린 그림이 가운데에서 반 장 넘게 밀리지 않게
+        /// 한 장의 너비로 접는다.
+        /// </summary>
+        /// <param name="layer">겹의 렌더러.</param>
+        /// <param name="distance">흐른 거리(유닛).</param>
+        /// <param name="width">그림 한 장의 너비(유닛).</param>
+        private static void Place(SpriteRenderer layer, float distance, float width)
+        {
+            Vector3 position = layer.transform.localPosition;
+            position.x = -(Mathf.Repeat(distance + (width / 2f), width) - (width / 2f));
+            layer.transform.localPosition = position;
+        }
+
+        /// <summary><paramref name="index"/>번 배경의 두 겹을 보인다.</summary>
+        /// <param name="index">배경의 번호.</param>
+        private void SetPicture(int index)
+        {
+            _picture = index;
+            _far.sprite = _fars[index];
+            _near.sprite = _nears[index];
         }
 
         /// <summary>막을 <paramref name="color"/>로 바꾸고 지금 투명도에서 다 덮기 시작한다.</summary>
@@ -199,9 +236,9 @@ namespace PortfolioIdleRpg.Views
                 {
                     _darkening = false;
                     _holdLeft = HoldSeconds;
-                    if (_pending != null)
-                        _background.sprite = _pending;
-                    _pending = null;
+                    if (_pending >= 0)
+                        SetPicture(_pending);
+                    _pending = -1;
                 }
             }
             else if (_holdLeft > 0f)
@@ -243,6 +280,6 @@ namespace PortfolioIdleRpg.Views
 
         /// <summary>배경 그림 한 장의 너비(유닛).</summary>
         /// <returns>너비. 그림이 없으면 1이다.</returns>
-        private float TileWidth() => (_background.sprite != null) ? _background.sprite.bounds.size.x : 1f;
+        private float TileWidth() => (_near.sprite != null) ? _near.sprite.bounds.size.x : 1f;
     }
 }

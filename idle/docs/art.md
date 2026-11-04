@@ -7,7 +7,7 @@
 - **Unity 기본**: Unity에 들어 있는 기본 UI 스프라이트.
 - **사각형**: 그림 없이 단색 사각형.
 - **글자**: 그림 없이 글자만.
-- **임시**: 코드로 그린 임시 그림(`ActorClips`, `Backgrounds`).
+- **임시**: 코드로 그린 임시 그림(`ActorClips`).
 - **없음**: 그림도 임시 그림도 없음.
 
 ## 생성 도구의 약관
@@ -25,7 +25,7 @@
 | 글꼴 | 78 | Jua 1개 |
 | 영웅 | 62 | 1명, 19프레임 |
 | 몬스터·보스·소환수 | 63 | 11종, 197프레임 |
-| 스테이지 배경 | 78 | 6장, 원경·근경 12겹(Unity 미적용) |
+| 스테이지 배경 | 78 | 6장, 원경·근경 12겹 |
 | 원하면 더 그릴 것 | | 발사체 8프레임, 아이콘 28장 |
 
 ## 그리는 규칙
@@ -250,7 +250,7 @@ Unity의 고블린 야영지 전투에서 대기·걷기·공격·피격·사망
 
 ## 앱 아이콘
 
-앱 이름은 `idle`(Player 설정의 `productName`)입니다. 아이콘은 2026-11-02에 게임 그림만으로 합성했고 새로 생성한 그림은 없습니다. 초원 배경(`Backgrounds.cs`의 `meadow`)의 하늘·언덕·풀밭 색으로 배경을 매끈하게 다시 그리고, 그 위에 용사(대기 첫 프레임), 용사를 보는 초록 슬라임(평탄화 기준 그림), 하늘을 나는 화염 드래곤(대기 첫 프레임, 좌우 반전)을 고해상도 원본(`art/source/actors/`)에서 가져와 올렸습니다. 만든 사람은 colorsocks, 도구는 Claude Code가 쓴 [합성 스크립트](../art/source/app-icon/compose.py)(저장소 밖 Pillow 환경)입니다.
+앱 이름은 `idle`(Player 설정의 `productName`)입니다. 아이콘은 2026-11-02에 게임 그림만으로 합성했고 새로 생성한 그림은 없습니다. 그때의 임시 초원 배경(`Backgrounds.cs`가 코드로 그린 `meadow`)의 하늘·언덕·풀밭 색으로 배경을 매끈하게 다시 그리고, 그 위에 용사(대기 첫 프레임), 용사를 보는 초록 슬라임(평탄화 기준 그림), 하늘을 나는 화염 드래곤(대기 첫 프레임, 좌우 반전)을 고해상도 원본(`art/source/actors/`)에서 가져와 올렸습니다. 만든 사람은 colorsocks, 도구는 Claude Code가 쓴 [합성 스크립트](../art/source/app-icon/compose.py)(저장소 밖 Pillow 환경)입니다.
 
 | 파일(`client/Assets/AppIcon/`) | 크기 | 쓰는 곳 |
 |---|---|---|
@@ -277,7 +277,7 @@ Unity의 고블린 야영지 전투에서 대기·걷기·공격·피격·사망
 
 ### 스테이지 배경
 
-지금 임시 그림은 96×168픽셀이고 12픽셀이 1유닛입니다. 지평선은 가운데보다 2유닛 위입니다.
+배경은 원경과 근경 두 겹이고 각 768×1344픽셀, 96픽셀이 1유닛(8×14유닛)입니다. 지평선은 위에서 37–39%입니다. 만드는 방법은 [art-prompts.md](art-prompts.md)의 "패럴랙스 배경(원경·근경)"에 있습니다.
 
 | 이름(`Stages.background`) | 스테이지 | 지금 | 만든 사람 | 도구 |
 |---|---|---|---|---|
@@ -288,7 +288,7 @@ Unity의 고블린 야영지 전투에서 대기·걷기·공격·피격·사망
 | snow | 얼어붙은 고개 | 완료 | colorsocks | Codex image_gen |
 | lava | 화염 드래곤의 둥지 | 완료 | colorsocks | Codex image_gen |
 
-meadow·forest·camp·fortress·snow·lava 원경·근경은 `art/backgrounds/<이름>_far.png`, `<이름>_near.png`(각 768×1344)로 만들었으며, Unity에는 아직 넣지 않았습니다.
+meadow·forest·camp·fortress·snow·lava 원경·근경은 `art/backgrounds/<이름>_far.png`, `<이름>_near.png`(각 768×1344)이고, Unity에는 `client/Assets/Battle/Backgrounds/Far/<이름>.png`, `Near/<이름>.png`로 들어가 전투에서 원경이 근경의 절반 빠르기로 흐릅니다.
 
 ### 효과 칸 아이콘
 

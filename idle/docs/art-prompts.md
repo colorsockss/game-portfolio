@@ -339,7 +339,7 @@ Constraints: transparent background; no background elements; no drop shadow outs
 
 ### 스테이지 배경 6장
 
-5의 "스테이지 배경" 표와 틀을 그대로 쓰되, 공통 스타일 대신 UI 개편 스타일을 붙이고 다음을 더합니다. 메인 화면은 배경의 위에서 30%–62% 사이만 보이고, 배우는 그 안의 46%–60%에 섭니다. 그래서 지평선은 위에서 35–40%, 그 아래는 고르고 넓은 땅이고, 랜드마크는 지평선 근처와 양 끝에 둡니다. 후처리는 5와 같습니다(768×1344, `idle/art/backgrounds/<key>.png`). 그림이 들어오면 `client/Assets/Battle/Backgrounds/`의 코드로 그린 그림을 바꿉니다(`Backgrounds.cs`, 백로그 65).
+5의 "스테이지 배경" 표와 틀을 그대로 쓰되, 공통 스타일 대신 UI 개편 스타일을 붙이고 다음을 더합니다. 메인 화면은 배경의 위에서 30%–62% 사이만 보이고, 배우는 그 안의 46%–60%에 섭니다. 그래서 지평선은 위에서 35–40%, 그 아래는 고르고 넓은 땅이고, 랜드마크는 지평선 근처와 양 끝에 둡니다. 후처리는 5와 같습니다(768×1344, `idle/art/backgrounds/<key>.png`). 게임에는 아래 "패럴랙스 배경(원경·근경)"의 두 겹으로 들어갑니다(`client/Assets/Battle/Backgrounds/Far`, `Near`).
 
 ```text
 Additional constraints for the background: outlines on large shapes only (hills, trees, rocks, walls), thinner than the icon outline; ground with a few simple flat patches, no busy detail where the characters stand; slightly lower saturation than the characters

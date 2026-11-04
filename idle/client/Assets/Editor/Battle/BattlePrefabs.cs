@@ -7,8 +7,8 @@ using Object = UnityEngine.Object;
 namespace PortfolioIdleRpg.Editor
 {
     /// <summary>
-    /// 전투 월드의 프리팹(Remote/Battle)을 코드로 만든다. 배우의 임시 클립 묶음(ActorClips)과 스테이지 배경
-    /// (Backgrounds)을 먼저 그린다. 다시 실행하면 같은 경로의 프리팹을 덮어쓰므로 GUID와 참조가 그대로다. HP 바 도형의
+    /// 전투 월드의 프리팹(Remote/Battle)을 코드로 만든다. 배우의 클립 묶음(ActorClips)을 먼저 그리고 스테이지
+    /// 배경(Backgrounds)을 임포트한다. 다시 실행하면 같은 경로의 프리팹을 덮어쓰므로 GUID와 참조가 그대로다. HP 바 도형의
     /// 스프라이트는 프리팹에 담기지 않고 ActorView가 실행 중에 넣는다. 배치 모드에서는 다음을 쓴다.
     /// <code>
     /// Unity -batchmode -quit -projectPath client
@@ -29,8 +29,11 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>배우 하나가 보이는 효과 칸의 최대 수.</summary>
         private const int EffectSlots = 4;
 
-        /// <summary>배경의 그리는 순서. 배우(0~4)보다 아래다.</summary>
-        private const int BackgroundOrder = -10;
+        /// <summary>배경 근경의 그리는 순서. 배우(0~4)보다 아래다.</summary>
+        private const int NearOrder = -10;
+
+        /// <summary>배경 원경의 그리는 순서. 근경 아래다.</summary>
+        private const int FarOrder = -11;
 
         /// <summary>파티클의 그리는 순서. 발사체(5) 위, 글자(10) 아래다.</summary>
         private const int ParticleOrder = 6;
@@ -50,13 +53,13 @@ namespace PortfolioIdleRpg.Editor
         public static void Build()
         {
             (SpriteClipSet[] actorClips, SpriteClipSet projectileClips) = ActorClips.Build();
-            Sprite[] backgrounds = Backgrounds.Build();
+            (Sprite[] far, Sprite[] near) = Backgrounds.Build();
             if (!AssetDatabase.IsValidFolder($"{ParentFolder}/{FolderName}"))
                 AssetDatabase.CreateFolder(ParentFolder, FolderName);
             BuildActor(actorClips);
             BuildProjectile(projectileClips);
             BuildDamageText();
-            BuildStage(backgrounds);
+            BuildStage(far, near);
             AssetDatabase.SaveAssets();
             Debug.Log($"[Battle] Built the prefabs in {ParentFolder}/{FolderName}");
         }
@@ -155,28 +158,27 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// 루트에 ViewRefs와 StageView를 두고 배경(SpriteRenderer), 파티클(ParticleSystem), 막(SpriteRenderer)을 자식으로
-        /// 둔 무대 프리팹을 만든다. ViewRefs 항목은 stage다. 파티클은 배경과 같은 스프라이트 재질로 흰 사각형을 그린다. 막의
-        /// 도형 스프라이트는 StageView가 실행 중에 넣는다.
+        /// 루트에 ViewRefs와 StageView를 두고 배경의 원경과 근경(SpriteRenderer), 파티클(ParticleSystem), 막(SpriteRenderer)을
+        /// 자식으로 둔 무대 프리팹을 만든다. ViewRefs 항목은 stage다. 파티클은 배경과 같은 스프라이트 재질로 흰 사각형을 그린다.
+        /// 막의 도형 스프라이트는 StageView가 실행 중에 넣는다.
         /// </summary>
-        /// <param name="backgrounds">StageView가 이름으로 고르는 배경. 0번이 기본이다.</param>
-        private static void BuildStage(Sprite[] backgrounds)
+        /// <param name="far">StageView가 이름으로 고르는 원경. 0번이 기본이다.</param>
+        /// <param name="near">원경과 같은 차례의 근경.</param>
+        private static void BuildStage(Sprite[] far, Sprite[] near)
         {
             var root = new GameObject("Stage", typeof(ViewRefs), typeof(StageView));
             try
             {
-                SpriteRenderer background = AddSprite(root.transform, "Background", Color.white, BackgroundOrder);
-                background.sprite = backgrounds[0];
-                // 그림 세 장을 가로로 이어, StageView.Scroll이 반 장까지 밀어도 넓은 화면의 양옆이 비지 않게 한다.
-                background.drawMode = SpriteDrawMode.Tiled;
-                Vector2 tile = backgrounds[0].bounds.size;
-                background.size = new Vector2(3f * tile.x, tile.y);
-                ParticleSystem particles = AddParticles(root.transform, background.sharedMaterial);
+                SpriteRenderer farLayer = AddLayer(root.transform, "Far", far[0], FarOrder);
+                SpriteRenderer nearLayer = AddLayer(root.transform, "Near", near[0], NearOrder);
+                ParticleSystem particles = AddParticles(root.transform, nearLayer.sharedMaterial);
                 SpriteRenderer cover = AddSprite(root.transform, "Cover", Color.clear, CoverOrder);
                 cover.transform.localScale = new Vector3(CoverSize, CoverSize, 1f);
 
                 var view = root.GetComponent<StageView>();
-                Fields.Wire(view, ("_background", background), ("_backgrounds", backgrounds), ("_particles", particles), ("_cover", cover));
+                Fields.Wire(
+                    view, ("_far", farLayer), ("_near", nearLayer), ("_fars", far), ("_nears", near),
+                    ("_particles", particles), ("_cover", cover));
 
                 UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("stage", view));
                 Save(root, "Stage");
@@ -238,6 +240,25 @@ namespace PortfolioIdleRpg.Editor
             }
             Fields.Wire(effects, ("_icons", icons), ("_bars", bars));
             return effects;
+        }
+
+        /// <summary>
+        /// 배경의 한 겹을 그리는 자식을 만든다. 그림 세 장을 가로로 이어, StageView.Scroll이 반 장까지 밀어도 넓은 화면의
+        /// 양옆이 비지 않게 한다.
+        /// </summary>
+        /// <param name="parent">무대의 루트.</param>
+        /// <param name="name">오브젝트 이름.</param>
+        /// <param name="sprite">처음 그림.</param>
+        /// <param name="sortingOrder">그리는 순서.</param>
+        /// <returns>만든 SpriteRenderer.</returns>
+        private static SpriteRenderer AddLayer(Transform parent, string name, Sprite sprite, int sortingOrder)
+        {
+            SpriteRenderer layer = AddSprite(parent, name, Color.white, sortingOrder);
+            layer.sprite = sprite;
+            layer.drawMode = SpriteDrawMode.Tiled;
+            Vector2 tile = sprite.bounds.size;
+            layer.size = new Vector2(3f * tile.x, tile.y);
+            return layer;
         }
 
         /// <summary>SpriteRenderer 하나를 가진 자식 오브젝트를 만든다.</summary>
