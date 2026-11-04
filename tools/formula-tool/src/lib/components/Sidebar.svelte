@@ -1,25 +1,13 @@
 <script lang="ts">
-  import { projectStore, type ItemKind } from '$lib/stores/project.svelte';
-  import type { Stat, Constant, Formula } from '$lib/project/types';
-
-  type Item = Stat | Constant | Formula;
+  import { KINDS, projectStore, type Item, type ItemKind } from '$lib/stores/project.svelte';
 
   let query = $state('');
 
-  const tabs: { kind: ItemKind; label: string }[] = [
-    { kind: 'formula', label: '공식' },
-    { kind: 'stat', label: '스탯' },
-    { kind: 'constant', label: '상수' },
-    { kind: 'input', label: '입력' },
-  ];
+  const tabs = Object.entries(KINDS).map(([kind, { label }]) => ({ kind: kind as ItemKind, label }));
 
   const items = $derived.by((): Item[] => {
     const p = projectStore.current;
-    if (!p) return [];
-    if (projectStore.activeTab === 'stat') return p.stats;
-    if (projectStore.activeTab === 'constant') return p.constants;
-    if (projectStore.activeTab === 'input') return p.inputs ?? [];
-    return p.formulas;
+    return p ? KINDS[projectStore.activeTab].items(p) : [];
   });
 
   const filtered = $derived.by(() => {
@@ -30,12 +18,7 @@
     );
   });
 
-  function add() {
-    if (projectStore.activeTab === 'stat') projectStore.addStat();
-    else if (projectStore.activeTab === 'constant') projectStore.addConstant();
-    else if (projectStore.activeTab === 'input') projectStore.addInput();
-    else projectStore.addFormula();
-  }
+  const add = () => projectStore.addItem(projectStore.activeTab);
 </script>
 
 <aside class="sidebar">

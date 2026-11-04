@@ -3,7 +3,7 @@
   import { goto } from '$app/navigation';
   import { ask } from '@tauri-apps/plugin-dialog';
   import { getCurrentWindow } from '@tauri-apps/api/window';
-  import { projectStore } from '$lib/stores/project.svelte';
+  import { KINDS, projectStore } from '$lib/stores/project.svelte';
   import { writeProject } from '$lib/tauri/projects';
   import { writeTextFile, pickTsExportPath } from '$lib/tauri/export';
   import { generateTypeScript } from '$lib/export/codegen';
@@ -47,10 +47,7 @@
     const p = projectStore.current;
     const sel = projectStore.selection;
     if (!p || !sel) return null;
-    if (sel.kind === 'formula') return p.formulas.find((f) => f.id === sel.id) ?? null;
-    if (sel.kind === 'stat') return p.stats.find((s) => s.id === sel.id) ?? null;
-    if (sel.kind === 'input') return p.inputs?.find((i) => i.id === sel.id) ?? null;
-    return p.constants.find((c) => c.id === sel.id) ?? null;
+    return KINDS[sel.kind].items(p).find((item) => item.id === sel.id) ?? null;
   });
 
   async function save() {

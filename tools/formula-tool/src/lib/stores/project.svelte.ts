@@ -1,7 +1,43 @@
-import type { Project, Stat, Constant, Input, Formula, ActorKey } from '$lib/project/types';
+import type { Project, Stat, Constant, Formula, ActorKey } from '$lib/project/types';
 import { uniqueKey } from '$lib/project/keys';
 
 export type ItemKind = 'formula' | 'stat' | 'constant' | 'input';
+
+/** 사이드바와 편집기가 다루는 항목. 입력(Input)은 상수와 모양이 같다. */
+export type Item = Stat | Constant | Formula;
+
+/** 항목 종류 하나: 탭 이름, 프로젝트 안의 목록, 새 항목을 더하는 법. 종류를 가르는 곳은 이 표 하나다. */
+interface KindSpec {
+  readonly label: string;
+  items(project: Project): Item[];
+  add(project: Project, id: string, keys: readonly string[]): void;
+}
+
+/** 탭 순서대로의 항목 종류. */
+export const KINDS: Readonly<Record<ItemKind, KindSpec>> = {
+  formula: {
+    label: '공식',
+    items: (p) => p.formulas,
+    add: (p, id, keys) => void p.formulas.push({ id, key: uniqueKey('formula', keys), expression: '0', description: '' }),
+  },
+  stat: {
+    label: '스탯',
+    items: (p) => p.stats,
+    add: (p, id, keys) =>
+      void p.stats.push({ id, key: uniqueKey('stat', keys), defaults: { caster: 0, target: 0 }, description: '' }),
+  },
+  constant: {
+    label: '상수',
+    items: (p) => p.constants,
+    add: (p, id, keys) => void p.constants.push({ id, key: uniqueKey('constant', keys), value: 0, description: '' }),
+  },
+  input: {
+    label: '입력',
+    items: (p) => p.inputs ?? [],
+    // 'input'은 생성 코드의 매개변수라 예약된 이름이다.
+    add: (p, id, keys) => void (p.inputs ??= []).push({ id, key: uniqueKey('param', keys), value: 0, description: '' }),
+  },
+};
 
 export interface Selection {
   kind: ItemKind;
@@ -74,73 +110,17 @@ class ProjectStore {
     return [...p.stats, ...p.constants, ...(p.inputs ?? []), ...p.formulas].map((i) => i.key);
   }
 
-  addStat(): void {
+  addItem(kind: ItemKind): void {
     if (!this.current) return;
     const id = crypto.randomUUID();
-    const stat: Stat = {
-      id,
-      key: uniqueKey('stat', this.allKeys()),
-      defaults: { caster: 0, target: 0 },
-      description: '',
-    };
-    this.current.stats.push(stat);
+    KINDS[kind].add(this.current, id, this.allKeys());
     this.markDirty();
-    this.select('stat', id);
-  }
-
-  addConstant(): void {
-    if (!this.current) return;
-    const id = crypto.randomUUID();
-    const constant: Constant = {
-      id,
-      key: uniqueKey('constant', this.allKeys()),
-      value: 0,
-      description: '',
-    };
-    this.current.constants.push(constant);
-    this.markDirty();
-    this.select('constant', id);
-  }
-
-  addInput(): void {
-    if (!this.current) return;
-    const id = crypto.randomUUID();
-    const input: Input = {
-      id,
-      // 'input'은 생성 코드의 매개변수라 예약된 이름이다.
-      key: uniqueKey('param', this.allKeys()),
-      value: 0,
-      description: '',
-    };
-    (this.current.inputs ??= []).push(input);
-    this.markDirty();
-    this.select('input', id);
-  }
-
-  addFormula(): void {
-    if (!this.current) return;
-    const id = crypto.randomUUID();
-    const formula: Formula = {
-      id,
-      key: uniqueKey('formula', this.allKeys()),
-      expression: '0',
-      description: '',
-    };
-    this.current.formulas.push(formula);
-    this.markDirty();
-    this.select('formula', id);
+    this.select(kind, id);
   }
 
   removeItem(kind: ItemKind, id: string): void {
     if (!this.current) return;
-    const list =
-      kind === 'stat'
-        ? this.current.stats
-        : kind === 'constant'
-          ? this.current.constants
-          : kind === 'input'
-            ? (this.current.inputs ?? [])
-            : this.current.formulas;
+    const list = KINDS[kind].items(this.current);
     const idx = list.findIndex((i) => i.id === id);
     if (idx === -1) return;
     list.splice(idx, 1);
