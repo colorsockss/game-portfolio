@@ -51,8 +51,7 @@ namespace PortfolioIdleRpg.Editor
         private static GameObject BuildSlot()
         {
             UiTheme theme = UiTheme.Load();
-            var root = new GameObject("SkillSlot", typeof(RectTransform), typeof(Image), typeof(Button), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("SkillSlot", new[] { typeof(Image), typeof(Button) }, root =>
             {
                 // 칸 전체가 누르는 자리라 투명한 바탕이 탭을 받는다.
                 var background = root.GetComponent<Image>();
@@ -79,15 +78,12 @@ namespace PortfolioIdleRpg.Editor
                 skillName.fontSizeMin = theme.TinySize;
                 skillName.fontSizeMax = theme.SmallSize;
 
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(), ("labelText", label), ("nameText", skillName), ("levelText", level),
-                    ("icon", icon), ("tint", tint), ("selectedMark", selected.gameObject), ("selectButton", button));
-                return UiPrefabs.Save(root, "SkillSlot");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                return new (string Name, Object Target)[]
+                {
+                    ("labelText", label), ("nameText", skillName), ("levelText", level),
+                    ("icon", icon), ("tint", tint), ("selectedMark", selected.gameObject), ("selectButton", button)
+                };
+            });
         }
 
         /// <summary>
@@ -98,16 +94,13 @@ namespace PortfolioIdleRpg.Editor
         private static ViewRefs BuildCell()
         {
             UiTheme theme = UiTheme.Load();
-            var root = new GameObject(
-                "SkillCell", typeof(RectTransform), typeof(Image), typeof(LayoutElement), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("SkillCell", new[] { typeof(Image), typeof(LayoutElement) }, root =>
             {
                 ((RectTransform)root.transform).sizeDelta = new Vector2(0f, CellHeight);
                 root.GetComponent<LayoutElement>().preferredHeight = CellHeight;
 
                 var background = root.GetComponent<Image>();
                 UiParts.Paint(background, theme.CellSprite, theme.Cell);
-                var cell = root.GetComponent<ViewRefs>();
 
                 Image tile = UiParts.AddFrame(background.transform, "Tile", theme.SlotSprite, theme.Elements[0]);
                 UiPrefabs.Place(tile, new Vector2(0f, 0.5f), new Vector2(16f, 0f), new Vector2(TileSize, TileSize));
@@ -137,21 +130,16 @@ namespace PortfolioIdleRpg.Editor
                 Button equip = AddButton(background.transform, "EquipButton", ButtonStyle.Primary, 1);
                 Button unequip = AddButton(background.transform, "UnequipButton", ButtonStyle.Secondary, 1);
 
-                UiPrefabs.SetRefs(
-                    cell, ("icon", icon), ("tint", tint), ("nameText", skillName), ("levelText", level), ("stateText", state),
+                return new (string Name, Object Target)[]
+                {
+                    ("icon", icon), ("tint", tint), ("nameText", skillName), ("levelText", level), ("stateText", state),
                     ("costText", cost),
                     ("learnButton", learn), ("learnLabel", UiPrefabs.LabelOf(learn)),
                     ("equipButton", equip), ("equipLabel", UiPrefabs.LabelOf(equip)),
                     ("unequipButton", unequip), ("unequipLabel", UiPrefabs.LabelOf(unequip)),
-                    ("levelUpButton", levelUp), ("levelUpLabel", UiPrefabs.LabelOf(levelUp)));
-
-                GameObject saved = UiPrefabs.Save(root, "SkillCell");
-                return saved.GetComponent<ViewRefs>();
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                    ("levelUpButton", levelUp), ("levelUpLabel", UiPrefabs.LabelOf(levelUp))
+                };
+            }).GetComponent<ViewRefs>();
         }
 
         /// <summary>칸의 오른쪽 끝에서 <paramref name="column"/>번째 자리에 버튼을 둔다.</summary>

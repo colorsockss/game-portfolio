@@ -42,11 +42,7 @@ namespace PortfolioIdleRpg.Editor
                 set = ScriptableObject.CreateInstance<IconSet>();
                 AssetDatabase.CreateAsset(set, SetPath);
             }
-            var serialized = new SerializedObject(set);
-            UiPrefabs.SetArray(
-                serialized.FindProperty("_icons"),
-                paths.Select(path => (Object)Get(Path.GetFileNameWithoutExtension(path))).ToArray());
-            serialized.ApplyModifiedPropertiesWithoutUndo();
+            Fields.Wire(set, ("_icons", paths.Select(path => (Object)Get(Path.GetFileNameWithoutExtension(path))).ToArray()));
             AssetDatabase.SaveAssets();
             Debug.Log($"[UI] Built {paths.Length} icons in {SetPath}");
         }
@@ -72,7 +68,7 @@ namespace PortfolioIdleRpg.Editor
         {
             Image image = AddFixed(parent, name, null);
             var icon = image.gameObject.AddComponent<IconView>();
-            UiPrefabs.SetField(icon, "_icons", AssetDatabase.LoadAssetAtPath<IconSet>(SetPath));
+            Fields.Wire(icon, ("_icons", AssetDatabase.LoadAssetAtPath<IconSet>(SetPath)));
             image.gameObject.SetActive(false);
             return icon;
         }

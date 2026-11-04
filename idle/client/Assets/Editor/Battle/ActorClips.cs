@@ -330,7 +330,7 @@ namespace PortfolioIdleRpg.Editor
             entry.FindPropertyRelative("FramesPerSecond").floatValue = clip.FramesPerSecond;
             entry.FindPropertyRelative("Loop").boolValue = clip.Loop;
             entry.FindPropertyRelative("ImpactFrame").intValue = clip.ImpactFrame;
-            UiPrefabs.SetArray(entry.FindPropertyRelative("Frames"), sprites);
+            Fields.Set(entry.FindPropertyRelative("Frames"), sprites);
         }
 
         /// <summary>프레임 하나를 텍스처의 <paramref name="left"/> 열부터 그린다.</summary>

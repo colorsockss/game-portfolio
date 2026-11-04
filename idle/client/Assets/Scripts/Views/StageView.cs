@@ -22,9 +22,6 @@ namespace PortfolioIdleRpg.Views
         /// <summary>막이 다 걷히는 데 걸리는 시간(초).</summary>
         private const float LightenSeconds = 0.45f;
 
-        /// <summary>한 프레임에 세는 가장 긴 시간(초). 로딩으로 긴 프레임이 와도 막이 건너뛰지 않는다.</summary>
-        private const float MaxFrameSeconds = 1f / 30f;
-
         /// <summary>배경 그림을 보이는 렌더러. 배우보다 아래에 그려진다.</summary>
         [SerializeField]
         private SpriteRenderer _background;
@@ -193,7 +190,7 @@ namespace PortfolioIdleRpg.Views
         {
             if (!_cover.enabled)
                 return;
-            float delta = Mathf.Min(Time.deltaTime, MaxFrameSeconds);
+            float delta = FrameTime.Scaled;
             Color color = _cover.color;
             if (_darkening)
             {

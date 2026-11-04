@@ -351,11 +351,7 @@ namespace PortfolioIdleRpg.Editor
             layout.childControlHeight = true;
             layout.childForceExpandWidth = true;
             layout.childForceExpandHeight = !vertical;
-            var instance = (GameObject)PrefabUtility.InstantiatePrefab(template, go.transform);
-            instance.SetActive(false);
-            var list = go.GetComponent<ViewList>();
-            UiPrefabs.SetField(list, "_template", instance.GetComponent<ViewRefs>());
-            return list;
+            return UiPrefabs.SetTemplate(go.GetComponent<ViewList>(), template);
         }
 
         /// <summary>

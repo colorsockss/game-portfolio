@@ -50,9 +50,7 @@ namespace PortfolioIdleRpg.Editor
         private static ViewRefs BuildCell()
         {
             UiTheme theme = UiTheme.Load();
-            var root = new GameObject(
-                "UpgradeCell", typeof(RectTransform), typeof(Image), typeof(LayoutElement), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("UpgradeCell", new[] { typeof(Image), typeof(LayoutElement) }, root =>
             {
                 ((RectTransform)root.transform).sizeDelta = new Vector2(0f, CellHeight);
                 root.GetComponent<LayoutElement>().preferredHeight = CellHeight;
@@ -60,7 +58,6 @@ namespace PortfolioIdleRpg.Editor
                 var background = root.GetComponent<Image>();
                 UiParts.Paint(background, theme.CellSprite, theme.Cell);
                 background.raycastTarget = false;
-                var cell = root.GetComponent<ViewRefs>();
 
                 Image tile = UiParts.AddFrame(background.transform, "Tile", theme.SlotSprite, theme.Secondary);
                 UiPrefabs.Place(tile, new Vector2(0f, 0.5f), new Vector2(14f, 0f), new Vector2(TileSize, TileSize));
@@ -95,17 +92,12 @@ namespace PortfolioIdleRpg.Editor
                 TMP_Text cost = UiPrefabs.LabelOf(upgrade);
                 cost.rectTransform.offsetMin = new Vector2(70f, 10f);
 
-                UiPrefabs.SetRefs(
-                    cell, ("icon", icon), ("nameText", upgradeName), ("levelText", level), ("bonusText", bonus),
-                    ("nextText", next), ("upgradeButton", upgrade), ("costText", cost));
-
-                GameObject saved = UiPrefabs.Save(root, "UpgradeCell");
-                return saved.GetComponent<ViewRefs>();
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                return new (string Name, Object Target)[]
+                {
+                    ("icon", icon), ("nameText", upgradeName), ("levelText", level), ("bonusText", bonus),
+                    ("nextText", next), ("upgradeButton", upgrade), ("costText", cost)
+                };
+            }).GetComponent<ViewRefs>();
         }
 
         /// <summary>

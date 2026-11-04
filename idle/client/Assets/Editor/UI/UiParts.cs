@@ -147,12 +147,7 @@ namespace PortfolioIdleRpg.Editor
         {
             graphic.color = colors[0];
             var tint = graphic.gameObject.AddComponent<TintView>();
-            var serialized = new SerializedObject(tint);
-            SerializedProperty list = serialized.FindProperty("_colors");
-            list.arraySize = colors.Length;
-            for (var i = 0; i < colors.Length; i++)
-                list.GetArrayElementAtIndex(i).colorValue = colors[i];
-            serialized.ApplyModifiedPropertiesWithoutUndo();
+            Fields.Wire(tint, ("_colors", colors));
             return tint;
         }
 
@@ -270,7 +265,7 @@ namespace PortfolioIdleRpg.Editor
             // 고르지 않은 탭은 칸이 보이지 않고, 누르는 동안만 옅게 비친다.
             colors.normalColor = new Color(1f, 1f, 1f, 0f);
             colors.highlightedColor = new Color(1f, 1f, 1f, 0f);
-            colors.pressedColor = new Color(1f, 1f, 1f, 0.25f);
+            colors.pressedColor = theme.TabPressed;
             // 누른 뒤에도 선택 상태로 밝게 남지 않게 보통 색과 같게 둔다.
             colors.selectedColor = colors.normalColor;
             colors.disabledColor = theme.Accent;
@@ -283,7 +278,7 @@ namespace PortfolioIdleRpg.Editor
             template.SetActive(false);
 
             var tabs = root.AddComponent<TabBar>();
-            UiPrefabs.SetField(tabs, "_template", button);
+            Fields.Wire(tabs, ("_template", button));
         });
 
         /// <summary>
@@ -300,8 +295,7 @@ namespace PortfolioIdleRpg.Editor
             panel.rectTransform.sizeDelta = new Vector2(960f, 1400f);
 
             var motion = root.AddComponent<PopupMotion>();
-            UiPrefabs.SetField(motion, "_group", root.GetComponent<CanvasGroup>());
-            UiPrefabs.SetField(motion, "_panel", panel.rectTransform);
+            Fields.Wire(motion, ("_group", root.GetComponent<CanvasGroup>()), ("_panel", panel.rectTransform));
         });
 
         /// <summary>

@@ -36,22 +36,20 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>아틀라스 한 장의 한 변. 다 차면 같은 크기의 장을 더한다.</summary>
         private const int AtlasSize = 2048;
 
-        /// <summary>외곽선과 그림자의 색. UI 그림의 외곽선(draw.py의 OUTLINE)과 같다.</summary>
-        private static readonly Color s_outline = new Color32(43, 34, 54, 255);
-
         /// <summary>글꼴 에셋과 재질을 만들거나 고치고, TMP의 기본 글꼴과 테마의 잉크 재질로 정한다.</summary>
         [MenuItem("Tools/UI/Build Font")]
         public static void Build()
         {
+            UiTheme theme = UiTheme.Load();
             TMP_FontAsset asset = LoadOrCreate();
             Material face = asset.material;
             face.shader = Shader.Find("TextMeshPro/Distance Field");
             face.SetFloat(ShaderUtilities.ID_FaceDilate, 0.2f);
             face.EnableKeyword(ShaderUtilities.Keyword_Outline);
-            face.SetColor(ShaderUtilities.ID_OutlineColor, s_outline);
+            face.SetColor(ShaderUtilities.ID_OutlineColor, theme.Outline);
             face.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.42f);
             face.EnableKeyword(ShaderUtilities.Keyword_Underlay);
-            face.SetColor(ShaderUtilities.ID_UnderlayColor, s_outline);
+            face.SetColor(ShaderUtilities.ID_UnderlayColor, theme.Outline);
             face.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, 0f);
             face.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.9f);
             face.SetFloat(ShaderUtilities.ID_UnderlayDilate, 0.6f);
@@ -70,11 +68,8 @@ namespace PortfolioIdleRpg.Editor
             ink.SetFloat(ShaderUtilities.ID_OutlineWidth, 0f);
             EditorUtility.SetDirty(ink);
 
-            var settings = new SerializedObject(TMP_Settings.instance);
-            settings.FindProperty("m_defaultFontAsset").objectReferenceValue = asset;
-            settings.ApplyModifiedPropertiesWithoutUndo();
+            Fields.Wire(TMP_Settings.instance, ("m_defaultFontAsset", asset));
 
-            UiTheme theme = UiTheme.Load();
             theme.InkMaterial = ink;
             EditorUtility.SetDirty(theme);
             AssetDatabase.SaveAssets();
@@ -98,9 +93,7 @@ namespace PortfolioIdleRpg.Editor
             asset.material.name = "Jua SDF Material";
             AssetDatabase.AddObjectToAsset(asset.material, asset);
             // 빌드에는 빈 아틀라스로 들어가 기기에서 쓰는 글자만 그린다.
-            var serialized = new SerializedObject(asset);
-            serialized.FindProperty("m_ClearDynamicDataOnBuild").boolValue = true;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
+            Fields.Wire(asset, ("m_ClearDynamicDataOnBuild", true));
             return asset;
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using PortfolioIdleRpg.Views;
 using TMPro;
 using UnityEditor;
@@ -59,8 +60,7 @@ namespace PortfolioIdleRpg.Editor
         private static ViewRefs BuildCell()
         {
             UiTheme theme = UiTheme.Load();
-            var root = new GameObject("EquipmentCell", typeof(RectTransform), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("EquipmentCell", Type.EmptyTypes, root =>
             {
                 ((RectTransform)root.transform).sizeDelta = new Vector2(TileSize, TileSize);
                 // 고른 테두리를 칸 안에 두어 스크롤 목록의 가장자리에서 잘리지 않게 한다.
@@ -99,18 +99,14 @@ namespace PortfolioIdleRpg.Editor
                 GameObject better = UiParts.AddBadge(root.transform);
                 UiPrefabs.Place(better.transform, Vector2.one, Vector2.zero, new Vector2(46f, 46f));
 
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(), ("icon", icon), ("tint", tint), ("levelText", level),
+                return new (string Name, Object Target)[]
+                {
+                    ("icon", icon), ("tint", tint), ("levelText", level),
                     ("countBar", track.gameObject), ("countFill", fill),
                     ("countText", count), ("wornMark", worn.gameObject), ("betterBadge", better),
-                    ("selectedMark", selected.gameObject), ("selectButton", button));
-                GameObject saved = UiPrefabs.Save(root, "EquipmentCell");
-                return saved.GetComponent<ViewRefs>();
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                    ("selectedMark", selected.gameObject), ("selectButton", button)
+                };
+            }).GetComponent<ViewRefs>();
         }
 
         /// <summary>
@@ -168,7 +164,7 @@ namespace PortfolioIdleRpg.Editor
             cost.text = "0";
             cost.alignment = TextAlignmentOptions.MidlineLeft;
             var rolling = cost.gameObject.AddComponent<RollingText>();
-            UiPrefabs.SetField(rolling, "_label", cost);
+            Fields.Wire(rolling, ("_label", cost));
             Button enhance = UiParts.AddButton(dock, "EnhanceButton", ButtonStyle.Positive);
             UiPrefabs.Place(enhance, new Vector2(1f, 0.39f), new Vector2(-16f, 0f), new Vector2(ButtonWidth, 76f));
             enhance.gameObject.AddComponent<RepeatButton>();

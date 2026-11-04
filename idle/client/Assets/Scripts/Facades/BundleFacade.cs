@@ -260,13 +260,9 @@ namespace PortfolioIdleRpg.Facades
         private static async Task DownloadAssetsAsync(string catalog)
         {
             await Addressables.InitializeAsync().Task;
-            Addressables.ClearResourceLocators();
-            AsyncOperationHandle<IResourceLocator> load = Addressables.LoadContentCatalogAsync(catalog, false);
+            AsyncOperationHandle<IResourceLocator> load = ResourceFacade.LoadOnlyCatalog(catalog);
             await load.Task;
-            bool loaded = load.Status == AsyncOperationStatus.Succeeded;
-            Addressables.Release(load);
-            if (!loaded)
-                throw new InvalidOperationException($"Could not load the asset catalog {catalog}.");
+            ResourceFacade.EndCatalogLoad(load, catalog);
 
             AsyncOperationHandle<long> size = Addressables.GetDownloadSizeAsync((object)AssetLabel);
             await size.Task;

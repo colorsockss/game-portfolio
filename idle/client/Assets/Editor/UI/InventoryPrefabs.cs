@@ -1,3 +1,4 @@
+using System;
 using PortfolioIdleRpg.Views;
 using TMPro;
 using UnityEditor;
@@ -44,8 +45,7 @@ namespace PortfolioIdleRpg.Editor
         private static ViewRefs BuildCell()
         {
             UiTheme theme = UiTheme.Load();
-            var root = new GameObject("InventoryCell", typeof(RectTransform), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("InventoryCell", Type.EmptyTypes, root =>
             {
                 ((RectTransform)root.transform).sizeDelta = new Vector2(SlotSize, SlotSize + NameHeight);
                 Image tile = UiParts.AddFrame(root.transform, "Tile", theme.SlotSprite, theme.Grades[0]);
@@ -64,16 +64,12 @@ namespace PortfolioIdleRpg.Editor
                 itemName.enableAutoSizing = true;
                 itemName.fontSizeMin = theme.TinySize;
                 itemName.fontSizeMax = theme.CaptionSize;
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(), ("icon", icon), ("nameText", itemName), ("amountText", amount), ("tint", tint));
 
-                GameObject saved = UiPrefabs.Save(root, "InventoryCell");
-                return saved.GetComponent<ViewRefs>();
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                return new (string Name, Object Target)[]
+                {
+                    ("icon", icon), ("nameText", itemName), ("amountText", amount), ("tint", tint)
+                };
+            }).GetComponent<ViewRefs>();
         }
 
         /// <summary>

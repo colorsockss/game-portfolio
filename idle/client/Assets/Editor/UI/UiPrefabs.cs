@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using PortfolioIdleRpg.Views;
 using TMPro;
 using UnityEditor;
@@ -137,16 +140,6 @@ namespace PortfolioIdleRpg.Editor
             rect.sizeDelta = size;
         }
 
-        /// <summary>직렬화된 오브젝트 배열 필드를 채운다.</summary>
-        /// <param name="property">배열 필드.</param>
-        /// <param name="values">넣을 오브젝트.</param>
-        internal static void SetArray(SerializedProperty property, Object[] values)
-        {
-            property.arraySize = values.Length;
-            for (var i = 0; i < values.Length; i++)
-                property.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
-        }
-
         /// <summary>ViewRefs의 항목을 Object 항목들로 정한다. 있던 항목은 지운다.</summary>
         /// <param name="refs">항목을 넣을 ViewRefs.</param>
         /// <param name="entries">항목 이름과 가리킬 오브젝트.</param>
@@ -174,15 +167,18 @@ namespace PortfolioIdleRpg.Editor
             }
         }
 
-        /// <summary>컴포넌트의 직렬화된 오브젝트 필드 하나를 정한다.</summary>
-        /// <param name="component">필드를 가진 컴포넌트.</param>
-        /// <param name="field">필드 이름.</param>
-        /// <param name="value">넣을 오브젝트.</param>
-        internal static void SetField(Object component, string field, Object value)
+        /// <summary>
+        /// 칸 프리팹을 목록 아래에 꺼 둔 틀로 놓고 ViewList의 틀로 정한다. ViewList가 원소마다 이 틀을 복제해 늘어놓는다.
+        /// </summary>
+        /// <param name="list">틀을 받을 ViewList.</param>
+        /// <param name="template">칸 프리팹(루트에 ViewRefs).</param>
+        /// <returns><paramref name="list"/>.</returns>
+        internal static ViewList SetTemplate(ViewList list, GameObject template)
         {
-            var serialized = new SerializedObject(component);
-            serialized.FindProperty(field).objectReferenceValue = value;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
+            var instance = (GameObject)PrefabUtility.InstantiatePrefab(template, list.transform);
+            instance.SetActive(false);
+            Fields.Wire(list, ("_template", instance.GetComponent<ViewRefs>()));
+            return list;
         }
 
         /// <summary>
@@ -239,9 +235,7 @@ namespace PortfolioIdleRpg.Editor
             scroller.scrollSensitivity = 30f;
 
             var list = go.GetComponent<ScrollList>();
-            var serialized = new SerializedObject(list);
-            serialized.FindProperty("_cellPrefab").objectReferenceValue = cell;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
+            Fields.Wire(list, ("_cellPrefab", cell));
             return list;
         }
 
@@ -255,5 +249,29 @@ namespace PortfolioIdleRpg.Editor
         /// <returns>저장한 프리팹 에셋.</returns>
         internal static GameObject Save(GameObject root, string name, bool inApp = false) =>
             PrefabIds.Save(root, $"{(inApp ? AppFolder : Folder)}/{name}.prefab");
+
+        /// <summary>
+        /// 루트에 ViewRefs가 있는 프리팹을 만들어 저장한다. 루트의 컴포넌트는 RectTransform, <paramref name="components"/>, ViewRefs
+        /// 순서이고, <paramref name="build"/>가 루트를 채운 뒤 ViewRefs 항목을 돌려준다. 장면에 만든 루트는 실패해도 지운다.
+        /// </summary>
+        /// <param name="name">프리팹 이름.</param>
+        /// <param name="components">RectTransform과 ViewRefs 사이에 달 컴포넌트.</param>
+        /// <param name="build">루트를 채우고 ViewRefs 항목(이름, 가리킬 오브젝트)을 돌려준다.</param>
+        /// <param name="inApp">앱에 드는 Assets/Resources/UI에 저장하는지.</param>
+        /// <returns>저장한 프리팹.</returns>
+        internal static GameObject SaveView(
+            string name, Type[] components, Func<GameObject, IEnumerable<(string Name, Object Target)>> build, bool inApp = false)
+        {
+            var root = new GameObject(name, components.Prepend(typeof(RectTransform)).Append(typeof(ViewRefs)).ToArray());
+            try
+            {
+                SetRefs(root.GetComponent<ViewRefs>(), build(root).ToArray());
+                return Save(root, name, inApp);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
     }
 }

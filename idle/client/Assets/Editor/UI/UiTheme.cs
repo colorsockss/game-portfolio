@@ -44,9 +44,6 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>팝업 뒤와 튜토리얼 막의 어두운 바탕.</summary>
         public Color Dim = new Color(0.05f, 0.04f, 0.1f, 0.65f);
 
-        /// <summary>토스트와 로딩 표시의 바탕.</summary>
-        public Color Notice = new Color(0.106f, 0.114f, 0.2f, 0.88f);
-
         /// <summary>고른 탭과 슬라이더 채움의 주황.</summary>
         public Color Accent = new Color(1f, 0.54f, 0.24f, 1f);
 
@@ -97,6 +94,15 @@ namespace PortfolioIdleRpg.Editor
 
         /// <summary>영웅 HP 막대의 채움.</summary>
         public Color Hp = new Color(1f, 0.36f, 0.43f, 1f);
+
+        /// <summary>스킬 칸이 재사용 대기 동안 덮이는 어두운 막.</summary>
+        public Color Cooldown = new Color(0.1f, 0.08f, 0.18f, 0.7f);
+
+        /// <summary>세그먼트 탭(TabBar)의 칸을 누르는 동안 옅게 비치는 색. 누르지 않으면 칸이 보이지 않는다.</summary>
+        public Color TabPressed = new Color(1f, 1f, 1f, 0.25f);
+
+        /// <summary>글자의 외곽선과 그림자 색. UI 그림의 외곽선(draw.py의 OUTLINE)과 같다.</summary>
+        public Color Outline = new Color32(43, 34, 54, 255);
 
         /// <summary>입력란의 바탕.</summary>
         public Color InputBackground = Color.white;

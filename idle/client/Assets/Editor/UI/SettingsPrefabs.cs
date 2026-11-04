@@ -37,9 +37,7 @@ namespace PortfolioIdleRpg.Editor
         /// <returns>저장한 프리팹.</returns>
         private static GameObject BuildChannel()
         {
-            var root = new GameObject(
-                "SettingsChannel", typeof(RectTransform), typeof(LayoutElement), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("SettingsChannel", new[] { typeof(LayoutElement) }, root =>
             {
                 ((RectTransform)root.transform).sizeDelta = new Vector2(900f, RowHeight);
                 root.GetComponent<LayoutElement>().preferredHeight = RowHeight;
@@ -58,15 +56,12 @@ namespace PortfolioIdleRpg.Editor
                 toggleRect.offsetMin = new Vector2(-240f, 0f);
                 toggleRect.offsetMax = Vector2.zero;
 
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(), ("nameText", label), ("volumeSlider", slider), ("muteToggle", mute),
-                    ("muteLabel", mute.GetComponentInChildren<TMP_Text>(true)));
-                return UiPrefabs.Save(root, "SettingsChannel");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                return new (string Name, Object Target)[]
+                {
+                    ("nameText", label), ("volumeSlider", slider), ("muteToggle", mute),
+                    ("muteLabel", mute.GetComponentInChildren<TMP_Text>(true))
+                };
+            });
         }
 
         /// <summary>

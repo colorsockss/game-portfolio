@@ -1,3 +1,4 @@
+using System;
 using PortfolioIdleRpg.Views;
 using TMPro;
 using UnityEditor;
@@ -29,8 +30,7 @@ namespace PortfolioIdleRpg.Editor
         public static void Build()
         {
             UiTheme theme = UiTheme.Load();
-            var root = new GameObject("DebugOverlay", typeof(RectTransform), typeof(ViewRefs));
-            try
+            UiPrefabs.SaveView("DebugOverlay", Type.EmptyTypes, root =>
             {
                 UiPrefabs.Stretch((RectTransform)root.transform, Vector2.zero, Vector2.zero);
 
@@ -60,18 +60,15 @@ namespace PortfolioIdleRpg.Editor
                 result.textWrappingMode = TextWrappingModes.Normal;
 
                 panel.gameObject.SetActive(false);
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(),
+
+                return new (string Name, Object Target)[]
+                {
                     ("toggleButton", toggle), ("panel", panel.gameObject), ("fpsText", fps),
                     ("serverTimeText", serverTime), ("dumpText", dump), ("cheatInput", cheat),
                     ("cheatButton", run), ("cheatResultText", result), ("toggleLabel", UiPrefabs.LabelOf(toggle)),
-                    ("cheatLabel", UiPrefabs.LabelOf(run)), ("cheatPlaceholder", (TMP_Text)cheat.placeholder));
-                UiPrefabs.Save(root, "DebugOverlay");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                    ("cheatLabel", UiPrefabs.LabelOf(run)), ("cheatPlaceholder", (TMP_Text)cheat.placeholder)
+                };
+            });
             AssetDatabase.SaveAssets();
             Debug.Log($"[UI] Built the debug overlay prefab in {UiPrefabs.Folder}");
         }

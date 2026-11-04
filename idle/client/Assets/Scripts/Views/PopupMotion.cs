@@ -19,9 +19,6 @@ namespace PortfolioIdleRpg.Views
         /// <summary>다 사라지는 데 걸리는 시간(초).</summary>
         private const float CloseSeconds = 0.12f;
 
-        /// <summary>한 프레임에 세는 가장 긴 시간(초). 프리팹을 만드는 긴 프레임이 와도 연출을 건너뛰지 않는다.</summary>
-        private const float MaxFrameSeconds = 1f / 30f;
-
         /// <summary>다 사라졌을 때 패널의 배율.</summary>
         private const float HiddenScale = 0.9f;
 
@@ -63,7 +60,7 @@ namespace PortfolioIdleRpg.Views
             if (_shown == target)
                 return;
             float seconds = _closing ? CloseSeconds : OpenSeconds;
-            _shown = Mathf.MoveTowards(_shown, target, Mathf.Min(Time.unscaledDeltaTime, MaxFrameSeconds) / seconds);
+            _shown = Mathf.MoveTowards(_shown, target, FrameTime.Unscaled / seconds);
             Apply();
             if (!_closing || (_shown != 0f))
                 return;

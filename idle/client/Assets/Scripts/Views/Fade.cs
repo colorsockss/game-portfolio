@@ -16,9 +16,6 @@ namespace PortfolioIdleRpg.Views
         /// <summary>다 가리거나 다 걷는 데 걸리는 시간(초).</summary>
         private const float FadeSeconds = 0.25f;
 
-        /// <summary>한 프레임에 세는 가장 긴 시간(초). 로딩으로 긴 프레임이 와도 페이드를 건너뛰지 않는다.</summary>
-        private const float MaxFrameSeconds = 1f / 30f;
-
         /// <summary>투명도를 바꾸는 그룹. 앱이 가린 채로 시작하므로 프리팹에서는 불투명하다.</summary>
         [SerializeField]
         private CanvasGroup _group;
@@ -46,7 +43,7 @@ namespace PortfolioIdleRpg.Views
         {
             if (!_moving)
                 return;
-            float step = Mathf.Min(Time.unscaledDeltaTime, MaxFrameSeconds) / FadeSeconds;
+            float step = FrameTime.Unscaled / FadeSeconds;
             _group.alpha = Mathf.MoveTowards(_group.alpha, _target, step);
             if (_group.alpha != _target)
                 return;

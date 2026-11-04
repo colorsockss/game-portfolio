@@ -1,3 +1,4 @@
+using System;
 using PortfolioIdleRpg.Views;
 using TMPro;
 using UnityEditor;
@@ -30,8 +31,7 @@ namespace PortfolioIdleRpg.Editor
         public static void Build()
         {
             UiTheme theme = UiTheme.Load();
-            var root = new GameObject("TutorialOverlay", typeof(RectTransform), typeof(ViewRefs));
-            try
+            UiPrefabs.SaveView("TutorialOverlay", Type.EmptyTypes, root =>
             {
                 UiPrefabs.Stretch((RectTransform)root.transform, Vector2.zero, Vector2.zero);
 
@@ -53,26 +53,19 @@ namespace PortfolioIdleRpg.Editor
 
                 (Image dialog, TMP_Text text, TMP_Text hint) = AddDialog(root.transform, theme);
 
-                UiPrefabs.SetField(spotlight, "_top", top.rectTransform);
-                UiPrefabs.SetField(spotlight, "_bottom", bottom.rectTransform);
-                UiPrefabs.SetField(spotlight, "_left", left.rectTransform);
-                UiPrefabs.SetField(spotlight, "_right", right.rectTransform);
-                UiPrefabs.SetField(spotlight, "_frame", frame);
-                UiPrefabs.SetField(spotlight, "_dialog", dialog.rectTransform);
+                Fields.Wire(
+                    spotlight, ("_top", top.rectTransform), ("_bottom", bottom.rectTransform), ("_left", left.rectTransform),
+                    ("_right", right.rectTransform), ("_frame", frame), ("_dialog", dialog.rectTransform));
                 foreach (Image shade in new[] { top, bottom, left, right })
                     shade.gameObject.SetActive(false);
                 frame.gameObject.SetActive(false);
 
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(),
+                return new (string Name, Object Target)[]
+                {
                     ("spotlight", spotlight), ("tapButton", tap), ("dialog", dialog.gameObject),
-                    ("dialogText", text), ("hint", hint.gameObject), ("hintLabel", hint));
-                UiPrefabs.Save(root, "TutorialOverlay");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                    ("dialogText", text), ("hint", hint.gameObject), ("hintLabel", hint)
+                };
+            });
             AssetDatabase.SaveAssets();
             Debug.Log($"[UI] Built the tutorial overlay prefab in {UiPrefabs.Folder}");
         }

@@ -48,9 +48,7 @@ namespace PortfolioIdleRpg.Editor
         /// <returns>저장한 프리팹.</returns>
         private static GameObject BuildCurrencySlot(UiTheme theme)
         {
-            var root = new GameObject(
-                "CurrencySlot", typeof(RectTransform), typeof(LayoutElement), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("CurrencySlot", new[] { typeof(LayoutElement) }, root =>
             {
                 ((RectTransform)root.transform).sizeDelta = new Vector2(SlotWidth, SlotHeight);
                 var element = root.GetComponent<LayoutElement>();
@@ -75,15 +73,13 @@ namespace PortfolioIdleRpg.Editor
                 amount.color = theme.Gold;
                 amount.alignment = TextAlignmentOptions.MidlineRight;
                 var rolling = amount.gameObject.AddComponent<RollingText>();
-                UiPrefabs.SetField(rolling, "_label", amount);
+                Fields.Wire(rolling, ("_label", amount));
 
-                UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("nameText", label), ("icon", icon), ("amountText", rolling));
-                return UiPrefabs.Save(root, "CurrencySlot");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                return new (string Name, Object Target)[]
+                {
+                    ("nameText", label), ("icon", icon), ("amountText", rolling)
+                };
+            });
         }
 
         /// <summary>
@@ -95,11 +91,7 @@ namespace PortfolioIdleRpg.Editor
         /// <returns>저장한 프리팹.</returns>
         private static GameObject BuildCurrencyBar(GameObject slot, UiTheme theme)
         {
-            var root = new GameObject(
-                "CurrencyBar",
-                typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(ContentSizeFitter),
-                typeof(ViewList), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("CurrencyBar", new[] { typeof(HorizontalLayoutGroup), typeof(ContentSizeFitter), typeof(ViewList) }, root =>
             {
                 UiPrefabs.Place(root.transform, new Vector2(1f, 0.5f), Vector2.zero, new Vector2(SlotWidth, SlotHeight));
                 var layout = root.GetComponent<HorizontalLayoutGroup>();
@@ -111,18 +103,13 @@ namespace PortfolioIdleRpg.Editor
                 layout.childForceExpandHeight = true;
                 root.GetComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-                var template = (GameObject)PrefabUtility.InstantiatePrefab(slot, root.transform);
-                template.SetActive(false);
-                var list = root.GetComponent<ViewList>();
-                UiPrefabs.SetField(list, "_template", template.GetComponent<ViewRefs>());
+                ViewList list = UiPrefabs.SetTemplate(root.GetComponent<ViewList>(), slot);
 
-                UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("currencies", list));
-                return UiPrefabs.Save(root, "CurrencyBar");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                return new (string Name, Object Target)[]
+                {
+                    ("currencies", list)
+                };
+            });
         }
 
         /// <summary>묻는 말과 취소·확인 버튼을 가진 팝업을 만든다.</summary>
@@ -165,10 +152,7 @@ namespace PortfolioIdleRpg.Editor
         /// <param name="theme">테마.</param>
         private static void BuildToast(UiTheme theme)
         {
-            var root = new GameObject(
-                "Toast",
-                typeof(RectTransform), typeof(CanvasGroup), typeof(Image), typeof(Toast), typeof(ViewRefs));
-            try
+            UiPrefabs.SaveView("Toast", new[] { typeof(CanvasGroup), typeof(Image), typeof(Toast) }, root =>
             {
                 UiPrefabs.Place(
                     root.transform, new Vector2(0.5f, 0.45f), Vector2.zero, new Vector2(900f, 110f));
@@ -185,15 +169,13 @@ namespace PortfolioIdleRpg.Editor
                 label.rectTransform.offsetMax = new Vector2(-theme.Padding, 0f);
 
                 var toast = root.GetComponent<Toast>();
-                UiPrefabs.SetField(toast, "_group", group);
-                UiPrefabs.SetField(toast, "_label", label);
-                UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("toast", toast));
-                UiPrefabs.Save(root, "Toast");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                Fields.Wire(toast, ("_group", group), ("_label", label));
+
+                return new (string Name, Object Target)[]
+                {
+                    ("toast", toast)
+                };
+            });
         }
 
         /// <summary>
@@ -204,8 +186,7 @@ namespace PortfolioIdleRpg.Editor
         /// <param name="theme">테마.</param>
         private static void BuildLoading(UiTheme theme)
         {
-            var root = new GameObject("Loading", typeof(RectTransform), typeof(Image), typeof(ViewRefs));
-            try
+            UiPrefabs.SaveView("Loading", new[] { typeof(Image) }, root =>
             {
                 UiPrefabs.Place(
                     root.transform, new Vector2(0.5f, 1f),
@@ -225,13 +206,11 @@ namespace PortfolioIdleRpg.Editor
                 message.rectTransform.offsetMax = new Vector2(-theme.Padding, 0f);
                 message.alignment = TextAlignmentOptions.Left;
 
-                UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("messageText", message));
-                UiPrefabs.Save(root, "Loading");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                return new (string Name, Object Target)[]
+                {
+                    ("messageText", message)
+                };
+            });
         }
 
         /// <summary>
@@ -242,10 +221,8 @@ namespace PortfolioIdleRpg.Editor
         /// <param name="theme">테마.</param>
         private static void BuildTransitionScreen(UiTheme theme)
         {
-            var root = new GameObject(
-                "TransitionScreen",
-                typeof(RectTransform), typeof(CanvasGroup), typeof(Image), typeof(Fade), typeof(ViewRefs));
-            try
+            // 부트의 패치 화면이라 앱에 든다.
+            UiPrefabs.SaveView("TransitionScreen", new[] { typeof(CanvasGroup), typeof(Image), typeof(Fade) }, root =>
             {
                 UiPrefabs.Bleed((RectTransform)root.transform);
                 var group = root.GetComponent<CanvasGroup>();
@@ -266,17 +243,13 @@ namespace PortfolioIdleRpg.Editor
                 track.gameObject.SetActive(false);
 
                 var fade = root.GetComponent<Fade>();
-                UiPrefabs.SetField(fade, "_group", group);
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(),
-                    ("fade", fade), ("messageText", message), ("progressBar", track.gameObject), ("progressFill", fill));
-                // 부트의 패치 화면이라 앱에 든다.
-                UiPrefabs.Save(root, "TransitionScreen", inApp: true);
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                Fields.Wire(fade, ("_group", group));
+
+                return new (string Name, Object Target)[]
+                {
+                    ("fade", fade), ("messageText", message), ("progressBar", track.gameObject), ("progressFill", fill)
+                };
+            }, inApp: true);
         }
     }
 }

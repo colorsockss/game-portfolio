@@ -27,6 +27,7 @@ Unity 6000.6 + PuerTS 3.0.3 프로젝트 루트입니다. 게임 로직은 `Type
   - 버튼 종류, 뱃지, 탭 막대, 팝업 틀, 게이지, 토글, 슬라이더, 입력란은 공용 부품(`Assets/UI/Parts/`, `Tools/UI/Build Parts`의 `UiParts.cs`)이고, 화면은 `UiParts.Add…`로 중첩 프리팹을 넣습니다. 부품을 고치고 다시 빌드하면 모든 화면이 바뀝니다.
   - 메인 화면 아래 탭이 여는 화면(성장, 스킬, 장비, 가방, 환생)은 화면을 덮는 바탕 없이 아래 탭과 영웅 띠 사이를 채우는 크림색 면 `UiSpec.Sheet(이름, 높이)`(높이는 `ScreenPrefabs.SheetHeight(탭)`)이고 TS 뷰의 레이어는 "screen"입니다. 판에는 테두리 카드도 닫기 버튼도 두지 않습니다(같은 탭이나 뒤로 가기로 닫음). 탭을 모두 끄면 메인 화면의 장착 현황 판이 그 자리에 보입니다. 확인·보상·설정은 팝업입니다.
   - 누르는 것은 볼록한 그림(버튼, `TileSprite`), 보기만 하는 칸은 오목한 그림(`SlotSprite`), 고르는 탭은 세그먼트(`TabBar` 부품)로 그려 버튼과 아닌 것을 구별합니다.
+  - 명세로 적지 않는 프리팹(칸, 메인·로그인, 위젯)은 `UiPrefabs.SaveView(이름, 컴포넌트, 루트 => 항목)`로 만들고, 컴포넌트의 직렬화된 필드는 `Fields.Wire(대상, ("_필드", 값), …)`로 채웁니다(전투 빌더도 같음). ViewList의 틀은 `UiPrefabs.SetTemplate`입니다.
   - 팝업과 판은 `UiSpec.Popup(이름, 너비, 높이)`나 `UiSpec.Sheet`에 머리(`Header`), 글자(`Text`), 탭(`Tabs`), 줄(`Row`, `Stack`), 목록(`List`), 본문(`Body`), 아래 버튼(`Footer`), 아래쪽에 고정한 판(`Dock`, 장비의 강화·합성 패널)을 위에서부터 쌓는 명세로 적습니다. 명세가 ViewRefs 항목 이름을 정하고 TS 뷰가 그 이름으로 바인딩하므로, 옮기거나 고칠 때 항목 이름을 바꾸지 않습니다.
 - 디버그 오버레이(`Remote/UI/DebugOverlay`)는 개발 빌드(`BUILD_MODE`)에서만 열립니다.
 - 튜토리얼 오버레이(`Remote/UI/TutorialOverlay`)가 비출 대상은 다른 뷰의 ViewRefs 항목 이름이라(`main.equipmentButton`), 항목 이름을 바꾸면 `idle/data/TutorialSteps.xlsx`의 `target`도 바꿉니다.

@@ -20,7 +20,6 @@ MonoBehaviour:
   Cell: {r: 1, g: 1, b: 1, a: 1}
   Pill: {r: 1, g: 1, b: 1, a: 1}
   Dim: {r: 0.05, g: 0.04, b: 0.1, a: 0.65}
-  Notice: {r: 0.106, g: 0.114, b: 0.2, a: 0.88}
   Accent: {r: 1, g: 0.54, b: 0.24, a: 1}
   Primary: {r: 0.36, g: 0.71, b: 1, a: 1}
   Secondary: {r: 0.72, g: 0.76, b: 0.84, a: 1}
@@ -38,6 +37,9 @@ MonoBehaviour:
   GoodInk: {r: 0.23, g: 0.65, b: 0.16, a: 1}
   Highlight: {r: 1, g: 0.82, b: 0.25, a: 1}
   Hp: {r: 1, g: 0.36, b: 0.43, a: 1}
+  Cooldown: {r: 0.1, g: 0.08, b: 0.18, a: 0.7}
+  TabPressed: {r: 1, g: 1, b: 1, a: 0.25}
+  Outline: {r: 0.16862746, g: 0.13333334, b: 0.21176471, a: 1}
   InputBackground: {r: 1, g: 1, b: 1, a: 1}
   InputText: {r: 0.23, g: 0.18, b: 0.16, a: 1}
   Grades:

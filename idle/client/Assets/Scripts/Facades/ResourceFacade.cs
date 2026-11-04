@@ -132,9 +132,25 @@ namespace PortfolioIdleRpg.Facades
             string catalog = CatalogPath(gameRoot);
             if (!File.Exists(catalog))
                 return;
-            Addressables.ClearResourceLocators();
-            AsyncOperationHandle<IResourceLocator> handle = Addressables.LoadContentCatalogAsync(catalog, false);
+            AsyncOperationHandle<IResourceLocator> handle = LoadOnlyCatalog(catalog);
             handle.WaitForCompletion();
+            EndCatalogLoad(handle, catalog);
+        }
+
+        /// <summary>다른 카탈로그를 모두 빼고 <paramref name="catalog"/> 하나만 불러오기 시작한다. 끝나면 <see cref="EndCatalogLoad"/>를 부른다.</summary>
+        /// <param name="catalog">카탈로그 파일의 전체 경로.</param>
+        /// <returns>불러오는 작업.</returns>
+        internal static AsyncOperationHandle<IResourceLocator> LoadOnlyCatalog(string catalog)
+        {
+            Addressables.ClearResourceLocators();
+            return Addressables.LoadContentCatalogAsync(catalog, false);
+        }
+
+        /// <summary>끝난 카탈로그 불러오기를 놓고, 실패했으면 던진다.</summary>
+        /// <param name="handle">끝난 작업.</param>
+        /// <param name="catalog">카탈로그 파일의 전체 경로.</param>
+        internal static void EndCatalogLoad(AsyncOperationHandle<IResourceLocator> handle, string catalog)
+        {
             bool loaded = handle.Status == AsyncOperationStatus.Succeeded;
             Addressables.Release(handle);
             if (!loaded)

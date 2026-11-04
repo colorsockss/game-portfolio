@@ -80,25 +80,15 @@ namespace PortfolioIdleRpg.Editor
                 hpFill.transform.localPosition = new Vector3(0f, BarHeight, 0f);
 
                 var animator = body.gameObject.AddComponent<SpriteAnimator>();
-                var animatorSerialized = new SerializedObject(animator);
-                animatorSerialized.FindProperty("_renderer").objectReferenceValue = body;
-                animatorSerialized.ApplyModifiedPropertiesWithoutUndo();
+                Fields.Wire(animator, ("_renderer", body));
 
                 var view = root.GetComponent<ActorView>();
-                var serialized = new SerializedObject(view);
-                serialized.FindProperty("_body").objectReferenceValue = body;
-                serialized.FindProperty("_animator").objectReferenceValue = animator;
-                SerializedProperty sets = serialized.FindProperty("_clipSets");
-                sets.arraySize = clipSets.Length;
-                for (int i = 0; i < clipSets.Length; i++)
-                    sets.GetArrayElementAtIndex(i).objectReferenceValue = clipSets[i];
                 EffectIcons effects = AddEffectIcons(root.transform);
-                serialized.FindProperty("_effects").objectReferenceValue = effects;
-                serialized.FindProperty("_hpBack").objectReferenceValue = hpBack;
-                serialized.FindProperty("_hpFill").objectReferenceValue = hpFill;
-                serialized.ApplyModifiedPropertiesWithoutUndo();
+                Fields.Wire(
+                    view, ("_body", body), ("_animator", animator), ("_clipSets", clipSets), ("_effects", effects), ("_hpBack", hpBack),
+                    ("_hpFill", hpFill));
 
-                SetRefs(root.GetComponent<ViewRefs>(), ("actor", view), ("effects", effects));
+                UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("actor", view), ("effects", effects));
                 Save(root, "Actor");
             }
             finally
@@ -125,11 +115,9 @@ namespace PortfolioIdleRpg.Editor
                 label.sortingOrder = 10;
 
                 var view = root.GetComponent<FloatingText>();
-                var serialized = new SerializedObject(view);
-                serialized.FindProperty("_label").objectReferenceValue = label;
-                serialized.ApplyModifiedPropertiesWithoutUndo();
+                Fields.Wire(view, ("_label", label));
 
-                SetRefs(root.GetComponent<ViewRefs>(), ("text", view));
+                UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("text", view));
                 Save(root, "DamageText");
             }
             finally
@@ -152,18 +140,12 @@ namespace PortfolioIdleRpg.Editor
                 var sprite = root.GetComponent<SpriteRenderer>();
                 sprite.sortingOrder = 5;
                 var animator = root.GetComponent<SpriteAnimator>();
-                var animatorSerialized = new SerializedObject(animator);
-                animatorSerialized.FindProperty("_renderer").objectReferenceValue = sprite;
-                animatorSerialized.ApplyModifiedPropertiesWithoutUndo();
+                Fields.Wire(animator, ("_renderer", sprite));
 
                 var view = root.GetComponent<ProjectileView>();
-                var serialized = new SerializedObject(view);
-                serialized.FindProperty("_renderer").objectReferenceValue = sprite;
-                serialized.FindProperty("_animator").objectReferenceValue = animator;
-                serialized.FindProperty("_clips").objectReferenceValue = clips;
-                serialized.ApplyModifiedPropertiesWithoutUndo();
+                Fields.Wire(view, ("_renderer", sprite), ("_animator", animator), ("_clips", clips));
 
-                SetRefs(root.GetComponent<ViewRefs>(), ("projectile", view));
+                UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("projectile", view));
                 Save(root, "Projectile");
             }
             finally
@@ -194,17 +176,9 @@ namespace PortfolioIdleRpg.Editor
                 cover.transform.localScale = new Vector3(CoverSize, CoverSize, 1f);
 
                 var view = root.GetComponent<StageView>();
-                var serialized = new SerializedObject(view);
-                serialized.FindProperty("_background").objectReferenceValue = background;
-                SerializedProperty sprites = serialized.FindProperty("_backgrounds");
-                sprites.arraySize = backgrounds.Length;
-                for (int i = 0; i < backgrounds.Length; i++)
-                    sprites.GetArrayElementAtIndex(i).objectReferenceValue = backgrounds[i];
-                serialized.FindProperty("_particles").objectReferenceValue = particles;
-                serialized.FindProperty("_cover").objectReferenceValue = cover;
-                serialized.ApplyModifiedPropertiesWithoutUndo();
+                Fields.Wire(view, ("_background", background), ("_backgrounds", backgrounds), ("_particles", particles), ("_cover", cover));
 
-                SetRefs(root.GetComponent<ViewRefs>(), ("stage", view));
+                UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("stage", view));
                 Save(root, "Stage");
             }
             finally
@@ -255,17 +229,14 @@ namespace PortfolioIdleRpg.Editor
             var child = new GameObject("Effects", typeof(EffectIcons));
             child.transform.SetParent(parent, false);
             var effects = child.GetComponent<EffectIcons>();
-            var serialized = new SerializedObject(effects);
-            SerializedProperty icons = serialized.FindProperty("_icons");
-            SerializedProperty bars = serialized.FindProperty("_bars");
-            icons.arraySize = EffectSlots;
-            bars.arraySize = EffectSlots;
+            var icons = new SpriteRenderer[EffectSlots];
+            var bars = new SpriteRenderer[EffectSlots];
             for (int i = 0; i < EffectSlots; i++)
             {
-                icons.GetArrayElementAtIndex(i).objectReferenceValue = AddSprite(child.transform, $"Icon{i}", Color.white, 3);
-                bars.GetArrayElementAtIndex(i).objectReferenceValue = AddSprite(child.transform, $"Bar{i}", Color.white, 4);
+                icons[i] = AddSprite(child.transform, $"Icon{i}", Color.white, 3);
+                bars[i] = AddSprite(child.transform, $"Bar{i}", Color.white, 4);
             }
-            serialized.ApplyModifiedPropertiesWithoutUndo();
+            Fields.Wire(effects, ("_icons", icons), ("_bars", bars));
             return effects;
         }
 
@@ -284,24 +255,6 @@ namespace PortfolioIdleRpg.Editor
             sprite.color = color;
             sprite.sortingOrder = sortingOrder;
             return sprite;
-        }
-
-        /// <summary>ViewRefs의 항목을 차례대로 Object 항목들로 정한다.</summary>
-        /// <param name="refs">항목을 넣을 ViewRefs.</param>
-        /// <param name="items">항목 이름과 가리킬 오브젝트.</param>
-        private static void SetRefs(ViewRefs refs, params (string Name, Object Target)[] items)
-        {
-            var serialized = new SerializedObject(refs);
-            SerializedProperty entries = serialized.FindProperty("_entries");
-            entries.arraySize = items.Length;
-            for (int i = 0; i < items.Length; i++)
-            {
-                SerializedProperty entry = entries.GetArrayElementAtIndex(i);
-                entry.FindPropertyRelative("Name").stringValue = items[i].Name;
-                entry.FindPropertyRelative("Kind").enumValueIndex = (int)ViewRefs.Kind.Object;
-                entry.FindPropertyRelative("ObjectValue").objectReferenceValue = items[i].Target;
-            }
-            serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         /// <summary>오브젝트를 폴더의 프리팹으로 저장한다. 있으면 덮어쓰고 지난 파일의 fileID를 그대로 둔다.</summary>

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using PortfolioIdleRpg.Facades;
 using PortfolioIdleRpg.Views;
 using TMPro;
 using UnityEditor;
@@ -112,8 +113,7 @@ namespace PortfolioIdleRpg.Editor
         /// <returns>저장한 프리팹.</returns>
         private static GameObject BuildSkillBarSlot(UiTheme theme)
         {
-            var root = new GameObject("SkillBarSlot", typeof(RectTransform), typeof(LayoutElement), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("SkillBarSlot", new[] { typeof(LayoutElement) }, root =>
             {
                 ((RectTransform)root.transform).sizeDelta = new Vector2(SkillSize, SkillSize);
                 var element = root.GetComponent<LayoutElement>();
@@ -125,7 +125,7 @@ namespace PortfolioIdleRpg.Editor
                 IconView icon = UiIcons.Add(tile.transform, "Icon");
                 UiPrefabs.Stretch((RectTransform)icon.transform, new Vector2(12f, 10f), new Vector2(-12f, -16f));
                 // 재사용 대기: 남은 비율만큼 위에서부터 시계 방향으로 덮인다.
-                Image cooldown = UiPrefabs.AddImage(tile.transform, "Cooldown", new Color(0.1f, 0.08f, 0.18f, 0.7f));
+                Image cooldown = UiPrefabs.AddImage(tile.transform, "Cooldown", theme.Cooldown);
                 cooldown.raycastTarget = false;
                 cooldown.sprite = theme.TileSprite;
                 cooldown.type = Image.Type.Filled;
@@ -136,15 +136,12 @@ namespace PortfolioIdleRpg.Editor
                 UiPrefabs.Stretch(cooldown.rectTransform, new Vector2(6f, 6f), new Vector2(-6f, -6f));
                 TMP_Text seconds = UiPrefabs.AddText(tile.transform, "Seconds", theme.LabelSize, Vector2.zero, Vector2.one);
 
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(), ("icon", icon), ("tint", tint), ("cooldownFill", cooldown),
-                    ("cooldownText", seconds));
-                return UiPrefabs.Save(root, "SkillBarSlot");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                return new (string Name, Object Target)[]
+                {
+                    ("icon", icon), ("tint", tint), ("cooldownFill", cooldown),
+                    ("cooldownText", seconds)
+                };
+            });
         }
 
         /// <summary>
@@ -155,8 +152,7 @@ namespace PortfolioIdleRpg.Editor
         /// <returns>저장한 프리팹.</returns>
         private static GameObject BuildLoadoutSlot(UiTheme theme)
         {
-            var root = new GameObject("LoadoutSlot", typeof(RectTransform), typeof(LayoutElement), typeof(ViewRefs));
-            try
+            return UiPrefabs.SaveView("LoadoutSlot", new[] { typeof(LayoutElement) }, root =>
             {
                 ((RectTransform)root.transform).sizeDelta = new Vector2(LoadoutSize, LoadoutSize + LoadoutNameHeight);
                 var element = root.GetComponent<LayoutElement>();
@@ -182,15 +178,12 @@ namespace PortfolioIdleRpg.Editor
                 name.fontSizeMin = theme.TinySize;
                 name.fontSizeMax = theme.SmallSize;
 
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(), ("tint", tint), ("icon", icon), ("levelText", level), ("nameText", name),
-                    ("openButton", button));
-                return UiPrefabs.Save(root, "LoadoutSlot");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                return new (string Name, Object Target)[]
+                {
+                    ("tint", tint), ("icon", icon), ("levelText", level), ("nameText", name),
+                    ("openButton", button)
+                };
+            });
         }
 
         /// <summary>메인 화면을 만든다. 전투 월드가 뒤에 비치도록 루트 바탕은 투명하다.</summary>
@@ -199,8 +192,7 @@ namespace PortfolioIdleRpg.Editor
         /// <param name="loadoutSlot">장착 현황 판의 칸 프리팹. 꺼 둔 틀로 넣는다.</param>
         private static void BuildMainScreen(UiTheme theme, GameObject skillSlot, GameObject loadoutSlot)
         {
-            var root = new GameObject("MainScreen", typeof(RectTransform), typeof(Image), typeof(ViewRefs));
-            try
+            UiPrefabs.SaveView("MainScreen", new[] { typeof(Image) }, root =>
             {
                 UiPrefabs.Stretch((RectTransform)root.transform, Vector2.zero, Vector2.zero);
                 root.GetComponent<Image>().color = Color.clear;
@@ -213,13 +205,9 @@ namespace PortfolioIdleRpg.Editor
                 refs.AddRange(AddStrip(strip.transform, theme, skillSlot));
                 refs.AddRange(AddNav(root.transform, theme));
                 AddBattleFrame(root, strip);
-                UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), refs.ToArray());
-                UiPrefabs.Save(root, "MainScreen");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+
+                return refs;
+            });
         }
 
         /// <summary>
@@ -237,11 +225,7 @@ namespace PortfolioIdleRpg.Editor
             rect.anchorMax = Vector2.one;
             rect.offsetMin = new Vector2(0f, -(HudHeight + StageBarHeight));
             rect.offsetMax = new Vector2(0f, -HudHeight);
-            var frame = root.AddComponent<BattleFrame>();
-            var serialized = new SerializedObject(frame);
-            serialized.FindProperty("_ceiling").objectReferenceValue = rect;
-            serialized.FindProperty("_floor").objectReferenceValue = strip.transform;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
+            Fields.Wire(root.AddComponent<BattleFrame>(), ("_ceiling", rect), ("_floor", strip.transform));
         }
 
         /// <summary>
@@ -344,10 +328,7 @@ namespace PortfolioIdleRpg.Editor
             glow.rectTransform.anchorMax = top;
             glow.rectTransform.anchoredPosition = skullCenter;
             glow.rectTransform.sizeDelta = new Vector2(170f, 170f);
-            var spinner = glow.gameObject.AddComponent<Spinner>();
-            var serialized = new SerializedObject(spinner);
-            serialized.FindProperty("_degreesPerSecond").floatValue = 60f;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
+            Fields.Wire(glow.gameObject.AddComponent<Spinner>(), ("_degreesPerSecond", 60f));
             glow.gameObject.SetActive(false);
             Image skull = UiIcons.AddFixed(root, "BossButton", UiIcons.Get("ui_boss"));
             skull.rectTransform.anchorMin = top;
@@ -397,16 +378,8 @@ namespace PortfolioIdleRpg.Editor
             backdrop.rectTransform.offsetMax = new Vector2(UiPrefabs.BleedMargin, 0f);
 
             var dock = strip.GetComponent<DockView>();
-            var serialized = new SerializedObject(dock);
-            SerializedProperty keys = serialized.FindProperty("_keys");
-            SerializedProperty positions = serialized.FindProperty("_positions");
-            keys.arraySize = positions.arraySize = bottoms.Length;
-            for (var i = 0; i < bottoms.Length; i++)
-            {
-                keys.GetArrayElementAtIndex(i).stringValue = (i == 0) ? "" : s_tabs[i - 1].Name;
-                positions.GetArrayElementAtIndex(i).floatValue = bottoms[i];
-            }
-            serialized.ApplyModifiedPropertiesWithoutUndo();
+            string[] keys = bottoms.Select((_, i) => (i == 0) ? "" : s_tabs[i - 1].Name).ToArray();
+            Fields.Wire(dock, ("_keys", keys), ("_positions", bottoms));
             return dock;
         }
 
@@ -463,11 +436,7 @@ namespace PortfolioIdleRpg.Editor
             layout.childControlHeight = true;
             layout.childForceExpandWidth = false;
             layout.childForceExpandHeight = false;
-            var template = (GameObject)PrefabUtility.InstantiatePrefab(slot, go.transform);
-            template.SetActive(false);
-            var list = go.GetComponent<ViewList>();
-            UiPrefabs.SetField(list, "_template", template.GetComponent<ViewRefs>());
-            return list;
+            return UiPrefabs.SetTemplate(go.GetComponent<ViewList>(), slot);
         }
 
         /// <summary>글자 대신 아이콘을 넣은 보조 버튼을 놓는다(스테이지 화살표).</summary>
@@ -524,10 +493,7 @@ namespace PortfolioIdleRpg.Editor
             layout.childControlHeight = true;
             layout.childForceExpandWidth = false;
             layout.childForceExpandHeight = false;
-            var template = (GameObject)PrefabUtility.InstantiatePrefab(skillSlot, skills.transform);
-            template.SetActive(false);
-            var list = skills.GetComponent<ViewList>();
-            UiPrefabs.SetField(list, "_template", template.GetComponent<ViewRefs>());
+            ViewList list = UiPrefabs.SetTemplate(skills.GetComponent<ViewList>(), skillSlot);
 
             return new (string Name, Object Target)[]
             {
@@ -573,7 +539,7 @@ namespace PortfolioIdleRpg.Editor
             band.rectTransform.offsetMax = new Vector2(UiPrefabs.BleedMargin, NavHeight);
 
             var refs = new List<(string Name, Object Target)>();
-            float left = (1080f - ((s_tabs.Length * TabWidth) + ((s_tabs.Length - 1) * TabGap))) / 2f;
+            float left = (UiRoot.s_referenceResolution.x - ((s_tabs.Length * TabWidth) + ((s_tabs.Length - 1) * TabGap))) / 2f;
             for (var i = 0; i < s_tabs.Length; i++)
             {
                 (string objectName, string name, _) = s_tabs[i];
@@ -608,8 +574,7 @@ namespace PortfolioIdleRpg.Editor
         /// <param name="theme">테마.</param>
         private static void BuildLoginScreen(UiTheme theme)
         {
-            var root = new GameObject("LoginScreen", typeof(RectTransform), typeof(Image), typeof(ViewRefs));
-            try
+            UiPrefabs.SaveView("LoginScreen", new[] { typeof(Image) }, root =>
             {
                 UiPrefabs.Bleed((RectTransform)root.transform);
                 root.GetComponent<Image>().color = theme.Backdrop;
@@ -642,16 +607,12 @@ namespace PortfolioIdleRpg.Editor
                 status.rectTransform.anchoredPosition = new Vector2(0f, -185f);
                 status.rectTransform.sizeDelta = new Vector2(760f, 140f);
 
-                UiPrefabs.SetRefs(
-                    root.GetComponent<ViewRefs>(),
+                return new (string Name, Object Target)[]
+                {
                     ("idInput", input), ("loginButton", login), ("statusText", status), ("titleLabel", title),
-                    ("loginLabel", UiPrefabs.LabelOf(login)), ("idPlaceholder", placeholder));
-                UiPrefabs.Save(root, "LoginScreen");
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-            }
+                    ("loginLabel", UiPrefabs.LabelOf(login)), ("idPlaceholder", placeholder)
+                };
+            });
         }
     }
 }
