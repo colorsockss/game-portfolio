@@ -1,3 +1,7 @@
+using System;
+using System.Runtime.ExceptionServices;
+using UnityEngine;
+
 namespace PortfolioIdleRpg.Facades
 {
     /// <summary>
@@ -10,46 +14,36 @@ namespace PortfolioIdleRpg.Facades
         /// 뷰도 스크립트를 부르지 못하게 한다. 소켓, 번들 받기, 스크립트가 시작한 로드는 그냥 두면 스크립트보다 오래
         /// 살아남는다.
         /// 그 사이에는 스크립트가 돌지 않으므로 스크립트 환경을 폐기하기 전에 정리해도 달라지는 것이 없다.
-        /// 앞 단계가 실패해도 뒤 단계는 정리하고, 그 예외는 그대로 올린다.
+        /// 앞 단계가 실패해도 뒤 단계는 정리하고, 처음 난 예외를 그대로 올린다. 그 뒤에 난 예외는 로그에 남긴다.
         /// </summary>
         internal static void Shutdown()
         {
-            try
+            Action[] steps =
             {
-                UiFacade.DestroyAll();
-            }
-            finally
+                UiFacade.DestroyAll,
+                WorldFacade.DestroyAll,
+                AudioFacade.StopAll,
+                WebSocketFacade.CloseAll,
+                BundleFacade.CancelAll,
+                ResourceFacade.ReleaseAll,
+            };
+            ExceptionDispatchInfo first = null;
+            foreach (Action step in steps)
             {
                 try
                 {
-                    WorldFacade.DestroyAll();
+                    step();
                 }
-                finally
+                catch (Exception exception)
                 {
-                    try
-                    {
-                        AudioFacade.StopAll();
-                    }
-                    finally
-                    {
-                        try
-                        {
-                            WebSocketFacade.CloseAll();
-                        }
-                        finally
-                        {
-                            try
-                            {
-                                BundleFacade.CancelAll();
-                            }
-                            finally
-                            {
-                                ResourceFacade.ReleaseAll();
-                            }
-                        }
-                    }
+                    // 한 단계가 실패해도 나머지를 정리해야 하므로 모두 잡고, 처음 것은 끝에서 다시 던진다.
+                    if (first == null)
+                        first = ExceptionDispatchInfo.Capture(exception);
+                    else
+                        Debug.LogException(exception);
                 }
             }
+            first?.Throw();
         }
     }
 }
