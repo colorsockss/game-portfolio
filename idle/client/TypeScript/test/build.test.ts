@@ -118,7 +118,27 @@ describe.each(["development", "release"])("%s artifact", mode => {
 
 type ManifestOptions = { api: string; build?: number; parts?: Record<string, string | null>; server?: string | null };
 type WriteManifest = (directory: string, options: ManifestOptions) => Promise<{ version: string }>;
-const { writeManifest } = await import(new URL("../tools/manifest.mjs", import.meta.url).href) as { writeManifest: WriteManifest };
+type VerifyManifest = (directory: string) => Promise<{ parts: Record<string, string | null> }>;
+const { writeManifest, verifyManifest } = await import(new URL("../tools/manifest.mjs", import.meta.url).href) as {
+  writeManifest: WriteManifest;
+  verifyManifest: VerifyManifest;
+};
+
+test("a fetched version's manifest is read by the runtime's rules before its files are checked", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "manifest-"));
+  try {
+    await writeFile(path.join(directory, "main.mjs"), "code");
+    await writeManifest(directory, { api: "0123456789abcdef", parts: { game: "abc" } });
+    expect((await verifyManifest(directory)).parts.game).toBe("abc");
+
+    // 같은 경로가 두 번 있으면 해시가 맞아도 런타임처럼 거절한다.
+    const manifest = JSON.parse(await readFile(path.join(directory, MANIFEST), "utf8")) as { files: unknown[] };
+    await writeFile(path.join(directory, MANIFEST), JSON.stringify({ ...manifest, files: [...manifest.files, ...manifest.files] }));
+    await expect(verifyManifest(directory)).rejects.toThrow("malformed file");
+  } finally {
+    await rm(directory, { recursive: true });
+  }
+});
 
 test("the manifest's version follows the files and the API, not the build number or the recorded commits", async () => {
   const directory = await mkdtemp(path.join(tmpdir(), "manifest-"));
