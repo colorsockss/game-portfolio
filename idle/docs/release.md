@@ -93,8 +93,10 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 올려 둔 버전을 공개합니다. 앞 버전을 넣으면 롤백입니다.
 
 1. VPS에서 그 버전을 받아 매니페스트로 검증합니다(크기와 sha256).
-2. 매니페스트의 `server`가 지금 Live 서버와 다르면, 그 서버가 `releases/`에 있는지 보고 바꿉니다(다시 시작). 없으면 `The server … is not on the VPS.`로 멈춥니다.
+2. 매니페스트의 `server`가 지금 Live 서버와 다르면, 그 서버가 `releases/`에 있는지 보고 바꿉니다(다시 시작). 없으면 `The server … is not on the VPS; stage it first.`로 멈춥니다.
 3. 그 버전의 API 채널 포인터를 옮깁니다.
+
+2와 3은 release 잡의 Publish와 같은 스크립트(`idle/server/deploy/publish.sh <서버 커밋> <패치 버전>`)입니다.
 
 빌드와 조합 검사는 하지 않습니다(그 버전을 만들 때 했음). 서버를 기록하지 않은 버전이면 경고하고 포인터만 옮깁니다.
 
@@ -114,10 +116,10 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 | Free disk space, Add swap | Unity | 러너의 쓰지 않는 도구와 Docker 이미지를 지우고, 스왑 8 GB를 임시 디스크(`/mnt`)에 더함(러너 메모리 약 7.9 GB). 남은 공간을 `df`로 찍음 |
 | checkout | 늘 | 기록 전체(`fetch-depth: 0`). 조합 검사가 다른 커밋의 `idle/shared/`와 견줌 |
 | LFS | 늘 | Unity면 전체(캐시), 아니면 테스트가 읽는 xlsx만 |
-| setup-node, `npm ci` | 늘 | Node 22.14.0 |
+| setup-node, `npm ci` | 늘 | Node는 `.nvmrc`(22.14.0) |
 | PuerTS 캐시, `npm run setup` | Unity | 약 270 MB |
 | `npm run typecheck`, `npm test` | 늘 | 실패하면 아무것도 내보내지 않음 |
-| SSH to the VPS | 늘 | 배포 키와 고정한 호스트 키로만 접속 |
+| SSH to the VPS | 늘 | 배포 키와 고정한 호스트 키로만 접속(`.github/actions/vps-ssh`, publish 잡과 같음) |
 | Read the live state | 늘 | 지금 Live 서버의 커밋(`current` 링크) |
 | Pull the base version | 패치 네 단위를 모두 고르지 않았을 때 | 기준 버전을 받아 검증 |
 | Pair the patch with a server | 패치 단위를 골랐을 때 | 짝 서버를 정함(2절, 3.1절) |
@@ -133,7 +135,7 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 | Report memory after a Unity failure | Unity가 실패했을 때 | 메모리, 디스크, 커널 OOM 기록 |
 | Stage the game server | `server` | `releases/<커밋>`에 올리기만 |
 | Upload the patch | 패치 단위를 골랐을 때 | `aa/` → `v/` 순서로 더하기만(이미 있는 이름은 건너뜀). 버전을 실행 요약에 적음 |
-| Publish | `publish` | 짝 서버가 아직 없으면(3.1절) 알리고 끝. 아니면 서버를 짝 서버로 바꾸고(다르면) 포인터를 옮김 |
+| Publish | `publish` | 짝 서버가 아직 없으면(3.1절) 알리고 끝. 아니면 서버를 짝 서버로 바꾸고(다르면) 포인터를 옮김(`idle/server/deploy/publish.sh`, publish 잡과 같음) |
 | Publish the APK | `apk` | GitHub Release와 태그 |
 
 ### 4.2 publish 잡

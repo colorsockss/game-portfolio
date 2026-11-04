@@ -38,7 +38,7 @@ npm ci
 
 ## CI
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml)이 `main`의 푸시, 모든 PR, 수동 실행(`workflow_dispatch`)에서 Ubuntu 24.04와 Node 22.14.0(로컬과 같은 버전. 서버가 `node:sqlite`를 씁니다)으로 `npm ci` → `npm run typecheck` → `npm test`를 돌립니다. 같은 PR이나 브랜치에 새 커밋이 오면 이전 실행을 취소합니다. 다른 브랜치는 PR을 열어야 돕니다. npm 캐시(`~/.npm`, 약 41 MB)는 `setup-node`가 `package-lock.json` 해시로 저장합니다.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml)이 `main`의 푸시, 모든 PR, 수동 실행(`workflow_dispatch`)에서 Ubuntu 24.04와 Node 22.14.0(`.nvmrc`. 로컬과 같은 버전이고, 서버가 `node:sqlite`를 씁니다. 릴리스 워크플로도 같은 파일을 읽습니다)으로 `npm ci` → `npm run typecheck` → `npm test`를 돌립니다. 같은 PR이나 브랜치에 새 커밋이 오면 이전 실행을 취소합니다. 다른 브랜치는 PR을 열어야 돕니다. npm 캐시(`~/.npm`, 약 41 MB)는 `setup-node`가 `package-lock.json` 해시로 저장합니다.
 
 - **LFS**: 체크아웃은 포인터만 받고, `git lfs pull --include="idle/data/*.xlsx"`로 `generate --check`가 읽는 xlsx 15개(145,711바이트)만 받습니다. LFS 전체(981개, 약 241 MB, 2026-10-31. Unity 그림·오디오·폰트가 대부분)의 0.1%도 안 되고, 무료 다운로드량 월 10 GiB로 약 7만 회 실행할 수 있습니다. 테스트가 다른 LFS 파일을 읽게 되면 `--include`에 더합니다.
 - **PuerTS**: `npm run setup`(약 270 MB)은 돌리지 않습니다. 클라이언트 타입 검사는 커밋된 `types/`의 선언을, 번들 실행 테스트는 가짜 호스트(`test/support/puerts-host.mjs`)를 씁니다.

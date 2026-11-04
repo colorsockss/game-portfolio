@@ -1,0 +1,31 @@
+# 배포 키로만 VPS에 들어가게 ssh를 맞춘다. 처음 보는 호스트 키는 믿지 않는다. 이 뒤로 `ssh "$VPS_HOST"`와 rsync가 이 설정을 쓴다.
+name: SSH to the VPS
+description: Configure ssh for the idle VPS with the deploy key and the pinned host key.
+inputs:
+  key:
+    description: 배포 키(secrets.VPS_SSH_KEY)
+    required: true
+  known-hosts:
+    description: VPS의 호스트 키(secrets.VPS_KNOWN_HOSTS)
+    required: true
+  host:
+    description: VPS 주소(vars.VPS_HOST)
+    required: true
+  user:
+    description: 배포 계정(vars.VPS_USER)
+    required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        VPS_SSH_KEY: ${{ inputs.key }}
+        VPS_KNOWN_HOSTS: ${{ inputs.known-hosts }}
+        HOST: ${{ inputs.host }}
+        USER_NAME: ${{ inputs.user }}
+      run: |
+        install -d -m 700 ~/.ssh
+        printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/idle-deploy && chmod 600 ~/.ssh/idle-deploy
+        printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        # 접속이 응답 없이 막히면(2026-11-02 러너에서 22번이 시간 초과, 이 Mac에서는 됨) 한 번에 15초씩 네 번까지 다시 붙는다.
+        printf 'Host %s\n  User %s\n  IdentityFile ~/.ssh/idle-deploy\n  IdentitiesOnly yes\n  BatchMode yes\n  ConnectTimeout 15\n  ConnectionAttempts 4\n  ServerAliveInterval 15\n' "$HOST" "$USER_NAME" > ~/.ssh/config

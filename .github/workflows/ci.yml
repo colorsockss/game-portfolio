@@ -32,7 +32,7 @@ jobs:
       # node:sqlite를 쓰므로 로컬과 같은 버전으로 고정한다.
       - uses: actions/setup-node@v7
         with:
-          node-version: 22.14.0
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run typecheck

@@ -134,7 +134,7 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          node-version: 22.14.0
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       # PuerTS(약 270 MB)는 Unity만 쓴다. 설치 스크립트가 같으면 다시 받지 않는다.
@@ -162,15 +162,12 @@ jobs:
 
       # 배포 키로만 들어가고, 처음 보는 호스트 키는 믿지 않는다. 기준 버전과 Live 서버를 읽는 데도 쓴다.
       - name: SSH to the VPS
-        env:
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
-        run: |
-          install -d -m 700 ~/.ssh
-          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/idle-deploy && chmod 600 ~/.ssh/idle-deploy
-          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          # 접속이 응답 없이 막히면(2026-11-02 러너에서 22번이 시간 초과, 이 Mac에서는 됨) 한 번에 15초씩 네 번까지 다시 붙는다.
-          printf 'Host %s\n  User %s\n  IdentityFile ~/.ssh/idle-deploy\n  IdentitiesOnly yes\n  BatchMode yes\n  ConnectTimeout 15\n  ConnectionAttempts 4\n  ServerAliveInterval 15\n' "$VPS_HOST" "$VPS_USER" > ~/.ssh/config
+        uses: ./.github/actions/vps-ssh
+        with:
+          key: ${{ secrets.VPS_SSH_KEY }}
+          known-hosts: ${{ secrets.VPS_KNOWN_HOSTS }}
+          host: ${{ env.VPS_HOST }}
+          user: ${{ env.VPS_USER }}
 
       - name: Read the live state
         id: live
@@ -366,14 +363,12 @@ jobs:
             echo "API \`$API\`, units from this commit: $PARTS, runs with server \`${SERVER_COMMIT:0:7}\`."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # 공개: 서버를 이 패치와 함께 돌 서버로 맞춘 뒤 포인터를 옮긴다. 서버가 바뀐 뒤 포인터를 옮기기까지 짧게 어긋날 수 있지만,
-      # 막힌 클라이언트는 "새 버전이 필요합니다"에서 다시 시도하면 맞춰진다.
+      # 공개: 서버를 이 패치와 함께 돌 서버로 맞춘 뒤 포인터를 옮긴다(idle/server/deploy/publish.sh).
       - name: Publish
         if: inputs.publish
         env:
           PARTS: ${{ steps.plan.outputs.parts }}
           VERSION: ${{ steps.patch.outputs.version }}
-          LIVE_SERVER: ${{ steps.live.outputs.server }}
           SERVER_COMMIT: ${{ steps.pair.outputs.commit || (inputs.server && github.sha) || steps.live.outputs.server }}
           PAIRED: ${{ steps.pair.outputs.paired }}
         run: |
@@ -383,14 +378,9 @@ jobs:
             echo "$message" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          if [ -n "$SERVER_COMMIT" ] && [ "$SERVER_COMMIT" != "$LIVE_SERVER" ]; then
-            idle/server/deploy/deploy.sh "$SERVER_COMMIT"
-            echo "Server \`${SERVER_COMMIT:0:7}\` is live." >> "$GITHUB_STEP_SUMMARY"
-          fi
-          if [ -n "$PARTS" ]; then
-            npm run patch -w @idle/client -- release "$VERSION"
-            echo "Patch \`$VERSION\` is live." >> "$GITHUB_STEP_SUMMARY"
-          fi
+          # 패치 없이 서버만 내면 포인터는 그대로다.
+          if [ -z "$PARTS" ]; then VERSION=; fi
+          idle/server/deploy/publish.sh "$SERVER_COMMIT" "$VERSION"
 
       - name: Publish the APK
         if: inputs.apk
@@ -423,31 +413,22 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 22.14.0
+          node-version-file: .nvmrc
+          cache: npm
+      # patch.mjs가 런타임의 update.ts를 esbuild로 불러온다(tools/update.mjs).
+      - run: npm ci
       - name: SSH to the VPS
-        env:
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
-        run: |
-          install -d -m 700 ~/.ssh
-          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/idle-deploy && chmod 600 ~/.ssh/idle-deploy
-          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          # 접속이 응답 없이 막히면(2026-11-02 러너에서 22번이 시간 초과, 이 Mac에서는 됨) 한 번에 15초씩 네 번까지 다시 붙는다.
-          printf 'Host %s\n  User %s\n  IdentityFile ~/.ssh/idle-deploy\n  IdentitiesOnly yes\n  BatchMode yes\n  ConnectTimeout 15\n  ConnectionAttempts 4\n  ServerAliveInterval 15\n' "$VPS_HOST" "$VPS_USER" > ~/.ssh/config
+        uses: ./.github/actions/vps-ssh
+        with:
+          key: ${{ secrets.VPS_SSH_KEY }}
+          known-hosts: ${{ secrets.VPS_KNOWN_HOSTS }}
+          host: ${{ env.VPS_HOST }}
+          user: ${{ env.VPS_USER }}
       - name: Publish the version
         env:
           VERSION: ${{ inputs.publish_version }}
         run: |
           node idle/client/TypeScript/tools/patch.mjs pull "$VERSION" "$RUNNER_TEMP/version"
           server=$(jq -r '.server // empty' "$RUNNER_TEMP/version/manifest.json")
-          current=$(ssh "$VPS_HOST" 'readlink /srv/idle/server/current || true')
-          live=${current##*/}
-          if [ -z "$server" ]; then
-            echo "::warning::$VERSION records no server; only the channel pointer moves."
-          elif [ "$server" != "$live" ]; then
-            ssh "$VPS_HOST" test -d "/srv/idle/server/releases/$server" \
-              || { echo "::error::The server $server for $VERSION is not on the VPS."; exit 1; }
-            idle/server/deploy/deploy.sh "$server"
-          fi
-          node idle/client/TypeScript/tools/patch.mjs release "$VERSION"
-          echo "### Patch \`$VERSION\` is live (server \`${server:0:7}\`)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -z "$server" ]; then echo "::warning::$VERSION records no server; only the channel pointer moves."; fi
+          idle/server/deploy/publish.sh "$server" "$VERSION"
