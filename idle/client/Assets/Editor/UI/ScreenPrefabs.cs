@@ -304,8 +304,8 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// HUD 아래의 스테이지 막대: 가운데 스테이지 이름 알약과 양옆의 이전·다음 스테이지 화살표, 그 아래 웨이브 진행 막대(안에
-        /// "2/3")와 끝의 보스 해골 버튼, 보스 중의 남은 시간. 해골은 도전할 수 있을 때만 눌리고, 그동안 뒤에서 빛살(bossGlow)이
+        /// HUD 아래의 스테이지 막대: 가운데 스테이지 이름 알약과 양옆의 이전·다음 스테이지 화살표, 그 아래 가운데의 웨이브 진행
+        /// 막대(안에 "2/3")와 그 오른쪽 끝에 붙은 보스 해골 버튼, 보스 중의 남은 시간. 해골은 도전할 수 있을 때만 눌리고, 그동안 뒤에서 빛살(bossGlow)이
         /// 돈다. 바탕 없이 전투 위에 뜬다.
         /// </summary>
         /// <param name="root">메인 화면의 루트.</param>
@@ -325,13 +325,20 @@ namespace PortfolioIdleRpg.Editor
             Button prev = AddIconButton(root, "PrevStageButton", "ui_prev", top, new Vector2(-280f, -(HudHeight + 6f)));
             Button next = AddIconButton(root, "NextStageButton", "ui_next", top, new Vector2(280f, -(HudHeight + 6f)));
 
+            // 진행 막대는 이름 알약 아래 가운데에 두고, 해골은 막대의 오른쪽 끝에 붙여 막대의 높이 가운데에 세운다. 해골 그림(ui_boss)은
+            // 왼쪽에 칸 너비의 16%가 투명해서 그만큼 막대 쪽으로 당겨야 그림이 막대에 닿는다. 막대 폭은 해골 칸이 다음 스테이지
+            // 화살표(x 238부터)에 닿지 않을 만큼이다.
+            const float skullSize = 96f;
+            const float skullInset = 16f;
+            var trackSize = new Vector2(300f, 40f);
+            float trackTop = HudHeight + 90f;
             (Image track, Image fill) = UiParts.AddGauge(root, "StageProgress");
             fill.color = theme.Special;
-            UiPrefabs.Place(track, top, new Vector2(-60f, -(HudHeight + 90f)), new Vector2(380f, 40f));
+            UiPrefabs.Place(track, top, new Vector2(0f, -trackTop), trackSize);
             TMP_Text waves = UiPrefabs.AddText(track.transform, "Waves", 26f, Vector2.zero, Vector2.one);
             waves.rectTransform.offsetMin = new Vector2(0f, 3f);
-            // 해골은 진행 막대의 오른쪽 끝, 스테이지 화살표 줄 아래에 둔다. 빛살은 해골보다 먼저 놓아 뒤에 그리고 탭은 받지 않는다.
-            var skullCenter = new Vector2(190f, -(HudHeight + 108f));
+            // 빛살은 해골보다 먼저 놓아 뒤에 그리고 탭은 받지 않는다.
+            var skullCenter = new Vector2(((trackSize.x + skullSize) / 2f) - skullInset, -(trackTop + (trackSize.y / 2f)));
             Image glow = UiParts.AddFrame(root, "BossGlow", theme.RaysSprite, theme.Special);
             glow.rectTransform.anchorMin = top;
             glow.rectTransform.anchorMax = top;
@@ -346,7 +353,7 @@ namespace PortfolioIdleRpg.Editor
             skull.rectTransform.anchorMin = top;
             skull.rectTransform.anchorMax = top;
             skull.rectTransform.anchoredPosition = skullCenter;
-            skull.rectTransform.sizeDelta = new Vector2(96f, 96f);
+            skull.rectTransform.sizeDelta = new Vector2(skullSize, skullSize);
             skull.raycastTarget = true;
             var boss = skull.gameObject.AddComponent<Button>();
             boss.targetGraphic = skull;
