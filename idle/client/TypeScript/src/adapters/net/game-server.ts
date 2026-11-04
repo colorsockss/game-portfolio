@@ -1,5 +1,5 @@
 import { GameErrorCode, Opcode } from "@idle/codes";
-import type { PlayerSnapshot } from "@idle/game-core";
+import { isCommandOpcode, type PlayerSnapshot } from "@idle/game-core";
 import {
   CloseCode, ResultCode, decodeMessage, encodeMessage, socketPath,
   type Apis, type RequestOf, type ResponseEnvelope, type Session,
@@ -60,10 +60,6 @@ interface Pending {
 }
 
 type Timer = ReturnType<typeof setTimeout>;
-
-// 한 소켓에 속하는 요청. 다음 소켓에서 다시 보내지 않는다: 로그인이나 재개는 처음부터 다시 하고,
-// 핑은 더 증명할 것이 없으며, 저장 데이터는 재개가 준다.
-const SOCKET_ONLY: ReadonlySet<keyof Apis> = new Set([Opcode.AuthLogin, Opcode.AuthResume, Opcode.Ping, Opcode.StateFetch]);
 
 // 이 종료 코드 뒤에는 재연결해도 소용이 없다. 플레이어에게 어떤 뜻인지도 함께 둔다.
 const FINAL_CLOSES: ReadonlyMap<number, EndReason> = new Map([
@@ -189,7 +185,9 @@ export function createGameServer({ socket, server, dataVersion, clock, network }
     for (const entry of pending.values()) {
       clearTimeout(entry.timeout);
       entry.sent = false;
-      if (SOCKET_ONLY.has(entry.op)) {
+      // 시스템 API는 그 소켓에 속해서 다음 소켓에서 다시 보내지 않는다: 로그인이나 재개는 처음부터 다시 하고,
+      // 핑은 더 증명할 것이 없으며, 저장 데이터는 재개가 준다. 게임 커맨드만 다시 보낸다.
+      if (!isCommandOpcode(entry.op)) {
         settle(entry);
         entry.reject(error);
       }
