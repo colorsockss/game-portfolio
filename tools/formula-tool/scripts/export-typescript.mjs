@@ -17,8 +17,7 @@ const bundle = await build({
   stdin: {
     contents: [
       "export { generateTypeScript } from '$lib/export/codegen';",
-      "export { validateProject } from '$lib/project/validation';",
-      "export { analyze } from '$lib/engine';",
+      "export { exportProblems } from '$lib/export/check';",
     ].join('\n'),
     resolveDir: lib,
     loader: 'ts',
@@ -26,15 +25,12 @@ const bundle = await build({
   alias: { $lib: lib },
   bundle: true, write: false, format: 'esm', platform: 'node', logLevel: 'silent',
 });
-const { generateTypeScript, validateProject, analyze } = await import(
+const { generateTypeScript, exportProblems } = await import(
   `data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].contents).toString('base64')}`
 );
 
 const project = JSON.parse(await readFile(projectPath, 'utf8'));
-const problems = [
-  ...validateProject(project).map((issue) => issue.message),
-  ...analyze(project).map((d) => `공식 '${d.formulaKey}': ${d.error.message}`),
-];
+const problems = exportProblems(project);
 const abilityTypeImport = project.exportSettings?.abilityTypeImport ?? '';
 if (abilityTypeImport.trim() === '') problems.push('exportSettings.abilityTypeImport가 비어 있습니다');
 if (problems.length > 0) {

@@ -7,8 +7,7 @@
   import { writeProject } from '$lib/tauri/projects';
   import { writeTextFile, pickTsExportPath } from '$lib/tauri/export';
   import { generateTypeScript } from '$lib/export/codegen';
-  import { validateProject } from '$lib/project/validation';
-  import { analyze } from '$lib/engine';
+  import { exportProblems } from '$lib/export/check';
   import type { Formula, Stat, Constant } from '$lib/project/types';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import FormulaEditor from '$lib/components/FormulaEditor.svelte';
@@ -75,10 +74,7 @@
     const p = projectStore.current;
     if (!p) return;
     error = null;
-    const problems = [
-      ...validateProject(p).map((i) => i.message),
-      ...analyze(p).map((d) => `공식 '${d.formulaKey}': ${d.error.message}`),
-    ];
+    const problems = exportProblems(p);
     if (problems.length > 0) {
       const more = problems.length > 1 ? ` 외 ${problems.length - 1}건` : '';
       error = `오류가 있어 내보낼 수 없습니다 — ${problems[0]}${more}`;

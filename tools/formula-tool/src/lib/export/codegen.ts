@@ -1,8 +1,10 @@
 import type { ExportSettings, Project } from '$lib/project/types';
 import type { Node } from '$lib/engine';
-import { BIG_UNSUPPORTED, parse } from '$lib/engine';
+import { BIG_UNSUPPORTED, BUILTINS, parse } from '$lib/engine';
 
-const MATH_BUILTINS = new Set(['min', 'max', 'floor', 'ceil', 'round', 'abs', 'sqrt', 'pow']);
+// 같은 이름의 Math 함수로 내보내는 내장 함수. 나머지(clamp, rand, randInt)는 아래 도우미를 함께 낸다.
+const isMathBuiltin = (name: string): boolean =>
+  Object.hasOwn(BUILTINS, name) && typeof (Math as unknown as Record<string, unknown>)[name] === 'function';
 
 const HELPER_SOURCE: Record<string, string> = {
   clamp: `function clamp(x: number, lo: number, hi: number): number {
@@ -234,7 +236,7 @@ export function generateTypeScript(project: Project, settings: ExportSettings): 
             }
             throw new Error(`알 수 없는 함수: ${node.callee}`);
           }
-          if (MATH_BUILTINS.has(node.callee)) {
+          if (isMathBuiltin(node.callee)) {
             return { exec: `Math.${node.callee}(${argsExec})`, log, kind: 'big' };
           }
           if (node.callee in HELPER_SOURCE) {

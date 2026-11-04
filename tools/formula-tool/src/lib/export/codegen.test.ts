@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { transformSync } from 'esbuild';
 import { Big } from '@idle/big-number';
+import { BUILTINS } from '$lib/engine';
 import { generateTypeScript } from './codegen';
 import type { ExportSettings, Project } from '$lib/project/types';
 
@@ -154,6 +155,14 @@ describe('generateTypeScript', () => {
       formulas: [{ id: 'f', key: 'f', expression: '-1 + 2', description: '' }],
     });
     expect(generateTypeScript(p, { abilityTypeImport: '../t' })).toContain('(-1)');
+  });
+
+  it('모든 내장 함수를 Math 함수나 도우미로 내보낸다', () => {
+    for (const [name, { minArgs }] of Object.entries(BUILTINS)) {
+      const call = `${name}(${Array(minArgs).fill('1').join(', ')})`;
+      const p = project({ formulas: [{ id: 'f', key: 'f', expression: call, description: '' }] });
+      expect(() => generateTypeScript(p, { abilityTypeImport: '../t' }), name).not.toThrow();
+    }
   });
 
   it('randInt 헬퍼 정의를 포함한다', () => {
