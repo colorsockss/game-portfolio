@@ -368,6 +368,31 @@ describe("repeated command requests", () => {
     expect((await savedOf(store, "hero"))?.revision).toBe(stageId === 9999 ? 1 : 2);
   });
 
+  // 새 로그인은 요청 번호를 처음부터 다시 매긴다. 옛 세션의 커맨드가 그 뒤에 답을 기록하면, 새 세션이 같은
+  // id로 보낸 커맨드가 실행되지 않고 그 답을 받는다.
+  test("from a session that a new login replaced while they ran are refused, not recorded for the new session", async () => {
+    const store = await openStore(":memory:");
+    const held = holding(store);
+    const log = collect();
+    const rpc = createRpc({ store: held, clock, data, log });
+    const old = rpc.connect(peer("old"));
+    await call(old, Opcode.AuthLogin, "login", { loginId: "hero" });
+
+    let release!: () => void;
+    held.hold = new Promise<void>(resolve => (release = resolve));
+    const first = call(old, Opcode.StageSelect, "1", { stageId: 3002 });
+    await vi.waitFor(() => expect(held.waiting).toBe(1));
+    const relogged = rpc.connect(peer("new"));
+    await call(relogged, Opcode.AuthLogin, "login", { loginId: "hero" });
+    held.hold = undefined;
+    release();
+
+    expect(await first).toMatchObject({ code: ResultCode.Rejected, error: { code: GameErrorCode.SessionReplaced } });
+    expect(await call(relogged, Opcode.StageSelect, "1", { stageId: 3003 })).toMatchObject({ code: ResultCode.Ok, sync: { revision: 2 } });
+    expect(await savedOf(store, "hero")).toMatchObject({ revision: 2, player: { stage: { currentId: 3003 } } });
+    expect(log.errors).toEqual([]);
+  });
+
   test("need an id of at most 64 characters", async () => {
     const { connection } = await setUp();
     expect(await call(connection, Opcode.StageSelect, "x".repeat(65), { stageId: 3002 })).toMatchObject({ code: ResultCode.BadRequest });

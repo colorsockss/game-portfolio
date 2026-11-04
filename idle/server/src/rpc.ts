@@ -57,6 +57,8 @@ interface ConnectionState {
   readonly peer: Peer;
   /** AuthLogin과 AuthResume이 정한다. */
   account?: Account;
+  /** 연결이 묶인 세션의 토큰 해시. `account`와 함께 정해지고 지워진다. */
+  tokenHash?: Uint8Array;
   /** 전송 계층이 잃은 연결. 이미 받은 요청은 계속 처리하지만 어느 계정에도 묶지 않는다. */
   gone: boolean;
   /** 게임 커맨드를 받을 수 있는 수(토큰 버킷)와 마지막으로 채운 서버 시각. */
@@ -108,22 +110,25 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
   }
 
   // 계정에는 연결이 하나뿐이다. 새 연결을 묶으면 이전 연결은 닫힌다.
-  function bind(connection: ConnectionState, account: Account): void {
+  function bind(connection: ConnectionState, account: Account, tokenHash: Uint8Array): void {
     unbind(connection);
     if (connection.gone) return;
     const previous = bound.get(account.id);
     if (previous && previous !== connection) {
       previous.account = undefined;
+      previous.tokenHash = undefined;
       log.info(`${previous.peer.name} ${account.loginId} replaced by ${connection.peer.name}`);
       previous.peer.close(CloseCode.SessionReplaced, "The account logged in elsewhere.");
     }
     connection.account = account;
+    connection.tokenHash = tokenHash;
     bound.set(account.id, connection);
   }
 
   function unbind(connection: ConnectionState): void {
     if (connection.account && bound.get(connection.account.id) === connection) bound.delete(connection.account.id);
     connection.account = undefined;
+    connection.tokenHash = undefined;
   }
 
   async function handle(connection: ConnectionState, bytes: Uint8Array): Promise<Uint8Array> {
@@ -166,9 +171,10 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
     const saved = account && await store.load(account.id);
     if (!account || !saved) throw new Error(`The account ${loginId} has no save.`);
     const token = createToken();
+    const tokenHash = hashToken(token);
     const expiresAt = now + SESSION_LIFETIME;
-    await store.startSession(account.id, hashToken(token), expiresAt);
-    bind(connection, account);
+    await store.startSession(account.id, tokenHash, expiresAt);
+    bind(connection, account, tokenHash);
     return ok({ snapshot: saved, session: { token, expiresAt } });
   }
 
@@ -178,15 +184,16 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
   async function resume(connection: ConnectionState, request: RequestEnvelope<Opcode.AuthResume>, now: number): Promise<ResponseResult> {
     const { token } = request.body;
     if (typeof token !== "string") return fail(ResultCode.BadRequest, "token must be a string.");
+    const tokenHash = hashToken(token);
     const found = await store.transaction(async tx => {
-      const session = await tx.findSession(hashToken(token));
+      const session = await tx.findSession(tokenHash);
       return session && { session, saved: await tx.load(session.account.id) };
     });
     if (!found) return reject(GameErrorCode.SessionReplaced, "The token is not the account's session any more.");
     const { session, saved } = found;
     if (session.expiresAt <= now) return reject(GameErrorCode.SessionExpired, "The session has expired.");
     if (!saved) throw new Error(`The account ${session.account.loginId} has no save.`);
-    bind(connection, session.account);
+    bind(connection, session.account, tokenHash);
     return ok(saved);
   }
 
@@ -208,9 +215,12 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
   // 찾지 않고 바로 그 트랜잭션 안에서 찾는다. 재연결한 뒤 새 연결로 다시 보낸 요청이 옛 연결의
   // 첫 요청이 아직 도는 동안 실행될 수 있고, 나중에 쓰는 쪽은 먼저 쓴 쪽의 답으로 답해야 하기
   // 때문이다.
+  //
+  // 기록은 세션의 것이다. 새 로그인은 기록을 비우고 요청 번호를 처음부터 다시 매기므로, 그 트랜잭션
+  // 안에서 이 연결의 세션이 아직 현재 세션인지 보고 아니면 저장도 기록도 하지 않는다.
   async function runCommand(connection: ConnectionState, request: RequestEnvelope<CommandOpcode>, now: number): Promise<ResponseResult> {
-    const { account } = connection;
-    if (!account) return fail(ResultCode.BadRequest, "Log in first.");
+    const { account, tokenHash } = connection;
+    if (!account || !tokenHash) return fail(ResultCode.BadRequest, "Log in first.");
     // 모드는 프로세스 내내 같으므로, 이 거절은 기록하지 않아도 같은 id에 같은 답이다.
     if (!cheats && isCheat(request.op)) return reject(GameErrorCode.CheatDisabled, "Cheats are open only on a development server.");
 
@@ -244,6 +254,7 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
         : reject(result.error.code, result.error.message);
 
       const answer = await store.transaction(async tx => {
+        if (!await tx.findSession(tokenHash)) return reject(GameErrorCode.SessionReplaced, "The account logged in elsewhere.");
         const recorded = await tx.findResult(account.id, request.id);
         if (recorded) return decodeMessage(recorded) as ResponseResult;
         if (result.ok && changed && !await tx.save(account.id, result.state, saved.revision, now)) return undefined;
