@@ -344,3 +344,47 @@ Constraints: transparent background; no background elements; no drop shadow outs
 ```text
 Additional constraints for the background: outlines on large shapes only (hills, trees, rocks, walls), thinner than the icon outline; ground with a few simple flat patches, no busy detail where the characters stand; slightly lower saturation than the characters
 ```
+
+### 패럴랙스 배경(원경·근경)
+
+위 "스테이지 배경 6장"을 두 겹으로 나눕니다. 원경(`far`)은 하늘과 먼 풍경이고 불투명하며, 근경(`near`)은 땅과 그 위의 가까운 소품이고 위쪽이 투명합니다. 근경은 배우와 같은 빠르기로, 원경은 그보다 느리게 흐릅니다. 두 겹이 같은 장면에서 나오도록 전체 장면을 먼저 뽑고 그것을 두 번 편집합니다.
+
+겹마다 그림 한 장이 아니라 가로로 끝없이 되풀이되는 띠입니다. 그래서 장면은 그 장소를 밖에서 바라본 그림이 아니라 영웅이 그 안을 지나가는 그림이고, 두 겹 모두 되풀이되어도 자연스러운 것(이어지는 벽, 나무 줄, 덩굴, 능선, 기둥의 줄)으로만 채웁니다. 성 한 채, 해, 봉우리 하나처럼 하나뿐이어야 하는 것은 넣지 않습니다. 장면은 아래 표의 원경·근경 값이 정합니다.
+
+```text
+idle/docs/art-prompts.md의 "6. UI 개편 그림체"의 "패럴랙스 배경(원경·근경)"으로 <key> 배경을 만들어라. 스테이지마다 image_gen을 세 번 부른다.
+1. 장면: "스테이지 배경 6장"의 명세(UI 개편 스타일, 5의 틀, 추가 조건)에 아래 "장면 추가 조건"을 더해 세로 그림(1024×1536)으로 뽑는다. 틀의 <장면>은 이 절의 표의 원경과 근경을 이은 것이고 <분위기>는 5의 표 값이다. 이 절의 조건이 "랜드마크는 양 끝에" 같은 앞 절의 지시와 어긋나면 이 절을 따른다.
+2. 원경: 1을 편집 대상으로 아래 원경 명세로 편집한다.
+3. 근경: 1을 편집 대상으로 아래 근경 명세로 편집한다. 투명 배경을 요청하고 alpha를 지킨다.
+원본 세 장은 idle/art/source/backgrounds/<key>_scene.png, <key>_far.png, <key>_near.png에 둔다.
+후처리: 원경과 근경을 각각 4:7로 가운데를 잘라 768×1344로 줄인다. 게임은 그림을 가로로 이어 그리며 흘리므로 왼쪽 끝과 오른쪽 끝이 이어져야 한다. 내용이 양 끝까지 이어지므로 후처리로 이음매를 맞추되(예: 거울상 잇기, 양 끝 띠 섞기) 벽·나무·능선이 끊기거나 겹치지 않게 하고, 근경은 alpha를 지킨다. 근경 땅에 투명 구멍이 생기면 장면 원본으로 메운다. 세 장을 가로로 이은 미리보기를 직접 열어 이음매나 겹친 외곽선이 보이거나, 하나뿐이어야 할 것이 되풀이되거나, 원경이 섬처럼 떨어져 그 사이에 빈 하늘이 보이면 고치거나 다시 뽑는다. 근경을 원경 위에 겹친 미리보기도 열어 땅이 지평선 아래를 다 덮는지 본다. 최종본은 idle/art/backgrounds/<key>_far.png, <key>_near.png다.
+```
+
+```text
+Additional scene constraints for parallax: the viewer travels through the place, not looking at it from outside; both layers repeat endlessly to the left and right, so fill them only with elements that naturally continue (walls, rows of trees, vines, ridges, rows of pillars) and include no unique landmark (no single castle, sun, moon or lone peak); the distant scenery spans the full width with no gaps of empty sky between groups; clear depth separation between the distant scenery behind the horizon and a few small generic near props standing on the ground just below the horizon (38-46% from the top), none where the characters stand (46-60% from the top); a level ground boundary across the full width with all distant scenery entirely above it; near props only within the central 70% of the width and the 38-46% band, none at the bottom; the image must tile horizontally: the horizon and the ground at the same height and colors on both sides
+```
+
+```text
+Use case: precise-object-edit
+Asset type: far parallax layer of a vertical 2D side-view battle background; it scrolls slower behind the near layer
+Input images: Image 1: edit target (the full stage background)
+Primary request: keep only the sky and the distant scenery behind the horizon; remove every near prop on the ground and continue the sky and distant scenery behind where they stood; below the horizon, fill with a single uniform ground color matching Image 1, without patches or outlines
+Constraints: change only the removed props and the ground below the horizon; keep the canvas size, alignment, style, palette, outlines, framing and horizon height of Image 1; opaque background; no characters, no creatures
+```
+
+```text
+Use case: background-extraction
+Asset type: near parallax layer of a vertical 2D side-view battle background; it scrolls at the characters' speed over the far layer
+Input images: Image 1: edit target (the full stage background)
+Primary request: keep only the ground from the horizon to the bottom edge across the full width and the near props standing on it; make the sky and all distant scenery fully transparent
+Constraints: keep the canvas size, alignment, style, palette, outlines, framing and horizon height of Image 1; do not trim, reframe or move anything, the props stay where they are; the ground is opaque, spans the full width and has no transparent holes; transparent background above the ground and around the props, as real alpha, not a painted checkerboard or solid backdrop; clean edges, no halo; no characters, no creatures
+```
+
+| key | 원경 | 근경 |
+|---|---|---|
+| `meadow` | rolling green hills and bushes continuing along the horizon under a sky with small clouds | a grassy field with small rocks and wildflower clumps |
+| `forest` | inside a dense forest: thick trunks and lush foliage continuing without gaps, sky only through small gaps in the leaves, hanging vines | a dirt path with vines, ferns and roots along its edge |
+| `camp` | inside a goblin camp: an endless wooden palisade with patched tent roofs behind it, both part of the distant layer; warm dusk sky; no sun, gate or watchtower | a packed dirt path with small crates and barrels |
+| `fortress` | inside an ogre fortress: a frontal view of an inner stone corridor wall with pillars and arches repeating at a regular interval, the arches closed with stone wall, plain cloth banners and torches between them | a flagstone path |
+| `snow` | an endless snowy mountain ridge of similar heights with falling snow; no isolated summit, no open valley | a snowy path with icy rocks |
+| `lava` | inside a volcanic cavern: a continuous cave wall with stalactites, lava streams flowing down between them; no central lavafall, no sky | a basalt floor with glowing cracks only near the top of the path |

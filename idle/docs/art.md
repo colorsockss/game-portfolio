@@ -25,7 +25,8 @@
 | 글꼴 | 78 | Jua 1개 |
 | 영웅 | 62 | 1명, 19프레임 |
 | 몬스터·보스·소환수 | 63 | 11종, 197프레임 |
-| 원하면 더 그릴 것 | | 발사체 8프레임, 배경 6장, 아이콘 28장 |
+| 스테이지 배경 | 78 | 6장, 원경·근경 12겹(Unity 미적용) |
+| 원하면 더 그릴 것 | | 발사체 8프레임, 아이콘 28장 |
 
 ## 그리는 규칙
 
@@ -280,12 +281,14 @@ Unity의 고블린 야영지 전투에서 대기·걷기·공격·피격·사망
 
 | 이름(`Stages.background`) | 스테이지 | 지금 | 만든 사람 | 도구 |
 |---|---|---|---|---|
-| meadow | 훈련의 초원 | 임시 | | |
-| forest | 숲의 입구 | 임시 | | |
-| camp | 고블린 야영지 | 임시 | | |
-| fortress | 오우거의 요새 | 임시 | | |
-| snow | 얼어붙은 고개 | 임시 | | |
-| lava | 화염 드래곤의 둥지 | 임시 | | |
+| meadow | 훈련의 초원 | 완료 | colorsocks | Codex image_gen |
+| forest | 숲의 입구 | 완료 | colorsocks | Codex image_gen |
+| camp | 고블린 야영지 | 완료 | colorsocks | Codex image_gen |
+| fortress | 오우거의 요새 | 완료 | colorsocks | Codex image_gen |
+| snow | 얼어붙은 고개 | 완료 | colorsocks | Codex image_gen |
+| lava | 화염 드래곤의 둥지 | 완료 | colorsocks | Codex image_gen |
+
+meadow·forest·camp·fortress·snow·lava 원경·근경은 `art/backgrounds/<이름>_far.png`, `<이름>_near.png`(각 768×1344)로 만들었으며, Unity에는 아직 넣지 않았습니다.
 
 ### 효과 칸 아이콘
 
