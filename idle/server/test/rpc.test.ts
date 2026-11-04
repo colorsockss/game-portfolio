@@ -94,6 +94,20 @@ function pausingAfterFindSession(store: Store, between: () => void): Store {
   };
 }
 
+// 저장 데이터를 읽은 직후마다 `between`을 부르고, true면 다음 매크로태스크까지 기다리는 저장소(위와 같은 방식).
+// `between`이 시작한 요청 자신의 읽기는 기다리지 않게 false를 돌려준다.
+function pausingAfterLoad(store: Store, between: () => boolean): Store {
+  return {
+    ...store,
+    async load(accountId) {
+      const saved = await store.load(accountId);
+      if (between()) await new Promise(resolve => setTimeout(resolve, 0));
+      return saved;
+    },
+    transaction: work => store.transaction(tx => work(pausingAfterLoad(tx, between))),
+  };
+}
+
 describe("commands", () => {
   test("start over from the newer save when another request saved in between", async () => {
     const store = await openStore(":memory:");
@@ -252,6 +266,29 @@ describe("sessions", () => {
     expect(await call(loggingIn, Opcode.StageSelect, "2", { stageId: 3002 })).toMatchObject({ code: ResultCode.Ok });
   });
 
+  // 로그인이 저장 데이터를 읽은 뒤 세션을 시작하기 전에 옛 세션의 커맨드가 저장하면, 로그인이 돌려준 저장 데이터가 이미 낡는다.
+  test("a login's snapshot is the save its session starts from, even if the old session's command lands meanwhile", async () => {
+    time = 1_000_000;
+    let between = () => false;
+    const log = collect();
+    const store = pausingAfterLoad(await openStore(":memory:"), () => between());
+    const rpc = createRpc({ store, clock, data, log });
+    const old = rpc.connect(peer("old"));
+    await call(old, Opcode.AuthLogin, "1", { loginId: "hero" });
+
+    let command: Promise<unknown> | undefined;
+    between = () => {
+      between = () => false;
+      command = call(old, Opcode.StageSelect, "2", { stageId: 3002 });
+      return true;
+    };
+    const login = await call(rpc.connect(peer("new")), Opcode.AuthLogin, "1", { loginId: "hero" }) as { body: { snapshot: { revision: number } } };
+
+    expect(await command).toMatchObject({ code: ResultCode.Rejected, error: { code: GameErrorCode.SessionReplaced } });
+    expect(login.body.snapshot.revision).toBe((await savedOf(store, "hero"))?.revision);
+    expect(log.errors).toEqual([]);
+  });
+
   test("a closed connection lets go of its account, even if a login was still on its way", async () => {
     const rpc = await setUp();
     const first = peer("first");
@@ -264,7 +301,7 @@ describe("sessions", () => {
     expect(first.closes).toEqual([]);
   });
 
-  // 둘 다 계정을 찾지 못해 만들려 하고, 늦은 쪽은 만들기에 실패한 뒤 먼저 만든 계정을 찾는다.
+  // 함께 와도 로그인은 한 트랜잭션이라 차례로 돌고, 늦은 쪽은 먼저 만든 계정을 찾는다.
   test("two logins that create the same new account at once share it, and the later one keeps the connection", async () => {
     const store = await openStore(":memory:");
     const rpc = createRpc({ store, clock, data, log: collect() });
@@ -382,9 +419,10 @@ describe("repeated command requests", () => {
     held.hold = new Promise<void>(resolve => (release = resolve));
     const first = call(old, Opcode.StageSelect, "1", { stageId: 3002 });
     await vi.waitFor(() => expect(held.waiting).toBe(1));
+    // 로그인도 트랜잭션을 쓰므로 로그인하는 동안은 붙잡지 않는다. 옛 커맨드는 처음 붙잡힌 채로 기다린다.
+    held.hold = undefined;
     const relogged = rpc.connect(peer("new"));
     await call(relogged, Opcode.AuthLogin, "login", { loginId: "hero" });
-    held.hold = undefined;
     release();
 
     expect(await first).toMatchObject({ code: ResultCode.Rejected, error: { code: GameErrorCode.SessionReplaced } });

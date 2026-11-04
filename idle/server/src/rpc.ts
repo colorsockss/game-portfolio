@@ -160,20 +160,22 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
     return (handler as Handler)(connection, request, now);
   }
 
-  // 계정을 찾거나 만들고, 새 세션을 시작한 뒤(이전 세션은 끝난다) 연결을 그 세션에 묶는다.
+  // 계정을 찾거나 만들고, 새 세션을 시작한 뒤(이전 세션은 끝난다) 연결을 그 세션에 묶는다. 찾기·만들기, 읽기,
+  // 세션 시작을 한 트랜잭션에 두므로 그 사이에 다른 요청이 끼어들지 않는다. 같은 계정을 함께 만들려던 로그인은
+  // 먼저 만든 계정을 찾고, 돌려주는 저장 데이터는 새 세션이 시작한 그대로다(그 뒤 옛 세션의 커맨드는 거절된다).
   async function login(connection: ConnectionState, request: RequestEnvelope<Opcode.AuthLogin>, now: number): Promise<ResponseResult> {
     const { loginId } = request.body;
     if (!isValidLoginId(loginId)) return fail(ResultCode.BadRequest, `loginId must be ${LOGIN_ID_LENGTH.min} to ${LOGIN_ID_LENGTH.max} lowercase letters, digits or underscores.`);
-    // 다른 요청이 같은 계정을 먼저 만들었으면 만들기는 실패하고 찾기는 성공한다.
-    const account = await store.findAccount(loginId)
-      ?? await store.createAccount(loginId, createPlayer(loginId, data, now), now)
-      ?? await store.findAccount(loginId);
-    const saved = account && await store.load(account.id);
-    if (!account || !saved) throw new Error(`The account ${loginId} has no save.`);
     const token = createToken();
     const tokenHash = hashToken(token);
     const expiresAt = now + SESSION_LIFETIME;
-    await store.startSession(account.id, tokenHash, expiresAt);
+    const { account, saved } = await store.transaction(async tx => {
+      const account = await tx.findAccount(loginId) ?? await tx.createAccount(loginId, createPlayer(loginId, data, now), now);
+      const saved = account && await tx.load(account.id);
+      if (!account || !saved) throw new Error(`The account ${loginId} has no save.`);
+      await tx.startSession(account.id, tokenHash, expiresAt);
+      return { account, saved };
+    });
     bind(connection, account, tokenHash);
     return ok({ snapshot: saved, session: { token, expiresAt } });
   }
