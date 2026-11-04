@@ -3,7 +3,8 @@
 // 곱한다. 커맨드는 commands/rebirth.ts다.
 import { Big } from "@idle/big-number";
 import { E_AbilityType } from "./ability-type.js";
-import { Formula, type IAbilityOwner } from "./formulas.js";
+import { NOBODY } from "./formula-owners.js";
+import { Formula } from "./formulas.js";
 
 /** 환생한 횟수와 그동안 받은 포인트의 합. 배율은 포인트로만 정한다. */
 export interface RebirthState {
@@ -13,12 +14,6 @@ export interface RebirthState {
 
 export const NO_REBIRTH: RebirthState = Object.freeze({ count: 0, points: 0 });
 
-// 환생 공식은 능력치를 읽지 않는다.
-const NOBODY: IAbilityOwner = {
-  get(type) {
-    throw new Error(`A rebirth formula cannot read ${E_AbilityType[type]}.`);
-  },
-};
 
 /** 영웅 레벨 `level`에서 환생하면 받는 포인트. 0이면 환생할 수 없다. */
 export function rebirthPoints(level: number): number {

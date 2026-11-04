@@ -20,6 +20,7 @@ import { Formula, type IAbilityOwner } from "../formulas.js";
 import { addReward, type ItemAmounts } from "../items.js";
 import { levelUp } from "../level.js";
 import { rebirthRate } from "../rebirth.js";
+import { required } from "../rows.js";
 import { skillMultiplier } from "../skills.js";
 import type { PlayerState } from "../state.js";
 import { isUnlocked } from "../unlock.js";
@@ -377,9 +378,7 @@ function amountFormula(kind: EffectKind): E_AbilityType | null {
 }
 
 function effectRow(data: GameData, id: number): EffectsRow {
-  const found = data.effects.get(id);
-  if (found === undefined) throw new Error(`Unknown effect ${id}.`);
-  return found;
+  return required(data.effects, id, "effect");
 }
 
 // 저장된 효과의 겹. 데이터에서 지운 효과는 버린다.
@@ -421,9 +420,7 @@ function stunned(self: Combatant): boolean {
 }
 
 function stageRow(data: GameData, id: number): StagesRow {
-  const found = data.stages.get(id);
-  if (found === undefined) throw new Error(`Unknown stage ${id}.`);
-  return found;
+  return required(data.stages, id, "stage");
 }
 
 /**
@@ -540,7 +537,7 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
   // 몬스터·소환수는 버린다. 소환수의 레벨은 지금 소환자가 그 소환수를 부르는 스킬의 레벨이다.
   for (const saved of battle.enemies) {
     const found = data.monsters.get(saved.monsterId);
-    if (found !== undefined) enemies.push(resumedMonster(saved, found));
+    if (found !== undefined) enemies.push(monster(found, saved));
   }
   for (const saved of battle.summons) {
     const found = data.summons.get(saved.summonId);
@@ -564,28 +561,30 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
 
   // 발사체를 쏜 스킬: 저장한 스킬 행과 레벨에서 다시 만든다. 떨어질 때는 재사용 대기를 쓰지 않는다.
   function savedAttack({ skillId, level }: ProjectileState): Attack {
-    const skill = data.skills.get(skillId);
-    if (skill === undefined) throw new Error(`Unknown skill ${skillId}.`);
-    return attackOf(skill, 0, level);
+    return attackOf(required(data.skills, skillId, "skill"), 0, level);
   }
 
-  function resumedMonster(saved: MonsterState, found: MonstersRow): Combatant {
+  // 몬스터 전투원. 새로 나온 몬스터(`state`가 id·보스·자리뿐)는 최대 HP에 효과가 없고 공격이 처음부터 기다리며, 체크포인트에서
+  // 이어 받은 몬스터는 저장한 HP·재사용 대기·효과다.
+  function monster(
+    found: MonstersRow, state: Pick<MonsterState, "id" | "boss" | "x"> & Partial<Pick<MonsterState, "hp" | "cooldowns" | "effects">>,
+  ): Combatant {
     const base = monsterStats(found, data);
-    const effects = effectsOf(data, saved.effects);
+    const effects = effectsOf(data, state.effects ?? []);
     const fighter = fighterWith(base, effects);
     return {
-      id: saved.id,
+      id: state.id,
       side: Side.Enemy,
       base,
       fighter,
-      cooldowns: fighter.attacks.map((attack, i) => saved.cooldowns[i] ?? attack.cooldown),
-      hp: saved.hp,
+      cooldowns: fighter.attacks.map((attack, i) => state.cooldowns?.[i] ?? attack.cooldown),
+      hp: state.hp ?? fighter.stats.maxHp,
       effects,
-      x: saved.x,
+      x: state.x,
       movedTick: -1,
       readyTick: tick + 1,
       row: found,
-      boss: saved.boss,
+      boss: state.boss,
       summon: null,
     };
   }
@@ -665,27 +664,9 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
   }
 
   function spawn(monsterId: number, boss: boolean): void {
-    const found = data.monsters.get(monsterId);
-    if (found === undefined) throw new Error(`Unknown monster ${monsterId}.`);
-    const base = monsterStats(found, data);
-    const fighter = fighterOf(base);
     const id = nextId++;
     const x = hero.x + spawnDistance;
-    enemies.push({
-      id,
-      side: Side.Enemy,
-      base,
-      fighter,
-      cooldowns: fighter.attacks.map(attack => attack.cooldown),
-      hp: fighter.stats.maxHp,
-      effects: [],
-      x,
-      movedTick: -1,
-      readyTick: tick + 1,
-      row: found,
-      boss,
-      summon: null,
-    });
+    enemies.push(monster(required(data.monsters, monsterId, "monster"), { id, boss, x }));
     emit({ tick, type: "spawn", id, monsterId, boss, x });
   }
 
@@ -715,8 +696,7 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
 
   // 소환수를 소환자 진영의 끝에 부른다. 같은 소환자의 같은 소환수가 꽉 찼으면 가장 먼저 부른 것이 만료한다.
   function call(by: Combatant, summonId: number, level: number): void {
-    const row = data.summons.get(summonId);
-    if (row === undefined) throw new Error(`Unknown summon ${summonId}.`);
+    const row = required(data.summons, summonId, "summon");
     const side = by.side === Side.Ally ? allies : enemies;
     let count = 0;
     let oldest: Combatant | undefined;
@@ -862,9 +842,7 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
 
   // 발사체가 나는 틱: 쏜 순간 첫 대상까지의 거리 ÷ 속도.
   function flightOf(projectileId: number, from: Combatant, to: Combatant): number {
-    const found = data.projectiles.get(projectileId);
-    if (found === undefined) throw new Error(`Unknown projectile ${projectileId}.`);
-    return toTicks(distance(from, to) / found.speed);
+    return toTicks(distance(from, to) / required(data.projectiles, projectileId, "projectile").speed);
   }
 
   // 전투원 하나의 차례. 맞설 상대가 있을 때만 모든 대기를 하나씩 줄이고, 쓸 수 있는 스킬(choose)을 쓴다. 쓸 것이 없으면

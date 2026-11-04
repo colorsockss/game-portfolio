@@ -4,7 +4,9 @@
 import { Big } from "@idle/big-number";
 import type { GameData, ItemsRow, Stat } from "@idle/data-schema";
 import { E_AbilityType } from "./ability-type.js";
-import { Formula, type IAbilityOwner } from "./formulas.js";
+import { NOBODY } from "./formula-owners.js";
+import { Formula } from "./formulas.js";
+import { required } from "./rows.js";
 
 /** 가진 장비 하나. */
 export interface EquipmentInstance {
@@ -35,9 +37,7 @@ export function slotOf(row: ItemsRow): number {
 export function equipmentRow(equipment: EquipmentState, equipmentId: number, data: GameData): ItemsRow {
   const instance = equipment.owned[equipmentId];
   if (instance === undefined) throw new Error(`Equipment ${equipmentId} is not owned.`);
-  const row = data.items.get(instance.itemId);
-  if (row === undefined) throw new Error(`Unknown item ${instance.itemId}.`);
-  return row;
+  return required(data.items, instance.itemId, "item");
 }
 
 /**
@@ -60,22 +60,17 @@ export function receive(equipment: EquipmentState, row: ItemsRow, amount: Big, d
   return { ...equipment, nextId, owned };
 }
 
-// 강화 공식은 능력치를 읽지 않고 입력(단계, 행의 스탯)만 읽는다.
-const NO_OWNER: IAbilityOwner = {
-  get(type) {
-    throw new Error(`Equipment formulas read no ability, but one read ${E_AbilityType[type]}.`);
-  },
-};
+// 강화 공식은 능력치를 읽지 않고 입력(단계, 행의 스탯)만 읽는다(NOBODY).
 
 /** 장비 행의 스탯 하나를 강화 단계만큼 키운 값(enhanceStat 공식). 행의 칸이 비었으면 null이다. */
 export function equipmentStat(row: ItemsRow, enhance: number, stat: Stat.MaxHp | Stat.Attack | Stat.Defense): Big | null {
   const base = row[stat];
-  return base === null ? null : Formula.get(E_AbilityType.enhanceStat, NO_OWNER, NO_OWNER, { base, step: enhance });
+  return base === null ? null : Formula.get(E_AbilityType.enhanceStat, NOBODY, NOBODY, { base, step: enhance });
 }
 
 /** 강화 단계 `enhance`에서 한 단계 올리는 골드(enhanceCost 공식). */
 export function enhanceCost(enhance: number): Big {
-  return Formula.get(E_AbilityType.enhanceCost, NO_OWNER, NO_OWNER, { step: enhance });
+  return Formula.get(E_AbilityType.enhanceCost, NOBODY, NOBODY, { step: enhance });
 }
 
 /**

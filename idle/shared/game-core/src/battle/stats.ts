@@ -3,6 +3,7 @@ import { SkillElement, Stat, type GameData, type MonstersRow, type SkillsRow, ty
 import { E_AbilityType } from "../ability-type.js";
 import { equipmentRow, equipmentStat } from "../equipment.js";
 import { Formula, type IAbilityOwner } from "../formulas.js";
+import { required } from "../rows.js";
 import { rebirthRate } from "../rebirth.js";
 import { heroRow, heroSkills, skillRow } from "../skills.js";
 import type { PlayerState } from "../state.js";
@@ -75,8 +76,7 @@ export function heroStats(
   player: Pick<PlayerState, "hero" | "equipment" | "statUpgrades" | "skills" | "rebirth">, data: GameData,
 ): CombatStats {
   const hero = heroRow(data);
-  const row = data.heroLevels.get(player.hero.level);
-  if (row === undefined) throw new Error(`Unknown hero level ${player.hero.level}.`);
+  const row = required(data.heroLevels, player.hero.level, "hero level");
   return applyModifiers(
     {
       maxHp: row.maxHp,

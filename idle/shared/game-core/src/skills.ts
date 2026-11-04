@@ -4,7 +4,9 @@
 import type { Big } from "@idle/big-number";
 import type { GameData, HeroesRow, SkillsRow } from "@idle/data-schema";
 import { E_AbilityType } from "./ability-type.js";
-import { Formula, type IAbilityOwner } from "./formulas.js";
+import { NOBODY } from "./formula-owners.js";
+import { Formula } from "./formulas.js";
+import { required } from "./rows.js";
 
 /** 영웅이 배운 스킬과 그 레벨, 장착. */
 export interface SkillsState {
@@ -16,15 +18,11 @@ export interface SkillsState {
 
 /** 플레이어가 쓰는 영웅(Constants.heroId)의 행. */
 export function heroRow(data: GameData): HeroesRow {
-  const hero = data.heroes.get(data.constants.heroId);
-  if (hero === undefined) throw new Error(`Unknown hero ${data.constants.heroId}.`);
-  return hero;
+  return required(data.heroes, data.constants.heroId, "hero");
 }
 
 export function skillRow(data: GameData, id: number): SkillsRow {
-  const skill = data.skills.get(id);
-  if (skill === undefined) throw new Error(`Unknown skill ${id}.`);
-  return skill;
+  return required(data.skills, id, "skill");
 }
 
 /** 장착할 수 있는 스킬: 영웅의 스킬 중 기본 공격이 아닌 것(재사용 대기가 있음). Heroes.skillIds 순서다. */
@@ -73,12 +71,6 @@ export function isEquipped(skills: SkillsState, skillId: number): boolean {
   return Object.values(skills.equipped).includes(skillId);
 }
 
-// 레벨 공식은 능력치를 읽지 않는다.
-const NOBODY: IAbilityOwner = {
-  get(type) {
-    throw new Error(`A skill level formula cannot read ${E_AbilityType[type]}.`);
-  },
-};
 
 /** `level`에서 한 레벨 올리는 비용(Skills.costItemId 아이템의 양, 공식 skillLevelCost). */
 export function skillLevelCost(level: number): Big {

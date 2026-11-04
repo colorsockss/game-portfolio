@@ -4,6 +4,7 @@
 import { Big } from "@idle/big-number";
 import { ItemKind, type GameData, type ItemsRow } from "@idle/data-schema";
 import { receive } from "./equipment.js";
+import { required } from "./rows.js";
 import type { PlayerState } from "./state.js";
 
 /** 아이템(Items.id)별 수량. 키가 없으면 0이다. 저장 데이터의 보유량과 보상이 같은 모양을 쓴다. */
@@ -25,9 +26,7 @@ export function minus(held: Big, amount: Big): Big {
 }
 
 function rowOf(id: number, data: GameData): ItemsRow {
-  const row = data.items.get(id);
-  if (row === undefined) throw new Error(`Unknown item ${id}.`);
-  return row;
+  return required(data.items, id, "item");
 }
 
 // 보유 `held`에 `amount`를 더한 값. 수량은 정수라서 더할 때마다 내림해 반올림 오차가 쌓이지 않게 한다.

@@ -3,6 +3,7 @@
 import { Big } from "@idle/big-number";
 import type { GameData } from "@idle/data-schema";
 import { minus, type ItemAmounts } from "./items.js";
+import { required } from "./rows.js";
 import type { HeroState } from "./state.js";
 
 /**
@@ -16,8 +17,7 @@ export function levelUp(
   let level = hero.level;
   let exp = items[expItemId] ?? Big.ZERO;
   for (;;) {
-    const need = data.heroLevels.get(level)?.expToNext;
-    if (need === undefined) throw new Error(`Unknown hero level ${level}.`);
+    const need = required(data.heroLevels, level, "hero level").expToNext;
     if (need === null || Big.lt(exp, need)) break;
     exp = minus(exp, need);
     level++;
