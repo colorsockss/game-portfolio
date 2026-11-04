@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { copyFile, cp, mkdir, readdir, rename, rm, writeFile } from "node:fs/promises";
+import { appendFile, copyFile, cp, mkdir, readdir, rename, rm, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -8,6 +8,7 @@ import { build, context } from "esbuild";
 import { readApi } from "./api.mjs";
 import { RULE_TABLES } from "./data-schema.mjs";
 import { PARTS, verifyManifest, writeManifest } from "./manifest.mjs";
+import { PLATFORM, channelPath, versionPath } from "./update.mjs";
 
 const clientRoot = fileURLToPath(new URL("../", import.meta.url));
 const tsconfigPath = path.join(clientRoot, "tsconfig.json");
@@ -22,16 +23,16 @@ if (watch && mode !== "development") {
 
 // 릴리스만 받는 값(docs/superpowers/specs/2026-10-30-patch-design.md 4.12절). --parts는 이번 커밋에서 만들 단위(기본은
 // 모두)이고, 고르지 않은 단위는 --base의 버전 폴더(tools/patch.mjs pull로 받은 것)에서 가져온다. --server는 이 버전과 함께 돌
-// 서버의 커밋, --bucket은 더할 버킷이다(기본 dist/patch, 테스트는 임시 폴더).
+// 서버의 커밋, --bucket은 더할 버킷이다(기본 dist/patch, 테스트는 임시 폴더). --report=<파일>을 주면 낸 채널의 API(`api=`), 버전
+// (`version=`), 버전 폴더(`folder=`)를 그 파일에 줄로 더한다(CI가 $GITHUB_OUTPUT을 넘겨 다음 단계가 버킷의 레이아웃을 몰라도 됨).
 const option = name => flags.find(flag => flag.startsWith(`--${name}=`))?.slice(name.length + 3);
 const parts = option("parts")?.split(",").filter(Boolean) ?? PARTS;
 const base = option("base") && path.resolve(option("base"));
 const server = option("server") ?? process.env.GITHUB_SHA ?? null;
+const report = option("report");
 for (const part of parts) if (!PARTS.includes(part)) throw new Error(`Unknown part ${part}; expected ${PARTS.join(", ")}.`);
 if (parts.length < PARTS.length && !base) throw new Error("Building only some parts needs --base=<a pulled version folder>.");
 
-// 내보내는 플랫폼. Android만 낸다(src/application/update/update.ts의 channelPath).
-const platform = "Android";
 // 릴리스의 로컬 버킷. Live VPS의 패치 폴더와 같은 레이아웃이고(aa/, v/<버전>/, channels/), serve:bundle이 내준다. 지우지 않고 더한다.
 const bucket = path.resolve(option("bucket") ?? path.join(clientRoot, "dist", "patch"));
 // 게임 번들(main과 data/)을 만드는 디렉터리. 릴리스는 다 만든 뒤 버킷의 v/<버전>/으로 옮긴다.
@@ -39,7 +40,7 @@ const outputDirectory = path.join(clientRoot, "dist", mode === "release" ? ".rel
 // 릴리스의 부트 번들은 앱에 들도록 Resources에 둔다(TypeScriptRuntimeSettings.ReleaseBootModule). 빌드 출력이라 커밋하지 않는다.
 const resourcesDirectory = path.join(clientRoot, "..", "Assets", "Resources", "TypeScript");
 // Unity의 Tools/Addressables/Build Remote Content가 만든 에셋 카탈로그와 에셋 번들(Assets/Editor/Patch/RemoteContent.cs).
-const remoteContent = path.join(clientRoot, "..", "ServerData", platform);
+const remoteContent = path.join(clientRoot, "..", "ServerData", PLATFORM);
 // 앱의 C# API 지문(tools/api.mjs).
 const api = await readApi(clientRoot);
 // 테이블 데이터는 FileFacade.Read가 찾는 진입 모듈 옆에 함께 담긴다.
@@ -107,7 +108,7 @@ async function publish() {
   const commit = process.env.GITHUB_SHA ?? null;
   const recorded = Object.fromEntries(PARTS.map(part => [part, parts.includes(part) ? commit : baseManifest.parts?.[part] ?? null]));
   const { version, files } = await writeManifest(outputDirectory, { api: patchApi, build: buildNumber(), parts: recorded, server });
-  const folder = path.join(bucket, "v", version);
+  const folder = path.join(bucket, versionPath(version));
   if (existsSync(folder)) {
     await rm(outputDirectory, { recursive: true });
     console.log(`[TypeScript] game bundle ${version} is already in the bucket`);
@@ -116,11 +117,12 @@ async function publish() {
     await rename(outputDirectory, folder);
     console.log(`[TypeScript] game bundle ${version}: ${files.length} files`);
   }
-  const pointer = path.join(bucket, "channels", platform, `${patchApi}.json`);
+  const pointer = path.join(bucket, channelPath(patchApi));
   await mkdir(path.dirname(pointer), { recursive: true });
   await writeFile(`${pointer}.tmp`, `${JSON.stringify({ version })}\n`);
   await rename(`${pointer}.tmp`, pointer);
-  console.log(`[TypeScript] channel ${platform}/${patchApi} -> ${version} (${parts.join(", ")} from this commit): ${bucket}`);
+  console.log(`[TypeScript] channel ${PLATFORM}/${patchApi} -> ${version} (${parts.join(", ")} from this commit): ${bucket}`);
+  if (report) await appendFile(report, `api=${patchApi}\nversion=${version}\nfolder=${folder}\n`);
 }
 
 // 게임 번들의 파일이 속한 단위. 에셋 번들은 매니페스트 밖이라 카탈로그만 assets다.
@@ -152,8 +154,8 @@ async function copyRemoteContent() {
     console.warn(`[TypeScript] No remote content in ${remoteContent}; run Tools/Addressables/Build Remote Content in Unity first.`);
     return;
   }
-  const catalogs = path.join(outputDirectory, "aa", platform);
-  const bundles = path.join(bucket, "aa", platform);
+  const catalogs = path.join(outputDirectory, "aa", PLATFORM);
+  const bundles = path.join(bucket, "aa", PLATFORM);
   await mkdir(catalogs, { recursive: true });
   await mkdir(bundles, { recursive: true });
   for (const name of await readdir(remoteContent)) {

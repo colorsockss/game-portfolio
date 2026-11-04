@@ -13,11 +13,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readApi } from "./api.mjs";
-import { MANIFEST, verifyManifest } from "./manifest.mjs";
+import { verifyManifest } from "./manifest.mjs";
+import { CHANNELS, MANIFEST, PLATFORM, channelPath, isVersion, versionPath } from "./update.mjs";
 
 const clientRoot = fileURLToPath(new URL("../", import.meta.url));
-// 내보내는 플랫폼. Android만 낸다(src/application/update/update.ts의 channelPath).
-const platform = "Android";
 const bucket = process.env.PATCH_BUCKET ?? path.join(clientRoot, "dist", "patch");
 const target = process.env.PATCH_TARGET;
 const [command, version, into] = process.argv.slice(2);
@@ -41,29 +40,28 @@ async function release(next) {
   checkVersion(next);
   // 올라간 매니페스트를 받아 본다. 없으면 rsync가 실패한다. 포인터는 그 버전이 맞춰 빌드된 API의 채널이다(롤백도 같음).
   const api = await withTemp(async pulled => {
-    rsync("-t", `${target}/v/${next}/${MANIFEST}`, `${pulled}/`);
+    rsync("-t", `${target}/${versionPath(next)}${MANIFEST}`, `${pulled}/`);
     const manifest = JSON.parse(await readFile(path.join(pulled, MANIFEST), "utf8"));
-    if (manifest.version !== next) throw new Error(`v/${next} holds version ${manifest.version}.`);
+    if (manifest.version !== next) throw new Error(`${versionPath(next)} holds version ${manifest.version}.`);
     return manifest.api;
   });
   await withTemp(async staged => {
-    await mkdir(path.join(staged, "channels", platform), { recursive: true });
-    await writeFile(path.join(staged, "channels", platform, `${api}.json`), `${JSON.stringify({ version: next })}\n`);
+    await mkdir(path.join(staged, CHANNELS), { recursive: true });
+    await writeFile(path.join(staged, channelPath(api)), `${JSON.stringify({ version: next })}\n`);
     rsync("-rt", `${staged}/`, `${target}/`);
   });
-  console.log(`[patch] channel ${platform}/${api} -> ${next}`);
+  console.log(`[patch] channel ${PLATFORM}/${api} -> ${next}`);
 }
 
 async function status() {
   await withTemp(async pulled => {
     // 포인터를 아직 올린 적이 없으면 받을 것이 없다.
-    const pulledOk = run(["-rt", `${target}/channels/`, `${pulled}/`]).status === 0;
-    const folder = path.join(pulled, platform);
-    const names = pulledOk ? (await readdir(folder).catch(() => [])).filter(name => name.endsWith(".json")).sort() : [];
+    const pulledOk = run(["-rt", `${target}/${CHANNELS}`, `${pulled}/`]).status === 0;
+    const names = pulledOk ? (await readdir(pulled)).filter(name => name.endsWith(".json")).sort() : [];
     if (names.length === 0) console.log("[patch] no channel pointers");
     for (const name of names) {
-      const { version: pointed } = JSON.parse(await readFile(path.join(folder, name), "utf8"));
-      console.log(`[patch] ${platform}/${path.basename(name, ".json")} -> ${pointed}`);
+      const { version: pointed } = JSON.parse(await readFile(path.join(pulled, name), "utf8"));
+      console.log(`[patch] ${PLATFORM}/${path.basename(name, ".json")} -> ${pointed}`);
     }
   });
 }
@@ -72,7 +70,7 @@ async function pull(wanted, folder) {
   if (!folder) throw new Error("Usage: node tools/patch.mjs pull <version|current> <folder>");
   const resolved = wanted === "current" ? await currentVersion() : wanted;
   checkVersion(resolved);
-  rsync("-rt", `${target}/v/${resolved}/`, `${path.resolve(folder)}/`);
+  rsync("-rt", `${target}/${versionPath(resolved)}`, `${path.resolve(folder)}/`);
   await verifyManifest(path.resolve(folder));
   console.log(`[patch] pulled ${resolved} into ${folder}`);
 }
@@ -81,15 +79,15 @@ async function pull(wanted, folder) {
 async function currentVersion() {
   const api = await readApi(clientRoot);
   return withTemp(async pulled => {
-    if (run(["-t", `${target}/channels/${platform}/${api}.json`, `${pulled}/`]).status !== 0) {
+    if (run(["-t", `${target}/${channelPath(api)}`, `${pulled}/`]).status !== 0) {
       throw new Error(`No patch is published for API ${api}; a new API needs a full patch.`);
     }
-    return JSON.parse(await readFile(path.join(pulled, `${api}.json`), "utf8")).version;
+    return JSON.parse(await readFile(path.join(pulled, path.basename(channelPath(api))), "utf8")).version;
   });
 }
 
 function checkVersion(value) {
-  if (!/^[0-9a-f]{16}$/.test(value ?? "")) throw new Error(`Expected a 16-digit hex version, got ${value}.`);
+  if (!isVersion(value ?? "")) throw new Error(`Expected a 16-digit hex version, got ${value}.`);
 }
 
 async function withTemp(use) {

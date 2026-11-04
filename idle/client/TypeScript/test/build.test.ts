@@ -170,10 +170,13 @@ test("a release of some parts takes the other parts' files and commits from the 
     await writeFile(path.join(base, "data", "Strings.bytes"), "strings from the base");
     await writeManifest(base, { api, parts: { game: "b".repeat(40), rules: "b".repeat(40), strings: "b".repeat(40), assets: "b".repeat(40) } });
 
-    const some = run(`--bucket=${path.join(root, "some")}`, "--parts=game,rules", `--base=${base}`, `--server=${"d".repeat(40)}`);
+    const report = path.join(root, "report");
+    const some = run(`--bucket=${path.join(root, "some")}`, "--parts=game,rules", `--base=${base}`, `--server=${"d".repeat(40)}`, `--report=${report}`);
     expect(some.status, some.stdout + some.stderr).toBe(0);
     const version = parsePointer(await readFile(path.join(root, "some", channelPath(api)), "utf8")).version;
     const folder = path.join(root, "some", versionPath(version));
+    // CI는 낸 채널을 버킷에서 찾지 않고 --report로 받는다($GITHUB_OUTPUT의 줄).
+    expect(await readFile(report, "utf8")).toBe(`api=${api}\nversion=${version}\nfolder=${folder}\n`);
     expect(await readFile(path.join(folder, "data", "Strings.bytes"), "utf8")).toBe("strings from the base");
     expect(await readFile(path.join(folder, "data", "Items.bytes"))).toEqual(await readFile(path.join(dataDirectory, "Items.bytes")));
     const manifest = JSON.parse(await readFile(path.join(folder, MANIFEST), "utf8")) as { parts: Record<string, string>; server: string };

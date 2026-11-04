@@ -243,8 +243,7 @@ jobs:
         run: |
           jq '.EnvironmentName = "Release"' Assets/Resources/TypeScriptRuntimeSettings.json > settings.tmp
           mv settings.tmp Assets/Resources/TypeScriptRuntimeSettings.json
-          npm run build:release -w @idle/client -- "--bucket=$RUNNER_TEMP/boot-only"
-          echo "api=$(basename "$(ls "$RUNNER_TEMP"/boot-only/channels/Android/*.json)" .json)" >> "$GITHUB_OUTPUT"
+          npm run build:release -w @idle/client -- "--bucket=$RUNNER_TEMP/boot-only" "--report=$GITHUB_OUTPUT"
 
       # Unity는 한 번만 띄운다. APK를 내면 같은 실행에서 원격 콘텐츠까지 빌드한다(PlayerBuild.BuildForCi). Unity Personal은
       # 계정(이메일·비밀번호)으로 좌석을 받는다. 라이선스 파일(.ulf)은 만든 컴퓨터에 묶여 CI 컨테이너에서 거절되므로 넘기지 않는다.
@@ -303,13 +302,11 @@ jobs:
           # 이 패치와 함께 돌 서버(위에서 정함).
           SERVER_COMMIT: ${{ steps.pair.outputs.commit }}
         run: |
-          args=("--bucket=$PATCH_BUCKET")
+          # 빌드가 낸 채널의 api, version, 버전 폴더(folder)를 이 단계의 출력으로 남긴다.
+          args=("--bucket=$PATCH_BUCKET" "--report=$GITHUB_OUTPUT")
           if [ -n "$SERVER_COMMIT" ]; then args+=("--server=$SERVER_COMMIT"); fi
           if [ "$PARTS" != game,rules,strings,assets ]; then args+=("--parts=$PARTS" "--base=$RUNNER_TEMP/base"); fi
           BUILD_NUMBER=${{ github.run_id }} npm run build:release -w @idle/client -- "${args[@]}"
-          pointer=$(ls "$PATCH_BUCKET"/channels/Android/*.json)
-          echo "api=$(basename "$pointer" .json)" >> "$GITHUB_OUTPUT"
-          echo "version=$(jq -r .version "$pointer")" >> "$GITHUB_OUTPUT"
 
       - name: Build the game server
         if: inputs.server
@@ -321,10 +318,10 @@ jobs:
         if: steps.plan.outputs.parts != '' || (inputs.server && inputs.publish)
         env:
           PARTS: ${{ steps.plan.outputs.parts }}
-          VERSION: ${{ steps.patch.outputs.version }}
+          FOLDER: ${{ steps.patch.outputs.folder }}
           PAIRED_SERVER: ${{ steps.pair.outputs.commit }}
         run: |
-          if [ -n "$PARTS" ]; then patch="$PATCH_BUCKET/v/$VERSION"; commit=$PAIRED_SERVER; else patch="$RUNNER_TEMP/base"; commit=$GITHUB_SHA; fi
+          if [ -n "$PARTS" ]; then patch="$FOLDER"; commit=$PAIRED_SERVER; else patch="$RUNNER_TEMP/base"; commit=$GITHUB_SHA; fi
           # 이 커밋의 서버는 idle/shared/data-schema/data를 그대로 싣는다(server/tools/build.mjs).
           if [ "$commit" = "$GITHUB_SHA" ]; then data=idle/shared/data-schema/data; else data="$RUNNER_TEMP/server-data"; fi
           node idle/client/TypeScript/tools/release-check.mjs --patch="$patch" --server-data="$data" --server-commit="$commit"

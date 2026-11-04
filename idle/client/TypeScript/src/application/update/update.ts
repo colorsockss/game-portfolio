@@ -29,18 +29,27 @@ const SHA256 = /^[0-9a-f]{64}$/;
 const VERSION = /^[0-9a-f]{16}$/;
 
 /**
- * 버킷의 채널 포인터 경로. API 지문마다 하나이고(`{ "version": … }`), 올린 뒤 다시 쓰는 파일은 이것뿐이다. Android만
- * 내보낸다(docs/superpowers/specs/2026-10-30-patch-design.md).
+ * 패치를 내보내는 플랫폼. Android만 내보낸다(docs/superpowers/specs/2026-10-30-patch-design.md). 버킷의 채널 포인터와 에셋
+ * 번들(`aa/<플랫폼>/`)이 이 이름 아래에 있다. 도구(tools/update.mjs)도 이 레이아웃을 그대로 쓴다.
  */
-export const channelPath = (api: string) => `channels/Android/${api}.json`;
+export const PLATFORM = "Android";
+
+/** 채널 포인터가 모인 버킷의 폴더. */
+export const CHANNELS = `channels/${PLATFORM}/`;
+
+/** 버킷의 채널 포인터 경로. API 지문마다 하나이고(`{ "version": … }`), 올린 뒤 다시 쓰는 파일은 이것뿐이다. */
+export const channelPath = (api: string) => `${CHANNELS}${api}.json`;
 
 /** 버전의 게임 파일(매니페스트, 코드, 표, 에셋 카탈로그)이 있는 버킷의 폴더. 한 번 쓰면 바뀌지 않는다. */
 export const versionPath = (version: string) => `v/${version}/`;
 
+/** 버전의 모양(매니페스트 해시의 16진수 16자리)인지. */
+export const isVersion = (value: string) => VERSION.test(value);
+
 /** 채널 포인터를 검사해 읽는다. 틀리면 throw한다. */
 export function parsePointer(text: string): { readonly version: string } {
   const value: unknown = JSON.parse(text);
-  if (!isRecord(value) || typeof value.version !== "string" || !VERSION.test(value.version)) {
+  if (!isRecord(value) || typeof value.version !== "string" || !isVersion(value.version)) {
     throw new Error(`The channel pointer is malformed: ${text}`);
   }
   return { version: value.version };

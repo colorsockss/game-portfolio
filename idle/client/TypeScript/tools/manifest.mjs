@@ -4,22 +4,10 @@
 import { createHash } from "node:crypto";
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { build } from "esbuild";
+// 매니페스트의 이름과 모양은 그것을 읽는 런타임(update.ts)이 정한다(tools/update.mjs).
+import { MANIFEST, parseManifest } from "./update.mjs";
 
-// 매니페스트의 이름과 모양은 그것을 읽는 런타임(update.ts)이 정한다. 그 자리에서 esbuild로 번들해 불러오므로 도구가 같은
-// 규칙을 따로 두지 않는다(tools/data-schema.mjs와 같은 방식).
-const { outputFiles } = await build({
-  entryPoints: [fileURLToPath(new URL("../src/application/update/update.ts", import.meta.url))],
-  bundle: true,
-  format: "esm",
-  platform: "node",
-  write: false,
-  logLevel: "silent",
-});
-const update = await import(`data:text/javascript;base64,${Buffer.from(outputFiles[0].text).toString("base64")}`);
-
-export const MANIFEST = update.MANIFEST;
+export { MANIFEST };
 
 /** 패치를 나눠 내는 단위(docs/superpowers/specs/2026-10-30-patch-design.md 4.12절). 에셋 번들은 매니페스트 밖이다. */
 export const PARTS = ["game", "rules", "strings", "assets"];
@@ -56,7 +44,7 @@ export async function writeManifest(directory, { api, build = 0, parts = {}, ser
  */
 export async function verifyManifest(directory) {
   const text = await readFile(path.join(directory, MANIFEST), "utf8");
-  for (const file of update.parseManifest(text).files) {
+  for (const file of parseManifest(text).files) {
     const bytes = await readFile(path.join(directory, file.path));
     if (bytes.length !== file.size || createHash("sha256").update(bytes).digest("hex") !== file.sha256) {
       throw new Error(`${file.path} in ${directory} does not match its manifest.`);
