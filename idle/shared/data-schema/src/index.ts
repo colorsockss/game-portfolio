@@ -1,22 +1,7 @@
 // data/*.xlsx에서 생성한 테이블 타입과 MessagePack 로더(tables/ 참고)로, 클라이언트와 서버가 함께
 // 쓴다. 로더는 호스트 API를 쓰지 않는다: 바이트는 각 호스트가 읽고, TextEncoder/TextDecoder가 없는
 // 호스트(PuerTS V8)는 이 패키지를 로드하기 전에 직접 설치한다.
-import {
-  deserializeConstantsMessagePack,
-  deserializeEffectsMessagePack,
-  deserializeHeroesMessagePack,
-  deserializeHeroLevelsMessagePack,
-  deserializeItemsMessagePack,
-  deserializeMonstersMessagePack,
-  deserializeProjectilesMessagePack,
-  deserializeSkillsMessagePack,
-  deserializeSoundsMessagePack,
-  deserializeStagesMessagePack,
-  deserializeStatUpgradesMessagePack,
-  deserializeStringsMessagePack,
-  deserializeSummonsMessagePack,
-  deserializeTutorialStepsMessagePack,
-} from "./tables/_index.js";
+import * as tables from "./tables/_index.js";
 
 export * from "./tables/_index.js";
 
@@ -40,34 +25,28 @@ export function fingerprint(tables: readonly Uint8Array[]): string {
   return (hash >>> 0).toString(16).padStart(8, "0");
 }
 
+// 읽는 테이블. 각각 생성된 `deserialize<이름>MessagePack`으로 풀어 GameData의 `<이름의 첫 글자를 소문자로>`에 둔다. 문장(Strings)과
+// 소리(Sounds)는 클라이언트만 쓰지만 테이블은 한곳에서 읽는다. 서버는 그만큼(수 KB)을 더 읽을 뿐이다.
+const TABLES = [
+  "Constants", "Effects", "Heroes", "HeroLevels", "Items", "Monsters", "Projectiles", "Skills", "Sounds", "Stages", "StatUpgrades", "Strings",
+  "Summons", "TutorialSteps",
+] as const;
+
+type TableName = (typeof TABLES)[number];
+// 규칙 상수(Constants)는 행이 하나인 테이블이라 Map이 아니라 그 행이다.
+type Tables = { readonly [N in TableName as Uncapitalize<N>]: Awaited<ReturnType<(typeof tables)[`deserialize${N}MessagePack`]>> };
+
 export async function loadGameData(read: TableReader) {
   const bytes = new Map<string, Uint8Array>();
-  const table = (name: string) => Promise.resolve(read(name)).then(raw => {
+  const entries = await Promise.all(TABLES.map(async name => {
+    const raw = await read(name);
     const view = raw instanceof Uint8Array ? raw : new Uint8Array(raw);
     bytes.set(name, view);
-    return view;
-  });
-  const [constants, effects, heroes, heroLevels, items, monsters, projectiles, skills, sounds, stages, statUpgrades, strings, summons, tutorialSteps] = await Promise.all([
-    // 규칙 상수: 행이 하나인 테이블이라 Map이 아니라 그 행이다.
-    table("Constants").then(deserializeConstantsMessagePack),
-    table("Effects").then(deserializeEffectsMessagePack),
-    table("Heroes").then(deserializeHeroesMessagePack),
-    table("HeroLevels").then(deserializeHeroLevelsMessagePack),
-    table("Items").then(deserializeItemsMessagePack),
-    table("Monsters").then(deserializeMonstersMessagePack),
-    table("Projectiles").then(deserializeProjectilesMessagePack),
-    table("Skills").then(deserializeSkillsMessagePack),
-    // 클라이언트만 쓰지만 테이블은 한곳에서 읽는다. 서버는 1KB 남짓을 더 읽을 뿐이다.
-    table("Sounds").then(deserializeSoundsMessagePack),
-    table("Stages").then(deserializeStagesMessagePack),
-    table("StatUpgrades").then(deserializeStatUpgradesMessagePack),
-    // 화면의 문장(키 → 언어마다 문장). 서버는 문장을 보내지 않고 쓰지도 않지만, 위처럼 테이블은 한곳에서 읽는다.
-    table("Strings").then(deserializeStringsMessagePack),
-    table("Summons").then(deserializeSummonsMessagePack),
-    table("TutorialSteps").then(deserializeTutorialStepsMessagePack),
-  ]);
+    const deserialize = tables[`deserialize${name}MessagePack`] as (bytes: Uint8Array) => Promise<unknown>;
+    return [name[0].toLowerCase() + name.slice(1), await deserialize(view)] as const;
+  }));
   const version = fingerprint(RULE_TABLES.map(name => bytes.get(name)!));
-  return { constants, effects, heroes, heroLevels, items, monsters, projectiles, skills, sounds, stages, statUpgrades, strings, summons, tutorialSteps, version };
+  return { ...(Object.fromEntries(entries) as Tables), version };
 }
 
 export type GameData = Awaited<ReturnType<typeof loadGameData>>;
