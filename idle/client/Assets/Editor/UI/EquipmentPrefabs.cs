@@ -76,7 +76,7 @@ namespace PortfolioIdleRpg.Editor
 
                 IconView icon = UiIcons.Add(tile.transform, "Icon");
                 UiPrefabs.Stretch((RectTransform)icon.transform, new Vector2(22f, 36f), new Vector2(-22f, -14f));
-                TMP_Text level = UiPrefabs.AddText(tile.transform, "Level", 30f, new Vector2(0f, 1f), Vector2.one);
+                TMP_Text level = UiPrefabs.AddText(tile.transform, "Level", theme.SmallSize, new Vector2(0f, 1f), Vector2.one);
                 level.rectTransform.offsetMin = new Vector2(12f, -46f);
                 level.rectTransform.offsetMax = new Vector2(0f, -4f);
                 level.alignment = TextAlignmentOptions.TopLeft;
@@ -87,13 +87,13 @@ namespace PortfolioIdleRpg.Editor
                 track.rectTransform.pivot = new Vector2(0.5f, 0f);
                 track.rectTransform.offsetMin = new Vector2(10f, 12f);
                 track.rectTransform.offsetMax = new Vector2(-10f, 40f);
-                TMP_Text count = UiPrefabs.AddText(track.transform, "CountText", 22f, Vector2.zero, Vector2.one);
+                TMP_Text count = UiPrefabs.AddText(track.transform, "CountText", theme.TinySize, Vector2.zero, Vector2.one);
                 count.rectTransform.offsetMin = new Vector2(0f, 2f);
 
                 // 착용 표시는 누르는 것이 아니라 뱃지처럼 동그라미다. 뱃지와 함께 칸 안의 모서리에 두어 스크롤 목록의 마스크에 잘리지 않게 한다.
                 Image worn = UiParts.AddFrame(root.transform, "WornMark", theme.DotSprite, theme.Primary);
                 UiPrefabs.Place(worn, Vector2.one, Vector2.zero, new Vector2(52f, 52f));
-                TMP_Text wornText = UiPrefabs.AddText(worn.transform, "Text", 28f, Vector2.zero, Vector2.one);
+                TMP_Text wornText = UiPrefabs.AddText(worn.transform, "Text", theme.CaptionSize, Vector2.zero, Vector2.one);
                 wornText.rectTransform.offsetMin = new Vector2(0f, 2f);
                 wornText.text = "E";
                 GameObject better = UiParts.AddBadge(root.transform);
@@ -152,7 +152,6 @@ namespace PortfolioIdleRpg.Editor
             TMP_Text forgeName = UiPrefabs.AddText(dock, "ForgeName", TextStyle.Ink, new Vector2(0f, 0.72f), new Vector2(0.5f, 1f));
             forgeName.rectTransform.offsetMin = new Vector2(30f, 0f);
             forgeName.alignment = TextAlignmentOptions.MidlineLeft;
-            forgeName.fontSize = 42f;
             TMP_Text step = UiPrefabs.AddText(dock, "ForgeStep", TextStyle.InkLabel, new Vector2(0.5f, 0.72f), new Vector2(0.78f, 1f));
             step.alignment = TextAlignmentOptions.MidlineLeft;
             Button equip = UiParts.AddButton(dock, "EquipToggleButton", ButtonStyle.Primary);

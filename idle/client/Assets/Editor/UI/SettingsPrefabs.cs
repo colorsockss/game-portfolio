@@ -21,9 +21,6 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>채널 한 줄의 높이.</summary>
         private const float RowHeight = 150f;
 
-        /// <summary>채널 이름과 "초당 프레임", "언어" 이름표의 글자 크기.</summary>
-        private const float LabelSize = 44f;
-
         /// <summary>SettingsChannel.prefab과 그것을 쓰는 SettingsScreen.prefab을 만든다.</summary>
         [MenuItem("Tools/UI/Build Settings Prefabs")]
         public static void Build()
@@ -48,7 +45,6 @@ namespace PortfolioIdleRpg.Editor
                 root.GetComponent<LayoutElement>().preferredHeight = RowHeight;
 
                 TMP_Text label = UiPrefabs.AddText(root.transform, "Name", TextStyle.Ink, Vector2.zero, Vector2.up);
-                label.fontSize = LabelSize;
                 label.rectTransform.offsetMax = new Vector2(200f, 0f);
                 label.alignment = TextAlignmentOptions.MidlineLeft;
 
@@ -84,16 +80,12 @@ namespace PortfolioIdleRpg.Editor
                 .Header()
                 .Stack("channels", channel, RowHeight, 2)
                 .Space(20f)
-                .Text("frameRateLabel", TextStyle.Ink, 80f, alignment: TextAlignmentOptions.MidlineLeft, configure: Big)
+                .Text("frameRateLabel", TextStyle.Ink, 80f, alignment: TextAlignmentOptions.MidlineLeft)
                 .Tabs("frameRates")
                 .Space(20f)
-                .Text("languageLabel", TextStyle.Ink, 80f, alignment: TextAlignmentOptions.MidlineLeft, configure: Big)
+                .Text("languageLabel", TextStyle.Ink, 80f, alignment: TextAlignmentOptions.MidlineLeft)
                 .Tabs("languages")
                 .Footer(120f, ("logout", ButtonStyle.Danger, 400f))
                 .Save();
-
-        /// <summary>이름표를 채널 이름과 같은 크기로 키운다.</summary>
-        /// <param name="text">이름표.</param>
-        private static void Big(TMP_Text text) => text.fontSize = LabelSize;
     }
 }

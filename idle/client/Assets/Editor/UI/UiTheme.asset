@@ -73,6 +73,9 @@ MonoBehaviour:
   LabelSize: 38
   SmallSize: 32
   LargeSize: 76
+  DisplaySize: 96
+  CaptionSize: 28
+  TinySize: 22
   Spacing: 16
   Padding: 30
   HeaderHeight: 110

@@ -134,7 +134,7 @@ namespace PortfolioIdleRpg.Editor
                 cooldown.fillClockwise = false;
                 cooldown.fillAmount = 0f;
                 UiPrefabs.Stretch(cooldown.rectTransform, new Vector2(6f, 6f), new Vector2(-6f, -6f));
-                TMP_Text seconds = UiPrefabs.AddText(tile.transform, "Seconds", 36f, Vector2.zero, Vector2.one);
+                TMP_Text seconds = UiPrefabs.AddText(tile.transform, "Seconds", theme.LabelSize, Vector2.zero, Vector2.one);
 
                 UiPrefabs.SetRefs(
                     root.GetComponent<ViewRefs>(), ("icon", icon), ("tint", tint), ("cooldownFill", cooldown),
@@ -171,7 +171,7 @@ namespace PortfolioIdleRpg.Editor
                 button.colors = theme.ButtonColors;
                 IconView icon = UiIcons.Add(tile.transform, "Icon");
                 UiPrefabs.Stretch((RectTransform)icon.transform, new Vector2(24f, 34f), new Vector2(-24f, -18f));
-                TMP_Text level = UiPrefabs.AddText(tile.transform, "Level", 30f, new Vector2(0f, 1f), Vector2.one);
+                TMP_Text level = UiPrefabs.AddText(tile.transform, "Level", theme.SmallSize, new Vector2(0f, 1f), Vector2.one);
                 level.rectTransform.offsetMin = new Vector2(12f, -46f);
                 level.rectTransform.offsetMax = new Vector2(-8f, -4f);
                 level.alignment = TextAlignmentOptions.TopLeft;
@@ -179,7 +179,7 @@ namespace PortfolioIdleRpg.Editor
                 name.rectTransform.offsetMax = new Vector2(0f, LoadoutNameHeight);
                 name.color = theme.Ink;
                 name.enableAutoSizing = true;
-                name.fontSizeMin = 22f;
+                name.fontSizeMin = theme.TinySize;
                 name.fontSizeMax = theme.SmallSize;
 
                 UiPrefabs.SetRefs(
@@ -268,18 +268,18 @@ namespace PortfolioIdleRpg.Editor
 
             Image star = UiIcons.AddFixed(root, "LevelBadge", UiIcons.Get("ui_level"));
             UiPrefabs.Place(star, Vector2.up, new Vector2(12f, -16f), new Vector2(118f, 118f));
-            TMP_Text level = UiPrefabs.AddText(star.transform, "Level", 38f, Vector2.zero, Vector2.one);
+            TMP_Text level = UiPrefabs.AddText(star.transform, "Level", theme.LabelSize, Vector2.zero, Vector2.one);
             level.rectTransform.offsetMin = new Vector2(0f, 4f);
 
-            TMP_Text name = UiPrefabs.AddText(root, "Name", 40f, Vector2.zero, Vector2.one);
+            TMP_Text name = UiPrefabs.AddText(root, "Name", theme.LabelSize, Vector2.zero, Vector2.one);
             UiPrefabs.Place(name, Vector2.up, new Vector2(140f, -14f), new Vector2(340f, 60f));
             name.alignment = TextAlignmentOptions.MidlineLeft;
             name.enableAutoSizing = true;
-            name.fontSizeMin = 26f;
-            name.fontSizeMax = 40f;
+            name.fontSizeMin = theme.TinySize;
+            name.fontSizeMax = theme.LabelSize;
             (Image track, Image fill) = UiParts.AddGauge(root, "ExpBar");
             UiPrefabs.Place(track, Vector2.up, new Vector2(140f, -80f), new Vector2(340f, 46f));
-            TMP_Text exp = UiPrefabs.AddText(track.transform, "ExpText", 28f, Vector2.zero, Vector2.one);
+            TMP_Text exp = UiPrefabs.AddText(track.transform, "ExpText", theme.CaptionSize, Vector2.zero, Vector2.one);
             exp.rectTransform.offsetMin = new Vector2(0f, 3f);
 
             var currencyBar = (GameObject)PrefabUtility.InstantiatePrefab(
@@ -316,12 +316,12 @@ namespace PortfolioIdleRpg.Editor
             var top = new Vector2(0.5f, 1f);
             Image pill = UiParts.AddFrame(root, "StagePill", theme.PillSprite, theme.Pill);
             UiPrefabs.Place(pill, top, new Vector2(0f, -(HudHeight + 8f)), new Vector2(460f, 72f));
-            TMP_Text stage = UiPrefabs.AddText(pill.transform, "Stage", 40f, Vector2.zero, Vector2.one);
+            TMP_Text stage = UiPrefabs.AddText(pill.transform, "Stage", theme.LabelSize, Vector2.zero, Vector2.one);
             stage.rectTransform.offsetMin = new Vector2(24f, 2f);
             stage.rectTransform.offsetMax = new Vector2(-24f, 0f);
             stage.enableAutoSizing = true;
-            stage.fontSizeMin = 26f;
-            stage.fontSizeMax = 40f;
+            stage.fontSizeMin = theme.TinySize;
+            stage.fontSizeMax = theme.LabelSize;
             Button prev = AddIconButton(root, "PrevStageButton", "ui_prev", top, new Vector2(-280f, -(HudHeight + 6f)));
             Button next = AddIconButton(root, "NextStageButton", "ui_next", top, new Vector2(280f, -(HudHeight + 6f)));
 
@@ -335,7 +335,7 @@ namespace PortfolioIdleRpg.Editor
             (Image track, Image fill) = UiParts.AddGauge(root, "StageProgress");
             fill.color = theme.Special;
             UiPrefabs.Place(track, top, new Vector2(0f, -trackTop), trackSize);
-            TMP_Text waves = UiPrefabs.AddText(track.transform, "Waves", 26f, Vector2.zero, Vector2.one);
+            TMP_Text waves = UiPrefabs.AddText(track.transform, "Waves", theme.CaptionSize, Vector2.zero, Vector2.one);
             waves.rectTransform.offsetMin = new Vector2(0f, 3f);
             // 빛살은 해골보다 먼저 놓아 뒤에 그리고 탭은 받지 않는다.
             var skullCenter = new Vector2(((trackSize.x + skullSize) / 2f) - skullInset, -(trackTop + (trackSize.y / 2f)));
@@ -359,7 +359,7 @@ namespace PortfolioIdleRpg.Editor
             boss.targetGraphic = skull;
             // 도전할 수 없을 때는 비활성 색으로 흐려서, 밝은 해골과 빛살이 누를 때를 알린다.
             boss.colors = theme.ButtonColors;
-            TMP_Text bossTime = UiPrefabs.AddText(root, "BossTime", 38f, Vector2.zero, Vector2.one);
+            TMP_Text bossTime = UiPrefabs.AddText(root, "BossTime", theme.LabelSize, Vector2.zero, Vector2.one);
             UiPrefabs.Place(bossTime, top, new Vector2(330f, -(HudHeight + 80f)), new Vector2(160f, 60f));
             bossTime.color = theme.Gold;
 
@@ -503,7 +503,7 @@ namespace PortfolioIdleRpg.Editor
             (Image hpTrack, Image hpFill) = UiParts.AddGauge(root, "HpBar");
             hpFill.color = theme.Hp;
             UiPrefabs.Place(hpTrack, Vector2.zero, new Vector2(70f, 58f), new Vector2(560f, 42f));
-            TMP_Text hp = UiPrefabs.AddText(hpTrack.transform, "HpText", 28f, Vector2.zero, Vector2.one);
+            TMP_Text hp = UiPrefabs.AddText(hpTrack.transform, "HpText", theme.CaptionSize, Vector2.zero, Vector2.one);
             hp.rectTransform.offsetMin = new Vector2(0f, 3f);
             Image heart = UiIcons.AddFixed(root, "HpIcon", UiIcons.Get("stat_maxHp"));
             UiPrefabs.Place(heart, Vector2.zero, new Vector2(20f, 46f), new Vector2(66f, 66f));
@@ -546,7 +546,7 @@ namespace PortfolioIdleRpg.Editor
         {
             Image pill = UiParts.AddFrame(root, $"{name}Pill", theme.PillSprite, theme.Pill);
             UiPrefabs.Place(pill, Vector2.zero, new Vector2(x, 10f), new Vector2(250f, 42f));
-            TMP_Text value = UiPrefabs.AddText(pill.transform, name, 30f, Vector2.zero, Vector2.one);
+            TMP_Text value = UiPrefabs.AddText(pill.transform, name, theme.SmallSize, Vector2.zero, Vector2.one);
             value.rectTransform.offsetMin = new Vector2(40f, 3f);
             value.rectTransform.offsetMax = new Vector2(-18f, 0f);
             value.alignment = TextAlignmentOptions.MidlineRight;
@@ -591,7 +591,7 @@ namespace PortfolioIdleRpg.Editor
                 selected.gameObject.SetActive(false);
                 Image icon = UiIcons.AddFixed(tab.transform, "Icon", UiIcons.Get($"main_{name}"));
                 UiPrefabs.Place(icon, new Vector2(0.5f, 0f), new Vector2(0f, 58f), new Vector2(110f, 110f));
-                TMP_Text label = UiPrefabs.AddText(tab.transform, "Label", 34f, Vector2.zero, Vector2.right);
+                TMP_Text label = UiPrefabs.AddText(tab.transform, "Label", theme.SmallSize, Vector2.zero, Vector2.right);
                 label.rectTransform.offsetMin = new Vector2(0f, 12f);
                 label.rectTransform.offsetMax = new Vector2(0f, 58f);
 
@@ -618,7 +618,7 @@ namespace PortfolioIdleRpg.Editor
                 card.raycastTarget = true;
                 card.rectTransform.sizeDelta = new Vector2(880f, 600f);
 
-                TMP_Text title = UiPrefabs.AddText(card.transform, "Title", 96f, Vector2.zero, Vector2.one);
+                TMP_Text title = UiPrefabs.AddText(card.transform, "Title", theme.DisplaySize, Vector2.zero, Vector2.one);
                 title.textWrappingMode = TextWrappingModes.Normal;
                 title.rectTransform.anchorMin = new Vector2(0.5f, 1f);
                 title.rectTransform.anchorMax = new Vector2(0.5f, 1f);
@@ -628,9 +628,9 @@ namespace PortfolioIdleRpg.Editor
                 TMP_InputField input = UiParts.AddInput(card.transform, "IdInput");
                 ((RectTransform)input.transform).anchoredPosition = new Vector2(0f, 150f);
                 input.characterLimit = 16;
-                input.textComponent.fontSize = 52f;
+                input.textComponent.fontSize = theme.TitleSize;
                 var placeholder = (TMP_Text)input.placeholder;
-                placeholder.fontSize = 52f;
+                placeholder.fontSize = theme.TitleSize;
 
                 Button login = UiParts.AddButton(card.transform, "LoginButton", ButtonStyle.Positive);
                 UiPrefabs.Place(login, new Vector2(0.5f, 0.5f), new Vector2(0f, -10f), new Vector2(760f, 140f));

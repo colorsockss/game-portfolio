@@ -46,7 +46,7 @@ namespace PortfolioIdleRpg.Editor
                 TMP_Text serverTime = TopText(panel.transform, "ServerTime", new Vector2(0.4f, 1f), Vector2.one, theme);
                 serverTime.alignment = TextAlignmentOptions.MidlineRight;
 
-                TMP_Text dump = AddDump(panel.transform);
+                TMP_Text dump = AddDump(panel.transform, theme);
 
                 TMP_InputField cheat = AddInput(panel.transform, theme);
                 Button run = UiParts.AddButton(panel.transform, "CheatButton", ButtonStyle.Secondary);
@@ -85,7 +85,7 @@ namespace PortfolioIdleRpg.Editor
         /// <returns>만든 글자.</returns>
         private static TMP_Text TopText(Transform panel, string name, Vector2 anchorMin, Vector2 anchorMax, UiTheme theme)
         {
-            TMP_Text text = UiPrefabs.AddText(panel, name, 40f, anchorMin, anchorMax);
+            TMP_Text text = UiPrefabs.AddText(panel, name, theme.LabelSize, anchorMin, anchorMax);
             text.rectTransform.offsetMin = new Vector2(20f, -100f);
             text.rectTransform.offsetMax = new Vector2(-20f, -20f);
             text.color = theme.Good;
@@ -95,7 +95,7 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>패널 가운데를 채우고 세로로 스크롤되는 상태 덤프 글자를 만든다.</summary>
         /// <param name="panel">패널.</param>
         /// <returns>덤프 글자. 내용만큼 높아진다.</returns>
-        private static TMP_Text AddDump(Transform panel)
+        private static TMP_Text AddDump(Transform panel, UiTheme theme)
         {
             // 투명한 Image가 끌기를 받고, RectMask2D가 영역 밖 줄을 가린다.
             var go = new GameObject("Dump", typeof(RectTransform), typeof(Image), typeof(RectMask2D), typeof(ScrollRect));
@@ -104,7 +104,7 @@ namespace PortfolioIdleRpg.Editor
             UiPrefabs.Stretch(viewport, new Vector2(20f, 260f), new Vector2(-20f, -120f));
             go.GetComponent<Image>().color = Color.clear;
 
-            TMP_Text text = UiPrefabs.AddText(go.transform, "Text", 26f, Vector2.up, Vector2.one);
+            TMP_Text text = UiPrefabs.AddText(go.transform, "Text", theme.CaptionSize, Vector2.up, Vector2.one);
             text.rectTransform.pivot = new Vector2(0.5f, 1f);
             text.alignment = TextAlignmentOptions.TopLeft;
             text.textWrappingMode = TextWrappingModes.Normal;
@@ -136,10 +136,10 @@ namespace PortfolioIdleRpg.Editor
             rect.offsetMin = new Vector2(20f, 140f);
             rect.offsetMax = new Vector2(-260f, 240f);
             field.GetComponent<Image>().color = theme.Backdrop;
-            field.textComponent.fontSize = 36f;
+            field.textComponent.fontSize = theme.LabelSize;
             field.textComponent.color = theme.Text;
             var placeholder = (TMP_Text)field.placeholder;
-            placeholder.fontSize = 28f;
+            placeholder.fontSize = theme.CaptionSize;
             // 어두운 바탕에서도 읽히게 흐린 글자색이다.
             placeholder.color = theme.Muted;
             return field;

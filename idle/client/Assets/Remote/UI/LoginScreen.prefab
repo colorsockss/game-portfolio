@@ -499,19 +499,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2231775190659493519, guid: 2beed3c93ed64465cae850d7f6652e48, type: 3}
       propertyPath: m_fontSize
-      value: 52
+      value: 56
       objectReference: {fileID: 0}
     - target: {fileID: 2231775190659493519, guid: 2beed3c93ed64465cae850d7f6652e48, type: 3}
       propertyPath: m_fontSizeBase
-      value: 52
+      value: 56
       objectReference: {fileID: 0}
     - target: {fileID: 3391255742633151480, guid: 2beed3c93ed64465cae850d7f6652e48, type: 3}
       propertyPath: m_fontSize
-      value: 52
+      value: 56
       objectReference: {fileID: 0}
     - target: {fileID: 3391255742633151480, guid: 2beed3c93ed64465cae850d7f6652e48, type: 3}
       propertyPath: m_fontSizeBase
-      value: 52
+      value: 56
       objectReference: {fileID: 0}
     - target: {fileID: 6020395233300581137, guid: 2beed3c93ed64465cae850d7f6652e48, type: 3}
       propertyPath: m_Name

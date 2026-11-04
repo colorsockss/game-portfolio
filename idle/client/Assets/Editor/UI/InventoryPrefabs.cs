@@ -53,17 +53,17 @@ namespace PortfolioIdleRpg.Editor
                 TintView tint = UiParts.AddTint(tile, theme.Grades);
                 IconView icon = UiIcons.Add(tile.transform, "Icon");
                 UiPrefabs.Stretch(icon.GetComponent<RectTransform>(), new Vector2(26f, 26f), new Vector2(-26f, -26f));
-                TMP_Text amount = UiPrefabs.AddText(tile.transform, "Amount", 38f, Vector2.zero, Vector2.one);
+                TMP_Text amount = UiPrefabs.AddText(tile.transform, "Amount", theme.LabelSize, Vector2.zero, Vector2.one);
                 amount.rectTransform.offsetMin = new Vector2(10f, 8f);
                 amount.rectTransform.offsetMax = new Vector2(-14f, 0f);
                 amount.alignment = TextAlignmentOptions.BottomRight;
                 // 장비 그림이 생기기 전에는 같은 슬롯의 장비가 같은 아이콘이라 이름이 가른다.
                 TMP_Text itemName = UiPrefabs.AddText(root.transform, "Name", TextStyle.InkSmall, Vector2.zero, new Vector2(1f, 0f));
                 itemName.rectTransform.offsetMax = new Vector2(0f, NameHeight);
-                itemName.fontSize = 28f;
+                itemName.fontSize = theme.CaptionSize;
                 itemName.enableAutoSizing = true;
-                itemName.fontSizeMin = 20f;
-                itemName.fontSizeMax = 28f;
+                itemName.fontSizeMin = theme.TinySize;
+                itemName.fontSizeMax = theme.CaptionSize;
                 UiPrefabs.SetRefs(
                     root.GetComponent<ViewRefs>(), ("icon", icon), ("nameText", itemName), ("amountText", amount), ("tint", tint));
 

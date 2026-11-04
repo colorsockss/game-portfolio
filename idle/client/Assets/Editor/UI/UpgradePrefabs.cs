@@ -71,20 +71,20 @@ namespace PortfolioIdleRpg.Editor
                     background.transform, "Name", TextStyle.Ink, new Vector2(0f, 0.5f), new Vector2(0.3f, 1f));
                 upgradeName.rectTransform.offsetMin = new Vector2(TextLeft, 0f);
                 upgradeName.alignment = TextAlignmentOptions.BottomLeft;
-                upgradeName.fontSize = 40f;
+                upgradeName.fontSize = theme.LabelSize;
                 TMP_Text level = UiPrefabs.AddText(
                     background.transform, "Level", TextStyle.InkLabel, new Vector2(0.3f, 0.5f), new Vector2(0.62f, 1f));
                 level.alignment = TextAlignmentOptions.BottomLeft;
-                level.fontSize = 32f;
+                level.fontSize = theme.SmallSize;
                 TMP_Text bonus = UiPrefabs.AddText(
                     background.transform, "Bonus", TextStyle.InkLabel, Vector2.zero, new Vector2(0.3f, 0.5f));
                 bonus.rectTransform.offsetMin = new Vector2(TextLeft, 0f);
                 bonus.alignment = TextAlignmentOptions.TopLeft;
-                bonus.fontSize = 32f;
+                bonus.fontSize = theme.SmallSize;
                 TMP_Text next = UiPrefabs.AddText(
                     background.transform, "Next", TextStyle.Ink, new Vector2(0.3f, 0f), new Vector2(0.62f, 0.5f));
                 next.alignment = TextAlignmentOptions.TopLeft;
-                next.fontSize = 32f;
+                next.fontSize = theme.SmallSize;
                 next.color = theme.GoodInk;
 
                 Button upgrade = UiParts.AddButton(background.transform, "UpgradeButton", ButtonStyle.Positive);

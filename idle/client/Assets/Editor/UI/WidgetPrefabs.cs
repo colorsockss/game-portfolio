@@ -68,7 +68,7 @@ namespace PortfolioIdleRpg.Editor
                 IconView icon = UiIcons.Add(root.transform, "Icon");
                 UiPrefabs.Place(icon, new Vector2(0f, 0.5f), Vector2.zero, new Vector2(SlotHeight, SlotHeight));
 
-                TMP_Text amount = UiPrefabs.AddText(root.transform, "Amount", 40f, Vector2.zero, Vector2.one);
+                TMP_Text amount = UiPrefabs.AddText(root.transform, "Amount", theme.LabelSize, Vector2.zero, Vector2.one);
                 amount.rectTransform.offsetMin = new Vector2(110f, 0f);
                 amount.rectTransform.offsetMax = new Vector2(-24f, 0f);
                 amount.text = "0";
@@ -151,7 +151,7 @@ namespace PortfolioIdleRpg.Editor
                 .Text("durationText", TextStyle.InkLabel, 70f, gap: 0f)
                 .Text("levelText", TextStyle.Ink, 80f, gap: 10f, configure: text =>
                 {
-                    text.fontSize = 52f;
+                    text.fontSize = theme.TitleSize;
                     text.color = theme.GoodInk;
                 })
                 .Footer(130f, ("ok", ButtonStyle.Positive, 400f))
@@ -220,7 +220,7 @@ namespace PortfolioIdleRpg.Editor
                 spinner.rectTransform.pivot = new Vector2(0.5f, 0.5f);
                 spinner.gameObject.AddComponent<Spinner>();
 
-                TMP_Text message = UiPrefabs.AddText(root.transform, "Message", 38f, Vector2.zero, Vector2.one);
+                TMP_Text message = UiPrefabs.AddText(root.transform, "Message", theme.LabelSize, Vector2.zero, Vector2.one);
                 message.rectTransform.offsetMin = new Vector2(124f, 0f);
                 message.rectTransform.offsetMax = new Vector2(-theme.Padding, 0f);
                 message.alignment = TextAlignmentOptions.Left;

@@ -225,7 +225,7 @@ namespace PortfolioIdleRpg.Editor
             label.rectTransform.offsetMin = new Vector2(12f, 10f);
             label.rectTransform.offsetMax = new Vector2(-12f, 0f);
             label.enableAutoSizing = true;
-            label.fontSizeMin = 24f;
+            label.fontSizeMin = theme.TinySize;
             label.fontSizeMax = theme.BodySize;
         });
 

@@ -192,6 +192,15 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>큰 글자.</summary>
         public float LargeSize = 76f;
 
+        /// <summary>로그인 제목처럼 화면을 대표하는 가장 큰 글자.</summary>
+        public float DisplaySize = 96f;
+
+        /// <summary>막대 안의 수치, 칸 아래 이름 같은 작은 글자.</summary>
+        public float CaptionSize = 28f;
+
+        /// <summary>가장 작은 글자. 개수와 자동 크기 조절의 하한.</summary>
+        public float TinySize = 22f;
+
         /// <summary>요소 사이의 간격.</summary>
         public float Spacing = 16f;
 

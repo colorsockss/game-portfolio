@@ -69,15 +69,15 @@ namespace PortfolioIdleRpg.Editor
                 button.targetGraphic = tile;
                 IconView icon = UiIcons.Add(tile.transform, "Icon");
                 UiPrefabs.Stretch((RectTransform)icon.transform, new Vector2(18f, 22f), new Vector2(-18f, -14f));
-                TMP_Text level = UiPrefabs.AddText(tile.transform, "Level", 28f, new Vector2(0f, 1f), Vector2.one);
+                TMP_Text level = UiPrefabs.AddText(tile.transform, "Level", theme.CaptionSize, new Vector2(0f, 1f), Vector2.one);
                 level.rectTransform.offsetMin = new Vector2(10f, -40f);
                 level.alignment = TextAlignmentOptions.TopLeft;
                 TMP_Text skillName = UiPrefabs.AddText(root.transform, "Name", TextStyle.Ink, Vector2.zero, new Vector2(1f, 0f));
                 skillName.rectTransform.offsetMax = new Vector2(0f, 50f);
-                skillName.fontSize = 32f;
+                skillName.fontSize = theme.SmallSize;
                 skillName.enableAutoSizing = true;
-                skillName.fontSizeMin = 22f;
-                skillName.fontSizeMax = 32f;
+                skillName.fontSizeMin = theme.TinySize;
+                skillName.fontSizeMax = theme.SmallSize;
 
                 UiPrefabs.SetRefs(
                     root.GetComponent<ViewRefs>(), ("labelText", label), ("nameText", skillName), ("levelText", level),
@@ -118,7 +118,7 @@ namespace PortfolioIdleRpg.Editor
                     background.transform, "Name", TextStyle.Ink, new Vector2(0f, 0.5f), new Vector2(0.48f, 1f));
                 skillName.rectTransform.offsetMin = new Vector2(TextLeft, 0f);
                 skillName.alignment = TextAlignmentOptions.BottomLeft;
-                skillName.fontSize = 40f;
+                skillName.fontSize = theme.LabelSize;
                 TMP_Text level = UiPrefabs.AddText(
                     background.transform, "Level", TextStyle.InkSmall, Vector2.zero, new Vector2(0.48f, 0.5f));
                 level.rectTransform.offsetMin = new Vector2(TextLeft, 0f);
