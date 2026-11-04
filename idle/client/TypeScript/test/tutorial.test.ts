@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { GameErrorCode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
-import { afterStep, tutorialStep, waitsForTap, type BattleSnapshot, type GameError, type PlayerState } from "@idle/game-core";
+import { afterStep, tutorialStep, waitsForTap, type GameError, type PlayerState } from "@idle/game-core";
 import { testPlayer } from "@idle/game-core/testing";
 import { signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
@@ -33,7 +33,7 @@ const flush = () => new Promise(resolve => setTimeout(resolve, 0));
 function setUp(stepId: number | null, changes: Partial<PlayerState> = {}) {
   // `changes`는 전투를 시작한 뒤에 덮는다.
   const state = createAppState({ flow: "main", player: { ...testPlayer(data, 0, { tutorial: { stepId } }), ...changes } });
-  const snapshot = signal<BattleSnapshot | undefined>(undefined);
+  const heroLevel = signal(state.player.value!.hero.level);
   const shown = signal<readonly ShownView[]>([main]);
   const clear = signal(true);
   const sent: number[] = [];
@@ -53,13 +53,13 @@ function setUp(stepId: number | null, changes: Partial<PlayerState> = {}) {
   const logger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
   const owner = createScope();
   const vm = createTutorialViewModel({
-    state, data, t, battle: { snapshot }, progress: { cmd }, shown, clear, prefabs, logger, owner,
+    state, data, t, battle: { heroLevel }, progress: { cmd }, shown, clear, prefabs, logger, owner,
   });
   const answer = async () => {
     answers.shift()?.();
     await flush();
   };
-  return { state, snapshot, shown, clear, sent, refusals, answer, logger, owner, vm };
+  return { state, heroLevel, shown, clear, sent, refusals, answer, logger, owner, vm };
 }
 
 describe("tutorial view model", () => {
@@ -90,8 +90,8 @@ describe("tutorial view model", () => {
     expect(t.vm.target.value).toBeNull();
     await flush();
     expect(t.sent).toEqual([]);
-    t.snapshot.value = { hero: { level: 5 } } as unknown as BattleSnapshot;
-    t.snapshot.value = { hero: { level: 6 } } as unknown as BattleSnapshot;
+    t.heroLevel.value = 5;
+    t.heroLevel.value = 6;
     await flush();
     expect(t.sent).toEqual([6]);
     expect(t.state.player.value?.tutorial).toEqual({ stepId: 7 });

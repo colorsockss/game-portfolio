@@ -35,7 +35,7 @@ export interface RebirthViewModelOptions {
    * 레벨은 경계에서 오르고 환생은 누른 틱까지 확정한 레벨로 포인트를 정하므로 보이는 전투의 레벨(`snapshot`)을 본다(메인
    * 화면의 레벨과 같다). 골드는 보이는 보유량(`items`)이다.
    */
-  readonly battle: Pick<BattleService, "snapshot" | "items">;
+  readonly battle: Pick<BattleService, "heroLevel" | "items">;
   readonly progress: Pick<Progress, "cmd">;
   readonly logger: Logger;
   /** 확인 팝업으로 묻고 플레이어의 답으로 이행한다(presentation/widgets/confirm.ts). */
@@ -54,7 +54,7 @@ export function createRebirthViewModel(
   // 환생할 수 있는 가장 낮은 레벨: 공식이 포인트를 주는 첫 레벨. 없으면(데이터) 환생할 수 없다.
   const minLevel = [...data.heroLevels.keys()].sort((a, b) => a - b).find(level => rebirthPoints(level) > 0);
   const startStage = data.stages.get(firstStageId(data))!;
-  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.hero.level ?? 0);
+  const level = battle.heroLevel;
   const points = computed(() => rebirthPoints(level.value));
   const ready = computed(() => state.player.value !== null && points.value > 0);
   return {

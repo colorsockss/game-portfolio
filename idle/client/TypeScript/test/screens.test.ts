@@ -69,7 +69,7 @@ function setUp(show: UiStack["show"]) {
     languageNames: languageNames(strings),
     account,
     battle: {
-      advance: () => [], upcoming: () => [], snapshot: signal<BattleSnapshot | undefined>(undefined), items: signal(NO_ITEMS),
+      advance: () => [], upcoming: () => [], snapshot: signal<BattleSnapshot | undefined>(undefined), items: signal(NO_ITEMS), heroLevel: signal(0),
       bossChallenge: vi.fn(), selectStage: vi.fn(),
     },
     progress: { cmd: {} as Commands },

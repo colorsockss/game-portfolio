@@ -268,6 +268,20 @@ test("the shown items are what the shown battle holds, and stay put when a settl
   expect(t.battle.items.value).toEqual({});
 });
 
+test("the shown hero level is the shown battle's, which rises at a boundary before the save does", () => {
+  const start = { ...huntOnly(), items: { [data.constants.expItemId]: Big.from(1_000_000) } };
+  const t = setUp(start);
+  // 보이는 전투가 없으면 저장된 레벨이다.
+  expect(t.battle.heroLevel.value).toBe(1);
+
+  t.frames(AT, AT + 30_000);
+  expect(t.battle.heroLevel.value).toBe(t.battle.snapshot.value!.hero.level);
+  expect(t.battle.heroLevel.value).toBeGreaterThan(t.player().hero.level);
+
+  t.setPlayer(null);
+  expect(t.battle.heroLevel.value).toBe(0);
+});
+
 test("the shown items are what a settle now would save, the kills in the wave under way included", () => {
   const start = { ...huntOnly(), items: { 1: Big.from(1000) } };
   const t = setUp(start);

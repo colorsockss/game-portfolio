@@ -47,7 +47,7 @@ export interface TutorialViewModelOptions {
   readonly data: GameData;
   readonly t: Translate;
   /** 보이는 전투의 레벨(스냅숏). */
-  readonly battle: Pick<BattleService, "snapshot">;
+  readonly battle: Pick<BattleService, "heroLevel">;
   /** 스텝을 마칠 때 보낸다. */
   readonly progress: Pick<Progress, "cmd">;
   /** 화면에 있는 뷰(UI 스택). 대상을 찾고 맨 위 팝업을 본다. */
@@ -70,7 +70,7 @@ export function createTutorialViewModel(
   });
   const tapping = computed(() => step.value !== undefined && waitsForTap(step.value));
   // 레벨은 메인 화면처럼 보이는 전투를 따른다. 커맨드가 정산한 뒤의 레벨은 보이는 것 이상이라 서버도 받아들인다.
-  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.hero.level ?? 0);
+  const level = battle.heroLevel;
   const done = computed(() => {
     const now = step.value;
     const save = state.player.value;

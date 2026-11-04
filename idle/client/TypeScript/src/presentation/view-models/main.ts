@@ -136,7 +136,7 @@ export interface MainViewModelOptions {
    * 스테이지를 옮기고 보스에 도전하며(거절이나 전송 실패는 서비스가 로그에 남긴다) 스냅숏으로 전투 수치, 레벨, 영웅 띠를,
    * 보이는 보유량으로 골드와 경험치를 보인다.
    */
-  readonly battle: Pick<BattleService, "selectStage" | "bossChallenge" | "snapshot" | "items">;
+  readonly battle: Pick<BattleService, "selectStage" | "bossChallenge" | "snapshot" | "items" | "heroLevel">;
   /** 장비 뱃지 트리의 뿌리(EquipmentBadges.any). */
   readonly equipmentBadge: Badge;
   /** 설정 화면을 연다(presentation/screens.ts). */
@@ -227,9 +227,8 @@ export function createMainViewModel({ state, data, t, battle, equipmentBadge, op
   const player = () => state.player.value!;
   const stageIds = [...data.stages.keys()].sort((a, b) => a - b);
   const hud = computed(() => hudOf(battle.snapshot.value, t));
-  // 레벨은 경계에서 오르므로 보이는 전투를 따른다. 보이는 전투가 없으면 저장된 레벨이다. 프레임마다 바뀌는 스냅숏에도
-  // 레벨이 바뀔 때만 알린다.
-  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.hero.level ?? 0);
+  // 레벨은 경계에서 오르므로 보이는 전투를 따른다.
+  const level = battle.heroLevel;
   // 커맨드가 정산한 뒤 보는 클리어와 레벨은 보이는 것 이상이라서, 여기서 해금된 스테이지는 서버도 받아들인다.
   const unlockedIds = computed(() => {
     const save = state.player.value;

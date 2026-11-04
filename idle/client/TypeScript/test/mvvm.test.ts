@@ -511,15 +511,16 @@ describe("main screen", () => {
     const selected: number[] = [];
     // 전투 서비스의 스냅숏은 테스트가 정한다.
     const shown = signal<BattleSnapshot | undefined>(first ?? undefined);
-    // 보이는 보유량도 테스트가 정한다.
+    // 보이는 보유량과 레벨도 테스트가 정한다.
     const items = signal<ItemAmounts>(player.items);
+    const heroLevel = signal(player.hero.level);
     const bossChallenge = vi.fn();
     const openSettings = vi.fn();
     // 장비 뱃지는 테스트가 정한다.
     const equipmentBadge = signal(false);
     const vm = createMainViewModel({
       state, data, t: translate,
-      battle: { selectStage: stageId => void selected.push(stageId), bossChallenge, snapshot: shown, items },
+      battle: { selectStage: stageId => void selected.push(stageId), bossChallenge, snapshot: shown, items, heroLevel },
       equipmentBadge,
       openSettings,
     });
@@ -528,7 +529,7 @@ describe("main screen", () => {
     mainView.bind(scope, prefab.source as unknown as ViewRoot, vm, fakeContext(translate));
     const hudNow = () => [vm.hud.waves.value, vm.hud.bossTime.value, vm.hud.canChallenge.value];
     const header = () => [prefab.levelText.text, prefab.nameText.text, prefab.expText.text];
-    return { state, selected, vm, shown, items, hudNow, header, bossChallenge, openSettings, equipmentBadge, prefab, scope };
+    return { state, selected, vm, shown, items, heroLevel, hudNow, header, bossChallenge, openSettings, equipmentBadge, prefab, scope };
   }
 
   test("shows the save and follows it", () => {
@@ -575,17 +576,16 @@ describe("main screen", () => {
     expect(t.prefab.labels.inventoryLabel.text).toBe("Bag");
   });
 
-  test("the level and exp follow the shown battle's level and show MAX at the last level", () => {
+  test("the level and exp follow the shown level and show MAX at the last level", () => {
     const t = setUp();
     t.items.value = { 2: Big.from(43) };
-    // 레벨은 보이는 전투를 따른다. 4레벨의 요구량은 172다.
-    t.shown.value = snapshot({ hero: { ...hero, level: 4 } });
+    // 4레벨의 요구량은 172다.
+    t.heroLevel.value = 4;
     expect(t.header()).toEqual(["4", "hero", "25%"]);
-    t.shown.value = snapshot({ hero: { ...hero, level: 50 } });
+    t.heroLevel.value = 50;
     expect(t.header()).toEqual(["50", "hero", "MAX"]);
     expect(t.prefab.expBar.fillAmount).toBe(1);
-    // 보이는 전투가 없으면 저장된 레벨이다.
-    t.shown.value = undefined;
+    t.heroLevel.value = 3;
     expect(t.header()).toEqual(["3", "hero", "29%"]);
     // 경계 전에 요구량을 넘게 모아도 100%에서 멈춘다.
     t.items.value = { 2: Big.from(1000) };
@@ -609,10 +609,10 @@ describe("main screen", () => {
     t.prefab.prevStageButton.click();
     expect(t.selected).toEqual([3003, 3001, 3001, 3004]);
 
-    // 3006은 3005를 클리어해도 15레벨이 되어야 열린다. 레벨은 보이는 전투를 따른다.
+    // 3006은 3005를 클리어해도 15레벨이 되어야 열린다. 레벨은 보이는 레벨을 따른다.
     t.state.player.value = { ...player, stage: { currentId: 3005, clearedIds: [3001, 3002, 3003, 3004, 3005] } };
     t.prefab.nextStageButton.click();
-    t.shown.value = snapshot({ hero: { ...hero, level: 15 } });
+    t.heroLevel.value = 15;
     t.prefab.nextStageButton.click();
     expect(t.selected.slice(4)).toEqual([3001, 3006]);
 
@@ -922,7 +922,7 @@ describe("equipment screen", () => {
 
   function setUp() {
     const state = createAppState({ flow: "main", player });
-    const snapshot = signal<BattleSnapshot | undefined>(undefined);
+    const heroLevel = signal(player.hero.level);
     const items = signal<ItemAmounts>({});
     const sent: string[] = [];
     let refuse = false;
@@ -935,7 +935,7 @@ describe("equipment screen", () => {
     const logger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
     const close = vi.fn();
     const badges = createEquipmentBadges({ state, data });
-    const vm = createEquipmentViewModel({ state, data, t, battle: { snapshot, items }, progress: { cmd }, badges, logger, close });
+    const vm = createEquipmentViewModel({ state, data, t, battle: { heroLevel, items }, progress: { cmd }, badges, logger, close });
 
     const stats: { name: { text: string }; icon: ReturnType<typeof fakeIcon>; amount: ReturnType<typeof fakeRollingText> }[] = [];
     const statList = fakeList(() => {
@@ -1000,7 +1000,7 @@ describe("equipment screen", () => {
     equipmentView.bind(scope, refs as unknown as ViewRoot, vm, context);
     const click = (index: number) => cells[index].click.fire();
     return {
-      state, snapshot, vm, badges, sent, logger, close, stats, shown, cells, list, tabClicks, tabBadges, context, scope, click, forge, items,
+      state, heroLevel, vm, badges, sent, logger, close, stats, shown, cells, list, tabClicks, tabBadges, context, scope, click, forge, items,
       refuse: () => void (refuse = true),
     };
   }
@@ -1056,7 +1056,7 @@ describe("equipment screen", () => {
     expect(t.shown().map(([, , , , worn]) => worn)).toEqual(["", "E", "E"]);
 
     // 레벨은 보이는 전투를 따른다(2레벨: HP 224, 공격 22, 방어 6).
-    t.snapshot.value = { hero: { level: 2 } } as BattleSnapshot;
+    t.heroLevel.value = 2;
     expect(t.stats.map(stat => stat.amount.shown())).toEqual(["47", "9", "254"]);
   });
 
@@ -1135,7 +1135,7 @@ describe("equipment screen", () => {
   test("a tab bar whose tabs have no badge object does not open", () => {
     const state = createAppState({ flow: "main", player });
     const vm = createEquipmentViewModel({
-      state, data, t, battle: { snapshot: signal(undefined), items: signal({}) }, progress: { cmd: {} as Commands },
+      state, data, t, battle: { heroLevel: signal(player.hero.level), items: signal({}) }, progress: { cmd: {} as Commands },
       badges: createEquipmentBadges({ state, data }), logger: console, close() {},
     });
     const tabs = { SetCount() {}, SetLabel() {}, Select() {}, GetClickEvent: () => fakeEvent().event, GetBadge: () => null };
@@ -1524,7 +1524,7 @@ describe("rebirth screen", () => {
     const logger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
     const close = vi.fn();
     const vm = createRebirthViewModel({
-      state, data, t, battle: { snapshot: signal(undefined), items: signal(player.items) }, progress: { cmd }, logger, confirm, close,
+      state, data, t, battle: { heroLevel: signal(level), items: signal(player.items) }, progress: { cmd }, logger, confirm, close,
     });
     const texts = { count: { text: "" }, rate: { text: "" }, gain: { text: "" }, resets: { text: "" } };
     const click = fakeEvent();

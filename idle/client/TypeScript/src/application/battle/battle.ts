@@ -40,6 +40,8 @@ export interface BattleService {
    * 보이는 전투가 없으면 저장 데이터의 보유량이고, 그것도 없으면 비어 있다.
    */
   readonly items: ReadonlySignal<ItemAmounts>;
+  /** 보이는 영웅 레벨: 경계에서 저장 데이터보다 먼저 오르는 보이는 전투의 레벨. 전투가 없으면 저장된 레벨, 그것도 없으면 0. */
+  readonly heroLevel: ReadonlySignal<number>;
   /**
    * 보이는 전투를 앞질러 간 예측 전투에서 지금부터 `ms` 안에 올 공격. 연출이 타격 프레임을 타격 틱에 맞추려고
    * 선딜레이만큼 먼저 재생한다. 같은 프레임의 `advance()` 뒤에 부르고, 같은 공격은 한 번만 준다. 저장 데이터가 바뀌어
@@ -237,6 +239,7 @@ export function createBattle({ state, data, clock, progress, events: appEvents, 
 
   // 스냅숏의 보유량은 다음 처치까지 같은 객체라서, 프레임마다 바뀌는 스냅숏에도 처치와 정산 때만 바뀐다.
   const items = computed(() => snapshot.value?.items ?? state.player.value?.items ?? NO_ITEMS);
+  const heroLevel = computed(() => snapshot.value?.hero.level ?? state.player.value?.hero.level ?? 0);
 
   return {
     advance() {
@@ -248,6 +251,8 @@ export function createBattle({ state, data, clock, progress, events: appEvents, 
     snapshot,
 
     items,
+
+    heroLevel,
 
     upcoming(ms) {
       const view = shown;

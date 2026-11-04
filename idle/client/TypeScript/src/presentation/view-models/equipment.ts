@@ -180,7 +180,7 @@ export interface EquipmentViewModelOptions {
   readonly data: GameData;
   readonly t: Translate;
   /** 보이는 전투의 레벨(스냅숏)과 확정될 보유량(강화에 쓸 골드). */
-  readonly battle: Pick<BattleService, "snapshot" | "items">;
+  readonly battle: Pick<BattleService, "heroLevel" | "items">;
   /** 착용, 해제, 강화, 합성을 보낸다. 거절은 토스트(refused)가 알린다. */
   readonly progress: Pick<Progress, "cmd">;
   /** 메인 화면의 장비 뱃지 트리(createEquipmentBadges). 슬롯 탭과 칸이 그 마디다. */
@@ -213,11 +213,11 @@ export function createEquipmentViewModel(
     null,
   );
   // 레벨은 경계에서 오르므로 보이는 전투를 따른다. 저장 데이터가 없으면(로그아웃 중) 능력치는 0이다.
-  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.hero.level);
+  const level = battle.heroLevel;
   const equipment = computed(() => state.player.value?.equipment);
   const hero = computed((): CombatStats | undefined => {
     const save = state.player.value;
-    if (!save || level.value === undefined) return undefined;
+    if (!save) return undefined;
     return heroStats({ ...save, hero: { ...save.hero, level: level.value } }, data);
   });
   // 커맨드는 즉시 적용되고, 서버에 닿지 못한 것은 로그만 남긴다(적용한 것은 취소된다).

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { Big } from "@idle/big-number";
 import { Opcode } from "@idle/codes";
 import { EquipSlot, loadGameData } from "@idle/data-schema";
-import { applyCommand, type BattleSnapshot, type EquipmentState, type ItemAmounts, type PlayerState } from "@idle/game-core";
+import { applyCommand, type EquipmentState, type ItemAmounts, type PlayerState } from "@idle/game-core";
 import { testPlayer } from "@idle/game-core/testing";
 import { signal } from "@preact/signals-core";
 import { expect, test, vi } from "vitest";
@@ -34,7 +34,7 @@ function setUp(equipment: EquipmentState, gold = 0) {
   } as unknown as Commands;
   const badges = createEquipmentBadges({ state, data });
   const vm = createEquipmentViewModel({
-    state, data, t, battle: { snapshot: signal<BattleSnapshot | undefined>(undefined), items }, progress: { cmd }, badges,
+    state, data, t, battle: { heroLevel: signal(player.hero.level), items }, progress: { cmd }, badges,
     logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() }, close() {},
   });
   const entry = (equipmentId: number) => vm.entries.value.find(found => found.equipmentId === equipmentId)!;

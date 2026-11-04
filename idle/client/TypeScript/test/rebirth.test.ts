@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { Big } from "@idle/big-number";
 import { Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
-import { applyCommand, NO_REBIRTH, type BattleSnapshot, type Command, type ItemAmounts, type RebirthState } from "@idle/game-core";
+import { applyCommand, NO_REBIRTH, type Command, type ItemAmounts, type RebirthState } from "@idle/game-core";
 import { testPlayer } from "@idle/game-core/testing";
 import { signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
@@ -25,7 +25,7 @@ describe("rebirth screen", () => {
       stage: { currentId: 3006, clearedIds: [3001, 3002, 3003, 3004, 3005] },
     });
     const state = createAppState({ flow: "main", player });
-    const snapshot = signal<BattleSnapshot | undefined>(undefined);
+    const heroLevel = signal(level);
     const items = signal<ItemAmounts>(player.items);
     const sent: Command[] = [];
     let offline = false;
@@ -38,7 +38,10 @@ describe("rebirth screen", () => {
         sent.push(command);
         if (offline) throw new Error("offline");
         const result = applyCommand(state.player.value!, command, { now: NOW, data });
-        if (result.ok) state.player.value = result.state;
+        if (result.ok) {
+          state.player.value = result.state;
+          heroLevel.value = result.state.hero.level;
+        }
         return result.ok ? undefined : result.error;
       },
     } as unknown as Commands;
@@ -48,9 +51,9 @@ describe("rebirth screen", () => {
     };
     const logger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
     const close = vi.fn();
-    const vm = createRebirthViewModel({ state, data, t, battle: { snapshot, items }, progress: { cmd }, logger, confirm, close });
+    const vm = createRebirthViewModel({ state, data, t, battle: { heroLevel, items }, progress: { cmd }, logger, confirm, close });
     return {
-      state, snapshot, items, vm, sent, asked, logger, close,
+      state, heroLevel, items, vm, sent, asked, logger, close,
       answer: (yes: boolean) => void (answer = yes), goOffline: () => void (offline = true),
     };
   }
@@ -84,7 +87,7 @@ describe("rebirth screen", () => {
 
   test("the level is the visible battle's, which rises at boundaries before the save does", () => {
     const t = setUp(29);
-    t.snapshot.value = { hero: { level: 30 } } as BattleSnapshot;
+    t.heroLevel.value = 30;
     expect(t.vm.ready.value).toBe(true);
     expect(t.vm.gain.value).toBe("Lv.30에서 환생하면 +1포인트, 배율 ×1.00 → ×1.00");
     expect(t.vm.resets.value.split("\n")[0]).toBe("레벨 30 → 1");
