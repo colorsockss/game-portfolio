@@ -1,5 +1,5 @@
 import { GameErrorCode, type Opcode } from "@idle/codes";
-import { freshBattle, settle } from "../battle/settle.js";
+import { freshBattle } from "../battle/settle.js";
 import type { CommandOf } from "../command.js";
 import { rebirthPoints } from "../rebirth.js";
 import { NO_STAT_UPGRADES } from "../stat-upgrade.js";
@@ -13,8 +13,7 @@ import { fail, ok, type CommandHandler } from "./types.js";
  * 환생한다. 레벨 1, 시작 스테이지(클리어 없음), 골드 강화 0단계, 골드와 경험치 0으로 돌리고 `now`에서 새 사냥을 시작한다. 스킬,
  * 장비(강화 단계와 착용), 다른 아이템, 튜토리얼은 남는다. 확정한 레벨에서 받을 포인트가 없으면 거절한다.
  */
-export const rebirth: CommandHandler<CommandOf<Opcode.Rebirth>> = (state, _, { now, data }) => {
-  const settled = settle(state, data, now);
+export const rebirth: CommandHandler<CommandOf<Opcode.Rebirth>> = (settled, _, { now, data }) => {
   const points = rebirthPoints(settled.profile.level);
   if (points < 1) return fail(GameErrorCode.RebirthNotReady, `Level ${settled.profile.level} gives no rebirth points.`);
   const { goldItemId, expItemId } = data.constants;

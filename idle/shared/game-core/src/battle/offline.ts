@@ -1,6 +1,6 @@
 // 오프라인 보상: 낡은 체크포인트(정산 상한보다 오래 멈춤)의 공백은 다시 돌리지 않고, 그 체크포인트에서
 // 이어지는 사냥을 떠날 때 레벨로 정산 상한만큼 돌려 번 것을 공백 시간에 비례해 늘린다. 다시 돌리면 공백
-// 1시간에 약 1.2 ms가 들지만, 이것은 공백과 무관하게 정산 한 번의 상한(약 0.2 ms)이다.
+// 1시간에 약 9 ms(10분에 약 1.5 ms)가 들지만, 이것은 공백과 무관하게 정산 한 번의 상한만큼(약 1.6 ms, docs/performance.md)이다.
 import { Big } from "@idle/big-number";
 import type { GameData } from "@idle/data-schema";
 import { NO_ITEMS, type ItemAmounts } from "../items.js";
