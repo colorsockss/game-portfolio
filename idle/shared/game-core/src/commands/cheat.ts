@@ -21,8 +21,8 @@ export const grantItem: CommandHandler<CommandOf<Opcode.CheatItemGrant>> = (sett
     return fail(GameErrorCode.InvalidCommand, `Cannot grant ${String(amount)} of item ${String(itemId)}.`);
   }
   const granted = { ...settled, ...grant(settled, { [itemId]: Big.from(amount) }, data) };
-  const { profile, items } = levelUp(granted.profile, granted.items, data);
-  return withLevel({ ...granted, items }, profile.level, data, now);
+  const { hero, items } = levelUp(granted.hero, granted.items, data);
+  return withLevel({ ...granted, items }, hero.level, data, now);
 };
 
 /** 영웅 레벨을 정한다. 능력치가 바뀌므로 착용처럼 `now`에서 사냥을 다시 시작한다. 경험치는 그대로다. */
@@ -41,7 +41,7 @@ export const unlockStage: CommandHandler<CommandOf<Opcode.CheatStageUnlock>> = (
   const row = data.stages.get(stageId);
   if (row === undefined) return fail(GameErrorCode.StageNotFound, `Stage ${String(stageId)} does not exist.`);
   const cleared = [...settled.stage.clearedIds];
-  let level = settled.profile.level;
+  let level = settled.hero.level;
   // 선행 조건이 도는 테이블(데이터 오류)에서 멈추도록 스테이지 수만큼만 거슬러 올라간다.
   for (let at = row, steps = 0; steps <= data.stages.size; steps++) {
     level = Math.max(level, at.unlockLevel ?? 0);
@@ -70,7 +70,7 @@ export const shiftTime: CommandHandler<CommandOf<Opcode.CheatTimeShift>> = (sett
 };
 
 function withLevel(player: PlayerState, level: number, data: GameData, now: number): CommandResult {
-  if (player.profile.level === level) return ok(player);
-  const leveled = { ...player, profile: { ...player.profile, level } };
+  if (player.hero.level === level) return ok(player);
+  const leveled = { ...player, hero: { ...player.hero, level } };
   return ok({ ...leveled, battle: restartBattle(leveled, data, now) });
 }

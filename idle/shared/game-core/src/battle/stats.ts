@@ -72,11 +72,11 @@ function modifiersOf(
 const skillsOf = (ids: readonly number[], data: GameData): SkillsRow[] => ids.map(id => skillRow(data, id));
 
 export function heroStats(
-  player: Pick<PlayerState, "profile" | "equipment" | "statUpgrades" | "skills" | "rebirth">, data: GameData,
+  player: Pick<PlayerState, "hero" | "equipment" | "statUpgrades" | "skills" | "rebirth">, data: GameData,
 ): CombatStats {
   const hero = heroRow(data);
-  const row = data.heroLevels.get(player.profile.level);
-  if (row === undefined) throw new Error(`Unknown hero level ${player.profile.level}.`);
+  const row = data.heroLevels.get(player.hero.level);
+  if (row === undefined) throw new Error(`Unknown hero level ${player.hero.level}.`);
   return applyModifiers(
     {
       maxHp: row.maxHp,

@@ -22,7 +22,7 @@ const EXP = data.constants.expItemId;
 const AT = 1_000_000;
 
 const player = (stageId = 3001, level = 1) =>
-  testPlayer(data, AT, { profile: { loginId: "hero", level }, stage: { currentId: stageId, clearedIds: [] } });
+  testPlayer(data, AT, { hero: { level }, stage: { currentId: stageId, clearedIds: [] } });
 
 const apply = (state: PlayerState, command: Command, now: number) => accepted(applyCommand(state, command, { now, data }));
 
@@ -66,9 +66,9 @@ test("settling pays what was earned on top of what is held", () => {
 test("settling keeps the level the battle reached and the experience left over", () => {
   const state = player();
   // 3001의 클리어(약 13초 뒤)에 경험치 100이 차서 2레벨이 된다. 그 전에는 프로필을 그대로 둔다.
-  expect(settleAt(state, AT + 8_000).profile).toBe(state.profile);
+  expect(settleAt(state, AT + 8_000).hero).toBe(state.hero);
   const settled = settleAt(state, AT + 30_000);
-  expect(settled.profile).toEqual({ loginId: "hero", level: 2 });
+  expect(settled.hero).toEqual({ level: 2 });
   expect(Big.lt(settled.items[EXP], 120)).toBe(true);
 });
 
@@ -93,13 +93,13 @@ test("settling after more than MAX_SETTLE_TICKS pays the offline reward and star
       const hurt = { hp: Big.from(1), cooldowns: [3, 4, 5], effects: [], x: 0 };
       const state = { ...base, battle: { ...base.battle, at, waves, autoBoss, hero: hurt, nextId: 40 } };
       const now = at + MAX_SETTLE_TICKS * TICK_MS + 1;
-      const { battle, items, profile } = settleAt(state, now);
+      const { battle, items, hero: grown } = settleAt(state, now);
       // 다시 돌리지 않은 시간은 오프라인 보상으로 받고 그 경험치로 바로 레벨을 올린다. 체크포인트가 없던 것(at 0)은
       // 받지 않는다.
-      const paid = levelUp(state.profile, grant(state, offlineReward(state, data, now).items, data).items, data);
-      expect({ profile, items }).toEqual(paid);
+      const paid = levelUp(state.hero, grant(state, offlineReward(state, data, now).items, data).items, data);
+      expect({ hero: grown, items }).toEqual(paid);
       if (at === 0) expect(items).toBe(state.items);
-      else expect(profile.level).toBeGreaterThan(10);
+      else expect(grown.level).toBeGreaterThan(10);
       // 새 사냥은 오른 레벨의 최대 HP와 처음 재사용 대기로 시작한다.
       const hero = heroStats({ ...state, ...paid }, data);
       expect(battle).toMatchObject({ mode, at: now, waves, autoBoss, nextId: 40, hero: { cooldowns: initialCooldowns(hero) } });
@@ -187,7 +187,7 @@ test("selecting a locked stage is refused by the clears and level the settle rea
   };
   expect(select(ready, 3006, AT + 100)).toMatchObject(locked);
   const selected = apply(ready, { type: Opcode.StageSelect, stageId: 3006 }, AT + 30_000);
-  expect(selected).toMatchObject({ profile: { level: 15 }, stage: { currentId: 3006 } });
+  expect(selected).toMatchObject({ hero: { level: 15 }, stage: { currentId: 3006 } });
 
   // 이미 있는 스테이지는 잠겨 있어도 정산만 한다.
   const inside = player(3006);

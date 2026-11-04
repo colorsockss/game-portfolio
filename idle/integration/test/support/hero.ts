@@ -10,7 +10,7 @@ import type { createTestServer } from "@idle/server/testing";
  */
 export async function createHero(
   server: Awaited<ReturnType<typeof createTestServer>>, data: GameData,
-  changes: Partial<Pick<PlayerState, "profile" | "items" | "equipment" | "statUpgrades" | "skills">> = {},
+  changes: Partial<Pick<PlayerState, "hero" | "items" | "equipment" | "statUpgrades" | "skills">> = {},
 ): Promise<void> {
   const now = Date.now();
   await server.store.createAccount("hero", testPlayer(data, now, { stage: { currentId: 3001, clearedIds: [3001, 3002] }, ...changes }), now);

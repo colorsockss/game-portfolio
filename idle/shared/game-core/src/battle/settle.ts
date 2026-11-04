@@ -17,7 +17,7 @@ import { heroStats } from "./stats.js";
  * 난수 상태를 주지 않으면 `now`에서 시드한다(uint32로 접어 mulberry32를 한 번 돌린 상태).
  */
 export function freshBattle(
-  player: Pick<PlayerState, "profile" | "equipment" | "statUpgrades" | "skills" | "rebirth" | "stage">, data: GameData, now: number,
+  player: Pick<PlayerState, "hero" | "equipment" | "statUpgrades" | "skills" | "rebirth" | "stage">, data: GameData, now: number,
   rng?: number,
 ): BattleState {
   const hero = heroStats(player, data);
@@ -57,7 +57,7 @@ export function playerBattle(state: PlayerState, data: GameData): Battle {
 
 /**
  * 체크포인트부터 `now`가 든 틱까지 돌려 그 틱의 상태로 확정한다(`battle`, 클리어가 있었으면 `stage`, 처치마다 받은 보상과
- * 레벨업에 쓴 경험치를 반영한 `items`, 레벨이 올랐으면 `profile`). 싸우던 웨이브도 그대로 저장되므로 보이는 보유량이 곧 확정된
+ * 레벨업에 쓴 경험치를 반영한 `items`, 레벨이 올랐으면 `hero`). 싸우던 웨이브도 그대로 저장되므로 보이는 보유량이 곧 확정된
  * 보유량이다. 지난 틱이 없으면 `state` 그대로다. 체크포인트가 없거나(`at` 0, 마이그레이션) 상한보다 오래되었으면 다시 돌리지 않고
  * 오프라인 보상(`offlineReward`)을 지급하고 그 경험치로 바로 레벨을 올린 뒤 `now`에서 새 사냥을 시작한다. 웨이브 수와 `autoBoss`는
  * 남긴다. `battle.at`이 `now`의 틱으로 옮겨지므로 같은 시간을 두 번 돌리지 않는다.
@@ -66,7 +66,7 @@ export function settle(state: PlayerState, data: GameData, now: number): PlayerS
   const { battle } = state;
   if (isStaleCheckpoint(battle, now)) {
     const held = grant(state, offlineReward(state, data, now).items, data);
-    const paid = { ...state, ...held, ...levelUp(state.profile, held.items, data) };
+    const paid = { ...state, ...held, ...levelUp(state.hero, held.items, data) };
     // 새 사냥은 오른 레벨의 최대 HP로 시작한다.
     return { ...paid, battle: restartBattle(paid, data, now) };
   }

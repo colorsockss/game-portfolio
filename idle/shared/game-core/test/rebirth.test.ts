@@ -22,7 +22,7 @@ const SWORD = { itemId: 104, enhance: 7 };
 // 마지막 스테이지까지 클리어하고 오우거 대검 +7을 입고 골드 강화와 스킬 레벨을 올린 영웅. 튜토리얼은 마쳤다.
 function player(level: number, rebirth: RebirthState = NO_REBIRTH, stageId = 3006): PlayerState {
   const state = testPlayer(data, AT, {
-    profile: { loginId: "hero", level },
+    hero: { level },
     items: { [GOLD]: Big.from(5000), [EXP]: Big.from(1234) },
     equipment: { nextId: 2, owned: { 1: SWORD }, equipped: { 1: 1 } },
     statUpgrades: { 7001: 40, 7002: 40, 7003: 20 },
@@ -51,7 +51,7 @@ describe("Rebirth", () => {
   test("starts the level, stages, gold upgrades, gold and EXP over, keeps skills, gear and the tutorial, and adds the points", () => {
     const state = player(47, { count: 1, points: 441 });
     const after = accepted(rebirth(state));
-    expect(after.profile).toEqual({ loginId: "hero", level: 1 });
+    expect(after.hero).toEqual({ level: 1 });
     expect(after.stage).toEqual({ currentId: 3001, clearedIds: [] });
     expect(after.statUpgrades).toEqual({});
     expect(after.items).toEqual({});
@@ -84,14 +84,14 @@ describe("Rebirth", () => {
     const state = { ...player(29, NO_REBIRTH, 3001), items: { [EXP]: data.heroLevels.get(29)!.expToNext! } };
     expect(rebirth(state, AT)).toMatchObject({ ok: false, error: { code: GameErrorCode.RebirthNotReady } });
     const now = AT + 60_000;
-    expect(settle(state, data, now).profile.level).toBe(30);
+    expect(settle(state, data, now).hero.level).toBe(30);
     expect(accepted(rebirth(state, now)).rebirth).toEqual({ count: 1, points: 1 });
   });
 
   test("a second rebirth needs the level again and adds its own points", () => {
     const once = accepted(rebirth(player(50)));
     expect(rebirth(once, AT + 1000)).toMatchObject({ ok: false, error: { code: GameErrorCode.RebirthNotReady } });
-    const again = accepted(rebirth({ ...once, profile: { ...once.profile, level: 40 } }, AT + 1000));
+    const again = accepted(rebirth({ ...once, hero: { ...once.hero, level: 40 } }, AT + 1000));
     expect(again.rebirth).toEqual({ count: 2, points: 441 + 121 });
   });
 });

@@ -54,7 +54,7 @@ export function createRebirthViewModel(
   // 환생할 수 있는 가장 낮은 레벨: 공식이 포인트를 주는 첫 레벨. 없으면(데이터) 환생할 수 없다.
   const minLevel = [...data.heroLevels.keys()].sort((a, b) => a - b).find(level => rebirthPoints(level) > 0);
   const startStage = data.stages.get(firstStageId(data))!;
-  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.profile.level ?? 0);
+  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.hero.level ?? 0);
   const points = computed(() => rebirthPoints(level.value));
   const ready = computed(() => state.player.value !== null && points.value > 0);
   return {

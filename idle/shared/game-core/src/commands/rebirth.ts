@@ -14,13 +14,13 @@ import { fail, ok, type CommandHandler } from "./types.js";
  * 장비(강화 단계와 착용), 다른 아이템, 튜토리얼은 남는다. 확정한 레벨에서 받을 포인트가 없으면 거절한다.
  */
 export const rebirth: CommandHandler<CommandOf<Opcode.Rebirth>> = (settled, _, { now, data }) => {
-  const points = rebirthPoints(settled.profile.level);
-  if (points < 1) return fail(GameErrorCode.RebirthNotReady, `Level ${settled.profile.level} gives no rebirth points.`);
+  const points = rebirthPoints(settled.hero.level);
+  if (points < 1) return fail(GameErrorCode.RebirthNotReady, `Level ${settled.hero.level} gives no rebirth points.`);
   const { goldItemId, expItemId } = data.constants;
   const { [goldItemId]: _gold, [expItemId]: _exp, ...items } = settled.items;
   const player = {
     ...settled,
-    profile: { ...settled.profile, level: 1 },
+    hero: { ...settled.hero, level: 1 },
     items,
     statUpgrades: NO_STAT_UPGRADES,
     stage: { currentId: firstStageId(data), clearedIds: [] },

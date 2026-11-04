@@ -229,12 +229,12 @@ export function createMainViewModel({ state, data, t, battle, equipmentBadge, op
   const hud = computed(() => hudOf(battle.snapshot.value, t));
   // 레벨은 경계에서 오르므로 보이는 전투를 따른다. 보이는 전투가 없으면 저장된 레벨이다. 프레임마다 바뀌는 스냅숏에도
   // 레벨이 바뀔 때만 알린다.
-  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.profile.level ?? 0);
+  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.hero.level ?? 0);
   // 커맨드가 정산한 뒤 보는 클리어와 레벨은 보이는 것 이상이라서, 여기서 해금된 스테이지는 서버도 받아들인다.
   const unlockedIds = computed(() => {
     const save = state.player.value;
     if (!save) return [];
-    const shown = { profile: { ...save.profile, level: level.value }, stage: save.stage };
+    const shown = { hero: { ...save.hero, level: level.value }, stage: save.stage };
     return stageIds.filter(id => isUnlocked(data.stages.get(id)!, shown));
   });
   // 다음 레벨까지 모은 경험치의 비율. 최대 레벨이면 null.

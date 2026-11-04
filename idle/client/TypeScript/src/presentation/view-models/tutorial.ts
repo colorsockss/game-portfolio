@@ -70,12 +70,12 @@ export function createTutorialViewModel(
   });
   const tapping = computed(() => step.value !== undefined && waitsForTap(step.value));
   // 레벨은 메인 화면처럼 보이는 전투를 따른다. 커맨드가 정산한 뒤의 레벨은 보이는 것 이상이라 서버도 받아들인다.
-  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.profile.level ?? 0);
+  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.hero.level ?? 0);
   const done = computed(() => {
     const now = step.value;
     const save = state.player.value;
     if (now === undefined || save === null || waitsForTap(now)) return false;
-    return isStepDone(now, { ...save, profile: { ...save.profile, level: level.value } });
+    return isStepDone(now, { ...save, hero: { ...save.hero, level: level.value } });
   });
   // "main.equipmentButton" → 그 화면의 프리팹과 ViewRefs 항목 이름.
   function parse(target: string | null): { readonly prefab: string | undefined; readonly name: string } | null {

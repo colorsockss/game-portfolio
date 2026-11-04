@@ -21,7 +21,7 @@ const AT = 1_000_000;
 const SAMPLE_MS = MAX_SETTLE_TICKS * TICK_MS;
 
 const player = (stageId = 3002, level = 1) =>
-  testPlayer(data, AT, { profile: { loginId: "hero", level }, stage: { currentId: stageId, clearedIds: [] } });
+  testPlayer(data, AT, { hero: { level }, stage: { currentId: stageId, clearedIds: [] } });
 
 // 체크포인트에서 이어지는 사냥(보스 도전, 클리어, 레벨업 없이)의 MAX_SETTLE_TICKS 동안 번 것.
 function hunted(state: PlayerState): ItemAmounts {
@@ -94,9 +94,9 @@ test("settling a long absence levels up with the reward at once and hunts at the
   const settled = settleAt(state, now);
 
   expect(settled.items[1]).toEqual(Big.add(7, reward[1]));
-  expect(settled.profile.level).toBeGreaterThan(1);
+  expect(settled.hero.level).toBeGreaterThan(1);
   // 레벨업에 쓰고 남은 경험치는 다음 레벨의 요구량에 못 미친다.
-  expect(Big.lt(settled.items[EXP], data.heroLevels.get(settled.profile.level)!.expToNext!)).toBe(true);
+  expect(Big.lt(settled.items[EXP], data.heroLevels.get(settled.hero.level)!.expToNext!)).toBe(true);
   expect(Big.lt(settled.items[EXP], reward[EXP])).toBe(true);
   expect(settled.battle.hero.hp).toEqual(heroStats(settled, data).maxHp);
 });

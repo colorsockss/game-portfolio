@@ -7,7 +7,7 @@ const data = await loadGameData(table => readFileSync(new URL(`../../shared/data
 
 test("the bench state is a level 30 hero hunting stage 3005", () => {
   const state = midGame(data);
-  expect(state.profile.level).toBe(30);
+  expect(state.hero.level).toBe(30);
   expect(state.stage.currentId).toBe(3005);
 });
 

@@ -96,7 +96,7 @@ const messages = {
     sync: {
       revision: 8,
       changes: {
-        profile: { loginId: "hero", level: 1 }, items: {}, statUpgrades: {}, stage: { currentId: 3001, clearedIds: [] },
+        hero: { level: 1 }, items: {}, statUpgrades: {}, stage: { currentId: 3001, clearedIds: [] },
         rebirth: { count: 2, points: 765 },
       },
     },

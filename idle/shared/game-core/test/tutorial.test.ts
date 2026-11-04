@@ -81,7 +81,7 @@ test("a stage step waits for the clear, seen through the settle at now", () => {
 
 test("a level step and an equipment step wait for their condition", () => {
   expect(advance(player(4), 4)).toMatchObject(unmet);
-  expect(advance(player(4, { profile: { loginId: "hero", level: 5 } }), 4)).toMatchObject({ ok: true, state: { tutorial: { stepId: 5 } } });
+  expect(advance(player(4, { hero: { level: 5 } }), 4)).toMatchObject({ ok: true, state: { tutorial: { stepId: 5 } } });
 
   expect(advance(player(5), 5)).toMatchObject(unmet);
   const armored = { nextId: 2, owned: { 1: { itemId: 102, enhance: 0 } }, equipped: { [EquipSlot.Armor]: 1 } };

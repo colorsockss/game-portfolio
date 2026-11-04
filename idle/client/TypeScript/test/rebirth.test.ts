@@ -20,7 +20,7 @@ describe("rebirth screen", () => {
   // 마지막 스테이지에서 성장(골드 강화)을 18단계 올린 영웅.
   function setUp(level: number, rebirth: RebirthState = NO_REBIRTH) {
     const player = testPlayer(data, NOW, {
-      profile: { loginId: "hero", level }, items: { [GOLD]: Big.from(12_345) },
+      hero: { level }, items: { [GOLD]: Big.from(12_345) },
       statUpgrades: { 7001: 10, 7002: 5, 7003: 3 }, rebirth,
       stage: { currentId: 3006, clearedIds: [3001, 3002, 3003, 3004, 3005] },
     });

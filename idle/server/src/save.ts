@@ -85,6 +85,11 @@ const migrations: readonly Migration[] = [
       },
     };
   },
+  // 13 → 14: 영웅 레벨을 계정(`profile`)에서 영웅 슬라이스(`hero`)로 옮긴다. 값은 그대로다.
+  ({ profile, ...save }) => {
+    const { level, ...rest } = profile as { level: number };
+    return { ...save, profile: rest, hero: { level } };
+  },
 ];
 
 export const SAVE_VERSION = migrations.length + 1;
@@ -95,7 +100,8 @@ export const SAVE_VERSION = migrations.length + 1;
  */
 export function createPlayer(loginId: string, data: GameData, now: number): PlayerState {
   const player = {
-    profile: { loginId, level: 1 },
+    profile: { loginId },
+    hero: { level: 1 },
     items: {},
     equipment: NO_EQUIPMENT,
     statUpgrades: NO_STAT_UPGRADES,

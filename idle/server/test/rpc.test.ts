@@ -53,7 +53,7 @@ function racing(store: Store): Store & { races: number } {
       if (saved && raced.races > 0) {
         raced.races--;
         const { player, revision } = saved;
-        await store.save(accountId, { ...player, profile: { ...player.profile, level: player.profile.level + 1 } }, revision, time);
+        await store.save(accountId, { ...player, hero: { ...player.hero, level: player.hero.level + 1 } }, revision, time);
       }
       return saved;
     },
@@ -120,7 +120,7 @@ describe("commands", () => {
       code: ResultCode.Ok, sync: { revision: 3, changes: { stage: { currentId: 3002 } } },
     });
     // 어느 쪽 변경도 사라지지 않는다. 커맨드가 다른 요청의 저장 데이터 위에 적용됐다.
-    expect(await savedOf(store, "hero")).toMatchObject({ revision: 3, player: { profile: { level: 2 }, stage: { currentId: 3002 } } });
+    expect(await savedOf(store, "hero")).toMatchObject({ revision: 3, player: { hero: { level: 2 }, stage: { currentId: 3002 } } });
   });
 
   test("fail without applying when they keep losing the race", async () => {
@@ -455,16 +455,16 @@ describe("offline rewards", () => {
     const store = await openStore(":memory:");
     const { connection, paid } = await setUp(store);
     expect(Big.sign(paid.items[1])).toBe(1);
-    expect(paid.profile.level).toBeGreaterThan(1);
+    expect(paid.hero.level).toBeGreaterThan(1);
 
     const first = await call(connection, Opcode.BattleSettle, "1", {});
     expect(first).toMatchObject({
-      code: ResultCode.Ok, sync: { revision: 2, changes: { items: paid.items, profile: paid.profile, battle: { at: time } } },
+      code: ResultCode.Ok, sync: { revision: 2, changes: { items: paid.items, hero: paid.hero, battle: { at: time } } },
     });
     // 다시 보낸 요청은 처음 답을 받고, 새 정산은 옮겨진 체크포인트에서 시작하므로 다시 받지 않는다.
     expect(await call(connection, Opcode.BattleSettle, "1", {})).toEqual(first);
     expect(await call(connection, Opcode.BattleSettle, "2", {})).toMatchObject({ code: ResultCode.Ok, sync: { revision: 2, changes: {} } });
-    expect((await savedOf(store, "hero"))?.player).toMatchObject({ items: paid.items, profile: paid.profile });
+    expect((await savedOf(store, "hero"))?.player).toMatchObject({ items: paid.items, hero: paid.hero });
   });
 
   test("are paid once when the connections before and after a reconnect settle at the same time", async () => {
@@ -487,9 +487,9 @@ describe("offline rewards", () => {
     release();
 
     // 둘 다 같은 저장 데이터에서 계산했지만 늦게 쓰는 쪽은 밀려서 옮겨진 체크포인트부터 다시 한다.
-    expect(await first).toMatchObject({ code: ResultCode.Ok, sync: { revision: 2, changes: { items: paid.items, profile: paid.profile } } });
+    expect(await first).toMatchObject({ code: ResultCode.Ok, sync: { revision: 2, changes: { items: paid.items, hero: paid.hero } } });
     expect(await second).toMatchObject({ code: ResultCode.Ok, sync: { revision: 2, changes: {} } });
-    expect((await savedOf(store, "hero"))?.player).toMatchObject({ items: paid.items, profile: paid.profile });
+    expect((await savedOf(store, "hero"))?.player).toMatchObject({ items: paid.items, hero: paid.hero });
   });
 });
 
@@ -598,7 +598,8 @@ test("a version 1 save in the database is read at the latest format on login, pl
         snapshot: {
           revision: 1,
           player: {
-            profile: { loginId: "hero", level: 3 },
+            profile: { loginId: "hero" },
+            hero: { level: 3 },
             items: { 1: Big.from(500), 2: Big.from(40) },
             equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH,
             stage: v1.stage,
@@ -647,7 +648,7 @@ describe("cheats", () => {
     // 같은 id로 다시 보낸 치트는 처음 답을 받고 다시 지급하지 않는다.
     expect(await call(connection, Opcode.CheatItemGrant, "1", { itemId: 1, amount: 1000 })).toEqual({ ...(first as object), serverTime: time });
     expect(await call(connection, Opcode.CheatLevelSet, "2", { level: 10 })).toMatchObject({ code: ResultCode.Ok, sync: { revision: 3 } });
-    expect(await saved()).toMatchObject({ revision: 3, player: { items: { 1: Big.from(1000) }, profile: { level: 10 } } });
+    expect(await saved()).toMatchObject({ revision: 3, player: { items: { 1: Big.from(1000) }, hero: { level: 10 } } });
   });
 });
 
@@ -857,7 +858,7 @@ describe("rebirth", () => {
     const store = await openStore(":memory:");
     const player = createPlayer("hero", data, time);
     await store.createAccount("hero", {
-      ...player, profile: { ...player.profile, level: 40 }, items: { 1: Big.from(5000) }, statUpgrades: { 7001: 10 },
+      ...player, hero: { ...player.hero, level: 40 }, items: { 1: Big.from(5000) }, statUpgrades: { 7001: 10 },
       stage: { currentId: 3003, clearedIds: [3001, 3002] },
     }, time);
     const held = holding(store);
@@ -868,7 +869,7 @@ describe("rebirth", () => {
   }
   const reborn = {
     revision: 2,
-    player: { profile: { level: 1 }, items: {}, statUpgrades: {}, stage: { currentId: 3001, clearedIds: [] }, rebirth: { count: 1, points: 121 } },
+    player: { hero: { level: 1 }, items: {}, statUpgrades: {}, stage: { currentId: 3001, clearedIds: [] }, rebirth: { count: 1, points: 121 } },
   };
   const notReady = { code: ResultCode.Rejected, error: { code: GameErrorCode.RebirthNotReady } };
 

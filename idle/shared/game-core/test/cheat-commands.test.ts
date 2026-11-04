@@ -41,8 +41,8 @@ test("granting experience levels up at once and restarts the hunt at now", () =>
   const { expItemId } = data.constants;
   const need = data.heroLevels.get(1)!.expToNext!;
   const state = apply(player(), { type: Opcode.CheatItemGrant, itemId: expItemId, amount: Big.toNumber(need) * 3 });
-  expect(state.profile.level).toBeGreaterThan(1);
-  expect(Big.lt(state.items[expItemId] ?? Big.ZERO, data.heroLevels.get(state.profile.level)!.expToNext!)).toBe(true);
+  expect(state.hero.level).toBeGreaterThan(1);
+  expect(Big.lt(state.items[expItemId] ?? Big.ZERO, data.heroLevels.get(state.hero.level)!.expToNext!)).toBe(true);
   expect(state.battle.at).toBe(NOW);
 });
 
@@ -54,7 +54,7 @@ test("granting refuses unknown items and amounts that are not positive integers"
 
 test("setting the level restarts the hunt at now with the new stats", () => {
   const state = apply(player(), { type: Opcode.CheatLevelSet, level: 10 });
-  expect(state.profile.level).toBe(10);
+  expect(state.hero.level).toBe(10);
   expect(state.battle.at).toBe(NOW);
   expect(refused({ type: Opcode.CheatLevelSet, level: data.heroLevels.size + 1 })).toBe(GameErrorCode.InvalidCommand);
 });
@@ -64,7 +64,7 @@ test("unlocking a stage clears its prerequisites and raises the level to its con
   const last = data.stages.get(3006)!;
   const state = apply(player(), { type: Opcode.CheatStageUnlock, stageId: 3006 });
   expect([...state.stage.clearedIds].sort()).toEqual([3001, 3002, 3003, 3004, 3005]);
-  expect(state.profile.level).toBe(15);
+  expect(state.hero.level).toBe(15);
   expect(isUnlocked(last, state)).toBe(true);
   expect(state.stage.currentId).toBe(settle(player(), data, NOW).stage.currentId);
   // 이미 열린 스테이지는 확정만 한다.

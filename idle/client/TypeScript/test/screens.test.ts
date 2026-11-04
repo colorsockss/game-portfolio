@@ -286,7 +286,7 @@ describe("screens", () => {
     const t = setUp(async (view, vm, owner, options) => void shown.push({ view: view as View<unknown>, vm, owner, options }));
     const step = { id: 1, textKey: "tutorial.welcome", target: null, opener: null, unlockStageId: null, unlockLevel: null, equipSlot: null };
     (t.options.data.tutorialSteps as Map<number, typeof step>).set(1, step);
-    const player = { profile: { loginId: "hero", level: 1 }, stage: { currentId: 3001 }, tutorial: { stepId: 1 } } as unknown as NonNullable<AppStateValues["player"]>;
+    const player = { hero: { level: 1 }, stage: { currentId: 3001 }, tutorial: { stepId: 1 } } as unknown as NonNullable<AppStateValues["player"]>;
     t.state.player.value = player;
     t.screens.main!(createScope());
     const opened = shown.filter(entry => entry.view === views.tutorial);

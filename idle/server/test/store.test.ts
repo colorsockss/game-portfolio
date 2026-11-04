@@ -33,7 +33,7 @@ test("creates an account once, with its first save at revision 1", async () => {
 test("creating an account leaves nothing when its first save cannot be written", async () => {
   const store = await openStore(":memory:");
   // MessagePack은 bigint를 쓰지 못한다(useBigInt64 없이).
-  const unwritable = { ...player, profile: { ...player.profile, level: 1n } } as unknown as typeof player;
+  const unwritable = { ...player, hero: { ...player.hero, level: 1n } } as unknown as typeof player;
   await expect(store.createAccount("hero", unwritable, 1000)).rejects.toThrow(/Unrecognized object/);
   expect(await store.findAccount("hero")).toBeUndefined();
 

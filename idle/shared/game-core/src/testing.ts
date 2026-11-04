@@ -11,12 +11,13 @@ import { NO_STAT_UPGRADES } from "./stat-upgrade.js";
 import { firstStageId } from "./unlock.js";
 
 /**
- * 튜토리얼을 마치고 첫 스테이지에서 사냥하는 1레벨 영웅 "hero"에 `changes`를 덮은 계정. 스킬은 새 계정과 같다.
+ * 로그인 ID "hero"인 계정: 튜토리얼을 마치고 첫 스테이지에서 사냥하는 1레벨 영웅에 `changes`를 덮었다. 스킬은 새 계정과 같다.
  * `battle`을 넘기지 않으면 덮은 슬라이스로 `at`에 새로 시작한 전투다.
  */
 export function testPlayer(data: GameData, at: number, changes: Partial<PlayerState> = {}): PlayerState {
   const player = {
-    profile: { loginId: "hero", level: 1 },
+    profile: { loginId: "hero" },
+    hero: { level: 1 },
     items: {},
     equipment: NO_EQUIPMENT,
     statUpgrades: NO_STAT_UPGRADES,

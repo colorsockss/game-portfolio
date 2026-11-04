@@ -13,7 +13,7 @@ import { Formula } from "../src/formulas.js";
 
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
 
-const playerAt = (level: number) => ({ profile: { loginId: "hero", level }, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data) });
+const playerAt = (level: number) => ({ hero: { level }, equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH, skills: startSkills(data) });
 const slime = data.monsters.get(2001)!;
 
 describe("toTicks", () => {

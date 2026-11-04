@@ -38,7 +38,7 @@ export function waitsForTap(step: TutorialStepsRow): boolean {
 }
 
 /** 적힌 조건(선행 클리어, 영웅 레벨, 그 슬롯의 착용)을 모두 채웠는지. 누름 스텝은 언제나 참이다. */
-export function isStepDone(step: TutorialStepsRow, player: Pick<PlayerState, "profile" | "stage" | "equipment">): boolean {
+export function isStepDone(step: TutorialStepsRow, player: Pick<PlayerState, "hero" | "stage" | "equipment">): boolean {
   return isUnlocked(step, player) && (step.equipSlot === null || player.equipment.equipped[step.equipSlot] !== undefined);
 }
 

@@ -100,7 +100,7 @@ function createPolicy(data: GameData, rebirthLevel: number): (state: PlayerState
     };
     state = send({ type: Opcode.BattleSettle });
     // 골드는 정산마다 다 쓰므로 환생이 버리는 골드는 마지막 정산 한 번 몫이다. 환생은 사냥을 다시 시작해 진행 중인 웨이브를 버린다.
-    const { level } = state.profile;
+    const { level } = state.hero;
     if (rebirthLevel > 0 && level >= rebirthLevel && rebirthPoints(level) > 0) state = send({ type: Opcode.Rebirth });
 
     for (const key of Object.keys(state.equipment.owned)) {
@@ -198,7 +198,7 @@ function sample(state: PlayerState, hour: number, online: boolean, data: GameDat
   return {
     hour,
     online,
-    level: state.profile.level,
+    level: state.hero.level,
     rebirth: state.rebirth,
     items: state.items,
     stageId: state.stage.currentId,

@@ -134,13 +134,13 @@ test("the first settle after a long absence pays the offline reward the client a
   const saved = (await server.store.load(account.id))!.player;
   // 서버는 자기 시각(새 체크포인트의 at)으로 지급하고 바로 레벨을 올린다.
   const paid = settle(away, data, saved.battle.at);
-  expect(saved).toMatchObject({ items: paid.items, profile: paid.profile });
-  expect(saved.profile.level).toBeGreaterThan(1);
+  expect(saved).toMatchObject({ items: paid.items, hero: paid.hero });
+  expect(saved.hero.level).toBeGreaterThan(1);
   expect(app.state.player.value!.items).toEqual(saved.items);
   expect(announced).toHaveLength(1);
   const [reward] = announced;
   expect(Math.abs(reward.duration - 3 * HOUR)).toBeLessThan(100);
   expect(Math.abs(Big.toNumber(Big.sub(reward.items[1], offlineReward(away, data, saved.battle.at).items[1])))).toBeLessThanOrEqual(1);
-  expect(reward.level).toEqual({ from: away.profile.level, to: saved.profile.level });
+  expect(reward.level).toEqual({ from: away.hero.level, to: saved.hero.level });
   expect(Big.sign(saved.items[1])).toBe(1);
 });

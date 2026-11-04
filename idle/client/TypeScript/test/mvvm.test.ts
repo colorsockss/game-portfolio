@@ -430,7 +430,7 @@ describe("reading ViewRefs", () => {
 });
 
 describe("main screen", () => {
-  const player = testPlayer(data, 0, { profile: { loginId: "hero", level: 3 }, items: { 1: Big.from(12_345) } });
+  const player = testPlayer(data, 0, { hero: { level: 3 }, items: { 1: Big.from(12_345) } });
 
   const hero = {
     level: 3, hp: Big.from(50), maxHp: Big.from(100), down: false, effects: [], x: -2, moving: false, attack: Big.from(10), critChance: 0, skills: [],
@@ -1515,7 +1515,7 @@ describe("skill screen", () => {
 describe("rebirth screen", () => {
   function setUp(level: number) {
     const player = testPlayer(data, 0, {
-      profile: { loginId: "hero", level }, items: { [data.constants.goldItemId]: Big.from(1234) }, statUpgrades: { 7001: 3, 7002: 2 },
+      hero: { level }, items: { [data.constants.goldItemId]: Big.from(1234) }, statUpgrades: { 7001: 3, 7002: 2 },
     });
     const state = createAppState({ flow: "main", player });
     const sent: object[] = [];

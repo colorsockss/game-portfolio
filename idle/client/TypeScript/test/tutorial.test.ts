@@ -123,7 +123,7 @@ describe("tutorial view model", () => {
 
   test("a step met while another command is being predicted is sent after it", async () => {
     // 5(누름)의 예측이 6(레벨 5, 이미 채움)으로 옮긴 그 자리에서 6을 보내면 서버가 6을 먼저 받아 거절한다.
-    const t = setUp(5, { profile: { loginId: "hero", level: 5 } });
+    const t = setUp(5, { hero: { level: 5 } });
     t.vm.tap();
     expect(t.sent).toEqual([5]);
     await flush();

@@ -57,13 +57,14 @@ const data: GameData = {
   }),
   heroLevels: new Map([...loaded.heroLevels].map(([id, row]) => [id, { ...row, expToNext: null }])),
 };
-const profile = { loginId: "hero", level: 1 };
+// 저장 데이터의 영웅 성장. 전투원 영웅(`hero`의 능력치)과 구별한다.
+const heroState = { level: 1 };
 const equipment = NO_EQUIPMENT;
 const statUpgrades = NO_STAT_UPGRADES;
 const rebirth = NO_REBIRTH;
 /** 영웅의 능력치. 스킬은 그 데이터의 새 계정처럼 장착한다. */
 const heroOf = (gameData: GameData, level = 1) =>
-  heroStats({ profile: { ...profile, level }, equipment, statUpgrades, skills: startSkills(gameData), rebirth }, gameData);
+  heroStats({ hero: { level }, equipment, statUpgrades, skills: startSkills(gameData), rebirth }, gameData);
 const hero = heroOf(data);
 // 영웅의 능력치는 테이블에서 오므로, 다른 영웅은 1레벨 행이나 Heroes 행을 바꾼 데이터로 만든다.
 const strong: GameData = { ...data, heroLevels: patch(data.heroLevels, 1, { attack: Big.add(hero.attack, 100000) }) };
@@ -98,7 +99,7 @@ function input(options: Options = {}): BattleInput {
   const waves = options.waves ?? 0;
   const gameData = options.data ?? data;
   const skills = options.skills ?? startSkills(gameData);
-  const stats = heroStats({ profile, equipment, statUpgrades, skills, rebirth }, gameData);
+  const stats = heroStats({ hero: heroState, equipment, statUpgrades, skills, rebirth }, gameData);
   return {
     player: {
       battle: {
@@ -117,7 +118,7 @@ function input(options: Options = {}): BattleInput {
         reviveTicksLeft: null,
       },
       stage: { currentId: stageId, clearedIds: [] },
-      profile,
+      hero: heroState,
       items: options.items ?? {},
       equipment,
       statUpgrades,
@@ -731,7 +732,7 @@ describe("levels", () => {
     ]);
     const b = battle.lastBoundary()!;
     expect(b.tick).toBe(tick);
-    expect(b.player.profile).toEqual({ loginId: "hero", level: 2 });
+    expect(b.player.hero).toEqual({ level: 2 });
     expect(b.player.items).toEqual({ 1: Big.from(60), [EXP]: Big.from(10) });
     expect(b.player.battle.hero.hp).toEqual(level2.maxHp);
     expect(battle.snapshot().hero).toMatchObject({ level: 2, hp: level2.maxHp, maxHp: level2.maxHp });
@@ -754,7 +755,7 @@ describe("levels", () => {
       const events = runUntil(battle, event => event.type === "stageClear");
       expect(events.find(event => event.type === "stageClear")).toMatchObject({ stageId: 3001, nextId });
       expect(battle.lastBoundary()!.player).toMatchObject({
-        profile: { level: 2 },
+        hero: { level: 2 },
         stage: { currentId: nextId ?? 3001 },
         battle: { autoBoss: nextId !== null },
       });
@@ -1062,7 +1063,7 @@ describe("projectiles", () => {
   });
 
   test("settling at any moment hits with each projectile once", () => {
-    const state: PlayerState = { ...input({ data: lingering, stageId: 3003 }).player, tutorial: { stepId: null } };
+    const state: PlayerState = { ...input({ data: lingering, stageId: 3003 }).player, profile: { loginId: "hero" }, tutorial: { stepId: null } };
     const { at } = state.battle;
     const end = at + MAX_SETTLE_TICKS * TICK_MS;
     let chained = state;
@@ -1230,7 +1231,7 @@ describe("summons", () => {
   });
 
   test("settling at any moment equals settling at once with summons alive across the settles", () => {
-    const state: PlayerState = { ...input({ data: loaded }).player, tutorial: { stepId: null } };
+    const state: PlayerState = { ...input({ data: loaded }).player, profile: { loginId: "hero" }, tutorial: { stepId: null } };
     const { at } = state.battle;
     const end = at + MAX_SETTLE_TICKS * TICK_MS;
     let chained = state;

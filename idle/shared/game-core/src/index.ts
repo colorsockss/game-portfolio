@@ -59,7 +59,7 @@ export {
   startSkills,
   type SkillsState,
 } from "./skills.js";
-export type { PlayerState, ProfileState, StageState } from "./state.js";
+export type { HeroState, PlayerState, ProfileState, StageState } from "./state.js";
 export { firstStageId, isUnlocked, type UnlockCondition } from "./unlock.js";
 export { afterStep, isStepDone, startTutorial, tutorialStep, waitsForTap, type TutorialState } from "./tutorial.js";
 export { DAILY_RESET_UTC, DAY, HOUR, MINUTE, SECOND, elapsed, gameDay, nextDailyReset } from "./time.js";

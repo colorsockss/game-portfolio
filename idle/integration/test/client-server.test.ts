@@ -125,7 +125,7 @@ test("enhancing and merging apply at once and the server confirms the same equip
 test("a rebirth applies at once and the server confirms the same points, reset and bonus", async () => {
   const data = await loadTestData();
   const server = await createTestServer(data);
-  await createHero(server, data, { profile: { loginId: "hero", level: 40 }, items: { 1: Big.from(5000) }, statUpgrades: { 7001: 10 } });
+  await createHero(server, data, { hero: { level: 40 }, items: { 1: Big.from(5000) }, statUpgrades: { 7001: 10 } });
   const app = await startApp(createLoopbackBridge(server.rpc), { server: "ws://game.test", mode: "release" }, captureViews().views);
   await app.account.login("hero");
   const before = app.state.player.value!;
@@ -133,7 +133,7 @@ test("a rebirth applies at once and the server confirms the same points, reset a
   const sent = app.progress.cmd.Rebirth({});
   const predicted = app.state.player.value!;
   expect(predicted).toMatchObject({
-    profile: { level: 1 }, items: {}, statUpgrades: {}, stage: { currentId: 3001, clearedIds: [] }, rebirth: { count: 1, points: 121 },
+    hero: { level: 1 }, items: {}, statUpgrades: {}, stage: { currentId: 3001, clearedIds: [] }, rebirth: { count: 1, points: 121 },
   });
   expect(await sent).toBeUndefined();
   const account = (await server.store.findAccount("hero"))!;
@@ -143,7 +143,7 @@ test("a rebirth applies at once and the server confirms the same points, reset a
   // 서버가 클라이언트가 예측한 시각 그대로 확정하므로 예측과 같다.
   expect(saved.player).toEqual(predicted);
   // 1레벨 영웅의 능력치에 배율 1.121이 곱해진다.
-  const level1 = heroStats({ ...before, profile: { ...before.profile, level: 1 }, statUpgrades: {} }, data);
+  const level1 = heroStats({ ...before, hero: { ...before.hero, level: 1 }, statUpgrades: {} }, data);
   expect(heroStats(saved.player, data).attack).toEqual(Big.floor(Big.mul(level1.attack, 1.121)));
 
   expect(await app.progress.cmd.Rebirth({})).toMatchObject({ code: GameErrorCode.RebirthNotReady });

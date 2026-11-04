@@ -131,7 +131,8 @@ describe("debug overlay", () => {
     const state = createAppState({
       flow: "main",
       player: {
-        profile: { loginId: "hero", level: 3 },
+        profile: { loginId: "hero" },
+        hero: { level: 3 },
         items: { 1: Big.from(1500) },
         equipment: NO_EQUIPMENT, statUpgrades: NO_STAT_UPGRADES, rebirth: NO_REBIRTH,
         skills: { equipped: {}, levels: {} },
@@ -165,7 +166,7 @@ describe("debug overlay", () => {
     expect(vm.fps.value).toBe("60 FPS");
     expect(vm.serverTime.value).toBe("2026-10-21 05:20:31 UTC");
     const dump = JSON.parse(vm.dump.value);
-    expect(dump).toMatchObject({ flow: "main", player: { profile: { level: 3 }, items: { 1: "1.5K" }, battle: { hero: { hp: "100" } } } });
+    expect(dump).toMatchObject({ flow: "main", player: { hero: { level: 3 }, items: { 1: "1.5K" }, battle: { hero: { hp: "100" } } } });
   });
 
   test("toggles the panel", () => {

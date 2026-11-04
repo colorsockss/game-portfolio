@@ -213,12 +213,12 @@ export function createEquipmentViewModel(
     null,
   );
   // 레벨은 경계에서 오르므로 보이는 전투를 따른다. 저장 데이터가 없으면(로그아웃 중) 능력치는 0이다.
-  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.profile.level);
+  const level = computed(() => battle.snapshot.value?.hero.level ?? state.player.value?.hero.level);
   const equipment = computed(() => state.player.value?.equipment);
   const hero = computed((): CombatStats | undefined => {
     const save = state.player.value;
     if (!save || level.value === undefined) return undefined;
-    return heroStats({ ...save, profile: { ...save.profile, level: level.value } }, data);
+    return heroStats({ ...save, hero: { ...save.hero, level: level.value } }, data);
   });
   // 커맨드는 즉시 적용되고, 서버에 닿지 못한 것은 로그만 남긴다(적용한 것은 취소된다).
   const sent = (command: Promise<unknown>) =>

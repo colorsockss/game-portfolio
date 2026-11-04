@@ -11,7 +11,7 @@ import { accepted, testPlayer } from "../src/testing.js";
 const data = await loadGameData(table => readFileSync(new URL(`../../data-schema/data/${table}.bytes`, import.meta.url)));
 const AT = 1_000_000;
 
-const player = () => testPlayer(data, AT, { profile: { loginId: "hero", level: 3 } });
+const player = () => testPlayer(data, AT, { hero: { level: 3 } });
 
 // 키를 거꾸로 다시 만든 깊은 사본. 저장 데이터를 풀어 만든 객체처럼 값은 같고 키 순서가 다르다.
 function reversed(value: unknown): unknown {

@@ -29,7 +29,7 @@ const data = await loadGameData(table => readFileSync(new URL(`../../../shared/d
 const AT = 1_000_000;
 
 const player = (stageId = 3001, at = AT, level = 1) =>
-  testPlayer(data, at, { profile: { loginId: "hero", level }, stage: { currentId: stageId, clearedIds: [] } });
+  testPlayer(data, at, { hero: { level }, stage: { currentId: stageId, clearedIds: [] } });
 
 // 3004에서 다음에 나올 것이 보스인 저장 데이터. 1레벨 영웅은 틱 61에 쓰러져 지고, 20레벨은 틱 102에 이긴다.
 function bossFight(level = 1): PlayerState {
@@ -198,8 +198,8 @@ test("announces the offline reward once the stale settle is accepted", async () 
   const t = setUp(away);
   t.battle.advance();
   // 보유량과 레벨은 예측으로 바로 오르고, 알림은 서버가 받아들인 뒤에 온다.
-  expect(t.player()).toMatchObject({ items: settle(away, data, AT).items, profile: settle(away, data, AT).profile });
-  const level = t.player().profile.level;
+  expect(t.player()).toMatchObject({ items: settle(away, data, AT).items, hero: settle(away, data, AT).hero });
+  const level = t.player().hero.level;
   expect(level).toBeGreaterThan(1);
   expect(t.rewards).toEqual([]);
   await t.answer();

@@ -195,14 +195,14 @@ export function createBattle({ state, data, clock, progress, events: appEvents, 
       shown = undefined;
       const away = player;
       // 정산을 보내면 progress가 바로 적용하므로, 그 뒤의 저장 데이터에 보상의 경험치로 오른 레벨이 있다.
-      let level = away.profile.level;
+      let level = away.hero.level;
       // 실패한 정산은 다음 프레임에 다시 보내므로, 보상은 받아들여진 한 번만 계산해 알린다.
       settle(now, () => {
         const reward = offlineReward(away, data, now);
-        if (reward.duration > 0) appEvents.emit("offlineReward", { ...reward, level: { from: away.profile.level, to: level } });
+        if (reward.duration > 0) appEvents.emit("offlineReward", { ...reward, level: { from: away.hero.level, to: level } });
       });
       player = state.player.value;
-      level = player?.profile.level ?? level;
+      level = player?.hero.level ?? level;
       if (player !== null && isStaleCheckpoint(player.battle, now)) return [];
     }
     if (player === null) {

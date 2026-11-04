@@ -32,12 +32,12 @@ import {
 import { abilityOwner, applyModifiers, heroStats, monsterStats, summonStats, type CombatStats, type StatModifier } from "./stats.js";
 
 /**
- * 전투가 이어 가는 저장 데이터: 체크포인트, 스테이지, 레벨(`profile`), 보유량, 장비, 강화 단계, 스킬, 환생. 처치 보상을 보유량과
+ * 전투가 이어 가는 저장 데이터: 체크포인트, 스테이지, 영웅 레벨(`hero`), 보유량, 장비, 강화 단계, 스킬, 환생. 처치 보상을 보유량과
  * 장비에 지급하고 경험치가 차면 경계에서 레벨을 올리므로 강화 단계, 스킬, 환생 말고는 모두 전투가 바꾼다. 착용, 강화 단계, 스킬
  * 장착·레벨, 환생 포인트는 전투 밖의 커맨드가 바꾸고, 그러면 그 틱의 체크포인트에서 새 능력치로 이어 간다(`refitHero`).
  */
 export type BattlePlayer = Pick<
-  PlayerState, "battle" | "stage" | "profile" | "items" | "equipment" | "statUpgrades" | "skills" | "rebirth"
+  PlayerState, "battle" | "stage" | "hero" | "items" | "equipment" | "statUpgrades" | "skills" | "rebirth"
 >;
 
 export interface BattleInput {
@@ -514,7 +514,8 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
   let autoBoss = battle.autoBoss;
   let nextId = battle.nextId;
   let stage = player.stage;
-  let profile = player.profile;
+  // 전투원 영웅(`hero`)과 구별해 저장 데이터의 영웅 성장은 heroState로 부른다.
+  let heroState = player.hero;
   let items = player.items;
   let equipment = player.equipment;
   const { statUpgrades, skills, rebirth } = player;
@@ -613,11 +614,11 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
     if (projectiles.length > 0) throw new Error(`Projectile ${projectiles[0].id} is in flight at a boundary.`);
     // 아군은 0으로 돌아온다. 그래서 체크포인트에는 자리가 없고, 이어 간 전투도 같은 자리에서 시작한다.
     for (const ally of allies) ally.x = 0;
-    const leveled = levelUps ? levelUp(profile, items, data) : { profile, items };
-    if (leveled.profile !== profile) {
-      ({ profile, items } = leveled);
+    const leveled = levelUps ? levelUp(heroState, items, data) : { hero: heroState, items };
+    if (leveled.hero !== heroState) {
+      ({ hero: heroState, items } = leveled);
       // 스킬(장착과 레벨)과 공격 간격은 레벨로 바뀌지 않으므로 재사용 대기는 그대로 이어진다. 걸린 효과도 그대로 얹는다.
-      hero.base = heroStats({ profile, equipment, statUpgrades, skills, rebirth }, data);
+      hero.base = heroStats({ hero: heroState, equipment, statUpgrades, skills, rebirth }, data);
       hero.fighter = fighterWith(hero.base, hero.effects);
       hero.hp = hero.fighter.stats.maxHp;
       // 소환수도 새 능력치로 다시 계산한다(체크포인트에서 이어 받는 소환수와 같다). HP는 그대로다.
@@ -626,7 +627,7 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
         ally.base = summonStats(ally.summon.row, hero.base, ally.summon.level, data);
         refit(ally);
       }
-      emit({ tick, type: "levelUp", level: profile.level });
+      emit({ tick, type: "levelUp", level: heroState.level });
     }
     mode = bossDue(stage.currentId, waves, autoBoss, data) ? BattleMode.Boss : BattleMode.Hunt;
     last = save();
@@ -660,7 +661,7 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
       bossTicksLeft: deadline === null ? null : deadline - tick,
       reviveTicksLeft: reviveAt === null ? null : reviveAt - tick,
     };
-    return { tick, player: { battle: checkpoint, stage, profile, items, equipment, statUpgrades, skills, rebirth } };
+    return { tick, player: { battle: checkpoint, stage, hero: heroState, items, equipment, statUpgrades, skills, rebirth } };
   }
 
   function spawn(monsterId: number, boss: boolean): void {
@@ -1100,7 +1101,7 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
     const clearedIds = stage.clearedIds.includes(stageId) ? stage.clearedIds : [...stage.clearedIds, stageId];
     // 다음 스테이지: 이 스테이지가 선행인 것 중 해금된 것의 가장 작은 ID. 최솟값이라 순회 순서와 무관하다. 레벨은
     // 곧 이어지는 경계에서 클리어 보상까지 받아 오를 레벨로 본다.
-    const after = { profile: levelUps ? levelUp(profile, items, data).profile : profile, stage: { ...stage, clearedIds } };
+    const after = { hero: levelUps ? levelUp(heroState, items, data).hero : heroState, stage: { ...stage, clearedIds } };
     let nextStageId: number | null = null;
     for (const candidate of data.stages.values()) {
       if (candidate.unlockStageId !== stageId || !isUnlocked(candidate, after)) continue;
@@ -1215,7 +1216,7 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
       battle.at + tick * TICK_MS,
       stage.currentId,
       stage.clearedIds,
-      profile.level,
+      heroState.level,
       equipment.equipped,
       statUpgrades,
       skillsKey,
@@ -1261,7 +1262,7 @@ export function startBattle({ player, data, levelUps = true }: BattleInput): Bat
       hasBoss: row.bossId !== null,
       bossTicksLeft: deadline === null ? null : deadline - tick,
       hero: {
-        level: profile.level, hp: hero.hp, maxHp: hero.fighter.stats.maxHp, down: reviveAt !== null, effects: effectSnapshots(hero), ...place(hero),
+        level: heroState.level, hp: hero.hp, maxHp: hero.fighter.stats.maxHp, down: reviveAt !== null, effects: effectSnapshots(hero), ...place(hero),
         attack: hero.fighter.stats.attack,
         critChance: hero.fighter.stats.critChance,
         // 0번은 기본 공격이다. 대기는 쓴 틱에 cooldown이 되고 차례마다 하나씩 줄어 0인 틱에 다시 쓴다.

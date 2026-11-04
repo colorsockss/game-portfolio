@@ -12,11 +12,11 @@ export interface UnlockCondition {
 }
 
 /** 적힌 조건을 모두 채웠는지. */
-export function isUnlocked(condition: UnlockCondition, player: Pick<PlayerState, "profile" | "stage">): boolean {
+export function isUnlocked(condition: UnlockCondition, player: Pick<PlayerState, "hero" | "stage">): boolean {
   const { unlockStageId, unlockLevel } = condition;
   return (
     (unlockStageId === null || player.stage.clearedIds.includes(unlockStageId)) &&
-    (unlockLevel === null || player.profile.level >= unlockLevel)
+    (unlockLevel === null || player.hero.level >= unlockLevel)
   );
 }
 
