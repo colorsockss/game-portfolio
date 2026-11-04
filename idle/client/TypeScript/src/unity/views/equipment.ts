@@ -1,10 +1,6 @@
-import { signal } from "@preact/signals-core";
 import type { EquipmentEntry, EquipmentViewModel } from "../../presentation/view-models/equipment.js";
 import { active, bigNumber, button, fill, icon, label, list, row, tabBar, text, tint, view } from "../binding/view.js";
 import { currencyView } from "./widgets.js";
-
-// 칸은 원소가 바뀌면 다시 바인딩하므로 원소의 값 그대로인 신호면 된다.
-const fixed = (value: boolean) => signal(value);
 
 /**
  * 장비 그리드의 칸 하나(EquipmentCell). 칸 전체가 버튼이라 누르면 고르고, 입지 않은 것이면 입는다(튜토리얼의 "무기 착용"도
@@ -14,12 +10,12 @@ const entryRow = row<EquipmentEntry>({
   icon: icon(entry => entry.icon),
   tint: tint(entry => entry.tint),
   levelText: text(entry => entry.level),
-  countBar: active(entry => fixed(entry.countText !== "")),
-  countFill: fill(entry => signal(entry.count)),
+  countBar: active(entry => entry.countText !== ""),
+  countFill: fill(entry => entry.count),
   countText: text(entry => entry.countText),
-  wornMark: active(entry => fixed(entry.worn)),
-  betterBadge: active(entry => fixed(entry.better)),
-  selectedMark: active(entry => fixed(entry.selected)),
+  wornMark: active(entry => entry.worn),
+  betterBadge: active(entry => entry.better),
+  selectedMark: active(entry => entry.selected),
   selectButton: button(entry => entry.tap()),
 });
 

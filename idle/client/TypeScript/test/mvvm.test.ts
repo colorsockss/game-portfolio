@@ -7,7 +7,7 @@ import { computed, signal, type Signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
 import type { EventSource, TextTarget } from "../src/unity/binding/components.js";
 import { Kind, readRefs, ref, type RefsSource } from "../src/unity/binding/refs.js";
-import { createScope, type Scope } from "../src/application/scope.js";
+import { createScope, scopedBy, type Scope } from "../src/application/scope.js";
 import type { ViewRoot } from "../src/presentation/ui/ports.js";
 import type { ViewContext } from "../src/presentation/ui/ui-stack.js";
 import { createLoginViewModel, type LoginViewModel } from "../src/presentation/view-models/login.js";
@@ -302,6 +302,24 @@ describe("bindings", () => {
     });
     b.value = 1;
     expect(applied).toEqual([1]);
+  });
+
+  test("a plain value binds once, and scopedBy opens a scope per value before closing the last", () => {
+    const applied: string[] = [];
+    bindValue(createScope(), "fixed", value => applied.push(value));
+    expect(applied).toEqual(["fixed"]);
+
+    const owner = createScope();
+    const source = signal("a");
+    const log: string[] = [];
+    scopedBy(owner, source, (scope, value) => {
+      log.push(`open ${value}`);
+      scope.add(() => log.push(`close ${value}`));
+    });
+    source.value = "b";
+    owner.dispose();
+    source.value = "c";
+    expect(log).toEqual(["open a", "open b", "close a", "close b"]);
   });
 });
 

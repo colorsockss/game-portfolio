@@ -4,7 +4,7 @@ import { firstStageId, NO_REBIRTH, rebirthPoints, rebirthRate } from "@idle/game
 import { computed, type ReadonlySignal } from "@preact/signals-core";
 import type { BattleService } from "../../application/battle/battle.js";
 import type { Logger } from "../../application/ports.js";
-import type { Progress } from "../../application/progress/progress.js";
+import { unsent, type Progress } from "../../application/progress/progress.js";
 import type { AppState } from "../../application/state/app-state.js";
 import { formatBig } from "../format/big.js";
 import type { Translate } from "../text.js";
@@ -84,7 +84,7 @@ export function createRebirthViewModel(
     }),
     rebirth: async () => {
       if (!ready.value || !await confirm(t("rebirth.confirm"))) return;
-      await progress.cmd.Rebirth({}).catch((error: unknown) => logger.warn("The rebirth did not reach the server:", error));
+      await progress.cmd.Rebirth({}).catch(unsent(logger, "The rebirth"));
     },
     close,
   };

@@ -4,7 +4,7 @@ import { statUpgradeBatch, statUpgradeCost } from "@idle/game-core";
 import { computed, type ReadonlySignal } from "@preact/signals-core";
 import type { BattleService } from "../../application/battle/battle.js";
 import type { Logger } from "../../application/ports.js";
-import type { Progress } from "../../application/progress/progress.js";
+import { unsent, type Progress } from "../../application/progress/progress.js";
 import type { AppState } from "../../application/state/app-state.js";
 import { formatBig } from "../format/big.js";
 import type { Translate } from "../text.js";
@@ -81,8 +81,7 @@ export function createUpgradeViewModel(
       const batch = statUpgradeBatch(step, row.maxStep, gold.value, wanted);
       const shown = batch.steps > 0 ? batch : { steps: 1, cost: statUpgradeCost(step) };
       const upgrade = () => {
-        progress.cmd.StatUpgrade({ upgradeId: row.id, steps: wanted })
-          .catch((error: unknown) => logger.warn("The stat upgrade did not reach the server:", error));
+        progress.cmd.StatUpgrade({ upgradeId: row.id, steps: wanted }).catch(unsent(logger, "The stat upgrade"));
       };
       return {
         upgradeId: row.id,

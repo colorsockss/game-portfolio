@@ -3,7 +3,7 @@ import { isStepDone, tutorialStep, waitsForTap } from "@idle/game-core";
 import { computed, type ReadonlySignal } from "@preact/signals-core";
 import type { BattleService } from "../../application/battle/battle.js";
 import type { Logger } from "../../application/ports.js";
-import type { Progress } from "../../application/progress/progress.js";
+import { unsent, type Progress } from "../../application/progress/progress.js";
 import type { Scope } from "../../application/scope.js";
 import type { AppState } from "../../application/state/app-state.js";
 import type { Translate } from "../text.js";
@@ -106,7 +106,7 @@ export function createTutorialViewModel(
   function advance(stepId: number): Promise<void> {
     return progress.cmd.TutorialAdvance({ stepId }).then(
       error => void (error && logger.warn(`Tutorial step ${stepId} was refused:`, error.message)),
-      (error: unknown) => logger.warn(`Tutorial step ${stepId} did not reach the server:`, error),
+      unsent(logger, `Tutorial step ${stepId}`),
     );
   }
 

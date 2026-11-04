@@ -4,7 +4,7 @@ import { equippableSkills, heroRow, isEquipped, skillLevel, skillLevelCost } fro
 import { computed, signal, type ReadonlySignal } from "@preact/signals-core";
 import type { BattleService } from "../../application/battle/battle.js";
 import type { Logger } from "../../application/ports.js";
-import type { Progress } from "../../application/progress/progress.js";
+import { unsent, type Progress } from "../../application/progress/progress.js";
 import type { AppState } from "../../application/state/app-state.js";
 import { formatBig } from "../format/big.js";
 import type { Translate } from "../text.js";
@@ -98,7 +98,7 @@ export function createSkillsViewModel({ state, data, t, battle, progress, logger
   const skills = computed(() => state.player.value?.skills);
   const choices = equippableSkills(data);
   const levelText = (level: number, row: SkillsRow) => t("skills.level", { level, max: row.maxLevel });
-  const sent = (what: string) => (error: unknown) => logger.warn(`The skill ${what} did not reach the server:`, error);
+  const sent = (what: string) => unsent(logger, `The skill ${what}`);
   const unequip = (skillId: number) => progress.cmd.SkillUnequip({ skillId }).catch(sent("unequip"));
 
   const slots = computed(() => {

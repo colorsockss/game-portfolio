@@ -1,5 +1,5 @@
 import type { BigLike } from "@idle/big-number";
-import { computed, signal, type ReadonlySignal, type Signal } from "@preact/signals-core";
+import { computed, type ReadonlySignal, type Signal } from "@preact/signals-core";
 import type { Listen } from "../../application/events.js";
 import type { Scope } from "../../application/scope.js";
 import type { TextKey } from "../../presentation/text.js";
@@ -23,6 +23,7 @@ import {
   bindToast,
   bindToggle,
   bindValue,
+  type Value,
 } from "./bind.js";
 import type {
   ActiveTarget,
@@ -78,7 +79,7 @@ export function view<VM>(prefab: string, bindings: Readonly<Record<string, Binde
 }
 
 /** 문자열 신호(목록의 칸이면 문자열)를 텍스트 컴포넌트에 보인다. */
-export function text<VM>(get: (vm: VM) => ReadonlySignal<string> | string): Binder<VM> {
+export function text<VM>(get: (vm: VM) => Value<string>): Binder<VM> {
   return { kind: Kind.Object, bind: (scope, target, vm) => bindText(scope, target as TextTarget, get(vm)) };
 }
 
@@ -115,8 +116,8 @@ export function label<VM>(key: TextKey): Binder<VM> {
 export function button<VM>(
   click: (vm: VM) => unknown,
   options: {
-    readonly enabled?: (vm: VM) => ReadonlySignal<boolean>;
-    readonly visible?: (vm: VM) => ReadonlySignal<boolean>;
+    readonly enabled?: (vm: VM) => Value<boolean>;
+    readonly visible?: (vm: VM) => Value<boolean>;
   } = {},
 ): Binder<VM> {
   return {
@@ -160,7 +161,7 @@ export function slider<VM>(
 }
 
 /** 불리언 신호로 오브젝트를 보이고 숨긴다. 알림 뱃지(presentation/widgets/badge.ts)도 이것으로 켜고 끈다. */
-export function active<VM>(get: (vm: VM) => ReadonlySignal<boolean>): Binder<VM> {
+export function active<VM>(get: (vm: VM) => Value<boolean>): Binder<VM> {
   return { kind: Kind.Object, bind: (scope, target, vm) => bindActive(scope, target as ActiveTarget, get(vm)) };
 }
 
@@ -178,7 +179,7 @@ export function bigNumber<VM>(get: (vm: VM) => ReadonlySignal<BigLike>): Binder<
 }
 
 /** 0~1의 비율로 Filled Image를 채운다(경험치 막대). */
-export function fill<VM>(get: (vm: VM) => ReadonlySignal<number>): Binder<VM> {
+export function fill<VM>(get: (vm: VM) => Value<number>): Binder<VM> {
   return { kind: Kind.Object, bind: (scope, target, vm) => bindFill(scope, target as FillTarget, get(vm)) };
 }
 
@@ -214,15 +215,12 @@ export function nested<VM, Child>(child: View<Child>, get: (vm: VM) => Child): B
  * 항목은 칸을 보일 때 읽으므로, 칸과 어긋난 표는 그때 처리되지 않은 오류가 된다.
  */
 export function list<VM, Item>(
-  get: (vm: VM) => ReadonlySignal<readonly Item[]> | readonly Item[],
+  get: (vm: VM) => Value<readonly Item[]>,
   row: Pick<View<Item>, "bind">,
 ): Binder<VM> {
   return {
     kind: Kind.Object,
-    bind(scope, target, vm, context) {
-      const items = get(vm);
-      const source = Array.isArray(items) ? signal(items as readonly Item[]) : (items as ReadonlySignal<readonly Item[]>);
-      bindList(scope, target as ListTarget, source, (cell, root, item) => row.bind(cell, root as unknown as ViewRoot, item, context));
-    },
+    bind: (scope, target, vm, context) =>
+      bindList(scope, target as ListTarget, get(vm), (cell, root, item) => row.bind(cell, root as unknown as ViewRoot, item, context)),
   };
 }

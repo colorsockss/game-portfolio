@@ -1,3 +1,5 @@
+import type { ReadonlySignal } from "@preact/signals-core";
+
 /**
  * 열린 뷰가 쥐고 있는 것: 신호 구독과 C# 이벤트에 넘긴 함수. 뷰를 닫으면 스코프를 해제해
  * 모두 놓으므로, C#이 뷰보다 오래 JS 함수를 쥐고 있지 않는다.
@@ -27,4 +29,19 @@ export function createScope(): Scope {
       for (let i = pending.length - 1; i >= 0; i--) pending[i]();
     },
   };
+}
+
+/**
+ * `source`의 값마다 자식 스코프를 열어 `enter`에 넘기고 앞 값의 스코프를 닫는다. 새 스코프를 먼저 열고 앞 것을 닫으므로 이어지는
+ * 것(BGM)이 끊기지 않는다. `owner`가 해제되면 마지막 스코프도 닫는다.
+ */
+export function scopedBy<T>(owner: Scope, source: ReadonlySignal<T>, enter: (scope: Scope, value: T) => void): void {
+  let current: Scope | undefined;
+  owner.add(() => current?.dispose());
+  owner.add(source.subscribe(value => {
+    const next = createScope();
+    enter(next, value);
+    current?.dispose();
+    current = next;
+  }));
 }

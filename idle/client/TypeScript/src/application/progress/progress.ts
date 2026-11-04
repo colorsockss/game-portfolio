@@ -173,6 +173,13 @@ export function createProgress({ player, server, data, clock, maxUnanswered, eve
   };
 }
 
+/**
+ * 커맨드가 서버에 닿지 못했을 때(reject) 남길 경고. 적용한 것은 progress가 취소하고, 규칙의 거절은 `refused`가 따로 알리므로
+ * 화면은 이것만 남긴다. 예: `cmd.Rebirth({}).catch(unsent(logger, "The rebirth"))`.
+ */
+export const unsent = (logger: Pick<Logger, "warn">, what: string) => (error: unknown): void =>
+  logger.warn(`${what} did not reach the server:`, error);
+
 // 게임 커맨드인 opcode의 이름.
 type OpcodeName = keyof typeof Opcode;
 type CommandName = { [N in OpcodeName]: (typeof Opcode)[N] extends CommandOpcode ? N : never }[OpcodeName];

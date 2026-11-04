@@ -1,9 +1,5 @@
-import { signal } from "@preact/signals-core";
 import type { SkillEntry, SkillSlot, SkillsViewModel } from "../../presentation/view-models/skills.js";
 import { active, button, icon, label, list, row, text, tint, view } from "../binding/view.js";
-
-// 칸은 원소가 바뀌면 다시 바인딩하므로 원소의 값 그대로인 신호면 된다.
-const fixed = (value: boolean) => signal(value);
 
 /** 슬롯 줄의 칸 하나(SkillSlot). 칸 전체가 고르는 버튼이고 고른 슬롯에 주황 테두리가 켜진다. */
 const slotView = row<SkillSlot>({
@@ -12,7 +8,7 @@ const slotView = row<SkillSlot>({
   tint: tint(slot => slot.tint),
   nameText: text(slot => slot.name),
   levelText: text(slot => slot.level),
-  selectedMark: active(slot => fixed(slot.selected)),
+  selectedMark: active(slot => slot.selected),
   selectButton: button(slot => slot.select()),
 });
 
@@ -27,10 +23,10 @@ const entryRow = row<SkillEntry>({
   levelText: text(entry => entry.level),
   stateText: text(entry => entry.state),
   costText: text(entry => entry.cost),
-  learnButton: button(entry => entry.learn(), { visible: entry => fixed(!entry.learned), enabled: entry => entry.affordable }),
-  equipButton: button(entry => entry.equip(), { visible: entry => fixed(entry.learned && !entry.equipped) }),
-  unequipButton: button(entry => entry.unequip(), { visible: entry => fixed(entry.equipped) }),
-  levelUpButton: button(entry => entry.levelUp(), { visible: entry => fixed(entry.learned), enabled: entry => entry.affordable }),
+  learnButton: button(entry => entry.learn(), { visible: entry => !entry.learned, enabled: entry => entry.affordable }),
+  equipButton: button(entry => entry.equip(), { visible: entry => entry.learned && !entry.equipped }),
+  unequipButton: button(entry => entry.unequip(), { visible: entry => entry.equipped }),
+  levelUpButton: button(entry => entry.levelUp(), { visible: entry => entry.learned, enabled: entry => entry.affordable }),
   learnLabel: label("skills.learn"),
   equipLabel: label("skills.equip"),
   unequipLabel: label("skills.unequip"),

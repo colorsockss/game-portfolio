@@ -6,7 +6,7 @@ import {
 import { computed, signal, type ReadonlySignal, type Signal } from "@preact/signals-core";
 import type { BattleService } from "../../application/battle/battle.js";
 import type { Logger } from "../../application/ports.js";
-import type { Progress } from "../../application/progress/progress.js";
+import { unsent, type Progress } from "../../application/progress/progress.js";
 import type { AppState } from "../../application/state/app-state.js";
 import { formatBig } from "../format/big.js";
 import type { TextKey, Translate } from "../text.js";
@@ -221,8 +221,7 @@ export function createEquipmentViewModel(
     return heroStats({ ...save, hero: { ...save.hero, level: level.value } }, data);
   });
   // 커맨드는 즉시 적용되고, 서버에 닿지 못한 것은 로그만 남긴다(적용한 것은 취소된다).
-  const sent = (command: Promise<unknown>) =>
-    void command.catch((error: unknown) => logger.warn("The equipment change did not reach the server:", error));
+  const sent = (command: Promise<unknown>) => void command.catch(unsent(logger, "The equipment change"));
   const wornIds = computed((): ReadonlySet<number> => new Set(Object.values(equipment.value?.equipped ?? {})));
   const toggle = (equipmentId: number) =>
     sent(wornIds.value.has(equipmentId) ? progress.cmd.ItemUnequip({ equipmentId }) : progress.cmd.ItemEquip({ equipmentId }));

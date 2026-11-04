@@ -1,7 +1,7 @@
 import type { BigLike } from "@idle/big-number";
-import type { ReadonlySignal, Signal } from "@preact/signals-core";
+import { Signal, type ReadonlySignal } from "@preact/signals-core";
 import type { Listen } from "../../application/events.js";
-import { createScope, type Scope } from "../../application/scope.js";
+import { createScope, scopedBy, type Scope } from "../../application/scope.js";
 import { formatBig, rollFrames } from "../../presentation/format/big.js";
 import type { TutorialTarget } from "../../presentation/view-models/tutorial.js";
 import type { Tabs } from "../../presentation/view-models/tabs.js";
@@ -28,8 +28,15 @@ import type {
 // 불리고 프레임마다 도는 것은 없다. 등록한 것은 모두 스코프에 들어간다.
 
 /** 값을 지금 적용하고, 바뀔 때마다 다시 적용한다. `apply` 안에서 읽는 신호는 따라가지 않는다. */
-export function bindValue<T>(scope: Scope, source: ReadonlySignal<T>, apply: (value: T) => void): void {
-  scope.add(source.subscribe(apply));
+/**
+ * 바인딩할 값: 신호이거나, 바인딩하는 동안 바뀌지 않는 값. 목록의 칸은 원소가 바뀌면 다시 바인딩하므로 원소의 값 그대로면 된다.
+ */
+export type Value<T> = ReadonlySignal<T> | T;
+
+/** 신호면 스코프가 해제될 때까지 값마다, 바뀌지 않는 값이면 한 번 `apply`를 부른다. */
+export function bindValue<T>(scope: Scope, source: Value<T>, apply: (value: T) => void): void {
+  if (source instanceof Signal) scope.add((source as ReadonlySignal<T>).subscribe(apply));
+  else apply(source as T);
 }
 
 /** 스코프가 해제될 때까지 UnityEvent를 듣는다. 리스너가 던진 것은 C#으로 빠져나가지 않고 처리되지 않은 오류가 된다. */
@@ -53,16 +60,15 @@ export function listenPress<A extends unknown[]>(
 }
 
 /** 글자를 보인다. 신호면 바뀔 때마다, 문자열이면(목록의 칸처럼 원소가 바뀌면 다시 바인딩하는 것) 한 번 넣는다. */
-export function bindText(scope: Scope, target: TextTarget, source: ReadonlySignal<string> | string): void {
-  if (typeof source === "string") target.text = source;
-  else bindValue(scope, source, text => (target.text = text));
+export function bindText(scope: Scope, target: TextTarget, source: Value<string>): void {
+  bindValue(scope, source, text => (target.text = text));
 }
 
-export function bindActive(scope: Scope, target: ActiveTarget, source: ReadonlySignal<boolean>): void {
+export function bindActive(scope: Scope, target: ActiveTarget, source: Value<boolean>): void {
   bindValue(scope, source, active => target.SetActive(active));
 }
 
-export function bindInteractable(scope: Scope, target: ButtonTarget, source: ReadonlySignal<boolean>): void {
+export function bindInteractable(scope: Scope, target: ButtonTarget, source: Value<boolean>): void {
   bindValue(scope, source, interactable => (target.interactable = interactable));
 }
 
@@ -114,7 +120,7 @@ export function bindInput(scope: Scope, target: InputTarget, source: Signal<stri
 export function bindList<Item>(
   scope: Scope,
   target: ListTarget,
-  source: ReadonlySignal<readonly Item[]>,
+  source: Value<readonly Item[]>,
   bindItem: (scope: Scope, root: RefsSource, item: Item) => void,
 ): void {
   let items: readonly Item[] = [];
@@ -189,7 +195,7 @@ export function bindBigNumber(scope: Scope, target: RollingTextTarget, source: R
   });
 }
 
-export function bindFill(scope: Scope, target: FillTarget, source: ReadonlySignal<number>): void {
+export function bindFill(scope: Scope, target: FillTarget, source: Value<number>): void {
   bindValue(scope, source, ratio => (target.fillAmount = ratio));
 }
 
@@ -211,15 +217,11 @@ export function bindToast(scope: Scope, target: ToastTarget, source: Listen<stri
 export function bindSpotlight(
   scope: Scope, target: SpotlightTarget, source: ReadonlySignal<TutorialTarget | null>, tapped: () => void,
 ): void {
-  let clicks: Scope | undefined;
-  scope.add(() => clicks?.dispose());
-  bindValue(scope, source, aimed => {
-    clicks?.dispose();
-    clicks = undefined;
+  scopedBy(scope, source, (clicks, aimed) => {
     const object = aimed && viewRefs(aimed.root).GetObject(aimed.name);
     if (!object) return target.Clear();
     target.Focus(object);
     const { onClick } = object as Partial<ButtonTarget>;
-    if (onClick) listen((clicks = createScope()), onClick, tapped);
+    if (onClick) listen(clicks, onClick, tapped);
   });
 }

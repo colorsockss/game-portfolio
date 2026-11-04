@@ -6,7 +6,7 @@ import type { BattleService } from "../application/battle/battle.js";
 import type { AppEvents, OfflineRewarded } from "../application/events.js";
 import type { Clock, Logger } from "../application/ports.js";
 import type { Progress } from "../application/progress/progress.js";
-import { createScope, type Scope } from "../application/scope.js";
+import { createScope, scopedBy, type Scope } from "../application/scope.js";
 import type { Language, SettingsService } from "../application/settings/settings.js";
 import type { AppState } from "../application/state/app-state.js";
 import type { Audio } from "./audio/audio.js";
@@ -186,15 +186,10 @@ export function createScreens(
       const stageId = battle.snapshot.value?.stageId ?? state.player.value?.stage.currentId;
       return stageId === undefined ? undefined : data.stages.get(stageId)?.bgm;
     });
-    let playing: Scope | undefined;
-    owner.add(() => playing?.dispose());
-    owner.add(key.subscribe(bgm => {
-      // 새 곡을 먼저 틀어야 앞 곡의 스코프를 닫을 때 BGM이 멈췄다가 다시 나지 않는다.
-      const next = createScope();
-      if (bgm) audio.playBgm(bgm, next);
-      playing?.dispose();
-      playing = next;
-    }));
+    // 새 곡을 먼저 틀고 앞 곡의 스코프를 닫으므로(scopedBy) BGM이 멈췄다가 다시 나지 않는다.
+    scopedBy(owner, key, (playing, bgm) => {
+      if (bgm) audio.playBgm(bgm, playing);
+    });
   }
 
   // 튜토리얼은 메인 화면 위의 오버레이다. 지금 스텝이 있는 동안 열어 두고, 마치면 닫는다. 조건은 메인 상태 내내 따라간다.
@@ -202,8 +197,6 @@ export function createScreens(
     const vm = createTutorialViewModel({
       state, data, t, battle, progress, shown: ui.shown, clear: transition.clear, prefabs, logger, owner,
     });
-    let open: Scope | undefined;
-    owner.add(() => open?.dispose());
     // 튜토리얼이 보이는 동안은 뒤로 가기를 막는다. 비춘 팝업을 Esc로 닫아 스텝을 건너뛰지 않게 한다.
     let backBlocked: (() => void) | undefined;
     owner.add(() => backBlocked?.());
@@ -215,15 +208,9 @@ export function createScreens(
         backBlocked = undefined;
       }
     }));
-    owner.add(vm.running.subscribe(running => {
-      if (running && !open) {
-        open = createScope();
-        void show(views.tutorial, vm, open);
-      } else if (!running && open) {
-        open.dispose();
-        open = undefined;
-      }
-    }));
+    scopedBy(owner, vm.running, (open, running) => {
+      if (running) void show(views.tutorial, vm, open);
+    });
   }
 
   return {

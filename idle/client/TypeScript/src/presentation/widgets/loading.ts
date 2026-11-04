@@ -1,5 +1,5 @@
 import { computed, type ReadonlySignal } from "@preact/signals-core";
-import { createScope, type Scope } from "../../application/scope.js";
+import { scopedBy, type Scope } from "../../application/scope.js";
 import type { AppState } from "../../application/state/app-state.js";
 import type { Translate } from "../text.js";
 import type { UiStack, View } from "../ui/ui-stack.js";
@@ -27,16 +27,8 @@ export function showWhileWaiting({ state, show, view, t, owner }: LoadingOptions
   const vm: LoadingViewModel = {
     message: computed(() => t(state.network.value.status === "reconnecting" ? "loading.reconnecting" : "loading.waiting")),
   };
-  let open: Scope | undefined;
-  owner.add(() => open?.dispose());
-  owner.add(computed(() => state.network.value.waiting).subscribe(waiting => {
-    if (waiting && !open) {
-      open = createScope();
-      // 열리기 전에 기다림이 끝나면 스택이 그 뷰를 버린다.
-      void show(view, vm, open);
-    } else if (!waiting && open) {
-      open.dispose();
-      open = undefined;
-    }
-  }));
+  scopedBy(owner, computed(() => state.network.value.waiting), (open, waiting) => {
+    // 열리기 전에 기다림이 끝나면 스택이 그 뷰를 버린다.
+    if (waiting) void show(view, vm, open);
+  });
 }
