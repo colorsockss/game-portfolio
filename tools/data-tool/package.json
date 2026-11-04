@@ -23,6 +23,7 @@
     "fast-text-encoding": "^1.0.6"
   },
   "devDependencies": {
+    "@idle/big-number": "file:../../idle/shared/big-number",
     "@types/node": "^22.0.0",
     "esbuild": "0.28.2",
     "typescript": "^5.9.0"

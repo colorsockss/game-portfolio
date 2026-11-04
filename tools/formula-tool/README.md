@@ -2,6 +2,10 @@
 
 공식을 편집·시뮬레이션하고 TypeScript로 내보내는 데스크톱 앱(Tauri + SvelteKit)입니다.
 
+## 실행
+
+이 앱은 game-portfolio 모노레포의 `@idle/formula-tool` 워크스페이스이므로 의존성은 리포지토리 루트에서 `npm ci`로 설치합니다. 실행은 `npm run tauri dev -w @idle/formula-tool`이고 [Tauri 사전 요구사항](https://v2.tauri.app/start/prerequisites/)(Rust 툴체인)이 필요합니다.
+
 ## TypeScript 내보내기 설정
 
 프로젝트 파일의 `exportSettings`가 생성 코드를 정합니다.
