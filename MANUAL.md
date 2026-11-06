@@ -32,7 +32,7 @@ npm ci
 | `npm run check` | 커밋하지 않은 변경에 맞는 검사만: 문서(`*.md`)만이면 없음, `mmo/`는 생성 파일 검사와 `test:mmo`, 나머지는 `typecheck`와 전체 `test` (`scripts/check.mjs`) |
 | `npm run typecheck` | 모든 워크스페이스 타입 검사 |
 | `npm test` | 생성 파일 검사 → import 경계 검사 → 전체 테스트(마지막에 `test:mmo`) |
-| `npm run test:mmo` | mmo의 C# 테스트(`dotnet test`) |
+| `npm run test:mmo` | mmo의 C# 테스트(`dotnet test mmo/mmo.slnx`: 패킷, 서버) |
 | `npm run coverage` | idle의 vitest 워크스페이스마다 커버리지 표 |
 | `npm run generate` | 게임의 원본(`idle/data/`, `mmo/shared/contract/packets.proto`)에서 테이블 로더·데이터·공식·패킷 코드 재생성 (`-- --check`는 검사만) |
 

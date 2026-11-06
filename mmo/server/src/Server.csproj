@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- MMO 서버. 틱 루프 하나가 월드를 고치고, 소켓은 받은 패킷을 큐에 넣고 틱이 만든 버퍼를 보내기만 한다. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>PortfolioMmo.Server</RootNamespace>
+    <AssemblyName>PortfolioMmo.Server</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../shared/contract/Contract.csproj" />
+  </ItemGroup>
+</Project>

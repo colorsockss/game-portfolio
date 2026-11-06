@@ -36,6 +36,7 @@ idle/                키우기
   docs/              백로그, 성능, 릴리스, 설계 기록
 mmo/                 MMORPG (준비 중)
   shared/contract/   패킷 정의(packets.proto)
+  server/            MMO 서버 (C#, .NET 10)
 tools/
   data-tool/         Excel → 데이터와 타입 있는 로더, 테이블 간 검사
   formula-tool/      공식 편집, 코드 생성, 전투 미리보기 (데스크톱 앱)

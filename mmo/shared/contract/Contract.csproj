@@ -17,5 +17,6 @@
     <PackageReference Include="Grpc.Tools" Version="2.85.0" PrivateAssets="all" />
     <Protobuf Include="packets.proto" GrpcServices="None" OutputDir="$(ContractOutputDir)" CompileOutputs="false" />
     <Compile Include="generated/*.cs" />
+    <Compile Include="Units.cs" />
   </ItemGroup>
 </Project>

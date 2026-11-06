@@ -1,0 +1,12 @@
+<Solution>
+  <!-- mmo의 C# 프로젝트 전부. npm run test:mmo가 이 솔루션으로 빌드하고 테스트한다. -->
+  <Folder Name="/shared/">
+    <Project Path="shared/contract/Contract.csproj" />
+    <Project Path="shared/contract/Contract.Tests/Contract.Tests.csproj" />
+  </Folder>
+  <Folder Name="/server/">
+    <Project Path="server/src/Server.csproj" />
+    <Project Path="server/test/Server.Tests.csproj" />
+    <Project Path="server/tools/load-test/LoadTest.csproj" />
+  </Folder>
+</Solution>
