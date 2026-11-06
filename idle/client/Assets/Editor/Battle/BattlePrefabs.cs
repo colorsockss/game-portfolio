@@ -8,8 +8,8 @@ namespace PortfolioIdleRpg.Editor
 {
     /// <summary>
     /// 전투 월드의 프리팹(Remote/Battle)을 코드로 만든다. 배우의 클립 묶음(ActorClips)을 먼저 그리고 스테이지
-    /// 배경(Backgrounds)을 임포트한다. 다시 실행하면 같은 경로의 프리팹을 덮어쓰므로 GUID와 참조가 그대로다. HP 바 도형의
-    /// 스프라이트는 프리팹에 담기지 않고 ActorView가 실행 중에 넣는다. 배치 모드에서는 다음을 쓴다.
+    /// 배경(Backgrounds)을 임포트한다. 다시 실행하면 같은 경로의 프리팹을 덮어쓰므로 GUID와 참조가 그대로다. 그림자와 HP 바
+    /// 도형의 스프라이트는 프리팹에 담기지 않고 ActorView가 실행 중에 넣는다. 배치 모드에서는 다음을 쓴다.
     /// <code>
     /// Unity -batchmode -quit -projectPath client
     ///   -executeMethod PortfolioIdleRpg.Editor.BattlePrefabs.Build
@@ -28,6 +28,9 @@ namespace PortfolioIdleRpg.Editor
 
         /// <summary>배우 하나가 보이는 효과 칸의 최대 수.</summary>
         private const int EffectSlots = 4;
+
+        /// <summary>배우 발밑 그림자의 그리는 순서. 모든 배우의 몸(0) 아래, 배경 근경(-10) 위다.</summary>
+        private const int ShadowOrder = -1;
 
         /// <summary>배경 근경의 그리는 순서. 배우(0~4)보다 아래다.</summary>
         private const int NearOrder = -10;
@@ -65,7 +68,7 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// 루트에 ViewRefs와 ActorView를 두고 몸(SpriteAnimator), HP 바, 효과 칸(EffectIcons)을 자식으로 둔 배우 프리팹을
+        /// 루트에 ViewRefs와 ActorView를 두고 그림자, 몸(SpriteAnimator), HP 바, 효과 칸(EffectIcons)을 자식으로 둔 배우 프리팹을
         /// 만든다. ViewRefs 항목은 actor와 effects다.
         /// </summary>
         /// <param name="clipSets">ActorView가 이름으로 고르는 클립 묶음. 0번이 기본이다.</param>
@@ -74,6 +77,7 @@ namespace PortfolioIdleRpg.Editor
             var root = new GameObject("Actor", typeof(ViewRefs), typeof(ActorView));
             try
             {
+                SpriteRenderer shadow = AddSprite(root.transform, "Shadow", new Color(0f, 0f, 0f, 0.5f), ShadowOrder);
                 SpriteRenderer body = AddSprite(root.transform, "Body", Color.white, 0);
                 SpriteRenderer hpBack = AddSprite(
                     root.transform, "HpBack", new Color(0.1f, 0.1f, 0.1f), 1);
@@ -88,8 +92,8 @@ namespace PortfolioIdleRpg.Editor
                 var view = root.GetComponent<ActorView>();
                 EffectIcons effects = AddEffectIcons(root.transform);
                 Fields.Wire(
-                    view, ("_body", body), ("_animator", animator), ("_clipSets", clipSets), ("_effects", effects), ("_hpBack", hpBack),
-                    ("_hpFill", hpFill));
+                    view, ("_body", body), ("_animator", animator), ("_clipSets", clipSets), ("_effects", effects), ("_shadow", shadow),
+                    ("_hpBack", hpBack), ("_hpFill", hpFill));
 
                 UiPrefabs.SetRefs(root.GetComponent<ViewRefs>(), ("actor", view), ("effects", effects));
                 Save(root, "Actor");

@@ -5,7 +5,7 @@ using UnityEngine.Scripting;
 namespace PortfolioIdleRpg.Views
 {
     /// <summary>
-    /// 전투 월드의 배우 하나: 클립을 재생하는 몸과 그 위의 HP 바. TypeScript가 부르는 메서드는 상태를
+    /// 전투 월드의 배우 하나: 클립을 재생하는 몸, 발밑의 그림자, 몸 위의 HP 바. TypeScript가 부르는 메서드는 상태를
     /// 바꾸기만 하고, 몸의 프레임은 SpriteAnimator가, 움직임은 Update의 짧은 보간이 그린다. 전투 규칙은
     /// 모르고 보이는 모양(클립 묶음, 위치, 색, 크기, HP 비율)만 쥔다.
     /// </summary>
@@ -42,6 +42,15 @@ namespace PortfolioIdleRpg.Views
         /// <summary>HP 바 뒤판이 채움 둘레로 더 나온 두께(유닛).</summary>
         private const float BarBorder = 0.03f;
 
+        /// <summary>발이 몸 중심보다 아래인 거리(크기 1의 유닛). 그림은 프레임 중심보다 64픽셀 아래가 접지선이고 PPU가 150이다.</summary>
+        private const float FootOffset = 64f / 150f;
+
+        /// <summary>그림자 타원의 너비(크기 1의 유닛).</summary>
+        private const float ShadowWidth = 0.8f;
+
+        /// <summary>그림자 타원의 높이(크기 1의 유닛).</summary>
+        private const float ShadowHeight = 0.22f;
+
         /// <summary>
         /// 피격 깜빡임의 몸 색. 그림이 있는 배우는 색을 입히지 않아(흰색) 흰색으로는 깜빡임이 보이지 않으므로 붉게 물들인다.
         /// </summary>
@@ -59,6 +68,10 @@ namespace PortfolioIdleRpg.Views
         // shortcut: 모든 묶음을 프리팹이 쥐어 배우 하나가 모든 시트를 함께 불러온다. 62–63에서 시트가 늘면 키로 불러온다.
         [SerializeField]
         private SpriteClipSet[] _clipSets;
+
+        /// <summary>발밑의 그림자. 몸 아래에 그려지고 몸 크기를 따른다.</summary>
+        [SerializeField]
+        private SpriteRenderer _shadow;
 
         /// <summary>HP 바의 어두운 뒤판.</summary>
         [SerializeField]
@@ -123,17 +136,22 @@ namespace PortfolioIdleRpg.Views
         /// <summary>물러나기 시작한 뒤 지난 시간(초).</summary>
         private float _leaveElapsed;
 
+        /// <summary>프리팹이 정한 그림자의 색. 물러날 때 흐리게 한다.</summary>
+        private Color _shadowColor;
+
         /// <summary>프리팹이 정한 HP 바 뒤판의 색. 물러날 때 흐리게 한다.</summary>
         private Color _hpBackColor;
 
         /// <summary>프리팹이 정한 HP 바 채움의 색.</summary>
         private Color _hpFillColor;
 
-        /// <summary>HP 바에 도형 스프라이트를 넣고, Setup 전에도 부를 수 있게 첫 클립 묶음의 대기를 재생한다.</summary>
+        /// <summary>그림자와 HP 바에 도형 스프라이트를 넣고, Setup 전에도 부를 수 있게 첫 클립 묶음의 대기를 재생한다.</summary>
         private void Awake()
         {
+            _shadow.sprite = ShapeSprites.Shadow;
             _hpBack.sprite = ShapeSprites.Square;
             _hpFill.sprite = ShapeSprites.Square;
+            _shadowColor = _shadow.color;
             _hpBackColor = _hpBack.color;
             _hpFillColor = _hpFill.color;
             _clips = _clipSets[0];
@@ -180,6 +198,8 @@ namespace PortfolioIdleRpg.Views
             _color = new Color(r, g, b, 1f);
             _size = size;
             _body.transform.localScale = new Vector3(size, size, 1f);
+            _shadow.transform.localPosition = new Vector3(0f, -FootOffset * size, 0f);
+            _shadow.transform.localScale = new Vector3(ShadowWidth * size, ShadowHeight * size, 1f);
             _facing = (facing >= 0f) ? 1f : -1f;
             _body.flipX = _facing < 0f;
             _moveSeconds = 0f;
@@ -387,6 +407,7 @@ namespace PortfolioIdleRpg.Views
             Color body = (_flashElapsed < FlashSeconds) ? s_flashColor : _color;
             float alpha = _leaving ? (1f - (_leaveElapsed / LeaveSeconds)) : 1f;
             _body.color = new Color(body.r, body.g, body.b, alpha);
+            _shadow.color = new Color(_shadowColor.r, _shadowColor.g, _shadowColor.b, _shadowColor.a * alpha);
             _hpBack.color = new Color(_hpBackColor.r, _hpBackColor.g, _hpBackColor.b, alpha);
             _hpFill.color = new Color(_hpFillColor.r, _hpFillColor.g, _hpFillColor.b, alpha);
         }
