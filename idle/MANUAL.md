@@ -908,7 +908,7 @@ interface RebirthState {
 **알려진 한계**:
 - 새 게임 번들이 시작하지 못하면(예: 테이블을 읽지 못함) 앞 슬롯으로 돌아가는 부팅 확인이 아직 없습니다. 그런 번들을 올리면 다음 패치까지 게임을 시작하지 못하므로, 올리기 전에 같은 빌드가 `npm test`의 빌드 테스트(번들을 PuerTS처럼 실행해 로그인까지 감)를 통과해야 합니다.
 - API 지문이 세는 public 시그니처는 Facades·Views뿐입니다. TS가 그 밖의 C#을 부르게 되면 지문이 그 변경을 놓칩니다(지금은 Unity 컴포넌트를 `ViewRefs`로만 씀). 직렬화 필드는 플레이어에 드는 프로젝트 스크립트(`Assets/`)를 모두 셉니다. 패키지의 필드는 에디터의 OS에 따라 달라서(Input System 등의 `#if UNITY_EDITOR_OSX`) 세지 않고 `manifest.json`으로 셉니다. CI(Linux)와 이 Mac의 지문이 다르면 플레이어 빌드가 부트 번들을 거절하기 때문입니다(2026-11-06). 에디터 전용 패키지를 바꿔도 지문이 바뀝니다.
-- 패치의 에셋을 앱의 Resources로 옮기거나 그 반대로 옮기는 것은 지문이 모릅니다. 옮긴 패치는 같은 API의 옛 앱에서 그 키를 찾지 못하므로 새 앱과 함께 냅니다.
+- 패치의 에셋을 앱의 Resources로 옮기거나 그 반대로 옮기는 것은 지문이 모릅니다. 옮긴 패치는 같은 API의 옛 앱에서 그 키를 찾지 못하므로 새 앱과 함께 냅니다. 이렇게 지문이 보지 못하는 변경(C# 동작만 바꿈 포함)은 앱의 세대(`TypeScriptTypings.Generation`)를 올려 지문을 바꿉니다.
 - 패치 화면의 그림(버튼, 패널, 게이지)은 따로 묶은 부트 아틀라스(`Assets/UI/Boot.spriteatlasv2`, 512×256 ASTC 6×6, 약 59KB)에 있어 앱에는 이것만 들고, 나머지 UI 그림의 아틀라스(512×1024, 약 235KB)는 UI 번들에만 있습니다. 패치 뒤의 화면도 버튼과 패널을 쓰므로 부트 아틀라스는 UI 번들에 한 벌 더 들어갑니다(Addressables의 암묵 의존). 기본 글꼴(LiberationSans SDF)도 TextMesh Pro의 Resources에 있어 앱과 UI 번들에 한 벌씩 있습니다.
 - 이전 버전의 에셋 번들이 캐시에 남습니다. 지금은 몇 MB라 두고, 커지면 설치한 뒤 `Addressables.CleanBundleCache`로 지금 카탈로그가 쓰지 않는 것을 지웁니다.
 - IL2CPP 플레이어는 PuerTS의 C++ 연결 코드(`Assets/Gen/`, 커밋함)가 있어야 빌드됩니다. `Tools/TypeScript/Generate IL2CPP Bridge`(`PuertsIl2cpp.cs`)가 PuerTS의 리플렉션 모드 생성과 네이티브 플러그인 파일 생성을 부르고, PuerTS 3.0.3(과 2026-10의 master)이 부르는 `il2cpp::vm::Object::Unbox`(Unity 6000.6에서 없어짐)를 같은 일을 하는 `Object::GetRawData`(IL2CPP의 `il2cpp_object_unbox`가 부르는 것) 네 곳으로 바꿉니다. C# API를 바꾸면 다시 만들어 커밋하고, 빌드 전 검사(`PuertsIl2cppValidation`)가 빠졌거나 고치지 않은 연결 코드를 막습니다. PuerTS가 고쳐지면 바꾸기를 지웁니다. APK는 빌드되지만 기기에서 돌려 보지는 않았습니다.

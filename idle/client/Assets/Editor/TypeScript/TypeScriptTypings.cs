@@ -32,6 +32,13 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>생성한 파일의 머리에 API 지문을 적는 줄의 앞부분.</summary>
         private const string FingerprintLine = "// API 지문: ";
 
+        /// <summary>
+        /// 앱의 세대. 지문에 들어가므로 올리면 API가 바뀌어 새 APK가 새 채널을 쓰고, 옛 앱은 새 앱 안내를 받는다. 지문이 보지 못하는
+        /// 변경(C# 동작만 바꿈, 에셋을 Resources와 Remote 사이로 옮김)을 낸 APK가 옛 앱과 패치를 나누면 안 될 때 올린다.
+        /// 1: build 5의 새 앱 안내를 시험하는 build 6(2026-11-06).
+        /// </summary>
+        private const int Generation = 1;
+
         /// <summary>TypeScript에 선언하는 네임스페이스.</summary>
         private static readonly string[] s_namespaces =
         {
@@ -110,14 +117,14 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// 목록에 있는 타입의 public 시그니처, 프로젝트 스크립트가 직렬화하는 필드, 패키지 목록, 파일에 실린 문서의
+        /// 목록에 있는 타입의 public 시그니처, 프로젝트 스크립트가 직렬화하는 필드, 패키지 목록, 앱의 세대, 파일에 실린 문서의
         /// Unity 버전으로 만든 지문. V8 환경을 띄우는 생성과 달리 다시 불러올 때마다 해도 될 만큼 싸다. CI(Linux)와 이 Mac이 같은
         /// 커밋에서 같은 지문을 내야 하므로(다르면 플레이어 빌드가 부트 번들을 거절함) 에디터의 OS에 따라 달라지는 것은 넣지 않는다.
         /// </summary>
         /// <returns>16자리 16진수 지문.</returns>
         internal static string Fingerprint()
         {
-            var api = new StringBuilder(Application.unityVersion);
+            var api = new StringBuilder(Application.unityVersion).Append('\n').Append(Generation);
             foreach (Type type in Types)
             {
                 api.Append('\n').Append(type.FullName).Append(" : ").Append(type.BaseType);

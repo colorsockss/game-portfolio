@@ -155,6 +155,7 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 | 서버 코드만(`idle/shared/`와 규칙은 그대로) | `idle server` |
 | C#(API 지문이 바뀜: 파사드·뷰의 public 멤버, 직렬화 필드, 패키지) | `idle APK`에 `full_patch` 켬 |
 | C#(API 지문은 그대로) | `idle APK` |
+| 지문이 못 보는 변경(C# 동작만 바꿈, 에셋을 Resources와 Remote 사이로 옮김) | `TypeScriptTypings.Generation`을 올리고 `idle APK`에 `full_patch` 켬 |
 | 여러 단위가 함께 바뀐 큰 변경 | `idle all` |
 | 되돌리기 | `idle publish / rollback`에 앞 버전 |
 
