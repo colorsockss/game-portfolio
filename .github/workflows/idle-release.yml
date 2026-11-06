@@ -136,6 +136,10 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      # npm test의 생성 검사와 test:mmo가 mmo의 패킷 코드 생성(Grpc.Tools의 protoc)과 C# 테스트에 쓴다(ci.yml과 같음).
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
       - run: npm ci
       # PuerTS(약 270 MB)는 Unity만 쓴다. 설치 스크립트가 같으면 다시 받지 않는다.
       - uses: actions/cache/restore@v6
