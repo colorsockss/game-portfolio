@@ -1,5 +1,5 @@
 // idle/client/Assets/Editor/TypeScript/TypeScriptTypings.cs가 생성한 파일. 직접 고치지 않는다.
-// API 지문: 8b738c97d0cc1d32
+// API 지문: c0e7cb10e99dfe20
 
     declare namespace CS {
     //keep type incompatibility / 此属性保持类型不兼容
@@ -1204,7 +1204,7 @@
         {
             protected [__keep_incompatibility]: never;
             public SetCount ($count: number) : void
-            public Show ($index: number, $r: number, $g: number, $b: number, $seconds: number, $total: number) : void
+            public Show ($index: number, $icon: string, $r: number, $g: number, $b: number, $seconds: number, $total: number) : void
             public constructor ()
         }
         class Fade extends UnityEngine.MonoBehaviour

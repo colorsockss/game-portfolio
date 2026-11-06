@@ -214,15 +214,18 @@ test("each fighter's effects become icons when they change, are refreshed or wea
   const t = setUp();
   const withBurn = (effects: readonly { effectId: number; stacks: number; ticksLeft: number }[]) =>
     snapshot({ enemies: [{ ...monster, effects: [...effects] }, second] });
-  // 화상(지속 피해)은 보라, 공격력 버프(4005)는 초록, 둔화(4004: 공격 간격이 늘어남)는 빨강이다. 막대는 처음 지속 시간에 비례한다.
+  // 아이콘은 Effects.icon이고, 막대 색은 화상(지속 피해)이 보라, 공격력 버프(4005)가 초록, 둔화(4004: 공격 간격이 늘어남)가 빨강이다.
+  // 막대는 처음 지속 시간에 비례한다.
   expect(t.frame({ snapshot: withBurn([burn]) })).toEqual([
-    { type: "effects", target: 1, effects: [{ color: [0.7, 0.35, 0.9], seconds: 3, total: 3 }] },
+    { type: "effects", target: 1, effects: [{ icon: "effect_burn", color: [0.7, 0.35, 0.9], seconds: 3, total: 3 }] },
   ]);
   expect(t.frame({ snapshot: withBurn([{ ...burn, ticksLeft: 29 }]) })).toEqual([]);
   expect(t.frame({ snapshot: withBurn([{ ...burn, ticksLeft: 30 }]) })).toHaveLength(1);
   const buffed = snapshot({ hero: { ...hero, effects: [{ effectId: 4005, stacks: 1, ticksLeft: 100 }, { effectId: 4004, stacks: 2, ticksLeft: 40 }] } });
   expect(t.frame({ snapshot: buffed })).toEqual([
-    { type: "effects", target: HERO_ID, effects: [{ color: [0.35, 0.85, 0.4], seconds: 10, total: 10 }, { color: [0.9, 0.3, 0.3], seconds: 4, total: 4 }] },
+    { type: "effects", target: HERO_ID, effects: [
+      { icon: "effect_attackUp", color: [0.35, 0.85, 0.4], seconds: 10, total: 10 }, { icon: "effect_slow", color: [0.9, 0.3, 0.3], seconds: 4, total: 4 },
+    ] },
     { type: "effects", target: 1, effects: [] },
   ]);
   expect(t.frame({ events: [{ tick: 9, type: "reset" }] }).filter(direction => direction.type === "effects")).toEqual([

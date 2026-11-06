@@ -11,6 +11,14 @@ test("every item's icon has its picture in the UI icon folder", () => {
   }
 });
 
+// EffectIcons도 없는 이름이면 색 사각형으로 보일 뿐이다.
+test("every effect's icon has its picture in the battle effect icon folder", () => {
+  for (const row of data.effects.values()) {
+    if (row.icon === null) continue;
+    expect(existsSync(new URL(`../../Assets/Battle/EffectIcons/${row.icon}.png`, import.meta.url)), `${row.id} ${row.icon}`).toBe(true);
+  }
+});
+
 test("every skill's icon has its picture in the UI icon folder", () => {
   for (const row of data.skills.values()) {
     if (row.icon === null) continue;

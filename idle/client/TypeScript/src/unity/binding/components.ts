@@ -93,7 +93,7 @@ export interface ActorTarget {
 /** 배우 머리 위의 효과 칸(idle/client/Assets/Scripts/Views/EffectIcons.cs). */
 export interface EffectIconsTarget {
   SetCount(count: number): void;
-  Show(index: number, r: number, g: number, b: number, seconds: number, total: number): void;
+  Show(index: number, icon: string, r: number, g: number, b: number, seconds: number, total: number): void;
 }
 
 /** 날아가는 발사체(idle/client/Assets/Scripts/Views/ProjectileView.cs). */

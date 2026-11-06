@@ -8,7 +8,8 @@
     "tickSeconds": 1,
     "power": 0.15000000596046448,
     "effectIds": null,
-    "note": "독: 겹마다 1초에 공격력의 15%"
+    "note": "독: 겹마다 1초에 공격력의 15%",
+    "icon": "effect_poison"
   },
   {
     "id": 4002,
@@ -19,7 +20,8 @@
     "tickSeconds": 0.5,
     "power": 0.11999999731779099,
     "effectIds": null,
-    "note": "화상: 0.5초마다 공격력의 12%"
+    "note": "화상: 0.5초마다 공격력의 12%",
+    "icon": "effect_burn"
   },
   {
     "id": 4003,
@@ -30,7 +32,8 @@
     "tickSeconds": null,
     "power": null,
     "effectIds": null,
-    "note": "기절"
+    "note": "기절",
+    "icon": "effect_stun"
   },
   {
     "id": 4004,
@@ -41,7 +44,8 @@
     "tickSeconds": null,
     "power": 0.5,
     "effectIds": null,
-    "note": "둔화: 공격 간격 +50%"
+    "note": "둔화: 공격 간격 +50%",
+    "icon": "effect_slow"
   },
   {
     "id": 4005,
@@ -52,7 +56,8 @@
     "tickSeconds": null,
     "power": 0.30000001192092896,
     "effectIds": null,
-    "note": "공격력 +30%"
+    "note": "공격력 +30%",
+    "icon": "effect_attackUp"
   },
   {
     "id": 4006,
@@ -63,7 +68,8 @@
     "tickSeconds": 1,
     "power": 1.5,
     "effectIds": null,
-    "note": "즉시 회복: 공격력의 150%"
+    "note": "즉시 회복: 공격력의 150%",
+    "icon": null
   },
   {
     "id": 4007,
@@ -74,7 +80,8 @@
     "tickSeconds": 1,
     "power": 0.20000000298023224,
     "effectIds": null,
-    "note": "지속 회복: 1초마다 공격력의 20%"
+    "note": "지속 회복: 1초마다 공격력의 20%",
+    "icon": "effect_regen"
   },
   {
     "id": 4008,
@@ -85,7 +92,8 @@
     "tickSeconds": null,
     "power": 2,
     "effectIds": null,
-    "note": "보호막: 공격력의 200% 흡수"
+    "note": "보호막: 공격력의 200% 흡수",
+    "icon": "effect_shield"
   },
   {
     "id": 4009,
@@ -102,7 +110,8 @@
       4004,
       4010
     ],
-    "note": "정화: 해로운 효과를 풀고 3초 동안 막음"
+    "note": "정화: 해로운 효과를 풀고 3초 동안 막음",
+    "icon": "effect_cleanse"
   },
   {
     "id": 4010,
@@ -113,6 +122,7 @@
     "tickSeconds": null,
     "power": -0.5,
     "effectIds": null,
-    "note": "둔화(이동): 이동 속도 −50%"
+    "note": "둔화(이동): 이동 속도 −50%",
+    "icon": "effect_moveSlow"
   }
 ]

@@ -30,8 +30,8 @@ namespace PortfolioIdleRpg.Views
         /// <summary>쓰러지지 않고 물러나며(소환수의 만료) 흐려지는 데 걸리는 시간(초).</summary>
         private const float LeaveSeconds = 0.3f;
 
-        /// <summary>효과 칸 줄이 HP 바 위로 떨어진 거리(유닛).</summary>
-        private const float EffectsOffset = 0.25f;
+        /// <summary>효과 칸 줄의 아래 끝이 HP 바 가운데보다 위로 떨어진 거리(유닛). HP 바의 위 끝(0.09)과 조금 띄운다.</summary>
+        private const float EffectsOffset = 0.14f;
 
         /// <summary>HP 바가 몸 윗면에서 떨어진 거리(유닛). 크기 1이면 몸 중심 위 0.7유닛이다.</summary>
         private const float BarOffset = 0.2f;

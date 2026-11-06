@@ -22,6 +22,8 @@ export interface EffectsRow {
   "effectIds": number[] | null;
   // 인덱스 8: 기획 메모 (선택)
   "note": string | null;
+  // 인덱스 9: 효과 칸의 아이콘 그림 이름(클라이언트 Assets/Battle/EffectIcons의 파일 이름). 비우면 효과의 색 사각형이다
+  "icon": string | null;
 }
 
 export async function deserializeEffectsMessagePack(bytes: Uint8Array | ArrayBuffer): Promise<Map<number, EffectsRow>> {
@@ -37,6 +39,7 @@ export async function deserializeEffectsMessagePack(bytes: Uint8Array | ArrayBuf
       "power": row[6] as number | null,
       "effectIds": row[7] as number[] | null,
       "note": row[8] as string | null,
+      "icon": row[9] as string | null,
     };
     result.set(record.id, record);
   }

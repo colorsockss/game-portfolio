@@ -24,8 +24,9 @@ export interface ProjectileLook {
   readonly fromAbove: boolean;
 }
 
-/** 배우 머리 위의 효과 칸 하나: 색과 남은 시간, 처음 지속 시간(막대가 그 비율로 줄어듦). */
+/** 배우 머리 위의 효과 칸 하나: 아이콘(Effects.icon, 없으면 빈 문자열이라 색 사각형), 막대의 색과 남은 시간, 처음 지속 시간(막대가 그 비율로 줄어듦). */
 export interface EffectIcon {
+  readonly icon: string;
   readonly color: Color;
   readonly seconds: number;
   readonly total: number;
@@ -190,7 +191,7 @@ const BOSS_LOOK: ActorLook = { clips: "boss", color: [0.9, 0.2, 0.2], size: 1.6 
 /** Projectiles에 없는 발사체. */
 const UNKNOWN_PROJECTILE: ProjectileLook = { clip: "orb", color: [0.8, 0.8, 0.8], size: 0.8, fromAbove: false };
 
-// 효과 칸의 색: 이로운 능력치는 초록, 해로운 능력치는 빨강, 지속 피해 보라, 회복 연두, 기절 노랑, 보호막 하늘, 그 밖에 회색.
+// 효과 칸 막대의 색(아이콘이 없으면 칸의 색): 이로운 능력치는 초록, 해로운 능력치는 빨강, 지속 피해 보라, 회복 연두, 기절 노랑, 보호막 하늘, 그 밖에 회색.
 // 공격 간격은 늘면 느려지므로 늘리는 쪽이 해롭다.
 function effectColor(row: EffectsRow | undefined): Color {
   switch (row?.kind) {
@@ -416,7 +417,7 @@ export function createBattleDirector({ battle, data, t, audio }: BattleDirectorO
         target: id,
         effects: effects.map(effect => {
           const row = data.effects.get(effect.effectId);
-          return { color: effectColor(row), seconds: secondsOf(effect.ticksLeft), total: row?.durationSeconds ?? 0 };
+          return { icon: row?.icon ?? "", color: effectColor(row), seconds: secondsOf(effect.ticksLeft), total: row?.durationSeconds ?? 0 };
         }),
       });
     }

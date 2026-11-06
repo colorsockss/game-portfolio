@@ -101,7 +101,7 @@ function moveTo(actor: ActorTarget, from: number, x: number, y: number, moving: 
 
 function showEffects(effects: EffectIconsTarget, icons: readonly EffectIcon[]): void {
   effects.SetCount(icons.length);
-  icons.forEach(({ color: [r, g, b], seconds, total }, i) => effects.Show(i, r, g, b, seconds, total));
+  icons.forEach(({ icon, color: [r, g, b], seconds, total }, i) => effects.Show(i, icon, r, g, b, seconds, total));
 }
 
 // 서 있는 적이나 소환수와 그 자리: 시뮬레이션의 x와 걷는지, 화면의 줄(ENEMY_LANES나 ALLY_LANES의 칸).

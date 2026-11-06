@@ -349,11 +349,11 @@ test("effect icons go to the fighter's EffectIcons and a damage-over-time tick m
   await t.frame(withEnemies);
   t.log.length = 0;
   await t.frame(
-    { type: "effects", target: 1, effects: [{ color: [0.7, 0.35, 0.9], seconds: 3, total: 3 }, { color: [1, 0.85, 0.2], seconds: 1, total: 1.5 }] },
+    { type: "effects", target: 1, effects: [{ icon: "effect_burn", color: [0.7, 0.35, 0.9], seconds: 3, total: 3 }, { icon: "", color: [1, 0.85, 0.2], seconds: 1, total: 1.5 }] },
     { type: "effects", target: HERO_ID, effects: [] },
     { type: "effects", target: 99, effects: [] },
   );
-  expect(t.log).toEqual(["actor2fx.SetCount(2)", "actor2fx.Show(0, 0.7, 0.35, 0.9, 3, 3)", "actor2fx.Show(1, 1, 0.85, 0.2, 1, 1.5)", "actor1fx.SetCount(0)"]);
+  expect(t.log).toEqual(["actor2fx.SetCount(2)", "actor2fx.Show(0, effect_burn, 0.7, 0.35, 0.9, 3, 3)", "actor2fx.Show(1, , 1, 0.85, 0.2, 1, 1.5)", "actor1fx.SetCount(0)"]);
 
   t.log.length = 0;
   await t.frame({ type: "dot", target: 1, text: "20", heal: false, hpRatio: 0.25 }, { type: "dot", target: HERO_ID, text: "+5", heal: true, hpRatio: 1 });

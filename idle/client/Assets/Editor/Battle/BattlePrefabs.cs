@@ -1,3 +1,5 @@
+using System.IO;
+using System.Linq;
 using PortfolioIdleRpg.Views;
 using TMPro;
 using UnityEditor;
@@ -29,6 +31,12 @@ namespace PortfolioIdleRpg.Editor
         /// <summary>배우 하나가 보이는 효과 칸의 최대 수.</summary>
         private const int EffectSlots = 4;
 
+        /// <summary>효과 칸의 아이콘 그림을 두는 폴더. 파일 이름이 Effects.icon이다.</summary>
+        private const string EffectIconFolder = "Assets/Battle/EffectIcons";
+
+        /// <summary>효과 칸 아이콘의 최대 크기(픽셀). 칸이 화면에서 100픽셀이 안 되므로 줄여 넣는다.</summary>
+        private const int EffectIconMaxSize = 128;
+
         /// <summary>배우 발밑 그림자의 그리는 순서. 모든 배우의 몸(0) 아래, 배경 근경(-10) 위다.</summary>
         private const int ShadowOrder = -1;
 
@@ -57,9 +65,10 @@ namespace PortfolioIdleRpg.Editor
         {
             (SpriteClipSet[] actorClips, SpriteClipSet projectileClips) = ActorClips.Build();
             (Sprite[] far, Sprite[] near) = Backgrounds.Build();
+            Sprite[] effectIcons = ImportEffectIcons();
             if (!AssetDatabase.IsValidFolder($"{ParentFolder}/{FolderName}"))
                 AssetDatabase.CreateFolder(ParentFolder, FolderName);
-            BuildActor(actorClips);
+            BuildActor(actorClips, effectIcons);
             BuildProjectile(projectileClips);
             BuildDamageText();
             BuildStage(far, near);
@@ -72,7 +81,8 @@ namespace PortfolioIdleRpg.Editor
         /// 만든다. ViewRefs 항목은 actor와 effects다.
         /// </summary>
         /// <param name="clipSets">ActorView가 이름으로 고르는 클립 묶음. 0번이 기본이다.</param>
-        private static void BuildActor(SpriteClipSet[] clipSets)
+        /// <param name="effectIcons">효과 칸이 이름으로 고르는 아이콘.</param>
+        private static void BuildActor(SpriteClipSet[] clipSets, Sprite[] effectIcons)
         {
             var root = new GameObject("Actor", typeof(ViewRefs), typeof(ActorView));
             try
@@ -90,7 +100,7 @@ namespace PortfolioIdleRpg.Editor
                 Fields.Wire(animator, ("_renderer", body));
 
                 var view = root.GetComponent<ActorView>();
-                EffectIcons effects = AddEffectIcons(root.transform);
+                EffectIcons effects = AddEffectIcons(root.transform, effectIcons);
                 Fields.Wire(
                     view, ("_body", body), ("_animator", animator), ("_clipSets", clipSets), ("_effects", effects), ("_shadow", shadow),
                     ("_hpBack", hpBack), ("_hpFill", hpFill));
@@ -229,8 +239,9 @@ namespace PortfolioIdleRpg.Editor
 
         /// <summary>효과 칸과 그 아래의 남은 시간 막대 EffectSlots쌍을 가진 Effects 자식을 만든다.</summary>
         /// <param name="parent">배우의 루트.</param>
+        /// <param name="sprites">칸이 이름으로 고르는 아이콘.</param>
         /// <returns>만든 EffectIcons.</returns>
-        private static EffectIcons AddEffectIcons(Transform parent)
+        private static EffectIcons AddEffectIcons(Transform parent, Sprite[] sprites)
         {
             var child = new GameObject("Effects", typeof(EffectIcons));
             child.transform.SetParent(parent, false);
@@ -242,8 +253,38 @@ namespace PortfolioIdleRpg.Editor
                 icons[i] = AddSprite(child.transform, $"Icon{i}", Color.white, 3);
                 bars[i] = AddSprite(child.transform, $"Bar{i}", Color.white, 4);
             }
-            Fields.Wire(effects, ("_icons", icons), ("_bars", bars));
+            Fields.Wire(effects, ("_sprites", sprites), ("_icons", icons), ("_bars", bars));
             return effects;
+        }
+
+        /// <summary>
+        /// 효과 칸의 아이콘(EffectIconFolder의 PNG)을 스프라이트로 임포트한다. 유닛당 픽셀 수가 그림의 너비라서 한 변이
+        /// 1유닛이고, 칸이 아이콘이 없을 때 쓰는 사각형(ShapeSprites.Square)과 같은 크기다. 그림은 idle/art/icons의 것을
+        /// 옮겨 온 것이다(idle/docs/art.md).
+        /// </summary>
+        /// <returns>이름순의 아이콘.</returns>
+        private static Sprite[] ImportEffectIcons()
+        {
+            string[] paths = Directory.GetFiles(EffectIconFolder, "*.png")
+                .OrderBy(path => path, System.StringComparer.Ordinal)
+                .ToArray();
+            foreach (string path in paths)
+            {
+                var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+                importer.GetSourceTextureWidthAndHeight(out int width, out _);
+                importer.textureType = TextureImporterType.Sprite;
+                importer.spriteImportMode = SpriteImportMode.Single;
+                importer.spritePixelsPerUnit = width;
+                importer.maxTextureSize = EffectIconMaxSize;
+                // 월드 카메라가 화면 크기에 따라 줄여 그리므로 밉맵을 둔다.
+                importer.mipmapEnabled = true;
+                importer.alphaIsTransparency = true;
+                importer.wrapMode = TextureWrapMode.Clamp;
+                importer.filterMode = FilterMode.Bilinear;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.SaveAndReimport();
+            }
+            return paths.Select(path => AssetDatabase.LoadAssetAtPath<Sprite>(path)).ToArray();
         }
 
         /// <summary>

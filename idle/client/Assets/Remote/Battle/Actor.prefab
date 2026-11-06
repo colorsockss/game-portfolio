@@ -894,6 +894,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb8d92565d2aa4e4798c213a6a8dcac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: PortfolioIdleRpg.Views::PortfolioIdleRpg.Views.EffectIcons
+  _sprites:
+  - {fileID: 21300000, guid: c6d952cb9606d4d5295b44ed4d744739, type: 3}
+  - {fileID: 21300000, guid: 5711e1f5bd89b477ca25c2a101917853, type: 3}
+  - {fileID: 21300000, guid: dab443acf5c374be78404269299f39ea, type: 3}
+  - {fileID: 21300000, guid: 780f687ffb02a41da93f2adab16e54e8, type: 3}
+  - {fileID: 21300000, guid: 4146fb429462049f0ac5e985955063ef, type: 3}
+  - {fileID: 21300000, guid: 0b257e1be98c640bf881bc0c2ff877b6, type: 3}
+  - {fileID: 21300000, guid: 066a0c53f6b7545e788161ed15ce3bdd, type: 3}
+  - {fileID: 21300000, guid: e6e41e465b68d4b3caa1c69d96476b6f, type: 3}
+  - {fileID: 21300000, guid: 1010a875be4a74c5fa30ee1b6e9f3c75, type: 3}
   _icons:
   - {fileID: 7668577055556208733}
   - {fileID: 8534821284528878208}

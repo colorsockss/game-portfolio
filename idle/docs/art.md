@@ -21,12 +21,12 @@
 | 묶음 | 백로그 | 개수 |
 |---|---|---|
 | UI 테마 | 55, 78 | 13장(스크립트) |
-| 아이콘 | 55, 78 | 28장(임시 SVG, Codex로 다시 그릴 것) |
+| 아이콘 | 55, 78 | 28장 + 효과 칸 9장(임시 SVG, Codex로 다시 그릴 것) |
 | 글꼴 | 78 | Jua 1개 |
 | 영웅 | 62 | 1명, 19프레임 |
 | 몬스터·보스·소환수 | 63 | 11종, 197프레임 |
 | 스테이지 배경 | 78 | 6장, 원경·근경 12겹 |
-| 원하면 더 그릴 것 | | 발사체 8프레임, 아이콘 28장 |
+| 원하면 더 그릴 것 | | 발사체 8프레임, 아이콘 37장 |
 
 ## 그리는 규칙
 
@@ -98,6 +98,9 @@ Jua에 없는 기호(×, →, · 등)는 런타임 대체 글꼴(Noto Sans KR, `
 | 강화 줄·영웅 띠 | `stat_attack`, `stat_maxHp`, `stat_critChance` | 임시 | colorsocks | SVG(Claude Code) |
 | 스킬(`Skills.icon`) | `skill_slash`, `skill_volley`, `skill_fireball`, `skill_heal`, `skill_roar`, `skill_wolf` | 임시 | colorsocks | SVG(Claude Code) |
 | HUD·스테이지 막대·팝업·로딩 | `ui_level`, `ui_boss`, `ui_prev`, `ui_next`, `ui_lock`, `ui_close`, `ui_spinner` | 임시 | colorsocks | SVG(Claude Code) |
+| 효과 칸(`Effects.icon`) | `effect_poison`, `effect_burn`, `effect_stun`, `effect_slow`, `effect_attackUp`, `effect_regen`, `effect_shield`, `effect_cleanse`, `effect_moveSlow` | 임시 | colorsocks | SVG(Claude Code) |
+
+효과 칸 아이콘(2026-11-06)은 같은 SVG 원본과 굽기로 만들었고, UI 아틀라스가 아니라 전투 월드의 `client/Assets/Battle/EffectIcons/`에 넣었습니다(배우 프리팹이 UI 아틀라스를 끌고 가지 않게). 효과의 이롭고 해로움은 칸 아래 막대의 색이 보이므로 그림은 효과의 종류만 그립니다.
 
 2026-10-23에 Codex image_gen으로 만든 앞 그림체의 12장은 [이전 최종본](../art/source/icons/previous-style-2026-10-23/)과 [생성 원본·프롬프트](../art/source/icons/prompts.json)로 보존했습니다. 사실적인 질감이라 배우의 평면 그림체와 어긋나서 바꿨습니다.
 
@@ -294,16 +297,17 @@ meadow·forest·camp·fortress·snow·lava 원경·근경은 `art/backgrounds/<�
 
 배우마다 붙은 효과 칸(4칸)입니다. 즉시 회복은 지속 시간이 0이라 걸린 채 남지 않아 칸에 뜨지 않으므로 그리지 않습니다.
 
-| 효과 | 지금 | 만든 사람 | 도구 |
-|---|---|---|---|
-| 독 | 사각형 | | |
-| 화상 | 사각형 | | |
-| 기절 | 사각형 | | |
-| 둔화 | 사각형 | | |
-| 공격력 강화 | 사각형 | | |
-| 지속 회복 | 사각형 | | |
-| 보호막 | 사각형 | | |
-| 정화 | 사각형 | | |
+| 효과 | 아이콘 | 지금 | 만든 사람 | 도구 |
+|---|---|---|---|---|
+| 독 | `effect_poison`(보라 물방울) | 임시 | colorsocks | SVG(Claude Code) |
+| 화상 | `effect_burn`(불꽃) | 임시 | colorsocks | SVG(Claude Code) |
+| 기절 | `effect_stun`(별) | 임시 | colorsocks | SVG(Claude Code) |
+| 둔화(공격 간격) | `effect_slow`(모래시계) | 임시 | colorsocks | SVG(Claude Code) |
+| 공격력 강화 | `effect_attackUp`(칼과 위 화살표) | 임시 | colorsocks | SVG(Claude Code) |
+| 지속 회복 | `effect_regen`(하트와 더하기) | 임시 | colorsocks | SVG(Claude Code) |
+| 보호막 | `effect_shield`(방패) | 임시 | colorsocks | SVG(Claude Code) |
+| 정화 | `effect_cleanse`(반짝임) | 임시 | colorsocks | SVG(Claude Code) |
+| 둔화(이동) | `effect_moveSlow`(달팽이) | 임시 | colorsocks | SVG(Claude Code) |
 
 ### 장비 아이콘
 

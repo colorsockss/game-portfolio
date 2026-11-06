@@ -770,7 +770,7 @@ describe("levels", () => {
 
 describe("effects", () => {
   const effect = (id: number, kind: EffectKind, change: Partial<EffectsRow> = {}): EffectsRow => ({
-    id, kind, durationSeconds: 2, maxStacks: 1, stat: null, tickSeconds: null, power: null, effectIds: null, note: null, ...change,
+    id, kind, durationSeconds: 2, maxStacks: 1, stat: null, tickSeconds: null, power: null, effectIds: null, note: null, icon: null, ...change,
   });
   const skill = (id: number, change: Partial<SkillsRow>): SkillsRow => ({ ...data.skills.get(1001)!, id, cooldownSeconds: 100, ...change });
   const self = (id: number, effectIds: number[], change: Partial<SkillsRow> = {}) =>
@@ -1585,8 +1585,8 @@ describe("skill levels", () => {
 
   test("effects take their amounts from the level of the skill that applied them", () => {
     const effects = new Map<number, EffectsRow>([
-      [1, { id: 1, kind: EffectKind.Damage, durationSeconds: 3, maxStacks: 1, stat: null, tickSeconds: 1, power: 0.5, effectIds: null, note: null }],
-      [2, { id: 2, kind: EffectKind.Stat, durationSeconds: 60, maxStacks: 1, stat: Stat.MaxHp, tickSeconds: null, power: 0.5, effectIds: null, note: null }],
+      [1, { id: 1, kind: EffectKind.Damage, durationSeconds: 3, maxStacks: 1, stat: null, tickSeconds: 1, power: 0.5, effectIds: null, note: null, icon: null }],
+      [2, { id: 2, kind: EffectKind.Stat, durationSeconds: 60, maxStacks: 1, stat: Stat.MaxHp, tickSeconds: null, power: 0.5, effectIds: null, note: null, icon: null }],
     ]);
     const gameData = setup({ powerMultiplier: 0, effectIds: [1] }, {
       effects,
