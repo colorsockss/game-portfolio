@@ -334,13 +334,22 @@ jobs:
             echo "::error::No released APK runs API $API; release the APK with a full patch (idle-apk)."; exit 1
           fi
 
-      # Unity가 죽었으면 메모리 때문인지 남긴다(커널의 OOM 기록).
-      - name: Report memory after a Unity failure
+      # Unity가 죽었으면 누가 죽였는지 남긴다. 커널 OOM은 dmesg에, systemd-oomd는 저널에만 남고, 도커는 컨테이너의 OOMKilled를
+      # 적는다(2026-11-06 dmesg에 아무 기록 없이 SIGKILL이 이어짐). 어느 것도 실패를 바꾸지 않으므로 명령마다 실패를 넘긴다.
+      - name: Report why Unity stopped
         if: failure() && env.UNITY == 'true'
         run: |
           free -m
           df -h /
-          sudo dmesg | grep -iE 'out of memory|killed process|oom' | tail -10 || true
+          echo "--- memory pressure"; cat /proc/pressure/memory || true
+          echo "--- dmesg"; sudo dmesg -T | tail -60 || true
+          echo "--- systemd-oomd: $(systemctl is-active systemd-oomd || true)"
+          sudo journalctl --no-pager -u systemd-oomd --since "-45 min" | tail -20 || true
+          echo "--- journal kills"; sudo journalctl --no-pager --since "-45 min" | grep -iE 'oom|killed|sigkill|out of memory' | tail -40 || true
+          echo "--- containers"
+          for id in $(docker ps -aq | head -5); do
+            docker inspect --format '{{.Name}} {{.Config.Image}} OOMKilled={{.State.OOMKilled}} ExitCode={{.State.ExitCode}} Error={{.State.Error}}' "$id" || true
+          done
 
       # 여기부터 내보낸다. 올리기는 더하기만 하므로 Live에 영향이 없다.
       - name: Stage the game server

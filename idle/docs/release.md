@@ -133,7 +133,7 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 | Build the game server | `server` | `server/dist` |
 | Check the units fit together | 패치 단위를 골랐거나, `server`를 바로 공개할 때 | 조합 검사 1, 2, 5 |
 | Check an app can run the patch | 패치 단위를 골랐고 `apk`가 아닐 때 | 조합 검사 3 |
-| Report memory after a Unity failure | Unity가 실패했을 때 | 메모리, 디스크, 커널 OOM 기록 |
+| Report why Unity stopped | Unity가 실패했을 때 | 메모리, 디스크, 메모리 압박, `dmesg` 끝부분, systemd-oomd와 저널의 kill 기록, 남은 컨테이너의 `OOMKilled` |
 | Stage the game server | `server` | `releases/<커밋>`에 올리기만 |
 | Upload the patch | 패치 단위를 골랐을 때 | `aa/` → `v/` 순서로 더하기만(이미 있는 이름은 건너뜀). 버전을 실행 요약에 적음 |
 | Publish | `publish` | 짝 서버가 아직 없으면(3.1절) 알리고 끝. 아니면 서버를 짝 서버로 바꾸고(다르면) 포인터를 옮김(`idle/server/deploy/publish.sh`, publish 잡과 같음) |
@@ -237,7 +237,7 @@ Unity를 쓰지 않는 액션은 약 3분이고, Library 캐시가 APK 빌드를
 | Unity 이미지 받기에서 `no space left on device` | 러너 디스크가 모자람(Library 캐시를 풀면 약 8 GB를 더 씀) | 2026-11-02에 지우는 도구를 늘리고 스왑을 `/mnt`로 옮겼음. 다시 나면 Free disk space 단계의 `df`를 보고 더 지움 |
 | 기기에서만 `TypeError: … is not a function` | IL2CPP가 TS만 부르는 엔진 멤버를 잘라냄 | 그 타입을 `TypeScriptTypings.cs`의 `[Binding]`에 넣고 Tools/TypeScript/Generate IL2CPP Bridge로 `link.xml`을 다시 만든 뒤 APK를 다시 냄(`client/AGENTS.md`) |
 | `ssh: connect to host … Connection timed out` | 러너가 VPS 22번에 붙지 못함(2026-11-02에 한 번, 원인은 못 찾음) | 15초씩 네 번까지 다시 붙고 안 되면 그 단계가 멈춤. 계속되면 VPS의 `sudo ufw status verbose`와 hPanel 방화벽을 봄 |
-| Unity가 `exit 137` | 커널이 Unity를 죽임 | 2026-10-31에는 GameCI의 기본 빌드 스크립트가 원인이었고 우리 빌드 메서드로 피했음. 2026-11-03 `idle all`(41623858841)도 Unity를 연 지 2초 만에 `Begin MonoManager ReloadAssembly` 바로 뒤에서 죽었는데, 메모리가 14.6 GB 남았고 OOM 기록도 없었으며 같은 입력으로 다시 돌리자 지나갔음(41637742941). 실패하면 "Report memory" 단계의 기록을 보고, 메모리 문제가 아니면 다시 돌림 |
+| Unity가 `exit 137` | 커널이 Unity를 죽임 | 2026-10-31에는 GameCI의 기본 빌드 스크립트가 원인이었고 우리 빌드 메서드로 피했음. 2026-11-03 `idle all`(41623858841)도 Unity를 연 지 2초 만에 `Begin MonoManager ReloadAssembly` 바로 뒤에서 죽었는데, 메모리가 14.6 GB 남았고 OOM 기록도 없었으며 같은 입력으로 다시 돌리자 지나갔음(41637742941). 2026-11-06에는 08:00 무렵부터 같은 지점(시작 1초 안)에서 연달아 죽었고, 07:29에 통과한 커밋과 캐시로도 죽어 커밋 탓이 아니었음. 실패하면 "Report why Unity stopped" 단계의 기록을 보고, 메모리 문제가 아니면 다시 돌림 |
 | Unity 활성화 실패 | 계정 로그인이 안 됨 | `UNITY_EMAIL`·`UNITY_PASSWORD`를 확인(2단계 인증이 막는지는 확인하지 못함) |
 
 ## 9. 알려진 문제와 확인하지 못한 것
