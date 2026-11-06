@@ -135,12 +135,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - remote
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ef408546d51fe4e6da40e6535e6a4a09
-    m_Address: UI/ConfirmPopup
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - remote
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f0694e14e4cee4c42a7b58eafab4f35f
     m_Address: UI/Loading
     m_ReadOnly: 0

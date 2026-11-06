@@ -590,6 +590,16 @@
     "en": "A new version is required. Try again once the update is out."
   },
   {
+    "id": "transition.appRequired",
+    "ko": "새 앱이 나와서 이 앱으로는 더 플레이할 수 없습니다. 새 앱을 설치하는 페이지를 열까요?",
+    "en": "A new app is out and this one can no longer play. Open the page to install the new app?"
+  },
+  {
+    "id": "transition.appAvailable",
+    "ko": "새 앱이 나왔습니다. 앞으로의 업데이트는 새 앱으로만 받을 수 있습니다. 새 앱을 설치하는 페이지를 열까요?",
+    "en": "A new app is out. Future updates come only to the new app. Open the page to install it?"
+  },
+  {
     "id": "transition.failed",
     "ko": "업데이트를 받지 못했습니다. 네트워크를 확인하고 다시 시도해 주세요.",
     "en": "Could not download the update. Check your network and try again."

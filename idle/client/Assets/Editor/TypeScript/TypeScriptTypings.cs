@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using Puerts;
 using UnityEditor;
+using UnityEditor.Compilation;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -107,8 +109,8 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// 목록에 있는 타입의 public 시그니처와, 파일에 실린 문서의 Unity 버전으로 만든 지문. V8 환경을
-        /// 띄우는 생성과 달리 다시 불러올 때마다 해도 될 만큼 싸다.
+        /// 목록에 있는 타입의 public 시그니처, 플레이어 스크립트가 직렬화하는 필드, 파일에 실린 문서의 Unity 버전으로 만든 지문.
+        /// V8 환경을 띄우는 생성과 달리 다시 불러올 때마다 해도 될 만큼 싸다.
         /// </summary>
         /// <returns>16자리 16진수 지문.</returns>
         internal static string Fingerprint()
@@ -125,9 +127,46 @@ namespace PortfolioIdleRpg.Editor
                 foreach (string member in members)
                     api.Append('\n').Append(member);
             }
+            foreach (Type type in SerializedTypes())
+            {
+                api.Append('\n').Append(type.FullName).Append(" {");
+                foreach (FieldInfo field in SerializedFields(type))
+                    api.Append(' ').Append(field.FieldType).Append(' ').Append(field.Name).Append(';');
+                api.Append(" }");
+            }
             using SHA256 sha = SHA256.Create();
             byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(api.ToString()));
             return BitConverter.ToString(hash, 0, 8).Replace("-", "").ToLowerInvariant();
         }
+
+        /// <summary>
+        /// 플레이어에 드는 스크립트 어셈블리(프로젝트와 패키지)에서 Unity가 직렬화하는 타입: 컴포넌트, ScriptableObject,
+        /// [Serializable] 타입. 패치의 프리팹과 에셋은 이 필드를 이름으로 맞춰 읽고 없는 이름은 빈 값으로 두므로, 필드가 다른 앱이
+        /// 받으면 오류 없이 깨진다(2026-11-04 build 3이 build 4의 무대를 받아 배경과 이동이 멈춤). public API에 드러나지 않아도
+        /// 지문이 바뀌어야 하는 까닭이다. 컴파일러가 만든 타입(람다의 닫힘)은 직렬화되지 않으므로 뺀다.
+        /// </summary>
+        /// <returns>이름 순의 타입.</returns>
+        private static IEnumerable<Type> SerializedTypes()
+        {
+            var player = new HashSet<string>(CompilationPipeline
+                .GetAssemblies(AssembliesType.PlayerWithoutTestAssemblies)
+                .Select(assembly => assembly.name));
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .Where(assembly => player.Contains(assembly.GetName().Name))
+                .SelectMany(assembly => assembly.GetTypes())
+                .Where(type => (typeof(UnityEngine.Object).IsAssignableFrom(type) || type.IsSerializable)
+                    && !type.IsDefined(typeof(CompilerGeneratedAttribute), false))
+                .OrderBy(type => type.FullName, StringComparer.Ordinal);
+        }
+
+        /// <summary>Unity가 직렬화하는 <paramref name="type"/>의 필드(기반 타입의 것은 빼고).</summary>
+        /// <param name="type">타입.</param>
+        /// <returns>이름 순의 필드.</returns>
+        private static IEnumerable<FieldInfo> SerializedFields(Type type) => type
+            .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .Where(field => !field.IsInitOnly && !field.IsNotSerialized
+                && (field.IsPublic || field.IsDefined(typeof(SerializeField), false)
+                    || field.IsDefined(typeof(SerializeReference), false)))
+            .OrderBy(field => field.Name, StringComparer.Ordinal);
     }
 }

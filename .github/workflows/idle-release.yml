@@ -395,13 +395,16 @@ jobs:
           test -n "$apk" || { echo "::error::The Unity build left no APK."; exit 1; }
           # APK만 내면 채널은 그대로이므로 지금 Live 패치(기준 버전)를 적는다.
           if [ -z "$PARTS" ]; then patch=$(jq -r .version "$RUNNER_TEMP/base/manifest.json"); else patch=$VERSION; fi
-          gh release create "idle-android-b${{ steps.apk_number.outputs.value }}" "$apk" --target "$GITHUB_SHA" \
+          tag="idle-android-b${{ steps.apk_number.outputs.value }}"
+          gh release create "$tag" "$apk" --target "$GITHUB_SHA" \
             --title "idle aos build ${{ steps.apk_number.outputs.value }}" \
             --notes "API 지문: $API
           패치 버전: $patch
           빌드 번호(versionCode): ${{ steps.apk_number.outputs.value }}
           실행: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
           커밋: $GITHUB_SHA"
+          # API가 다른 앱은 부트에서 이 Release를 열라는 안내를 받는다(update.ts의 APP). 포인터를 옮긴 뒤라 새 앱이 받을 패치가 있다.
+          npm run patch -w @idle/client -- app "$API" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$tag"
           echo "### APK idle aos build ${{ steps.apk_number.outputs.value }} released (patch \`$patch\`)" >> "$GITHUB_STEP_SUMMARY"
 
   # 올려 둔 버전을 공개한다: 그 버전과 함께 돌 서버로 맞추고 포인터를 옮긴다. 앞 버전이면 롤백이다.

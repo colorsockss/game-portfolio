@@ -1,5 +1,5 @@
 // idle/client/Assets/Editor/TypeScript/TypeScriptTypings.cs가 생성한 파일. 직접 고치지 않는다.
-// API 지문: ea2aebf778c9e3fd
+// API 지문: d85aa886478d0611
 
     declare namespace CS {
     //keep type incompatibility / 此属性保持类型不兼容
@@ -460,6 +460,7 @@
             protected [__keep_incompatibility]: never;
             public static Restart () : void
             public static StartGame () : void
+            public static OpenUrl ($url: string) : void
             public static Config () : string
         }
         class SocketEvent extends System.Object

@@ -1,6 +1,8 @@
 // 로컬 버킷(릴리스 빌드의 dist/patch)을 Live의 패치 폴더로 내보낸다(docs/superpowers/specs/2026-10-30-patch-design.md 4.7절).
 //   node tools/patch.mjs upload           에셋 번들(aa/) → 버전 폴더(v/) 순서로 올린다. 이미 있는 이름은 건너뛰고 포인터는 올리지 않는다.
 //   node tools/patch.mjs release <버전>    그 버전이 올라가 있는지 본 뒤, 그 버전의 API 채널 포인터를 그것으로 옮긴다.
+//   node tools/patch.mjs app <API> <주소>  마지막으로 낸 앱의 기록(update.ts의 APP)을 그 API와 내려받는 페이지로 바꾼다. API가 다른
+//                                         앱은 부트에서 새 앱의 설치를 안내받는다. APK를 내고 포인터를 옮긴 뒤에 부른다.
 //   node tools/patch.mjs status           올라간 채널 포인터마다 API 지문과 가리키는 버전을 보인다.
 //   node tools/patch.mjs pull <버전|current> <폴더>   올라간 버전 폴더를 받아 매니페스트로 검증한다. current는 이 커밋의 API
 //                                         채널이 가리키는 버전이다. 단위로 나눠 낼 때 기준 버전으로 쓴다(4.12절).
@@ -14,7 +16,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readApi } from "./api.mjs";
 import { verifyManifest } from "./manifest.mjs";
-import { CHANNELS, MANIFEST, PLATFORM, channelPath, isVersion, versionPath } from "./update.mjs";
+import { APP, CHANNELS, MANIFEST, PLATFORM, channelPath, isVersion, parseApp, versionPath } from "./update.mjs";
 
 const clientRoot = fileURLToPath(new URL("../", import.meta.url));
 const bucket = process.env.PATCH_BUCKET ?? path.join(clientRoot, "dist", "patch");
@@ -24,9 +26,10 @@ const [command, version, into] = process.argv.slice(2);
 if (!target) throw new Error("Set PATCH_TARGET to the patch folder, e.g. deploy@idle.dennou.cloud:/srv/idle/patch.");
 if (command === "upload") await upload();
 else if (command === "release") await release(version);
+else if (command === "app") await app(version, into);
 else if (command === "status") await status();
 else if (command === "pull") await pull(version, into);
-else throw new Error("Usage: node tools/patch.mjs upload | release <version> | status | pull <version|current> <folder>");
+else throw new Error("Usage: node tools/patch.mjs upload | release <version> | app <api> <url> | status | pull <version|current> <folder>");
 
 async function upload() {
   // 포인터가 가리킬 것이 먼저 다 있어야 하므로 번들 → 버전 순서다. 숨은 파일과 빌드가 쓰다 남긴 임시 파일은 올리지 않는다.
@@ -51,6 +54,18 @@ async function release(next) {
     rsync("-rt", `${staged}/`, `${target}/`);
   });
   console.log(`[patch] channel ${PLATFORM}/${api} -> ${next}`);
+}
+
+async function app(api, url) {
+  // 앱이 읽는 것과 같은 검사로 쓰기 전에 막는다.
+  const text = `${JSON.stringify({ api, url })}\n`;
+  parseApp(text);
+  await withTemp(async staged => {
+    await mkdir(path.dirname(path.join(staged, APP)), { recursive: true });
+    await writeFile(path.join(staged, APP), text);
+    rsync("-rt", `${staged}/`, `${target}/`);
+  });
+  console.log(`[patch] app ${PLATFORM} -> ${api} (${url})`);
 }
 
 async function status() {

@@ -8,8 +8,8 @@ using Object = UnityEngine.Object;
 namespace PortfolioIdleRpg.Editor
 {
     /// <summary>
-    /// 공용 위젯의 프리팹(Remote/UI/CurrencySlot, CurrencyBar, ConfirmPopup, RewardPopup, Toast, Loading)과 앱에 드는 부트의
-    /// 패치 화면(Resources/UI/TransitionScreen, NoticePopup)을 테마와 부품으로 만든다. 고정 글자는 비워 ViewRefs 항목(…Label)으로 내놓는다(TypeScript가
+    /// 공용 위젯의 프리팹(Remote/UI/CurrencySlot, CurrencyBar, RewardPopup, Toast, Loading)과 앱에 드는 부트의
+    /// 패치 화면(Resources/UI/TransitionScreen, NoticePopup, ConfirmPopup)을 테마와 부품으로 만든다. 고정 글자는 비워 ViewRefs 항목(…Label)으로 내놓는다(TypeScript가
     /// 지금 언어로 채운다). 다시 실행하면 같은 경로를 덮어쓰므로 GUID와 fileID가 그대로다. 배치 모드에서는 다음을 쓴다.
     /// <code>
     /// Unity -batchmode -quit -projectPath client
@@ -112,12 +112,14 @@ namespace PortfolioIdleRpg.Editor
             });
         }
 
-        /// <summary>묻는 말과 취소·확인 버튼을 가진 팝업을 만든다.</summary>
+        /// <summary>
+        /// 묻는 말과 취소·확인 버튼을 가진 팝업을 만든다. 부트가 새 앱의 설치 페이지를 열지 물을 때도 쓰므로 앱에 든다.
+        /// </summary>
         private static void BuildConfirmPopup() =>
             UiSpec.Popup("ConfirmPopup", 840f, 520f)
                 .Footer(120f, ("cancel", ButtonStyle.Secondary, 340f), ("ok", ButtonStyle.Positive, 340f))
                 .Body("messageText", TextStyle.Ink, TextAlignmentOptions.Center)
-                .Save();
+                .Save(inApp: true);
 
         /// <summary>
         /// 알리는 말과 가운데의 확인 버튼 하나를 가진 팝업을 만든다. 부트가 패치를 받지 못했을 때 다시 시도를 기다리는 데

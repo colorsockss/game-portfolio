@@ -122,6 +122,8 @@ export type StringsId =
   | "transition.downloading"
   | "transition.applying"
   | "transition.updateRequired"
+  | "transition.appRequired"
+  | "transition.appAvailable"
   | "transition.failed"
   | "transition.loading"
   | "tutorial.tapToContinue"

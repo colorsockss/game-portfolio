@@ -94,9 +94,11 @@ test.each([
     const views = {
       transition: { prefab: "UI/TransitionScreen", layer: "overlay", bind() {} },
       notice: { prefab: "UI/NoticePopup", layer: "overlay", bind: (_scope: unknown, _root: unknown, vm: NoticeViewModel) => void notices.push(vm) },
+      // 버킷에 앱 기록이 없으므로 새 앱을 묻지 않는다.
+      confirm: { prefab: "UI/ConfirmPopup", layer: "overlay", bind: () => expect.unreachable("asked about a new app") },
     } as const;
     const strings = loopback.file.read("data/Strings.bytes") as Uint8Array;
-    const booting = runBoot({ ...loopback, bundle: bundles.store, startGame }, { mode: "release", api: API, patch: "https://cdn.test/" }, strings, views, quiet);
+    const booting = runBoot({ ...loopback, bundle: bundles.store, startGame, openUrl: vi.fn() }, { mode: "release", api: API, patch: "https://cdn.test/" }, strings, views, quiet);
     if (corrupt) {
       await vi.waitFor(() => expect(notices).toHaveLength(1));
       expect(bundles.committed).toBeUndefined();

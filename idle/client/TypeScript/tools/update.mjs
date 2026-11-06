@@ -13,4 +13,4 @@ const { outputFiles } = await build({
 });
 const update = await import(`data:text/javascript;base64,${Buffer.from(outputFiles[0].text).toString("base64")}`);
 
-export const { MANIFEST, PLATFORM, CHANNELS, channelPath, versionPath, isVersion, parseManifest } = update;
+export const { MANIFEST, PLATFORM, CHANNELS, APP, channelPath, versionPath, isVersion, parseManifest, parseApp } = update;

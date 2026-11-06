@@ -54,6 +54,18 @@ namespace PortfolioIdleRpg.Facades
         public static void StartGame() => s_request = RuntimeRequest.StartGame;
 
         /// <summary>
+        /// 주소를 기기의 브라우저로 연다. 부트가 새 앱을 내려받는 페이지(버킷의 앱 기록)를 여는 데 쓴다. 받아 온 주소라 https만 연다.
+        /// </summary>
+        /// <param name="url">https 주소.</param>
+        [Preserve]
+        public static void OpenUrl(string url)
+        {
+            if (!url.StartsWith("https://", StringComparison.Ordinal))
+                throw new ArgumentException($"Only https links open: {url}", nameof(url));
+            Application.OpenURL(url);
+        }
+
+        /// <summary>
         /// 앱 설정(환경, 게임 서버 주소, 패치 주소)의 JSON. 검사는 TypeScript가 한다(parseAppConfig). 플레이어는 빌드가
         /// Resources에 넣은 설정을 읽고, 에디터는 메뉴 Tools/TypeScript/App Config에서 고른 설정(기본은 config/local.json)을
         /// 읽는다. 마지막 플레이어 빌드가 남긴 설정으로 에디터가 Live에 붙지 않게 하기 위해서다.

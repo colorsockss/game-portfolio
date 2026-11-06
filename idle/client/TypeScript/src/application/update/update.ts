@@ -25,8 +25,12 @@ export const MANIFEST = "manifest.json";
 // 받는 곳에 채널 포인터를 잠시 받아 두는 경로. 읽은 뒤 받는 곳을 비우므로 번들에 남지 않는다.
 const POINTER = "channel.json";
 
+// 받는 곳에 앱 기록을 잠시 받아 두는 경로. 포인터처럼 읽은 뒤 받는 곳을 비운다.
+const APP_FILE = "app.json";
+
 const SHA256 = /^[0-9a-f]{64}$/;
 const VERSION = /^[0-9a-f]{16}$/;
+const API = /^[0-9a-f]{16}$/;
 
 /**
  * 패치를 내보내는 플랫폼. Android만 내보낸다(docs/superpowers/specs/2026-10-30-patch-design.md). 버킷의 채널 포인터와 에셋
@@ -45,6 +49,32 @@ export const versionPath = (version: string) => `v/${version}/`;
 
 /** 버전의 모양(매니페스트 해시의 16진수 16자리)인지. */
 export const isVersion = (value: string) => VERSION.test(value);
+
+/**
+ * 마지막으로 낸 앱(APK)의 기록. 버킷의 APP에 있고 APK를 낼 때마다 다시 쓴다(tools/patch.mjs app). 이 앱과 API가 다르면 이 앱의
+ * 채널은 더 움직이지 않으므로, 새 앱을 설치해야 업데이트를 받는다.
+ */
+export interface AppRelease {
+  /** 그 앱의 C# API 지문. */
+  readonly api: string;
+  /** 그 앱을 내려받는 페이지(https). */
+  readonly url: string;
+}
+
+/** 버킷의 앱 기록 경로. 채널 포인터처럼 다시 쓰므로 캐시하지 않는 channels/ 아래에 두되, 포인터의 폴더(CHANNELS)와는 나눈다. */
+export const APP = `channels/app/${PLATFORM}.json`;
+
+/** 앱 기록을 검사해 읽는다. 받아 온 주소를 브라우저로 열므로 https만 받는다. 틀리면 throw한다. */
+export function parseApp(text: string): AppRelease {
+  const value: unknown = JSON.parse(text);
+  if (
+    !isRecord(value) || typeof value.api !== "string" || !API.test(value.api)
+    || typeof value.url !== "string" || !value.url.startsWith("https://")
+  ) {
+    throw new Error(`The app record is malformed: ${text}`);
+  }
+  return { api: value.api, url: value.url };
+}
 
 /** 채널 포인터를 검사해 읽는다. 틀리면 throw한다. */
 export function parsePointer(text: string): { readonly version: string } {
@@ -150,6 +180,11 @@ export interface Updater {
    * 번들이 없음) 플레이어가 다시 시도하면 다시 부른다.
    */
   check(): Promise<boolean>;
+  /**
+   * 이 앱과 API가 다른 앱이 나왔으면 그 기록을 돌려준다(그 앱이 이 앱보다 먼저 빌드된 것이어도). 패치하지 않거나(개발 빌드)
+   * 기록을 받지 못하면 null이다. 받는 곳을 함께 쓰므로 check가 끝난 뒤에 부른다.
+   */
+  newApp(): Promise<AppRelease | null>;
 }
 
 /** 패치. 부트 프로그램이 게임을 시작하기 전에 부른다. */
@@ -239,6 +274,21 @@ export function createUpdater({ store, source, api, update, storage, logger }: U
         report("failed");
         // 다른 API의 번들(앱을 새로 설치하기 전에 받은 것)은 이 앱의 C#과 맞지 않을 수 있어 시작하지 않는다.
         return !required && installed()?.api === api;
+      }
+    },
+    async newApp() {
+      if (source === undefined) return null;
+      try {
+        store.begin();
+        await store.download(`${source}${APP}`, APP_FILE);
+        const app = parseApp(store.read(APP_FILE));
+        return app.api === api ? null : app;
+      } catch (error) {
+        // 아직 APK를 기록하지 않은 버킷(로컬)도 여기로 온다. 안내만 못 할 뿐 게임은 시작한다.
+        logger.info("No app record:", error);
+        return null;
+      } finally {
+        store.discard();
       }
     },
   };

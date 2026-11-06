@@ -3,7 +3,8 @@ import { signal } from "@preact/signals-core";
 import { describe, expect, test, vi } from "vitest";
 import type { BundleStore } from "../src/application/ports.js";
 import {
-  MANIFEST, UPDATE_REQUIRED, channelPath, createUpdater, parseManifest, parsePointer, planUpdate, requestUpdate, versionPath,
+  APP, MANIFEST, UPDATE_REQUIRED, channelPath, createUpdater, parseApp, parseManifest, parsePointer, planUpdate, requestUpdate,
+  versionPath,
   type Manifest, type UpdateState, type UpdateStatus,
 } from "../src/application/update/update.js";
 
@@ -73,6 +74,21 @@ describe("parseManifest", () => {
   });
 });
 
+describe("parseApp", () => {
+  const url = "https://github.com/owner/repo/releases/tag/idle-android-b5";
+
+  test("reads an app record", () => {
+    expect(parseApp(JSON.stringify({ api: OTHER_API, url }))).toEqual({ api: OTHER_API, url });
+  });
+
+  test.each([
+    ["not an object", "null"],
+    ["an API that is not 16 hex digits", JSON.stringify({ api: "x", url })],
+    ["no link", JSON.stringify({ api: OTHER_API })],
+    ["a link that is not https", JSON.stringify({ api: OTHER_API, url: "intent://install" })],
+  ])("refuses %s", (_case, text) => expect(() => parseApp(text)).toThrow(/app record is malformed/));
+});
+
 test("planUpdate downloads what changed and copies the rest", () => {
   const { reuse, download } = planUpdate(v1.manifest, v2.manifest);
   expect(reuse.map(file => file.path)).toEqual(["data/Items.bytes"]);
@@ -83,13 +99,16 @@ test("planUpdate downloads what changed and copies the rest", () => {
  * 메모리의 번들 저장소. `installed`는 설치된 번들, `remote`는 올린 번들이고(`pointer`는 채널이 가리키는 버전, 기본은
  * 그 번들의 버전), `corrupt`는 받을 때 내용을 바꿀 파일이다.
  * 바꾸면 `committed`가 받는 곳이 되고 설치된 번들도 그것이 된다. `required`는 게임이 남긴 UPDATE_REQUIRED다. `assets`는
- * 카탈로그의 에셋 번들 중 캐시에 없는 바이트이고, 음수면 받지 못한다.
+ * 카탈로그의 에셋 번들 중 캐시에 없는 바이트이고, 음수면 받지 못한다. `app`은 버킷의 앱 기록(없으면 받지 못함)이다.
  */
 function setUp(
   installed: Bundle | null, remote: Bundle | undefined,
-  { corrupt, required = false, assets = 0, pointer }: { corrupt?: string; required?: boolean; assets?: number; pointer?: string } = {},
+  { corrupt, required = false, assets = 0, pointer, app }: {
+    corrupt?: string; required?: boolean; assets?: number; pointer?: string; app?: string;
+  } = {},
 ) {
   const bucket = published(remote, pointer);
+  if (app !== undefined) bucket.set(`${SOURCE}${APP}`, app);
   const update = signal<UpdateState>({ status: "idle", received: 0, total: 0 });
   const statuses: UpdateStatus[] = [];
   update.subscribe(value => statuses.push(value.status));
@@ -133,6 +152,27 @@ function setUp(
 }
 
 describe("the updater", () => {
+  test("tells of a released app with another API after the check and empties the staging area", async () => {
+    const url = "https://github.com/owner/repo/releases/tag/idle-android-b5";
+    const t = setUp(v1, v1, { app: JSON.stringify({ api: OTHER_API, url }) });
+    expect(await t.updater.check()).toBe(true);
+    expect(await t.updater.newApp()).toEqual({ api: OTHER_API, url });
+    expect(t.requested.at(-1)).toBe(`${SOURCE}channels/app/Android.json`);
+    expect(t.staging()).toBeUndefined();
+    expect(t.committed()).toBeUndefined();
+  });
+
+  test.each([
+    ["the released app is this one", JSON.stringify({ api: API, url: "https://example.test/app" })],
+    ["no app is recorded", undefined],
+    ["the record is malformed", "{"],
+  ])("tells of no new app when %s", async (_case, app) => {
+    const t = setUp(v1, v1, { app });
+    expect(await t.updater.check()).toBe(true);
+    expect(await t.updater.newApp()).toBeNull();
+    expect(t.staging()).toBeUndefined();
+  });
+
   test("downloads only the changed files, verifies every file, installs the bundle and lets the game start", async () => {
     const t = setUp(v1, v2);
     expect(await t.updater.check()).toBe(true);
@@ -275,6 +315,7 @@ describe("the updater", () => {
     const store = { current: vi.fn(() => JSON.stringify(v1.manifest)) } as unknown as BundleStore;
     const storage = { get: () => null, set: vi.fn(), delete: vi.fn() };
     const updater = createUpdater({ store, source: undefined, api: API, update, storage, logger: console });
+    expect(await updater.newApp()).toBeNull();
     expect(await updater.check()).toBe(true);
     expect(update.value.status).toBe("current");
     expect(store.current).not.toHaveBeenCalled();

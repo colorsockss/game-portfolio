@@ -8,7 +8,7 @@ import { display, storage } from "./device.js";
 import { createResourceBridge } from "./resources.js";
 import { createUiBridge } from "./ui.js";
 import { catchUncaught } from "./uncaught.js";
-import { noticeView } from "./views/notice.js";
+import { bootConfirmView, noticeView } from "./views/notice.js";
 import { transitionView } from "./views/transition.js";
 
 const bridge: BootBridge = {
@@ -18,6 +18,7 @@ const bridge: BootBridge = {
   display,
   bundle: createBundleStore(CS.PortfolioIdleRpg.Facades.BundleFacade),
   startGame: () => CS.PortfolioIdleRpg.Facades.RuntimeFacade.StartGame(),
+  openUrl: url => CS.PortfolioIdleRpg.Facades.RuntimeFacade.OpenUrl(url),
 };
 
 /** Unity에서 부트 프로그램을 돌린다: 패치 화면을 띄우고 게임 번들을 맞춘 뒤 게임 프로그램으로 넘어간다. */
@@ -29,5 +30,5 @@ export async function boot(): Promise<void> {
   const config: BootConfig = { mode: BUILD_MODE, api: RUNTIME_API, patch: BUILD_MODE === "release" ? patch : undefined };
   // 게임이 에셋 번들을 받는 주소도 이것이다. 패치를 확인하지 못해도 게임이 캐시의 에셋 번들을 찾도록 먼저 넣는다.
   if (config.patch !== undefined) CS.PortfolioIdleRpg.Facades.BundleFacade.UseSource(config.patch);
-  return runBoot(bridge, config, strings, { transition: transitionView, notice: noticeView });
+  return runBoot(bridge, config, strings, { transition: transitionView, notice: noticeView, confirm: bootConfirmView });
 }

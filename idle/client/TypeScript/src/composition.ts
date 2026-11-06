@@ -24,7 +24,7 @@ import type { ResourceBridge, UiBridge } from "./presentation/ui/ports.js";
 import { createResources, type Resources } from "./presentation/ui/resources.js";
 import { createUiStack, type UiStack, type View } from "./presentation/ui/ui-stack.js";
 import { blockWhileWaiting } from "./presentation/ui/waiting.js";
-import { notice, type NoticeViewModel } from "./presentation/widgets/confirm.js";
+import { confirm, notice, type ConfirmViewModel, type NoticeViewModel } from "./presentation/widgets/confirm.js";
 import { createCrashReporter } from "./presentation/widgets/crash.js";
 import type { WorldBridge } from "./presentation/world/ports.js";
 import { createWorld } from "./presentation/world/world.js";
@@ -150,6 +150,8 @@ export interface BootBridge extends Pick<Bridge, "resources" | "ui" | "storage" 
   readonly bundle: BundleStore;
   /** 이 스크립트 환경을 버리고 설치된 게임 번들로 게임 프로그램을 시작한다. */
   startGame(): void;
+  /** https 주소를 기기의 브라우저로 연다(새 앱의 설치 페이지). */
+  openUrl(url: string): void;
 }
 
 export interface BootConfig {
@@ -160,15 +162,21 @@ export interface BootConfig {
   readonly patch?: string;
 }
 
-/** 부트 프로그램의 뷰: 패치 화면(전환 화면)과 다시 시도를 기다리는 알림 팝업. 둘 다 앱에 든다. */
+/**
+ * 부트 프로그램의 뷰: 패치 화면(전환 화면), 다시 시도를 기다리는 알림 팝업, 새 앱의 설치 페이지를 열지 묻는 확인 팝업. 모두
+ * 앱에 든다.
+ */
 export interface BootViews {
   readonly transition: View<TransitionViewModel>;
   readonly notice: View<NoticeViewModel>;
+  readonly confirm: View<ConfirmViewModel>;
 }
 
 /**
  * 부트 프로그램: 패치 화면을 띄우고 게임 번들을 맞춘 뒤 게임 프로그램을 시작한다. 시작할 수 없으면 알림 팝업으로 플레이어가
- * 다시 시도하기를 기다린다. `strings`는 부트 번들에 든 Strings 표(MessagePack)라 패치 전에도 화면의 문장이 있다.
+ * 다시 시도하기를 기다린다. API가 다른 새 앱이 나왔으면 그 설치 페이지를 열지 묻는다: 서버가 이 앱을 막았으면 다시 시도하기
+ * 전에, 아니면 게임을 시작하기 전에(넘길 수 있음). `strings`는 부트 번들에 든 Strings 표(MessagePack)라 패치 전에도 화면의
+ * 문장이 있다.
  */
 export async function runBoot(bridge: BootBridge, config: BootConfig, strings: Uint8Array, views: BootViews, sink: LogSink = console): Promise<void> {
   const log = createLog(sink, config.mode === "development" ? "debug" : "info");
@@ -190,7 +198,16 @@ export async function runBoot(bridge: BootBridge, config: BootConfig, strings: U
     store: bridge.bundle, source: config.patch, api: config.api, update, storage: bridge.storage, logger: log("update"),
   });
   while (!(await updater.check())) {
-    await notice(ui.show, views.notice, lifetime, t(update.value.status === "required" ? "transition.updateRequired" : "transition.failed"));
+    // 서버가 막았는데 새 패치가 없으면, 이 앱의 채널이 멈춘 것(새 앱이 나옴)이거나 아직 패치가 올라오는 중이다.
+    const app = update.value.status === "required" ? await updater.newApp() : null;
+    if (app === null) {
+      await notice(ui.show, views.notice, lifetime, t(update.value.status === "required" ? "transition.updateRequired" : "transition.failed"));
+    } else if (await confirm(ui.show, views.confirm, lifetime, t("transition.appRequired"))) {
+      bridge.openUrl(app.url);
+    }
   }
+  // 받지 못하고 설치된 번들로 시작하면 기록도 받지 못하므로 다시 기다리지 않는다.
+  const app = update.value.status === "failed" ? null : await updater.newApp();
+  if (app !== null && await confirm(ui.show, views.confirm, lifetime, t("transition.appAvailable"))) bridge.openUrl(app.url);
   bridge.startGame();
 }

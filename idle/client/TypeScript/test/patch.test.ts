@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, expect, test } from "vitest";
-import { channelPath, versionPath } from "../src/application/update/update.js";
+import { APP, channelPath, versionPath } from "../src/application/update/update.js";
 
 const clientRoot = fileURLToPath(new URL("../", import.meta.url));
 // 앱의 C# API 지문. 내보내기는 이 API의 버전만 채널에 올린다.
@@ -82,6 +82,18 @@ test("release refuses a version that is not uploaded and moves the channel of th
   expect(other.status, other.stderr).toBe(0);
   expect(JSON.parse(await readFile(path.join(target, channelPath("fedcba9876543210")), "utf8"))).toEqual({ version: otherApiVersion });
   expect(existsSync(path.join(target, channelPath(api)))).toBe(false);
+});
+
+test("app records the last released app beside the channel pointers and refuses a link that is not https", async () => {
+  const url = "https://github.com/owner/repo/releases/tag/idle-android-b5";
+  const run = patch("app", api, url);
+  expect(run.status, run.stderr).toBe(0);
+  expect(JSON.parse(await readFile(path.join(target, APP), "utf8"))).toEqual({ api, url });
+  // 포인터의 폴더에 섞이지 않는다.
+  expect(patch("status").stdout).toContain("[patch] no channel pointers");
+  expect(patch("app", api, "http://example.test/app.apk").status).not.toBe(0);
+  expect(patch("app", "v1", url).status).not.toBe(0);
+  expect(JSON.parse(await readFile(path.join(target, APP), "utf8"))).toEqual({ api, url });
 });
 
 test("pull fetches the current or a named version and checks it against its manifest", async () => {
