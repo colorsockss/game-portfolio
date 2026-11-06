@@ -10,6 +10,7 @@ using Puerts;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
+using UnityEngine.Assemblies;
 using UnityEngine.Events;
 
 namespace PortfolioIdleRpg.Editor
@@ -109,8 +110,9 @@ namespace PortfolioIdleRpg.Editor
         }
 
         /// <summary>
-        /// 목록에 있는 타입의 public 시그니처, 플레이어 스크립트가 직렬화하는 필드, 파일에 실린 문서의 Unity 버전으로 만든 지문.
-        /// V8 환경을 띄우는 생성과 달리 다시 불러올 때마다 해도 될 만큼 싸다.
+        /// 목록에 있는 타입의 public 시그니처, 프로젝트 스크립트가 직렬화하는 필드, 패키지 목록, 파일에 실린 문서의
+        /// Unity 버전으로 만든 지문. V8 환경을 띄우는 생성과 달리 다시 불러올 때마다 해도 될 만큼 싸다. CI(Linux)와 이 Mac이 같은
+        /// 커밋에서 같은 지문을 내야 하므로(다르면 플레이어 빌드가 부트 번들을 거절함) 에디터의 OS에 따라 달라지는 것은 넣지 않는다.
         /// </summary>
         /// <returns>16자리 16진수 지문.</returns>
         internal static string Fingerprint()
@@ -134,25 +136,29 @@ namespace PortfolioIdleRpg.Editor
                     api.Append(' ').Append(field.FieldType).Append(' ').Append(field.Name).Append(';');
                 api.Append(" }");
             }
+            api.Append('\n').Append(PackageManifest());
             using SHA256 sha = SHA256.Create();
             byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(api.ToString()));
             return BitConverter.ToString(hash, 0, 8).Replace("-", "").ToLowerInvariant();
         }
 
         /// <summary>
-        /// 플레이어에 드는 스크립트 어셈블리(프로젝트와 패키지)에서 Unity가 직렬화하는 타입: 컴포넌트, ScriptableObject,
+        /// 플레이어에 드는 프로젝트(Assets/)의 스크립트 어셈블리에서 Unity가 직렬화하는 타입: 컴포넌트, ScriptableObject,
         /// [Serializable] 타입. 패치의 프리팹과 에셋은 이 필드를 이름으로 맞춰 읽고 없는 이름은 빈 값으로 두므로, 필드가 다른 앱이
         /// 받으면 오류 없이 깨진다(2026-11-04 build 3이 build 4의 무대를 받아 배경과 이동이 멈춤). public API에 드러나지 않아도
-        /// 지문이 바뀌어야 하는 까닭이다. 컴파일러가 만든 타입(람다의 닫힘)은 직렬화되지 않으므로 뺀다.
+        /// 지문이 바뀌어야 하는 까닭이다. 컴파일러가 만든 타입(람다의 닫힘)은 직렬화되지 않으므로 뺀다. 패키지의 필드는 에디터의 OS에
+        /// 따라 다르므로(Input System 등의 #if UNITY_EDITOR_OSX, 2026-11-06 CI의 지문이 달라 APK 빌드가 멈춤) 세지 않고 버전으로
+        /// 센다(PackageManifest).
         /// </summary>
         /// <returns>이름 순의 타입.</returns>
         private static IEnumerable<Type> SerializedTypes()
         {
-            var player = new HashSet<string>(CompilationPipeline
+            var project = new HashSet<string>(CompilationPipeline
                 .GetAssemblies(AssembliesType.PlayerWithoutTestAssemblies)
+                .Where(assembly => assembly.sourceFiles.All(file => file.StartsWith("Assets/", StringComparison.Ordinal)))
                 .Select(assembly => assembly.name));
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .Where(assembly => player.Contains(assembly.GetName().Name))
+            return CurrentAssemblies.GetLoadedAssemblies()
+                .Where(assembly => project.Contains(assembly.GetName().Name))
                 .SelectMany(assembly => assembly.GetTypes())
                 .Where(type => (typeof(UnityEngine.Object).IsAssignableFrom(type) || type.IsSerializable)
                     && !type.IsDefined(typeof(CompilerGeneratedAttribute), false))
@@ -168,5 +174,14 @@ namespace PortfolioIdleRpg.Editor
                 && (field.IsPublic || field.IsDefined(typeof(SerializeField), false)
                     || field.IsDefined(typeof(SerializeReference), false)))
             .OrderBy(field => field.Name, StringComparer.Ordinal);
+
+        /// <summary>
+        /// 패키지 목록(Packages/manifest.json). 패키지를 올리면 그 직렬화 필드가 바뀔 수 있으므로 버전과 git 커밋이 적힌 이 파일을
+        /// 통째로 센다. 커밋된 파일이라 기기마다 같고, 스크립트를 다시 불러오는 중에도 읽힌다(PackageInfo는 그때 비어 있어 같은
+        /// 에디터에서도 지문이 갈렸음). 에디터 전용 패키지를 바꿔도 지문이 바뀐다.
+        /// </summary>
+        /// <returns>줄바꿈을 LF로 맞춘 파일 내용.</returns>
+        private static string PackageManifest() =>
+            File.ReadAllText(Path.Combine(Application.dataPath, "..", "Packages", "manifest.json")).Replace("\r\n", "\n");
     }
 }

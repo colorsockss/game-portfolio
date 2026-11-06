@@ -1,5 +1,5 @@
 // idle/client/Assets/Editor/TypeScript/TypeScriptTypings.cs가 생성한 파일. 직접 고치지 않는다.
-// API 지문: d85aa886478d0611
+// API 지문: 0bec68d9a0142c79
 
     declare namespace CS {
     //keep type incompatibility / 此属性保持类型不兼容

@@ -32,7 +32,7 @@ idle publish / rollback     ─┘
 
 - **패치 버전**: `v/<버전>/`에 올라간 한 벌(매니페스트, `main.mjs`, 데이터 테이블, 에셋 카탈로그). 파일 목록과 API 지문의 해시가 버전 이름(16자리 16진수)이고, 한 번 올리면 바꾸지 않습니다. 에셋 번들(`aa/Android/`)은 버전끼리 함께 쓰고 더하기만 합니다.
 - **채널 포인터**: `channels/Android/<API 지문>.json`. 앱은 자기 API의 포인터가 가리키는 버전을 받습니다. 내보내기에서 바뀌는 파일은 이것 하나입니다.
-- **API 지문**: 앱의 C# API(`csharp.d.ts` 둘째 줄). TS가 부르는 public 시그니처와 프리팹이 기대는 직렬화 필드(뷰 컴포넌트의 `[SerializeField]` 등)를 셉니다. 지문이 달라지면 새 APK가 필요하고, 그 APK는 새 지문의 채널만 봅니다. 옛 APK는 자기 채널의 마지막 버전에 머뭅니다.
+- **API 지문**: 앱의 C# API(`csharp.d.ts` 둘째 줄). TS가 부르는 public 시그니처, 프리팹이 기대는 프로젝트 스크립트의 직렬화 필드(뷰 컴포넌트의 `[SerializeField]` 등), 패키지 목록(`Packages/manifest.json`)을 셉니다. 지문이 달라지면 새 APK가 필요하고, 그 APK는 새 지문의 채널만 봅니다. 옛 APK는 자기 채널의 마지막 버전에 머뭅니다.
 - **앱 기록**: `channels/app/Android.json`(`{ "api", "url" }`). APK를 낼 때 CI가 그 API와 Release 페이지로 바꿉니다. API가 다른 옛 앱은 시작할 때 새 앱의 설치 페이지를 열지 묻습니다(서버가 막았으면 "더 플레이할 수 없습니다", 아니면 넘길 수 있는 안내).
 - **단위**: 패치를 이루는 네 부분과 그 밖의 둘입니다. 패치는 `game`(TS 번들), `rules`(규칙 테이블 12개), `strings`(문장·소리), `assets`(Addressables)이고, 그 밖에 `server`(게임 서버)와 `apk`가 있습니다. 매니페스트의 `parts`가 단위마다 어느 커밋에서 왔는지, `server`가 이 버전과 함께 돌 서버의 커밋을 적습니다.
 - **기준 버전**: 고르지 않은 단위를 가져오는 버전. `base`를 비우면 이 커밋의 API 채널이 지금 가리키는 버전입니다.
@@ -153,7 +153,7 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 | TS와 `idle/shared/` | `idle game (TS)`에 `server` 켬 |
 | 프리팹, 그림, 소리 파일, UI | `idle assets (Addressables)` |
 | 서버 코드만(`idle/shared/`와 규칙은 그대로) | `idle server` |
-| C#(API 지문이 바뀜: 파사드·뷰의 public 멤버나 직렬화 필드) | `idle APK`에 `full_patch` 켬 |
+| C#(API 지문이 바뀜: 파사드·뷰의 public 멤버, 직렬화 필드, 패키지) | `idle APK`에 `full_patch` 켬 |
 | C#(API 지문은 그대로) | `idle APK` |
 | 여러 단위가 함께 바뀐 큰 변경 | `idle all` |
 | 되돌리기 | `idle publish / rollback`에 앞 버전 |
