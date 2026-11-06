@@ -13,7 +13,7 @@ import 경계는 `npm test`가 `scripts/check-boundaries.mjs`로 검사합니다
 
 ## 처음 설정
 
-Node.js 22.13 이상과 Git LFS가 필요합니다. 이미지, 사운드, 모델, 폰트, 네이티브 플러그인, xlsx는 `.gitattributes`에 따라 LFS로 저장됩니다. **LFS를 설치하지 않고 커밋하면 이 파일들이 일반 Git 객체로 들어가므로** 첫 커밋 전에 설치하세요. 수식툴 데스크톱 앱을 실행하려면 [Tauri 사전 요구사항](https://v2.tauri.app/start/prerequisites/)(Rust 툴체인)도 필요합니다.
+Node.js 22.13 이상, .NET SDK 10(mmo의 패킷 코드 생성과 C# 테스트, `brew install --cask dotnet-sdk`), Git LFS가 필요합니다. 이미지, 사운드, 모델, 폰트, 네이티브 플러그인, xlsx는 `.gitattributes`에 따라 LFS로 저장됩니다. **LFS를 설치하지 않고 커밋하면 이 파일들이 일반 Git 객체로 들어가므로** 첫 커밋 전에 설치하세요. 수식툴 데스크톱 앱을 실행하려면 [Tauri 사전 요구사항](https://v2.tauri.app/start/prerequisites/)(Rust 툴체인)도 필요합니다.
 
 ```sh
 brew install git-lfs
@@ -29,16 +29,18 @@ npm ci
 
 | 명령 | 설명 |
 | --- | --- |
+| `npm run check` | 커밋하지 않은 변경에 맞는 검사만: 문서(`*.md`)만이면 없음, `mmo/`는 생성 파일 검사와 `test:mmo`, 나머지는 `typecheck`와 전체 `test` (`scripts/check.mjs`) |
 | `npm run typecheck` | 모든 워크스페이스 타입 검사 |
-| `npm test` | 생성 파일 검사 → import 경계 검사 → 전체 테스트 |
+| `npm test` | 생성 파일 검사 → import 경계 검사 → 전체 테스트(마지막에 `test:mmo`) |
+| `npm run test:mmo` | mmo의 C# 테스트(`dotnet test`) |
 | `npm run coverage` | idle의 vitest 워크스페이스마다 커버리지 표 |
-| `npm run generate` | 게임의 `data/`에서 테이블 로더·데이터·공식 코드 재생성 (`-- --check`는 검사만) |
+| `npm run generate` | 게임의 원본(`idle/data/`, `mmo/shared/contract/packets.proto`)에서 테이블 로더·데이터·공식·패킷 코드 재생성 (`-- --check`는 검사만) |
 
 키우기의 실행·빌드 명령은 [idle/MANUAL.md](idle/MANUAL.md)에 있습니다.
 
 ## CI
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml)이 `main`의 푸시, 모든 PR, 수동 실행(`workflow_dispatch`)에서 Ubuntu 24.04와 Node 22.14.0(`.nvmrc`. 로컬과 같은 버전이고, 서버가 `node:sqlite`를 씁니다. 릴리스 워크플로도 같은 파일을 읽습니다)으로 `npm ci` → `npm run typecheck` → `npm test`를 돌립니다. 같은 PR이나 브랜치에 새 커밋이 오면 이전 실행을 취소합니다. 다른 브랜치는 PR을 열어야 돕니다. npm 캐시(`~/.npm`, 약 41 MB)는 `setup-node`가 `package-lock.json` 해시로 저장합니다.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml)이 `main`의 푸시, 모든 PR, 수동 실행(`workflow_dispatch`)에서 Ubuntu 24.04와 Node 22.14.0(`.nvmrc`. 로컬과 같은 버전이고, 서버가 `node:sqlite`를 씁니다. 릴리스 워크플로도 같은 파일을 읽습니다)과 .NET SDK 10(`setup-dotnet`, mmo의 패킷 코드 생성과 C# 테스트)으로 `npm ci` → `npm run typecheck` → `npm test`를 돌립니다. 같은 PR이나 브랜치에 새 커밋이 오면 이전 실행을 취소합니다. 다른 브랜치는 PR을 열어야 돕니다. npm 캐시(`~/.npm`, 약 41 MB)는 `setup-node`가 `package-lock.json` 해시로 저장합니다.
 
 - **LFS**: 체크아웃은 포인터만 받고, `git lfs pull --include="idle/data/*.xlsx"`로 `generate --check`가 읽는 xlsx 15개(145,711바이트)만 받습니다. LFS 전체(981개, 약 241 MB, 2026-10-31. Unity 그림·오디오·폰트가 대부분)의 0.1%도 안 되고, 무료 다운로드량 월 10 GiB로 약 7만 회 실행할 수 있습니다. 테스트가 다른 LFS 파일을 읽게 되면 `--include`에 더합니다.
 - **PuerTS**: `npm run setup`(약 270 MB)은 돌리지 않습니다. 클라이언트 타입 검사는 커밋된 `types/`의 선언을, 번들 실행 테스트는 가짜 호스트(`test/support/puerts-host.mjs`)를 씁니다.

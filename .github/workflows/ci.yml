@@ -34,6 +34,10 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      # mmo의 패킷 코드 생성(Grpc.Tools의 protoc)과 C# 테스트가 쓴다.
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
       - run: npm ci
       - run: npm run typecheck
       - run: npm test

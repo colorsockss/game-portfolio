@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    packets.proto → C#. Grpc.Tools(NuGet)의 protoc가 generated/에 만들고, 그 파일을 커밋해 Unity가 그대로 쓴다(Unity는 MSBuild
+    생성을 쓰지 못함). 서버는 이 프로젝트를 참조한다. Unity와 같은 조건(.NET Standard 2.1, C# 9)으로 컴파일해 생성 코드가
+    Unity에서도 컴파일되는지 지킨다. 루트의 generate 스크립트가 이 프로젝트를 빌드하고, 검사할 때는 ContractOutputDir를 다른 폴더로 주고 비교한다.
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <RootNamespace>PortfolioMmo.Contract</RootNamespace>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ContractOutputDir Condition="'$(ContractOutputDir)' == ''">$(MSBuildThisFileDirectory)generated</ContractOutputDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.36.2" />
+    <PackageReference Include="Grpc.Tools" Version="2.85.0" PrivateAssets="all" />
+    <Protobuf Include="packets.proto" GrpcServices="None" OutputDir="$(ContractOutputDir)" CompileOutputs="false" />
+    <Compile Include="generated/*.cs" />
+  </ItemGroup>
+</Project>

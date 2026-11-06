@@ -3,18 +3,19 @@
 게임 포트폴리오 두 개와 두 게임이 함께 쓰는 툴의 저장소입니다. 소개는 [README.md](README.md), 설정·명령·CI는 [MANUAL.md](MANUAL.md)에 있고, 하위 폴더의 AGENTS.md가 규칙을 더합니다.
 
 - `idle/`: 키우기. Unity 6 + PuerTS 클라이언트, Node 서버, 공용 TS 패키지의 npm workspaces. 규칙은 [idle/AGENTS.md](idle/AGENTS.md), 할 일은 [idle/docs/backlog.md](idle/docs/backlog.md).
-- `mmo/`: MMORPG. Unity(C#만)와 Unreal 클라이언트, C# MMO 서버. 계획 단계이며 할 일은 [mmo/docs/backlog.md](mmo/docs/backlog.md).
+- `mmo/`: MMORPG. Unity(C#만, PuerTS 없음, UI Toolkit + App UI)와 Unreal(C++, UMG) 클라이언트, C# MMO 서버, Protobuf 패킷. 패킷 정의만 있는 초기 단계이며 규칙은 [mmo/MANUAL.md](mmo/MANUAL.md), 할 일은 [mmo/docs/backlog.md](mmo/docs/backlog.md).
 - `tools/`: 두 게임이 함께 쓰는 데이터·공식 툴.
 
 ## 명령 (루트에서)
 
 ```sh
+npm run check       # 커밋하지 않은 변경에 맞는 검사만
 npm run typecheck
-npm test            # 생성 파일 검사 → import 경계 검사 → 전체 테스트
-npm run generate    # 게임의 data/ → 생성 파일
+npm test            # 생성 파일 검사 → import 경계 검사 → 전체 테스트(mmo의 C# 포함)
+npm run generate    # 게임의 원본(data/, packets.proto) → 생성 파일
 ```
 
-끝내기 전에 `typecheck`와 `test`를 통과시킵니다. Unity에서만 확인되는 변경은 확인하지 못했다고 밝힙니다.
+끝내기 전에 `npm run check`를 통과시킵니다. 커밋하지 않은 변경(추적하지 않는 파일 포함)을 보고 문서(`*.md`)만이면 건너뛰고, `mmo/`는 생성 파일 검사와 `test:mmo`(C#), 나머지는 `typecheck`와 전체 `test`를 돌립니다. 검사를 건너뛰었으면 그렇다고 밝히고, Unity에서만 확인되는 변경은 확인하지 못했다고 밝힙니다. CI는 늘 전체를 돌립니다.
 
 ## 구조
 
@@ -35,7 +36,7 @@ npm run generate    # 게임의 data/ → 생성 파일
 
 ## 생성 파일
 
-`idle/shared/data-schema/src/tables/`, `idle/shared/data-schema/data/`, `idle/shared/game-core/src/formulas.ts`, `idle/shared/game-core/src/ability-type.ts`는 `npm run generate`의 출력입니다. 직접 고치지 않고 원본(`idle/data/`)과 함께 커밋합니다.
+`idle/shared/data-schema/src/tables/`, `idle/shared/data-schema/data/`, `idle/shared/game-core/src/formulas.ts`, `idle/shared/game-core/src/ability-type.ts`, `mmo/shared/contract/generated/`는 `npm run generate`의 출력입니다. 직접 고치지 않고 원본(`idle/data/`, `mmo/shared/contract/packets.proto`)과 함께 커밋합니다.
 
 ## 스타일
 

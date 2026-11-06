@@ -5,7 +5,7 @@
 | 프로젝트 | 한 줄 소개 | 기술 | 상태 |
 | --- | --- | --- | --- |
 | [키우기 (idle)](idle/README.md) | 방치형 RPG. 클라이언트가 예측하고 서버가 같은 규칙으로 확정 | Unity 6, PuerTS(TypeScript), Node, SQLite | 개발 중, Android·Live 서버 배포 |
-| [MMORPG (mmo)](mmo/README.md) | 틱 기반 상태 서버 하나에 Unity와 Unreal 클라이언트가 붙는 MMO | C#(.NET) 서버, Unity(C#), Unreal(C++) | 준비 중 |
+| [MMORPG (mmo)](mmo/README.md) | 틱 기반 상태 서버 하나에 Unity와 Unreal 클라이언트가 붙는 MMO | C#(.NET) 서버, Unity(C#, UI Toolkit + App UI), Unreal(C++, UMG), Protobuf | 준비 중 |
 | [데이터 툴](tools/data-tool/README.md) | Excel → MessagePack 데이터와 타입 있는 로더, 테이블 간 참조 검사 | Node | 두 게임이 함께 씀 |
 | [공식 툴](tools/formula-tool/README.md) | 게임 공식 편집, 코드 생성, 전투 미리보기 데스크톱 앱 | Tauri, SvelteKit | 두 게임이 함께 씀 |
 
@@ -35,6 +35,7 @@ idle/                키우기
   data/              기획 데이터 원본
   docs/              백로그, 성능, 릴리스, 설계 기록
 mmo/                 MMORPG (준비 중)
+  shared/contract/   패킷 정의(packets.proto)
 tools/
   data-tool/         Excel → 데이터와 타입 있는 로더, 테이블 간 검사
   formula-tool/      공식 편집, 코드 생성, 전투 미리보기 (데스크톱 앱)

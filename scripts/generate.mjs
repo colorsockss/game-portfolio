@@ -1,6 +1,7 @@
-// idle/data/에서 파생되어 커밋되는 코드와 데이터를 다시 생성한다:
-//   idle/data/*.xlsx        → idle/shared/data-schema/src/tables/ (로더) + idle/shared/data-schema/data/
-//   idle/data/formulas.json → idle/shared/game-core/src/formulas.ts + ability-type.ts
+// 게임의 원본에서 파생되어 커밋되는 코드와 데이터를 다시 생성한다:
+//   idle/data/*.xlsx                   → idle/shared/data-schema/src/tables/ (로더) + idle/shared/data-schema/data/
+//   idle/data/formulas.json            → idle/shared/game-core/src/formulas.ts + ability-type.ts
+//   mmo/shared/contract/packets.proto  → mmo/shared/contract/generated/Packets.cs (Contract.csproj의 Grpc.Tools protoc)
 // --check를 주면 아무것도 쓰지 않고, 생성 파일이 낡았으면 명령이 실패한다.
 import { spawnSync } from "node:child_process";
 import { cp, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
@@ -19,6 +20,8 @@ try {
   // formulas.ts가 가져오는 E_AbilityType도 같은 프로젝트의 키로 만든다. 툴은 게임의 enum을 가져다 쓸 뿐 만들지 않는다.
   const formulas = JSON.parse(await readFile(path.join(root, "idle/data/formulas.json"), "utf8"));
   await writeFile(path.join(staging, "ability-type.ts"), abilityType(formulas));
+  // protoc 버전은 Contract.csproj의 Grpc.Tools 버전이 고정한다.
+  dotnet("build", "mmo/shared/contract/Contract.csproj", "-nologo", "-v", "q", `-p:ContractOutputDir=${path.join(staging, "contract")}`);
 
   // 이식 가능한 로더만 남긴다. 로더는 호스트 API(파일 접근, 폴리필)를 쓰지 않으므로 클라이언트와
   // 서버가 함께 쓰고, 바이트와 없는 전역은 각자 채운다.
@@ -27,6 +30,7 @@ try {
     [path.join(staging, "sheets/data"), "idle/shared/data-schema/data"],
     [path.join(staging, "formulas.ts"), "idle/shared/game-core/src/formulas.ts"],
     [path.join(staging, "ability-type.ts"), "idle/shared/game-core/src/ability-type.ts"],
+    [path.join(staging, "contract"), "mmo/shared/contract/generated"],
   ];
 
   if (check) {
@@ -55,9 +59,17 @@ function abilityType({ name, stats, formulas }) {
 }
 
 function run(script, ...args) {
-  const result = spawnSync(process.execPath, [script, ...args], { cwd: root, encoding: "utf8" });
+  report(spawnSync(process.execPath, [script, ...args], { cwd: root, encoding: "utf8" }));
+}
+
+function dotnet(...args) {
+  report(spawnSync("dotnet", args, { cwd: root, encoding: "utf8", env: { ...process.env, DOTNET_NOLOGO: "1", DOTNET_CLI_TELEMETRY_OPTOUT: "1" } }));
+}
+
+function report(result) {
   if (result.status !== 0) {
-    process.stderr.write(result.stdout + result.stderr);
+    // dotnet이 없으면 spawn 자체가 실패해 출력 대신 error만 있다.
+    process.stderr.write(result.error ? `${result.error.message}\n` : result.stdout + result.stderr);
     process.exit(result.status ?? 1);
   }
 }

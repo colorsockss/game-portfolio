@@ -1,0 +1,134 @@
+// MMO의 모든 패킷. 서버(C#), Unity(C#), Unreal(C++)이 이 파일에서 protoc로 생성한 코드를 쓴다.
+// 프레임은 protobuf의 길이 구분 형식(varint 길이 + Packet)이다. 배포된 필드 번호와 enum 값은 바꾸거나 다시 쓰지 않는다.
+syntax = "proto3";
+
+package portfolio.mmo;
+
+option csharp_namespace = "PortfolioMmo.Contract";
+
+// 주고받는 패킷 하나. body의 필드 번호가 패킷 번호이고, 기능마다 범위 하나를 쓴다.
+message Packet {
+  oneof body {
+    // 1–99: 세션(로그인과 연결 끊기)
+    Login login = 1;
+    LoginResult login_result = 2;
+    Kicked kicked = 3;
+
+    // 100–199: 월드(이동과 시야)
+    Move move = 100;
+    PositionReset position_reset = 101;
+    EntitiesEnter entities_enter = 102;
+    EntitiesLeave entities_leave = 103;
+    EntityMoves entity_moves = 104;
+  }
+}
+
+// 프로토콜 버전. 옛 클라이언트를 받을 수 없게 패킷의 뜻이 바뀌면 CURRENT를 올린다.
+// 필드를 더하기만 하면 protobuf가 모르는 필드를 건너뛰므로 올리지 않는다.
+enum ProtocolVersion {
+  PROTOCOL_VERSION_UNSPECIFIED = 0;
+  PROTOCOL_VERSION_CURRENT = 1;
+}
+
+// 좌표와 방향의 단위. 지면 좌표 x, z는 1 m를 32칸으로 나눈 정수(sint32, 맵은 ±1,024 m 안),
+// 방향 yaw는 위에서 본 한 바퀴(360°)를 256칸으로 나눈 칸 번호(0–255)다. 높이는 보내지 않고 각자 지면에서 구한다.
+
+// ── 세션 ──
+
+// 클라이언트 → 서버. 연결한 뒤 처음 보낸다. 서버는 LoginResult로 답한다.
+message Login {
+  // 클라이언트의 PROTOCOL_VERSION_CURRENT. 서버와 다르면 VERSION_MISMATCH.
+  ProtocolVersion protocol_version = 1;
+  // 로그인 ID이자 머리 위에 보일 이름. 영문 소문자, 숫자, 밑줄 4–16자이고 형식은 서버가 검사한다.
+  string login_id = 2;
+}
+
+// 서버 → 클라이언트. Login의 답.
+message LoginResult {
+  LoginResultCode result = 1;
+  // 내 개체 번호. 실패면 0.
+  uint32 self_id = 2;
+}
+
+// 로그인의 결과.
+enum LoginResultCode {
+  // 로그인했다. 이어서 내 개체와 주변 개체가 EntitiesEnter로 온다.
+  LOGIN_RESULT_CODE_OK = 0;
+  // 로그인 ID의 형식이 맞지 않는다.
+  LOGIN_RESULT_CODE_INVALID_LOGIN_ID = 1;
+  // 클라이언트와 서버의 프로토콜 버전이 다르다. 클라이언트를 업데이트해야 한다.
+  LOGIN_RESULT_CODE_VERSION_MISMATCH = 2;
+  // 동시 접속이 가득 찼다.
+  LOGIN_RESULT_CODE_SERVER_FULL = 3;
+}
+
+// 서버 → 클라이언트. 연결을 끊기 바로 전에 보낸다.
+message Kicked {
+  KickReason reason = 1;
+}
+
+// 서버가 연결을 끊는 까닭.
+enum KickReason {
+  KICK_REASON_UNSPECIFIED = 0;
+  // 같은 ID가 다른 연결에서 로그인했다. 예전 연결을 끊는다.
+  KICK_REASON_DUPLICATE_LOGIN = 1;
+  // 서버가 내려간다.
+  KICK_REASON_SERVER_SHUTDOWN = 2;
+  // 읽을 수 없는 패킷을 보냈다.
+  KICK_REASON_MALFORMED_PACKET = 3;
+}
+
+// ── 월드 ──
+
+// 클라이언트 → 서버. 내 개체의 위치와 방향. 움직이는 동안 틱마다 보내고, 멈출 때 한 번 더 보낸다.
+message Move {
+  sint32 x = 1;
+  sint32 z = 2;
+  uint32 yaw = 3;
+  // 마지막으로 받은 PositionReset의 ack(받은 적이 없으면 0). 서버는 자기 값과 다른 Move를 버린다.
+  uint32 ack = 4;
+}
+
+// 서버 → 클라이언트. 서버가 Move를 거절하고 내 개체를 되돌린 위치. 클라이언트는 이 위치로 옮기고 다음 Move부터 이 ack를 싣는다.
+message PositionReset {
+  sint32 x = 1;
+  sint32 z = 2;
+  // 되돌릴 때마다 1씩 오른다.
+  uint32 ack = 3;
+}
+
+// 서버 → 클라이언트. 시야에 들어온 개체들. 로그인 직후에는 내 개체도 들어 있다.
+message EntitiesEnter {
+  repeated EntityEnter entities = 1;
+}
+
+// 시야에 들어온 개체 하나.
+message EntityEnter {
+  // 개체 번호. 서버가 정하고, 개체가 사라질 때까지 바뀌지 않는다.
+  uint32 id = 1;
+  sint32 x = 2;
+  sint32 z = 3;
+  uint32 yaw = 4;
+  // 머리 위에 보일 이름(로그인 ID).
+  string name = 5;
+}
+
+// 서버 → 클라이언트. 시야에서 나간 개체들의 번호.
+message EntitiesLeave {
+  repeated uint32 ids = 1;
+}
+
+// 서버 → 클라이언트. 이번 틱에 움직인 개체들. 내 개체와 움직이지 않은 개체는 넣지 않는다.
+message EntityMoves {
+  // 서버 틱 번호(20Hz). 클라이언트는 TCP가 몰아서 전해도 이 간격으로 보간한다.
+  uint32 tick = 1;
+  repeated EntityMove entities = 2;
+}
+
+// 이번 틱에 움직인 개체 하나.
+message EntityMove {
+  uint32 id = 1;
+  sint32 x = 2;
+  sint32 z = 3;
+  uint32 yaw = 4;
+}
