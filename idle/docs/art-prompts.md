@@ -23,7 +23,7 @@ idle/docs/art.md의 그림을 imagegen 스킬의 기본 image_gen 도구로 만�
 - 그림 하나에 image_gen 호출 하나다. n으로 다른 그림을 대신하지 않는다.
 - 배경 그림(backgrounds)을 빼고는 진짜 투명 배경을 요청하고 alpha를 지킨다.
 - 생성된 원본은 idle/art/source/<묶음>/에, 후처리한 최종본은 idle/art/<묶음>/에 둔다. idle/client/Assets에는 넣지 않는다.
-- 후처리(자르기, 크기 맞추기, 프레임 나누기)는 저장소 밖 가상환경(python3 -m venv ~/.venvs/art, 그 안에 pip install pillow)의 스크립트로 한다. 저장소에 스크립트나 의존성을 더하지 않는다.
+- 후처리(자르기, 크기 맞추기, 프레임 나누기)는 저장소 밖 가상환경(python3 -m venv ~/.venvs/art, 그 안에 pip install pillow)의 스크립트로 한다. 저장소에 의존성은 더하지 않고, 최종본을 만든 스크립트와 실제로 쓴 프롬프트는 원본 옆(idle/art/source/<묶음>/)에 남긴다.
 - 결과를 직접 열어 보고, 명세와 다르면 한 가지만 고쳐 다시 뽑는다. 글자·숫자·로고·워터마크가 들어간 그림은 버린다.
 - 끝낸 그림마다 idle/docs/art.md의 그 줄에서 "지금"을 "완료"로 바꾸고, 만든 사람에 `git config user.name`의 값을, 도구에 "Codex image_gen"을 적는다.
 - 커밋하지 않고 git 브랜치도 바꾸지 않는다. 끝나면 만든 파일 경로와 실제로 쓴 프롬프트를 보고한다.
@@ -339,7 +339,7 @@ Constraints: transparent background; no background elements; no drop shadow outs
 
 ### 스테이지 배경 6장
 
-5의 "스테이지 배경" 표와 틀을 그대로 쓰되, 공통 스타일 대신 UI 개편 스타일을 붙이고 다음을 더합니다. 메인 화면은 배경의 위에서 30%–62% 사이만 보이고, 배우는 그 안의 46%–60%에 섭니다. 그래서 지평선은 위에서 35–40%, 그 아래는 고르고 넓은 땅이고, 랜드마크는 지평선 근처와 양 끝에 둡니다. 후처리는 5와 같습니다(768×1344, `idle/art/backgrounds/<key>.png`). 게임에는 아래 "패럴랙스 배경(원경·근경)"의 두 겹으로 들어갑니다(`client/Assets/Battle/Backgrounds/Far`, `Near`).
+5의 "스테이지 배경" 표와 틀을 그대로 쓰되, 공통 스타일 대신 UI 개편 스타일을 붙이고 다음을 더합니다. 메인 화면은 배경의 위에서 30%–62% 사이만 보이고, 배우는 그 안의 46%–60%에 섭니다. 그래서 지평선은 위에서 35–40%, 그 아래는 고르고 넓은 땅이고, 랜드마크는 지평선 근처와 양 끝에 둡니다. 이 장면은 아래 "패럴랙스 배경(원경·근경)"의 첫 단계이고, 후처리와 최종본(`idle/art/backgrounds/<key>_far.png`, `<key>_near.png`, 게임에는 `client/Assets/Battle/Backgrounds/Far`, `Near`)은 그 절을 따릅니다.
 
 ```text
 Additional constraints for the background: outlines on large shapes only (hills, trees, rocks, walls), thinner than the icon outline; ground with a few simple flat patches, no busy detail where the characters stand; slightly lower saturation than the characters
@@ -388,3 +388,5 @@ Constraints: keep the canvas size, alignment, style, palette, outlines, framing 
 | `fortress` | inside an ogre fortress: a frontal view of an inner stone corridor wall with pillars and arches repeating at a regular interval, the arches closed with stone wall, plain cloth banners and torches between them | a flagstone path |
 | `snow` | an endless snowy mountain ridge of similar heights with falling snow; no isolated summit, no open valley | a snowy path with icy rocks |
 | `lava` | inside a volcanic cavern: a continuous cave wall with stalactites, lava streams flowing down between them; no central lavafall, no sky | a basalt floor with glowing cracks only near the top of the path |
+
+2026-11-04에 만든 6장의 실제 프롬프트는 [prompts.json](../art/source/backgrounds/prompts.json)에, 후처리는 [process.py](../art/source/backgrounds/process.py)(초원은 [meadow.py](../art/source/backgrounds/meadow.py))에 있고, 원본 세 장으로 다시 돌리면 지금의 최종본과 같은 파일이 나옵니다. 이음매는 4:7로 줄인 그림의 왼쪽 절반과 그 거울상을 이은 것이라 겹마다 좌우가 대칭입니다(요새는 기둥 중심 x 66–412를 늘려 쓰고, 초원은 언덕 띠만 x 384–768의 거울상이며 하늘과 구름은 원본). 대칭이 눈에 띄는 곳(특히 용암)을 고치려면 이 이음매 방식을 바꿉니다(백로그 78).
