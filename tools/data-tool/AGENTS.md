@@ -1,4 +1,4 @@
-# @idle/data-tool
+# @tools/data-tool
 
 Excel → JSON·MessagePack·TS 로더 컴파일러입니다(순수 JS). 시트 규칙은 [README.md](README.md)에 있고, 테스트는 `node --test`입니다.
 

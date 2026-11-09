@@ -1,6 +1,6 @@
-# @idle/formula-tool
+# @tools/formula-tool
 
-공식을 편집·시뮬레이션하고 TS로 내보내는 앱입니다(Tauri 2 + SvelteKit + Svelte 5). 주석과 UI는 한국어입니다. 실행은 `npm run tauri dev -w @idle/formula-tool`, Rust 테스트는 `src-tauri`에서 `cargo test`입니다.
+공식을 편집·시뮬레이션하고 TS로 내보내는 앱입니다(Tauri 2 + SvelteKit + Svelte 5). 주석과 UI는 한국어입니다. 실행은 `npm run tauri dev -w @tools/formula-tool`, Rust 테스트는 `src-tauri`에서 `cargo test`입니다.
 
 - `src/lib/engine`, `export`, `project`는 Svelte·Tauri를 import하지 않습니다. `npm run generate`가 이것만 Node에서 돌립니다.
 - 생성기를 바꾸면 루트에서 `npm run generate`를 실행하고 `formulas.ts`를 함께 커밋합니다.

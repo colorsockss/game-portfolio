@@ -26,7 +26,7 @@ idle publish / rollback     ─┘
 | `idle publish / rollback`(`idle-publish.yml`) | 없음(올려 둔 버전을 공개) | `version`(필수) | 안 씀 | 1–2분(추정) |
 | `idle all`(`idle-all.yml`) | 패치 네 단위, 서버, 고르면 APK | `apk`(켬), `publish`(켬) | 씀 | 47분 52초(APK 포함, Library 캐시 없음) |
 
-액션 목록에는 `idle release (shared)`도 보이지만 Run 버튼이 없습니다. 다른 액션만 부를 수 있는 공용 워크플로(`workflow_call`)인데, GitHub가 워크플로 파일을 모두 목록에 보이기 때문입니다. 커밋마다 자동으로 도는 `CI`(`ci.yml`)는 타입 검사와 테스트만 하고 아무것도 내보내지 않습니다.
+액션 목록에는 `idle release (shared)`도 보이지만 Run 버튼이 없습니다. 다른 액션만 부를 수 있는 공용 워크플로(`workflow_call`)인데, GitHub가 워크플로 파일을 모두 목록에 보이기 때문입니다. 커밋마다 자동으로 도는 `idle CI`(`idle-ci.yml`)는 타입 검사와 테스트만 하고 아무것도 내보내지 않습니다.
 
 ## 2. 용어
 
@@ -119,7 +119,7 @@ Unity로 이번 커밋의 에셋 번들과 카탈로그를 빌드해 냅니다(`
 | LFS | 늘 | Unity면 전체(캐시), 아니면 테스트가 읽는 xlsx만 |
 | setup-node, `npm ci` | 늘 | Node는 `.nvmrc`(22.14.0) |
 | PuerTS 캐시, `npm run setup` | Unity | 약 270 MB |
-| `npm run typecheck`, `npm test` | 늘 | 실패하면 아무것도 내보내지 않음 |
+| `npm run typecheck:idle`, `npm run test:idle` | 늘 | 키우기만 검사(툴과 mmo는 각자의 CI). 실패하면 아무것도 내보내지 않음 |
 | SSH to the VPS | 늘 | 배포 키와 고정한 호스트 키로만 접속(`.github/actions/vps-ssh`, publish 잡과 같음) |
 | Read the live state | 늘 | 지금 Live 서버의 커밋(`current` 링크) |
 | Pull the base version | 패치 네 단위를 모두 고르지 않았을 때 | 기준 버전을 받아 검증 |

@@ -19,7 +19,7 @@
 // 공용 패키지의 코드(idle/shared/*/src)는 클라이언트와 서버에서 비트까지 같은 결과를 내야 하므로(idle/shared/AGENTS.md) 정확한
 // Math 함수(max, min, floor, round, abs, 난수 생성기의 imul)만 쓰고, 엔진마다 다를 수 있는 것(pow, log, sin, random 등)과 시계·타이머는
 // 쓰지 않는다.
-import { readFile, readdir } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -127,11 +127,41 @@ function layerOf(relativePath) {
   return relativePath.split("/")[0].replace(/\.(ts|js)$/, "");
 }
 
+// 루트 package.json의 워크스페이스마다 위의 import 규칙이 있고, 영역의 스크립트(typecheck:·test:의 idle, tools)가 그것을 고르는지 본다.
+// npm의 -w <폴더>는 그 폴더 바로 아래의 워크스페이스만 고르므로, 새 워크스페이스가 영역별 CI에서 조용히 빠지지 않게 한다.
+const rootPackage = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const selectors = script => [...(rootPackage.scripts[script] ?? "").matchAll(/-w (\S+)/g)].map(match => match[1]);
+for (const workspace of await workspaceFolders(rootPackage.workspaces)) {
+  const parent = path.posix.dirname(workspace);
+  const area = ["idle", "tools"].find(name => selectors(`test:${name}`).includes(parent));
+  if (!Object.hasOwn(allowed, workspace)) violations.push(`${workspace} has no import rules in scripts/check-boundaries.mjs`);
+  if (!area) violations.push(`${workspace} is not selected by test:idle or test:tools (npm -w ${parent} picks only direct children)`);
+  else if (!selectors(`typecheck:${area}`).includes(parent)) violations.push(`${workspace} is tested by test:${area} but not typechecked by typecheck:${area}`);
+}
+
 if (violations.length > 0) {
-  console.error(`Imports across boundaries or nondeterministic shared code (see MANUAL.md, 구조):\n  ${violations.join("\n  ")}`);
+  console.error(`Workspaces outside the rules, imports across boundaries, or nondeterministic shared code (see MANUAL.md, 구조):\n  ${violations.join("\n  ")}`);
   process.exit(1);
 }
 console.log("Workspace and client layer boundaries hold, and shared code keeps to exact math.");
+
+// package.json의 workspaces 항목 → 워크스페이스 폴더. "폴더/*"는 그 아래에서 package.json이 있는 폴더다.
+async function workspaceFolders(patterns) {
+  const folders = [];
+  for (const pattern of patterns) {
+    if (!pattern.endsWith("/*")) {
+      folders.push(pattern);
+      continue;
+    }
+    const parent = pattern.slice(0, -2);
+    for (const entry of await readdir(path.join(root, parent), { withFileTypes: true })) {
+      if (entry.isDirectory() && await access(path.join(root, parent, entry.name, "package.json")).then(() => true, () => false)) {
+        folders.push(`${parent}/${entry.name}`);
+      }
+    }
+  }
+  return folders;
+}
 
 async function sourceFiles(directory) {
   const entries = await readdir(directory, { recursive: true, withFileTypes: true });

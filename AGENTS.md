@@ -9,13 +9,13 @@
 ## 명령 (루트에서)
 
 ```sh
-npm run check       # 커밋하지 않은 변경에 맞는 검사만
-npm run typecheck
-npm test            # 생성 파일 검사 → import 경계 검사 → 전체 테스트(mmo의 C# 포함)
-npm run generate    # 게임의 원본(data/, packets.proto) → 생성 파일
+npm run check       # 커밋하지 않은 변경이 있는 영역(idle, tools, mmo)의 검사만
+npm run typecheck   # typecheck:idle, typecheck:tools는 그 영역만
+npm test            # test:idle → test:tools → test:mmo (각각 생성 파일 검사·import 경계 검사·테스트)
+npm run generate    # 게임의 원본(data/, packets.proto) → 생성 파일. -- idle처럼 게임을 주면 그 게임만
 ```
 
-끝내기 전에 `npm run check`를 통과시킵니다. 커밋하지 않은 변경(추적하지 않는 파일 포함)을 보고 문서(`*.md`)만이면 건너뛰고, `mmo/`는 생성 파일 검사와 `test:mmo`(C#), 나머지는 `typecheck`와 전체 `test`를 돌립니다. 검사를 건너뛰었으면 그렇다고 밝히고, Unity에서만 확인되는 변경은 확인하지 못했다고 밝힙니다. CI는 늘 전체를 돌립니다.
+끝내기 전에 `npm run check`를 통과시킵니다. 커밋하지 않은 변경(추적하지 않는 파일 포함)을 영역으로 나눠 문서(`*.md`)만이면 건너뛰고, 바뀐 영역의 `typecheck:*`와 `test:*`를 돌립니다(`tools/`는 idle도, 루트의 `package.json`·`scripts/` 등은 모든 영역). 검사를 건너뛰었으면 그렇다고 밝히고, Unity에서만 확인되는 변경은 확인하지 못했다고 밝힙니다. CI도 같은 영역으로 나눠 `idle-ci`, `tools-ci`, `mmo-ci`가 바뀐 영역만 돌리므로, 영역 규칙(`scripts/check.mjs`와 워크플로의 `paths`)은 함께 고칩니다.
 
 ## 구조
 

@@ -14,7 +14,7 @@ Node.js로 작성한 Excel 데이터 컴파일러입니다. **첫 번째 시트�
 
 ## 실행
 
-Node.js 22 이상이 필요합니다. 이 도구는 game-portfolio 모노레포의 `@idle/data-tool` 워크스페이스이므로 의존성은 리포지토리 루트에서 `npm ci`로 설치합니다. 이후 명령은 이 폴더(`tools/data-tool`)에서 실행합니다.
+Node.js 22 이상이 필요합니다. 이 도구는 game-portfolio 모노레포의 `@tools/data-tool` 워크스페이스이므로 의존성은 리포지토리 루트에서 `npm ci`로 설치합니다. 이후 명령은 이 폴더(`tools/data-tool`)에서 실행합니다.
 
 ```sh
 npm run example

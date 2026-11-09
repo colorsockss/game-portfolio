@@ -1,5 +1,5 @@
 {
-  "name": "@idle/data-tool",
+  "name": "@tools/data-tool",
   "version": "1.0.0",
   "private": true,
   "description": "Excel data/schema compiler for Node.js and Unity PuerTS",

@@ -136,10 +136,6 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      # npm test의 생성 검사와 test:mmo가 mmo의 패킷 코드 생성(Grpc.Tools의 protoc)과 C# 테스트에 쓴다(ci.yml과 같음).
-      - uses: actions/setup-dotnet@v6
-        with:
-          dotnet-version: 10.0.x
       - run: npm ci
       # PuerTS(약 270 MB)는 Unity만 쓴다. 설치 스크립트가 같으면 다시 받지 않는다.
       - uses: actions/cache/restore@v6
@@ -161,8 +157,9 @@ jobs:
             idle/client/Packages/v8
             idle/client/Packages/.puerts-*
           key: ${{ steps.puerts.outputs.cache-primary-key }}
-      - run: npm run typecheck
-      - run: npm test
+      # 키우기만 검사한다(idle-ci.yml과 같음). 툴과 mmo는 각자의 CI가 보므로 mmo의 실패가 Live 내보내기를 막지 않는다.
+      - run: npm run typecheck:idle
+      - run: npm run test:idle
 
       # 배포 키로만 들어가고, 처음 보는 호스트 키는 믿지 않는다. 기준 버전과 Live 서버를 읽는 데도 쓴다.
       - name: SSH to the VPS

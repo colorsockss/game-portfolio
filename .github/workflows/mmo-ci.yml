@@ -1,0 +1,52 @@
+# MMORPG의 공용(패킷)과 서버를 검사한다: 생성 파일 검사(packets.proto → C#)와 C# 테스트(mmo.slnx). 엔진이 필요한 클라이언트 검사와
+# 빌드는 로컬에서 하고(mmo/docs/backlog.md), 클라이언트의 엔진 없는 검사는 그 클라이언트를 시작할 때 워크플로를 따로 더한다.
+# paths는 scripts/check.mjs의 영역 규칙과 같게 유지한다.
+name: mmo CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mmo/**"
+      - "scripts/generate.mjs"
+      # test:mmo가 여기에 있다.
+      - "package.json"
+      - ".nvmrc"
+      - ".github/workflows/mmo-ci.yml"
+      # 어떤 테스트도 문서를 읽지 않는다. 제외는 맨 뒤에 둬야 앞의 포함을 덮는다.
+      - "!**/*.md"
+  pull_request:
+    paths:
+      - "mmo/**"
+      - "scripts/generate.mjs"
+      # test:mmo가 여기에 있다.
+      - "package.json"
+      - ".nvmrc"
+      - ".github/workflows/mmo-ci.yml"
+      - "!**/*.md"
+  workflow_dispatch:
+
+# 같은 PR(또는 브랜치)에 새 커밋이 오면 이전 실행을 취소해 무료 시간을 아낀다.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    # 멈춘 테스트가 기본 한도(360분)까지 무료 시간을 쓰지 않게 한다.
+    timeout-minutes: 10
+    steps:
+      # mmo는 아직 LFS 파일도 npm 의존성도 쓰지 않는다(generate.mjs는 Node 내장 모듈만 쓴다).
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      # 패킷 코드 생성(Grpc.Tools의 protoc)과 C# 테스트가 쓴다.
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - run: npm run test:mmo

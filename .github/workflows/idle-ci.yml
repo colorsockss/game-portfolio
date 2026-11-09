@@ -1,11 +1,30 @@
-# 타입 검사와 전체 테스트(생성 파일 검사, import 경계 검사, 서버·클라이언트 번들 포함)를 돌린다.
-# 실행 시간과 LFS 사용량은 MANUAL.md의 "CI"에 있다.
-name: CI
+# 키우기의 타입 검사와 테스트(생성 파일 검사, import 경계 검사, 서버·클라이언트 번들 포함)를 돌린다. 키우기가 툴의 출력을 생성 파일로
+# 커밋하므로 tools/가 바뀌어도 돈다. paths는 scripts/check.mjs의 영역 규칙과 같게 유지한다. 실행 시간과 LFS 사용량은 MANUAL.md의 "CI"에 있다.
+name: idle CI
 
 on:
   push:
     branches: [main]
+    paths:
+      - "idle/**"
+      - "tools/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".nvmrc"
+      - ".github/workflows/idle-ci.yml"
+      # 어떤 테스트도 문서를 읽지 않는다. 제외는 맨 뒤에 둬야 앞의 포함을 덮는다.
+      - "!**/*.md"
   pull_request:
+    paths:
+      - "idle/**"
+      - "tools/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".nvmrc"
+      - ".github/workflows/idle-ci.yml"
+      - "!**/*.md"
   workflow_dispatch:
 
 # 같은 PR(또는 브랜치)에 새 커밋이 오면 이전 실행을 취소해 무료 시간을 아낀다.
@@ -34,10 +53,6 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      # mmo의 패킷 코드 생성(Grpc.Tools의 protoc)과 C# 테스트가 쓴다.
-      - uses: actions/setup-dotnet@v6
-        with:
-          dotnet-version: 10.0.x
       - run: npm ci
-      - run: npm run typecheck
-      - run: npm test
+      - run: npm run typecheck:idle
+      - run: npm run test:idle

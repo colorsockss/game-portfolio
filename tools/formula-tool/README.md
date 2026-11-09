@@ -4,7 +4,7 @@
 
 ## 실행
 
-이 앱은 game-portfolio 모노레포의 `@idle/formula-tool` 워크스페이스이므로 의존성은 리포지토리 루트에서 `npm ci`로 설치합니다. 실행은 `npm run tauri dev -w @idle/formula-tool`이고 [Tauri 사전 요구사항](https://v2.tauri.app/start/prerequisites/)(Rust 툴체인)이 필요합니다.
+이 앱은 game-portfolio 모노레포의 `@tools/formula-tool` 워크스페이스이므로 의존성은 리포지토리 루트에서 `npm ci`로 설치합니다. 실행은 `npm run tauri dev -w @tools/formula-tool`이고 [Tauri 사전 요구사항](https://v2.tauri.app/start/prerequisites/)(Rust 툴체인)이 필요합니다.
 
 ## TypeScript 내보내기 설정
 

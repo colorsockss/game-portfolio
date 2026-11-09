@@ -62,8 +62,8 @@ Protobuf를 고른 이유는 언어 중립 표준 정의 하나에서 protoc가 
 
 | 명령 | 설명 |
 | --- | --- |
-| `npm run generate` | `packets.proto`에서 `generated/Packets.cs`를 다시 만든다(idle의 생성 파일도 함께) |
-| `npm run test:mmo` | mmo의 C# 테스트(`mmo.slnx`: 패킷, 서버) |
-| `npm run check` | 바뀐 곳에 맞는 검사. `mmo/`만 바뀌었으면 생성 파일 검사와 `test:mmo` |
+| `npm run generate -- mmo` | `packets.proto`에서 `generated/Packets.cs`를 다시 만든다(게임 이름이 없으면 idle의 생성 파일도 함께) |
+| `npm run test:mmo` | 생성 파일 검사 후 mmo의 C# 테스트(`mmo.slnx`: 패킷, 서버). CI(`mmo-ci.yml`)는 `mmo/`가 바뀌면 이것만 돌린다 |
+| `npm run check` | 바뀐 영역의 검사. `mmo/`만 바뀌었으면 `test:mmo` |
 | `dotnet run -c Release --project mmo/server/src -- --port 7777` | 서버. `--max-players`(동시 접속 상한, 기본 1000), `--spawn-half-extent`(시작 위치를 고르는 정사각형의 반 너비, m, 기본 0) |
 | `dotnet run -c Release --project mmo/server/tools/load-test -- --bots 2000 --half-extent 285` | 봇 부하. 서버는 같은 `--spawn-half-extent`로 띄우고, 틱 시간·CPU·메모리는 서버 로그에서 읽는다. `--host`, `--port`, `--seconds`(측정 시간, 기본 30) |

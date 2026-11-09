@@ -1,0 +1,53 @@
+# 두 게임이 함께 쓰는 툴(tools/)의 타입 검사와 테스트를 돌린다. 툴의 출력이 게임의 생성 파일과 맞는지는 각 게임의 CI가 본다.
+# 툴의 테스트가 생성 코드를 실제 Big으로 실행하므로 idle/shared/big-number/가 바뀌어도 돈다. paths는 scripts/check.mjs의 영역 규칙과
+# 같게 유지한다.
+name: tools CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/**"
+      - "idle/shared/big-number/**"
+      - "scripts/check-boundaries.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".nvmrc"
+      - ".github/workflows/tools-ci.yml"
+      # 어떤 테스트도 문서를 읽지 않는다. 제외는 맨 뒤에 둬야 앞의 포함을 덮는다.
+      - "!**/*.md"
+  pull_request:
+    paths:
+      - "tools/**"
+      - "idle/shared/big-number/**"
+      - "scripts/check-boundaries.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".nvmrc"
+      - ".github/workflows/tools-ci.yml"
+      - "!**/*.md"
+  workflow_dispatch:
+
+# 같은 PR(또는 브랜치)에 새 커밋이 오면 이전 실행을 취소해 무료 시간을 아낀다.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    # 멈춘 테스트가 기본 한도(360분)까지 무료 시간을 쓰지 않게 한다.
+    timeout-minutes: 10
+    steps:
+      # 툴의 테스트는 LFS 파일을 읽지 않는다(시트는 테스트가 만든다). LFS는 포인터로만 받는다.
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck:tools
+      - run: npm run test:tools
