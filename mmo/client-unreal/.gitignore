@@ -1,0 +1,14 @@
+# Unreal 프로젝트 루트(.uproject가 있는 폴더)의 규칙. 엔진과 빌드가 다시 만드는 것은 커밋하지 않는다.
+/Binaries/
+/Intermediate/
+/Saved/
+/DerivedDataCache/
+/Plugins/**/Binaries/
+/Plugins/**/Intermediate/
+
+# GenerateProjectFiles가 만드는 IDE 프로젝트(Xcode, Visual Studio, VS Code). Rider의 .idea/는 루트 .gitignore에 있다.
+*.xcworkspace
+*.sln
+.vs/
+.vscode/
+*.code-workspace

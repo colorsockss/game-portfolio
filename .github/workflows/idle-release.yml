@@ -109,13 +109,14 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      # Unity 빌드는 LFS 전체가 필요하다. 바뀐 객체만 받도록 .git/lfs를 목록의 해시로 캐시한다(무료 전송 월 10 GiB). 그 밖의
-      # 실행은 테스트가 읽는 xlsx만 받는다.
+      # Unity 빌드는 idle/의 LFS 전체가 필요하다. 바뀐 객체만 받도록 .git/lfs를 목록의 해시로 캐시한다(무료 전송 월 10 GiB).
+      # 받는 범위와 목록을 idle/로 좁혀 mmo 에셋은 받지 않고, mmo 에셋이 바뀌어도 캐시 키가 그대로다. 그 밖의 실행은 테스트가
+      # 읽는 xlsx만 받는다.
       # Unity 실행의 캐시(LFS, PuerTS, Library)는 채운 직후에 저장한다. 잡 끝(post)에 저장하면 뒤의 단계가 실패한 실행이
       # 아무것도 남기지 못한다(2026-11-02 idle assets: Unity 빌드는 성공했는데 조합 검사에서 멈춰 캐시가 없었음).
       - name: List LFS objects
         if: env.UNITY == 'true'
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects
+        run: git lfs ls-files -l -I "idle/**" | cut -d' ' -f1 | sort > .lfs-objects
       - uses: actions/cache/restore@v6
         id: lfs
         if: env.UNITY == 'true'
@@ -126,7 +127,7 @@ jobs:
       - name: Pull LFS files
         run: |
           git lfs install --local
-          if [ "$UNITY" = true ]; then git lfs pull; else git lfs pull --include="idle/data/*.xlsx"; fi
+          if [ "$UNITY" = true ]; then git lfs pull --include="idle/**"; else git lfs pull --include="idle/data/*.xlsx"; fi
       - uses: actions/cache/save@v6
         if: env.UNITY == 'true' && steps.lfs.outputs.cache-hit != 'true'
         with:

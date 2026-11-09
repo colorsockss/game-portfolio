@@ -13,7 +13,7 @@ import 경계는 `test:idle`과 `test:tools`가 `scripts/check-boundaries.mjs`�
 
 ## 처음 설정
 
-Node.js 22.13 이상, .NET SDK 10(mmo의 패킷 코드 생성과 C# 테스트, `brew install --cask dotnet-sdk`), Git LFS가 필요합니다. 이미지, 사운드, 모델, 폰트, 네이티브 플러그인, xlsx는 `.gitattributes`에 따라 LFS로 저장됩니다. **LFS를 설치하지 않고 커밋하면 이 파일들이 일반 Git 객체로 들어가므로** 첫 커밋 전에 설치하세요. 수식툴 데스크톱 앱을 실행하려면 [Tauri 사전 요구사항](https://v2.tauri.app/start/prerequisites/)(Rust 툴체인)도 필요합니다.
+Node.js 22.13 이상, .NET SDK 10(mmo의 패킷 코드 생성과 C# 테스트, `brew install --cask dotnet-sdk`), Git LFS가 필요합니다. 이미지, 사운드, 모델, 폰트, Unreal 에셋(`.uasset`, `.umap`), 네이티브 플러그인, xlsx는 `.gitattributes`에 따라 LFS로 저장됩니다. **LFS를 설치하지 않고 커밋하면 이 파일들이 일반 Git 객체로 들어가므로** 첫 커밋 전에 설치하세요. 수식툴 데스크톱 앱을 실행하려면 [Tauri 사전 요구사항](https://v2.tauri.app/start/prerequisites/)(Rust 툴체인)도 필요합니다.
 
 ```sh
 brew install git-lfs
@@ -52,7 +52,7 @@ CI는 영역마다 워크플로 하나입니다. 각 워크플로는 `main`의 �
 
 Node는 22.14.0입니다(`.nvmrc`. 로컬과 같은 버전이고, idle 서버가 `node:sqlite`를 씁니다. 릴리스 워크플로도 같은 파일을 읽습니다). npm 캐시(`~/.npm`, 약 41 MB)는 `setup-node`가 `package-lock.json` 해시로 저장합니다. 키우기 릴리스(`idle-release.yml`)도 `typecheck:idle`과 `test:idle`만 돌리므로 툴이나 mmo의 실패가 키우기 Live 내보내기를 막지 않습니다. mmo의 엔진 빌드와 테스트(Unity, Unreal)는 로컬에서 하고, 클라이언트의 엔진 없는 검사는 그 클라이언트를 시작할 때 워크플로를 더합니다([mmo/docs/backlog.md](mmo/docs/backlog.md) 7, 8, 10).
 
-- **LFS**: 체크아웃은 포인터만 받고, `idle-ci`만 `git lfs pull --include="idle/data/*.xlsx"`로 `generate --check`가 읽는 xlsx 15개(151,191바이트, 2026-11-09)를 받습니다. LFS 전체(981개, 약 241 MB, 2026-10-31. Unity 그림·오디오·폰트가 대부분)의 0.1%도 안 되고, 무료 다운로드량 월 10 GiB로 약 7만 회 실행할 수 있습니다. 툴의 테스트는 LFS 파일을 읽지 않습니다. 테스트가 다른 LFS 파일을 읽게 되면 `--include`에 더합니다.
+- **LFS**: 체크아웃은 포인터만 받고, `idle-ci`만 `git lfs pull --include="idle/data/*.xlsx"`로 `generate --check`가 읽는 xlsx 15개(151,191바이트, 2026-11-09)를 받습니다. LFS 전체(981개, 약 241 MB, 2026-10-31. Unity 그림·오디오·폰트가 대부분)의 0.1%도 안 되고, 무료 다운로드량 월 10 GiB로 약 7만 회 실행할 수 있습니다. 툴의 테스트는 LFS 파일을 읽지 않습니다. 테스트가 다른 LFS 파일을 읽게 되면 `--include`에 더합니다. 키우기 릴리스(`idle-release`)의 Unity 실행은 `idle/`의 LFS만 받고 그 목록의 해시를 LFS 캐시 키로 써서, mmo 에셋은 받지 않고 mmo 에셋이 바뀌어도 캐시가 무효가 되지 않습니다.
 - **PuerTS**: `npm run setup`(약 270 MB)은 돌리지 않습니다. 클라이언트 타입 검사는 커밋된 `types/`의 선언을, 번들 실행 테스트는 가짜 호스트(`test/support/puerts-host.mjs`)를 씁니다.
 - **시간**: 영역으로 나누기 전의 전체 단계(`npm ci` → `typecheck` → `test`)는 깨끗한 얕은 클론의 M4 Max에서 약 17초였습니다(`npm ci` 1.8초, 빈 캐시면 2.4초 / `typecheck` 6.4초 / `test` 7.8초, CPU 합 약 47초). 비공개 저장소의 표준 러너(2 vCPU)에서 잰 첫 실행(2026-10-22, 실행 39737281668)은 잡 111초로 로컬의 약 6.5배입니다: 체크아웃과 LFS 각 1초, `setup-node` 7초, `npm ci` 6초, `typecheck` 32초, `test` 59초. 2026-11-02에 공개 저장소가 되어 표준 러너는 무료이고, 4 vCPU 러너에서 잰 첫 실행은 잡 93초입니다. 나누기 직전의 실행(2026-11-06, 실행 42192687852)은 잡 81초였고(`setup-dotnet` 0.8초, `typecheck` 19초, `test` 49초 = 생성 파일 검사 4.5초 + 워크스페이스 테스트(idle과 툴) 40초 + `test:mmo` 4.2초), mmo만 바뀐 푸시도 이 81초를 다 썼습니다. 나눈 뒤 로컬(M4 Max, 캐시 있음, 2026-11-09)에서는 `typecheck:idle` 6.4초, `test:idle` 12.5초, `typecheck:tools` 2.0초, `test:tools` 2.9초, `test:mmo` 2.9초입니다. 나눈 뒤의 러너 시간은 아직 재지 않았습니다. 멈춘 테스트가 시간을 쓰지 않게 잡 한도는 10분입니다.
 

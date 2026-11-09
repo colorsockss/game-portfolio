@@ -1,4 +1,4 @@
-# Unity 규칙은 idle/client/.gitignore에 있다(Unity 프로젝트 루트에 고정되어 있다).
+# 엔진 규칙은 경로가 프로젝트 루트에 고정되어 있어 그 루트의 .gitignore에 있다: Unity는 idle/client/, Unreal은 mmo/client-unreal/.
 
 # OS
 .DS_Store

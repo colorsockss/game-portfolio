@@ -33,6 +33,10 @@
 *.ttf filter=lfs diff=lfs merge=lfs -text
 *.otf filter=lfs diff=lfs merge=lfs -text
 
+# Unreal 에셋과 레벨(바이너리, mmo/client-unreal/)
+*.uasset filter=lfs diff=lfs merge=lfs -text
+*.umap filter=lfs diff=lfs merge=lfs -text
+
 # 네이티브 플러그인. PuerTS는 저장소에 두지 않는다(idle/client/.gitignore)
 *.dll filter=lfs diff=lfs merge=lfs -text
 *.so filter=lfs diff=lfs merge=lfs -text
