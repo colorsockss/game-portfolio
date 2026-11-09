@@ -2,7 +2,7 @@
 
 **준비 중입니다.** 패킷 정의(`shared/contract/packets.proto`)와 서버 뼈대(로그인, 20Hz 틱, 이동 검증, 시야, SQLite 저장)가 있고([MANUAL.md](MANUAL.md)), 클라이언트는 아직 없습니다.
 
-틱마다 이동과 전투를 계산해 주변 플레이어에게 보내는 상태 서버 하나에 Unity와 Unreal 클라이언트가 함께 붙는 MMORPG를 만듭니다. 두 클라이언트는 같은 Protobuf 정의에서 생성한 코드(Unity는 C#, Unreal은 C++)로 같은 조건에서 서버에 붙습니다. Unity 클라이언트를 먼저 다 만들고, Unreal 클라이언트는 그것을 C++과 UMG로 옮겨(포팅) 만듭니다.
+틱마다 이동과 전투를 계산해 주변 플레이어에게 보내는 상태 서버 하나에 Unity와 Unreal 클라이언트가 함께 붙는 MMORPG를 만듭니다. 두 클라이언트는 같은 Protobuf 정의에서 생성한 코드(Unity는 C#, Unreal은 C++)로 같은 조건에서 서버에 붙습니다. Unreal 클라이언트를 먼저 다 만들고, Unity 클라이언트는 그것을 C#과 UI Toolkit으로 옮겨(포팅) 만듭니다.
 
 ## 계획
 
