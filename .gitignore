@@ -28,6 +28,10 @@ npm-debug.log*
 /idle/server/*.sqlite
 /idle/server/*.sqlite-*
 
+# MMO 서버의 로컬 SQLite 데이터베이스(dotnet run --project mmo/server/src)
+/mmo/server/*.sqlite
+/mmo/server/*.sqlite-*
+
 # MMO C# 프로젝트의 빌드 결과물(dotnet build, dotnet test)
 /mmo/**/bin/
 /mmo/**/obj/

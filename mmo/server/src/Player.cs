@@ -67,6 +67,11 @@ namespace PortfolioMmo.Server
         internal bool Moved { get; set; }
 
         /// <summary>
+        /// 마지막으로 저장한 뒤에 움직였다.
+        /// </summary>
+        internal bool Dirty { get; set; }
+
+        /// <summary>
         /// 로그인한 뒤 아직 자기 EntityEnter를 보내지 않았다.
         /// </summary>
         internal bool JustEntered { get; set; } = true;

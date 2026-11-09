@@ -103,7 +103,7 @@ namespace PortfolioMmo.Server
         public int Port => ((IPEndPoint)_listener.LocalEndpoint).Port;
 
         /// <summary>
-        /// cancellationToken이 취소될 때까지 서버를 돌린다. 취소되면 모두에게 SERVER_SHUTDOWN을 보내고 닫는다.
+        /// cancellationToken이 취소될 때까지 서버를 돌린다. 취소되면 모두에게 SERVER_SHUTDOWN을 보내고, 위치를 저장하고 닫는다.
         /// </summary>
         public async Task RunAsync(CancellationToken cancellationToken)
         {
@@ -129,6 +129,8 @@ namespace PortfolioMmo.Server
             {
                 _world.Kick(connection.Session, KickReason.ServerShutdown);
             }
+
+            _world.SaveAll();
 
             Task[] closed = _connections.Select(connection => connection.Closed).ToArray();
             Flush();

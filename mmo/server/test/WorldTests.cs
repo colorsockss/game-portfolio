@@ -230,11 +230,68 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 나간 플레이어의 위치는 그 틱에 저장되고, 서버를 다시 띄운 뒤 같은 ID로 들어오면 그 자리에서 시작한다.
+        /// </summary>
+        [Fact]
+        public void LeavingSavesThePositionForTheNextServer()
+        {
+            using var store = new PlayerStore(":memory:");
+            World world = NewWorld(store: store);
+            Session session = LogIn(world, "hero_01");
+            WalkTo(world, session, 100, 0);
+            Move(world, session, 100, 0, ack: 0, yaw: 32);
+            world.Disconnect(session);
+            world.Step();
+            Assert.Equal(new SavedPosition(100, 0, 32), store.Load("hero_01"));
+
+            World restarted = NewWorld(store: store);
+            Session again = LogIn(restarted, "hero_01");
+            restarted.Step();
+            Assert.Equal(new[] { LoginOk(1), Enter(new EntityEnter { Id = 1, X = 100, Yaw = 32, Name = "hero_01" }) }, Take(again));
+        }
+
+        /// <summary>
+        /// 나간 틱 안에 다시 들어오면 아직 저장하지 않은 위치에서 이어 간다.
+        /// </summary>
+        [Fact]
+        public void RejoiningBeforeTheSaveKeepsThePosition()
+        {
+            World world = NewWorld();
+            Session session = LogIn(world, "hero_01");
+            WalkTo(world, session, 100, 0);
+            world.Disconnect(session);
+
+            Session again = LogIn(world, "hero_01");
+            world.Step();
+            Assert.Equal(new[] { LoginOk(2), Enter(Entity(2, "hero_01", x: 100)) }, Take(again));
+        }
+
+        /// <summary>
+        /// 접속 중인 플레이어는 움직였으면 저장 간격마다 저장된다.
+        /// </summary>
+        [Fact]
+        public void MovedPlayersAreSavedEveryInterval()
+        {
+            using var store = new PlayerStore(":memory:");
+            World world = NewWorld(store: store);
+            Session session = LogIn(world, "hero_01");
+            WalkTo(world, session, 100, 0);
+            Assert.Null(store.Load("hero_01"));
+
+            while (world.Tick % World.SaveIntervalTicks != 0)
+            {
+                world.Step();
+            }
+
+            Assert.Equal(new SavedPosition(100, 0, 0), store.Load("hero_01"));
+        }
+
+        /// <summary>
         /// 모든 플레이어가 원점에서 시작하는 월드.
         /// </summary>
-        private static World NewWorld(int maxPlayers = 10)
+        private static World NewWorld(int maxPlayers = 10, PlayerStore? store = null)
         {
-            return new World(maxPlayers, spawnHalfExtent: 0, new Random(1));
+            return new World(maxPlayers, spawnHalfExtent: 0, new Random(1), store ?? new PlayerStore(":memory:"));
         }
 
         /// <summary>

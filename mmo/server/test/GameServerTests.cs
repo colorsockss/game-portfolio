@@ -27,7 +27,7 @@ namespace PortfolioMmo.Server.Tests
         public async Task LogsInOverTcpAndKicksAnOversizedFrame()
         {
             using var cancellation = new CancellationTokenSource();
-            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1)));
+            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new PlayerStore(":memory:")));
             Task running = server.RunAsync(cancellation.Token);
 
             using var client = new TcpClient();
@@ -47,13 +47,14 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 서버가 내려가면 연결마다 SERVER_SHUTDOWN을 보내고 닫는다.
+        /// 서버가 내려가면 연결마다 SERVER_SHUTDOWN을 보내고, 위치를 저장하고 닫는다.
         /// </summary>
         [Fact]
-        public async Task ShutdownKicksEveryConnection()
+        public async Task ShutdownKicksEveryConnectionAndSaves()
         {
             using var cancellation = new CancellationTokenSource();
-            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1)));
+            using var store = new PlayerStore(":memory:");
+            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), store));
             Task running = server.RunAsync(cancellation.Token);
 
             using var client = new TcpClient();
@@ -73,6 +74,7 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(KickReason.ServerShutdown, packet!.Kicked.Reason);
             client.Close();
             await running.WaitAsync(s_timeout);
+            Assert.Equal(new SavedPosition(0, 0, 0), store.Load("hero_01"));
         }
 
         /// <summary>

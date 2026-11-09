@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Microsoft.Data.Sqlite;
 using PortfolioMmo.Contract;
 
 namespace PortfolioMmo.Server
@@ -15,6 +16,11 @@ namespace PortfolioMmo.Server
         /// shortcut: 상수다. 데이터(backlog 4)가 생기면 데이터에서 읽고 클라이언트 예측과 함께 쓴다.
         /// </summary>
         public const double MaxSpeedMetersPerSecond = 6;
+
+        /// <summary>
+        /// 움직인 플레이어의 위치를 저장하는 간격(틱, 60초). 서버가 죽으면 이만큼의 이동을 잃는다. 나간 플레이어는 그 틱에 저장한다.
+        /// </summary>
+        public const uint SaveIntervalTicks = 60 * Units.TicksPerSecond;
 
         /// <summary>
         /// 틱마다 차오르는 이동 거리(칸). 클라이언트 시계가 조금 빨라도 거절하지 않게 10% 여유를 둔다.
@@ -37,8 +43,7 @@ namespace PortfolioMmo.Server
         private readonly int _maxPlayers;
 
         /// <summary>
-        /// 처음 들어온 플레이어를 놓을 정사각형의 반 너비(칸). 원점이 가운데다.
-        /// shortcut: 저장(backlog 6)이 없어 마지막 위치 대신 쓴다. 저장이 생기면 저장한 위치에서 시작한다.
+        /// 저장한 위치가 없는(처음 들어온) 플레이어를 놓을 정사각형의 반 너비(칸). 원점이 가운데다.
         /// </summary>
         private readonly int _spawnHalfExtent;
 
@@ -46,6 +51,11 @@ namespace PortfolioMmo.Server
         /// 시작 위치를 고르는 난수.
         /// </summary>
         private readonly Random _random;
+
+        /// <summary>
+        /// 마지막 위치의 저장소.
+        /// </summary>
+        private readonly PlayerStore _store;
 
         /// <summary>
         /// 로그인한 플레이어. 로그인 ID가 키다.
@@ -58,6 +68,11 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<long, List<Player>> _cells = new Dictionary<long, List<Player>>();
 
         /// <summary>
+        /// 월드에서 빠졌지만 아직 위치를 저장하지 못한 플레이어. 로그인 ID가 키이고, 다시 들어오면 저장소보다 먼저 본다.
+        /// </summary>
+        private readonly Dictionary<string, Player> _unsaved = new Dictionary<string, Player>();
+
+        /// <summary>
         /// 다음 개체 번호. 0은 "없음"이라 1부터 쓴다.
         /// </summary>
         private uint _nextId = 1;
@@ -65,11 +80,12 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 빈 월드를 만든다.
         /// </summary>
-        public World(int maxPlayers, int spawnHalfExtent, Random random)
+        public World(int maxPlayers, int spawnHalfExtent, Random random, PlayerStore store)
         {
             _maxPlayers = maxPlayers;
             _spawnHalfExtent = spawnHalfExtent;
             _random = random;
+            _store = store;
         }
 
         /// <summary>
@@ -148,7 +164,8 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 틱 하나를 끝낸다. 플레이어마다 시야가 바뀐 것과 움직인 개체를 보내고, 이동 거리를 채운다.
+        /// 틱 하나를 끝낸다. 플레이어마다 시야가 바뀐 것과 움직인 개체를 보내고, 이동 거리를 채우고,
+        /// 나간 플레이어와(저장 간격마다) 움직인 플레이어의 위치를 저장한다.
         /// </summary>
         public void Step()
         {
@@ -165,6 +182,19 @@ namespace PortfolioMmo.Server
             }
 
             Tick++;
+            bool periodic = Tick % SaveIntervalTicks == 0;
+            if (periodic || (_unsaved.Count > 0))
+            {
+                Save(periodic);
+            }
+        }
+
+        /// <summary>
+        /// 나간 플레이어와 움직인 플레이어의 위치를 지금 저장한다. 서버가 내려갈 때 부른다.
+        /// </summary>
+        public void SaveAll()
+        {
+            Save(includeOnline: true);
         }
 
         /// <summary>
@@ -190,18 +220,17 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            Player player;
+            // 이어 갈 위치: 접속 중인 예전 연결 → 아직 저장하지 못한 나간 플레이어 → 저장소 → 무작위.
+            SavedPosition? position = previous != null ? new SavedPosition(previous.X, previous.Z, previous.Yaw)
+                : _unsaved.TryGetValue(login.LoginId, out Player? left) ? new SavedPosition(left.X, left.Z, left.Yaw)
+                : _store.Load(login.LoginId);
+            SavedPosition start = position ?? new SavedPosition(
+                _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1), _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1), 0);
+            var player = new Player(_nextId++, login.LoginId, session, start.X, start.Z, start.Yaw);
             if (previous != null)
             {
-                player = new Player(_nextId++, login.LoginId, session, previous.X, previous.Z, previous.Yaw);
                 // 새 개체를 넣기 전에 빼야 같은 키의 새 개체가 지워지지 않는다.
                 Kick(previous.Session, KickReason.DuplicateLogin);
-            }
-            else
-            {
-                int x = _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1);
-                int z = _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1);
-                player = new Player(_nextId++, login.LoginId, session, x, z, 0);
             }
 
             _players.Add(player.LoginId, player);
@@ -246,6 +275,7 @@ namespace PortfolioMmo.Server
             player.Z = move.Z;
             player.Yaw = move.Yaw;
             player.Moved = true;
+            player.Dirty = true;
             long cell = CellOf(move.X, move.Z);
             if (cell != player.Cell)
             {
@@ -343,6 +373,49 @@ namespace PortfolioMmo.Server
             session.Player = null;
             _players.Remove(player.LoginId);
             _cells[player.Cell].Remove(player);
+            _unsaved[player.LoginId] = player;
+        }
+
+        /// <summary>
+        /// 나간 플레이어와(includeOnline이면) 움직인 접속 중인 플레이어의 위치를 한 트랜잭션으로 저장한다.
+        /// 실패하면 그대로 남겨 두고 다음 Step에서 다시 저장한다.
+        /// </summary>
+        private void Save(bool includeOnline)
+        {
+            // 나간 플레이어를 먼저 넣는다. 같은 ID로 다시 들어온 플레이어의 위치가 더 새것이라 뒤에 써야 한다.
+            var players = new List<Player>(_unsaved.Values);
+            if (includeOnline)
+            {
+                foreach (Player player in _players.Values)
+                {
+                    if (player.Dirty)
+                    {
+                        players.Add(player);
+                    }
+                }
+            }
+
+            if (players.Count == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                _store.Save(players);
+            }
+            catch (SqliteException exception)
+            {
+                // 저장하지 못한 위치는 메모리에 남아 있으니, 틱을 멈추지 않고 다음에 다시 쓴다.
+                Console.Error.WriteLine($"Saving {players.Count} players failed: {exception.Message}");
+                return;
+            }
+
+            _unsaved.Clear();
+            foreach (Player player in players)
+            {
+                player.Dirty = false;
+            }
         }
 
         /// <summary>

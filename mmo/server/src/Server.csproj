@@ -7,8 +7,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>PortfolioMmo.Server</RootNamespace>
     <AssemblyName>PortfolioMmo.Server</AssemblyName>
+    <!-- dotnet run의 작업 디렉터리. 기본 데이터베이스(mmo.sqlite)가 mmo/server/에 생긴다. -->
+    <RunWorkingDirectory>$(MSBuildProjectDirectory)/..</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.14" />
     <ProjectReference Include="../../shared/contract/Contract.csproj" />
   </ItemGroup>
 </Project>
