@@ -6,7 +6,8 @@
 // 쓰지 않고, data-schema는 big-number를, game-core는 codes, big-number, data-schema를, protocol은
 // codes, big-number, game-core를 쓴다). 클라이언트와 서버는
 // 공용 패키지만 쓰고(서로는 쓰지 않는다), 둘을 함께 쓸 수 있는 것은 integration/뿐이다. 밸런스 시뮬레이션(balance/)은
-// 공용 패키지와 서버(새 계정의 저장 데이터)만 쓴다. 툴(tools/)은 게임 코드를 쓰지 않고 생성 파일만 쓴다. 툴의 테스트만
+// 공용 패키지와 서버(새 계정의 저장 데이터)만 쓴다. 툴(tools/)은 게임 코드를 쓰지 않고 생성 파일만 쓰며, 게임도 툴(@tools)을
+// import하지 않는다(실행만 한다). 툴의 테스트만
 // big 열·Big 모드로 만든 코드를 실제 Big으로 실행해 보려고 @idle/big-number를 쓴다.
 // 클라이언트(idle/client/TypeScript/src) 안에서는 최상위 폴더 하나가 계층이며, 자기보다 아래 계층만
 // import할 수 있다: domain → application → adapters와 presentation(서로 import하지 않는다) →
@@ -26,7 +27,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const shared = ["@idle/big-number", "@idle/codes", "@idle/data-schema", "@idle/game-core", "@idle/protocol"];
 
-// 워크스페이스 폴더 → 그 코드가 import할 수 있는 @idle 패키지.
+// 워크스페이스 폴더 → 그 코드가 import할 수 있는 이 저장소의 패키지(@idle, @tools).
 const allowed = {
   "idle/shared/big-number": [],
   "idle/shared/codes": [],
@@ -40,7 +41,7 @@ const allowed = {
   "tools/data-tool": [],
   "tools/formula-tool": [],
 };
-// 워크스페이스 폴더 → 그 테스트 파일(*.test.*)만 더 import할 수 있는 @idle 패키지.
+// 워크스페이스 폴더 → 그 테스트 파일(*.test.*)만 더 import할 수 있는 이 저장소의 패키지.
 const allowedInTests = {
   "tools/data-tool": ["@idle/big-number"],
   "tools/formula-tool": ["@idle/big-number"],
@@ -76,7 +77,8 @@ for (const [workspace, packages] of Object.entries(allowed)) {
     const specifiers = [...code.matchAll(/(?:\bfrom|\bimport)\s*\(?\s*["']([^"']+)["']/g)].map(match => match[1]);
     const usable = /\.test\.\w+$/.test(name) ? [...packages, ...(allowedInTests[workspace] ?? [])] : packages;
     for (const specifier of specifiers) {
-      const target = /^@idle\/[\w-]+/.exec(specifier)?.[0];
+      // 툴(@tools)도 이 저장소의 패키지라서 허용 목록에 없으면 막는다.
+      const target = /^@(idle|tools)\/[\w-]+/.exec(specifier)?.[0];
       if (target && !usable.includes(target)) violations.push(`${name} imports ${target}`);
     }
     if (name.startsWith(clientSource)) checkClientLayers(name, code, specifiers);

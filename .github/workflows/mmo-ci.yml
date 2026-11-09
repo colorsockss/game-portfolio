@@ -1,6 +1,6 @@
 # MMORPG의 공용(패킷)과 서버를 검사한다: 생성 파일 검사(packets.proto → C#)와 C# 테스트(mmo.slnx). 엔진이 필요한 클라이언트 검사와
 # 빌드는 로컬에서 하고(mmo/docs/backlog.md), 클라이언트의 엔진 없는 검사는 그 클라이언트를 시작할 때 워크플로를 따로 더한다.
-# paths는 scripts/check.mjs의 영역 규칙과 같게 유지한다.
+# 영역 폴더의 규칙은 scripts/check.mjs와 함께 고친다.
 name: mmo CI
 
 on:

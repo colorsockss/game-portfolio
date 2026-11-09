@@ -1,7 +1,8 @@
-// 커밋하지 않은 변경(추적하지 않는 파일 포함)을 보고 바뀐 영역의 검사만 돌린다. 영역을 가르는 규칙은 CI 워크플로(idle-ci, tools-ci,
-// mmo-ci)의 paths와 같게 유지한다.
+// 커밋하지 않은 변경(추적하지 않는 파일 포함)을 보고 바뀐 영역의 검사만 돌린다. 영역 폴더의 규칙은 CI 워크플로(idle-ci, tools-ci,
+// mmo-ci)의 paths와 같게 유지한다. 영역 밖의 파일은 CI보다 넓게 모든 영역을 검사하므로 로컬 검사가 CI보다 좁아지지 않는다.
 //   *.md만                     → 없음 (어떤 테스트도 문서를 읽지 않는다)
-//   idle/shared/big-number/    → idle, tools (툴의 테스트가 생성 코드를 실제 Big으로 실행한다)
+//   idle/shared/big-number/, idle/tsconfig.base.json
+//                              → idle, tools (툴의 테스트가 생성 코드를 실제 Big으로 실행하고, Big을 변환할 때 이 tsconfig를 따른다)
 //   idle/                      → idle
 //   tools/                     → tools, idle (idle이 툴의 출력을 생성 파일로 커밋한다)
 //   mmo/                       → mmo
@@ -22,7 +23,7 @@ const COMMANDS = {
 // 위에서부터 보고 처음 맞는 규칙을 쓴다.
 const RULES = [
   [(file) => file.endsWith(".md"), []],
-  [(file) => file.startsWith("idle/shared/big-number/"), ["idle", "tools"]],
+  [(file) => file.startsWith("idle/shared/big-number/") || file === "idle/tsconfig.base.json", ["idle", "tools"]],
   [(file) => file.startsWith("idle/"), ["idle"]],
   [(file) => file.startsWith("tools/"), ["tools", "idle"]],
   [(file) => file.startsWith("mmo/"), ["mmo"]],
@@ -39,6 +40,7 @@ assert.deepEqual(plan(["README.md", "mmo/MANUAL.md"]), []);
 assert.deepEqual(plan(["mmo/shared/contract/packets.proto", "mmo/README.md"]), ["mmo"]);
 assert.deepEqual(plan(["idle/server/src/main.ts"]), ["idle"]);
 assert.deepEqual(plan(["idle/shared/big-number/src/index.ts"]), ["idle", "tools"]);
+assert.deepEqual(plan(["idle/tsconfig.base.json"]), ["idle", "tools"]);
 assert.deepEqual(plan(["tools/data-tool/src/cli.js"]), ["idle", "tools"]);
 assert.deepEqual(plan(["mmo/server/src/World.cs", "idle/server/src/main.ts"]), ["idle", "mmo"]);
 assert.deepEqual(plan(["package.json"]), ["idle", "tools", "mmo"]);

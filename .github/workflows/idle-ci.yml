@@ -1,5 +1,5 @@
 # 키우기의 타입 검사와 테스트(생성 파일 검사, import 경계 검사, 서버·클라이언트 번들 포함)를 돌린다. 키우기가 툴의 출력을 생성 파일로
-# 커밋하므로 tools/가 바뀌어도 돈다. paths는 scripts/check.mjs의 영역 규칙과 같게 유지한다. 실행 시간과 LFS 사용량은 MANUAL.md의 "CI"에 있다.
+# 커밋하므로 tools/가 바뀌어도 돈다. 영역 폴더의 규칙은 scripts/check.mjs와 함께 고친다. 실행 시간과 LFS 사용량은 MANUAL.md의 "CI"에 있다.
 name: idle CI
 
 on:
@@ -12,6 +12,8 @@ on:
       - "package.json"
       - "package-lock.json"
       - ".nvmrc"
+      # 테스트가 읽는 xlsx를 LFS로 받을지 정한다.
+      - ".gitattributes"
       - ".github/workflows/idle-ci.yml"
       # 어떤 테스트도 문서를 읽지 않는다. 제외는 맨 뒤에 둬야 앞의 포함을 덮는다.
       - "!**/*.md"
@@ -23,6 +25,8 @@ on:
       - "package.json"
       - "package-lock.json"
       - ".nvmrc"
+      # 테스트가 읽는 xlsx를 LFS로 받을지 정한다.
+      - ".gitattributes"
       - ".github/workflows/idle-ci.yml"
       - "!**/*.md"
   workflow_dispatch:

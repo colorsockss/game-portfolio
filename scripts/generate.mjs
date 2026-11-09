@@ -5,6 +5,7 @@
 // 게임 이름(idle, mmo)을 주면 그 게임만 생성하므로 다른 게임이 쓰는 도구(idle의 xlsx LFS와 npm 의존성, mmo의 dotnet)가 없어도 된다.
 // 이름이 없으면 모두 생성한다. --check를 주면 아무것도 쓰지 않고, 생성 파일이 낡았으면 명령이 실패한다.
 import { spawnSync } from "node:child_process";
+import { rmSync } from "node:fs";
 import { cp, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -43,36 +44,42 @@ const GAMES = {
   },
 };
 
-const names = args.filter((arg) => !arg.startsWith("--"));
+// 옵션 오타(--chek)를 넘기면 검사 대신 생성 파일을 덮어쓰므로 막는다. `npm run generate --check`처럼 --를 빠뜨리면 npm이 --check를
+// 자기 설정으로 가져가 여기에는 오지 않고 npm_config_check만 남는다.
+if (process.env.npm_config_check) throw new Error("npm took --check as its own option. Run `npm run generate -- --check`.");
+for (const option of args.filter((arg) => arg.startsWith("--"))) {
+  if (option !== "--check") throw new Error(`Unknown option "${option}". The only option is --check.`);
+}
+const names = [...new Set(args.filter((arg) => !arg.startsWith("--")))];
 for (const name of names) {
   if (!Object.hasOwn(GAMES, name)) throw new Error(`Unknown game "${name}". Choose from: ${Object.keys(GAMES).join(", ")}.`);
 }
 const staging = await mkdtemp(path.join(tmpdir(), "game-generate-"));
+// 실패하면 process.exit로 끝나서 finally가 돌지 않으므로, 스테이징 폴더는 프로세스가 끝날 때 지운다.
+process.on("exit", () => rmSync(staging, { recursive: true, force: true }));
 
-try {
-  const outputs = [];
-  for (const name of names.length > 0 ? names : Object.keys(GAMES)) {
-    await GAMES[name].generate(staging);
-    outputs.push(...GAMES[name].outputs.map(([from, to]) => [path.join(staging, from), to]));
-  }
+const outputs = [];
+for (const name of names.length > 0 ? names : Object.keys(GAMES)) {
+  await GAMES[name].generate(staging);
+  outputs.push(...GAMES[name].outputs.map(([from, to]) => [path.join(staging, from), to]));
+}
 
-  if (check) {
-    const stale = [];
-    for (const [from, to] of outputs) stale.push(...await differences(from, path.join(root, to), to));
-    if (stale.length > 0) {
-      console.error(`Generated files are out of date. Run \`npm run generate\`.\n  ${stale.join("\n  ")}`);
-      process.exit(1);
-    }
-    console.log("Generated files are up to date.");
-  } else {
-    for (const [from, to] of outputs) {
-      await rm(path.join(root, to), { recursive: true, force: true });
-      await cp(from, path.join(root, to), { recursive: true });
-      console.log(`Updated ${to}`);
-    }
+if (check) {
+  const stale = [];
+  for (const [from, to] of outputs) stale.push(...await differences(from, path.join(root, to), to));
+  if (stale.length > 0) {
+    // 고른 게임만 다시 만들게 안내한다(npm run generate는 모든 게임을 만들어 mmo의 .NET도 필요하다).
+    const command = names.length > 0 ? `npm run generate -- ${names.join(" ")}` : "npm run generate";
+    console.error(`Generated files are out of date. Run \`${command}\`.\n  ${stale.join("\n  ")}`);
+    process.exit(1);
   }
-} finally {
-  await rm(staging, { recursive: true, force: true });
+  console.log("Generated files are up to date.");
+} else {
+  for (const [from, to] of outputs) {
+    await rm(path.join(root, to), { recursive: true, force: true });
+    await cp(from, path.join(root, to), { recursive: true });
+    console.log(`Updated ${to}`);
+  }
 }
 
 // 능력치와 공식의 키를 프로젝트의 순서(능력치 다음 공식)대로 담은 enum. 값은 메모리 안에서만 쓰여 순서가 바뀌어도 된다.

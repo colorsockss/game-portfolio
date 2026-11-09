@@ -1,6 +1,6 @@
 # idle/data/
 
-기획 원본입니다. xlsx는 Excel로, `formulas.json`은 Formula Lab으로 고친 뒤 루트에서 `npm run generate`를 실행하고 생성 파일과 함께 커밋합니다(`data:`).
+기획 원본입니다. xlsx는 Excel로, `formulas.json`은 Formula Lab으로 고친 뒤 루트에서 `npm run generate -- idle`을 실행하고(mmo까지 만들려면 .NET이 필요하므로 키우기만) 생성 파일과 함께 커밋합니다(`data:`).
 
 - xlsx 변경은 생성된 `idle/shared/data-schema/data/*.json`의 diff로 설명합니다.
 - 테이블을 추가하면 `loadGameData`가 읽는 `TABLES`(`shared/data-schema/src/index.ts`)에 이름을 더합니다. 공식 key는 `npm run generate`가 `E_AbilityType`을 다시 만들어 따로 더하지 않습니다. Enum 멤버는 `Enums.xlsx`(생성 코드의 TS enum), 코드가 읽는 규칙 값과 코드가 고르는 행(경험치 아이템, 소리 키 등)은 `Constants.xlsx`(시트 하나에 상수 하나가 행 하나인 키-값 시트. 상수를 더하면 행 하나에 `type`, `value`, 검사 열을 적습니다)에 둡니다. 공식 식만 읽는 값은 `formulas.json`의 상수이고, 같은 값을 두 곳에 두지 않습니다.

@@ -90,7 +90,8 @@ jobs:
             /opt/microsoft /opt/google /opt/az /usr/share/miniconda
           docker image prune --all --force > /dev/null
           df -h / /mnt
-      # 러너의 메모리는 약 7.9 GB이고 넘치면 커널이 Unity를 죽인다(2026-10-31 APK 빌드, exit 137). 스왑을 더해 둔다.
+      # 비공개 저장소 때의 2 vCPU 러너는 메모리가 약 7.9 GB라 넘치면 커널이 Unity를 죽였다(2026-10-31 APK 빌드, exit 137). 2026-11-02에
+      # 공개 저장소가 된 뒤의 4 vCPU 러너는 약 16 GB지만, 스왑을 더해 둔다.
       # 임시 디스크(/mnt)가 있으면 거기에 둬 루트를 Unity 이미지와 Library에 남긴다.
       - name: Add swap
         if: env.UNITY == 'true'

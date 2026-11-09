@@ -1,6 +1,6 @@
 # 두 게임이 함께 쓰는 툴(tools/)의 타입 검사와 테스트를 돌린다. 툴의 출력이 게임의 생성 파일과 맞는지는 각 게임의 CI가 본다.
-# 툴의 테스트가 생성 코드를 실제 Big으로 실행하므로 idle/shared/big-number/가 바뀌어도 돈다. paths는 scripts/check.mjs의 영역 규칙과
-# 같게 유지한다.
+# 툴의 테스트가 생성 코드를 실제 Big으로 실행하므로 idle/shared/big-number/와, Big을 변환할 때 따르는 idle/tsconfig.base.json이
+# 바뀌어도 돈다. 영역 폴더의 규칙은 scripts/check.mjs와 같게 유지한다.
 name: tools CI
 
 on:
@@ -9,6 +9,7 @@ on:
     paths:
       - "tools/**"
       - "idle/shared/big-number/**"
+      - "idle/tsconfig.base.json"
       - "scripts/check-boundaries.mjs"
       - "package.json"
       - "package-lock.json"
@@ -20,6 +21,7 @@ on:
     paths:
       - "tools/**"
       - "idle/shared/big-number/**"
+      - "idle/tsconfig.base.json"
       - "scripts/check-boundaries.mjs"
       - "package.json"
       - "package-lock.json"
