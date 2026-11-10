@@ -3,7 +3,7 @@
 게임 포트폴리오 두 개와 두 게임이 함께 쓰는 툴의 저장소입니다. 소개는 [README.md](README.md), 설정·명령·CI는 [MANUAL.md](MANUAL.md)에 있고, 하위 폴더의 AGENTS.md가 규칙을 더합니다.
 
 - `idle/`: 키우기. Unity 6 + PuerTS 클라이언트, Node 서버, 공용 TS 패키지의 npm workspaces. 규칙은 [idle/AGENTS.md](idle/AGENTS.md), 할 일은 [idle/docs/backlog.md](idle/docs/backlog.md).
-- `mmo/`: MMORPG. Unity(C#만, PuerTS 없음, UI Toolkit + App UI)와 Unreal(C++, UMG) 클라이언트, C# MMO 서버, Protobuf 패킷. Unreal 클라이언트를 먼저 다 만들고 Unity는 그것을 옮겨(포팅) 만듭니다. 패킷 정의와 서버 뼈대만 있는 초기 단계이며 규칙은 [mmo/MANUAL.md](mmo/MANUAL.md), 할 일은 [mmo/docs/backlog.md](mmo/docs/backlog.md).
+- `mmo/`: MMORPG. Unity(C#만, PuerTS 없음, UI Toolkit + App UI)와 Unreal(C++, UMG) 클라이언트, C# MMO 서버, Protobuf 패킷. Unreal 클라이언트를 먼저 다 만들고 Unity는 그것을 옮겨(포팅) 만듭니다. 패킷 정의, 서버 뼈대, Unreal 클라이언트의 로그인까지 있는 초기 단계이며 규칙은 [mmo/MANUAL.md](mmo/MANUAL.md), 게임 설계는 [mmo/docs/design.md](mmo/docs/design.md), 할 일은 [mmo/docs/backlog.md](mmo/docs/backlog.md).
 - `tools/`: 두 게임이 함께 쓰는 데이터·공식 툴.
 
 ## 명령 (루트에서)
