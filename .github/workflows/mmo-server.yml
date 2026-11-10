@@ -1,4 +1,4 @@
-# MMO: 게임 서버를 Live VPS(키우기와 같은 VPS)에 내보낸다. 손으로 실행한다. 클라이언트는 로컬에서 패키징한다(mmo/MANUAL.md).
+# MMO: 게임 서버를 Live VPS(키우기와 같은 VPS, mmo.dennou.cloud:7777)에 내보낸다. 손으로 실행한다. 클라이언트는 로컬에서 패키징한다(mmo/MANUAL.md).
 # 접속 비밀값은 키우기와 같다(secrets.VPS_SSH_KEY, VPS_KNOWN_HOSTS, vars.VPS_HOST, VPS_USER). VPS는 mmo/server/deploy/setup.sh로 준비해 둔다.
 name: mmo server
 
