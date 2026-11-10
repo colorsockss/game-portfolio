@@ -39,7 +39,7 @@ namespace PortfolioMmo.Server.Tests
             world.Step();
             Assert.Equal(new[] { Enter(Entity(2, "hero_02")) }, Take(first));
             Assert.Equal(
-                new[] { LoginOk(2), Enter(Entity(2, "hero_02"), Entity(1, "hero_01")) },
+                new[] { LoginOk(2, tick: 1), Enter(Entity(2, "hero_02"), Entity(1, "hero_01")) },
                 Take(second));
         }
 
@@ -77,12 +77,13 @@ namespace PortfolioMmo.Server.Tests
             WalkTo(world, old, 100, 0);
             Take(old);
 
+            uint loginTick = world.Tick;
             Session renewed = LogIn(world, "hero_01");
             world.Step();
             Assert.Equal(new[] { new Packet { Kicked = new Kicked { Reason = KickReason.DuplicateLogin } } }, Take(old));
             Assert.True(old.IsClosing);
             Assert.Null(old.Player);
-            Assert.Equal(new[] { LoginOk(2), Enter(Entity(2, "hero_01", x: 100)) }, Take(renewed));
+            Assert.Equal(new[] { LoginOk(2, loginTick), Enter(Entity(2, "hero_01", x: 100)) }, Take(renewed));
         }
 
         /// <summary>
@@ -199,6 +200,27 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// Ping은 로그인 전이든 뒤든 그 틱에 그 틱 번호를 실은 Pong으로 답한다.
+        /// </summary>
+        [Fact]
+        public void PingIsAnsweredWithPong()
+        {
+            var pong = new Packet { Pong = new Pong() };
+            World world = NewWorld();
+
+            var notLoggedIn = new Session();
+            world.Receive(notLoggedIn, new Packet { Ping = new Ping() });
+            Assert.Equal(new[] { pong }, Take(notLoggedIn));
+            Assert.False(notLoggedIn.IsClosing);
+
+            Session loggedIn = LogIn(world, "hero_01");
+            world.Step();
+            Take(loggedIn);
+            world.Receive(loggedIn, new Packet { Ping = new Ping() });
+            Assert.Equal(new[] { new Packet { Pong = new Pong { Tick = 1 } } }, Take(loggedIn));
+        }
+
+        /// <summary>
         /// 로그인 전의 Move, 두 번째 Login, 범위 밖의 yaw, 서버가 보내는 패킷은 MALFORMED_PACKET으로 끊는다.
         /// </summary>
         [Fact]
@@ -261,9 +283,10 @@ namespace PortfolioMmo.Server.Tests
             WalkTo(world, session, 100, 0);
             world.Disconnect(session);
 
+            uint loginTick = world.Tick;
             Session again = LogIn(world, "hero_01");
             world.Step();
-            Assert.Equal(new[] { LoginOk(2), Enter(Entity(2, "hero_01", x: 100)) }, Take(again));
+            Assert.Equal(new[] { LoginOk(2, loginTick), Enter(Entity(2, "hero_01", x: 100)) }, Take(again));
         }
 
         /// <summary>
@@ -346,11 +369,11 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 로그인 성공 패킷.
+        /// 로그인 성공 패킷. tick은 로그인한 틱이다.
         /// </summary>
-        private static Packet LoginOk(uint selfId)
+        private static Packet LoginOk(uint selfId, uint tick = 0)
         {
-            return new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok, SelfId = selfId } };
+            return new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok, SelfId = selfId, Tick = tick } };
         }
 
         /// <summary>

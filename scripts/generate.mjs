@@ -1,7 +1,7 @@
 // 게임의 원본에서 파생되어 커밋되는 코드와 데이터를 다시 생성한다:
 //   idle/data/*.xlsx                   → idle/shared/data-schema/src/tables/ (로더) + idle/shared/data-schema/data/
 //   idle/data/formulas.json            → idle/shared/game-core/src/formulas.ts + ability-type.ts
-//   mmo/shared/contract/packets.proto  → mmo/shared/contract/generated/Packets.cs (Contract.csproj의 Grpc.Tools protoc)
+//   mmo/shared/contract/packets.proto  → mmo/shared/contract/generated/ (C#과 C++, Contract.csproj의 Google.Protobuf.Tools protoc)
 // 게임 이름(idle, mmo)을 주면 그 게임만 생성하므로 다른 게임이 쓰는 도구(idle의 xlsx LFS와 npm 의존성, mmo의 dotnet)가 없어도 된다.
 // 이름이 없으면 모두 생성한다. --check를 주면 아무것도 쓰지 않고, 생성 파일이 낡았으면 명령이 실패한다.
 import { spawnSync } from "node:child_process";
@@ -37,8 +37,9 @@ const GAMES = {
   },
   mmo: {
     async generate(staging) {
-      // protoc 버전은 Contract.csproj의 Grpc.Tools 버전이 고정한다.
-      dotnet("build", "mmo/shared/contract/Contract.csproj", "-nologo", "-v", "q", `-p:ContractOutputDir=${path.join(staging, "contract")}`);
+      // protoc 버전은 Contract.csproj의 Google.Protobuf.Tools 버전이 고정한다.
+      // 생성 타깃만 돌린다. Units.cs가 생성된 코드를 쓰므로, 전체를 빌드하면 새 enum이 생성되기 전의 코드로 컴파일하다 실패한다.
+      dotnet("build", "mmo/shared/contract/Contract.csproj", "-t:GenerateContract", "-nologo", "-v", "q", `-p:ContractOutputDir=${path.join(staging, "contract")}`);
     },
     outputs: [["contract", "mmo/shared/contract/generated"]],
   },

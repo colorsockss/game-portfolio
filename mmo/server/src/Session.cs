@@ -29,6 +29,11 @@ namespace PortfolioMmo.Server
         public uint ConnectedTick { get; set; }
 
         /// <summary>
+        /// 마지막으로 패킷을 받은 틱(받은 적이 없으면 연결을 받은 틱). 무응답 시간 제한에 쓴다.
+        /// </summary>
+        public uint LastReceivedTick { get; set; }
+
+        /// <summary>
         /// 이번 틱에 보낼 패킷에 더한다.
         /// </summary>
         public void Send(Packet packet)

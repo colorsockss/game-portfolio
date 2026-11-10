@@ -12,10 +12,10 @@ namespace PortfolioMmo.Server
     public sealed partial class World
     {
         /// <summary>
-        /// 최대 이동 속도(m/s).
-        /// shortcut: 상수다. 데이터(backlog 4)가 생기면 데이터에서 읽고 클라이언트 예측과 함께 쓴다.
+        /// 최대 이동 속도(m/s). 클라이언트도 같은 값으로 움직이도록 packets.proto의 Constant가 원본이다.
+        /// shortcut: 상수다. 데이터(backlog 4)가 생기면 데이터에서 읽는다.
         /// </summary>
-        public const double MaxSpeedMetersPerSecond = 6;
+        public const double MaxSpeedMetersPerSecond = (double)Constant.MaxSpeedMetersPerSecond;
 
         /// <summary>
         /// 움직인 플레이어의 위치를 저장하는 간격(틱, 60초). 서버가 죽으면 이만큼의 이동을 잃는다. 나간 플레이어는 그 틱에 저장한다.
@@ -134,6 +134,9 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.Move when player != null:
                     Move(player, packet.Move);
                     break;
+                case Packet.BodyOneofCase.Ping:
+                    session.Send(new Packet { Pong = new Pong { Tick = Tick } });
+                    break;
                 default:
                     Kick(session, KickReason.MalformedPacket);
                     break;
@@ -237,7 +240,7 @@ namespace PortfolioMmo.Server
             player.Cell = CellOf(player.X, player.Z);
             CellPlayers(player.Cell).Add(player);
             session.Player = player;
-            session.Send(new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok, SelfId = player.Id } });
+            session.Send(new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok, SelfId = player.Id, Tick = Tick } });
         }
 
         /// <summary>

@@ -47,6 +47,40 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// Ping을 보내는 동안은 연결이 유지되고, 아무것도 보내지 않으면 IDLE_TIMEOUT을 받고 끊긴다.
+        /// </summary>
+        [Fact]
+        public async Task KicksAConnectionThatSendsNothing()
+        {
+            using var cancellation = new CancellationTokenSource();
+            // 시간 제한 10틱(0.5초).
+            var server = new GameServer(
+                new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new PlayerStore(":memory:")), idleTimeoutTicks: 10);
+            Task running = server.RunAsync(cancellation.Token);
+
+            using var client = new TcpClient();
+            await client.ConnectAsync(IPAddress.Loopback, server.Port);
+            NetworkStream stream = client.GetStream();
+            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01" } }.WriteDelimitedTo(stream);
+            Assert.Equal(LoginResultCode.Ok, (await ReadAsync(stream))!.LoginResult.Result);
+            await ReadAsync(stream);
+
+            // 시간 제한의 두 배(1초) 동안 0.2초마다 Ping을 보낸다.
+            for (int count = 0; count < 5; count++)
+            {
+                await Task.Delay(200);
+                new Packet { Ping = new Ping() }.WriteDelimitedTo(stream);
+                Assert.Equal(Packet.BodyOneofCase.Pong, (await ReadAsync(stream))!.BodyCase);
+            }
+
+            Assert.Equal(KickReason.IdleTimeout, (await ReadAsync(stream))!.Kicked.Reason);
+            Assert.Null(await ReadAsync(stream));
+
+            cancellation.Cancel();
+            await running;
+        }
+
+        /// <summary>
         /// 서버가 내려가면 연결마다 SERVER_SHUTDOWN을 보내고, 위치를 저장하고 닫는다.
         /// </summary>
         [Fact]

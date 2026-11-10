@@ -13,6 +13,8 @@ message Packet {
     Login login = 1;
     LoginResult login_result = 2;
     Kicked kicked = 3;
+    Ping ping = 4;
+    Pong pong = 5;
 
     // 100–199: 월드(이동과 시야)
     Move move = 100;
@@ -30,8 +32,29 @@ enum ProtocolVersion {
   PROTOCOL_VERSION_CURRENT = 1;
 }
 
-// 좌표와 방향의 단위. 지면 좌표 x, z는 1 m를 32칸으로 나눈 정수(sint32, 맵은 ±1,024 m 안),
-// 방향 yaw는 위에서 본 한 바퀴(360°)를 256칸으로 나눈 칸 번호(0–255)다. 높이는 보내지 않고 각자 지면에서 구한다.
+// 좌표와 방향. 지면 좌표 x, z는 1 m를 CONSTANT_UNITS_PER_METER칸으로 나눈 정수(sint32)이고 맵은 ±CONSTANT_MAP_HALF_EXTENT_METERS 안이다.
+// 위에서 볼 때 +z가 앞(북), +x가 오른쪽(동)이다. 방향 yaw는 한 바퀴(360°)를 CONSTANT_YAW_STEPS칸으로 나눈 칸 번호이고,
+// 0이 +z를 보며 위에서 볼 때 시계 방향으로 는다(64가 +x). 높이는 보내지 않고 각자 지면에서 구한다.
+// Unity는 x, z와 Y축 회전에 그대로 쓰고, Unreal은 z를 X(앞), x를 Y(오른쪽)에 쓰며 yaw는 같은 방향이다.
+
+// 서버와 두 클라이언트가 함께 쓰는 수. Protobuf에는 상수가 없어서 enum 값으로 두고, C#과 C++이 여기서 생성된다.
+enum Constant {
+  CONSTANT_UNSPECIFIED = 0;
+  // 1 m를 나눈 좌표 칸 수.
+  CONSTANT_UNITS_PER_METER = 32;
+  // 맵의 반 너비(m). x, z는 이 거리 안이다.
+  CONSTANT_MAP_HALF_EXTENT_METERS = 1024;
+  // 한 바퀴를 나눈 yaw 칸 수. yaw는 이보다 작다.
+  CONSTANT_YAW_STEPS = 256;
+  // 서버의 초당 틱 수. EntityMoves.tick이 틱마다 1씩 오른다.
+  CONSTANT_TICKS_PER_SECOND = 20;
+  // 최대 이동 속도(m/s). 데이터(backlog 4)가 생기면 데이터로 옮긴다.
+  CONSTANT_MAX_SPEED_METERS_PER_SECOND = 6;
+  // 클라이언트가 Ping을 보내는 간격(초).
+  CONSTANT_PING_INTERVAL_SECONDS = 5;
+  // 이 시간(초) 동안 아무것도 받지 못하면 서버도 클라이언트도 연결이 죽었다고 보고 끊는다.
+  CONSTANT_IDLE_TIMEOUT_SECONDS = 15;
+}
 
 // ── 세션 ──
 
@@ -48,6 +71,8 @@ message LoginResult {
   LoginResultCode result = 1;
   // 내 개체 번호. 실패면 0.
   uint32 self_id = 2;
+  // 서버의 지금 틱 번호(EntityMoves.tick과 같은 수). 클라이언트가 서버 시계를 맞춘다.
+  uint32 tick = 3;
 }
 
 // 로그인의 결과.
@@ -76,6 +101,17 @@ enum KickReason {
   KICK_REASON_SERVER_SHUTDOWN = 2;
   // 읽을 수 없는 패킷을 보냈다.
   KICK_REASON_MALFORMED_PACKET = 3;
+  // CONSTANT_IDLE_TIMEOUT_SECONDS 동안 아무것도 보내지 않았다.
+  KICK_REASON_IDLE_TIMEOUT = 4;
+}
+
+// 클라이언트 → 서버. 연결이 살아 있음을 알린다. 로그인 전에도 보낼 수 있고, CONSTANT_PING_INTERVAL_SECONDS마다 보낸다.
+message Ping {}
+
+// 서버 → 클라이언트. Ping의 답. 움직이는 개체가 없어도 클라이언트가 서버가 살아 있음과 서버의 틱을 안다.
+message Pong {
+  // 서버의 지금 틱 번호(EntityMoves.tick과 같은 수).
+  uint32 tick = 1;
 }
 
 // ── 월드 ──

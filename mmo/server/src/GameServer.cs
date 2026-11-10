@@ -24,6 +24,11 @@ namespace PortfolioMmo.Server
         private const uint LoginTimeoutTicks = 10 * Units.TicksPerSecond;
 
         /// <summary>
+        /// 아무것도 받지 못하고 버틸 수 있는 틱 수의 기본값. 클라이언트는 그보다 짧은 간격으로 Ping을 보낸다.
+        /// </summary>
+        private const uint IdleTimeoutTicks = (uint)Constant.IdleTimeoutSeconds * Units.TicksPerSecond;
+
+        /// <summary>
         /// 통계를 찍는 간격(틱, 10초).
         /// </summary>
         private const uint StatsIntervalTicks = 10 * Units.TicksPerSecond;
@@ -42,6 +47,11 @@ namespace PortfolioMmo.Server
         /// 월드. 틱 루프에서만 부른다.
         /// </summary>
         private readonly World _world;
+
+        /// <summary>
+        /// 아무것도 받지 못하고 버틸 수 있는 틱 수. 넘으면 IDLE_TIMEOUT으로 끊는다.
+        /// </summary>
+        private readonly uint _idleTimeoutTicks;
 
         /// <summary>
         /// 소켓 쪽에서 틱 루프로 넘기는 일.
@@ -90,11 +100,13 @@ namespace PortfolioMmo.Server
 
         /// <summary>
         /// endpoint에서 연결을 받을 서버를 만든다. 포트가 0이면 RunAsync를 부른 뒤 Port에서 실제 포트를 읽는다.
+        /// idleTimeoutTicks는 테스트가 짧게 줄 때만 넘긴다.
         /// </summary>
-        public GameServer(IPEndPoint endpoint, World world)
+        public GameServer(IPEndPoint endpoint, World world, uint idleTimeoutTicks = IdleTimeoutTicks)
         {
             _listener = new TcpListener(endpoint);
             _world = world;
+            _idleTimeoutTicks = idleTimeoutTicks;
         }
 
         /// <summary>
@@ -229,9 +241,11 @@ namespace PortfolioMmo.Server
                 {
                     case InboundKind.Connected:
                         session.ConnectedTick = _world.Tick;
+                        session.LastReceivedTick = _world.Tick;
                         _connections.Add(item.Connection);
                         break;
                     case InboundKind.Received:
+                        session.LastReceivedTick = _world.Tick;
                         _world.Receive(session, item.Packet!);
                         break;
                     case InboundKind.Malformed:
@@ -257,6 +271,12 @@ namespace PortfolioMmo.Server
                 if ((session.Player == null) && !session.IsClosing && (_world.Tick - session.ConnectedTick > LoginTimeoutTicks))
                 {
                     session.Close();
+                }
+
+                // 연결이 끊긴 것을 TCP가 알려 주지 않는 경우(망이 바뀐 휴대폰, 멈춘 앱)에 개체가 월드에 남지 않게 한다.
+                if (!session.IsClosing && (_world.Tick - session.LastReceivedTick > _idleTimeoutTicks))
+                {
+                    _world.Kick(session, KickReason.IdleTimeout);
                 }
 
                 if (session.Outbox.Count > 0)
