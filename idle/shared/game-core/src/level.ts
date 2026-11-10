@@ -2,7 +2,7 @@
 // 전투가 경계마다 부르므로 레벨은 경계에서만 바뀌고, 이미 보여 준 전투를 다시 쓰지 않는다.
 import { Big } from "@idle/big-number";
 import type { GameData } from "@idle/data-schema";
-import { minus, type ItemAmounts } from "./items.js";
+import type { ItemAmounts } from "./items.js";
 import { required } from "./rows.js";
 import type { HeroState } from "./state.js";
 
@@ -19,7 +19,7 @@ export function levelUp(
   for (;;) {
     const need = required(data.heroLevels, level, "hero level").expToNext;
     if (need === null || Big.lt(exp, need)) break;
-    exp = minus(exp, need);
+    exp = Big.floor(Big.sub(exp, need));
     level++;
   }
   if (level === hero.level) return { hero, items };

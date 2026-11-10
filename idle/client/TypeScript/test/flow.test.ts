@@ -130,6 +130,20 @@ describe("the app flow", () => {
     expect(t.logins()).toEqual(["hero"]);
   });
 
+  test("logs in again by itself when the session expired, so an app left running does not stop at the login screen", () => {
+    const t = setUp("hero");
+    t.state.player.value = save;
+    t.end("expired");
+    expect(t.at()).toBe("login");
+    expect(t.logins()).toEqual(["hero", "hero"]);
+
+    // 서버가 메시지를 거절해 끝난 연결은 다시 로그인해도 같으므로 플레이어를 기다린다.
+    const broken = setUp("hero");
+    broken.state.player.value = save;
+    broken.end("error");
+    expect(broken.logins()).toEqual(["hero"]);
+  });
+
   test("goes to main when a save arrives", () => {
     const t = setUp();
     t.state.player.value = save;

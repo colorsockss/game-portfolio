@@ -235,12 +235,13 @@ async function prepare(url: string, clients: number, data: GameData): Promise<vo
     [Opcode.CheatItemGrant, { itemId: data.constants.goldItemId, amount: GOLD }],
     ...[...firstOfSlot.values()].map((itemId): Request => [Opcode.CheatItemGrant, { itemId, amount: 2 }]),
   ];
-  // 연결 하나가 계정 여럿을 차례로 만든다. 서버는 연결마다 게임 커맨드를 초당 10개까지 받으므로 연결을 넉넉히 열고, 그래도 걸리면
-  // 다시 찰 때까지 기다렸다 보낸다(거른 커맨드는 기록되지 않음).
-  const lanes = Math.min(clients, 512);
+  // 계정마다 연결을 열어 만든다. 서버는 연결마다 로그인을 몇 번까지만 받기 때문이다. 연결을 거듭 여는 동안 macOS의 접속
+  // 대기열(kern.ipc.somaxconn 128)이 넘쳐 ECONNRESET이 나지 않게 100개까지만 나란히 연다. 연결마다 게임 커맨드도 초당 10개까지
+  // 받으므로, 걸리면 다시 찰 때까지 기다렸다 보낸다(거른 커맨드는 기록되지 않음).
+  const lanes = Math.min(clients, 100);
   await Promise.all(Array.from({ length: lanes }, async (_, lane) => {
-    const socket = await connect(url);
     for (let index = lane; index < clients; index += lanes) {
+      const socket = await connect(url);
       for (const [op, body] of [[Opcode.AuthLogin, { loginId: loginIdOf(index) }] as const, ...steps]) {
         let { response } = await socket.request(op, body);
         while (response.code === ResultCode.TooManyRequests) {
@@ -249,8 +250,8 @@ async function prepare(url: string, clients: number, data: GameData): Promise<vo
         }
         if (response.code !== ResultCode.Ok) throw new Error(`Preparing ${loginIdOf(index)}: ${Opcode[op]} answered ${describe(response)}.`);
       }
+      socket.close();
     }
-    socket.close();
   }));
 }
 

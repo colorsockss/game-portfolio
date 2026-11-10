@@ -6,7 +6,7 @@ import { decode, encode } from "@msgpack/msgpack";
 import { Big } from "@idle/big-number";
 import { GameErrorCode, Opcode } from "@idle/codes";
 import { HOUR, NO_EQUIPMENT, NO_REBIRTH, NO_STAT_UPGRADES, playerFingerprint, settle } from "@idle/game-core";
-import { CloseCode, ResultCode, decodeMessage, encodeMessage } from "@idle/protocol";
+import { CloseCode, MAX_UNANSWERED_COMMANDS, ResultCode, decodeMessage, encodeMessage } from "@idle/protocol";
 import { describe, expect, test, vi } from "vitest";
 import type { Logger } from "../src/log.js";
 import { createRpc, type Connection, type Peer } from "../src/rpc.js";
@@ -324,6 +324,32 @@ describe("sessions", () => {
     }
     expect(await call(rpc.connect(peer()), Opcode.AuthLogin, "1", { loginId: "hero_0123456789" })).toMatchObject({ code: ResultCode.Ok });
   });
+
+  // 로그인은 계정을 만들고 커밋할 수 있으므로, 한 연결이 보내는 로그인과 재개는 몇 번까지만 받는다.
+  test("logins and resumes beyond a connection's few are refused and create no account, and one more comes back every 10 s", async () => {
+    time = 1_000_000;
+    const store = await openStore(":memory:");
+    const rpc = createRpc({ store, clock, data, log: collect() });
+    const flooding = rpc.connect(peer());
+    for (let i = 0; i < 5; i++) {
+      expect(await call(flooding, Opcode.AuthLogin, `l${i}`, { loginId: `flood_${i}` })).toMatchObject({ code: ResultCode.Ok });
+    }
+    expect(await call(flooding, Opcode.AuthLogin, "l5", { loginId: "flood_5" })).toMatchObject({ code: ResultCode.TooManyRequests });
+    expect(await store.findAccount("flood_5")).toBeUndefined();
+    // 재개도 같은 몫을 쓴다.
+    expect(await call(flooding, Opcode.AuthResume, "r", { token: "unknown" })).toMatchObject({ code: ResultCode.TooManyRequests });
+    time += 10_000;
+    expect(await call(flooding, Opcode.AuthLogin, "l6", { loginId: "flood_5" })).toMatchObject({ code: ResultCode.Ok });
+    expect(await call(flooding, Opcode.AuthLogin, "l7", { loginId: "flood_6" })).toMatchObject({ code: ResultCode.TooManyRequests });
+    expect(await store.findAccount("flood_6")).toBeUndefined();
+
+    // 재개만 이어 보내도 같다. 새 연결은 처음부터 센다.
+    const resuming = rpc.connect(peer());
+    for (let i = 0; i < 5; i++) {
+      expect(await call(resuming, Opcode.AuthResume, `r${i}`, { token: "unknown" })).toMatchObject({ code: ResultCode.Rejected });
+    }
+    expect(await call(resuming, Opcode.AuthResume, "r5", { token: "unknown" })).toMatchObject({ code: ResultCode.TooManyRequests });
+  });
 });
 
 describe("repeated command requests", () => {
@@ -554,6 +580,30 @@ describe("command times and rates", () => {
     expect(await call(connection, Opcode.BattleSettle, "s21", {})).toMatchObject({ code: ResultCode.Ok });
     expect(await call(connection, Opcode.BattleSettle, "s22", {})).toMatchObject({ code: ResultCode.TooManyRequests });
   });
+
+  // 재연결한 클라이언트는 재개하고, 답을 받지 못한 커맨드를 한꺼번에 다시 보내고, 지문이 어긋나면 저장 데이터를 받아 온다.
+  test("a reconnect's resume, every command a client may have left unanswered and a fetch are all answered", async () => {
+    const store = await openStore(":memory:");
+    const rpc = createRpc({ store, clock, data, log: collect() });
+    const { body } = await call(rpc.connect(peer("old")), Opcode.AuthLogin, "login", { loginId: "back" }) as { body: { session: { token: string } } };
+    const resumed = rpc.connect(peer("new"));
+    const answers = await Promise.all([
+      call(resumed, Opcode.AuthResume, "resume", { token: body.session.token }),
+      ...Array.from({ length: MAX_UNANSWERED_COMMANDS }, (_, i) => call(resumed, Opcode.BattleSettle, `c${i}`, {})),
+      call(resumed, Opcode.StateFetch, "fetch", {}),
+    ]);
+    expect(answers).toEqual(answers.map(() => expect.objectContaining({ code: ResultCode.Ok })));
+  });
+
+  test("pings are answered however many, and leave the commands' budget alone", async () => {
+    const store = await openStore(":memory:");
+    const connection = createRpc({ store, clock, data, log: collect() }).connect(peer());
+    await call(connection, Opcode.AuthLogin, "login", { loginId: "pinger" });
+    const pings = await Promise.all(Array.from({ length: 100 }, (_, i) => call(connection, Opcode.Ping, `p${i}`, {})));
+    expect(pings).toEqual(pings.map(() => expect.objectContaining({ code: ResultCode.Ok })));
+    const commands = await Promise.all(Array.from({ length: 20 }, (_, i) => call(connection, Opcode.BattleSettle, `c${i}`, {})));
+    expect(commands).toEqual(commands.map(() => expect.objectContaining({ code: ResultCode.Ok })));
+  });
 });
 
 describe("requests", () => {
@@ -567,6 +617,8 @@ describe("requests", () => {
       encodeMessage({ op: "1", id: "1", body: {} }),
       encodeMessage({ op: Opcode.Ping, id: 1, body: {} }),
       encodeMessage({ op: Opcode.Ping, id: "1" }),
+      // 시각은 epoch ms의 정수다. 소수는 새 사냥의 battle.at에 그대로 저장된다.
+      encodeMessage({ op: Opcode.BattleSettle, id: "1", body: {}, time: 1_000_000.5 }),
     ];
     for (const bytes of malformed) {
       expect(decodeMessage(await connection.receive(bytes))).toMatchObject({ id: "", code: ResultCode.BadRequest });
@@ -849,6 +901,40 @@ describe("equipment enhancement", () => {
     expect(await before).toMatchObject({ code: ResultCode.Ok, sync: { revision: 2 } });
     expect(await after).toMatchObject({ code: ResultCode.Rejected, error: { code: GameErrorCode.NotEnoughGold } });
     expect(await saved()).toMatchObject({ revision: 2, player: { items: { 1: Big.from(500) }, equipment: { owned: { 1: { enhance: 1 } } } } });
+  });
+});
+
+describe("merging everything", () => {
+  // 낡은 검 63개를 가진 계정. 일괄 합성 한 번이 21번 합성해 날 선 검 21개(64–84)가 된다. 합성마다 커맨드를 보냈다면 커맨드 몫(20)을 넘는다.
+  async function setUp(rpcStore?: (store: Store) => Store) {
+    const store = await openStore(":memory:");
+    const owned = Object.fromEntries(Array.from({ length: 63 }, (_, i) => [i + 1, { itemId: 101, enhance: 0 }]));
+    await store.createAccount("hero", { ...createPlayer("hero", data, time), equipment: { nextId: 64, owned, equipped: {} } }, time);
+    const connection = createRpc({ store: rpcStore?.(store) ?? store, clock, data, log: collect() }).connect(peer());
+    await call(connection, Opcode.AuthLogin, "login", { loginId: "hero" });
+    return { connection, saved: () => savedOf(store, "hero") };
+  }
+  const merged = Object.fromEntries(Array.from({ length: 21 }, (_, i) => [i + 64, { itemId: 107, enhance: 0 }]));
+
+  test("merges more sets than the command burst in one request and one save, and a retried request gets the first answer", async () => {
+    const { connection, saved } = await setUp();
+    const first = await call(connection, Opcode.ItemMergeAll, "1", {});
+    expect(first).toMatchObject({ code: ResultCode.Ok, sync: { revision: 2, changes: { equipment: { nextId: 85, owned: merged } } } });
+    expect(await saved()).toMatchObject({ revision: 2, player: { equipment: { nextId: 85, owned: merged } } });
+    expect(Object.keys((await saved())!.player.equipment.owned)).toHaveLength(21);
+    expect(await call(connection, Opcode.ItemMergeAll, "1", {})).toEqual({ ...(first as object), serverTime: time });
+    // 남은 것이 없는 새 요청은 거절되고 저장하지 않는다.
+    expect(await call(connection, Opcode.ItemMergeAll, "2", {}))
+      .toMatchObject({ code: ResultCode.Rejected, error: { code: GameErrorCode.MergeMaterialsShort } });
+    expect((await saved())!.revision).toBe(2);
+  });
+
+  test("starts over from the newer save when another request saved in between", async () => {
+    let raced!: ReturnType<typeof racing>;
+    const { connection, saved } = await setUp(store => (raced = racing(store)));
+    raced.races = 1;
+    expect(await call(connection, Opcode.ItemMergeAll, "1", {})).toMatchObject({ code: ResultCode.Ok, sync: { revision: 3 } });
+    expect(await saved()).toMatchObject({ revision: 3, player: { hero: { level: 2 }, equipment: { nextId: 85, owned: merged } } });
   });
 });
 

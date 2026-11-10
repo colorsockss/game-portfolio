@@ -13,7 +13,7 @@ export interface RequestEnvelope<K extends keyof Apis = keyof Apis> {
   readonly id: string;
   readonly body: RequestOf<K>;
   /**
-   * 게임 커맨드만: 클라이언트가 커맨드를 예측한 서버 시각(epoch ms, 서버 시계의 추정치). 서버는 이것을 자기 시각의
+   * 게임 커맨드만: 클라이언트가 커맨드를 예측한 서버 시각(epoch ms의 정수, 서버 시계의 추정치). 서버는 이것을 자기 시각의
    * `COMMAND_TIME.past`ms 전부터 `COMMAND_TIME.ahead`ms 뒤까지로 잘라 그 시각에 커맨드를 적용하므로, 보통의 지연이면 클라이언트의
    * 예측과 서버의 확정이 같은 틱에서 같은 결과를 낸다. 없으면 서버가 받은 시각이다.
    */
@@ -30,8 +30,12 @@ export const COMMAND_TIME = { past: 1_000, ahead: 500 } as const;
 /**
  * 클라이언트가 응답을 받지 못한 채 보내 둘 수 있는 게임 커맨드의 수. 서버는 다시 온 커맨드를
  * 알아보려고 계정마다 이만큼의 응답을 보관한다. 이를 넘으면 다시 보낸 커맨드가 두 번 실행될 수 있다.
+ *
+ * 서버가 연결마다 한꺼번에 받는 커맨드의 수이기도 하다(rpc.ts의 COMMAND_RATE). 재연결한 클라이언트는 기다리던 커맨드를 한꺼번에
+ * 다시 보내는데, 받는 수가 이보다 적으면 넘친 것이 TooManyRequests로 돌아와 예측이 취소된다. 답이 0.5초 늦으면 화면이 입력을
+ * 막으므로(WAITING_DELAY) 기다리는 커맨드는 보통 다섯을 넘지 않는다.
  */
-export const MAX_UNANSWERED_COMMANDS = 100;
+export const MAX_UNANSWERED_COMMANDS = 20;
 
 /** 무슨 일이 있었는지. 숫자로 보내며, 배포된 값은 번호를 바꾸거나 재사용하지 않는다. */
 export enum ResultCode {
@@ -44,7 +48,8 @@ export enum ResultCode {
   /** 서버가 요청을 처리하지 못했다. */
   ServerError = 3,
   /**
-   * 게임 커맨드가 너무 잦아 처리하지 않았고 아무것도 바뀌지 않았다. 답을 기록하지 않으므로 같은 id로 다시 보내면 그때 처리한다.
+   * 게임 커맨드, 또는 로그인·재개(AuthLogin, AuthResume)가 연결의 몫보다 잦아 처리하지 않았고 아무것도 바뀌지 않았다. 답을 기록하지
+   * 않으므로 같은 id로 다시 보내면 그때 처리한다.
    */
   TooManyRequests = 4,
 }

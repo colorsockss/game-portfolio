@@ -1,12 +1,11 @@
 import { Big } from "@idle/big-number";
 import { GameErrorCode, type Opcode } from "@idle/codes";
 import type { CommandOf } from "../command.js";
-import { minus } from "../items.js";
 import { MAX_STAT_UPGRADE_STEPS, statUpgradeBatch, statUpgradeCost } from "../stat-upgrade.js";
 import { fail, refit, type CommandHandler } from "./types.js";
 
-// 강화는 착용(equipment.ts)처럼 `now`의 틱까지 확정한 상태에서 그 틱의 새 능력치로 전투를 이어 간다. 비용은 그 확정의 골드에서
-// 낸다: 진행 중인 웨이브의 처치 보상도 들어 있어 보이는 골드와 같다.
+// 강화는 착용(equipment.ts)처럼 `now`의 틱까지 확정한 상태에서 그 틱의 새 능력치로 전투를 이어 간다. 되돌릴 수 없으므로 최대 HP가
+// 오른 만큼 HP도 올린다. 비용은 그 확정의 골드에서 낸다: 진행 중인 웨이브의 처치 보상도 들어 있어 보이는 골드와 같다.
 
 /**
  * 강화 하나를 `steps`단계까지 한 번에 올린다(statUpgradeBatch). 최대 단계나 확정한 골드가 모자란 데서 멈춘다. 없는 강화, 1–100이
@@ -30,8 +29,8 @@ export const upgradeStat: CommandHandler<CommandOf<Opcode.StatUpgrade>> = (settl
   }
   const player = {
     ...settled,
-    items: { ...settled.items, [goldItemId]: minus(gold, bought.cost) },
+    items: { ...settled.items, [goldItemId]: Big.floor(Big.sub(gold, bought.cost)) },
     statUpgrades: { ...settled.statUpgrades, [row.id]: step + bought.steps },
   };
-  return refit(settled, player, data);
+  return refit(settled, player, data, true);
 };

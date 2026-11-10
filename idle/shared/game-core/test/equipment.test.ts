@@ -6,7 +6,8 @@ import { describe, expect, test } from "vitest";
 import { heroStats } from "../src/battle/stats.js";
 import type { Command } from "../src/command.js";
 import { applyCommand } from "../src/commands/index.js";
-import { enhanceCost, equipmentStat, mergeMaterials, NO_EQUIPMENT, type EquipmentState } from "../src/equipment.js";
+import { next as random } from "../src/battle/rng.js";
+import { enhanceCost, equipmentStat, mergeMaterials, nextMerge, NO_EQUIPMENT, type EquipmentState } from "../src/equipment.js";
 import type { PlayerState } from "../src/state.js";
 import { accepted, testPlayer } from "../src/testing.js";
 
@@ -142,5 +143,121 @@ describe("merging", () => {
     const top = player({ nextId: 2, owned: { 1: { itemId: SHARP_SWORD, enhance: 0 } }, equipped: {} });
     expect(send(top, Opcode.ItemMerge, 1)).toMatchObject({ ok: false, error: { code: GameErrorCode.EquipmentNotMergeable } });
     expect(send(player(NO_EQUIPMENT), Opcode.ItemMerge, 1)).toMatchObject({ ok: false, error: { code: GameErrorCode.EquipmentNotFound } });
+  });
+});
+
+describe("merging everything", () => {
+  const RING = 103;
+  const piece = (itemId: number, enhance = 0) => ({ itemId, enhance });
+  const mergeAll = (state: PlayerState, game = data, now = AT + 99) => applyCommand(state, { type: Opcode.ItemMergeAll }, { now, data: game });
+  // 날 선 검 둘이 오우거 전쟁검(110, 같은 무기)으로 합성되는 데이터. 합성의 결과가 다시 재료가 된다.
+  const cascading = { ...data, items: new Map(data.items).set(SHARP_SWORD, { ...row(SHARP_SWORD), mergeItemId: 110, mergeCount: 2 }) };
+
+  // 옛 일괄 합성 버튼: 재료가 모인 장비 중 ID가 가장 작은 것을 ItemMerge로 하나씩, 남은 것이 없을 때까지.
+  function pressedRepeatedly(state: PlayerState, game = data): PlayerState {
+    for (;;) {
+      const held = state.equipment;
+      const equipmentId = Object.keys(held.owned).map(Number).find(id => mergeMaterials(held, id, game) !== undefined);
+      if (equipmentId === undefined) return state;
+      state = accepted(applyCommand(state, { type: Opcode.ItemMerge, equipmentId }, { now: AT + 99, data: game }));
+    }
+  }
+
+  test("is refused when nothing has its materials, without settling anything into a save", () => {
+    const equipment = { nextId: 4, owned: { 1: piece(SWORD), 2: piece(SWORD), 3: piece(SHARP_SWORD) }, equipped: {} };
+    expect(nextMerge(equipment, data)).toBeUndefined();
+    for (const state of [player(equipment), player(NO_EQUIPMENT)]) {
+      expect(mergeAll(state)).toMatchObject({ ok: false, error: { code: GameErrorCode.MergeMaterialsShort } });
+    }
+  });
+
+  test("merges every set of every slot in id order, for no gold, leaving the battle alone when nothing worn is used", () => {
+    // 낡은 검 넷(1: +3), 가죽 갑옷 셋, 구리 반지 둘. 검은 1과 +0인 3, 5를, 갑옷은 셋을 쓰고, 반지와 검 하나는 남는다.
+    const state = player({
+      nextId: 10,
+      owned: {
+        1: piece(SWORD, 3), 2: piece(ARMOR), 3: piece(SWORD), 4: piece(ARMOR), 5: piece(SWORD), 6: piece(ARMOR), 7: piece(RING),
+        8: piece(SWORD), 9: piece(RING),
+      },
+      equipped: {},
+    });
+    expect(nextMerge(state.equipment, data)).toEqual([1, 3, 5]);
+    const after = accepted(mergeAll(state));
+    expect(after.equipment).toEqual({
+      nextId: 12, owned: { 7: piece(RING), 8: piece(SWORD), 9: piece(RING), 10: piece(SHARP_SWORD), 11: piece(108) }, equipped: {},
+    });
+    expect(after.items).toBe(state.items);
+    expect(after.battle).toBe(state.battle);
+    expect(after).toEqual(pressedRepeatedly(state));
+  });
+
+  test("merges again what a merge completes", () => {
+    const owned = Object.fromEntries(Array.from({ length: 6 }, (_, i) => [i + 1, piece(SWORD)]));
+    // 1–3 → 7, 4–6 → 8(날 선 검 둘) → 9(오우거 전쟁검).
+    const after = accepted(mergeAll(player({ nextId: 7, owned, equipped: {} }), cascading));
+    expect(after.equipment).toEqual({ nextId: 10, owned: { 9: piece(110) }, equipped: {} });
+  });
+
+  test("wears the result in the slot of a worn material and goes on with it from now, refitting once", () => {
+    // 입은 낡은 검 +2(1)와 검 둘, 입지 않은 가죽 갑옷 셋.
+    const owned = { 1: piece(SWORD, 2), 2: piece(SWORD), 3: piece(SWORD), 4: piece(ARMOR), 5: piece(ARMOR), 6: piece(ARMOR) };
+    const state = player({ nextId: 7, owned, equipped: { 1: 1 } });
+    const after = accepted(mergeAll(state, data, AT + 200));
+    expect(after.equipment).toEqual({ nextId: 9, owned: { 7: piece(SHARP_SWORD), 8: piece(108) }, equipped: { 1: 7 } });
+    expect(after.battle.at).toBe(AT + 200);
+    // 낡은 검 +2(7)에서 날 선 검(12)으로.
+    expect(heroStats(after, data).attack).toEqual(Big.add(heroStats(state, data).attack, 5));
+  });
+
+  test("ends where pressing the old merge-all button again and again ends, for any bag", () => {
+    const items = [...data.items.values()].filter(item => item.kind === ItemKind.Equipment);
+    let rng = 7;
+    const roll = (n: number) => {
+      const drawn = random(rng);
+      rng = drawn.state;
+      return Math.floor(drawn.value * n);
+    };
+    let merged = 0;
+    let wornUsed = 0;
+    for (let bag = 0; bag < 30; bag++) {
+      const owned: { [id: number]: { itemId: number; enhance: number } } = {};
+      const count = roll(40);
+      for (let id = 1; id <= count; id++) owned[id] = piece(items[roll(items.length)].id, roll(4));
+      const equipped: { [slot: number]: number } = {};
+      for (const [id, instance] of Object.entries(owned)) if (roll(4) === 0) equipped[row(instance.itemId).slot!] = Number(id);
+      const state = player({ nextId: count + 1, owned, equipped });
+      const pressed = pressedRepeatedly(state, cascading);
+      if (pressed === state) {
+        expect(mergeAll(state, cascading)).toMatchObject({ ok: false, error: { code: GameErrorCode.MergeMaterialsShort } });
+        continue;
+      }
+      const after = accepted(mergeAll(state, cascading));
+      merged++;
+      if (after.equipment.equipped !== state.equipment.equipped) wornUsed++;
+      expect(after.equipment).toEqual(pressed.equipment);
+      expect(nextMerge(after.equipment, cascading)).toBeUndefined();
+      // 전투는 합성마다가 아니라 한 번 이어 가므로 HP만 다를 수 있다(최대 HP가 줄었다 오르는 합성들).
+      const hpless = (s: PlayerState) => ({ ...s, battle: { ...s.battle, hero: { ...s.battle.hero, hp: null } } });
+      expect(hpless(after)).toEqual(hpless(pressed));
+    }
+    // 대부분의 가방이 합성하고, 그중 여럿은 입은 장비를 쓴다.
+    expect(merged).toBeGreaterThan(10);
+    expect(wornUsed).toBeGreaterThan(3);
+  });
+
+  test("merges a full bag in one command, and stops at its bound even for data whose merges would never end", () => {
+    const full = Object.fromEntries(Array.from({ length: data.constants.equipmentCap }, (_, i) => [i + 1, piece(SWORD)]));
+    const after = accepted(mergeAll(player({ nextId: data.constants.equipmentCap + 1, owned: full, equipped: {} })));
+    expect(Object.values(after.equipment.owned).filter(found => found.itemId === SHARP_SWORD)).toHaveLength(33);
+    expect(Object.keys(after.equipment.owned)).toHaveLength(34);
+    // 하나로 하나를 만드는 순환은 장비 수가 줄지 않는다. 처음 가진 수만큼 합성하고 멈춘다.
+    const looping = {
+      ...data,
+      items: new Map(data.items)
+        .set(SWORD, { ...row(SWORD), mergeItemId: SHARP_SWORD, mergeCount: 1 })
+        .set(SHARP_SWORD, { ...row(SHARP_SWORD), mergeItemId: SWORD, mergeCount: 1 }),
+    };
+    const stuck = accepted(mergeAll(player({ nextId: 3, owned: { 1: piece(SWORD), 2: piece(SHARP_SWORD) }, equipped: {} }), looping));
+    expect(stuck.equipment.nextId).toBe(5);
   });
 });

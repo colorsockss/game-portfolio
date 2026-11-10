@@ -116,6 +116,41 @@ describe("arithmetic", () => {
     expect(tiny.m).toBeCloseTo(1, 8);
   });
 
+  // 가수(5.00634)는 이진수로 정확하지 않아서, 가까운 두 정수의 가수끼리 빼면 그 오차가 결과보다 크게 남아 내림이 1 작아진다.
+  test("subtracts close integers to the exact integer and cancels to exact zero", () => {
+    expect(Big.toNumber(Big.floor(Big.sub(Big.from(500634), Big.from(490942))))).toBe(9692);
+    expect(Big.floor(Big.sub(91032, 90695))).toEqual(Big.from(337));
+    expect(Big.sub(Big.sub(Big.from(10), Big.from(7)), Big.from(3))).toBe(Big.ZERO);
+  });
+
+  test("adds and subtracts integers below 2^51 to the same Big as the integer itself", () => {
+    // 결정적인 난수(LCG). 자릿수를 1–15에서 고르고, 반은 a에 가까운 b(큰 상쇄), 반은 자릿수가 다른 b다.
+    let seed = 20261110;
+    const next = () => (seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32;
+    const integer = (maxDigits: number) => {
+      const value = Math.floor(next() * Number(`1e${1 + Math.floor(next() * maxDigits)}`));
+      return next() < 0.5 ? -value : value;
+    };
+    for (let i = 0; i < 20_000; i++) {
+      const a = integer(15);
+      const b = i % 2 === 0 ? a - integer(4) : integer(15);
+      expect(Big.sub(a, b)).toEqual(Big.from(a - b));
+      expect(Big.add(a, b)).toEqual(Big.from(a + b));
+      expect(Big.toNumber(Big.floor(Big.sub(a, b)))).toBe(a - b);
+      expect(Big.toNumber(Big.floor(Big.add(a, b)))).toBe(a + b);
+      expect(Big.sub(a, a)).toBe(Big.ZERO);
+    }
+  });
+
+  test("adds integers and fractions across the edge of the exact range", () => {
+    expect(Big.add(2 ** 50, 2 ** 50)).toEqual(Big.from(2 ** 51));
+    expect(Big.sub(1e15, 1)).toEqual(Big.from(999999999999999));
+    expect(Big.add(1e16, -1e15)).toEqual(Big.from(9e15));
+    expect(Big.toNumber(Big.add(3, 0.5))).toBe(3.5);
+    expect(Big.toNumber(Big.sub(10, 0.25))).toBe(9.75);
+    expect(Big.toNumber(Big.add(1.5, 2.25))).toBe(3.75);
+  });
+
   test("multiplies and divides past the range of doubles", () => {
     expect(Big.mul({ m: 2, e: 300 }, { m: 5, e: 300 })).toEqual({ m: 1, e: 601 });
     expect(Big.div({ m: 1, e: 601 }, { m: 5, e: 300 })).toEqual({ m: 2, e: 300 });

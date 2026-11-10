@@ -87,3 +87,16 @@ export function mergeMaterials(equipment: EquipmentState, equipmentId: number, d
     .sort((a, b) => Number(worn.has(a)) - Number(worn.has(b)) || owned[a].enhance - owned[b].enhance || a - b);
   return others.length + 1 < row.mergeCount ? undefined : [equipmentId, ...others.slice(0, row.mergeCount - 1)];
 }
+
+/**
+ * 일괄 합성(ItemMergeAll)의 다음 합성: 재료가 모인 장비 중 ID가 가장 작은 것을 고른 재료(mergeMaterials). 없으면 undefined다.
+ * 장비 화면의 일괄 합성 버튼도 이것으로 누를 수 있는지 본다.
+ */
+export function nextMerge(equipment: EquipmentState, data: GameData): number[] | undefined {
+  // 정수 키는 오름차순으로 순회된다.
+  for (const key of Object.keys(equipment.owned)) {
+    const used = mergeMaterials(equipment, Number(key), data);
+    if (used) return used;
+  }
+  return undefined;
+}

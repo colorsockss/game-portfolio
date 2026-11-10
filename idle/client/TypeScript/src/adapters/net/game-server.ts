@@ -216,6 +216,11 @@ export function createGameServer({ socket, server, dataVersion, clock, network }
 
   function end(reason: EndReason): void {
     session = undefined;
+    // 재개를 거절한 소켓은 아직 열려 있다. 닫지 않으면 서버의 핑에 답하며 다음 로그인의 소켓 옆에 남는다.
+    const open = handle;
+    generation++;
+    handle = undefined;
+    open?.close(1000, `The session ended: ${reason}.`);
     stop(new Error(`The connection ended: ${reason}.`), "ended", reason);
   }
 

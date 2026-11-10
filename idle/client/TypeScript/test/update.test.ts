@@ -97,14 +97,14 @@ test("planUpdate downloads what changed and copies the rest", () => {
 
 /**
  * 메모리의 번들 저장소. `installed`는 설치된 번들, `remote`는 올린 번들이고(`pointer`는 채널이 가리키는 버전, 기본은
- * 그 번들의 버전), `corrupt`는 받을 때 내용을 바꿀 파일이다.
+ * 그 번들의 버전), `corrupt`는 받을 때 내용을 바꿀 파일이다. `damaged`는 설치된 번들에서 내용이 깨진 파일, `lost`는 사라진 파일이다.
  * 바꾸면 `committed`가 받는 곳이 되고 설치된 번들도 그것이 된다. `required`는 게임이 남긴 UPDATE_REQUIRED다. `assets`는
  * 카탈로그의 에셋 번들 중 캐시에 없는 바이트이고, 음수면 받지 못한다. `app`은 버킷의 앱 기록(없으면 받지 못함)이다.
  */
 function setUp(
   installed: Bundle | null, remote: Bundle | undefined,
-  { corrupt, required = false, assets = 0, pointer, app }: {
-    corrupt?: string; required?: boolean; assets?: number; pointer?: string; app?: string;
+  { corrupt, damaged, lost, required = false, assets = 0, pointer, app }: {
+    corrupt?: string; damaged?: string; lost?: string; required?: boolean; assets?: number; pointer?: string; app?: string;
   } = {},
 ) {
   const bucket = published(remote, pointer);
@@ -126,7 +126,10 @@ function setUp(
       if (text === undefined) throw new Error(`404 ${url}`);
       staging!.set(path, path === corrupt ? `${text}!` : text);
     },
-    reuse: path => void staging!.set(path, installed!.files[path]),
+    reuse(path) {
+      if (path === lost) throw new Error(`No installed ${path}.`);
+      staging!.set(path, path === damaged ? `${installed!.files[path]}?` : installed!.files[path]);
+    },
     read: path => staging!.get(path)!,
     digest(path) {
       const text = staging!.get(path);
@@ -231,6 +234,26 @@ describe("the updater", () => {
     expect(t.staging()).toBeUndefined();
     expect(t.update.value.status).toBe("current");
     expect(t.prefetched).toEqual(["installed"]);
+  });
+
+  test.each([["damaged", { damaged: "main.mjs" }], ["lost", { lost: "main.mjs" }]])(
+    "downloads an installed file that is %s again though the channel still points at the installed bundle",
+    async (_case, broken) => {
+      const t = setUp(v1, v1, broken);
+      expect(await t.updater.check()).toBe(true);
+      const folder = `${SOURCE}v/${v1.manifest.version}/`;
+      expect(t.requested).toEqual([`${SOURCE}channels/Android/${API}.json`, `${folder}manifest.json`, `${folder}main.mjs`]);
+      expect(Object.fromEntries(t.committed()!)).toEqual({ ...v1.files, [MANIFEST]: JSON.stringify(v1.manifest) });
+      expect(t.update.value.status).toBe("updated");
+      expect(t.logger.warn).toHaveBeenCalledWith("The installed bundle is damaged (main.mjs); downloading it again.");
+    },
+  );
+
+  test("downloads an unchanged file whose installed copy is damaged instead of failing every later update", async () => {
+    const t = setUp(v1, v2, { damaged: "data/Items.bytes" });
+    expect(await t.updater.check()).toBe(true);
+    expect(t.requested.at(-1)).toBe(`${SOURCE}v/${v2.manifest.version}/data/Items.bytes`);
+    expect(Object.fromEntries(t.committed()!)).toEqual({ ...v2.files, [MANIFEST]: JSON.stringify(v2.manifest) });
   });
 
   test("keeps and starts the installed bundle when a file fails verification", async () => {

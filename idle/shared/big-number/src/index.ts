@@ -112,11 +112,18 @@ function snap(n: number): number {
   return Math.abs(n - integer) <= Math.abs(n) * SNAP ? integer : n;
 }
 
+// 정수부가 10^16보다 작은 두 수(지수 0–15)는 값으로 바꿔 더한다. 가수끼리 더하면 가수의 표현 오차(5.00634)가 큰 쪽 크기만큼
+// 남는데, 가까운 두 정수를 빼면 그 오차가 결과에 비례하는 snap의 허용치보다 커서 내림이 1 작아지고 같은 값을 빼도 0이 아니게
+// 된다. toNumber처럼 snap하면 2^51(약 2.25 × 10^15)보다 작은 정수를 정확히 되찾고 double은 그 합을 정확히 더하므로, 그런 정수끼리의
+// 결과는 Big.from(a ± b)와 같은 비트이고 상쇄되면 ZERO다.
+const VALUE_ADD_MAX_E = 15;
+
 function add(a: BigLike, b: BigLike): Big {
   const x = from(a);
   const y = from(b);
   if (x.m === 0) return y;
   if (y.m === 0) return x;
+  if (x.e >= 0 && x.e <= VALUE_ADD_MAX_E && y.e >= 0 && y.e <= VALUE_ADD_MAX_E) return normalize(snap(x.m * POW10[x.e]) + snap(y.m * POW10[y.e]), 0);
   const gap = x.e - y.e;
   if (gap > PRECISION) return x;
   if (gap < -PRECISION) return y;

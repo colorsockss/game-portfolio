@@ -41,7 +41,7 @@ export {
 } from "./battle/stats.js";
 export type { Command, CommandOf, CommandOpcode } from "./command.js";
 export { applyCommand, isCommandOpcode } from "./commands/index.js";
-export { enhanceCost, equipmentStat, mergeMaterials, NO_EQUIPMENT, type EquipmentInstance, type EquipmentState } from "./equipment.js";
+export { enhanceCost, equipmentStat, mergeMaterials, nextMerge, NO_EQUIPMENT, type EquipmentInstance, type EquipmentState } from "./equipment.js";
 export type { CommandContext, CommandResult } from "./commands/types.js";
 export type { GameError } from "./errors.js";
 export { grant, NO_ITEMS, type Holdings, type ItemAmounts } from "./items.js";

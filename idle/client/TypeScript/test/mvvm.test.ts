@@ -949,7 +949,10 @@ describe("equipment screen", () => {
       if (refuse) throw new Error("offline");
       return undefined;
     };
-    const cmd = { ItemEquip: send("equip"), ItemUnequip: send("unequip"), ItemEnhance: send("enhance"), ItemMerge: send("merge") } as unknown as Commands;
+    const cmd = {
+      ItemEquip: send("equip"), ItemUnequip: send("unequip"), ItemEnhance: send("enhance"), ItemMerge: send("merge"),
+      ItemMergeAll: async () => void sent.push("mergeAll"),
+    } as unknown as Commands;
     const logger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
     const close = vi.fn();
     const badges = createEquipmentBadges({ state, data });
@@ -1110,11 +1113,11 @@ describe("equipment screen", () => {
     t.forge.equipBest.click.fire();
     expect(t.sent).toEqual(["equip 2", "equip 3"]);
 
-    // 낡은 검을 셋 모으면 합성할 수 있다. 이 테스트의 커맨드는 상태를 바꾸지 않아 같은 재료가 다시 나오면 멈춘다.
+    // 낡은 검을 셋 모으면 합성할 수 있다. 무엇을 합성할지는 규칙이 정하므로 커맨드 하나만 보낸다.
     t.state.player.value = { ...player, equipment: { nextId: 4, owned: { 1: owned[1], 2: { itemId: 101, enhance: 0 }, 3: { itemId: 101, enhance: 0 } }, equipped: {} } };
     expect(t.forge.mergeAll.target.interactable).toBe(true);
     t.forge.mergeAll.click.fire();
-    expect(t.sent.slice(2).filter(sent => sent.startsWith("merge"))).toHaveLength(1);
+    expect(t.sent.slice(2)).toEqual(["mergeAll"]);
   });
 
   test("the badge tree lights a slot tab for better equipment and the root for any slot, and goes out once it is worn", () => {

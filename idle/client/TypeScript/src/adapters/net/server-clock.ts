@@ -20,7 +20,8 @@ export function createServerClock(local: () => number = Date.now): ServerClock {
   let high = 0;
   let synced = false;
   return {
-    now: () => local() + (low + high) / 2,
+    // 구간의 가운데는 0.5ms로 끝날 수 있다. 커맨드의 시각으로 서버에 가고 저장 데이터(`battle.at`)에 남으므로 정수로 내린다.
+    now: () => Math.floor(local() + (low + high) / 2),
     local,
     observe(serverTime, sentAt) {
       const sampleLow = serverTime - local();

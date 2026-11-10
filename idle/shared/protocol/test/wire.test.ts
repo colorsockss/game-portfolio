@@ -50,6 +50,8 @@ const messages = {
   "ItemUnequip request": { op: Opcode.ItemUnequip, id: "9", body: { equipmentId: 3 } },
   "ItemEnhance request": { op: Opcode.ItemEnhance, id: "13", body: { equipmentId: 3 } },
   "ItemMerge request": { op: Opcode.ItemMerge, id: "14", body: { equipmentId: 3 } },
+  // 일괄 합성은 본문이 비고, 무엇을 합성할지는 규칙이 정한다(프로토콜 23).
+  "ItemMergeAll request": { op: Opcode.ItemMergeAll, id: "21", body: {} },
   // 장비는 장비 ID를 키로 하는 인스턴스(아이템 ID, 강화 단계) 맵과, 슬롯을 키로 하는 착용이다(키는 MessagePack에서 문자열).
   "Ok command response with equipment sync": {
     id: "8", serverTime: 1000, code: ResultCode.Ok, body: null,

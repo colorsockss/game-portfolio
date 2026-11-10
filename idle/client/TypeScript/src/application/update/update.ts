@@ -212,6 +212,20 @@ export function createUpdater({ store, source, api, update, storage, logger }: U
     if (total > 0) logger.info(`assets: ${total} bytes downloaded`);
   }
 
+  // 설치된 번들의 `files`를 받는 곳에 복사하고, 매니페스트와 다르거나 없는 것을 돌려준다(받아야 한다). 설치한 뒤에 깨진 파일을
+  // 믿고 복사하면 검증이 매번 실패해, 그 파일이 바뀌지 않는 한 다음 패치를 영영 받지 못한다.
+  function reuseIntact(files: readonly BundleFile[]): BundleFile[] {
+    return files.filter(file => {
+      try {
+        store.reuse(file.path);
+      } catch {
+        return true;
+      }
+      const digest = store.digest(file.path);
+      return digest?.size !== file.size || digest.sha256 !== file.sha256;
+    });
+  }
+
   // 받아서 바꿨으면 true, 설치된 것이 최신이면 false. 받지 못하면 throw한다. 에셋 번들은 설치하기 전에 받아 두므로 게임이
   // 시작하자마자 쓸 수 있다.
   async function download(from: string): Promise<boolean> {
@@ -221,10 +235,16 @@ export function createUpdater({ store, source, api, update, storage, logger }: U
     await store.download(`${from}${channelPath(api)}`, POINTER);
     const { version } = parsePointer(store.read(POINTER));
     if (version === current.version) {
-      store.discard();
-      // 버전은 같아도 캐시에서 지워진 에셋 번들이 있으면 다시 받는다.
-      await prefetch(false, 0);
-      return false;
+      // 설치된 파일을 매니페스트로 확인한다(시작할 때마다 번들 약 170KB의 복사와 해시). 깨진 것이 있으면 그대로 시작해 봐야
+      // 게임이 뜨지 않으므로, 같은 버전을 새 번들처럼 받아 깨진 파일만 다시 받는다.
+      const broken = reuseIntact(current.files);
+      if (broken.length === 0) {
+        store.discard();
+        // 버전은 같아도 캐시에서 지워진 에셋 번들이 있으면 다시 받는다.
+        await prefetch(false, 0);
+        return false;
+      }
+      logger.warn(`The installed bundle is damaged (${broken.map(file => file.path).join(", ")}); downloading it again.`);
     }
     // 포인터는 번들의 파일이 아니므로 받는 곳을 비우고 매니페스트부터 받는다.
     store.begin();
@@ -234,8 +254,8 @@ export function createUpdater({ store, source, api, update, storage, logger }: U
     if (next.version !== version || next.api !== api) {
       throw new Error(`The manifest ${next.version} (API ${next.api}) is not the channel's ${version} (API ${api}).`);
     }
-    const { reuse, download } = planUpdate(current, next);
-    for (const file of reuse) store.reuse(file.path);
+    const plan = planUpdate(current, next);
+    const download = [...plan.download, ...reuseIntact(plan.reuse)];
     const total = download.reduce((sum, file) => sum + file.size, 0);
     let received = 0;
     report("downloading", received, total);

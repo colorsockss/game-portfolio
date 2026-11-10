@@ -51,7 +51,8 @@ namespace PortfolioIdleRpg.Facades
 
         /// <summary>
         /// 뷰에 닫는 연출(팝업 틀의 PopupMotion)이 있으면 시작하고 그 컴포넌트를 돌려준다. TypeScript는 그 Finished를
-        /// 듣고 나서 Destroy를 부른다. 연출이 없거나 돌릴 수 없으면 null이고, 그때는 바로 Destroy를 부른다.
+        /// 듣고 나서 Destroy를 부른다. 연출이 없거나 돌릴 수 없으면(꺼짐, 첫 프레임 전이라 보인 것이 없음) null이고, 그때는
+        /// 바로 Destroy를 부른다.
         /// </summary>
         /// <param name="view">Create가 돌려준 ViewRefs.</param>
         /// <returns>시작한 연출, 또는 null.</returns>

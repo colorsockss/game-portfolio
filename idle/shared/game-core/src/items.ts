@@ -15,16 +15,6 @@ export type Holdings = Pick<PlayerState, "items" | "equipment">;
 
 export const NO_ITEMS: ItemAmounts = Object.freeze({});
 
-/**
- * 보유량에서 쓴 만큼 뺀다(레벨업의 경험치, 강화와 스킬의 비용). m × 10^e의 가수는 이진수로 정확하지 않아 가까운 두 정수를
- * Big.sub로 빼면 내림의 허용치보다 크게 어긋난다(230 − 100 − 120이 9.99…가 되어 내림하면 9). 그래서 double이 정확히 담는
- * 정수 범위에서는 double로 뺀다.
- */
-export function minus(held: Big, amount: Big): Big {
-  const value = Big.toNumber(held);
-  return value <= Number.MAX_SAFE_INTEGER ? Big.from(value - Big.toNumber(amount)) : Big.floor(Big.sub(held, amount));
-}
-
 function rowOf(id: number, data: GameData): ItemsRow {
   return required(data.items, id, "item");
 }
@@ -66,7 +56,7 @@ export function addReward(
 /** 보유량에서 `itemId`를 `amount`만큼 쓴다. 모자라면 undefined다. */
 export function spend(items: ItemAmounts, itemId: number, amount: Big): ItemAmounts | undefined {
   const held = items[itemId] ?? Big.ZERO;
-  return Big.lt(held, amount) ? undefined : { ...items, [itemId]: minus(held, amount) };
+  return Big.lt(held, amount) ? undefined : { ...items, [itemId]: Big.floor(Big.sub(held, amount)) };
 }
 
 /** 보상을 지급한다. 바뀌지 않은 쪽은 같은 객체이므로 그 슬라이스를 다시 보내지 않는다. */

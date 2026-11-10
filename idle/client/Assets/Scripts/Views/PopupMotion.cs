@@ -69,14 +69,17 @@ namespace PortfolioIdleRpg.Views
         }
 
         /// <summary>
-        /// 사라지기 시작한다. 나타나던 중이면 지금 정도에서 돌아간다. 꺼져 있어 연출을 돌릴 수 없으면 false이고, 그때는
-        /// Finished가 나지 않는다.
+        /// 사라지기 시작한다. 나타나던 중이면 지금 정도에서 돌아간다. 꺼져 있거나 아직 보인 것이 없어(켜진 뒤 첫 Update 전)
+        /// 돌릴 연출이 없으면 false이고, 그때는 Finished가 나지 않는다. true면 다 사라질 때 Finished가 한 번 난다. 그 전에
+        /// 꺼지거나 없어지면 나지 않는데, 그것은 스크립트 환경을 버리는 정리(UiRoot.DestroyAll)뿐이라 기다리는 스크립트도
+        /// 함께 사라진다(정리 중에는 뷰가 스크립트를 부르지 않는다).
         /// </summary>
         /// <returns>연출을 시작했으면 true.</returns>
         [Preserve]
         public bool Close()
         {
-            if (!isActiveAndEnabled)
+            // 보인 것이 없으면 Update가 이미 목표(0)에 있어 Finished를 낼 일이 없다.
+            if (!isActiveAndEnabled || (_shown == 0f))
                 return false;
             _closing = true;
             return true;

@@ -456,6 +456,18 @@ describe("waves", () => {
     ]);
   });
 
+  test("a hit for exactly the HP left fells the hero", () => {
+    // 몬스터 2001이 6씩 쳐서 18 HP의 영웅은 세 번째 공격에 쓰러진다. 18 − 6 − 6이 6보다 조금 크게 남으면 HP가 1e-15쯤 남았다.
+    const sixes: GameData = {
+      ...tank,
+      heroLevels: patch(tank.heroLevels, 1, { maxHp: Big.from(18), attack: Big.ONE, defense: Big.ZERO }),
+      monsters: patch(tank.monsters, 2001, { attack: Big.from(6), skillIds: [] }),
+    };
+    const events = runUntil(startBattle(input({ data: sixes })), isHeroDeath);
+    const hits = monsterAttacks(events).flatMap(event => event.hits);
+    expect(hits.map(hit => [hit.damage, hit.hp])).toEqual([[Big.from(6), Big.from(12)], [Big.from(6), Big.from(6)], [Big.from(6), Big.ZERO]]);
+  });
+
   test("the wave count stops at the target while autoBoss is off", () => {
     for (const stageId of [3004, 3001]) {
       const start = input({ data: strong, stageId, waves: 3, mode: BattleMode.Hunt });

@@ -1,8 +1,11 @@
 // 게임 서버 진입점. 공용 패키지는 esbuild가 TypeScript 소스에서 바로 번들한다.
 import { readFile } from "node:fs/promises";
 import type { AddressInfo } from "node:net";
+import path from "node:path";
 import { loadGameData } from "@idle/data-schema";
+import { HOUR } from "@idle/game-core";
 import { socketPath } from "@idle/protocol";
+import { backupDatabase } from "./backup.js";
 import { createLog } from "./log.js";
 import { createRpc } from "./rpc.js";
 import { openStore } from "./store.js";
@@ -23,6 +26,20 @@ const main = log("server");
 // tools/build.mjs가 테이블 데이터를 이 번들 옆의 data/로 복사한다.
 const data = await loadGameData(table => readFile(new URL(`./data/${table}.bytes`, import.meta.url)));
 main.info(`GameData Items: ${data.items.size}, Monsters: ${data.monsters.size}, Skills: ${data.skills.size}, Stages: ${data.stages.size}`);
+
+// 하루에 하나씩 DB 옆의 backup/에 사본을 남긴다(backup.ts). 열기 전에 먼저 해서, 이 서버가 스키마를 올리기 전의 DB가 남는다.
+// 그 뒤로는 날이 바뀌었는지를 한 시간마다 본다. 실패해도 서버는 돈다.
+function backup(): void {
+  if (databasePath === ":memory:") return;
+  try {
+    const copy = backupDatabase(databasePath, path.join(path.dirname(databasePath), "backup"), Date.now());
+    if (copy) main.info(`Backed up to ${copy}`);
+  } catch (error) {
+    main.error("The database backup failed:", error);
+  }
+}
+backup();
+setInterval(backup, HOUR).unref();
 
 const store = await openStore(databasePath);
 main.info(`Saves in ${databasePath}`);

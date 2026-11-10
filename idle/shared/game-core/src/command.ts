@@ -14,6 +14,8 @@ export type Command =
   | { readonly type: Opcode.ItemEnhance; readonly equipmentId: number }
   /** 이 장비와 같은 장비들을 합쳐 다음 등급 장비 하나로 만든다. */
   | { readonly type: Opcode.ItemMerge; readonly equipmentId: number }
+  /** 재료가 모인 장비를 남김없이 합성한다. 무엇을 먼저 합성할지는 규칙(nextMerge)이 정하므로 고르는 필드가 없다. */
+  | { readonly type: Opcode.ItemMergeAll }
   /** 강화(StatUpgrades.id) 하나를 골드로 `steps`(1–100)단계까지 올린다. 최대 단계나 골드가 모자란 데서 멈춘다. */
   | { readonly type: Opcode.StatUpgrade; readonly upgradeId: number; readonly steps: number }
   /** 스킬을 배운다(1레벨). 비용은 Skills.costItemId 아이템에서 Skills.learnCost만큼 낸다. */

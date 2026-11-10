@@ -5,7 +5,7 @@ import {
   type Command, type CommandOpcode, type PlayerState, type StateSync,
 } from "@idle/game-core";
 import {
-  COMMAND_TIME, CloseCode, ResultCode, decodeMessage, encodeMessage,
+  COMMAND_TIME, CloseCode, MAX_UNANSWERED_COMMANDS, ResultCode, decodeMessage, encodeMessage,
   type Apis, type FailureCode, type RequestEnvelope, type ResponseEnvelope, type ResponseOf,
   type ResponseResult, type SystemOpcode,
 } from "@idle/protocol";
@@ -61,9 +61,21 @@ interface ConnectionState {
   tokenHash?: Uint8Array;
   /** 전송 계층이 잃은 연결. 이미 받은 요청은 계속 처리하지만 어느 계정에도 묶지 않는다. */
   gone: boolean;
-  /** 게임 커맨드를 받을 수 있는 수(토큰 버킷)와 마지막으로 채운 서버 시각. */
+  /** 게임 커맨드(COMMAND_RATE)와 로그인·재개(SESSION_RATE)를 받을 수 있는 수. */
+  readonly commands: Bucket;
+  readonly sessions: Bucket;
+}
+
+/** 토큰 버킷: 받을 수 있는 수와 마지막으로 채운 시각(ms). */
+export interface Bucket {
   tokens: number;
   filledAt: number;
+}
+
+/** 버킷이 초당 `perSecond`개씩, `burst`개까지 찬다. */
+export interface Rate {
+  readonly perSecond: number;
+  readonly burst: number;
 }
 
 // 그 사이 다른 요청이 같은 계정을 저장했을 때 커맨드를 처음부터 다시 시작하는 횟수.
@@ -71,10 +83,18 @@ const SAVE_ATTEMPTS = 3;
 const MAX_REQUEST_ID = 64;
 /**
  * 연결마다 게임 커맨드를 초당 `perSecond`개, 한꺼번에 `burst`개까지 받는다. 사람이 강화를 연타해도(초당 10번 안팎) 걸리지 않고,
- * 조작한 클라이언트 하나가 커맨드마다 드는 정산과 커밋으로 프로세스를 채우지 못하게 한다.
- * shortcut: 연결마다 세므로 다시 연결하면 처음부터 센다. 재연결을 되풀이하는 클라이언트까지 막으려면 계정마다 센다.
+ * 조작한 클라이언트 하나가 커맨드마다 드는 정산과 커밋으로 프로세스를 채우지 못하게 한다. `burst`는 클라이언트가 답 없이 보내 둘
+ * 수 있는 수와 같아서, 재연결한 클라이언트가 한꺼번에 다시 보내는 커맨드는 모두 받는다.
  */
-const COMMAND_RATE = { perSecond: 10, burst: 20 };
+const COMMAND_RATE: Rate = { perSecond: 10, burst: MAX_UNANSWERED_COMMANDS };
+/**
+ * 연결마다 로그인과 재개를 합쳐 5번까지, 그 뒤로는 10초에 한 번 받는다. 로그인은 자격 없이 텍스트 ID만으로 계정을 만들고 커밋하므로
+ * 가장 비싸고, 클라이언트는 연결마다 재개 한 번이나 로그인 한 번과 실패한 뒤의 재시도 몇 번만 보낸다. StateFetch와 Ping은 저장하지
+ * 않으므로 여기서 세지 않고 전송 계층의 메시지 몫(transport.ts)으로 묶는다.
+ * shortcut: 버킷은 모두 연결마다라서 연결을 거듭 열거나(연결마다 로그인 5번) 여럿 여는 클라이언트는 막지 못한다. 계정 수나 DB가 이유
+ * 없이 늘거나 한 IP의 연결이 몰리면 IP마다 센다(Caddy 뒤에서는 모든 상대가 프록시이므로 X-Forwarded-For를 믿게 한 뒤).
+ */
+const SESSION_RATE: Rate = { perSecond: 0.1, burst: 5 };
 
 /**
  * 어떤 메시지 전송 위에서든 돌아가는 게임 프로토콜. WebSocket 서버가 연결마다 바이너리 메시지를
@@ -94,7 +114,10 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
   return { connect };
 
   function connect(peer: Peer): Connection {
-    const connection: ConnectionState = { peer, gone: false, tokens: COMMAND_RATE.burst, filledAt: clock.now() };
+    const now = clock.now();
+    const connection: ConnectionState = {
+      peer, gone: false, commands: { tokens: COMMAND_RATE.burst, filledAt: now }, sessions: { tokens: SESSION_RATE.burst, filledAt: now },
+    };
     let last: Promise<unknown> = Promise.resolve();
     return {
       receive(message) {
@@ -164,6 +187,7 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
   // 세션 시작을 한 트랜잭션에 두므로 그 사이에 다른 요청이 끼어들지 않는다. 같은 계정을 함께 만들려던 로그인은
   // 먼저 만든 계정을 찾고, 돌려주는 저장 데이터는 새 세션이 시작한 그대로다(그 뒤 옛 세션의 커맨드는 거절된다).
   async function login(connection: ConnectionState, request: RequestEnvelope<Opcode.AuthLogin>, now: number): Promise<ResponseResult> {
+    if (!take(connection.sessions, SESSION_RATE, now)) return fail(ResultCode.TooManyRequests, "Too many logins; try again later.");
     const { loginId } = request.body;
     if (!isValidLoginId(loginId)) return fail(ResultCode.BadRequest, `loginId must be ${LOGIN_ID_LENGTH.min} to ${LOGIN_ID_LENGTH.max} lowercase letters, digits or underscores.`);
     const token = createToken();
@@ -184,6 +208,7 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
   // 두고 곧바로 묶으므로, 같은 계정의 로그인은 그보다 먼저 끝나 이 재개를 거절하게 하거나, 뒤에 와서
   // 이 연결을 밀어낸다.
   async function resume(connection: ConnectionState, request: RequestEnvelope<Opcode.AuthResume>, now: number): Promise<ResponseResult> {
+    if (!take(connection.sessions, SESSION_RATE, now)) return fail(ResultCode.TooManyRequests, "Too many resumes; try again later.");
     const { token } = request.body;
     if (typeof token !== "string") return fail(ResultCode.BadRequest, "token must be a string.");
     const tokenHash = hashToken(token);
@@ -226,7 +251,7 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
     // 모드는 프로세스 내내 같으므로, 이 거절은 기록하지 않아도 같은 id에 같은 답이다.
     if (!cheats && isCheat(request.op)) return reject(GameErrorCode.CheatDisabled, "Cheats are open only on a development server.");
 
-    if (!take(connection, now)) {
+    if (!take(connection.commands, COMMAND_RATE, now)) {
       // 다시 보낸 커맨드는 이미 처리했을 수 있다. 그 답은 거르지 않는다.
       const recorded = await store.transaction(tx => tx.findResult(account.id, request.id));
       if (recorded) return decodeMessage(recorded) as ResponseResult;
@@ -269,13 +294,13 @@ export function createRpc({ store, clock, data, log, cheats = false }: RpcOption
   }
 }
 
-// 연결의 토큰 버킷을 지금까지 채우고 커맨드 하나만큼 꺼낸다. 남은 것이 없으면 false.
-function take(connection: ConnectionState, now: number): boolean {
-  const refill = (Math.max(0, now - connection.filledAt) * COMMAND_RATE.perSecond) / 1000;
-  connection.tokens = Math.min(COMMAND_RATE.burst, connection.tokens + refill);
-  connection.filledAt = now;
-  if (connection.tokens < 1) return false;
-  connection.tokens--;
+/** 버킷을 `now`(ms)까지 채우고 하나를 꺼낸다. 남은 것이 없으면 false. */
+export function take(bucket: Bucket, rate: Rate, now: number): boolean {
+  const refill = (Math.max(0, now - bucket.filledAt) * rate.perSecond) / 1000;
+  bucket.tokens = Math.min(rate.burst, bucket.tokens + refill);
+  bucket.filledAt = now;
+  if (bucket.tokens < 1) return false;
+  bucket.tokens--;
   return true;
 }
 
@@ -317,8 +342,9 @@ function parseRequest(bytes: Uint8Array): RequestEnvelope | undefined {
   if (typeof value !== "object" || value === null) return undefined;
   const { op, id, body, time } = value as Record<string, unknown>;
   if (!Number.isInteger(op) || typeof body !== "object" || body === null) return undefined;
-  // MessagePack은 undefined를 nil로 보내므로 null도 없는 것으로 본다.
-  if (time !== undefined && time !== null && !Number.isFinite(time)) return undefined;
+  // MessagePack은 undefined를 nil로 보내므로 null도 없는 것으로 본다. 시각은 epoch ms의 정수다. 소수를 받으면 새 사냥의 `battle.at`에
+  // 그대로 저장된다.
+  if (time !== undefined && time !== null && !Number.isSafeInteger(time)) return undefined;
   // 커맨드의 답을 id로 저장하므로 id는 짧아야 한다.
   if (typeof id !== "string" || id.length === 0 || id.length > MAX_REQUEST_ID) return undefined;
   return value as RequestEnvelope;

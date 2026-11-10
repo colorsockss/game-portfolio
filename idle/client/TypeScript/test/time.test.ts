@@ -20,6 +20,16 @@ test("the server clock puts the server's time in the middle of the round trip", 
   expect(clock.now()).toBe(1_000_350);
 });
 
+test("the server clock is whole milliseconds though the middle of an odd round trip is not", () => {
+  let local = 1101;
+  const clock = createServerClock(() => local);
+  // 왕복 101ms의 가운데는 50.5ms다. 커맨드의 시각으로 서버에 가므로 내린다.
+  clock.observe(1_000_050, 1000);
+  expect(clock.now()).toBe(1_000_100);
+  local += 1;
+  expect(clock.now()).toBe(1_000_101);
+});
+
 test("the server clock narrows with faster answers and starts over when a clock jumps", () => {
   let local = 1100;
   const clock = createServerClock(() => local);

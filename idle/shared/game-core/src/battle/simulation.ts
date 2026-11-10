@@ -392,18 +392,19 @@ function effectsOf(data: GameData, states: readonly EffectState[]): Effect[] {
 const effectStates = (self: Combatant): EffectState[] => self.effects.map(({ row, ticksLeft, amount }) => ({ effectId: row.id, ticksLeft, amount }));
 
 /**
- * 착용·강화·스킬이 바뀐 체크포인트. 전투는 그 틱에서 그대로 이어 가고 영웅만 새 능력치로 바꾼다: 최대 HP가 오른 만큼 지금 HP를
- * 올리고(줄면 새 최대 HP로 자르며, 쓰러진 영웅은 그대로), 재사용 대기는 스킬 id로 옮긴다(새로 쓰는 스킬은 처음부터 기다린다).
- * 영웅의 소환수는 이어 받을 때 영웅의 새 능력치로 다시 계산된다.
+ * 착용·강화·스킬이 바뀐 체크포인트. 전투는 그 틱에서 그대로 이어 가고 영웅만 새 능력치로 바꾼다: 지금 HP는 새 최대 HP로 자르고
+ * (쓰러진 영웅은 그대로), `grow`(되돌릴 수 없는 성장)일 때만 최대 HP가 오른 만큼 올린다. 입고 벗기에도 올리면 벗었다 다시 입을
+ * 때마다 공짜로 회복한다. 재사용 대기는 스킬 id로 옮긴다(새로 쓰는 스킬은 처음부터 기다린다). 영웅의 소환수는 이어 받을 때 영웅의
+ * 새 능력치로 다시 계산된다.
  */
-export function refitHero(before: BattlePlayer, after: BattlePlayer, data: GameData): BattleState {
+export function refitHero(before: BattlePlayer, after: BattlePlayer, data: GameData, grow: boolean): BattleState {
   const { battle } = before;
   const effects = effectsOf(data, battle.hero.effects);
   const old = fighterWith(heroStats(before, data), effects);
   const next = fighterWith(heroStats(after, data), effects);
   const { hp, cooldowns } = battle.hero;
   const gained = Big.sub(next.stats.maxHp, old.stats.maxHp);
-  const raised = Big.sign(hp) > 0 && Big.sign(gained) > 0 ? Big.add(hp, gained) : hp;
+  const raised = grow && Big.sign(hp) > 0 && Big.sign(gained) > 0 ? Big.add(hp, gained) : hp;
   const moved = next.attacks.map((attack, i) => {
     if (i === 0) return cooldowns[0] ?? 0;
     const j = old.attacks.findIndex((other, k) => k > 0 && other.skillId === attack.skillId);

@@ -4,7 +4,7 @@ import { settle } from "../battle/settle.js";
 import type { PlayerState } from "../state.js";
 import { challengeBoss, settleBattle } from "./battle.js";
 import { grantItem, setLevel, shiftTime, unlockStage } from "./cheat.js";
-import { enhanceItem, equipItem, mergeItem, unequipItem } from "./equipment.js";
+import { enhanceItem, equipItem, mergeAllItems, mergeItem, unequipItem } from "./equipment.js";
 import { rebirth } from "./rebirth.js";
 import { equipSkill, learnSkill, levelUpSkill, unequipSkill } from "./skills.js";
 import { selectStage } from "./stage.js";
@@ -21,6 +21,7 @@ const handlers: { readonly [K in CommandOpcode]: CommandHandler<CommandOf<K>> } 
   [Opcode.ItemUnequip]: unequipItem,
   [Opcode.ItemEnhance]: enhanceItem,
   [Opcode.ItemMerge]: mergeItem,
+  [Opcode.ItemMergeAll]: mergeAllItems,
   [Opcode.StatUpgrade]: upgradeStat,
   [Opcode.SkillLearn]: learnSkill,
   [Opcode.SkillEquip]: equipSkill,

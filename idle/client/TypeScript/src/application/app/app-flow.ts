@@ -80,10 +80,12 @@ export function createAppFlow({ state, flow, account, progress, requestUpdate, s
           screens.login?.(scope);
           follow(scope, state => state.player.value !== null, loggedIn => loggedIn && go("main"));
           follow(scope, state => state.network.value.ended, ended => ended === "update" && go("update"));
-          // 저장된 ID가 있으면 시작하면서 저절로 로그인한다. 세션이 끝난 뒤에는 하지 않는다: 계정이
-          // 다른 곳에서 로그인해서 끝난 경우 바로 다시 로그인하면 그쪽에서 계정을 빼앗게 된다.
+          // 저장된 ID가 있으면 시작하면서 저절로 로그인한다. 세션이 만료되어 끝났을 때도 한다: 세션은 로그인한 지 하루면
+          // 만료되므로 켜 둔 앱은 그 뒤 첫 재연결에서 끝나는데, 그대로 두면 방치한 게임이 로그인 화면에 멈춘다. 그 밖의 이유로
+          // 끝났으면 하지 않는다: 계정이 다른 곳에서 로그인해서 끝난 경우 바로 다시 로그인하면 그쪽에서 계정을 빼앗게 된다.
           const saved = account.lastLoginId();
-          if (state.network.value.ended === null && isValidLoginId(saved)) void account.login(saved);
+          const { ended } = state.network.value;
+          if ((ended === null || ended === "expired") && isValidLoginId(saved)) void account.login(saved);
         },
       },
       // 계정이 다른 곳에서 로그인하거나 연결이 끊긴 사이 만료되면 세션이 끝나고(login으로

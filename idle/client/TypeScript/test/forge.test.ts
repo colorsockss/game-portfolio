@@ -21,8 +21,8 @@ function setUp(equipment: EquipmentState, gold = 0) {
   const items = signal<ItemAmounts>(player.items);
   const sent: string[] = [];
   // progress처럼 규칙을 바로 화면의 저장 데이터에 적용하고, 거절은 오류로 이행한다.
-  const send = (type: Opcode) => async ({ equipmentId }: { equipmentId: number }) => {
-    sent.push(`${Opcode[type]} ${equipmentId}`);
+  const send = (type: Opcode) => async ({ equipmentId }: { equipmentId?: number }) => {
+    sent.push(`${Opcode[type]} ${equipmentId ?? ""}`.trimEnd());
     const result = applyCommand(state.player.value!, { type, equipmentId } as never, { now: 0, data });
     if (!result.ok) return result.error;
     state.player.value = result.state;
@@ -31,6 +31,7 @@ function setUp(equipment: EquipmentState, gold = 0) {
   };
   const cmd = {
     ItemEquip: send(Opcode.ItemEquip), ItemUnequip: send(Opcode.ItemUnequip), ItemEnhance: send(Opcode.ItemEnhance), ItemMerge: send(Opcode.ItemMerge),
+    ItemMergeAll: send(Opcode.ItemMergeAll),
   } as unknown as Commands;
   const badges = createEquipmentBadges({ state, data });
   const vm = createEquipmentViewModel({
@@ -100,6 +101,16 @@ test("the forge merges once enough of the same piece is held, then chooses the r
   forge.toggle();
   expect(t.sent.at(-1)).toBe("ItemUnequip 4");
   expect(forge.worn.value).toBe(false);
+});
+
+test("merge all sends one command that merges every set, and goes off once nothing is left to merge", () => {
+  const sword = { itemId: SWORD, enhance: 0 };
+  const t = setUp({ nextId: 7, owned: { 1: sword, 2: sword, 3: sword, 4: sword, 5: sword, 6: sword }, equipped: {} });
+  expect(t.vm.canMergeAll.value).toBe(true);
+  t.vm.mergeAll();
+  expect(t.sent).toEqual(["ItemMergeAll"]);
+  expect(t.player().equipment.owned).toEqual({ 7: { itemId: SHARP_SWORD, enhance: 0 }, 8: { itemId: SHARP_SWORD, enhance: 0 } });
+  expect(t.vm.canMergeAll.value).toBe(false);
 });
 
 test("the forge lets go of a piece that is gone", () => {

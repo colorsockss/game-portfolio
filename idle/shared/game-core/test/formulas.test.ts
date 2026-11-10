@@ -48,6 +48,17 @@ describe("generated formulas", () => {
     expect([1, 2, 3, 9].map(cost)).toEqual([1000, 1600, 2560, 42949]);
   });
 
+  // 공격력과 방어력이 가까우면 가수끼리 뺀 오차가 내림의 허용치보다 커서 1 작게 나왔다(24 − 22가 1).
+  test("damage is attack minus defense exactly, so flooring keeps it", () => {
+    const owner = (attack: number, defense: number): IAbilityOwner => ({
+      get: type => Big.from(type === E_AbilityType.attack ? attack : type === E_AbilityType.defense ? defense : 0),
+    });
+    const damage = (attack: number, defense: number) => Big.floor(Formula.get(E_AbilityType.damage, owner(attack, 0), owner(0, defense)));
+    expect(damage(24, 22)).toEqual(Big.from(2));
+    expect(damage(500634, 490942)).toEqual(Big.from(9692));
+    expect(damage(5, 9)).toEqual(Big.ONE);
+  });
+
   test("a formula throws when its caller leaves out an input it reads", () => {
     expect(() => Formula.get(E_AbilityType.dotDamage, attacker(10), nobody)).toThrow("power");
   });

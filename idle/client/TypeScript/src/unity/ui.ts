@@ -12,7 +12,7 @@ type Generated = typeof CS.PortfolioIdleRpg.Facades.UiFacade;
 /** 이 브리지가 쓰는 UiFacade의 부분. Create가 주는 ViewRefs는 ViewRoot로 넘기고 RefsSource로 읽는다(unity/binding/refs.ts). */
 export interface UiFacade extends Pick<Generated, "Screen" | "Popup" | "Guide" | "Overlay" | "Debug" | "SetBlocking" | "BackPressed"> {
   Create(assetId: number, layer: number): RefsSource;
-  /** 닫는 연출(PopupMotion)을 시작하고 돌려준다. 연출이 없으면 null이다. */
+  /** 닫는 연출(PopupMotion)을 시작하고 돌려준다. 연출이 없거나 돌릴 수 없으면(첫 프레임 전이라 보인 것이 없음) null이다. */
   Close(view: RefsSource): object | null;
   Destroy(view: RefsSource): void;
 }

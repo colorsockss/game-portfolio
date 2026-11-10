@@ -19,8 +19,8 @@ test("a client logs in, and its command applies at once and is confirmed by the 
 
   // 커맨드 이름은 오퍼코드를 따른다.
   expect(Object.keys(app.progress.cmd)).toEqual([
-    "StageSelect", "BattleSettle", "BossChallenge", "ItemEquip", "ItemUnequip", "ItemEnhance", "ItemMerge", "StatUpgrade",
-    "SkillLearn", "SkillEquip", "SkillUnequip", "SkillLevelUp", "TutorialAdvance", "Rebirth",
+    "StageSelect", "BattleSettle", "BossChallenge", "ItemEquip", "ItemUnequip", "ItemEnhance", "ItemMerge", "ItemMergeAll",
+    "StatUpgrade", "SkillLearn", "SkillEquip", "SkillUnequip", "SkillLevelUp", "TutorialAdvance", "Rebirth",
     "CheatItemGrant", "CheatLevelSet", "CheatStageUnlock", "CheatTimeShift",
   ]);
 
@@ -118,6 +118,32 @@ test("enhancing and merging apply at once and the server confirms the same equip
   expect(await app.progress.cmd.ItemEnhance({ equipmentId: 4 })).toMatchObject({ code: GameErrorCode.NotEnoughGold });
   expect(await saved()).toMatchObject({ items: { 1: Big.from(0) }, equipment: { owned: { 4: { itemId: 107, enhance: 1 } } } });
   expect(predicted()).toEqual({ items: (await saved()).items, equipment: (await saved()).equipment });
+});
+
+// 일괄 합성은 커맨드 하나로 나가 클라이언트에 바로 보이고, 서버가 같은 규칙으로 같은 장비 ID와 착용, 전투를 확정한다.
+test("merge-all goes as one command and the server confirms the same equipment, ids and fight", async () => {
+  const data = await loadTestData();
+  const server = await createTestServer(data);
+  const sword = { itemId: 101, enhance: 0 };
+  const armor = { itemId: 102, enhance: 0 };
+  await createHero(server, data, {
+    equipment: { nextId: 8, owned: { 1: sword, 2: armor, 3: sword, 4: armor, 5: sword, 6: armor, 7: sword }, equipped: { 2: 4 } },
+  });
+  const app = await startApp(createLoopbackBridge(server.rpc), { server: "ws://game.test", mode: "release" }, captureViews().views);
+  await app.account.login("hero");
+
+  // 검 1, 3, 5 → 8. 갑옷은 2와 입지 않은 6, 모자라는 입은 4를 써서 결과(9)를 입는다.
+  const sent = app.progress.cmd.ItemMergeAll({});
+  expect(app.state.player.value?.equipment).toEqual({
+    nextId: 10, owned: { 7: sword, 8: { itemId: 107, enhance: 0 }, 9: { itemId: 108, enhance: 0 } }, equipped: { 2: 9 },
+  });
+  expect(await sent).toBeUndefined();
+  const account = (await server.store.findAccount("hero"))!;
+  const saved = (await server.store.load(account.id))!;
+  expect(saved.revision).toBe(2);
+  expect(app.state.player.value).toEqual(saved.player);
+  // 남은 것이 없으면 클라이언트의 규칙이 먼저 거절한다.
+  expect(await app.progress.cmd.ItemMergeAll({})).toMatchObject({ code: GameErrorCode.MergeMaterialsShort });
 });
 
 // 환생은 클라이언트에 바로 보이고, 서버가 같은 규칙으로 같은 포인트와 초기화를 확정한다. 다음 환생은 1레벨이라 클라이언트가 먼저

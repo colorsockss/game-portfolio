@@ -1,7 +1,7 @@
 import { Big } from "@idle/big-number";
 import { EquipSlot, Stat, type GameData, type ItemsRow } from "@idle/data-schema";
 import {
-  enhanceCost, equipmentStat, heroStats, mergeMaterials, type CombatStats, type EquipmentInstance, type EquipmentState,
+  enhanceCost, equipmentStat, heroStats, mergeMaterials, nextMerge, type CombatStats, type EquipmentInstance, type EquipmentState,
 } from "@idle/game-core";
 import { computed, signal, type ReadonlySignal, type Signal } from "@preact/signals-core";
 import type { BattleService } from "../../application/battle/battle.js";
@@ -169,7 +169,7 @@ export interface EquipmentViewModel {
   equipBest(): void;
   /** 재료가 모인 장비가 있다. */
   readonly canMergeAll: ReadonlySignal<boolean>;
-  /** 재료가 모인 장비를 남김없이 합성한다. 합성한 결과로 다시 모이면 그것도 합성한다. */
+  /** 재료가 모인 장비를 남김없이 합성한다(커맨드 ItemMergeAll 하나). 합성한 결과로 다시 모이면 그것도 합성한다. */
   mergeAll(): void;
   close(): void;
 }
@@ -199,9 +199,6 @@ function detailOf(piece: Piece, t: Translate): string {
 
 const nameOf = ({ row, enhance }: Piece, t: Translate) =>
   enhance === 0 ? t(row.nameKey) : t("equipment.enhanced", { name: t(row.nameKey), step: enhance });
-
-/** 일괄 합성이 한 번에 보내는 최대 합성 수. 거절되어 상태가 그대로면 그 전에 멈춘다. */
-const MAX_MERGES = 50;
 
 export function createEquipmentViewModel(
   { state, data, t, battle, progress, badges, logger, close }: EquipmentViewModelOptions,
@@ -284,27 +281,14 @@ export function createEquipmentViewModel(
       return bestId !== undefined && bestId !== wornId ? [bestId] : [];
     });
   });
-  const mergeable = () => {
-    const held = equipment.value;
-    return held && Object.keys(held.owned).map(Number).find(id => mergeMaterials(held, id, data) !== undefined);
-  };
-
   return {
     canEquipBest: computed(() => bestIds.value.length > 0),
     equipBest: () => {
       for (const equipmentId of bestIds.peek()) sent(progress.cmd.ItemEquip({ equipmentId }));
     },
-    canMergeAll: computed(() => mergeable() !== undefined),
-    // 커맨드는 화면에 즉시 적용되므로 보낼 때마다 다음 재료를 다시 찾는다. 거절되어 같은 장비가 다시 나오면 멈춘다.
-    mergeAll: () => {
-      const tried = new Set<number>();
-      for (let i = 0; i < MAX_MERGES; i++) {
-        const equipmentId = mergeable();
-        if (equipmentId === undefined || tried.has(equipmentId)) return;
-        tried.add(equipmentId);
-        sent(progress.cmd.ItemMerge({ equipmentId }));
-      }
-    },
+    // 무엇을 합성할지는 커맨드와 같은 규칙(nextMerge)이 정한다.
+    canMergeAll: computed(() => equipment.value !== undefined && nextMerge(equipment.value, data) !== undefined),
+    mergeAll: () => sent(progress.cmd.ItemMergeAll({})),
     stats: STATS.map(({ stat, label }) => ({
       name: computed(() => t(label)),
       icon: "",

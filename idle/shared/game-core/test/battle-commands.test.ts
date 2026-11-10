@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { Big } from "@idle/big-number";
+import { Big, type BigLike } from "@idle/big-number";
 import { GameErrorCode, Opcode } from "@idle/codes";
 import { loadGameData } from "@idle/data-schema";
 import { describe, expect, test } from "vitest";
@@ -42,6 +42,17 @@ function fighting(state: PlayerState, from = 300): number {
     battle.advance(tick);
     if (battle.snapshot().enemies.length > 0) return state.battle.at + tick * TICK_MS;
   }
+}
+
+// 영웅이 맞아 HP가 최대 HP보다 `margin`을 넘게 줄어든 채 싸우는 첫 틱의 시각.
+function hurtInFight(state: PlayerState, margin: BigLike = 0): number {
+  const battle = playerBattle(state, data);
+  for (let tick = 1; tick < MAX_SETTLE_TICKS; tick++) {
+    battle.advance(tick);
+    const { hero, enemies } = battle.snapshot();
+    if (enemies.length > 0 && Big.sign(hero.hp) > 0 && Big.lt(Big.add(hero.hp, margin), hero.maxHp)) return state.battle.at + tick * TICK_MS;
+  }
+  throw new Error("The hero was never hurt in a fight.");
 }
 
 test("settling commits the battle at the tick of now, the wave in progress included", () => {
@@ -228,18 +239,54 @@ describe("equipment", () => {
     expect(accepted(equip(swapped, 2, AT + 300))).toEqual(settleAt(swapped, AT + 300));
   });
 
+  test("wearing never raises HP: at full HP it stays below the new maximum", () => {
+    const settled = settleAt(state, AT + 100);
+    const armored = accepted(equip(state, 3, AT + 100));
+    expect(Big.gt(heroStats(armored, data).maxHp, heroStats(settled, data).maxHp)).toBe(true);
+    expect(settled.battle.hero.hp).toEqual(heroStats(settled, data).maxHp);
+    expect(armored.battle).toEqual(settled.battle);
+  });
+
   test("taking off goes on with the new stats, cutting HP to a lower maximum, and taking off what is not worn only settles", () => {
-    const wearing = accepted(equip(accepted(equip(state, 1, AT + 100)), 3, AT + 200));
+    // 입은 채 시작한 사냥이라 HP가 가죽 갑옷까지 더한 최대 HP다(입어서는 HP가 오르지 않는다).
+    const wearing = testPlayer(data, AT, { stage: base.stage, equipment: { ...state.equipment, equipped: { 1: 1, 2: 3 } } });
+    expect(wearing.battle.hero.hp).toEqual(heroStats(wearing, data).maxHp);
     // 가죽 갑옷을 벗으면 최대 HP가 준다.
     const bare = accepted(unequip(wearing, 3, AT + 300));
     expect(Big.lt(heroStats(bare, data).maxHp, heroStats(wearing, data).maxHp)).toBe(true);
     expect(bare.battle.hero.hp).toEqual(heroStats(bare, data).maxHp);
+    // 다시 입어도 잘린 HP 그대로다.
+    expect(accepted(equip(bare, 3, AT + 300)).battle.hero.hp).toEqual(bare.battle.hero.hp);
     const off = accepted(unequip(wearing, 1, AT + 300));
     expect(off.equipment.equipped).toEqual({ 2: 3 });
     expect(off.battle.at).toBe(AT + 300);
     expect(off.battle.hero.hp).toEqual(heroStats(off, data).maxHp);
     expect(accepted(unequip(off, 1, AT + 300))).toBe(off);
     expect(accepted(unequip(off, 2, AT + 300))).toBe(off);
+  });
+
+  test("taking off and wearing again, or swapping pieces of one slot, never heals", () => {
+    // 가죽 갑옷(최대 HP +30)을 입고 징 박은 갑옷(+75)을 가진 채 3003에서 맞아, HP가 갑옷 없는 최대 HP보다도 적다.
+    const armored = testPlayer(data, AT, {
+      stage: { currentId: 3003, clearedIds: [] },
+      equipment: { nextId: 3, owned: { 1: { itemId: 102, enhance: 0 }, 2: { itemId: 108, enhance: 0 } }, equipped: { 2: 1 } },
+    });
+    const now = hurtInFight(armored, 30);
+    const hurt = settleAt(armored, now);
+    const { hp } = hurt.battle.hero;
+    let current = hurt;
+    for (let i = 0; i < 3; i++) {
+      current = accepted(unequip(current, 1, now));
+      expect(current.battle.hero.hp).toEqual(hp);
+      current = accepted(equip(current, 1, now));
+      expect(current.battle.hero.hp).toEqual(hp);
+    }
+    for (const id of [2, 1, 2, 1]) {
+      current = accepted(equip(current, id, now));
+      expect(current.equipment.equipped).toEqual({ 2: id });
+      expect(current.battle.hero.hp).toEqual(hp);
+    }
+    expect({ ...current.battle, hero: undefined }).toEqual({ ...hurt.battle, hero: undefined });
   });
 
   test("equipment that is not owned is refused, whatever arrives from the network", () => {
@@ -393,17 +440,6 @@ describe("skills", () => {
 describe("upgrades during a fight", () => {
   const GOLD = data.constants.goldItemId;
 
-  // 영웅이 맞아 HP가 줄어든 채 싸우는 첫 틱의 시각.
-  function hurtInFight(state: PlayerState): number {
-    const battle = playerBattle(state, data);
-    for (let tick = 1; tick < MAX_SETTLE_TICKS; tick++) {
-      battle.advance(tick);
-      const { hero, enemies } = battle.snapshot();
-      if (enemies.length > 0 && Big.sign(hero.hp) > 0 && Big.lt(hero.hp, hero.maxHp)) return state.battle.at + tick * TICK_MS;
-    }
-    throw new Error("The hero was never hurt in a fight.");
-  }
-
   test("raising max HP raises HP by as much and the same fight goes on", () => {
     const state = { ...player(3003), items: { [GOLD]: Big.from(100_000) } };
     const now = hurtInFight(state);
@@ -414,6 +450,25 @@ describe("upgrades during a fight", () => {
     expect(upgraded.battle.hero.hp).toEqual(Big.add(settled.battle.hero.hp, gained));
     expect({ ...upgraded.battle, hero: undefined }).toEqual({ ...settled.battle, hero: undefined });
     expect(upgraded.battle.enemies.length).toBeGreaterThan(0);
+  });
+
+  test("enhancing or merging a worn piece, alone or with merge-all, raises HP by the max HP it adds", () => {
+    // 가죽 갑옷(최대 HP +30) 셋 중 하나를 입고 3003에서 맞았다. +1은 +6, 징 박은 갑옷(+75)으로 합성하면 +45다.
+    const state = testPlayer(data, AT, {
+      items: { [GOLD]: Big.from(100_000) },
+      stage: { currentId: 3003, clearedIds: [] },
+      equipment: { nextId: 4, owned: { 1: { itemId: 102, enhance: 0 }, 2: { itemId: 102, enhance: 0 }, 3: { itemId: 102, enhance: 0 } }, equipped: { 2: 1 } },
+    });
+    const now = hurtInFight(state);
+    const settled = settleAt(state, now);
+    for (const [type, gain] of [[Opcode.ItemEnhance, 6], [Opcode.ItemMerge, 45]] as const) {
+      const after = apply(state, { type, equipmentId: 1 }, now);
+      const gained = Big.sub(heroStats(after, data).maxHp, heroStats(settled, data).maxHp);
+      expect(Big.toNumber(gained)).toBe(gain);
+      expect(after.battle.hero.hp).toEqual(Big.add(settled.battle.hero.hp, gained));
+    }
+    // 일괄 합성도 입은 갑옷을 재료로 써서 같은 만큼 올린다.
+    expect(apply(state, { type: Opcode.ItemMergeAll }, now).battle.hero.hp).toEqual(Big.add(settled.battle.hero.hp, 45));
   });
 
   test("an upgrade during a boss fight goes on with the same boss, its HP and the time left", () => {

@@ -415,6 +415,8 @@ describe("the connection ends for good", () => {
 
     await request;
     expect(t.network()).toMatchObject({ status: "ended", ended: reason });
+    // 재개를 거절한 소켓은 열린 채 남지 않는다.
+    expect(t.last().closedBy).toBe(1000);
   });
 
   test("and a new login starts it over", async () => {

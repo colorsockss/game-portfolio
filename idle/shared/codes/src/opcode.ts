@@ -17,6 +17,7 @@ export enum Opcode {
   ItemUnequip = 201,
   ItemEnhance = 202,
   ItemMerge = 203,
+  ItemMergeAll = 204,
   // 300-399: 골드 강화
   StatUpgrade = 300,
   // 400-499: 스킬

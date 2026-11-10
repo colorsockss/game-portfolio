@@ -27,6 +27,7 @@ npm-debug.log*
 # 게임 서버의 로컬 SQLite 데이터베이스(npm start -w @idle/server)
 /idle/server/*.sqlite
 /idle/server/*.sqlite-*
+/idle/server/backup/
 
 # MMO 서버의 로컬 SQLite 데이터베이스(dotnet run --project mmo/server/src)
 /mmo/server/*.sqlite
