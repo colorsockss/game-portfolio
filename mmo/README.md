@@ -1,6 +1,6 @@
 # MMORPG (mmo)
 
-**준비 중입니다.** 패킷 정의(`shared/contract/packets.proto`)와 서버 뼈대(로그인, 20Hz 틱, 이동 검증, 시야, SQLite 저장)가 있고([MANUAL.md](MANUAL.md)), Unreal 클라이언트는 Mac에서 로그인해 필드를 걷고 주변 플레이어가 보간되어 움직이는 데까지 있습니다(캐릭터는 아직 자리 표시용 도형).
+**준비 중입니다.** 패킷 정의(`shared/contract/packets.proto`)와 서버 뼈대(로그인과 캐릭터 선택, 20Hz 틱, 이동 검증, 시야, SQLite 저장)가 있고([MANUAL.md](MANUAL.md)), Unreal 클라이언트는 Mac·Android에서 로그인해 캐릭터(기사·마법사, 계정마다 4개)를 만들고 골라 필드를 걷고, 주변 플레이어가 보간되어 움직이는 데까지 있습니다.
 
 틱마다 이동과 전투를 계산해 주변 플레이어에게 보내는 상태 서버 하나에 Unity와 Unreal 클라이언트가 함께 붙는 MMORPG를 만듭니다. 두 클라이언트는 같은 Protobuf 정의에서 생성한 코드(Unity는 C#, Unreal은 C++)로 같은 조건에서 서버에 붙습니다. Unreal 클라이언트를 먼저 다 만들고, Unity 클라이언트는 그것을 C#과 UI Toolkit으로 옮겨(포팅) 만듭니다.
 
