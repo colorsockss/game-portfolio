@@ -32,6 +32,18 @@ public:
 	/** 연결을 닫는다. OnClosed가 LoggedOutReason으로 온다. */
 	void LogOut();
 
+	/** 캐릭터를 만든다(캐릭터 선택 중). 결과는 OnPacket의 CreateCharacterResult와 바뀐 CharacterList로 온다. */
+	void CreateCharacter(const FString& Name, portfolio::mmo::CharacterClass Class);
+
+	/** 이 캐릭터로 월드에 들어간다(캐릭터 선택 중). 결과는 OnPacket의 EnterWorldResult로 온다. */
+	void EnterWorld(uint64 CharacterId);
+
+	/** 캐릭터 선택으로 돌아간다. 월드를 바로 비우고(액터가 지워짐), 서버는 CharacterList로 답한다. */
+	void LeaveWorld();
+
+	/** 이 계정의 캐릭터들. 마지막으로 받은 CharacterList다. */
+	const portfolio::mmo::CharacterList& Characters() const { return CharacterList; }
+
 	/** 스스로 로그아웃해 닫혔을 때 OnClosed의 까닭. */
 	static inline const FString LoggedOutReason = TEXT("Logged out");
 
@@ -58,4 +70,5 @@ private:
 	int32 Port = 0;
 	FString CurrentLoginId;
 	MmoWorld::FWorldState WorldState;
+	portfolio::mmo::CharacterList CharacterList;
 };

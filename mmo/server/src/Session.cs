@@ -14,7 +14,12 @@ namespace PortfolioMmo.Server
         public List<Packet> Outbox { get; } = new List<Packet>();
 
         /// <summary>
-        /// 로그인한 개체. 로그인 전이거나 개체가 월드에서 빠졌으면 null.
+        /// 로그인한 계정(로그인 ID). 로그인 전이면 null이다. 로그인한 뒤 Player가 null이면 캐릭터를 고르는 중이다.
+        /// </summary>
+        public string? LoginId { get; internal set; }
+
+        /// <summary>
+        /// 월드에 들어온 캐릭터의 개체. 월드 밖(로그인 전, 캐릭터 선택 중)이면 null.
         /// </summary>
         public Player? Player { get; internal set; }
 

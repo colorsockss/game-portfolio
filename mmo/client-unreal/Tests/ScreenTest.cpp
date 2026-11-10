@@ -71,6 +71,17 @@ namespace
 		Expect(Stack.IsOpen(EScreen::Settings) && !Stack.IsOpen(EScreen::Confirm), "IsOpen follows the stack");
 	}
 
+	void CharacterSelectionTakesInputAndCreateClosesWithBack()
+	{
+		MmoScreen::FScreenStack Stack;
+		Stack.Open(EScreen::CharacterSelect);
+		Expect(Stack.InputMode() == EInputMode::Ui && !Stack.BackTarget(), "character selection takes input and back does not close it");
+		Stack.Open(EScreen::CharacterCreate);
+		Expect(Stack.BackTarget() == EScreen::CharacterCreate, "back closes character creation");
+		Stack.Close(EScreen::CharacterCreate);
+		Expect(Stack.InputMode() == EInputMode::Ui, "closing creation keeps the selection screen's input");
+	}
+
 	void LoginWinsOverWindows()
 	{
 		MmoScreen::FScreenStack Stack;
@@ -87,6 +98,7 @@ int main()
 	PopupWinsOverALaterWindow();
 	OpeningAgainMovesToTheTop();
 	LoginWinsOverWindows();
+	CharacterSelectionTakesInputAndCreateClosesWithBack();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

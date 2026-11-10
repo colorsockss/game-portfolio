@@ -7,7 +7,8 @@ using PortfolioMmo.Contract;
 namespace PortfolioMmo.Server
 {
     /// <summary>
-    /// 로그인한 플레이어, 이동 검증, 시야. 틱 스레드 하나만 부르므로 확인과 쓰기가 늘 한 동기 구간에 있다.
+    /// 로그인한 계정, 캐릭터 선택, 월드의 플레이어, 이동 검증, 시야. 틱 스레드 하나만 부르므로 확인과 쓰기가 늘 한 동기 구간에 있다.
+    /// 연결은 로그인 전 → 캐릭터 선택(Session.LoginId만 있음) → 월드(Session.Player도 있음)이고, 상태에 맞지 않는 요청은 끊는다.
     /// </summary>
     public sealed partial class World
     {
@@ -38,7 +39,7 @@ namespace PortfolioMmo.Server
         private const int CellShift = 10;
 
         /// <summary>
-        /// 동시 접속 상한.
+        /// 동시 접속 상한(로그인한 계정 수).
         /// </summary>
         private readonly int _maxPlayers;
 
@@ -53,14 +54,19 @@ namespace PortfolioMmo.Server
         private readonly Random _random;
 
         /// <summary>
-        /// 마지막 위치의 저장소.
+        /// 캐릭터와 마지막 위치의 저장소.
         /// </summary>
-        private readonly PlayerStore _store;
+        private readonly CharacterStore _store;
 
         /// <summary>
-        /// 로그인한 플레이어. 로그인 ID가 키다.
+        /// 로그인한 계정의 연결. 로그인 ID가 키다.
         /// </summary>
-        private readonly Dictionary<string, Player> _players = new Dictionary<string, Player>();
+        private readonly Dictionary<string, Session> _accounts = new Dictionary<string, Session>();
+
+        /// <summary>
+        /// 월드에 들어온 플레이어. 캐릭터 번호가 키다.
+        /// </summary>
+        private readonly Dictionary<long, Player> _players = new Dictionary<long, Player>();
 
         /// <summary>
         /// 시야 칸마다 그 안의 플레이어.
@@ -68,9 +74,9 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<long, List<Player>> _cells = new Dictionary<long, List<Player>>();
 
         /// <summary>
-        /// 월드에서 빠졌지만 아직 위치를 저장하지 못한 플레이어. 로그인 ID가 키이고, 다시 들어오면 저장소보다 먼저 본다.
+        /// 월드에서 빠졌지만 아직 위치를 저장하지 못한 플레이어. 캐릭터 번호가 키이고, 다시 들어오면 저장소보다 먼저 본다.
         /// </summary>
-        private readonly Dictionary<string, Player> _unsaved = new Dictionary<string, Player>();
+        private readonly Dictionary<long, Player> _unsaved = new Dictionary<long, Player>();
 
         /// <summary>
         /// 다음 개체 번호. 0은 "없음"이라 1부터 쓴다.
@@ -80,7 +86,7 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 빈 월드를 만든다.
         /// </summary>
-        public World(int maxPlayers, int spawnHalfExtent, Random random, PlayerStore store)
+        public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store)
         {
             _maxPlayers = maxPlayers;
             _spawnHalfExtent = spawnHalfExtent;
@@ -94,7 +100,7 @@ namespace PortfolioMmo.Server
         public uint Tick { get; private set; }
 
         /// <summary>
-        /// 로그인한 플레이어 수.
+        /// 월드에 들어온 플레이어 수.
         /// </summary>
         public int PlayerCount => _players.Count;
 
@@ -126,10 +132,21 @@ namespace PortfolioMmo.Server
             }
 
             Player? player = session.Player;
+            bool selecting = (session.LoginId != null) && (player == null);
             switch (packet.BodyCase)
             {
-                case Packet.BodyOneofCase.Login when player == null:
+                case Packet.BodyOneofCase.Login when session.LoginId == null:
                     Login(session, packet.Login);
+                    break;
+                case Packet.BodyOneofCase.CreateCharacter when selecting:
+                    CreateCharacter(session, packet.CreateCharacter);
+                    break;
+                case Packet.BodyOneofCase.EnterWorld when selecting:
+                    EnterWorld(session, packet.EnterWorld);
+                    break;
+                case Packet.BodyOneofCase.LeaveWorld when player != null:
+                    Remove(session);
+                    SendCharacterList(session);
                     break;
                 case Packet.BodyOneofCase.Move when player != null:
                     Move(player, packet.Move);
@@ -144,7 +161,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// Kicked를 보내고 연결을 끊는다. 개체는 월드에서 빠진다.
+        /// Kicked를 보내고 연결을 끊는다. 개체는 월드에서 빠지고 계정은 로그아웃한다.
         /// </summary>
         public void Kick(Session session, KickReason reason)
         {
@@ -154,7 +171,7 @@ namespace PortfolioMmo.Server
                 session.Close();
             }
 
-            Remove(session);
+            LogOut(session);
         }
 
         /// <summary>
@@ -163,7 +180,7 @@ namespace PortfolioMmo.Server
         public void Disconnect(Session session)
         {
             session.Close();
-            Remove(session);
+            LogOut(session);
         }
 
         /// <summary>
@@ -207,14 +224,21 @@ namespace PortfolioMmo.Server
         private static partial Regex LoginIdPattern();
 
         /// <summary>
-        /// 로그인을 처리한다. 실패하면 LoginResult를 보내고 끊는다. 같은 ID가 이미 있으면 예전 연결을 끊고 그 자리에서 이어 간다.
+        /// 캐릭터 이름의 형식. 한글 음절, 영문, 숫자 2–12자.
+        /// </summary>
+        [GeneratedRegex(@"^[가-힣A-Za-z0-9]{2,12}\z")]
+        private static partial Regex CharacterNamePattern();
+
+        /// <summary>
+        /// 로그인을 처리한다. 실패하면 LoginResult를 보내고 끊는다. 같은 계정이 이미 로그인해 있으면 예전 연결을 끊는다.
+        /// 성공하면 캐릭터 목록을 보낸다.
         /// </summary>
         private void Login(Session session, Login login)
         {
-            _players.TryGetValue(login.LoginId, out Player? previous);
+            _accounts.TryGetValue(login.LoginId, out Session? previous);
             LoginResultCode result = login.ProtocolVersion != ProtocolVersion.Current ? LoginResultCode.VersionMismatch
                 : !LoginIdPattern().IsMatch(login.LoginId) ? LoginResultCode.InvalidLoginId
-                : (previous == null && _players.Count >= _maxPlayers) ? LoginResultCode.ServerFull
+                : (previous == null && _accounts.Count >= _maxPlayers) ? LoginResultCode.ServerFull
                 : LoginResultCode.Ok;
             if (result != LoginResultCode.Ok)
             {
@@ -223,24 +247,86 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            // 이어 갈 위치: 접속 중인 예전 연결 → 아직 저장하지 못한 나간 플레이어 → 저장소 → 무작위.
-            SavedPosition? position = previous != null ? new SavedPosition(previous.X, previous.Z, previous.Yaw)
-                : _unsaved.TryGetValue(login.LoginId, out Player? left) ? new SavedPosition(left.X, left.Z, left.Yaw)
-                : _store.Load(login.LoginId);
-            SavedPosition start = position ?? new SavedPosition(
-                _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1), _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1), 0);
-            var player = new Player(_nextId++, login.LoginId, session, start.X, start.Z, start.Yaw);
             if (previous != null)
             {
-                // 새 개체를 넣기 전에 빼야 같은 키의 새 개체가 지워지지 않는다.
-                Kick(previous.Session, KickReason.DuplicateLogin);
+                // 예전 연결의 캐릭터는 월드에서 빠지고(위치는 _unsaved에 남음), 새 연결이 그 자리를 이어 간다.
+                Kick(previous, KickReason.DuplicateLogin);
             }
 
-            _players.Add(player.LoginId, player);
+            _accounts.Add(login.LoginId, session);
+            session.LoginId = login.LoginId;
+            session.Send(new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok } });
+            SendCharacterList(session);
+        }
+
+        /// <summary>
+        /// 캐릭터를 만든다. 결과를 보내고, 성공하면 바뀐 목록도 보낸다.
+        /// </summary>
+        private void CreateCharacter(Session session, CreateCharacter create)
+        {
+            CreateCharacterResultCode result;
+            if (create.CharacterClass is not (CharacterClass.Knight or CharacterClass.Mage))
+            {
+                result = CreateCharacterResultCode.InvalidClass;
+            }
+            else if (!CharacterNamePattern().IsMatch(create.Name))
+            {
+                result = CreateCharacterResultCode.InvalidName;
+            }
+            else
+            {
+                // 처음 들어갈 자리는 만들 때 정해 저장한다.
+                int x = _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1);
+                int z = _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1);
+                result = _store.Create(session.LoginId!, create.Name, create.CharacterClass, x, z).Result;
+            }
+
+            session.Send(new Packet { CreateCharacterResult = new CreateCharacterResult { Result = result } });
+            if (result == CreateCharacterResultCode.Ok)
+            {
+                SendCharacterList(session);
+            }
+        }
+
+        /// <summary>
+        /// 고른 캐릭터로 월드에 들어간다. 이 계정의 캐릭터가 아니면 실패로 답한다.
+        /// </summary>
+        private void EnterWorld(Session session, EnterWorld enter)
+        {
+            CharacterRecord? character = _store.Load((long)enter.CharacterId);
+            if ((character == null) || (character.LoginId != session.LoginId))
+            {
+                session.Send(new Packet { EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.NoSuchCharacter } });
+                return;
+            }
+
+            // 이어 갈 위치: 아직 저장하지 못한 나간 플레이어 → 저장소.
+            SavedPosition position = _unsaved.TryGetValue(character.Id, out Player? left)
+                ? new SavedPosition(left.X, left.Z, left.Yaw)
+                : character.Position;
+            var player = new Player(_nextId++, character, session, position);
+            _players.Add(player.CharacterId, player);
             player.Cell = CellOf(player.X, player.Z);
             CellPlayers(player.Cell).Add(player);
             session.Player = player;
-            session.Send(new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok, SelfId = player.Id, Tick = Tick } });
+            session.Send(new Packet
+            {
+                EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.Ok, SelfId = player.Id, Tick = Tick },
+            });
+        }
+
+        /// <summary>
+        /// 계정의 캐릭터 목록을 보낸다.
+        /// </summary>
+        private void SendCharacterList(Session session)
+        {
+            var list = new CharacterList();
+            foreach (CharacterRecord character in _store.List(session.LoginId!))
+            {
+                list.Characters.Add(new CharacterSummary { Id = (ulong)character.Id, Name = character.Name, CharacterClass = character.Class });
+            }
+
+            session.Send(new Packet { CharacterList = list });
         }
 
         /// <summary>
@@ -363,7 +449,19 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 연결의 개체를 월드에서 뺀다. 개체가 없으면 아무것도 하지 않는다.
+        /// 연결의 개체를 월드에서 빼고 계정을 로그아웃한다.
+        /// </summary>
+        private void LogOut(Session session)
+        {
+            Remove(session);
+            if ((session.LoginId != null) && _accounts.TryGetValue(session.LoginId, out Session? current) && (current == session))
+            {
+                _accounts.Remove(session.LoginId);
+            }
+        }
+
+        /// <summary>
+        /// 연결의 개체를 월드에서 뺀다(캐릭터 선택으로 돌아감). 개체가 없으면 아무것도 하지 않는다.
         /// </summary>
         private void Remove(Session session)
         {
@@ -374,9 +472,9 @@ namespace PortfolioMmo.Server
             }
 
             session.Player = null;
-            _players.Remove(player.LoginId);
+            _players.Remove(player.CharacterId);
             _cells[player.Cell].Remove(player);
-            _unsaved[player.LoginId] = player;
+            _unsaved[player.CharacterId] = player;
         }
 
         /// <summary>
@@ -385,7 +483,7 @@ namespace PortfolioMmo.Server
         /// </summary>
         private void Save(bool includeOnline)
         {
-            // 나간 플레이어를 먼저 넣는다. 같은 ID로 다시 들어온 플레이어의 위치가 더 새것이라 뒤에 써야 한다.
+            // 나간 플레이어를 먼저 넣는다. 같은 캐릭터로 다시 들어온 플레이어의 위치가 더 새것이라 뒤에 써야 한다.
             var players = new List<Player>(_unsaved.Values);
             if (includeOnline)
             {
@@ -440,7 +538,10 @@ namespace PortfolioMmo.Server
         /// </summary>
         private static EntityEnter EnterOf(Player player)
         {
-            return new EntityEnter { Id = player.Id, X = player.X, Z = player.Z, Yaw = player.Yaw, Name = player.LoginId };
+            return new EntityEnter
+            {
+                Id = player.Id, X = player.X, Z = player.Z, Yaw = player.Yaw, Name = player.Name, CharacterClass = player.Class,
+            };
         }
 
         /// <summary>

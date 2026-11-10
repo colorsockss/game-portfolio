@@ -21,6 +21,8 @@
 #include "Engine/Texture2D.h"
 #include "HAL/FileManager.h"
 #include "Kismet2/KismetEditorUtilities.h"
+#include "UI/MmoCharacterCreateWidget.h"
+#include "UI/MmoCharacterSelectWidget.h"
 #include "UI/MmoConfirmWidget.h"
 #include "UI/MmoHudWidget.h"
 #include "UI/MmoJoystickWidget.h"
@@ -261,8 +263,74 @@ namespace
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Settings, UMmoSettingsWidget::StaticClass());
 		UVerticalBox* Column = Builder.CenteredPanel(320.0f);
 		AddWithPadding(*Column, Builder.Text(TEXT("Title"), LOCTEXT("SettingsTitle", "설정"), 24), 16.0f);
+		AddWithPadding(*Column, Builder.Button(TEXT("CharacterSelectButton"), LOCTEXT("CharacterSelect", "캐릭터 선택")), 8.0f);
 		AddWithPadding(*Column, Builder.Button(TEXT("LogOutButton"), LOCTEXT("LogOut", "로그아웃")), 8.0f);
 		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), LOCTEXT("Close", "닫기")));
+		return Builder.Save();
+	}
+
+	/** 버튼 두 개를 오른쪽 정렬로 나란히 둔다. */
+	UHorizontalBox* ButtonRow(FWidgetBlueprintBuilder& Builder, const TCHAR* Name, UButton* Left, UButton* Right)
+	{
+		UHorizontalBox* Row = Builder.Add<UHorizontalBox>(Name);
+		Row->AddChildToHorizontalBox(Left)->SetPadding(FMargin(0.0f, 0.0f, 8.0f, 0.0f));
+		Row->AddChildToHorizontalBox(Right);
+		return Row;
+	}
+
+	bool CreateCharacterSelect()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::CharacterSelect, UMmoCharacterSelectWidget::StaticClass());
+		UBorder* Root = Builder.Add<UBorder>(TEXT("Root"));
+		Root->SetBrushColor(Backdrop);
+		Root->SetHorizontalAlignment(HAlign_Center);
+		Root->SetVerticalAlignment(VAlign_Center);
+		Builder.SetRoot(Root);
+
+		USizeBox* Size = Builder.Add<USizeBox>(TEXT("PanelSize"));
+		Size->SetWidthOverride(420.0f);
+		Root->SetContent(Size);
+		UVerticalBox* Column = Builder.Add<UVerticalBox>(TEXT("Column"));
+		Size->SetContent(Column);
+		AddWithPadding(*Column, Builder.Text(TEXT("Title"), LOCTEXT("CharacterSelectTitle", "캐릭터 선택"), 24), 16.0f);
+
+		// 칸 4개(Constant의 캐릭터 수). 버튼과 그 안의 글이 모두 기반 클래스에 묶인다.
+		for (int32 Index = 0; Index < 4; ++Index)
+		{
+			UButton* SlotButton = Builder.Add<UButton>(*FString::Printf(TEXT("Slot%dButton"), Index), true);
+			UTextBlock* SlotText = Builder.Text(*FString::Printf(TEXT("Slot%dText"), Index), FText::GetEmpty(), 18, true);
+			SlotText->SetColorAndOpacity(FSlateColor(FLinearColor(0.05f, 0.05f, 0.05f)));
+			Cast<UButtonSlot>(SlotButton->AddChild(SlotText))->SetPadding(FMargin(16.0f, 10.0f));
+			AddWithPadding(*Column, SlotButton, 6.0f);
+		}
+
+		UHorizontalBox* Buttons = ButtonRow(Builder, TEXT("Buttons"),
+			Builder.Button(TEXT("CreateButton"), LOCTEXT("Create", "만들기")), Builder.Button(TEXT("StartButton"), LOCTEXT("Start", "시작")));
+		Column->AddChildToVerticalBox(Buttons)->SetPadding(FMargin(0.0f, 10.0f, 0.0f, 8.0f));
+		Cast<UVerticalBoxSlot>(Buttons->Slot)->SetHorizontalAlignment(HAlign_Right);
+		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), 16, true);
+		Status->SetAutoWrapText(true);
+		Column->AddChildToVerticalBox(Status);
+		return Builder.Save();
+	}
+
+	bool CreateCharacterCreate()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::CharacterCreate, UMmoCharacterCreateWidget::StaticClass());
+		UVerticalBox* Column = Builder.CenteredPanel(360.0f);
+		AddWithPadding(*Column, Builder.Text(TEXT("Title"), LOCTEXT("CharacterCreateTitle", "캐릭터 만들기"), 24), 16.0f);
+		UEditableTextBox* NameBox = Builder.Add<UEditableTextBox>(TEXT("NameBox"), true);
+		NameBox->SetHintText(LOCTEXT("NameHint", "이름 (한글·영문·숫자 2–12자)"));
+		AddWithPadding(*Column, NameBox, 12.0f);
+		AddWithPadding(*Column, ButtonRow(Builder, TEXT("Classes"),
+			Builder.Button(TEXT("KnightButton"), LOCTEXT("Knight", "기사")), Builder.Button(TEXT("MageButton"), LOCTEXT("Mage", "마법사"))), 12.0f);
+		UHorizontalBox* Buttons = ButtonRow(Builder, TEXT("Buttons"),
+			Builder.Button(TEXT("CancelButton"), LOCTEXT("Cancel", "취소")), Builder.Button(TEXT("CreateButton"), LOCTEXT("Create", "만들기")));
+		Column->AddChildToVerticalBox(Buttons)->SetPadding(FMargin(0.0f, 0.0f, 0.0f, 8.0f));
+		Cast<UVerticalBoxSlot>(Buttons->Slot)->SetHorizontalAlignment(HAlign_Right);
+		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), 16, true);
+		Status->SetAutoWrapText(true);
+		Column->AddChildToVerticalBox(Status);
 		return Builder.Save();
 	}
 
@@ -292,7 +360,8 @@ UMmoCreateWidgetsCommandlet::UMmoCreateWidgetsCommandlet()
 int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 {
 	UClass* Joystick = CreateJoystick();
-	const bool bOk = CreateLogin() && Joystick && CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateConfirm();
+	const bool bOk = CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate() && Joystick && CreateHud(Joystick) && CreateNotice()
+		&& CreateNameTag() && CreateSettings() && CreateConfirm();
 	return bOk ? 0 : 1;
 }
 

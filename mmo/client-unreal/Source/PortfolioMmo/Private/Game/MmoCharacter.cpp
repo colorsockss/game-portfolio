@@ -2,7 +2,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Game/MmoEntityActor.h"
+#include "Game/MmoCharacterLook.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "World/Units.h"
@@ -25,11 +25,9 @@ AMmoCharacter::AMmoCharacter()
 	Movement->RotationRate = FRotator(0.0, 720.0, 0.0);
 	bUseControllerRotationYaw = false;
 
-	// 몸통의 아래쪽을 캡슐의 바닥(지면)에 맞춘다.
-	USceneComponent* Feet = CreateDefaultSubobject<USceneComponent>(TEXT("Feet"));
-	Feet->SetupAttachment(GetCapsuleComponent());
-	Feet->SetRelativeLocation(FVector(0.0, 0.0, -90.0));
-	AMmoEntityActor::AddPlaceholderBody(*this, *Feet);
+	// 메시의 발을 캡슐의 바닥(지면)에 맞춘다.
+	GetMesh()->SetRelativeLocation(FVector(0.0, 0.0, -90.0));
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	CameraArm->SetupAttachment(GetCapsuleComponent());
@@ -41,10 +39,9 @@ AMmoCharacter::AMmoCharacter()
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
 }
 
-void AMmoCharacter::BeginPlay()
+void AMmoCharacter::SetClass(portfolio::mmo::CharacterClass Class)
 {
-	Super::BeginPlay();
-	AMmoEntityActor::TintPlaceholderBody(*this, FLinearColor(0.15f, 0.45f, 0.95f));
+	MmoCharacterLook::Apply(*GetMesh(), Class);
 }
 
 void AMmoCharacter::Zoom(float Amount)

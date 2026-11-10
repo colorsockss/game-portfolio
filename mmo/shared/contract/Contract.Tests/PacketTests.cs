@@ -25,11 +25,23 @@ namespace PortfolioMmo.Contract.Tests
             Packet[] packets =
             {
                 new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01" } },
-                new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok, SelfId = 7 } },
+                new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok } },
+                new Packet
+                {
+                    CharacterList = new CharacterList
+                    {
+                        Characters = { new CharacterSummary { Id = 12, Name = "기사01", CharacterClass = CharacterClass.Knight } },
+                    },
+                },
+                new Packet { CreateCharacter = new CreateCharacter { Name = "Merlin", CharacterClass = CharacterClass.Mage } },
+                new Packet { CreateCharacterResult = new CreateCharacterResult { Result = CreateCharacterResultCode.NameTaken } },
+                new Packet { EnterWorld = new EnterWorld { CharacterId = 12 } },
+                new Packet { EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.Ok, SelfId = 7, Tick = 100 } },
+                new Packet { LeaveWorld = new LeaveWorld() },
                 new Packet { Kicked = new Kicked { Reason = KickReason.DuplicateLogin } },
                 new Packet { Move = new Move { X = -3, Z = 32767, Yaw = 255, Ack = 2 } },
                 new Packet { PositionReset = new PositionReset { X = 1, Z = -1, Ack = 3 } },
-                new Packet { EntitiesEnter = new EntitiesEnter { Entities = { new EntityEnter { Id = 7, X = 48, Z = 0, Yaw = 64, Name = "hero_01" } } } },
+                new Packet { EntitiesEnter = new EntitiesEnter { Entities = { new EntityEnter { Id = 7, X = 48, Z = 0, Yaw = 64, Name = "기사01", CharacterClass = CharacterClass.Mage } } } },
                 new Packet { EntitiesLeave = new EntitiesLeave { Ids = { 7, 8 } } },
                 new Packet { EntityMoves = new EntityMoves { Tick = 72000, Entities = { s_sampleMove } } },
             };

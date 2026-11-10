@@ -15,6 +15,12 @@ message Packet {
     Kicked kicked = 3;
     Ping ping = 4;
     Pong pong = 5;
+    CharacterList character_list = 6;
+    CreateCharacter create_character = 7;
+    CreateCharacterResult create_character_result = 8;
+    EnterWorld enter_world = 9;
+    EnterWorldResult enter_world_result = 10;
+    LeaveWorld leave_world = 11;
 
     // 100–199: 월드(이동과 시야)
     Move move = 100;
@@ -29,7 +35,8 @@ message Packet {
 // 필드를 더하기만 하면 protobuf가 모르는 필드를 건너뛰므로 올리지 않는다.
 enum ProtocolVersion {
   PROTOCOL_VERSION_UNSPECIFIED = 0;
-  PROTOCOL_VERSION_CURRENT = 1;
+  // 2: 로그인과 월드에 들어가기를 나눴다(계정 하나에 캐릭터 여럿, 2026-11-11).
+  PROTOCOL_VERSION_CURRENT = 2;
 }
 
 // 좌표와 방향. 지면 좌표 x, z는 1 m를 CONSTANT_UNITS_PER_METER칸으로 나눈 정수(sint32)이고 맵은 ±CONSTANT_MAP_HALF_EXTENT_METERS 안이다.
@@ -54,6 +61,8 @@ enum Constant {
   CONSTANT_PING_INTERVAL_SECONDS = 5;
   // 이 시간(초) 동안 아무것도 받지 못하면 서버도 클라이언트도 연결이 죽었다고 보고 끊는다.
   CONSTANT_IDLE_TIMEOUT_SECONDS = 15;
+  // 계정 하나가 만들 수 있는 캐릭터 수.
+  CONSTANT_MAX_CHARACTERS = 4;
 }
 
 // ── 세션 ──
@@ -62,22 +71,20 @@ enum Constant {
 message Login {
   // 클라이언트의 PROTOCOL_VERSION_CURRENT. 서버와 다르면 VERSION_MISMATCH.
   ProtocolVersion protocol_version = 1;
-  // 로그인 ID이자 머리 위에 보일 이름. 영문 소문자, 숫자, 밑줄 4–16자이고 형식은 서버가 검사한다.
+  // 로그인 ID(계정). 영문 소문자, 숫자, 밑줄 4–16자이고 형식은 서버가 검사한다. 머리 위에는 캐릭터 이름이 보인다.
   string login_id = 2;
 }
 
-// 서버 → 클라이언트. Login의 답.
+// 서버 → 클라이언트. Login의 답. 성공하면 이어서 CharacterList가 온다.
 message LoginResult {
   LoginResultCode result = 1;
-  // 내 개체 번호. 실패면 0.
-  uint32 self_id = 2;
-  // 서버의 지금 틱 번호(EntityMoves.tick과 같은 수). 클라이언트가 서버 시계를 맞춘다.
-  uint32 tick = 3;
+  // 버전 1의 내 개체 번호와 틱. EnterWorldResult로 옮겼다.
+  reserved 2, 3;
 }
 
 // 로그인의 결과.
 enum LoginResultCode {
-  // 로그인했다. 이어서 내 개체와 주변 개체가 EntitiesEnter로 온다.
+  // 로그인했다. 이어서 CharacterList가 온다.
   LOGIN_RESULT_CODE_OK = 0;
   // 로그인 ID의 형식이 맞지 않는다.
   LOGIN_RESULT_CODE_INVALID_LOGIN_ID = 1;
@@ -107,6 +114,79 @@ enum KickReason {
 
 // 클라이언트 → 서버. 연결이 살아 있음을 알린다. 로그인 전에도 보낼 수 있고, CONSTANT_PING_INTERVAL_SECONDS마다 보낸다.
 message Ping {}
+
+// 직업. 만들 때 정하고 바꿀 수 없다.
+enum CharacterClass {
+  CHARACTER_CLASS_UNSPECIFIED = 0;
+  // 근접. 체력과 방어력이 높다.
+  CHARACTER_CLASS_KNIGHT = 1;
+  // 원거리 마법. 마나와 공격력이 높고 체력이 낮다.
+  CHARACTER_CLASS_MAGE = 2;
+}
+
+// 캐릭터 선택 화면의 캐릭터 하나.
+message CharacterSummary {
+  // 캐릭터 번호. 서버가 정하고 바뀌지 않는다. 개체 번호와는 다르다.
+  uint64 id = 1;
+  string name = 2;
+  CharacterClass character_class = 3;
+}
+
+// 서버 → 클라이언트. 이 계정의 캐릭터들(만든 차례). 로그인 뒤, 캐릭터를 만든 뒤, LeaveWorld 뒤에 온다.
+message CharacterList {
+  repeated CharacterSummary characters = 1;
+}
+
+// 클라이언트 → 서버. 캐릭터를 만든다. 캐릭터 선택 중에만 보낼 수 있다. 서버는 CreateCharacterResult로 답하고, 성공하면 CharacterList도 보낸다.
+message CreateCharacter {
+  // 한글·영문·숫자 2–12자. 서버 전체에서 하나이고 영문은 대소문자를 가리지 않는다. 형식은 서버가 검사한다.
+  string name = 1;
+  CharacterClass character_class = 2;
+}
+
+// 서버 → 클라이언트. CreateCharacter의 답.
+message CreateCharacterResult {
+  CreateCharacterResultCode result = 1;
+}
+
+// 캐릭터 만들기의 결과.
+enum CreateCharacterResultCode {
+  CREATE_CHARACTER_RESULT_CODE_OK = 0;
+  // 이름의 형식이 맞지 않는다.
+  CREATE_CHARACTER_RESULT_CODE_INVALID_NAME = 1;
+  // 같은 이름(영문은 대소문자를 가리지 않음)의 캐릭터가 이미 있다.
+  CREATE_CHARACTER_RESULT_CODE_NAME_TAKEN = 2;
+  // 이 계정의 캐릭터가 CONSTANT_MAX_CHARACTERS개다.
+  CREATE_CHARACTER_RESULT_CODE_TOO_MANY = 3;
+  // 없는 직업이다.
+  CREATE_CHARACTER_RESULT_CODE_INVALID_CLASS = 4;
+}
+
+// 클라이언트 → 서버. 이 캐릭터로 월드에 들어간다. 캐릭터 선택 중에만 보낼 수 있다. 서버는 EnterWorldResult로 답하고,
+// 성공하면 이어서 내 개체와 주변 개체가 EntitiesEnter로 온다.
+message EnterWorld {
+  uint64 character_id = 1;
+}
+
+// 서버 → 클라이언트. EnterWorld의 답.
+message EnterWorldResult {
+  EnterWorldResultCode result = 1;
+  // 내 개체 번호. 실패면 0.
+  uint32 self_id = 2;
+  // 서버의 지금 틱 번호(EntityMoves.tick과 같은 수). 클라이언트가 서버 시계를 맞춘다.
+  uint32 tick = 3;
+}
+
+// 월드에 들어가기의 결과.
+enum EnterWorldResultCode {
+  ENTER_WORLD_RESULT_CODE_OK = 0;
+  // 이 계정에 그 번호의 캐릭터가 없다.
+  ENTER_WORLD_RESULT_CODE_NO_SUCH_CHARACTER = 1;
+}
+
+// 클라이언트 → 서버. 캐릭터 선택으로 돌아간다. 월드에 있을 때만 보낼 수 있다. 서버는 캐릭터를 저장하고 월드에서 뺀 뒤
+// CharacterList를 보낸다. 연결은 그대로다.
+message LeaveWorld {}
 
 // 서버 → 클라이언트. Ping의 답. 움직이는 개체가 없어도 클라이언트가 서버가 살아 있음과 서버의 틱을 안다.
 message Pong {
@@ -145,8 +225,9 @@ message EntityEnter {
   sint32 x = 2;
   sint32 z = 3;
   uint32 yaw = 4;
-  // 머리 위에 보일 이름(로그인 ID).
+  // 머리 위에 보일 이름(캐릭터 이름).
   string name = 5;
+  CharacterClass character_class = 6;
 }
 
 // 서버 → 클라이언트. 시야에서 나간 개체들의 번호.

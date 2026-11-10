@@ -30,6 +30,10 @@ namespace
 		{
 		case EScreen::Login:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Login);
+		case EScreen::CharacterSelect:
+			return MmoUiPaths::ClassOf(MmoUiPaths::CharacterSelect);
+		case EScreen::CharacterCreate:
+			return MmoUiPaths::ClassOf(MmoUiPaths::CharacterCreate);
 		case EScreen::Hud:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Hud);
 		case EScreen::Settings:
@@ -168,6 +172,15 @@ void UMmoUiManager::LogOut()
 	});
 }
 
+void UMmoUiManager::ReturnToCharacterSelect()
+{
+	Session().LeaveWorld();
+	Close(EScreen::Confirm);
+	Close(EScreen::Settings);
+	Close(EScreen::Hud);
+	Open(EScreen::CharacterSelect);
+}
+
 void UMmoUiManager::Show(EScreen Screen, UUserWidget& Widget, const FOnShown& OnShown)
 {
 	Root->AddToLayer(MmoScreen::RuleOf(Screen).Layer, Widget);
@@ -213,6 +226,13 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		&& Packet.login_result().result() == portfolio::mmo::LOGIN_RESULT_CODE_OK)
 	{
 		Close(EScreen::Login);
+		Open(EScreen::CharacterSelect);
+	}
+	else if (Packet.body_case() == portfolio::mmo::Packet::kEnterWorldResult
+		&& Packet.enter_world_result().result() == portfolio::mmo::ENTER_WORLD_RESULT_CODE_OK)
+	{
+		Close(EScreen::CharacterCreate);
+		Close(EScreen::CharacterSelect);
 		Open(EScreen::Hud);
 	}
 }
@@ -223,6 +243,8 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Close(EScreen::Confirm);
 	Close(EScreen::Settings);
 	Close(EScreen::Hud);
+	Close(EScreen::CharacterCreate);
+	Close(EScreen::CharacterSelect);
 	Open(EScreen::Login);
 	if (bWasPlaying && Reason != UMmoSession::LoggedOutReason)
 	{

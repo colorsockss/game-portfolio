@@ -268,7 +268,7 @@ namespace PortfolioMmo.Server
             {
                 Connection connection = _connections[index];
                 Session session = connection.Session;
-                if ((session.Player == null) && !session.IsClosing && (_world.Tick - session.ConnectedTick > LoginTimeoutTicks))
+                if ((session.LoginId == null) && !session.IsClosing && (_world.Tick - session.ConnectedTick > LoginTimeoutTicks))
                 {
                     session.Close();
                 }

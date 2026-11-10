@@ -110,9 +110,9 @@ namespace MmoWorld
 	{
 		switch (Packet.body_case())
 		{
-		case portfolio::mmo::Packet::kLoginResult:
-			Self = Packet.login_result().self_id();
-			ObserveTick(Packet.login_result().tick(), NowSeconds);
+		case portfolio::mmo::Packet::kEnterWorldResult:
+			Self = Packet.enter_world_result().self_id();
+			ObserveTick(Packet.enter_world_result().tick(), NowSeconds);
 			break;
 		case portfolio::mmo::Packet::kPong:
 			ObserveTick(Packet.pong().tick(), NowSeconds);
@@ -121,7 +121,7 @@ namespace MmoWorld
 			for (const portfolio::mmo::EntityEnter& Enter : Packet.entities_enter().entities())
 			{
 				FEntity& Entity = Visible[Enter.id()];
-				Entity = { Enter.id(), Enter.x(), Enter.z(), Enter.yaw(), Enter.name(), {} };
+				Entity = { Enter.id(), Enter.x(), Enter.z(), Enter.yaw(), Enter.name(), Enter.character_class(), {} };
 				Entity.Track.Push({ LastTick, Enter.x(), Enter.z(), Enter.yaw() });
 				Entered.push_back(Enter.id());
 			}

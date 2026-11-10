@@ -12,6 +12,8 @@ namespace MmoScreen
 	enum class EScreen : uint8_t
 	{
 		Login,
+		CharacterSelect,
+		CharacterCreate,
 		Hud,
 		Settings,
 		Confirm,
@@ -28,7 +30,7 @@ namespace MmoScreen
 	/** 열린 화면들이 정하는 입력. */
 	enum class EInputMode : uint8_t
 	{
-		/** 화면만 입력을 받는다(로그인). */
+		/** 화면만 입력을 받는다(로그인, 캐릭터 선택과 만들기). */
 		Ui,
 		/** 게임이 입력을 받는다. */
 		Game,

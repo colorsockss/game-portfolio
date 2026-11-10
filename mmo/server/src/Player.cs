@@ -9,16 +9,18 @@ namespace PortfolioMmo.Server
     public sealed class Player
     {
         /// <summary>
-        /// 로그인한 연결의 개체를 만든다.
+        /// 연결이 고른 캐릭터로 월드에 들어온 개체를 만든다.
         /// </summary>
-        public Player(uint id, string loginId, Session session, int x, int z, uint yaw)
+        public Player(uint id, CharacterRecord character, Session session, SavedPosition position)
         {
             Id = id;
-            LoginId = loginId;
+            CharacterId = character.Id;
+            Name = character.Name;
+            Class = character.Class;
             Session = session;
-            X = x;
-            Z = z;
-            Yaw = yaw;
+            X = position.X;
+            Z = position.Z;
+            Yaw = position.Yaw;
         }
 
         /// <summary>
@@ -27,9 +29,19 @@ namespace PortfolioMmo.Server
         public uint Id { get; }
 
         /// <summary>
-        /// 로그인 ID이자 머리 위에 보일 이름.
+        /// 저장소의 캐릭터 번호. 개체 번호와 달리 다시 들어와도 같다.
         /// </summary>
-        public string LoginId { get; }
+        public long CharacterId { get; }
+
+        /// <summary>
+        /// 캐릭터 이름. 머리 위에 보인다.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// 직업.
+        /// </summary>
+        public CharacterClass Class { get; }
 
         /// <summary>
         /// 이 개체를 움직이는 연결.

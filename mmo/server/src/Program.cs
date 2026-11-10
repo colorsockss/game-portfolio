@@ -22,7 +22,7 @@ namespace PortfolioMmo.Server
             int port = int.Parse(Option(args, "--port", "7777"));
             int maxPlayers = int.Parse(Option(args, "--max-players", "1000"));
             int spawnHalfExtent = int.Parse(Option(args, "--spawn-half-extent", "0")) * Units.PerMeter;
-            using var store = new PlayerStore(Option(args, "--database", "mmo.sqlite"));
+            using var store = new CharacterStore(Option(args, "--database", "mmo.sqlite"));
 
             using var cancellation = new CancellationTokenSource();
             Action<PosixSignalContext> stop = context =>

@@ -34,6 +34,7 @@ namespace
 		Entity->set_x(X);
 		Entity->set_z(Z);
 		Entity->set_name(Name);
+		Entity->set_character_class(portfolio::mmo::CHARACTER_CLASS_MAGE);
 		return Packet;
 	}
 
@@ -106,13 +107,14 @@ namespace
 		MmoWorld::FWorldState World;
 		Expect(World.SelfId() == 0 && World.SelfEntity() == nullptr, "a new world is not logged in");
 
-		portfolio::mmo::Packet Login;
-		Login.mutable_login_result()->set_self_id(7);
-		World.Apply(Login, 0);
+		portfolio::mmo::Packet Entered;
+		Entered.mutable_enter_world_result()->set_self_id(7);
+		World.Apply(Entered, 0);
 		World.Apply(Enter(7, 32, -64, "hero_01"), 0);
 		World.Apply(Enter(8, 0, 0, "hero_02"), 0);
-		Expect(World.SelfId() == 7, "LoginResult sets the self id");
+		Expect(World.SelfId() == 7, "EnterWorldResult sets the self id");
 		Expect(World.SelfEntity() != nullptr && World.SelfEntity()->Name == "hero_01" && World.SelfEntity()->Z == -64, "the self entity comes from EntitiesEnter");
+		Expect(World.SelfEntity()->Class == portfolio::mmo::CHARACTER_CLASS_MAGE, "the class comes from EntitiesEnter");
 		Expect(World.Entities().size() == 2, "entered entities are visible");
 
 		portfolio::mmo::Packet Moved = Moves(1, 8, 96, 0, 64);
@@ -174,14 +176,14 @@ namespace
 		Expect(Near(Clock.Now(15.4), 210), "the clock keeps running without packets");
 	}
 
-	void WorldClockComesFromLoginPongAndMoves()
+	void WorldClockComesFromEnterPongAndMoves()
 	{
 		MmoWorld::FWorldState World;
-		portfolio::mmo::Packet Login;
-		Login.mutable_login_result()->set_self_id(1);
-		Login.mutable_login_result()->set_tick(500);
-		World.Apply(Login, 1);
-		Expect(Near(World.Clock().Now(1), 500), "LoginResult sets the clock");
+		portfolio::mmo::Packet Entered;
+		Entered.mutable_enter_world_result()->set_self_id(1);
+		Entered.mutable_enter_world_result()->set_tick(500);
+		World.Apply(Entered, 1);
+		Expect(Near(World.Clock().Now(1), 500), "EnterWorldResult sets the clock");
 		Expect(Near(World.RenderTick(1), 498), "entities are drawn two ticks behind the server");
 
 		portfolio::mmo::Packet Pong;
@@ -271,7 +273,7 @@ int main()
 	LoginAndViewAreKept();
 	EnteredAndLeftAreQueuedForTheScreen();
 	ClockFollowsTheEarliestArrival();
-	WorldClockComesFromLoginPongAndMoves();
+	WorldClockComesFromEnterPongAndMoves();
 	TrackInterpolates();
 	TrackYawTurnsTheShortWay();
 	TrackKeepsWalkersSmoothAndStartsStillOnes();

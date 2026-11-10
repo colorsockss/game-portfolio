@@ -10,6 +10,8 @@
 namespace MmoUiPaths
 {
 	inline const TCHAR* const Login = TEXT("/Game/UI/WBP_Login");
+	inline const TCHAR* const CharacterSelect = TEXT("/Game/UI/WBP_CharacterSelect");
+	inline const TCHAR* const CharacterCreate = TEXT("/Game/UI/WBP_CharacterCreate");
 	inline const TCHAR* const Hud = TEXT("/Game/UI/WBP_Hud");
 	inline const TCHAR* const Joystick = TEXT("/Game/UI/WBP_Joystick");
 	inline const TCHAR* const Settings = TEXT("/Game/UI/WBP_Settings");

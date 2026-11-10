@@ -116,9 +116,14 @@ namespace PortfolioMmo.LoadTest
         private readonly object _gate = new object();
 
         /// <summary>
-        /// 내 개체 번호. LoginResult에서 받는다.
+        /// 내 개체 번호. EnterWorldResult에서 받는다.
         /// </summary>
         private uint _selfId;
+
+        /// <summary>
+        /// 처음이면 만들 캐릭터의 이름(로그인 ID에서 밑줄을 뺀 것).
+        /// </summary>
+        private string _characterName = string.Empty;
 
         /// <summary>
         /// 내 개체가 EntitiesEnter로 와서 위치를 안다.
@@ -180,13 +185,13 @@ namespace PortfolioMmo.LoadTest
         public bool IsAlive { get; private set; } = true;
 
         /// <summary>
-        /// 연결하고 로그인을 보낸다.
+        /// 연결하고 로그인을 보낸다. 캐릭터 목록이 오면 첫 캐릭터로(없으면 만들어) 들어간다.
         /// </summary>
         public static async Task<Bot> ConnectAsync(string host, int port, string loginId)
         {
             var client = new TcpClient { NoDelay = true };
             await client.ConnectAsync(host, port);
-            var bot = new Bot(client);
+            var bot = new Bot(client) { _characterName = loginId.Replace("_", string.Empty) };
             new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = loginId } }.WriteDelimitedTo(bot._stream);
             _ = bot.ReceiveAsync();
             return bot;
@@ -276,8 +281,22 @@ namespace PortfolioMmo.LoadTest
             {
                 switch (packet.BodyCase)
                 {
-                    case Packet.BodyOneofCase.LoginResult:
-                        _selfId = packet.LoginResult.SelfId;
+                    // 월드에 들어가기 전에는 이 수신 작업만 쓰고, 들어간 뒤에는 Step만 쓴다(Step은 _ready 전에 쓰지 않는다).
+                    case Packet.BodyOneofCase.CharacterList when packet.CharacterList.Characters.Count == 0:
+                        new Packet
+                        {
+                            CreateCharacter = new CreateCharacter { Name = _characterName, CharacterClass = CharacterClass.Knight },
+                        }.WriteDelimitedTo(_stream);
+                        break;
+                    case Packet.BodyOneofCase.CharacterList:
+                        new Packet { EnterWorld = new EnterWorld { CharacterId = packet.CharacterList.Characters[0].Id } }.WriteDelimitedTo(_stream);
+                        break;
+                    case Packet.BodyOneofCase.CreateCharacterResult when packet.CreateCharacterResult.Result != CreateCharacterResultCode.Ok:
+                        Console.Error.WriteLine($"Bot {_characterName} could not create a character: {packet.CreateCharacterResult.Result}");
+                        IsAlive = false;
+                        break;
+                    case Packet.BodyOneofCase.EnterWorldResult:
+                        _selfId = packet.EnterWorldResult.SelfId;
                         break;
                     case Packet.BodyOneofCase.EntitiesEnter:
                         foreach (EntityEnter entity in packet.EntitiesEnter.Entities.Where(entity => entity.Id == _selfId))

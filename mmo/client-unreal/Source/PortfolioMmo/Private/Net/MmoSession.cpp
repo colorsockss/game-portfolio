@@ -46,6 +46,7 @@ void UMmoSession::LogIn(const FString& InLoginId)
 {
 	CurrentLoginId = InLoginId;
 	WorldState.Reset();
+	CharacterList.Clear();
 	Connection().Connect(Host, Port);
 }
 
@@ -54,6 +55,30 @@ void UMmoSession::LogOut()
 	// 직접 닫으면 연결은 OnClosed를 보내지 않으므로 끊김을 여기서 처리한다.
 	Connection().Close();
 	HandleClosed(LoggedOutReason);
+}
+
+void UMmoSession::CreateCharacter(const FString& Name, portfolio::mmo::CharacterClass Class)
+{
+	portfolio::mmo::Packet Packet;
+	const FTCHARToUTF8 Utf8(*Name);
+	Packet.mutable_create_character()->set_name(Utf8.Get(), Utf8.Length());
+	Packet.mutable_create_character()->set_character_class(Class);
+	Connection().Send(Packet);
+}
+
+void UMmoSession::EnterWorld(uint64 CharacterId)
+{
+	portfolio::mmo::Packet Packet;
+	Packet.mutable_enter_world()->set_character_id(CharacterId);
+	Connection().Send(Packet);
+}
+
+void UMmoSession::LeaveWorld()
+{
+	portfolio::mmo::Packet Packet;
+	Packet.mutable_leave_world();
+	Connection().Send(Packet);
+	WorldState.Reset();
 }
 
 void UMmoSession::HandleConnected()
@@ -69,6 +94,10 @@ void UMmoSession::HandleConnected()
 
 void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 {
+	if (Packet.body_case() == portfolio::mmo::Packet::kCharacterList)
+	{
+		CharacterList = Packet.character_list();
+	}
 	WorldState.Apply(Packet, FPlatformTime::Seconds());
 	OnPacket.Broadcast(Packet);
 }

@@ -8,7 +8,8 @@ using Xunit;
 namespace PortfolioMmo.Server.Tests
 {
     /// <summary>
-    /// 소켓 없이 월드의 로그인, 이동 검증, 시야를 확인한다. 모든 플레이어는 원점에서 시작한다.
+    /// 소켓 없이 월드의 로그인, 캐릭터 선택, 이동 검증, 시야를 확인한다. 모든 캐릭터는 원점에서 시작하고,
+    /// Join은 로그인 ID에서 밑줄을 뺀 이름의 기사를 만들어 들어간다.
     /// </summary>
     public class WorldTests
     {
@@ -23,24 +24,130 @@ namespace PortfolioMmo.Server.Tests
         private const int Stride = 10;
 
         /// <summary>
-        /// 로그인하면 내 번호를 받고, 다음 틱에 나와 주변 개체가 EntitiesEnter로 온다. 주변 플레이어도 나를 받는다.
+        /// 월드에 들어가면 내 번호를 받고, 다음 틱에 나와 주변 개체가 EntitiesEnter로 온다. 주변 플레이어도 나를 받는다.
         /// </summary>
         [Fact]
-        public void LoginEntersSelfAndNeighbors()
+        public void EnteringShowsSelfAndNeighbors()
         {
             World world = NewWorld();
-            Session first = LogIn(world, "hero_01");
+            Session first = Join(world, "hero_01");
             world.Step();
             Assert.Equal(
-                new[] { LoginOk(1), Enter(Entity(1, "hero_01")) },
+                new[] { Entered(1), Enter(Entity(1, "hero01")) },
                 Take(first));
 
-            Session second = LogIn(world, "hero_02");
+            Session second = Join(world, "hero_02", CharacterClass.Mage);
             world.Step();
-            Assert.Equal(new[] { Enter(Entity(2, "hero_02")) }, Take(first));
+            Assert.Equal(new[] { Enter(Entity(2, "hero02", characterClass: CharacterClass.Mage)) }, Take(first));
             Assert.Equal(
-                new[] { LoginOk(2, tick: 1), Enter(Entity(2, "hero_02"), Entity(1, "hero_01")) },
+                new[] { Entered(2, tick: 1), Enter(Entity(2, "hero02", characterClass: CharacterClass.Mage), Entity(1, "hero01")) },
                 Take(second));
+        }
+
+        /// <summary>
+        /// 로그인하면 결과와 캐릭터 목록이 온다. 캐릭터를 만들면 결과와 바뀐 목록이 오고, 목록은 만든 차례다.
+        /// </summary>
+        [Fact]
+        public void LoginListsCharactersAndCreatingAddsThem()
+        {
+            World world = NewWorld();
+            Session session = LogIn(world, "hero_01");
+            Assert.Equal(new[] { LoginOk(), List() }, Take(session));
+
+            Create(world, session, "기사01", CharacterClass.Knight);
+            Create(world, session, "Merlin", CharacterClass.Mage);
+            List<Packet> packets = Take(session);
+            Assert.Equal(
+                new[]
+                {
+                    Created(CreateCharacterResultCode.Ok), List(("기사01", CharacterClass.Knight)),
+                    Created(CreateCharacterResultCode.Ok), List(("기사01", CharacterClass.Knight), ("Merlin", CharacterClass.Mage)),
+                },
+                packets.Select(WithoutIds));
+            Assert.Equal(0, world.PlayerCount);
+        }
+
+        /// <summary>
+        /// 이름 형식, 직업, 겹치는 이름(영문 대소문자를 가리지 않음, 다른 계정이어도), 캐릭터 수의 상한을 지킨다.
+        /// </summary>
+        [Fact]
+        public void CreatingCharacterChecksNameClassAndCount()
+        {
+            World world = NewWorld();
+            Session session = LogIn(world, "hero_01");
+            Session other = LogIn(world, "hero_02");
+            Take(session);
+            Take(other);
+
+            foreach (string invalid in new[] { "a", "thirteen_char", "공백 있음", "가나다라마바사아자차카타파", "abc\n" })
+            {
+                Create(world, session, invalid, CharacterClass.Knight);
+                Assert.Equal(new[] { Created(CreateCharacterResultCode.InvalidName) }, Take(session));
+            }
+
+            Create(world, session, "Arthur", CharacterClass.Unspecified);
+            Assert.Equal(new[] { Created(CreateCharacterResultCode.InvalidClass) }, Take(session));
+
+            Create(world, other, "Arthur", CharacterClass.Knight);
+            Take(other);
+            Create(world, session, "ARTHUR", CharacterClass.Mage);
+            Assert.Equal(new[] { Created(CreateCharacterResultCode.NameTaken) }, Take(session));
+
+            for (int i = 0; i < (int)Constant.MaxCharacters; i++)
+            {
+                Create(world, session, $"Knight{i}", CharacterClass.Knight);
+            }
+
+            Take(session);
+            Create(world, session, "OneTooMany", CharacterClass.Knight);
+            Assert.Equal(new[] { Created(CreateCharacterResultCode.TooMany) }, Take(session));
+            Assert.False(session.IsClosing);
+        }
+
+        /// <summary>
+        /// 없는 캐릭터와 다른 계정의 캐릭터로는 들어갈 수 없고, 연결은 끊기지 않는다.
+        /// </summary>
+        [Fact]
+        public void EnteringNeedsOwnCharacter()
+        {
+            World world = NewWorld();
+            Session owner = LogIn(world, "hero_01");
+            long id = CreateCharacter(world, owner, "Arthur");
+            Session thief = LogIn(world, "hero_02");
+            Take(thief);
+
+            world.Receive(thief, new Packet { EnterWorld = new EnterWorld { CharacterId = (ulong)id } });
+            world.Receive(thief, new Packet { EnterWorld = new EnterWorld { CharacterId = 999 } });
+            var noSuchCharacter = new Packet { EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.NoSuchCharacter } };
+            Assert.Equal(new[] { noSuchCharacter, noSuchCharacter }, Take(thief));
+            Assert.Null(thief.Player);
+            Assert.False(thief.IsClosing);
+        }
+
+        /// <summary>
+        /// LeaveWorld는 캐릭터를 월드에서 빼고 목록을 다시 보낸다. 주변은 EntitiesLeave를 받고, 다시 들어가면 그 자리에서 이어 간다.
+        /// </summary>
+        [Fact]
+        public void LeavingTheWorldReturnsToSelectionAndKeepsThePosition()
+        {
+            World world = NewWorld();
+            Session leaver = Join(world, "hero_01");
+            Session observer = Join(world, "hero_02");
+            long id = leaver.Player!.CharacterId;
+            WalkTo(world, leaver, 100, 0);
+            Take(leaver);
+            Take(observer);
+
+            world.Receive(leaver, new Packet { LeaveWorld = new LeaveWorld() });
+            Assert.Equal(new[] { List(("hero01", CharacterClass.Knight)) }, Take(leaver).Select(WithoutIds));
+            Assert.Null(leaver.Player);
+            world.Step();
+            Assert.Equal(new[] { new Packet { EntitiesLeave = new EntitiesLeave { Ids = { 1 } } } }, Take(observer));
+
+            uint tick = world.Tick;
+            Enter(world, leaver, id);
+            world.Step();
+            Assert.Equal(new[] { Entered(3, tick), Enter(Entity(3, "hero01", x: 100), Entity(2, "hero02")) }, Take(leaver));
         }
 
         /// <summary>
@@ -56,7 +163,7 @@ namespace PortfolioMmo.Server.Tests
         public void LoginRejects(ProtocolVersion version, string loginId, LoginResultCode expected)
         {
             World world = NewWorld(maxPlayers: 1);
-            LogIn(world, "hero_01");
+            Join(world, "hero_01");
             var session = new Session();
             world.Receive(session, new Packet { Login = new Login { ProtocolVersion = version, LoginId = loginId } });
 
@@ -66,24 +173,29 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 같은 ID로 다시 로그인하면 예전 연결은 DUPLICATE_LOGIN으로 끊기고, 새 연결이 그 자리에서 새 번호로 이어 간다.
-        /// 동시 접속이 가득 차도 자리를 넘겨받는다.
+        /// 같은 계정으로 다시 로그인하면 예전 연결은 DUPLICATE_LOGIN으로 끊기고 캐릭터는 월드에서 빠진다. 새 연결이 같은 캐릭터로
+        /// 들어가면 그 자리에서 새 번호로 이어 간다. 동시 접속이 가득 차도 자리를 넘겨받는다.
         /// </summary>
         [Fact]
         public void DuplicateLoginKicksTheOldConnectionAndKeepsThePosition()
         {
             World world = NewWorld(maxPlayers: 1);
-            Session old = LogIn(world, "hero_01");
+            Session old = Join(world, "hero_01");
+            long id = old.Player!.CharacterId;
             WalkTo(world, old, 100, 0);
             Take(old);
 
-            uint loginTick = world.Tick;
             Session renewed = LogIn(world, "hero_01");
-            world.Step();
             Assert.Equal(new[] { new Packet { Kicked = new Kicked { Reason = KickReason.DuplicateLogin } } }, Take(old));
             Assert.True(old.IsClosing);
             Assert.Null(old.Player);
-            Assert.Equal(new[] { LoginOk(2, loginTick), Enter(Entity(2, "hero_01", x: 100)) }, Take(renewed));
+            Assert.Equal(0, world.PlayerCount);
+
+            Take(renewed);
+            uint tick = world.Tick;
+            Enter(world, renewed, id);
+            world.Step();
+            Assert.Equal(new[] { Entered(2, tick), Enter(Entity(2, "hero01", x: 100)) }, Take(renewed));
         }
 
         /// <summary>
@@ -93,7 +205,7 @@ namespace PortfolioMmo.Server.Tests
         public void TooFarMoveIsResetAndStaleAckMovesAreDropped()
         {
             World world = NewWorld();
-            Session session = LogIn(world, "hero_01");
+            Session session = Join(world, "hero_01");
             world.Step();
             Take(session);
 
@@ -117,7 +229,7 @@ namespace PortfolioMmo.Server.Tests
         public void MoveOutsideTheMapIsReset()
         {
             World world = NewWorld();
-            Session session = LogIn(world, "hero_01");
+            Session session = Join(world, "hero_01");
             WalkTo(world, session, Units.MapHalfExtent, 0);
             Take(session);
 
@@ -134,8 +246,8 @@ namespace PortfolioMmo.Server.Tests
         public void MovesReachObserversButNotTheMover()
         {
             World world = NewWorld();
-            Session mover = LogIn(world, "hero_01");
-            Session observer = LogIn(world, "hero_02");
+            Session mover = Join(world, "hero_01");
+            Session observer = Join(world, "hero_02");
             world.Step();
             Take(mover);
             Take(observer);
@@ -166,8 +278,8 @@ namespace PortfolioMmo.Server.Tests
         public void PlayersLeaveAndEnterTheViewAsTheyWalk()
         {
             World world = NewWorld();
-            Session walker = LogIn(world, "hero_01");
-            Session stayer = LogIn(world, "hero_02");
+            Session walker = Join(world, "hero_01");
+            Session stayer = Join(world, "hero_02");
             world.Step();
             Take(walker);
             Take(stayer);
@@ -177,8 +289,8 @@ namespace PortfolioMmo.Server.Tests
             Assert.Contains(new Packet { EntitiesLeave = new EntitiesLeave { Ids = { 2 } } }, Take(walker));
 
             WalkTo(world, walker, CellSize * 2 - Stride, 0);
-            Assert.Equal(new[] { Enter(Entity(1, "hero_01", x: CellSize * 2 - Stride)) }, Take(stayer));
-            Assert.Equal(new[] { Enter(Entity(2, "hero_02")) }, Take(walker));
+            Assert.Equal(new[] { Enter(Entity(1, "hero01", x: CellSize * 2 - Stride)) }, Take(stayer));
+            Assert.Equal(new[] { Enter(Entity(2, "hero02")) }, Take(walker));
         }
 
         /// <summary>
@@ -188,8 +300,8 @@ namespace PortfolioMmo.Server.Tests
         public void DisconnectLeavesTheView()
         {
             World world = NewWorld();
-            Session leaving = LogIn(world, "hero_01");
-            Session observer = LogIn(world, "hero_02");
+            Session leaving = Join(world, "hero_01");
+            Session observer = Join(world, "hero_02");
             world.Step();
             Take(observer);
 
@@ -213,7 +325,7 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(new[] { pong }, Take(notLoggedIn));
             Assert.False(notLoggedIn.IsClosing);
 
-            Session loggedIn = LogIn(world, "hero_01");
+            Session loggedIn = Join(world, "hero_01");
             world.Step();
             Take(loggedIn);
             world.Receive(loggedIn, new Packet { Ping = new Ping() });
@@ -221,55 +333,73 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 로그인 전의 Move, 두 번째 Login, 범위 밖의 yaw, 서버가 보내는 패킷은 MALFORMED_PACKET으로 끊는다.
+        /// 상태에 맞지 않는 요청(로그인 전의 캐릭터 요청, 캐릭터 선택 중의 Move와 LeaveWorld, 월드 안의 캐릭터 만들기와 들어가기,
+        /// 두 번째 Login), 범위 밖의 yaw, 서버가 보내는 패킷은 MALFORMED_PACKET으로 끊는다.
         /// </summary>
-        [Fact]
-        public void ProtocolViolationsKickAsMalformed()
+        [Theory]
+        [MemberData(nameof(OutOfStateRequests))]
+        public void ProtocolViolationsKickAsMalformed(string state, Packet packet)
         {
-            var malformed = new Packet { Kicked = new Kicked { Reason = KickReason.MalformedPacket } };
             World world = NewWorld();
+            Session session = state switch
+            {
+                "connected" => new Session(),
+                "selecting" => LogIn(world, "hero_01"),
+                _ => Join(world, "hero_01"),
+            };
+            Take(session);
 
-            var notLoggedIn = new Session();
-            world.Receive(notLoggedIn, new Packet { Move = new Move() });
-            Assert.Equal(new[] { malformed }, Take(notLoggedIn));
-            Assert.True(notLoggedIn.IsClosing);
-
-            Session twice = LogIn(world, "hero_01");
-            Take(twice);
-            world.Receive(twice, LoginPacket("hero_01"));
-            Assert.Equal(new[] { malformed }, Take(twice));
-
-            Session badYaw = LogIn(world, "hero_02");
-            Take(badYaw);
-            Move(world, badYaw, 0, 0, ack: 0, yaw: Units.YawSteps);
-            Assert.Equal(new[] { malformed }, Take(badYaw));
-
-            Session serverPacket = LogIn(world, "hero_03");
-            Take(serverPacket);
-            world.Receive(serverPacket, new Packet { EntitiesLeave = new EntitiesLeave() });
-            Assert.Equal(new[] { malformed }, Take(serverPacket));
+            world.Receive(session, packet);
+            Assert.Equal(new[] { new Packet { Kicked = new Kicked { Reason = KickReason.MalformedPacket } } }, Take(session));
+            Assert.True(session.IsClosing);
             Assert.Equal(0, world.PlayerCount);
         }
 
         /// <summary>
-        /// 나간 플레이어의 위치는 그 틱에 저장되고, 서버를 다시 띄운 뒤 같은 ID로 들어오면 그 자리에서 시작한다.
+        /// 상태마다 보낼 수 없는 패킷.
+        /// </summary>
+        public static TheoryData<string, Packet> OutOfStateRequests()
+        {
+            return new TheoryData<string, Packet>
+            {
+                { "connected", new Packet { Move = new Move() } },
+                { "connected", new Packet { CreateCharacter = new CreateCharacter { Name = "Arthur", CharacterClass = CharacterClass.Knight } } },
+                { "connected", new Packet { EnterWorld = new EnterWorld { CharacterId = 1 } } },
+                { "selecting", LoginPacket("hero_01") },
+                { "selecting", new Packet { Move = new Move() } },
+                { "selecting", new Packet { LeaveWorld = new LeaveWorld() } },
+                { "playing", LoginPacket("hero_01") },
+                { "playing", new Packet { CreateCharacter = new CreateCharacter { Name = "Arthur", CharacterClass = CharacterClass.Knight } } },
+                { "playing", new Packet { EnterWorld = new EnterWorld { CharacterId = 1 } } },
+                { "playing", new Packet { Move = new Move { Yaw = Units.YawSteps } } },
+                { "playing", new Packet { EntitiesLeave = new EntitiesLeave() } },
+            };
+        }
+
+        /// <summary>
+        /// 나간 플레이어의 위치는 그 틱에 저장되고, 서버를 다시 띄운 뒤 같은 캐릭터로 들어오면 그 자리에서 시작한다.
         /// </summary>
         [Fact]
         public void LeavingSavesThePositionForTheNextServer()
         {
-            using var store = new PlayerStore(":memory:");
+            using var store = new CharacterStore(":memory:");
             World world = NewWorld(store: store);
-            Session session = LogIn(world, "hero_01");
+            Session session = Join(world, "hero_01");
+            long id = session.Player!.CharacterId;
             WalkTo(world, session, 100, 0);
             Move(world, session, 100, 0, ack: 0, yaw: 32);
             world.Disconnect(session);
             world.Step();
-            Assert.Equal(new SavedPosition(100, 0, 32), store.Load("hero_01"));
+            Assert.Equal(new SavedPosition(100, 0, 32), store.Load(id)!.Position);
 
             World restarted = NewWorld(store: store);
             Session again = LogIn(restarted, "hero_01");
+            Take(again);
+            Enter(restarted, again, id);
             restarted.Step();
-            Assert.Equal(new[] { LoginOk(1), Enter(new EntityEnter { Id = 1, X = 100, Yaw = 32, Name = "hero_01" }) }, Take(again));
+            Assert.Equal(
+                new[] { Entered(1), Enter(new EntityEnter { Id = 1, X = 100, Yaw = 32, Name = "hero01", CharacterClass = CharacterClass.Knight }) },
+                Take(again));
         }
 
         /// <summary>
@@ -279,14 +409,17 @@ namespace PortfolioMmo.Server.Tests
         public void RejoiningBeforeTheSaveKeepsThePosition()
         {
             World world = NewWorld();
-            Session session = LogIn(world, "hero_01");
+            Session session = Join(world, "hero_01");
+            long id = session.Player!.CharacterId;
             WalkTo(world, session, 100, 0);
             world.Disconnect(session);
 
-            uint loginTick = world.Tick;
+            uint tick = world.Tick;
             Session again = LogIn(world, "hero_01");
+            Take(again);
+            Enter(world, again, id);
             world.Step();
-            Assert.Equal(new[] { LoginOk(2, loginTick), Enter(Entity(2, "hero_01", x: 100)) }, Take(again));
+            Assert.Equal(new[] { Entered(2, tick), Enter(Entity(2, "hero01", x: 100)) }, Take(again));
         }
 
         /// <summary>
@@ -295,36 +428,76 @@ namespace PortfolioMmo.Server.Tests
         [Fact]
         public void MovedPlayersAreSavedEveryInterval()
         {
-            using var store = new PlayerStore(":memory:");
+            using var store = new CharacterStore(":memory:");
             World world = NewWorld(store: store);
-            Session session = LogIn(world, "hero_01");
+            Session session = Join(world, "hero_01");
+            long id = session.Player!.CharacterId;
             WalkTo(world, session, 100, 0);
-            Assert.Null(store.Load("hero_01"));
+            Assert.Equal(new SavedPosition(0, 0, 0), store.Load(id)!.Position);
 
             while (world.Tick % World.SaveIntervalTicks != 0)
             {
                 world.Step();
             }
 
-            Assert.Equal(new SavedPosition(100, 0, 0), store.Load("hero_01"));
+            Assert.Equal(new SavedPosition(100, 0, 0), store.Load(id)!.Position);
         }
 
         /// <summary>
         /// 모든 플레이어가 원점에서 시작하는 월드.
         /// </summary>
-        private static World NewWorld(int maxPlayers = 10, PlayerStore? store = null)
+        private static World NewWorld(int maxPlayers = 10, CharacterStore? store = null)
         {
-            return new World(maxPlayers, spawnHalfExtent: 0, new Random(1), store ?? new PlayerStore(":memory:"));
+            return new World(maxPlayers, spawnHalfExtent: 0, new Random(1), store ?? new CharacterStore(":memory:"));
         }
 
         /// <summary>
-        /// 새 연결로 로그인한다.
+        /// 새 연결로 로그인한다(캐릭터 선택에 머문다).
         /// </summary>
         private static Session LogIn(World world, string loginId)
         {
             var session = new Session();
             world.Receive(session, LoginPacket(loginId));
             return session;
+        }
+
+        /// <summary>
+        /// 새 연결로 로그인해 로그인 ID에서 밑줄을 뺀 이름의 캐릭터를 만들고 월드에 들어간다. 선택 중의 패킷은 비우고
+        /// EnterWorldResult만 남긴다.
+        /// </summary>
+        private static Session Join(World world, string loginId, CharacterClass characterClass = CharacterClass.Knight)
+        {
+            Session session = LogIn(world, loginId);
+            long id = CreateCharacter(world, session, loginId.Replace("_", string.Empty), characterClass);
+            Enter(world, session, id);
+            return session;
+        }
+
+        /// <summary>
+        /// 캐릭터를 만들고 그 번호를 낸다(만든 뒤 오는 목록에서 찾는다). 쌓인 패킷은 비운다.
+        /// </summary>
+        private static long CreateCharacter(World world, Session session, string name, CharacterClass characterClass = CharacterClass.Knight)
+        {
+            Create(world, session, name, characterClass);
+            List<Packet> packets = Take(session);
+            Assert.Contains(Created(CreateCharacterResultCode.Ok), packets);
+            return (long)packets.Last(p => p.BodyCase == Packet.BodyOneofCase.CharacterList).CharacterList.Characters.Single(c => c.Name == name).Id;
+        }
+
+        /// <summary>
+        /// CreateCharacter 하나를 보낸다.
+        /// </summary>
+        private static void Create(World world, Session session, string name, CharacterClass characterClass)
+        {
+            world.Receive(session, new Packet { CreateCharacter = new CreateCharacter { Name = name, CharacterClass = characterClass } });
+        }
+
+        /// <summary>
+        /// EnterWorld 하나를 보낸다.
+        /// </summary>
+        private static void Enter(World world, Session session, long characterId)
+        {
+            world.Receive(session, new Packet { EnterWorld = new EnterWorld { CharacterId = (ulong)characterId } });
         }
 
         /// <summary>
@@ -369,11 +542,58 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 로그인 성공 패킷. tick은 로그인한 틱이다.
+        /// 로그인 성공 패킷.
         /// </summary>
-        private static Packet LoginOk(uint selfId, uint tick = 0)
+        private static Packet LoginOk()
         {
-            return new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok, SelfId = selfId, Tick = tick } };
+            return new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok } };
+        }
+
+        /// <summary>
+        /// 월드에 들어간 패킷. tick은 들어간 틱이다.
+        /// </summary>
+        private static Packet Entered(uint selfId, uint tick = 0)
+        {
+            return new Packet { EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.Ok, SelfId = selfId, Tick = tick } };
+        }
+
+        /// <summary>
+        /// 캐릭터 만들기의 결과 패킷.
+        /// </summary>
+        private static Packet Created(CreateCharacterResultCode result)
+        {
+            return new Packet { CreateCharacterResult = new CreateCharacterResult { Result = result } };
+        }
+
+        /// <summary>
+        /// 캐릭터 목록 패킷. 캐릭터 번호는 비교하지 않도록 0이다(WithoutIds와 함께 쓴다).
+        /// </summary>
+        private static Packet List(params (string Name, CharacterClass Class)[] characters)
+        {
+            var list = new CharacterList();
+            foreach ((string name, CharacterClass characterClass) in characters)
+            {
+                list.Characters.Add(new CharacterSummary { Name = name, CharacterClass = characterClass });
+            }
+
+            return new Packet { CharacterList = list };
+        }
+
+        /// <summary>
+        /// 캐릭터 목록의 번호를 0으로 바꾼 사본. 다른 패킷은 그대로다.
+        /// </summary>
+        private static Packet WithoutIds(Packet packet)
+        {
+            Packet copy = packet.Clone();
+            if (copy.BodyCase == Packet.BodyOneofCase.CharacterList)
+            {
+                foreach (CharacterSummary character in copy.CharacterList.Characters)
+                {
+                    character.Id = 0;
+                }
+            }
+
+            return copy;
         }
 
         /// <summary>
@@ -387,9 +607,9 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// 시야에 들어온 개체 하나.
         /// </summary>
-        private static EntityEnter Entity(uint id, string name, int x = 0, int z = 0)
+        private static EntityEnter Entity(uint id, string name, int x = 0, int z = 0, CharacterClass characterClass = CharacterClass.Knight)
         {
-            return new EntityEnter { Id = id, X = x, Z = z, Name = name };
+            return new EntityEnter { Id = id, X = x, Z = z, Name = name, CharacterClass = characterClass };
         }
     }
 }

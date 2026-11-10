@@ -9,6 +9,8 @@ namespace MmoScreen
 		// EScreen의 차례와 같다.
 		static const FScreenRule Rules[] = {
 			{ ELayer::Window, false, EInputMode::Ui },    // Login: 뒤로 가기로 닫으면 갈 곳이 없다.
+			{ ELayer::Window, false, EInputMode::Ui },    // CharacterSelect: 로그인 화면과 같다.
+			{ ELayer::Popup, true, EInputMode::Ui },      // CharacterCreate: 닫으면 캐릭터 선택으로 돌아간다.
 			{ ELayer::Hud, false, EInputMode::Game },     // Hud
 			{ ELayer::Window, true, EInputMode::Window }, // Settings
 			{ ELayer::Popup, true, EInputMode::Window },  // Confirm

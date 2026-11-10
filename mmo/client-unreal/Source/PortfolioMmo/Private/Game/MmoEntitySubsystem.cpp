@@ -3,6 +3,7 @@
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 #include "Game/MmoCharacter.h"
+#include "Game/MmoCharacterLook.h"
 #include "Game/MmoCoordinates.h"
 #include "Game/MmoEntityActor.h"
 #include "GameFramework/PlayerController.h"
@@ -38,6 +39,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		if (Id == World.SelfId())
 		{
 			AMmoCharacter* Self = GetWorld()->SpawnActor<AMmoCharacter>(Location, Rotation, Spawn);
+			Self->SetClass(Entity.Class);
 			Self->Teleport(Location);
 			GetWorld()->GetFirstPlayerController()->Possess(Self);
 			Actors.Add(Id, Self);
@@ -45,6 +47,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		else
 		{
 			AMmoEntityActor* Other = GetWorld()->SpawnActor<AMmoEntityActor>(Location, Rotation, Spawn);
+			Other->SetClass(Entity.Class);
 #if WITH_EDITOR
 			// 에디터의 아웃라이너에서 찾기 쉽게 한다. 머리 위의 이름은 이름표 층(backlog 16)이 그린다.
 			Other->SetActorLabel(UTF8_TO_TCHAR(Entity.Name.c_str()));
@@ -58,10 +61,18 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 	{
 		if (Pair.Key == World.SelfId())
 		{
+			// 내 캐릭터는 이동 컴포넌트가 옮기므로 그 속도로 달린다.
+			AMmoCharacter* Self = CastChecked<AMmoCharacter>(Pair.Value);
+			MmoCharacterLook::SetSpeed(*Self->GetMesh(), Self->GetVelocity().Size2D());
 			continue;
 		}
+		AMmoEntityActor* Other = CastChecked<AMmoEntityActor>(Pair.Value);
 		const MmoWorld::FPose Pose = World.Entities().at(Pair.Key).Track.Sample(RenderTick);
-		Pair.Value->SetActorLocationAndRotation(MmoCoordinates::ToWorld(Pose.X, Pose.Z), MmoCoordinates::ToRotator(Pose.Yaw));
+		const FVector Location = MmoCoordinates::ToWorld(Pose.X, Pose.Z);
+		// 다른 캐릭터는 이번 프레임에 보간이 옮긴 거리로 달리는 속도를 정한다.
+		const double Speed = DeltaTime > 0 ? FVector::Dist2D(Location, Other->GetActorLocation()) / DeltaTime : 0;
+		MmoCharacterLook::SetSpeed(Other->Mesh(), Speed);
+		Other->SetActorLocationAndRotation(Location, MmoCoordinates::ToRotator(Pose.Yaw));
 	}
 }
 

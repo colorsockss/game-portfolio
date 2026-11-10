@@ -24,62 +24,100 @@ namespace PortfolioMmo.Contract {
     static PacketsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1wYWNrZXRzLnByb3RvEg1wb3J0Zm9saW8ubW1vIt8DCgZQYWNrZXQSJQoF",
+            "Cg1wYWNrZXRzLnByb3RvEg1wb3J0Zm9saW8ubW1vIr8GCgZQYWNrZXQSJQoF",
             "bG9naW4YASABKAsyFC5wb3J0Zm9saW8ubW1vLkxvZ2luSAASMgoMbG9naW5f",
             "cmVzdWx0GAIgASgLMhoucG9ydGZvbGlvLm1tby5Mb2dpblJlc3VsdEgAEicK",
             "BmtpY2tlZBgDIAEoCzIVLnBvcnRmb2xpby5tbW8uS2lja2VkSAASIwoEcGlu",
             "ZxgEIAEoCzITLnBvcnRmb2xpby5tbW8uUGluZ0gAEiMKBHBvbmcYBSABKAsy",
-            "Ey5wb3J0Zm9saW8ubW1vLlBvbmdIABIjCgRtb3ZlGGQgASgLMhMucG9ydGZv",
-            "bGlvLm1tby5Nb3ZlSAASNgoOcG9zaXRpb25fcmVzZXQYZSABKAsyHC5wb3J0",
-            "Zm9saW8ubW1vLlBvc2l0aW9uUmVzZXRIABI2Cg5lbnRpdGllc19lbnRlchhm",
-            "IAEoCzIcLnBvcnRmb2xpby5tbW8uRW50aXRpZXNFbnRlckgAEjYKDmVudGl0",
-            "aWVzX2xlYXZlGGcgASgLMhwucG9ydGZvbGlvLm1tby5FbnRpdGllc0xlYXZl",
-            "SAASMgoMZW50aXR5X21vdmVzGGggASgLMhoucG9ydGZvbGlvLm1tby5FbnRp",
-            "dHlNb3Zlc0gAQgYKBGJvZHkiUwoFTG9naW4SOAoQcHJvdG9jb2xfdmVyc2lv",
-            "bhgBIAEoDjIeLnBvcnRmb2xpby5tbW8uUHJvdG9jb2xWZXJzaW9uEhAKCGxv",
-            "Z2luX2lkGAIgASgJIlwKC0xvZ2luUmVzdWx0Ei4KBnJlc3VsdBgBIAEoDjIe",
-            "LnBvcnRmb2xpby5tbW8uTG9naW5SZXN1bHRDb2RlEg8KB3NlbGZfaWQYAiAB",
-            "KA0SDAoEdGljaxgDIAEoDSIzCgZLaWNrZWQSKQoGcmVhc29uGAEgASgOMhku",
-            "cG9ydGZvbGlvLm1tby5LaWNrUmVhc29uIgYKBFBpbmciFAoEUG9uZxIMCgR0",
-            "aWNrGAEgASgNIjYKBE1vdmUSCQoBeBgBIAEoERIJCgF6GAIgASgREgsKA3lh",
-            "dxgDIAEoDRILCgNhY2sYBCABKA0iMgoNUG9zaXRpb25SZXNldBIJCgF4GAEg",
-            "ASgREgkKAXoYAiABKBESCwoDYWNrGAMgASgNIj0KDUVudGl0aWVzRW50ZXIS",
-            "LAoIZW50aXRpZXMYASADKAsyGi5wb3J0Zm9saW8ubW1vLkVudGl0eUVudGVy",
-            "IkoKC0VudGl0eUVudGVyEgoKAmlkGAEgASgNEgkKAXgYAiABKBESCQoBehgD",
-            "IAEoERILCgN5YXcYBCABKA0SDAoEbmFtZRgFIAEoCSIcCg1FbnRpdGllc0xl",
-            "YXZlEgsKA2lkcxgBIAMoDSJICgtFbnRpdHlNb3ZlcxIMCgR0aWNrGAEgASgN",
-            "EisKCGVudGl0aWVzGAIgAygLMhkucG9ydGZvbGlvLm1tby5FbnRpdHlNb3Zl",
-            "IjsKCkVudGl0eU1vdmUSCgoCaWQYASABKA0SCQoBeBgCIAEoERIJCgF6GAMg",
-            "ASgREgsKA3lhdxgEIAEoDSpRCg9Qcm90b2NvbFZlcnNpb24SIAocUFJPVE9D",
-            "T0xfVkVSU0lPTl9VTlNQRUNJRklFRBAAEhwKGFBST1RPQ09MX1ZFUlNJT05f",
-            "Q1VSUkVOVBABKpECCghDb25zdGFudBIYChRDT05TVEFOVF9VTlNQRUNJRklF",
-            "RBAAEhwKGENPTlNUQU5UX1VOSVRTX1BFUl9NRVRFUhAgEiQKH0NPTlNUQU5U",
-            "X01BUF9IQUxGX0VYVEVOVF9NRVRFUlMQgAgSFwoSQ09OU1RBTlRfWUFXX1NU",
-            "RVBTEIACEh0KGUNPTlNUQU5UX1RJQ0tTX1BFUl9TRUNPTkQQFBIoCiRDT05T",
-            "VEFOVF9NQVhfU1BFRURfTUVURVJTX1BFUl9TRUNPTkQQBhIiCh5DT05TVEFO",
-            "VF9QSU5HX0lOVEVSVkFMX1NFQ09ORFMQBRIhCh1DT05TVEFOVF9JRExFX1RJ",
-            "TUVPVVRfU0VDT05EUxAPKp4BCg9Mb2dpblJlc3VsdENvZGUSGAoUTE9HSU5f",
-            "UkVTVUxUX0NPREVfT0sQABImCiJMT0dJTl9SRVNVTFRfQ09ERV9JTlZBTElE",
-            "X0xPR0lOX0lEEAESJgoiTE9HSU5fUkVTVUxUX0NPREVfVkVSU0lPTl9NSVNN",
-            "QVRDSBACEiEKHUxPR0lOX1JFU1VMVF9DT0RFX1NFUlZFUl9GVUxMEAMqqwEK",
-            "CktpY2tSZWFzb24SGwoXS0lDS19SRUFTT05fVU5TUEVDSUZJRUQQABIfChtL",
-            "SUNLX1JFQVNPTl9EVVBMSUNBVEVfTE9HSU4QARIfChtLSUNLX1JFQVNPTl9T",
-            "RVJWRVJfU0hVVERPV04QAhIgChxLSUNLX1JFQVNPTl9NQUxGT1JNRURfUEFD",
-            "S0VUEAMSHAoYS0lDS19SRUFTT05fSURMRV9USU1FT1VUEARCGKoCFVBvcnRm",
-            "b2xpb01tby5Db250cmFjdGIGcHJvdG8z"));
+            "Ey5wb3J0Zm9saW8ubW1vLlBvbmdIABI2Cg5jaGFyYWN0ZXJfbGlzdBgGIAEo",
+            "CzIcLnBvcnRmb2xpby5tbW8uQ2hhcmFjdGVyTGlzdEgAEjoKEGNyZWF0ZV9j",
+            "aGFyYWN0ZXIYByABKAsyHi5wb3J0Zm9saW8ubW1vLkNyZWF0ZUNoYXJhY3Rl",
+            "ckgAEkcKF2NyZWF0ZV9jaGFyYWN0ZXJfcmVzdWx0GAggASgLMiQucG9ydGZv",
+            "bGlvLm1tby5DcmVhdGVDaGFyYWN0ZXJSZXN1bHRIABIwCgtlbnRlcl93b3Js",
+            "ZBgJIAEoCzIZLnBvcnRmb2xpby5tbW8uRW50ZXJXb3JsZEgAEj0KEmVudGVy",
+            "X3dvcmxkX3Jlc3VsdBgKIAEoCzIfLnBvcnRmb2xpby5tbW8uRW50ZXJXb3Js",
+            "ZFJlc3VsdEgAEjAKC2xlYXZlX3dvcmxkGAsgASgLMhkucG9ydGZvbGlvLm1t",
+            "by5MZWF2ZVdvcmxkSAASIwoEbW92ZRhkIAEoCzITLnBvcnRmb2xpby5tbW8u",
+            "TW92ZUgAEjYKDnBvc2l0aW9uX3Jlc2V0GGUgASgLMhwucG9ydGZvbGlvLm1t",
+            "by5Qb3NpdGlvblJlc2V0SAASNgoOZW50aXRpZXNfZW50ZXIYZiABKAsyHC5w",
+            "b3J0Zm9saW8ubW1vLkVudGl0aWVzRW50ZXJIABI2Cg5lbnRpdGllc19sZWF2",
+            "ZRhnIAEoCzIcLnBvcnRmb2xpby5tbW8uRW50aXRpZXNMZWF2ZUgAEjIKDGVu",
+            "dGl0eV9tb3ZlcxhoIAEoCzIaLnBvcnRmb2xpby5tbW8uRW50aXR5TW92ZXNI",
+            "AEIGCgRib2R5IlMKBUxvZ2luEjgKEHByb3RvY29sX3ZlcnNpb24YASABKA4y",
+            "Hi5wb3J0Zm9saW8ubW1vLlByb3RvY29sVmVyc2lvbhIQCghsb2dpbl9pZBgC",
+            "IAEoCSJJCgtMb2dpblJlc3VsdBIuCgZyZXN1bHQYASABKA4yHi5wb3J0Zm9s",
+            "aW8ubW1vLkxvZ2luUmVzdWx0Q29kZUoECAIQA0oECAMQBCIzCgZLaWNrZWQS",
+            "KQoGcmVhc29uGAEgASgOMhkucG9ydGZvbGlvLm1tby5LaWNrUmVhc29uIgYK",
+            "BFBpbmciZAoQQ2hhcmFjdGVyU3VtbWFyeRIKCgJpZBgBIAEoBBIMCgRuYW1l",
+            "GAIgASgJEjYKD2NoYXJhY3Rlcl9jbGFzcxgDIAEoDjIdLnBvcnRmb2xpby5t",
+            "bW8uQ2hhcmFjdGVyQ2xhc3MiRAoNQ2hhcmFjdGVyTGlzdBIzCgpjaGFyYWN0",
+            "ZXJzGAEgAygLMh8ucG9ydGZvbGlvLm1tby5DaGFyYWN0ZXJTdW1tYXJ5IlcK",
+            "D0NyZWF0ZUNoYXJhY3RlchIMCgRuYW1lGAEgASgJEjYKD2NoYXJhY3Rlcl9j",
+            "bGFzcxgCIAEoDjIdLnBvcnRmb2xpby5tbW8uQ2hhcmFjdGVyQ2xhc3MiUQoV",
+            "Q3JlYXRlQ2hhcmFjdGVyUmVzdWx0EjgKBnJlc3VsdBgBIAEoDjIoLnBvcnRm",
+            "b2xpby5tbW8uQ3JlYXRlQ2hhcmFjdGVyUmVzdWx0Q29kZSIiCgpFbnRlcldv",
+            "cmxkEhQKDGNoYXJhY3Rlcl9pZBgBIAEoBCJmChBFbnRlcldvcmxkUmVzdWx0",
+            "EjMKBnJlc3VsdBgBIAEoDjIjLnBvcnRmb2xpby5tbW8uRW50ZXJXb3JsZFJl",
+            "c3VsdENvZGUSDwoHc2VsZl9pZBgCIAEoDRIMCgR0aWNrGAMgASgNIgwKCkxl",
+            "YXZlV29ybGQiFAoEUG9uZxIMCgR0aWNrGAEgASgNIjYKBE1vdmUSCQoBeBgB",
+            "IAEoERIJCgF6GAIgASgREgsKA3lhdxgDIAEoDRILCgNhY2sYBCABKA0iMgoN",
+            "UG9zaXRpb25SZXNldBIJCgF4GAEgASgREgkKAXoYAiABKBESCwoDYWNrGAMg",
+            "ASgNIj0KDUVudGl0aWVzRW50ZXISLAoIZW50aXRpZXMYASADKAsyGi5wb3J0",
+            "Zm9saW8ubW1vLkVudGl0eUVudGVyIoIBCgtFbnRpdHlFbnRlchIKCgJpZBgB",
+            "IAEoDRIJCgF4GAIgASgREgkKAXoYAyABKBESCwoDeWF3GAQgASgNEgwKBG5h",
+            "bWUYBSABKAkSNgoPY2hhcmFjdGVyX2NsYXNzGAYgASgOMh0ucG9ydGZvbGlv",
+            "Lm1tby5DaGFyYWN0ZXJDbGFzcyIcCg1FbnRpdGllc0xlYXZlEgsKA2lkcxgB",
+            "IAMoDSJICgtFbnRpdHlNb3ZlcxIMCgR0aWNrGAEgASgNEisKCGVudGl0aWVz",
+            "GAIgAygLMhkucG9ydGZvbGlvLm1tby5FbnRpdHlNb3ZlIjsKCkVudGl0eU1v",
+            "dmUSCgoCaWQYASABKA0SCQoBeBgCIAEoERIJCgF6GAMgASgREgsKA3lhdxgE",
+            "IAEoDSpRCg9Qcm90b2NvbFZlcnNpb24SIAocUFJPVE9DT0xfVkVSU0lPTl9V",
+            "TlNQRUNJRklFRBAAEhwKGFBST1RPQ09MX1ZFUlNJT05fQ1VSUkVOVBACKq4C",
+            "CghDb25zdGFudBIYChRDT05TVEFOVF9VTlNQRUNJRklFRBAAEhwKGENPTlNU",
+            "QU5UX1VOSVRTX1BFUl9NRVRFUhAgEiQKH0NPTlNUQU5UX01BUF9IQUxGX0VY",
+            "VEVOVF9NRVRFUlMQgAgSFwoSQ09OU1RBTlRfWUFXX1NURVBTEIACEh0KGUNP",
+            "TlNUQU5UX1RJQ0tTX1BFUl9TRUNPTkQQFBIoCiRDT05TVEFOVF9NQVhfU1BF",
+            "RURfTUVURVJTX1BFUl9TRUNPTkQQBhIiCh5DT05TVEFOVF9QSU5HX0lOVEVS",
+            "VkFMX1NFQ09ORFMQBRIhCh1DT05TVEFOVF9JRExFX1RJTUVPVVRfU0VDT05E",
+            "UxAPEhsKF0NPTlNUQU5UX01BWF9DSEFSQUNURVJTEAQqngEKD0xvZ2luUmVz",
+            "dWx0Q29kZRIYChRMT0dJTl9SRVNVTFRfQ09ERV9PSxAAEiYKIkxPR0lOX1JF",
+            "U1VMVF9DT0RFX0lOVkFMSURfTE9HSU5fSUQQARImCiJMT0dJTl9SRVNVTFRf",
+            "Q09ERV9WRVJTSU9OX01JU01BVENIEAISIQodTE9HSU5fUkVTVUxUX0NPREVf",
+            "U0VSVkVSX0ZVTEwQAyqrAQoKS2lja1JlYXNvbhIbChdLSUNLX1JFQVNPTl9V",
+            "TlNQRUNJRklFRBAAEh8KG0tJQ0tfUkVBU09OX0RVUExJQ0FURV9MT0dJThAB",
+            "Eh8KG0tJQ0tfUkVBU09OX1NFUlZFUl9TSFVURE9XThACEiAKHEtJQ0tfUkVB",
+            "U09OX01BTEZPUk1FRF9QQUNLRVQQAxIcChhLSUNLX1JFQVNPTl9JRExFX1RJ",
+            "TUVPVVQQBCpnCg5DaGFyYWN0ZXJDbGFzcxIfChtDSEFSQUNURVJfQ0xBU1Nf",
+            "VU5TUEVDSUZJRUQQABIaChZDSEFSQUNURVJfQ0xBU1NfS05JR0hUEAESGAoU",
+            "Q0hBUkFDVEVSX0NMQVNTX01BR0UQAir3AQoZQ3JlYXRlQ2hhcmFjdGVyUmVz",
+            "dWx0Q29kZRIjCh9DUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX09LEAAS",
+            "LQopQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9JTlZBTElEX05BTUUQ",
+            "ARIrCidDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX05BTUVfVEFLRU4Q",
+            "AhIpCiVDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX1RPT19NQU5ZEAMS",
+            "LgoqQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9JTlZBTElEX0NMQVNT",
+            "EAQqZQoURW50ZXJXb3JsZFJlc3VsdENvZGUSHgoaRU5URVJfV09STERfUkVT",
+            "VUxUX0NPREVfT0sQABItCilFTlRFUl9XT1JMRF9SRVNVTFRfQ09ERV9OT19T",
+            "VUNIX0NIQVJBQ1RFUhABQhiqAhVQb3J0Zm9saW9NbW8uQ29udHJhY3RiBnBy",
+            "b3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Contract.ProtocolVersion), typeof(global::PortfolioMmo.Contract.Constant), typeof(global::PortfolioMmo.Contract.LoginResultCode), typeof(global::PortfolioMmo.Contract.KickReason), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Packet), global::PortfolioMmo.Contract.Packet.Parser, new[]{ "Login", "LoginResult", "Kicked", "Ping", "Pong", "Move", "PositionReset", "EntitiesEnter", "EntitiesLeave", "EntityMoves" }, new[]{ "Body" }, null, null, null),
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Contract.ProtocolVersion), typeof(global::PortfolioMmo.Contract.Constant), typeof(global::PortfolioMmo.Contract.LoginResultCode), typeof(global::PortfolioMmo.Contract.KickReason), typeof(global::PortfolioMmo.Contract.CharacterClass), typeof(global::PortfolioMmo.Contract.CreateCharacterResultCode), typeof(global::PortfolioMmo.Contract.EnterWorldResultCode), }, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Packet), global::PortfolioMmo.Contract.Packet.Parser, new[]{ "Login", "LoginResult", "Kicked", "Ping", "Pong", "CharacterList", "CreateCharacter", "CreateCharacterResult", "EnterWorld", "EnterWorldResult", "LeaveWorld", "Move", "PositionReset", "EntitiesEnter", "EntitiesLeave", "EntityMoves" }, new[]{ "Body" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Login), global::PortfolioMmo.Contract.Login.Parser, new[]{ "ProtocolVersion", "LoginId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.LoginResult), global::PortfolioMmo.Contract.LoginResult.Parser, new[]{ "Result", "SelfId", "Tick" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.LoginResult), global::PortfolioMmo.Contract.LoginResult.Parser, new[]{ "Result" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Kicked), global::PortfolioMmo.Contract.Kicked.Parser, new[]{ "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Ping), global::PortfolioMmo.Contract.Ping.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.CharacterSummary), global::PortfolioMmo.Contract.CharacterSummary.Parser, new[]{ "Id", "Name", "CharacterClass" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.CharacterList), global::PortfolioMmo.Contract.CharacterList.Parser, new[]{ "Characters" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.CreateCharacter), global::PortfolioMmo.Contract.CreateCharacter.Parser, new[]{ "Name", "CharacterClass" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.CreateCharacterResult), global::PortfolioMmo.Contract.CreateCharacterResult.Parser, new[]{ "Result" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EnterWorld), global::PortfolioMmo.Contract.EnterWorld.Parser, new[]{ "CharacterId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EnterWorldResult), global::PortfolioMmo.Contract.EnterWorldResult.Parser, new[]{ "Result", "SelfId", "Tick" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.LeaveWorld), global::PortfolioMmo.Contract.LeaveWorld.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Pong), global::PortfolioMmo.Contract.Pong.Parser, new[]{ "Tick" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Move), global::PortfolioMmo.Contract.Move.Parser, new[]{ "X", "Z", "Yaw", "Ack" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.PositionReset), global::PortfolioMmo.Contract.PositionReset.Parser, new[]{ "X", "Z", "Ack" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntitiesEnter), global::PortfolioMmo.Contract.EntitiesEnter.Parser, new[]{ "Entities" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityEnter), global::PortfolioMmo.Contract.EntityEnter.Parser, new[]{ "Id", "X", "Z", "Yaw", "Name" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityEnter), global::PortfolioMmo.Contract.EntityEnter.Parser, new[]{ "Id", "X", "Z", "Yaw", "Name", "CharacterClass" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntitiesLeave), global::PortfolioMmo.Contract.EntitiesLeave.Parser, new[]{ "Ids" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityMoves), global::PortfolioMmo.Contract.EntityMoves.Parser, new[]{ "Tick", "Entities" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityMove), global::PortfolioMmo.Contract.EntityMove.Parser, new[]{ "Id", "X", "Z", "Yaw" }, null, null, null, null)
@@ -95,7 +133,10 @@ namespace PortfolioMmo.Contract {
   /// </summary>
   public enum ProtocolVersion {
     [pbr::OriginalName("PROTOCOL_VERSION_UNSPECIFIED")] Unspecified = 0,
-    [pbr::OriginalName("PROTOCOL_VERSION_CURRENT")] Current = 1,
+    /// <summary>
+    /// 2: 로그인과 월드에 들어가기를 나눴다(계정 하나에 캐릭터 여럿, 2026-11-11).
+    /// </summary>
+    [pbr::OriginalName("PROTOCOL_VERSION_CURRENT")] Current = 2,
   }
 
   /// <summary>
@@ -131,6 +172,10 @@ namespace PortfolioMmo.Contract {
     /// 이 시간(초) 동안 아무것도 받지 못하면 서버도 클라이언트도 연결이 죽었다고 보고 끊는다.
     /// </summary>
     [pbr::OriginalName("CONSTANT_IDLE_TIMEOUT_SECONDS")] IdleTimeoutSeconds = 15,
+    /// <summary>
+    /// 계정 하나가 만들 수 있는 캐릭터 수.
+    /// </summary>
+    [pbr::OriginalName("CONSTANT_MAX_CHARACTERS")] MaxCharacters = 4,
   }
 
   /// <summary>
@@ -138,7 +183,7 @@ namespace PortfolioMmo.Contract {
   /// </summary>
   public enum LoginResultCode {
     /// <summary>
-    /// 로그인했다. 이어서 내 개체와 주변 개체가 EntitiesEnter로 온다.
+    /// 로그인했다. 이어서 CharacterList가 온다.
     /// </summary>
     [pbr::OriginalName("LOGIN_RESULT_CODE_OK")] Ok = 0,
     /// <summary>
@@ -176,6 +221,55 @@ namespace PortfolioMmo.Contract {
     /// CONSTANT_IDLE_TIMEOUT_SECONDS 동안 아무것도 보내지 않았다.
     /// </summary>
     [pbr::OriginalName("KICK_REASON_IDLE_TIMEOUT")] IdleTimeout = 4,
+  }
+
+  /// <summary>
+  /// 직업. 만들 때 정하고 바꿀 수 없다.
+  /// </summary>
+  public enum CharacterClass {
+    [pbr::OriginalName("CHARACTER_CLASS_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 근접. 체력과 방어력이 높다.
+    /// </summary>
+    [pbr::OriginalName("CHARACTER_CLASS_KNIGHT")] Knight = 1,
+    /// <summary>
+    /// 원거리 마법. 마나와 공격력이 높고 체력이 낮다.
+    /// </summary>
+    [pbr::OriginalName("CHARACTER_CLASS_MAGE")] Mage = 2,
+  }
+
+  /// <summary>
+  /// 캐릭터 만들기의 결과.
+  /// </summary>
+  public enum CreateCharacterResultCode {
+    [pbr::OriginalName("CREATE_CHARACTER_RESULT_CODE_OK")] Ok = 0,
+    /// <summary>
+    /// 이름의 형식이 맞지 않는다.
+    /// </summary>
+    [pbr::OriginalName("CREATE_CHARACTER_RESULT_CODE_INVALID_NAME")] InvalidName = 1,
+    /// <summary>
+    /// 같은 이름(영문은 대소문자를 가리지 않음)의 캐릭터가 이미 있다.
+    /// </summary>
+    [pbr::OriginalName("CREATE_CHARACTER_RESULT_CODE_NAME_TAKEN")] NameTaken = 2,
+    /// <summary>
+    /// 이 계정의 캐릭터가 CONSTANT_MAX_CHARACTERS개다.
+    /// </summary>
+    [pbr::OriginalName("CREATE_CHARACTER_RESULT_CODE_TOO_MANY")] TooMany = 3,
+    /// <summary>
+    /// 없는 직업이다.
+    /// </summary>
+    [pbr::OriginalName("CREATE_CHARACTER_RESULT_CODE_INVALID_CLASS")] InvalidClass = 4,
+  }
+
+  /// <summary>
+  /// 월드에 들어가기의 결과.
+  /// </summary>
+  public enum EnterWorldResultCode {
+    [pbr::OriginalName("ENTER_WORLD_RESULT_CODE_OK")] Ok = 0,
+    /// <summary>
+    /// 이 계정에 그 번호의 캐릭터가 없다.
+    /// </summary>
+    [pbr::OriginalName("ENTER_WORLD_RESULT_CODE_NO_SUCH_CHARACTER")] NoSuchCharacter = 1,
   }
 
   #endregion
@@ -234,6 +328,24 @@ namespace PortfolioMmo.Contract {
           break;
         case BodyOneofCase.Pong:
           Pong = other.Pong.Clone();
+          break;
+        case BodyOneofCase.CharacterList:
+          CharacterList = other.CharacterList.Clone();
+          break;
+        case BodyOneofCase.CreateCharacter:
+          CreateCharacter = other.CreateCharacter.Clone();
+          break;
+        case BodyOneofCase.CreateCharacterResult:
+          CreateCharacterResult = other.CreateCharacterResult.Clone();
+          break;
+        case BodyOneofCase.EnterWorld:
+          EnterWorld = other.EnterWorld.Clone();
+          break;
+        case BodyOneofCase.EnterWorldResult:
+          EnterWorldResult = other.EnterWorldResult.Clone();
+          break;
+        case BodyOneofCase.LeaveWorld:
+          LeaveWorld = other.LeaveWorld.Clone();
           break;
         case BodyOneofCase.Move:
           Move = other.Move.Clone();
@@ -324,6 +436,78 @@ namespace PortfolioMmo.Contract {
       }
     }
 
+    /// <summary>Field number for the "character_list" field.</summary>
+    public const int CharacterListFieldNumber = 6;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.CharacterList CharacterList {
+      get { return bodyCase_ == BodyOneofCase.CharacterList ? (global::PortfolioMmo.Contract.CharacterList) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.CharacterList;
+      }
+    }
+
+    /// <summary>Field number for the "create_character" field.</summary>
+    public const int CreateCharacterFieldNumber = 7;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.CreateCharacter CreateCharacter {
+      get { return bodyCase_ == BodyOneofCase.CreateCharacter ? (global::PortfolioMmo.Contract.CreateCharacter) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.CreateCharacter;
+      }
+    }
+
+    /// <summary>Field number for the "create_character_result" field.</summary>
+    public const int CreateCharacterResultFieldNumber = 8;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.CreateCharacterResult CreateCharacterResult {
+      get { return bodyCase_ == BodyOneofCase.CreateCharacterResult ? (global::PortfolioMmo.Contract.CreateCharacterResult) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.CreateCharacterResult;
+      }
+    }
+
+    /// <summary>Field number for the "enter_world" field.</summary>
+    public const int EnterWorldFieldNumber = 9;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.EnterWorld EnterWorld {
+      get { return bodyCase_ == BodyOneofCase.EnterWorld ? (global::PortfolioMmo.Contract.EnterWorld) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.EnterWorld;
+      }
+    }
+
+    /// <summary>Field number for the "enter_world_result" field.</summary>
+    public const int EnterWorldResultFieldNumber = 10;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.EnterWorldResult EnterWorldResult {
+      get { return bodyCase_ == BodyOneofCase.EnterWorldResult ? (global::PortfolioMmo.Contract.EnterWorldResult) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.EnterWorldResult;
+      }
+    }
+
+    /// <summary>Field number for the "leave_world" field.</summary>
+    public const int LeaveWorldFieldNumber = 11;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.LeaveWorld LeaveWorld {
+      get { return bodyCase_ == BodyOneofCase.LeaveWorld ? (global::PortfolioMmo.Contract.LeaveWorld) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.LeaveWorld;
+      }
+    }
+
     /// <summary>Field number for the "move" field.</summary>
     public const int MoveFieldNumber = 100;
     /// <summary>
@@ -396,6 +580,12 @@ namespace PortfolioMmo.Contract {
       Kicked = 3,
       Ping = 4,
       Pong = 5,
+      CharacterList = 6,
+      CreateCharacter = 7,
+      CreateCharacterResult = 8,
+      EnterWorld = 9,
+      EnterWorldResult = 10,
+      LeaveWorld = 11,
       Move = 100,
       PositionReset = 101,
       EntitiesEnter = 102,
@@ -436,6 +626,12 @@ namespace PortfolioMmo.Contract {
       if (!object.Equals(Kicked, other.Kicked)) return false;
       if (!object.Equals(Ping, other.Ping)) return false;
       if (!object.Equals(Pong, other.Pong)) return false;
+      if (!object.Equals(CharacterList, other.CharacterList)) return false;
+      if (!object.Equals(CreateCharacter, other.CreateCharacter)) return false;
+      if (!object.Equals(CreateCharacterResult, other.CreateCharacterResult)) return false;
+      if (!object.Equals(EnterWorld, other.EnterWorld)) return false;
+      if (!object.Equals(EnterWorldResult, other.EnterWorldResult)) return false;
+      if (!object.Equals(LeaveWorld, other.LeaveWorld)) return false;
       if (!object.Equals(Move, other.Move)) return false;
       if (!object.Equals(PositionReset, other.PositionReset)) return false;
       if (!object.Equals(EntitiesEnter, other.EntitiesEnter)) return false;
@@ -454,6 +650,12 @@ namespace PortfolioMmo.Contract {
       if (bodyCase_ == BodyOneofCase.Kicked) hash ^= Kicked.GetHashCode();
       if (bodyCase_ == BodyOneofCase.Ping) hash ^= Ping.GetHashCode();
       if (bodyCase_ == BodyOneofCase.Pong) hash ^= Pong.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.CharacterList) hash ^= CharacterList.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.CreateCharacter) hash ^= CreateCharacter.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.CreateCharacterResult) hash ^= CreateCharacterResult.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.EnterWorld) hash ^= EnterWorld.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.EnterWorldResult) hash ^= EnterWorldResult.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.LeaveWorld) hash ^= LeaveWorld.GetHashCode();
       if (bodyCase_ == BodyOneofCase.Move) hash ^= Move.GetHashCode();
       if (bodyCase_ == BodyOneofCase.PositionReset) hash ^= PositionReset.GetHashCode();
       if (bodyCase_ == BodyOneofCase.EntitiesEnter) hash ^= EntitiesEnter.GetHashCode();
@@ -497,6 +699,30 @@ namespace PortfolioMmo.Contract {
       if (bodyCase_ == BodyOneofCase.Pong) {
         output.WriteRawTag(42);
         output.WriteMessage(Pong);
+      }
+      if (bodyCase_ == BodyOneofCase.CharacterList) {
+        output.WriteRawTag(50);
+        output.WriteMessage(CharacterList);
+      }
+      if (bodyCase_ == BodyOneofCase.CreateCharacter) {
+        output.WriteRawTag(58);
+        output.WriteMessage(CreateCharacter);
+      }
+      if (bodyCase_ == BodyOneofCase.CreateCharacterResult) {
+        output.WriteRawTag(66);
+        output.WriteMessage(CreateCharacterResult);
+      }
+      if (bodyCase_ == BodyOneofCase.EnterWorld) {
+        output.WriteRawTag(74);
+        output.WriteMessage(EnterWorld);
+      }
+      if (bodyCase_ == BodyOneofCase.EnterWorldResult) {
+        output.WriteRawTag(82);
+        output.WriteMessage(EnterWorldResult);
+      }
+      if (bodyCase_ == BodyOneofCase.LeaveWorld) {
+        output.WriteRawTag(90);
+        output.WriteMessage(LeaveWorld);
       }
       if (bodyCase_ == BodyOneofCase.Move) {
         output.WriteRawTag(162, 6);
@@ -548,6 +774,30 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(42);
         output.WriteMessage(Pong);
       }
+      if (bodyCase_ == BodyOneofCase.CharacterList) {
+        output.WriteRawTag(50);
+        output.WriteMessage(CharacterList);
+      }
+      if (bodyCase_ == BodyOneofCase.CreateCharacter) {
+        output.WriteRawTag(58);
+        output.WriteMessage(CreateCharacter);
+      }
+      if (bodyCase_ == BodyOneofCase.CreateCharacterResult) {
+        output.WriteRawTag(66);
+        output.WriteMessage(CreateCharacterResult);
+      }
+      if (bodyCase_ == BodyOneofCase.EnterWorld) {
+        output.WriteRawTag(74);
+        output.WriteMessage(EnterWorld);
+      }
+      if (bodyCase_ == BodyOneofCase.EnterWorldResult) {
+        output.WriteRawTag(82);
+        output.WriteMessage(EnterWorldResult);
+      }
+      if (bodyCase_ == BodyOneofCase.LeaveWorld) {
+        output.WriteRawTag(90);
+        output.WriteMessage(LeaveWorld);
+      }
       if (bodyCase_ == BodyOneofCase.Move) {
         output.WriteRawTag(162, 6);
         output.WriteMessage(Move);
@@ -592,6 +842,24 @@ namespace PortfolioMmo.Contract {
       }
       if (bodyCase_ == BodyOneofCase.Pong) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Pong);
+      }
+      if (bodyCase_ == BodyOneofCase.CharacterList) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CharacterList);
+      }
+      if (bodyCase_ == BodyOneofCase.CreateCharacter) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateCharacter);
+      }
+      if (bodyCase_ == BodyOneofCase.CreateCharacterResult) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateCharacterResult);
+      }
+      if (bodyCase_ == BodyOneofCase.EnterWorld) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(EnterWorld);
+      }
+      if (bodyCase_ == BodyOneofCase.EnterWorldResult) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(EnterWorldResult);
+      }
+      if (bodyCase_ == BodyOneofCase.LeaveWorld) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LeaveWorld);
       }
       if (bodyCase_ == BodyOneofCase.Move) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(Move);
@@ -650,6 +918,42 @@ namespace PortfolioMmo.Contract {
             Pong = new global::PortfolioMmo.Contract.Pong();
           }
           Pong.MergeFrom(other.Pong);
+          break;
+        case BodyOneofCase.CharacterList:
+          if (CharacterList == null) {
+            CharacterList = new global::PortfolioMmo.Contract.CharacterList();
+          }
+          CharacterList.MergeFrom(other.CharacterList);
+          break;
+        case BodyOneofCase.CreateCharacter:
+          if (CreateCharacter == null) {
+            CreateCharacter = new global::PortfolioMmo.Contract.CreateCharacter();
+          }
+          CreateCharacter.MergeFrom(other.CreateCharacter);
+          break;
+        case BodyOneofCase.CreateCharacterResult:
+          if (CreateCharacterResult == null) {
+            CreateCharacterResult = new global::PortfolioMmo.Contract.CreateCharacterResult();
+          }
+          CreateCharacterResult.MergeFrom(other.CreateCharacterResult);
+          break;
+        case BodyOneofCase.EnterWorld:
+          if (EnterWorld == null) {
+            EnterWorld = new global::PortfolioMmo.Contract.EnterWorld();
+          }
+          EnterWorld.MergeFrom(other.EnterWorld);
+          break;
+        case BodyOneofCase.EnterWorldResult:
+          if (EnterWorldResult == null) {
+            EnterWorldResult = new global::PortfolioMmo.Contract.EnterWorldResult();
+          }
+          EnterWorldResult.MergeFrom(other.EnterWorldResult);
+          break;
+        case BodyOneofCase.LeaveWorld:
+          if (LeaveWorld == null) {
+            LeaveWorld = new global::PortfolioMmo.Contract.LeaveWorld();
+          }
+          LeaveWorld.MergeFrom(other.LeaveWorld);
           break;
         case BodyOneofCase.Move:
           if (Move == null) {
@@ -745,6 +1049,60 @@ namespace PortfolioMmo.Contract {
             }
             input.ReadMessage(subBuilder);
             Pong = subBuilder;
+            break;
+          }
+          case 50: {
+            global::PortfolioMmo.Contract.CharacterList subBuilder = new global::PortfolioMmo.Contract.CharacterList();
+            if (bodyCase_ == BodyOneofCase.CharacterList) {
+              subBuilder.MergeFrom(CharacterList);
+            }
+            input.ReadMessage(subBuilder);
+            CharacterList = subBuilder;
+            break;
+          }
+          case 58: {
+            global::PortfolioMmo.Contract.CreateCharacter subBuilder = new global::PortfolioMmo.Contract.CreateCharacter();
+            if (bodyCase_ == BodyOneofCase.CreateCharacter) {
+              subBuilder.MergeFrom(CreateCharacter);
+            }
+            input.ReadMessage(subBuilder);
+            CreateCharacter = subBuilder;
+            break;
+          }
+          case 66: {
+            global::PortfolioMmo.Contract.CreateCharacterResult subBuilder = new global::PortfolioMmo.Contract.CreateCharacterResult();
+            if (bodyCase_ == BodyOneofCase.CreateCharacterResult) {
+              subBuilder.MergeFrom(CreateCharacterResult);
+            }
+            input.ReadMessage(subBuilder);
+            CreateCharacterResult = subBuilder;
+            break;
+          }
+          case 74: {
+            global::PortfolioMmo.Contract.EnterWorld subBuilder = new global::PortfolioMmo.Contract.EnterWorld();
+            if (bodyCase_ == BodyOneofCase.EnterWorld) {
+              subBuilder.MergeFrom(EnterWorld);
+            }
+            input.ReadMessage(subBuilder);
+            EnterWorld = subBuilder;
+            break;
+          }
+          case 82: {
+            global::PortfolioMmo.Contract.EnterWorldResult subBuilder = new global::PortfolioMmo.Contract.EnterWorldResult();
+            if (bodyCase_ == BodyOneofCase.EnterWorldResult) {
+              subBuilder.MergeFrom(EnterWorldResult);
+            }
+            input.ReadMessage(subBuilder);
+            EnterWorldResult = subBuilder;
+            break;
+          }
+          case 90: {
+            global::PortfolioMmo.Contract.LeaveWorld subBuilder = new global::PortfolioMmo.Contract.LeaveWorld();
+            if (bodyCase_ == BodyOneofCase.LeaveWorld) {
+              subBuilder.MergeFrom(LeaveWorld);
+            }
+            input.ReadMessage(subBuilder);
+            LeaveWorld = subBuilder;
             break;
           }
           case 802: {
@@ -854,6 +1212,60 @@ namespace PortfolioMmo.Contract {
             }
             input.ReadMessage(subBuilder);
             Pong = subBuilder;
+            break;
+          }
+          case 50: {
+            global::PortfolioMmo.Contract.CharacterList subBuilder = new global::PortfolioMmo.Contract.CharacterList();
+            if (bodyCase_ == BodyOneofCase.CharacterList) {
+              subBuilder.MergeFrom(CharacterList);
+            }
+            input.ReadMessage(subBuilder);
+            CharacterList = subBuilder;
+            break;
+          }
+          case 58: {
+            global::PortfolioMmo.Contract.CreateCharacter subBuilder = new global::PortfolioMmo.Contract.CreateCharacter();
+            if (bodyCase_ == BodyOneofCase.CreateCharacter) {
+              subBuilder.MergeFrom(CreateCharacter);
+            }
+            input.ReadMessage(subBuilder);
+            CreateCharacter = subBuilder;
+            break;
+          }
+          case 66: {
+            global::PortfolioMmo.Contract.CreateCharacterResult subBuilder = new global::PortfolioMmo.Contract.CreateCharacterResult();
+            if (bodyCase_ == BodyOneofCase.CreateCharacterResult) {
+              subBuilder.MergeFrom(CreateCharacterResult);
+            }
+            input.ReadMessage(subBuilder);
+            CreateCharacterResult = subBuilder;
+            break;
+          }
+          case 74: {
+            global::PortfolioMmo.Contract.EnterWorld subBuilder = new global::PortfolioMmo.Contract.EnterWorld();
+            if (bodyCase_ == BodyOneofCase.EnterWorld) {
+              subBuilder.MergeFrom(EnterWorld);
+            }
+            input.ReadMessage(subBuilder);
+            EnterWorld = subBuilder;
+            break;
+          }
+          case 82: {
+            global::PortfolioMmo.Contract.EnterWorldResult subBuilder = new global::PortfolioMmo.Contract.EnterWorldResult();
+            if (bodyCase_ == BodyOneofCase.EnterWorldResult) {
+              subBuilder.MergeFrom(EnterWorldResult);
+            }
+            input.ReadMessage(subBuilder);
+            EnterWorldResult = subBuilder;
+            break;
+          }
+          case 90: {
+            global::PortfolioMmo.Contract.LeaveWorld subBuilder = new global::PortfolioMmo.Contract.LeaveWorld();
+            if (bodyCase_ == BodyOneofCase.LeaveWorld) {
+              subBuilder.MergeFrom(LeaveWorld);
+            }
+            input.ReadMessage(subBuilder);
+            LeaveWorld = subBuilder;
             break;
           }
           case 802: {
@@ -976,7 +1388,7 @@ namespace PortfolioMmo.Contract {
     public const int LoginIdFieldNumber = 2;
     private string loginId_ = "";
     /// <summary>
-    /// 로그인 ID이자 머리 위에 보일 이름. 영문 소문자, 숫자, 밑줄 4–16자이고 형식은 서버가 검사한다.
+    /// 로그인 ID(계정). 영문 소문자, 숫자, 밑줄 4–16자이고 형식은 서버가 검사한다. 머리 위에는 캐릭터 이름이 보인다.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1153,7 +1565,7 @@ namespace PortfolioMmo.Contract {
   }
 
   /// <summary>
-  /// 서버 → 클라이언트. Login의 답.
+  /// 서버 → 클라이언트. Login의 답. 성공하면 이어서 CharacterList가 온다.
   /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class LoginResult : pb::IMessage<LoginResult>
@@ -1191,8 +1603,6 @@ namespace PortfolioMmo.Contract {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public LoginResult(LoginResult other) : this() {
       result_ = other.result_;
-      selfId_ = other.selfId_;
-      tick_ = other.tick_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1214,36 +1624,6 @@ namespace PortfolioMmo.Contract {
       }
     }
 
-    /// <summary>Field number for the "self_id" field.</summary>
-    public const int SelfIdFieldNumber = 2;
-    private uint selfId_;
-    /// <summary>
-    /// 내 개체 번호. 실패면 0.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint SelfId {
-      get { return selfId_; }
-      set {
-        selfId_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "tick" field.</summary>
-    public const int TickFieldNumber = 3;
-    private uint tick_;
-    /// <summary>
-    /// 서버의 지금 틱 번호(EntityMoves.tick과 같은 수). 클라이언트가 서버 시계를 맞춘다.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint Tick {
-      get { return tick_; }
-      set {
-        tick_ = value;
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1260,8 +1640,6 @@ namespace PortfolioMmo.Contract {
         return true;
       }
       if (Result != other.Result) return false;
-      if (SelfId != other.SelfId) return false;
-      if (Tick != other.Tick) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1270,8 +1648,6 @@ namespace PortfolioMmo.Contract {
     public override int GetHashCode() {
       int hash = 1;
       if (Result != global::PortfolioMmo.Contract.LoginResultCode.Ok) hash ^= Result.GetHashCode();
-      if (SelfId != 0) hash ^= SelfId.GetHashCode();
-      if (Tick != 0) hash ^= Tick.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1294,14 +1670,6 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(8);
         output.WriteEnum((int) Result);
       }
-      if (SelfId != 0) {
-        output.WriteRawTag(16);
-        output.WriteUInt32(SelfId);
-      }
-      if (Tick != 0) {
-        output.WriteRawTag(24);
-        output.WriteUInt32(Tick);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1316,14 +1684,6 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(8);
         output.WriteEnum((int) Result);
       }
-      if (SelfId != 0) {
-        output.WriteRawTag(16);
-        output.WriteUInt32(SelfId);
-      }
-      if (Tick != 0) {
-        output.WriteRawTag(24);
-        output.WriteUInt32(Tick);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1336,12 +1696,6 @@ namespace PortfolioMmo.Contract {
       int size = 0;
       if (Result != global::PortfolioMmo.Contract.LoginResultCode.Ok) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Result);
-      }
-      if (SelfId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SelfId);
-      }
-      if (Tick != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Tick);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1357,12 +1711,6 @@ namespace PortfolioMmo.Contract {
       }
       if (other.Result != global::PortfolioMmo.Contract.LoginResultCode.Ok) {
         Result = other.Result;
-      }
-      if (other.SelfId != 0) {
-        SelfId = other.SelfId;
-      }
-      if (other.Tick != 0) {
-        Tick = other.Tick;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1387,14 +1735,6 @@ namespace PortfolioMmo.Contract {
             Result = (global::PortfolioMmo.Contract.LoginResultCode) input.ReadEnum();
             break;
           }
-          case 16: {
-            SelfId = input.ReadUInt32();
-            break;
-          }
-          case 24: {
-            Tick = input.ReadUInt32();
-            break;
-          }
         }
       }
     #endif
@@ -1416,14 +1756,6 @@ namespace PortfolioMmo.Contract {
             break;
           case 8: {
             Result = (global::PortfolioMmo.Contract.LoginResultCode) input.ReadEnum();
-            break;
-          }
-          case 16: {
-            SelfId = input.ReadUInt32();
-            break;
-          }
-          case 24: {
-            Tick = input.ReadUInt32();
             break;
           }
         }
@@ -1799,6 +2131,1564 @@ namespace PortfolioMmo.Contract {
   }
 
   /// <summary>
+  /// 캐릭터 선택 화면의 캐릭터 하나.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class CharacterSummary : pb::IMessage<CharacterSummary>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CharacterSummary> _parser = new pb::MessageParser<CharacterSummary>(() => new CharacterSummary());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CharacterSummary> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CharacterSummary() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CharacterSummary(CharacterSummary other) : this() {
+      id_ = other.id_;
+      name_ = other.name_;
+      characterClass_ = other.characterClass_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CharacterSummary Clone() {
+      return new CharacterSummary(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private ulong id_;
+    /// <summary>
+    /// 캐릭터 번호. 서버가 정하고 바뀌지 않는다. 개체 번호와는 다르다.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 2;
+    private string name_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "character_class" field.</summary>
+    public const int CharacterClassFieldNumber = 3;
+    private global::PortfolioMmo.Contract.CharacterClass characterClass_ = global::PortfolioMmo.Contract.CharacterClass.Unspecified;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.CharacterClass CharacterClass {
+      get { return characterClass_; }
+      set {
+        characterClass_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CharacterSummary);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CharacterSummary other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if (Name != other.Name) return false;
+      if (CharacterClass != other.CharacterClass) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id != 0UL) hash ^= Id.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) hash ^= CharacterClass.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Id != 0UL) {
+        output.WriteRawTag(8);
+        output.WriteUInt64(Id);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Name);
+      }
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) CharacterClass);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Id != 0UL) {
+        output.WriteRawTag(8);
+        output.WriteUInt64(Id);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Name);
+      }
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) CharacterClass);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Id);
+      }
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CharacterClass);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CharacterSummary other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id != 0UL) {
+        Id = other.Id;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        CharacterClass = other.CharacterClass;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Id = input.ReadUInt64();
+            break;
+          }
+          case 18: {
+            Name = input.ReadString();
+            break;
+          }
+          case 24: {
+            CharacterClass = (global::PortfolioMmo.Contract.CharacterClass) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Id = input.ReadUInt64();
+            break;
+          }
+          case 18: {
+            Name = input.ReadString();
+            break;
+          }
+          case 24: {
+            CharacterClass = (global::PortfolioMmo.Contract.CharacterClass) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 서버 → 클라이언트. 이 계정의 캐릭터들(만든 차례). 로그인 뒤, 캐릭터를 만든 뒤, LeaveWorld 뒤에 온다.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class CharacterList : pb::IMessage<CharacterList>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CharacterList> _parser = new pb::MessageParser<CharacterList>(() => new CharacterList());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CharacterList> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CharacterList() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CharacterList(CharacterList other) : this() {
+      characters_ = other.characters_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CharacterList Clone() {
+      return new CharacterList(this);
+    }
+
+    /// <summary>Field number for the "characters" field.</summary>
+    public const int CharactersFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::PortfolioMmo.Contract.CharacterSummary> _repeated_characters_codec
+        = pb::FieldCodec.ForMessage(10, global::PortfolioMmo.Contract.CharacterSummary.Parser);
+    private readonly pbc::RepeatedField<global::PortfolioMmo.Contract.CharacterSummary> characters_ = new pbc::RepeatedField<global::PortfolioMmo.Contract.CharacterSummary>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::PortfolioMmo.Contract.CharacterSummary> Characters {
+      get { return characters_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CharacterList);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CharacterList other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!characters_.Equals(other.characters_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= characters_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      characters_.WriteTo(output, _repeated_characters_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      characters_.WriteTo(ref output, _repeated_characters_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += characters_.CalculateSize(_repeated_characters_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CharacterList other) {
+      if (other == null) {
+        return;
+      }
+      characters_.Add(other.characters_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            characters_.AddEntriesFrom(input, _repeated_characters_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            characters_.AddEntriesFrom(ref input, _repeated_characters_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 클라이언트 → 서버. 캐릭터를 만든다. 캐릭터 선택 중에만 보낼 수 있다. 서버는 CreateCharacterResult로 답하고, 성공하면 CharacterList도 보낸다.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class CreateCharacter : pb::IMessage<CreateCharacter>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CreateCharacter> _parser = new pb::MessageParser<CreateCharacter>(() => new CreateCharacter());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CreateCharacter> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateCharacter() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateCharacter(CreateCharacter other) : this() {
+      name_ = other.name_;
+      characterClass_ = other.characterClass_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateCharacter Clone() {
+      return new CreateCharacter(this);
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 1;
+    private string name_ = "";
+    /// <summary>
+    /// 한글·영문·숫자 2–12자. 서버 전체에서 하나이고 영문은 대소문자를 가리지 않는다. 형식은 서버가 검사한다.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "character_class" field.</summary>
+    public const int CharacterClassFieldNumber = 2;
+    private global::PortfolioMmo.Contract.CharacterClass characterClass_ = global::PortfolioMmo.Contract.CharacterClass.Unspecified;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.CharacterClass CharacterClass {
+      get { return characterClass_; }
+      set {
+        characterClass_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CreateCharacter);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CreateCharacter other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Name != other.Name) return false;
+      if (CharacterClass != other.CharacterClass) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) hash ^= CharacterClass.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) CharacterClass);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) CharacterClass);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CharacterClass);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CreateCharacter other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        CharacterClass = other.CharacterClass;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 16: {
+            CharacterClass = (global::PortfolioMmo.Contract.CharacterClass) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 16: {
+            CharacterClass = (global::PortfolioMmo.Contract.CharacterClass) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 서버 → 클라이언트. CreateCharacter의 답.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class CreateCharacterResult : pb::IMessage<CreateCharacterResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CreateCharacterResult> _parser = new pb::MessageParser<CreateCharacterResult>(() => new CreateCharacterResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CreateCharacterResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[8]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateCharacterResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateCharacterResult(CreateCharacterResult other) : this() {
+      result_ = other.result_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateCharacterResult Clone() {
+      return new CreateCharacterResult(this);
+    }
+
+    /// <summary>Field number for the "result" field.</summary>
+    public const int ResultFieldNumber = 1;
+    private global::PortfolioMmo.Contract.CreateCharacterResultCode result_ = global::PortfolioMmo.Contract.CreateCharacterResultCode.Ok;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.CreateCharacterResultCode Result {
+      get { return result_; }
+      set {
+        result_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CreateCharacterResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CreateCharacterResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Result != other.Result) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Result != global::PortfolioMmo.Contract.CreateCharacterResultCode.Ok) hash ^= Result.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Result != global::PortfolioMmo.Contract.CreateCharacterResultCode.Ok) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Result);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Result != global::PortfolioMmo.Contract.CreateCharacterResultCode.Ok) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Result);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Result != global::PortfolioMmo.Contract.CreateCharacterResultCode.Ok) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Result);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CreateCharacterResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Result != global::PortfolioMmo.Contract.CreateCharacterResultCode.Ok) {
+        Result = other.Result;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Result = (global::PortfolioMmo.Contract.CreateCharacterResultCode) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Result = (global::PortfolioMmo.Contract.CreateCharacterResultCode) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 클라이언트 → 서버. 이 캐릭터로 월드에 들어간다. 캐릭터 선택 중에만 보낼 수 있다. 서버는 EnterWorldResult로 답하고,
+  /// 성공하면 이어서 내 개체와 주변 개체가 EntitiesEnter로 온다.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class EnterWorld : pb::IMessage<EnterWorld>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<EnterWorld> _parser = new pb::MessageParser<EnterWorld>(() => new EnterWorld());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<EnterWorld> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public EnterWorld() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public EnterWorld(EnterWorld other) : this() {
+      characterId_ = other.characterId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public EnterWorld Clone() {
+      return new EnterWorld(this);
+    }
+
+    /// <summary>Field number for the "character_id" field.</summary>
+    public const int CharacterIdFieldNumber = 1;
+    private ulong characterId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong CharacterId {
+      get { return characterId_; }
+      set {
+        characterId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as EnterWorld);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(EnterWorld other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (CharacterId != other.CharacterId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (CharacterId != 0UL) hash ^= CharacterId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (CharacterId != 0UL) {
+        output.WriteRawTag(8);
+        output.WriteUInt64(CharacterId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (CharacterId != 0UL) {
+        output.WriteRawTag(8);
+        output.WriteUInt64(CharacterId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (CharacterId != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(CharacterId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(EnterWorld other) {
+      if (other == null) {
+        return;
+      }
+      if (other.CharacterId != 0UL) {
+        CharacterId = other.CharacterId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            CharacterId = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            CharacterId = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 서버 → 클라이언트. EnterWorld의 답.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class EnterWorldResult : pb::IMessage<EnterWorldResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<EnterWorldResult> _parser = new pb::MessageParser<EnterWorldResult>(() => new EnterWorldResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<EnterWorldResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[10]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public EnterWorldResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public EnterWorldResult(EnterWorldResult other) : this() {
+      result_ = other.result_;
+      selfId_ = other.selfId_;
+      tick_ = other.tick_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public EnterWorldResult Clone() {
+      return new EnterWorldResult(this);
+    }
+
+    /// <summary>Field number for the "result" field.</summary>
+    public const int ResultFieldNumber = 1;
+    private global::PortfolioMmo.Contract.EnterWorldResultCode result_ = global::PortfolioMmo.Contract.EnterWorldResultCode.Ok;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.EnterWorldResultCode Result {
+      get { return result_; }
+      set {
+        result_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "self_id" field.</summary>
+    public const int SelfIdFieldNumber = 2;
+    private uint selfId_;
+    /// <summary>
+    /// 내 개체 번호. 실패면 0.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint SelfId {
+      get { return selfId_; }
+      set {
+        selfId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "tick" field.</summary>
+    public const int TickFieldNumber = 3;
+    private uint tick_;
+    /// <summary>
+    /// 서버의 지금 틱 번호(EntityMoves.tick과 같은 수). 클라이언트가 서버 시계를 맞춘다.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint Tick {
+      get { return tick_; }
+      set {
+        tick_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as EnterWorldResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(EnterWorldResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Result != other.Result) return false;
+      if (SelfId != other.SelfId) return false;
+      if (Tick != other.Tick) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Result != global::PortfolioMmo.Contract.EnterWorldResultCode.Ok) hash ^= Result.GetHashCode();
+      if (SelfId != 0) hash ^= SelfId.GetHashCode();
+      if (Tick != 0) hash ^= Tick.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Result != global::PortfolioMmo.Contract.EnterWorldResultCode.Ok) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Result);
+      }
+      if (SelfId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(SelfId);
+      }
+      if (Tick != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(Tick);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Result != global::PortfolioMmo.Contract.EnterWorldResultCode.Ok) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Result);
+      }
+      if (SelfId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(SelfId);
+      }
+      if (Tick != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(Tick);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Result != global::PortfolioMmo.Contract.EnterWorldResultCode.Ok) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Result);
+      }
+      if (SelfId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SelfId);
+      }
+      if (Tick != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Tick);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(EnterWorldResult other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Result != global::PortfolioMmo.Contract.EnterWorldResultCode.Ok) {
+        Result = other.Result;
+      }
+      if (other.SelfId != 0) {
+        SelfId = other.SelfId;
+      }
+      if (other.Tick != 0) {
+        Tick = other.Tick;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Result = (global::PortfolioMmo.Contract.EnterWorldResultCode) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            SelfId = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            Tick = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Result = (global::PortfolioMmo.Contract.EnterWorldResultCode) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            SelfId = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            Tick = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 클라이언트 → 서버. 캐릭터 선택으로 돌아간다. 월드에 있을 때만 보낼 수 있다. 서버는 캐릭터를 저장하고 월드에서 뺀 뒤
+  /// CharacterList를 보낸다. 연결은 그대로다.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class LeaveWorld : pb::IMessage<LeaveWorld>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<LeaveWorld> _parser = new pb::MessageParser<LeaveWorld>(() => new LeaveWorld());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<LeaveWorld> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[11]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public LeaveWorld() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public LeaveWorld(LeaveWorld other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public LeaveWorld Clone() {
+      return new LeaveWorld(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as LeaveWorld);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(LeaveWorld other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(LeaveWorld other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// 서버 → 클라이언트. Ping의 답. 움직이는 개체가 없어도 클라이언트가 서버가 살아 있음과 서버의 틱을 안다.
   /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
@@ -1816,7 +3706,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[5]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2020,7 +3910,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[6]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2335,7 +4225,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[7]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[14]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2613,7 +4503,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[8]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[15]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2803,7 +4693,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[9]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2828,6 +4718,7 @@ namespace PortfolioMmo.Contract {
       z_ = other.z_;
       yaw_ = other.yaw_;
       name_ = other.name_;
+      characterClass_ = other.characterClass_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2892,7 +4783,7 @@ namespace PortfolioMmo.Contract {
     public const int NameFieldNumber = 5;
     private string name_ = "";
     /// <summary>
-    /// 머리 위에 보일 이름(로그인 ID).
+    /// 머리 위에 보일 이름(캐릭터 이름).
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2900,6 +4791,18 @@ namespace PortfolioMmo.Contract {
       get { return name_; }
       set {
         name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "character_class" field.</summary>
+    public const int CharacterClassFieldNumber = 6;
+    private global::PortfolioMmo.Contract.CharacterClass characterClass_ = global::PortfolioMmo.Contract.CharacterClass.Unspecified;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.CharacterClass CharacterClass {
+      get { return characterClass_; }
+      set {
+        characterClass_ = value;
       }
     }
 
@@ -2923,6 +4826,7 @@ namespace PortfolioMmo.Contract {
       if (Z != other.Z) return false;
       if (Yaw != other.Yaw) return false;
       if (Name != other.Name) return false;
+      if (CharacterClass != other.CharacterClass) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2935,6 +4839,7 @@ namespace PortfolioMmo.Contract {
       if (Z != 0) hash ^= Z.GetHashCode();
       if (Yaw != 0) hash ^= Yaw.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) hash ^= CharacterClass.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2973,6 +4878,10 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(42);
         output.WriteString(Name);
       }
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        output.WriteRawTag(48);
+        output.WriteEnum((int) CharacterClass);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -3003,6 +4912,10 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(42);
         output.WriteString(Name);
       }
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        output.WriteRawTag(48);
+        output.WriteEnum((int) CharacterClass);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3027,6 +4940,9 @@ namespace PortfolioMmo.Contract {
       }
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CharacterClass);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -3054,6 +4970,9 @@ namespace PortfolioMmo.Contract {
       }
       if (other.Name.Length != 0) {
         Name = other.Name;
+      }
+      if (other.CharacterClass != global::PortfolioMmo.Contract.CharacterClass.Unspecified) {
+        CharacterClass = other.CharacterClass;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3092,6 +5011,10 @@ namespace PortfolioMmo.Contract {
           }
           case 42: {
             Name = input.ReadString();
+            break;
+          }
+          case 48: {
+            CharacterClass = (global::PortfolioMmo.Contract.CharacterClass) input.ReadEnum();
             break;
           }
         }
@@ -3133,6 +5056,10 @@ namespace PortfolioMmo.Contract {
             Name = input.ReadString();
             break;
           }
+          case 48: {
+            CharacterClass = (global::PortfolioMmo.Contract.CharacterClass) input.ReadEnum();
+            break;
+          }
         }
       }
     }
@@ -3158,7 +5085,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[10]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3350,7 +5277,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[11]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3580,7 +5507,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[12]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[19]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

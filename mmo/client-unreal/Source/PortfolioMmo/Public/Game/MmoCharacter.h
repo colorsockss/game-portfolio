@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Protocol/MmoPackets.h"
 
 #include "MmoCharacter.generated.h"
 
@@ -26,8 +27,8 @@ public:
 	/** 서버가 정한 자리로 순간 이동한다(PositionReset). Location은 지면의 자리다. */
 	void Teleport(const FVector& Location);
 
-protected:
-	virtual void BeginPlay() override;
+	/** 직업의 모습을 입힌다. 만든 뒤 한 번 부른다. */
+	void SetClass(portfolio::mmo::CharacterClass Class);
 
 private:
 	UPROPERTY(VisibleAnywhere)

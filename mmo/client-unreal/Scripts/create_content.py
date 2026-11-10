@@ -1,4 +1,4 @@
-# 코드가 쓰는 에셋을 처음부터 만든다: 격자 머티리얼, 자리 표시용 몸통의 머티리얼, Field 레벨.
+# Field 레벨과 그 격자 머티리얼을 처음부터 만든다.
 # 에셋을 손으로 고치지 않고 이 스크립트를 고쳐 다시 만든다(맵 원본은 backlog 65, 캐릭터 메시는 14).
 # Field는 바닥(엔진 평면 + 격자), 해, 하늘, 하늘빛만 둔다. 조명은 모두 동적이다(라이트맵 없음).
 #
@@ -11,7 +11,6 @@ materials = unreal.MaterialEditingLibrary
 tools = unreal.AssetToolsHelpers.get_asset_tools()
 
 GRID = "/Game/Materials/M_Grid"
-PLACEHOLDER = "/Game/Materials/M_Placeholder"
 LEVEL = "/Game/Maps/Field"
 # 맵은 ±1,024 m(packets.proto의 CONSTANT_MAP_HALF_EXTENT_METERS)이고 엔진 평면은 1 m 너비다.
 MAP_SIZE_METERS = 2048
@@ -56,15 +55,6 @@ materials.connect_material_property(grid_roughness, "", unreal.MaterialProperty.
 materials.recompile_material(grid)
 save(grid)
 
-# 코드(AMmoEntityActor::TintPlaceholderBody)가 Color 파라미터로 개체마다 색을 정한다.
-placeholder = recreate(PLACEHOLDER, unreal.Material, unreal.MaterialFactoryNew())
-color = materials.create_material_expression(placeholder, unreal.MaterialExpressionVectorParameter, -300, 0)
-color.set_editor_property("parameter_name", "Color")
-color.set_editor_property("default_value", unreal.LinearColor(0.8, 0.8, 0.8, 1.0))
-materials.connect_material_property(color, "", unreal.MaterialProperty.MP_BASE_COLOR)
-materials.recompile_material(placeholder)
-save(placeholder)
-
 # 열려 있는 레벨은 지울 수 없으므로, 이미 있으면 열어서 액터를 비운다.
 levels = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
@@ -100,4 +90,4 @@ sky_light.light_component.set_editor_property("real_time_capture", True)
 
 if not levels.save_current_level():
     raise RuntimeError(f"Could not save {LEVEL}")
-unreal.log(f"Created {GRID}, {PLACEHOLDER}, {LEVEL}")
+unreal.log(f"Created {GRID}, {LEVEL}")

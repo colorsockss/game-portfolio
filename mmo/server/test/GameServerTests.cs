@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -21,13 +22,13 @@ namespace PortfolioMmo.Server.Tests
         private static readonly TimeSpan s_timeout = TimeSpan.FromSeconds(5);
 
         /// <summary>
-        /// 로그인하면 LoginResult와 내 EntitiesEnter가 오고, 상한을 넘는 길이를 보내면 MALFORMED_PACKET을 받고 끊긴다.
+        /// 로그인하고 캐릭터를 만들어 들어가면 내 EntitiesEnter가 오고, 상한을 넘는 길이를 보내면 MALFORMED_PACKET을 받고 끊긴다.
         /// </summary>
         [Fact]
         public async Task LogsInOverTcpAndKicksAnOversizedFrame()
         {
             using var cancellation = new CancellationTokenSource();
-            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new PlayerStore(":memory:")));
+            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new CharacterStore(":memory:")));
             Task running = server.RunAsync(cancellation.Token);
 
             using var client = new TcpClient();
@@ -35,7 +36,15 @@ namespace PortfolioMmo.Server.Tests
             NetworkStream stream = client.GetStream();
             new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01" } }.WriteDelimitedTo(stream);
             Assert.Equal(LoginResultCode.Ok, (await ReadAsync(stream))!.LoginResult.Result);
-            Assert.Equal("hero_01", (await ReadAsync(stream))!.EntitiesEnter.Entities[0].Name);
+            Assert.Empty((await ReadAsync(stream))!.CharacterList.Characters);
+
+            new Packet { CreateCharacter = new CreateCharacter { Name = "Arthur", CharacterClass = CharacterClass.Knight } }.WriteDelimitedTo(stream);
+            Assert.Equal(CreateCharacterResultCode.Ok, (await ReadAsync(stream))!.CreateCharacterResult.Result);
+            CharacterSummary created = (await ReadAsync(stream))!.CharacterList.Characters.Single();
+
+            new Packet { EnterWorld = new EnterWorld { CharacterId = created.Id } }.WriteDelimitedTo(stream);
+            Assert.Equal(EnterWorldResultCode.Ok, (await ReadAsync(stream))!.EnterWorldResult.Result);
+            Assert.Equal("Arthur", (await ReadAsync(stream))!.EntitiesEnter.Entities[0].Name);
 
             // varint 길이 16383. 서버가 받는 상한(256바이트)을 넘는다.
             await stream.WriteAsync(new byte[] { 0xFF, 0x7F });
@@ -55,7 +64,7 @@ namespace PortfolioMmo.Server.Tests
             using var cancellation = new CancellationTokenSource();
             // 시간 제한 10틱(0.5초).
             var server = new GameServer(
-                new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new PlayerStore(":memory:")), idleTimeoutTicks: 10);
+                new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new CharacterStore(":memory:")), idleTimeoutTicks: 10);
             Task running = server.RunAsync(cancellation.Token);
 
             using var client = new TcpClient();
@@ -87,7 +96,8 @@ namespace PortfolioMmo.Server.Tests
         public async Task ShutdownKicksEveryConnectionAndSaves()
         {
             using var cancellation = new CancellationTokenSource();
-            using var store = new PlayerStore(":memory:");
+            using var store = new CharacterStore(":memory:");
+            long id = store.Create("hero_01", "Arthur", CharacterClass.Knight, 0, 0).Character!.Id;
             var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), store));
             Task running = server.RunAsync(cancellation.Token);
 
@@ -95,7 +105,15 @@ namespace PortfolioMmo.Server.Tests
             await client.ConnectAsync(IPAddress.Loopback, server.Port);
             NetworkStream stream = client.GetStream();
             new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01" } }.WriteDelimitedTo(stream);
-            await ReadAsync(stream);
+            new Packet { EnterWorld = new EnterWorld { CharacterId = (ulong)id } }.WriteDelimitedTo(stream);
+            Packet? entered;
+            do
+            {
+                entered = await ReadAsync(stream);
+            }
+            while ((entered != null) && (entered.BodyCase != Packet.BodyOneofCase.EnterWorldResult));
+
+            Assert.Equal(EnterWorldResultCode.Ok, entered!.EnterWorldResult.Result);
 
             cancellation.Cancel();
             Packet? packet;
@@ -108,7 +126,7 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(KickReason.ServerShutdown, packet!.Kicked.Reason);
             client.Close();
             await running.WaitAsync(s_timeout);
-            Assert.Equal(new SavedPosition(0, 0, 0), store.Load("hero_01"));
+            Assert.Equal(new SavedPosition(0, 0, 0), store.Load(id)!.Position);
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace portfolio::mmo
 /**
  * 화면 관리자. 뿌리 위젯(UMmoUiRoot)의 층에 화면을 올리고 내리며, 무엇이 열렸는지와 뒤로 가기, 입력 모드는 FScreenStack의 판단을 따른다.
  * 화면은 위젯 블루프린트(MmoUiPaths)를 비동기로 불러와 만들고, 닫아도 지우지 않고 다음에 다시 쓴다.
- * 세션을 들어 로그인하면 HUD로, 연결이 끊기면 로그인 화면으로 바꾼다.
+ * 세션을 들어 로그인하면 캐릭터 선택으로, 월드에 들어가면 HUD로, 연결이 끊기면 로그인 화면으로 바꾼다.
  */
 UCLASS()
 class UMmoUiManager : public ULocalPlayerSubsystem
@@ -50,6 +50,9 @@ public:
 
 	/** 확인을 받은 뒤 로그아웃한다(설정 창의 버튼). */
 	void LogOut();
+
+	/** 월드를 떠나 캐릭터 선택으로 돌아간다(설정 창의 버튼). 연결은 그대로다. */
+	void ReturnToCharacterSelect();
 
 private:
 	void Show(MmoScreen::EScreen Screen, UUserWidget& Widget, const FOnShown& OnShown);

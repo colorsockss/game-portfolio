@@ -1,0 +1,94 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+
+#include "MmoCharacterSelectWidget.generated.h"
+
+class UButton;
+class UTextBlock;
+class UMmoSession;
+
+namespace portfolio::mmo
+{
+	class Packet;
+}
+
+/**
+ * 캐릭터 선택 화면(WBP_CharacterSelect의 기반). 계정의 캐릭터 4칸을 보이고, 칸을 골라 시작하거나 캐릭터 만들기를 연다.
+ * 목록은 세션이 가진 마지막 CharacterList이고, 바뀌면 다시 그린다.
+ */
+UCLASS(Abstract)
+class UMmoCharacterSelectWidget : public UUserWidget
+{
+	GENERATED_BODY()
+
+protected:
+	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
+
+private:
+	UFUNCTION()
+	void HandleSlot0Clicked();
+
+	UFUNCTION()
+	void HandleSlot1Clicked();
+
+	UFUNCTION()
+	void HandleSlot2Clicked();
+
+	UFUNCTION()
+	void HandleSlot3Clicked();
+
+	UFUNCTION()
+	void HandleStartClicked();
+
+	UFUNCTION()
+	void HandleCreateClicked();
+
+	void HandlePacket(const portfolio::mmo::Packet& Packet);
+	void Select(int32 Index);
+	/** 칸과 버튼을 세션의 목록과 고른 칸에 맞춘다. */
+	void Refresh();
+	UMmoSession& Session() const;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Slot0Button;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Slot1Button;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Slot2Button;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Slot3Button;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Slot0Text;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Slot1Text;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Slot2Text;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Slot3Text;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> StartButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> CreateButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> StatusText;
+
+	/** 고른 칸. 없으면 INDEX_NONE. */
+	int32 Selected = INDEX_NONE;
+	/** 마지막으로 그린 캐릭터 수. 목록이 늘었는지 본다. */
+	int32 ShownCount = 0;
+	/** EnterWorld를 보내고 답을 기다린다. */
+	bool bEntering = false;
+};

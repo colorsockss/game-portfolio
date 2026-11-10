@@ -39,6 +39,20 @@ PROTOBUF_CONSTINIT ::google::protobuf::internal::ReflectionData
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::Ping
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::CharacterSummary
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::CharacterList
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::CreateCharacter
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::CreateCharacterResult
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::EnterWorld
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::EnterWorldResult
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::LeaveWorld
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::Pong
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::Move
@@ -164,7 +178,7 @@ constexpr auto PositionReset::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[7],
+      &file_reflection_data[14],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -304,7 +318,7 @@ constexpr auto Pong::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[5],
+      &file_reflection_data[12],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -589,7 +603,7 @@ constexpr auto Move::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[6],
+      &file_reflection_data[13],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -652,11 +666,11 @@ constexpr LoginResult::ParseTableT_ LoginResult::InternalGenerateParseTable_(con
     {
       PROTOBUF_FIELD_OFFSET(LoginResult, _impl_._has_bits_),
       0, // no _extensions_
-      3, 24,  // max_field_number, fast_idx_mask
+      1, 0,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967288,  // skipmap
+      4294967294,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      3,  // num_field_entries
+      1,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -666,28 +680,15 @@ constexpr LoginResult::ParseTableT_ LoginResult::InternalGenerateParseTable_(con
       ::_pbi::TcParser::GetTable<::portfolio::mmo::LoginResult>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      {::_pbi::TcParser::MiniParse, {}},
       // .portfolio.mmo.LoginResultCode result = 1;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(LoginResult, _impl_.result_), 0>(),
        {8, 0, 0,
         PROTOBUF_FIELD_OFFSET(LoginResult, _impl_.result_)}},
-      // uint32 self_id = 2;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(LoginResult, _impl_.self_id_), 1>(),
-       {16, 1, 0,
-        PROTOBUF_FIELD_OFFSET(LoginResult, _impl_.self_id_)}},
-      // uint32 tick = 3;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(LoginResult, _impl_.tick_), 2>(),
-       {24, 2, 0,
-        PROTOBUF_FIELD_OFFSET(LoginResult, _impl_.tick_)}},
     }}, {{
       65535, 65535
     }}, {{
       // .portfolio.mmo.LoginResultCode result = 1;
       {PROTOBUF_FIELD_OFFSET(LoginResult, _impl_.result_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
-      // uint32 self_id = 2;
-      {PROTOBUF_FIELD_OFFSET(LoginResult, _impl_.self_id_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
-      // uint32 tick = 3;
-      {PROTOBUF_FIELD_OFFSET(LoginResult, _impl_.tick_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -699,9 +700,7 @@ constexpr LoginResult::ParseTableT_ LoginResult::InternalGenerateParseTable_(con
 inline constexpr LoginResult::Impl_::Impl_(
     [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
     ::_pbi::ConstantInitialized) noexcept
-      : result_{static_cast< ::portfolio::mmo::LoginResultCode >(0)},
-        self_id_{0u},
-        tick_{0u} {}
+      : result_{static_cast< ::portfolio::mmo::LoginResultCode >(0)} {}
 
 template <typename>
 constexpr LoginResult::LoginResult(::_pbi::ConstantInitialized,
@@ -943,6 +942,130 @@ const ::_pbi::ClassData* Login_get_class_data() {
   return Login_globals_.GetClassData();
 #else
   return Login_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class LeaveWorld::_Internal {
+ public:
+};
+
+constexpr LeaveWorld::ParseTableT_ LeaveWorld::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(LeaveWorld,
+                            _impl_._cached_size_),  // no hasbits
+      0, // no _extensions_
+      0, 0,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967295,  // skipmap
+      offsetof(ParseTableT_, field_names),  // no field_entries
+      0,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::LeaveWorld>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      {::_pbi::TcParser::MiniParse, {}},
+    }}, {{
+      65535, 65535
+    }}, // no field_entries, or aux_entries
+    {{
+    }},
+  };
+}
+
+template <typename>
+constexpr LeaveWorld::LeaveWorld(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      ) {
+}
+inline void* PROTOBUF_NONNULL LeaveWorld::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) LeaveWorld(arena);
+}
+constexpr auto LeaveWorld::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(LeaveWorld), alignof(LeaveWorld));
+}
+constexpr auto LeaveWorld::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &LeaveWorld::MergeImpl,
+          Super_::GetNewImpl<LeaveWorld>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &LeaveWorld::SharedDtor,
+          Super_::GetClearImpl<LeaveWorld>(), &LeaveWorld::ByteSizeLong,
+              &LeaveWorld::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(LeaveWorld, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[11],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct LeaveWorldGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr LeaveWorldGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 LeaveWorld_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(LeaveWorld::InternalGenerateClassData_(
+            _default, &LeaveWorld_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<LeaveWorld>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~LeaveWorldGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) LeaveWorld _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<LeaveWorld>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(LeaveWorldGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST LeaveWorldGlobalsTypeInternal LeaveWorld_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* LeaveWorld_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return LeaveWorld_globals_.GetClassData();
+#else
+  return LeaveWorld_class_data_.base();
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 }
 }  // namespace
@@ -1197,7 +1320,7 @@ constexpr auto EntityMove::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[12],
+      &file_reflection_data[19],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1260,11 +1383,11 @@ constexpr EntityEnter::ParseTableT_ EntityEnter::InternalGenerateParseTable_(con
     {
       PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_._has_bits_),
       0, // no _extensions_
-      5, 56,  // max_field_number, fast_idx_mask
+      6, 56,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967264,  // skipmap
+      4294967232,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      5,  // num_field_entries
+      6,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -1295,7 +1418,10 @@ constexpr EntityEnter::ParseTableT_ EntityEnter::InternalGenerateParseTable_(con
       {::_pbi::TcParser::FastUS1,
        {42, 0, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.name_)}},
-      {::_pbi::TcParser::MiniParse, {}},
+      // .portfolio.mmo.CharacterClass character_class = 6;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EntityEnter, _impl_.character_class_), 5>(),
+       {48, 5, 0,
+        PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.character_class_)}},
       {::_pbi::TcParser::MiniParse, {}},
     }}, {{
       65535, 65535
@@ -1310,6 +1436,8 @@ constexpr EntityEnter::ParseTableT_ EntityEnter::InternalGenerateParseTable_(con
       {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.yaw_), _Internal::kHasBitsOffset + 4, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // string name = 5;
       {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.name_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
+      // .portfolio.mmo.CharacterClass character_class = 6;
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.character_class_), _Internal::kHasBitsOffset + 5, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
     }},
     // no aux_entries
     {{
@@ -1330,7 +1458,8 @@ inline constexpr EntityEnter::Impl_::Impl_(
         id_{0u},
         x_{0},
         z_{0},
-        yaw_{0u} {}
+        yaw_{0u},
+        character_class_{static_cast< ::portfolio::mmo::CharacterClass >(0)} {}
 
 template <typename>
 constexpr EntityEnter::EntityEnter(::_pbi::ConstantInitialized,
@@ -1373,7 +1502,7 @@ constexpr auto EntityEnter::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[9],
+      &file_reflection_data[16],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1517,7 +1646,7 @@ constexpr auto EntitiesLeave::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[10],
+      &file_reflection_data[17],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1564,6 +1693,753 @@ const ::_pbi::ClassData* EntitiesLeave_get_class_data() {
   return EntitiesLeave_globals_.GetClassData();
 #else
   return EntitiesLeave_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class EnterWorldResult::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<EnterWorldResult>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_._has_bits_);
+};
+
+constexpr EnterWorldResult::ParseTableT_ EnterWorldResult::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_._has_bits_),
+      0, // no _extensions_
+      3, 24,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967288,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      3,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::EnterWorldResult>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      {::_pbi::TcParser::MiniParse, {}},
+      // .portfolio.mmo.EnterWorldResultCode result = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EnterWorldResult, _impl_.result_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.result_)}},
+      // uint32 self_id = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EnterWorldResult, _impl_.self_id_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.self_id_)}},
+      // uint32 tick = 3;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EnterWorldResult, _impl_.tick_), 2>(),
+       {24, 2, 0,
+        PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.tick_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // .portfolio.mmo.EnterWorldResultCode result = 1;
+      {PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.result_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
+      // uint32 self_id = 2;
+      {PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.self_id_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 tick = 3;
+      {PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.tick_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr EnterWorldResult::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : result_{static_cast< ::portfolio::mmo::EnterWorldResultCode >(0)},
+        self_id_{0u},
+        tick_{0u} {}
+
+template <typename>
+constexpr EnterWorldResult::EnterWorldResult(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL EnterWorldResult::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) EnterWorldResult(arena);
+}
+constexpr auto EnterWorldResult::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(EnterWorldResult), alignof(EnterWorldResult));
+}
+constexpr auto EnterWorldResult::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &EnterWorldResult::MergeImpl,
+          Super_::GetNewImpl<EnterWorldResult>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &EnterWorldResult::SharedDtor,
+          Super_::GetClearImpl<EnterWorldResult>(), &EnterWorldResult::ByteSizeLong,
+              &EnterWorldResult::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[10],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct EnterWorldResultGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr EnterWorldResultGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 EnterWorldResult_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(EnterWorldResult::InternalGenerateClassData_(
+            _default, &EnterWorldResult_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<EnterWorldResult>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~EnterWorldResultGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) EnterWorldResult _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<EnterWorldResult>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(EnterWorldResultGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST EnterWorldResultGlobalsTypeInternal EnterWorldResult_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* EnterWorldResult_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return EnterWorldResult_globals_.GetClassData();
+#else
+  return EnterWorldResult_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class EnterWorld::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<EnterWorld>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(EnterWorld, _impl_._has_bits_);
+};
+
+constexpr EnterWorld::ParseTableT_ EnterWorld::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(EnterWorld, _impl_._has_bits_),
+      0, // no _extensions_
+      1, 0,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967294,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      1,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::EnterWorld>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // uint64 character_id = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(EnterWorld, _impl_.character_id_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(EnterWorld, _impl_.character_id_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint64 character_id = 1;
+      {PROTOBUF_FIELD_OFFSET(EnterWorld, _impl_.character_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt64)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr EnterWorld::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : character_id_{::uint64_t{0u}} {}
+
+template <typename>
+constexpr EnterWorld::EnterWorld(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL EnterWorld::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) EnterWorld(arena);
+}
+constexpr auto EnterWorld::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(EnterWorld), alignof(EnterWorld));
+}
+constexpr auto EnterWorld::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &EnterWorld::MergeImpl,
+          Super_::GetNewImpl<EnterWorld>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &EnterWorld::SharedDtor,
+          Super_::GetClearImpl<EnterWorld>(), &EnterWorld::ByteSizeLong,
+              &EnterWorld::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(EnterWorld, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[9],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct EnterWorldGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr EnterWorldGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 EnterWorld_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(EnterWorld::InternalGenerateClassData_(
+            _default, &EnterWorld_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<EnterWorld>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~EnterWorldGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) EnterWorld _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<EnterWorld>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(EnterWorldGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST EnterWorldGlobalsTypeInternal EnterWorld_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* EnterWorld_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return EnterWorld_globals_.GetClassData();
+#else
+  return EnterWorld_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class CreateCharacterResult::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<CreateCharacterResult>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(CreateCharacterResult, _impl_._has_bits_);
+};
+
+constexpr CreateCharacterResult::ParseTableT_ CreateCharacterResult::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(CreateCharacterResult, _impl_._has_bits_),
+      0, // no _extensions_
+      1, 0,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967294,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      1,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::CreateCharacterResult>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // .portfolio.mmo.CreateCharacterResultCode result = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CreateCharacterResult, _impl_.result_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(CreateCharacterResult, _impl_.result_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // .portfolio.mmo.CreateCharacterResultCode result = 1;
+      {PROTOBUF_FIELD_OFFSET(CreateCharacterResult, _impl_.result_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr CreateCharacterResult::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : result_{static_cast< ::portfolio::mmo::CreateCharacterResultCode >(0)} {}
+
+template <typename>
+constexpr CreateCharacterResult::CreateCharacterResult(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL CreateCharacterResult::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) CreateCharacterResult(arena);
+}
+constexpr auto CreateCharacterResult::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(CreateCharacterResult), alignof(CreateCharacterResult));
+}
+constexpr auto CreateCharacterResult::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &CreateCharacterResult::MergeImpl,
+          Super_::GetNewImpl<CreateCharacterResult>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &CreateCharacterResult::SharedDtor,
+          Super_::GetClearImpl<CreateCharacterResult>(), &CreateCharacterResult::ByteSizeLong,
+              &CreateCharacterResult::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(CreateCharacterResult, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[8],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct CreateCharacterResultGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr CreateCharacterResultGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 CreateCharacterResult_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(CreateCharacterResult::InternalGenerateClassData_(
+            _default, &CreateCharacterResult_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<CreateCharacterResult>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~CreateCharacterResultGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) CreateCharacterResult _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<CreateCharacterResult>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(CreateCharacterResultGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST CreateCharacterResultGlobalsTypeInternal CreateCharacterResult_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* CreateCharacterResult_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return CreateCharacterResult_globals_.GetClassData();
+#else
+  return CreateCharacterResult_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class CreateCharacter::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<CreateCharacter>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(CreateCharacter, _impl_._has_bits_);
+};
+
+constexpr CreateCharacter::ParseTableT_ CreateCharacter::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(CreateCharacter, _impl_._has_bits_),
+      0, // no _extensions_
+      2, 8,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967292,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      2,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::CreateCharacter>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // .portfolio.mmo.CharacterClass character_class = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CreateCharacter, _impl_.character_class_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(CreateCharacter, _impl_.character_class_)}},
+      // string name = 1;
+      {::_pbi::TcParser::FastUS1,
+       {10, 0, 0,
+        PROTOBUF_FIELD_OFFSET(CreateCharacter, _impl_.name_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // string name = 1;
+      {PROTOBUF_FIELD_OFFSET(CreateCharacter, _impl_.name_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
+      // .portfolio.mmo.CharacterClass character_class = 2;
+      {PROTOBUF_FIELD_OFFSET(CreateCharacter, _impl_.character_class_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
+    }},
+    // no aux_entries
+    {{
+      "\35\4\0\0\0\0\0\0"
+      "portfolio.mmo.CreateCharacter"
+      "name"
+    }},
+  };
+}
+
+
+inline constexpr CreateCharacter::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : name_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        character_class_{static_cast< ::portfolio::mmo::CharacterClass >(0)} {}
+
+template <typename>
+constexpr CreateCharacter::CreateCharacter(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL CreateCharacter::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) CreateCharacter(arena);
+}
+constexpr auto CreateCharacter::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::CopyInit(sizeof(CreateCharacter), alignof(CreateCharacter));
+}
+constexpr auto CreateCharacter::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &CreateCharacter::MergeImpl,
+          Super_::GetNewImpl<CreateCharacter>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &CreateCharacter::SharedDtor,
+          Super_::GetClearImpl<CreateCharacter>(), &CreateCharacter::ByteSizeLong,
+              &CreateCharacter::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(CreateCharacter, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[7],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct CreateCharacterGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr CreateCharacterGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 CreateCharacter_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(CreateCharacter::InternalGenerateClassData_(
+            _default, &CreateCharacter_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<CreateCharacter>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~CreateCharacterGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) CreateCharacter _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<CreateCharacter>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(CreateCharacterGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST CreateCharacterGlobalsTypeInternal CreateCharacter_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* CreateCharacter_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return CreateCharacter_globals_.GetClassData();
+#else
+  return CreateCharacter_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class CharacterSummary::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<CharacterSummary>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_._has_bits_);
+};
+
+constexpr CharacterSummary::ParseTableT_ CharacterSummary::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_._has_bits_),
+      0, // no _extensions_
+      3, 24,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967288,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      3,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::CharacterSummary>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      {::_pbi::TcParser::MiniParse, {}},
+      // uint64 id = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(CharacterSummary, _impl_.id_), 1>(),
+       {8, 1, 0,
+        PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.id_)}},
+      // string name = 2;
+      {::_pbi::TcParser::FastUS1,
+       {18, 0, 0,
+        PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.name_)}},
+      // .portfolio.mmo.CharacterClass character_class = 3;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CharacterSummary, _impl_.character_class_), 2>(),
+       {24, 2, 0,
+        PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.character_class_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint64 id = 1;
+      {PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.id_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt64)},
+      // string name = 2;
+      {PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.name_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
+      // .portfolio.mmo.CharacterClass character_class = 3;
+      {PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.character_class_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
+    }},
+    // no aux_entries
+    {{
+      "\36\0\4\0\0\0\0\0"
+      "portfolio.mmo.CharacterSummary"
+      "name"
+    }},
+  };
+}
+
+
+inline constexpr CharacterSummary::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : name_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        id_{::uint64_t{0u}},
+        character_class_{static_cast< ::portfolio::mmo::CharacterClass >(0)} {}
+
+template <typename>
+constexpr CharacterSummary::CharacterSummary(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL CharacterSummary::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) CharacterSummary(arena);
+}
+constexpr auto CharacterSummary::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::CopyInit(sizeof(CharacterSummary), alignof(CharacterSummary));
+}
+constexpr auto CharacterSummary::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &CharacterSummary::MergeImpl,
+          Super_::GetNewImpl<CharacterSummary>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &CharacterSummary::SharedDtor,
+          Super_::GetClearImpl<CharacterSummary>(), &CharacterSummary::ByteSizeLong,
+              &CharacterSummary::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[5],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct CharacterSummaryGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr CharacterSummaryGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 CharacterSummary_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(CharacterSummary::InternalGenerateClassData_(
+            _default, &CharacterSummary_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<CharacterSummary>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~CharacterSummaryGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) CharacterSummary _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<CharacterSummary>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(CharacterSummaryGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST CharacterSummaryGlobalsTypeInternal CharacterSummary_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* CharacterSummary_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return CharacterSummary_globals_.GetClassData();
+#else
+  return CharacterSummary_class_data_.base();
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 }
 }  // namespace
@@ -1674,7 +2550,7 @@ constexpr auto EntityMoves::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[11],
+      &file_reflection_data[18],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1824,7 +2700,7 @@ constexpr auto EntitiesEnter::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[8],
+      &file_reflection_data[15],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1875,6 +2751,156 @@ const ::_pbi::ClassData* EntitiesEnter_get_class_data() {
 }
 }  // namespace
 #endif  // PROTOBUF_CUSTOM_VTABLE
+class CharacterList::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<CharacterList>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(CharacterList, _impl_._has_bits_);
+};
+
+constexpr CharacterList::ParseTableT_ CharacterList::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(CharacterList, _impl_._has_bits_),
+      0, // no _extensions_
+      1, 0,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967294,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      1,  // num_field_entries
+      1,  // num_aux_entries
+      offsetof(ParseTableT_, aux_entries),
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::CharacterList>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // repeated .portfolio.mmo.CharacterSummary characters = 1;
+      {::_pbi::TcParser::FastMtR1,
+       {10, 0, 0,
+        PROTOBUF_FIELD_OFFSET(CharacterList, _impl_.characters_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // repeated .portfolio.mmo.CharacterSummary characters = 1;
+      {PROTOBUF_FIELD_OFFSET(CharacterList, _impl_.characters_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+    }},
+    {{
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::CharacterSummary>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::CharacterSummary_globals_},
+        #endif
+    }},
+    {{
+    }},
+  };
+}
+
+
+inline constexpr CharacterList::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : characters_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::CharacterList,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterList, _impl_.characters_)>()
+         }
+     {}
+
+template <typename>
+constexpr CharacterList::CharacterList(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL CharacterList::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) CharacterList(arena);
+}
+constexpr auto CharacterList::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::CopyInit(sizeof(CharacterList), alignof(CharacterList));
+}
+constexpr auto CharacterList::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &CharacterList::MergeImpl,
+          Super_::GetNewImpl<CharacterList>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &CharacterList::SharedDtor,
+          Super_::GetClearImpl<CharacterList>(), &CharacterList::ByteSizeLong,
+              &CharacterList::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(CharacterList, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[6],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct CharacterListGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr CharacterListGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 CharacterList_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(CharacterList::InternalGenerateClassData_(
+            _default, &CharacterList_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<CharacterList>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~CharacterListGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) CharacterList _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<CharacterList>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(CharacterListGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST CharacterListGlobalsTypeInternal CharacterList_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* CharacterList_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return CharacterList_globals_.GetClassData();
+#else
+  return CharacterList_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
 class Packet::_Internal {
  public:
   static constexpr ::int32_t kOneofCaseOffset =
@@ -1889,10 +2915,10 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       0, // no _extensions_
       104, 0,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967264,  // skipmap
+      4294965248,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      10,  // num_field_entries
-      10,  // num_aux_entries
+      16,  // num_field_entries
+      16,  // num_aux_entries
       offsetof(ParseTableT_, aux_entries),
       class_data,
       nullptr,  // post_loop_handler
@@ -1901,15 +2927,15 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       ::_pbi::TcParser::GetTable<::portfolio::mmo::Packet>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      // .portfolio.mmo.EntityMoves entity_moves = 104;
-      {::_pbi::TcParser::FastMiniParse2,
-       {1730, ::uint8_t{6},
+      // .portfolio.mmo.CreateCharacterResult create_character_result = 8;
+      {::_pbi::TcParser::FastMiniParse1,
+       {66, ::uint8_t{6},
         ::uint32_t{
             PROTOBUF_FIELD_OFFSET(ParseTableT_, field_entries) +
-            sizeof(_pbi::TcParseTableBase::FieldEntry) * 9}}},
+            sizeof(_pbi::TcParseTableBase::FieldEntry) * 7}}},
     }}, {{
       100, 0, 1,
-      65504, 5,
+      65504, 11,
       65535, 65535
     }}, {{
       // .portfolio.mmo.Login login = 1;
@@ -1922,16 +2948,28 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.ping_), _Internal::kOneofCaseOffset + 0, 3, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.Pong pong = 5;
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.pong_), _Internal::kOneofCaseOffset + 0, 4, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.CharacterList character_list = 6;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.character_list_), _Internal::kOneofCaseOffset + 0, 5, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.CreateCharacter create_character = 7;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.create_character_), _Internal::kOneofCaseOffset + 0, 6, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.CreateCharacterResult create_character_result = 8;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.create_character_result_), _Internal::kOneofCaseOffset + 0, 7, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.EnterWorld enter_world = 9;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.enter_world_), _Internal::kOneofCaseOffset + 0, 8, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.EnterWorldResult enter_world_result = 10;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.enter_world_result_), _Internal::kOneofCaseOffset + 0, 9, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.LeaveWorld leave_world = 11;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.leave_world_), _Internal::kOneofCaseOffset + 0, 10, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.Move move = 100;
-      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.move_), _Internal::kOneofCaseOffset + 0, 5, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.move_), _Internal::kOneofCaseOffset + 0, 11, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.PositionReset position_reset = 101;
-      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.position_reset_), _Internal::kOneofCaseOffset + 0, 6, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.position_reset_), _Internal::kOneofCaseOffset + 0, 12, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.EntitiesEnter entities_enter = 102;
-      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.entities_enter_), _Internal::kOneofCaseOffset + 0, 7, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.entities_enter_), _Internal::kOneofCaseOffset + 0, 13, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.EntitiesLeave entities_leave = 103;
-      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.entities_leave_), _Internal::kOneofCaseOffset + 0, 8, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.entities_leave_), _Internal::kOneofCaseOffset + 0, 14, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.EntityMoves entity_moves = 104;
-      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.entity_moves_), _Internal::kOneofCaseOffset + 0, 9, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.entity_moves_), _Internal::kOneofCaseOffset + 0, 15, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
     }},
     {{
         #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -1958,6 +2996,36 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
         {::_pbi::TcParser::GetTable<::portfolio::mmo::Pong>()},
         #else
         {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::Pong_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::CharacterList>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::CharacterList_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::CreateCharacter>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::CreateCharacter_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::CreateCharacterResult>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::CreateCharacterResult_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::EnterWorld>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::EnterWorld_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::EnterWorldResult>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::EnterWorldResult_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::LeaveWorld>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::LeaveWorld_globals_},
         #endif
         #ifndef PROTOBUF_MESSAGE_GLOBALS
         {::_pbi::TcParser::GetTable<::portfolio::mmo::Move>()},
@@ -2092,7 +3160,7 @@ const ::_pbi::ClassData* Packet_get_class_data() {
 }  // namespace mmo
 }  // namespace portfolio
 static const ::_pb::EnumDescriptor* PROTOBUF_NONNULL
-    file_level_enum_descriptors_packets_2eproto[4];
+    file_level_enum_descriptors_packets_2eproto[7];
 static constexpr const ::_pb::ServiceDescriptor* PROTOBUF_NONNULL* PROTOBUF_NULLABLE
     file_level_service_descriptors_packets_2eproto = nullptr;
 const ::uint32_t
@@ -2100,6 +3168,12 @@ const ::uint32_t
         protodesc_cold) = {
         0x004, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_._oneof_case_[0]),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
@@ -2120,18 +3194,55 @@ const ::uint32_t
         0,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::LoginResult, _impl_._has_bits_),
-        6, // hasbit index offset
+        4, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::LoginResult, _impl_.result_),
-        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::LoginResult, _impl_.self_id_),
-        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::LoginResult, _impl_.tick_),
         0,
-        1,
-        2,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Kicked, _impl_._has_bits_),
         4, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Kicked, _impl_.reason_),
         0,
+        0x000, // bitmap
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_._has_bits_),
+        6, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_.id_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_.name_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_.character_class_),
+        1,
+        0,
+        2,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterList, _impl_._has_bits_),
+        4, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterList, _impl_.characters_),
+        0,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CreateCharacter, _impl_._has_bits_),
+        5, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CreateCharacter, _impl_.name_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CreateCharacter, _impl_.character_class_),
+        0,
+        1,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CreateCharacterResult, _impl_._has_bits_),
+        4, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CreateCharacterResult, _impl_.result_),
+        0,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorld, _impl_._has_bits_),
+        4, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorld, _impl_.character_id_),
+        0,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorldResult, _impl_._has_bits_),
+        6, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorldResult, _impl_.result_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorldResult, _impl_.self_id_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorldResult, _impl_.tick_),
+        0,
+        1,
+        2,
         0x000, // bitmap
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Pong, _impl_._has_bits_),
@@ -2165,17 +3276,19 @@ const ::uint32_t
         0,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_._has_bits_),
-        8, // hasbit index offset
+        9, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.x_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.z_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.yaw_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.name_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.character_class_),
         1,
         2,
         3,
         4,
         0,
+        5,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntitiesLeave, _impl_._has_bits_),
         4, // hasbit index offset
@@ -2204,18 +3317,25 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::Packet)},
-        {13, sizeof(::portfolio::mmo::Login)},
-        {20, sizeof(::portfolio::mmo::LoginResult)},
-        {29, sizeof(::portfolio::mmo::Kicked)},
-        {34, sizeof(::portfolio::mmo::Ping)},
-        {35, sizeof(::portfolio::mmo::Pong)},
-        {40, sizeof(::portfolio::mmo::Move)},
-        {51, sizeof(::portfolio::mmo::PositionReset)},
-        {60, sizeof(::portfolio::mmo::EntitiesEnter)},
-        {65, sizeof(::portfolio::mmo::EntityEnter)},
-        {78, sizeof(::portfolio::mmo::EntitiesLeave)},
-        {83, sizeof(::portfolio::mmo::EntityMoves)},
-        {90, sizeof(::portfolio::mmo::EntityMove)},
+        {19, sizeof(::portfolio::mmo::Login)},
+        {26, sizeof(::portfolio::mmo::LoginResult)},
+        {31, sizeof(::portfolio::mmo::Kicked)},
+        {36, sizeof(::portfolio::mmo::Ping)},
+        {37, sizeof(::portfolio::mmo::CharacterSummary)},
+        {46, sizeof(::portfolio::mmo::CharacterList)},
+        {51, sizeof(::portfolio::mmo::CreateCharacter)},
+        {58, sizeof(::portfolio::mmo::CreateCharacterResult)},
+        {63, sizeof(::portfolio::mmo::EnterWorld)},
+        {68, sizeof(::portfolio::mmo::EnterWorldResult)},
+        {77, sizeof(::portfolio::mmo::LeaveWorld)},
+        {78, sizeof(::portfolio::mmo::Pong)},
+        {83, sizeof(::portfolio::mmo::Move)},
+        {94, sizeof(::portfolio::mmo::PositionReset)},
+        {103, sizeof(::portfolio::mmo::EntitiesEnter)},
+        {108, sizeof(::portfolio::mmo::EntityEnter)},
+        {123, sizeof(::portfolio::mmo::EntitiesLeave)},
+        {128, sizeof(::portfolio::mmo::EntityMoves)},
+        {135, sizeof(::portfolio::mmo::EntityMove)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -2224,6 +3344,13 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
         &::portfolio::mmo::LoginResult_globals_,
         &::portfolio::mmo::Kicked_globals_,
         &::portfolio::mmo::Ping_globals_,
+        &::portfolio::mmo::CharacterSummary_globals_,
+        &::portfolio::mmo::CharacterList_globals_,
+        &::portfolio::mmo::CreateCharacter_globals_,
+        &::portfolio::mmo::CreateCharacterResult_globals_,
+        &::portfolio::mmo::EnterWorld_globals_,
+        &::portfolio::mmo::EnterWorldResult_globals_,
+        &::portfolio::mmo::LeaveWorld_globals_,
         &::portfolio::mmo::Pong_globals_,
         &::portfolio::mmo::Move_globals_,
         &::portfolio::mmo::PositionReset_globals_,
@@ -2235,66 +3362,101 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\rpackets.proto\022\rportfolio.mmo\"\337\003\n\006Packe"
+    "\n\rpackets.proto\022\rportfolio.mmo\"\277\006\n\006Packe"
     "t\022%\n\005login\030\001 \001(\0132\024.portfolio.mmo.LoginH\000"
     "\0222\n\014login_result\030\002 \001(\0132\032.portfolio.mmo.L"
     "oginResultH\000\022\'\n\006kicked\030\003 \001(\0132\025.portfolio"
     ".mmo.KickedH\000\022#\n\004ping\030\004 \001(\0132\023.portfolio."
     "mmo.PingH\000\022#\n\004pong\030\005 \001(\0132\023.portfolio.mmo"
-    ".PongH\000\022#\n\004move\030d \001(\0132\023.portfolio.mmo.Mo"
-    "veH\000\0226\n\016position_reset\030e \001(\0132\034.portfolio"
-    ".mmo.PositionResetH\000\0226\n\016entities_enter\030f"
-    " \001(\0132\034.portfolio.mmo.EntitiesEnterH\000\0226\n\016"
-    "entities_leave\030g \001(\0132\034.portfolio.mmo.Ent"
-    "itiesLeaveH\000\0222\n\014entity_moves\030h \001(\0132\032.por"
-    "tfolio.mmo.EntityMovesH\000B\006\n\004body\"S\n\005Logi"
-    "n\0228\n\020protocol_version\030\001 \001(\0162\036.portfolio."
-    "mmo.ProtocolVersion\022\020\n\010login_id\030\002 \001(\t\"\\\n"
-    "\013LoginResult\022.\n\006result\030\001 \001(\0162\036.portfolio"
-    ".mmo.LoginResultCode\022\017\n\007self_id\030\002 \001(\r\022\014\n"
-    "\004tick\030\003 \001(\r\"3\n\006Kicked\022)\n\006reason\030\001 \001(\0162\031."
-    "portfolio.mmo.KickReason\"\006\n\004Ping\"\024\n\004Pong"
-    "\022\014\n\004tick\030\001 \001(\r\"6\n\004Move\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002"
-    " \001(\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack\030\004 \001(\r\"2\n\rPositi"
-    "onReset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030\003 \001"
-    "(\r\"=\n\rEntitiesEnter\022,\n\010entities\030\001 \003(\0132\032."
-    "portfolio.mmo.EntityEnter\"J\n\013EntityEnter"
-    "\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003ya"
-    "w\030\004 \001(\r\022\014\n\004name\030\005 \001(\t\"\034\n\rEntitiesLeave\022\013"
-    "\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n\004tick\030\001 \001(\r"
-    "\022+\n\010entities\030\002 \003(\0132\031.portfolio.mmo.Entit"
-    "yMove\";\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001"
-    "(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r*Q\n\017ProtocolVe"
-    "rsion\022 \n\034PROTOCOL_VERSION_UNSPECIFIED\020\000\022"
-    "\034\n\030PROTOCOL_VERSION_CURRENT\020\001*\221\002\n\010Consta"
-    "nt\022\030\n\024CONSTANT_UNSPECIFIED\020\000\022\034\n\030CONSTANT"
-    "_UNITS_PER_METER\020 \022$\n\037CONSTANT_MAP_HALF_"
-    "EXTENT_METERS\020\200\010\022\027\n\022CONSTANT_YAW_STEPS\020\200"
-    "\002\022\035\n\031CONSTANT_TICKS_PER_SECOND\020\024\022(\n$CONS"
-    "TANT_MAX_SPEED_METERS_PER_SECOND\020\006\022\"\n\036CO"
-    "NSTANT_PING_INTERVAL_SECONDS\020\005\022!\n\035CONSTA"
-    "NT_IDLE_TIMEOUT_SECONDS\020\017*\236\001\n\017LoginResul"
-    "tCode\022\030\n\024LOGIN_RESULT_CODE_OK\020\000\022&\n\"LOGIN"
-    "_RESULT_CODE_INVALID_LOGIN_ID\020\001\022&\n\"LOGIN"
-    "_RESULT_CODE_VERSION_MISMATCH\020\002\022!\n\035LOGIN"
-    "_RESULT_CODE_SERVER_FULL\020\003*\253\001\n\nKickReaso"
-    "n\022\033\n\027KICK_REASON_UNSPECIFIED\020\000\022\037\n\033KICK_R"
-    "EASON_DUPLICATE_LOGIN\020\001\022\037\n\033KICK_REASON_S"
-    "ERVER_SHUTDOWN\020\002\022 \n\034KICK_REASON_MALFORME"
-    "D_PACKET\020\003\022\034\n\030KICK_REASON_IDLE_TIMEOUT\020\004"
-    "B\030\252\002\025PortfolioMmo.Contractb\006proto3"
+    ".PongH\000\0226\n\016character_list\030\006 \001(\0132\034.portfo"
+    "lio.mmo.CharacterListH\000\022:\n\020create_charac"
+    "ter\030\007 \001(\0132\036.portfolio.mmo.CreateCharacte"
+    "rH\000\022G\n\027create_character_result\030\010 \001(\0132$.p"
+    "ortfolio.mmo.CreateCharacterResultH\000\0220\n\013"
+    "enter_world\030\t \001(\0132\031.portfolio.mmo.EnterW"
+    "orldH\000\022=\n\022enter_world_result\030\n \001(\0132\037.por"
+    "tfolio.mmo.EnterWorldResultH\000\0220\n\013leave_w"
+    "orld\030\013 \001(\0132\031.portfolio.mmo.LeaveWorldH\000\022"
+    "#\n\004move\030d \001(\0132\023.portfolio.mmo.MoveH\000\0226\n\016"
+    "position_reset\030e \001(\0132\034.portfolio.mmo.Pos"
+    "itionResetH\000\0226\n\016entities_enter\030f \001(\0132\034.p"
+    "ortfolio.mmo.EntitiesEnterH\000\0226\n\016entities"
+    "_leave\030g \001(\0132\034.portfolio.mmo.EntitiesLea"
+    "veH\000\0222\n\014entity_moves\030h \001(\0132\032.portfolio.m"
+    "mo.EntityMovesH\000B\006\n\004body\"S\n\005Login\0228\n\020pro"
+    "tocol_version\030\001 \001(\0162\036.portfolio.mmo.Prot"
+    "ocolVersion\022\020\n\010login_id\030\002 \001(\t\"I\n\013LoginRe"
+    "sult\022.\n\006result\030\001 \001(\0162\036.portfolio.mmo.Log"
+    "inResultCodeJ\004\010\002\020\003J\004\010\003\020\004\"3\n\006Kicked\022)\n\006re"
+    "ason\030\001 \001(\0162\031.portfolio.mmo.KickReason\"\006\n"
+    "\004Ping\"d\n\020CharacterSummary\022\n\n\002id\030\001 \001(\004\022\014\n"
+    "\004name\030\002 \001(\t\0226\n\017character_class\030\003 \001(\0162\035.p"
+    "ortfolio.mmo.CharacterClass\"D\n\rCharacter"
+    "List\0223\n\ncharacters\030\001 \003(\0132\037.portfolio.mmo"
+    ".CharacterSummary\"W\n\017CreateCharacter\022\014\n\004"
+    "name\030\001 \001(\t\0226\n\017character_class\030\002 \001(\0162\035.po"
+    "rtfolio.mmo.CharacterClass\"Q\n\025CreateChar"
+    "acterResult\0228\n\006result\030\001 \001(\0162(.portfolio."
+    "mmo.CreateCharacterResultCode\"\"\n\nEnterWo"
+    "rld\022\024\n\014character_id\030\001 \001(\004\"f\n\020EnterWorldR"
+    "esult\0223\n\006result\030\001 \001(\0162#.portfolio.mmo.En"
+    "terWorldResultCode\022\017\n\007self_id\030\002 \001(\r\022\014\n\004t"
+    "ick\030\003 \001(\r\"\014\n\nLeaveWorld\"\024\n\004Pong\022\014\n\004tick\030"
+    "\001 \001(\r\"6\n\004Move\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003y"
+    "aw\030\003 \001(\r\022\013\n\003ack\030\004 \001(\r\"2\n\rPositionReset\022\t"
+    "\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEnt"
+    "itiesEnter\022,\n\010entities\030\001 \003(\0132\032.portfolio"
+    ".mmo.EntityEnter\"\202\001\n\013EntityEnter\022\n\n\002id\030\001"
+    " \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022"
+    "\014\n\004name\030\005 \001(\t\0226\n\017character_class\030\006 \001(\0162\035"
+    ".portfolio.mmo.CharacterClass\"\034\n\rEntitie"
+    "sLeave\022\013\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n\004ti"
+    "ck\030\001 \001(\r\022+\n\010entities\030\002 \003(\0132\031.portfolio.m"
+    "mo.EntityMove\";\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022"
+    "\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r*Q\n\017Pr"
+    "otocolVersion\022 \n\034PROTOCOL_VERSION_UNSPEC"
+    "IFIED\020\000\022\034\n\030PROTOCOL_VERSION_CURRENT\020\002*\256\002"
+    "\n\010Constant\022\030\n\024CONSTANT_UNSPECIFIED\020\000\022\034\n\030"
+    "CONSTANT_UNITS_PER_METER\020 \022$\n\037CONSTANT_M"
+    "AP_HALF_EXTENT_METERS\020\200\010\022\027\n\022CONSTANT_YAW"
+    "_STEPS\020\200\002\022\035\n\031CONSTANT_TICKS_PER_SECOND\020\024"
+    "\022(\n$CONSTANT_MAX_SPEED_METERS_PER_SECOND"
+    "\020\006\022\"\n\036CONSTANT_PING_INTERVAL_SECONDS\020\005\022!"
+    "\n\035CONSTANT_IDLE_TIMEOUT_SECONDS\020\017\022\033\n\027CON"
+    "STANT_MAX_CHARACTERS\020\004*\236\001\n\017LoginResultCo"
+    "de\022\030\n\024LOGIN_RESULT_CODE_OK\020\000\022&\n\"LOGIN_RE"
+    "SULT_CODE_INVALID_LOGIN_ID\020\001\022&\n\"LOGIN_RE"
+    "SULT_CODE_VERSION_MISMATCH\020\002\022!\n\035LOGIN_RE"
+    "SULT_CODE_SERVER_FULL\020\003*\253\001\n\nKickReason\022\033"
+    "\n\027KICK_REASON_UNSPECIFIED\020\000\022\037\n\033KICK_REAS"
+    "ON_DUPLICATE_LOGIN\020\001\022\037\n\033KICK_REASON_SERV"
+    "ER_SHUTDOWN\020\002\022 \n\034KICK_REASON_MALFORMED_P"
+    "ACKET\020\003\022\034\n\030KICK_REASON_IDLE_TIMEOUT\020\004*g\n"
+    "\016CharacterClass\022\037\n\033CHARACTER_CLASS_UNSPE"
+    "CIFIED\020\000\022\032\n\026CHARACTER_CLASS_KNIGHT\020\001\022\030\n\024"
+    "CHARACTER_CLASS_MAGE\020\002*\367\001\n\031CreateCharact"
+    "erResultCode\022#\n\037CREATE_CHARACTER_RESULT_"
+    "CODE_OK\020\000\022-\n)CREATE_CHARACTER_RESULT_COD"
+    "E_INVALID_NAME\020\001\022+\n\'CREATE_CHARACTER_RES"
+    "ULT_CODE_NAME_TAKEN\020\002\022)\n%CREATE_CHARACTE"
+    "R_RESULT_CODE_TOO_MANY\020\003\022.\n*CREATE_CHARA"
+    "CTER_RESULT_CODE_INVALID_CLASS\020\004*e\n\024Ente"
+    "rWorldResultCode\022\036\n\032ENTER_WORLD_RESULT_C"
+    "ODE_OK\020\000\022-\n)ENTER_WORLD_RESULT_CODE_NO_S"
+    "UCH_CHARACTER\020\001B\030\252\002\025PortfolioMmo.Contrac"
+    "tb\006proto3"
 };
 static ::absl::once_flag descriptor_table_packets_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_packets_2eproto = {
     false,
     false,
-    1914,
+    3289,
     descriptor_table_protodef_packets_2eproto,
     "packets.proto",
     &descriptor_table_packets_2eproto_once,
     nullptr,
     0,
-    13,
+    20,
     schemas,
     file_message_globals,
     TableStruct_packets_2eproto::offsets,
@@ -2309,14 +3471,14 @@ ProtocolVersion_descriptor() {
   return file_level_enum_descriptors_packets_2eproto[0];
 }
 PROTOBUF_CONSTINIT const uint32_t ProtocolVersion_internal_data_[] = {
-    131072u, 0u, };
+    65536u, 32u, 2u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 Constant_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
   return file_level_enum_descriptors_packets_2eproto[1];
 }
 PROTOBUF_CONSTINIT const uint32_t Constant_internal_data_[] = {
-    65536u, 131104u, 2148024368u, 1024u, 256u, };
+    65536u, 131104u, 2148024376u, 1024u, 256u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 LoginResultCode_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
@@ -2331,6 +3493,27 @@ KickReason_descriptor() {
 }
 PROTOBUF_CONSTINIT const uint32_t KickReason_internal_data_[] = {
     327680u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+CharacterClass_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
+  return file_level_enum_descriptors_packets_2eproto[4];
+}
+PROTOBUF_CONSTINIT const uint32_t CharacterClass_internal_data_[] = {
+    196608u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+CreateCharacterResultCode_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
+  return file_level_enum_descriptors_packets_2eproto[5];
+}
+PROTOBUF_CONSTINIT const uint32_t CreateCharacterResultCode_internal_data_[] = {
+    327680u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+EnterWorldResultCode_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
+  return file_level_enum_descriptors_packets_2eproto[6];
+}
+PROTOBUF_CONSTINIT const uint32_t EnterWorldResultCode_internal_data_[] = {
+    131072u, 0u, };
 // ===================================================================
 
 void Packet::set_allocated_login(::portfolio::mmo::Login* PROTOBUF_NULLABLE login) {
@@ -2397,6 +3580,84 @@ void Packet::set_allocated_pong(::portfolio::mmo::Pong* PROTOBUF_NULLABLE pong) 
     _impl_.body_.pong_ = pong;
   }
   // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.pong)
+}
+void Packet::set_allocated_character_list(::portfolio::mmo::CharacterList* PROTOBUF_NULLABLE character_list) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (character_list) {
+    ::google::protobuf::Arena* submessage_arena = character_list->GetArena();
+    if (message_arena != submessage_arena) {
+      character_list = ::google::protobuf::internal::GetOwnedMessage(message_arena, character_list, submessage_arena);
+    }
+    set_has_character_list();
+    _impl_.body_.character_list_ = character_list;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.character_list)
+}
+void Packet::set_allocated_create_character(::portfolio::mmo::CreateCharacter* PROTOBUF_NULLABLE create_character) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (create_character) {
+    ::google::protobuf::Arena* submessage_arena = create_character->GetArena();
+    if (message_arena != submessage_arena) {
+      create_character = ::google::protobuf::internal::GetOwnedMessage(message_arena, create_character, submessage_arena);
+    }
+    set_has_create_character();
+    _impl_.body_.create_character_ = create_character;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.create_character)
+}
+void Packet::set_allocated_create_character_result(::portfolio::mmo::CreateCharacterResult* PROTOBUF_NULLABLE create_character_result) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (create_character_result) {
+    ::google::protobuf::Arena* submessage_arena = create_character_result->GetArena();
+    if (message_arena != submessage_arena) {
+      create_character_result = ::google::protobuf::internal::GetOwnedMessage(message_arena, create_character_result, submessage_arena);
+    }
+    set_has_create_character_result();
+    _impl_.body_.create_character_result_ = create_character_result;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.create_character_result)
+}
+void Packet::set_allocated_enter_world(::portfolio::mmo::EnterWorld* PROTOBUF_NULLABLE enter_world) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (enter_world) {
+    ::google::protobuf::Arena* submessage_arena = enter_world->GetArena();
+    if (message_arena != submessage_arena) {
+      enter_world = ::google::protobuf::internal::GetOwnedMessage(message_arena, enter_world, submessage_arena);
+    }
+    set_has_enter_world();
+    _impl_.body_.enter_world_ = enter_world;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.enter_world)
+}
+void Packet::set_allocated_enter_world_result(::portfolio::mmo::EnterWorldResult* PROTOBUF_NULLABLE enter_world_result) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (enter_world_result) {
+    ::google::protobuf::Arena* submessage_arena = enter_world_result->GetArena();
+    if (message_arena != submessage_arena) {
+      enter_world_result = ::google::protobuf::internal::GetOwnedMessage(message_arena, enter_world_result, submessage_arena);
+    }
+    set_has_enter_world_result();
+    _impl_.body_.enter_world_result_ = enter_world_result;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.enter_world_result)
+}
+void Packet::set_allocated_leave_world(::portfolio::mmo::LeaveWorld* PROTOBUF_NULLABLE leave_world) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (leave_world) {
+    ::google::protobuf::Arena* submessage_arena = leave_world->GetArena();
+    if (message_arena != submessage_arena) {
+      leave_world = ::google::protobuf::internal::GetOwnedMessage(message_arena, leave_world, submessage_arena);
+    }
+    set_has_leave_world();
+    _impl_.body_.leave_world_ = leave_world;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.leave_world)
 }
 void Packet::set_allocated_move(::portfolio::mmo::Move* PROTOBUF_NULLABLE move) {
   ::google::protobuf::Arena* message_arena = GetArena();
@@ -2511,6 +3772,24 @@ Packet::Packet(
       case kPong:
         _impl_.body_.pong_ = Super_::CopyConstruct(arena, *from._impl_.body_.pong_);
         break;
+      case kCharacterList:
+        _impl_.body_.character_list_ = Super_::CopyConstruct(arena, *from._impl_.body_.character_list_);
+        break;
+      case kCreateCharacter:
+        _impl_.body_.create_character_ = Super_::CopyConstruct(arena, *from._impl_.body_.create_character_);
+        break;
+      case kCreateCharacterResult:
+        _impl_.body_.create_character_result_ = Super_::CopyConstruct(arena, *from._impl_.body_.create_character_result_);
+        break;
+      case kEnterWorld:
+        _impl_.body_.enter_world_ = Super_::CopyConstruct(arena, *from._impl_.body_.enter_world_);
+        break;
+      case kEnterWorldResult:
+        _impl_.body_.enter_world_result_ = Super_::CopyConstruct(arena, *from._impl_.body_.enter_world_result_);
+        break;
+      case kLeaveWorld:
+        _impl_.body_.leave_world_ = Super_::CopyConstruct(arena, *from._impl_.body_.leave_world_);
+        break;
       case kMove:
         _impl_.body_.move_ = Super_::CopyConstruct(arena, *from._impl_.body_.move_);
         break;
@@ -2597,6 +3876,54 @@ void Packet::clear_body() {
         delete _impl_.body_.pong_;
       } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
         ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.pong_);
+      }
+      break;
+    }
+    case kCharacterList: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.character_list_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.character_list_);
+      }
+      break;
+    }
+    case kCreateCharacter: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.create_character_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.create_character_);
+      }
+      break;
+    }
+    case kCreateCharacterResult: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.create_character_result_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.create_character_result_);
+      }
+      break;
+    }
+    case kEnterWorld: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.enter_world_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.enter_world_);
+      }
+      break;
+    }
+    case kEnterWorldResult: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.enter_world_result_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.enter_world_result_);
+      }
+      break;
+    }
+    case kLeaveWorld: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.leave_world_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.leave_world_);
       }
       break;
     }
@@ -2733,6 +4060,42 @@ PROTOBUF_NOINLINE void Packet::Clear() {
           stream);
       break;
     }
+    case kCharacterList: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          6, *this_._impl_.body_.character_list_, this_._impl_.body_.character_list_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kCreateCharacter: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          7, *this_._impl_.body_.create_character_, this_._impl_.body_.create_character_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kCreateCharacterResult: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          8, *this_._impl_.body_.create_character_result_, this_._impl_.body_.create_character_result_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kEnterWorld: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          9, *this_._impl_.body_.enter_world_, this_._impl_.body_.enter_world_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kEnterWorldResult: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          10, *this_._impl_.body_.enter_world_result_, this_._impl_.body_.enter_world_result_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kLeaveWorld: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          11, *this_._impl_.body_.leave_world_, this_._impl_.body_.leave_world_->GetCachedSize(), target,
+          stream);
+      break;
+    }
     case kMove: {
       target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
           100, *this_._impl_.body_.move_, this_._impl_.body_.move_->GetCachedSize(), target,
@@ -2816,6 +4179,42 @@ PROTOBUF_NOINLINE void Packet::Clear() {
     case kPong: {
       total_size += 1 +
                     ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.pong_);
+      break;
+    }
+    // .portfolio.mmo.CharacterList character_list = 6;
+    case kCharacterList: {
+      total_size += 1 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.character_list_);
+      break;
+    }
+    // .portfolio.mmo.CreateCharacter create_character = 7;
+    case kCreateCharacter: {
+      total_size += 1 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.create_character_);
+      break;
+    }
+    // .portfolio.mmo.CreateCharacterResult create_character_result = 8;
+    case kCreateCharacterResult: {
+      total_size += 1 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.create_character_result_);
+      break;
+    }
+    // .portfolio.mmo.EnterWorld enter_world = 9;
+    case kEnterWorld: {
+      total_size += 1 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.enter_world_);
+      break;
+    }
+    // .portfolio.mmo.EnterWorldResult enter_world_result = 10;
+    case kEnterWorldResult: {
+      total_size += 1 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.enter_world_result_);
+      break;
+    }
+    // .portfolio.mmo.LeaveWorld leave_world = 11;
+    case kLeaveWorld: {
+      total_size += 1 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.leave_world_);
       break;
     }
     // .portfolio.mmo.Move move = 100;
@@ -2918,6 +4317,54 @@ void Packet::MergeImpl(::google::protobuf::MessageLite& to_msg,
           _this->_impl_.body_.pong_ = Super_::CopyConstruct(arena, *from._impl_.body_.pong_);
         } else {
           _this->_impl_.body_.pong_->MergeFrom(*from._impl_.body_.pong_);
+        }
+        break;
+      }
+      case kCharacterList: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.character_list_ = Super_::CopyConstruct(arena, *from._impl_.body_.character_list_);
+        } else {
+          _this->_impl_.body_.character_list_->MergeFrom(*from._impl_.body_.character_list_);
+        }
+        break;
+      }
+      case kCreateCharacter: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.create_character_ = Super_::CopyConstruct(arena, *from._impl_.body_.create_character_);
+        } else {
+          _this->_impl_.body_.create_character_->MergeFrom(*from._impl_.body_.create_character_);
+        }
+        break;
+      }
+      case kCreateCharacterResult: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.create_character_result_ = Super_::CopyConstruct(arena, *from._impl_.body_.create_character_result_);
+        } else {
+          _this->_impl_.body_.create_character_result_->MergeFrom(*from._impl_.body_.create_character_result_);
+        }
+        break;
+      }
+      case kEnterWorld: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.enter_world_ = Super_::CopyConstruct(arena, *from._impl_.body_.enter_world_);
+        } else {
+          _this->_impl_.body_.enter_world_->MergeFrom(*from._impl_.body_.enter_world_);
+        }
+        break;
+      }
+      case kEnterWorldResult: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.enter_world_result_ = Super_::CopyConstruct(arena, *from._impl_.body_.enter_world_result_);
+        } else {
+          _this->_impl_.body_.enter_world_result_->MergeFrom(*from._impl_.body_.enter_world_result_);
+        }
+        break;
+      }
+      case kLeaveWorld: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.leave_world_ = Super_::CopyConstruct(arena, *from._impl_.body_.leave_world_);
+        } else {
+          _this->_impl_.body_.leave_world_->MergeFrom(*from._impl_.body_.leave_world_);
         }
         break;
       }
@@ -3253,12 +4700,7 @@ PROTOBUF_NDEBUG_INLINE LoginResult::Impl_::Impl_(
 
 inline void LoginResult::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
-  ::memset(reinterpret_cast<char*>(&_impl_) +
-               offsetof(Impl_, result_),
-           0,
-           offsetof(Impl_, tick_) -
-               offsetof(Impl_, result_) +
-               sizeof(Impl_::tick_));
+  _impl_.result_ = {};
 }
 LoginResult::~LoginResult() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.LoginResult)
@@ -3306,14 +4748,7 @@ PROTOBUF_NOINLINE void LoginResult::Clear() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
-  cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
-    ::memset(&this_._impl_.result_, 0,
-             static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.tick_) -
-                 reinterpret_cast<char*>(&this_._impl_.result_)) +
-                 sizeof(_impl_.tick_));
-  }
+  this_._impl_.result_ = 0;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -3346,24 +4781,6 @@ PROTOBUF_NOINLINE void LoginResult::Clear() {
     }
   }
 
-  // uint32 self_id = 2;
-  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
-    if (this_._internal_self_id() != 0) {
-      target = stream->EnsureSpace(target);
-      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
-          2, this_._internal_self_id(), target);
-    }
-  }
-
-  // uint32 tick = 3;
-  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
-    if (this_._internal_tick() != 0) {
-      target = stream->EnsureSpace(target);
-      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
-          3, this_._internal_tick(), target);
-    }
-  }
-
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -3385,28 +4802,13 @@ PROTOBUF_NOINLINE void LoginResult::Clear() {
 
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
-  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
-  cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+   {
     // .portfolio.mmo.LoginResultCode result = 1;
+    cached_has_bits = this_._impl_._has_bits_[0];
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (this_._internal_result() != 0) {
         total_size += 1 +
                       ::_pbi::WireFormatLite::EnumSize(this_._internal_result());
-      }
-    }
-    // uint32 self_id = 2;
-    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
-      if (this_._internal_self_id() != 0) {
-        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
-            this_._internal_self_id());
-      }
-    }
-    // uint32 tick = 3;
-    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
-      if (this_._internal_tick() != 0) {
-        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
-            this_._internal_tick());
       }
     }
   }
@@ -3427,21 +4829,9 @@ void LoginResult::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
-    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-      if (from._internal_result() != 0) {
-        _this->_impl_.result_ = from._impl_.result_;
-      }
-    }
-    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
-      if (from._internal_self_id() != 0) {
-        _this->_impl_.self_id_ = from._impl_.self_id_;
-      }
-    }
-    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
-      if (from._internal_tick() != 0) {
-        _this->_impl_.tick_ = from._impl_.tick_;
-      }
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (from._internal_result() != 0) {
+      _this->_impl_.result_ = from._impl_.result_;
     }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -3461,12 +4851,7 @@ void LoginResult::InternalSwap(LoginResult* PROTOBUF_RESTRICT PROTOBUF_NONNULL o
   using ::std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(LoginResult, _impl_.tick_)
-      + sizeof(LoginResult::_impl_.tick_)
-      - PROTOBUF_FIELD_OFFSET(LoginResult, _impl_.result_)>(
-          reinterpret_cast<char*>(&_impl_.result_),
-          reinterpret_cast<char*>(&other->_impl_.result_));
+  swap(_impl_.result_, other->_impl_.result_);
 }
 
 ::google::protobuf::Metadata LoginResult::GetMetadata() const {
@@ -3719,6 +5104,1422 @@ PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const Ping::ParseTableT_
 
 
 ::google::protobuf::Metadata Ping::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+CharacterSummary::CharacterSummary(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, CharacterSummary_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.CharacterSummary)
+}
+PROTOBUF_NDEBUG_INLINE CharacterSummary::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+    [[maybe_unused]] const ::portfolio::mmo::CharacterSummary& from_msg)
+      : _has_bits_{from._has_bits_},
+        name_(arena, from.name_) {}
+
+CharacterSummary::CharacterSummary(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
+    const CharacterSummary& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, CharacterSummary_get_class_data()) {
+
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  CharacterSummary* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  ::memcpy(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, id_),
+           reinterpret_cast<const char*>(&from._impl_) +
+               offsetof(Impl_, id_),
+           offsetof(Impl_, character_class_) -
+               offsetof(Impl_, id_) +
+               sizeof(Impl_::character_class_));
+
+  // @@protoc_insertion_point(copy_constructor:portfolio.mmo.CharacterSummary)
+}
+PROTOBUF_NDEBUG_INLINE CharacterSummary::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+      : name_(arena) {}
+
+inline void CharacterSummary::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, id_),
+           0,
+           offsetof(Impl_, character_class_) -
+               offsetof(Impl_, id_) +
+               sizeof(Impl_::character_class_));
+}
+CharacterSummary::~CharacterSummary() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.CharacterSummary)
+  SharedDtor(*this);
+}
+inline void CharacterSummary::SharedDtor(MessageLite& self) {
+  CharacterSummary& this_ = static_cast<CharacterSummary&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.name_.Destroy();
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull CharacterSummary_class_data_ =
+        CharacterSummary::InternalGenerateClassData_(CharacterSummary_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+CharacterSummary::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&CharacterSummary_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(CharacterSummary_class_data_.tc_table);
+  return CharacterSummary_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+CharacterSummary::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&CharacterSummary_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&CharacterSummary_globals_));
+  return CharacterSummary_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const CharacterSummary::ParseTableT_
+    CharacterSummary::_table_ =
+        CharacterSummary::InternalGenerateParseTable_(CharacterSummary_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void CharacterSummary::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.CharacterSummary)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    this_._impl_.name_.ClearNonDefaultToEmpty();
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x00000006U)) {
+    ::memset(&this_._impl_.id_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.character_class_) -
+                 reinterpret_cast<char*>(&this_._impl_.id_)) +
+                 sizeof(_impl_.character_class_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL CharacterSummary::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const CharacterSummary& this_ = static_cast<const CharacterSummary&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL CharacterSummary::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const CharacterSummary& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.CharacterSummary)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint64 id = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt64ToArray(
+          1, this_._internal_id(), target);
+    }
+  }
+
+  // string name = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (!this_._internal_name().empty()) {
+      const ::std::string& _s = this_._internal_name();
+      ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+          _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "portfolio.mmo.CharacterSummary.name");
+      target = stream->WriteStringMaybeAliased(2, _s, target);
+    }
+  }
+
+  // .portfolio.mmo.CharacterClass character_class = 3;
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (this_._internal_character_class() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteEnumToArray(
+          3, this_._internal_character_class(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.CharacterSummary)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t CharacterSummary::ByteSizeLong(const MessageLite& base) {
+  const CharacterSummary& this_ = static_cast<const CharacterSummary&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t CharacterSummary::ByteSizeLong() const {
+  const CharacterSummary& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.CharacterSummary)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    // string name = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (!this_._internal_name().empty()) {
+        total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                        this_._internal_name());
+      }
+    }
+    // uint64 id = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(
+            this_._internal_id());
+      }
+    }
+    // .portfolio.mmo.CharacterClass character_class = 3;
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (this_._internal_character_class() != 0) {
+        total_size += 1 +
+                      ::_pbi::WireFormatLite::EnumSize(this_._internal_character_class());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void CharacterSummary::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<CharacterSummary*>(&to_msg);
+  auto& from = static_cast<const CharacterSummary&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.CharacterSummary)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (!from._internal_name().empty()) {
+        _this->_internal_set_name(from._internal_name());
+      } else {
+        if (_this->_impl_.name_.IsDefault()) {
+          _this->_internal_set_name("");
+        }
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_id() != 0) {
+        _this->_impl_.id_ = from._impl_.id_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (from._internal_character_class() != 0) {
+        _this->_impl_.character_class_ = from._impl_.character_class_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void CharacterSummary::CopyFrom(const CharacterSummary& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.CharacterSummary)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void CharacterSummary::InternalSwap(CharacterSummary* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  auto* arena = GetArena();
+  ABSL_DCHECK_EQ(arena, other->GetArena());
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_, &other->_impl_.name_, arena);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.character_class_)
+      + sizeof(CharacterSummary::_impl_.character_class_)
+      - PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.id_)>(
+          reinterpret_cast<char*>(&_impl_.id_),
+          reinterpret_cast<char*>(&other->_impl_.id_));
+}
+
+::google::protobuf::Metadata CharacterSummary::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+CharacterList::CharacterList(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, CharacterList_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.CharacterList)
+}
+PROTOBUF_NDEBUG_INLINE CharacterList::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+    [[maybe_unused]] const ::portfolio::mmo::CharacterList& from_msg)
+      : _has_bits_{from._has_bits_},
+        characters_ {
+          visibility, ::_pbi::InternalMetadataOffset::Build<
+              ::portfolio::mmo::CharacterList,
+              PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterList, _impl_.characters_)>()
+          , arena, from.characters_
+        }
+     {}
+
+CharacterList::CharacterList(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
+    const CharacterList& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, CharacterList_get_class_data()) {
+
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  CharacterList* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+
+  // @@protoc_insertion_point(copy_constructor:portfolio.mmo.CharacterList)
+}
+PROTOBUF_NDEBUG_INLINE CharacterList::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+      : characters_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::CharacterList,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterList, _impl_.characters_)>()
+         }
+     {}
+
+inline void CharacterList::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+}
+CharacterList::~CharacterList() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.CharacterList)
+  SharedDtor(*this);
+}
+inline void CharacterList::SharedDtor(MessageLite& self) {
+  CharacterList& this_ = static_cast<CharacterList&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull CharacterList_class_data_ =
+        CharacterList::InternalGenerateClassData_(CharacterList_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+CharacterList::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&CharacterList_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(CharacterList_class_data_.tc_table);
+  return CharacterList_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+CharacterList::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&CharacterList_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&CharacterList_globals_));
+  return CharacterList_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const CharacterList::ParseTableT_
+    CharacterList::_table_ =
+        CharacterList::InternalGenerateParseTable_(CharacterList_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void CharacterList::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.CharacterList)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    _impl_.characters_.Clear();
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL CharacterList::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const CharacterList& this_ = static_cast<const CharacterList&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL CharacterList::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const CharacterList& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.CharacterList)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // repeated .portfolio.mmo.CharacterSummary characters = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    for (unsigned i = 0, n = static_cast<unsigned>(
+                             this_._internal_characters_size());
+         i < n; i++) {
+      const auto& repfield = this_._internal_characters().Get(i);
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          1, repfield, repfield.GetCachedSize(), target,
+          stream);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.CharacterList)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t CharacterList::ByteSizeLong(const MessageLite& base) {
+  const CharacterList& this_ = static_cast<const CharacterList&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t CharacterList::ByteSizeLong() const {
+  const CharacterList& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.CharacterList)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+   {
+    // repeated .portfolio.mmo.CharacterSummary characters = 1;
+    cached_has_bits = this_._impl_._has_bits_[0];
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      total_size += 1UL * this_._internal_characters_size();
+      for (const auto& msg : this_._internal_characters()) {
+        total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void CharacterList::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<CharacterList*>(&to_msg);
+  auto& from = static_cast<const CharacterList&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  ::google::protobuf::Arena* arena = _this->GetArena();
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.CharacterList)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    _this->_internal_mutable_characters()->InternalMergeFromWithArena(
+        ::google::protobuf::MessageLite::internal_visibility(), arena,
+        from._internal_characters());
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void CharacterList::CopyFrom(const CharacterList& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.CharacterList)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void CharacterList::InternalSwap(CharacterList* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _impl_.characters_.InternalSwap(&other->_impl_.characters_);
+}
+
+::google::protobuf::Metadata CharacterList::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+CreateCharacter::CreateCharacter(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, CreateCharacter_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.CreateCharacter)
+}
+PROTOBUF_NDEBUG_INLINE CreateCharacter::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+    [[maybe_unused]] const ::portfolio::mmo::CreateCharacter& from_msg)
+      : _has_bits_{from._has_bits_},
+        name_(arena, from.name_) {}
+
+CreateCharacter::CreateCharacter(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
+    const CreateCharacter& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, CreateCharacter_get_class_data()) {
+
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  CreateCharacter* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  _impl_.character_class_ = from._impl_.character_class_;
+
+  // @@protoc_insertion_point(copy_constructor:portfolio.mmo.CreateCharacter)
+}
+PROTOBUF_NDEBUG_INLINE CreateCharacter::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+      : name_(arena) {}
+
+inline void CreateCharacter::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.character_class_ = {};
+}
+CreateCharacter::~CreateCharacter() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.CreateCharacter)
+  SharedDtor(*this);
+}
+inline void CreateCharacter::SharedDtor(MessageLite& self) {
+  CreateCharacter& this_ = static_cast<CreateCharacter&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.name_.Destroy();
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull CreateCharacter_class_data_ =
+        CreateCharacter::InternalGenerateClassData_(CreateCharacter_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+CreateCharacter::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&CreateCharacter_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(CreateCharacter_class_data_.tc_table);
+  return CreateCharacter_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+CreateCharacter::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&CreateCharacter_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&CreateCharacter_globals_));
+  return CreateCharacter_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const CreateCharacter::ParseTableT_
+    CreateCharacter::_table_ =
+        CreateCharacter::InternalGenerateParseTable_(CreateCharacter_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void CreateCharacter::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.CreateCharacter)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    this_._impl_.name_.ClearNonDefaultToEmpty();
+  }
+  this_._impl_.character_class_ = 0;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL CreateCharacter::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const CreateCharacter& this_ = static_cast<const CreateCharacter&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL CreateCharacter::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const CreateCharacter& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.CreateCharacter)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // string name = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (!this_._internal_name().empty()) {
+      const ::std::string& _s = this_._internal_name();
+      ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+          _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "portfolio.mmo.CreateCharacter.name");
+      target = stream->WriteStringMaybeAliased(1, _s, target);
+    }
+  }
+
+  // .portfolio.mmo.CharacterClass character_class = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_character_class() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteEnumToArray(
+          2, this_._internal_character_class(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.CreateCharacter)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t CreateCharacter::ByteSizeLong(const MessageLite& base) {
+  const CreateCharacter& this_ = static_cast<const CreateCharacter&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t CreateCharacter::ByteSizeLong() const {
+  const CreateCharacter& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.CreateCharacter)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    // string name = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (!this_._internal_name().empty()) {
+        total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                        this_._internal_name());
+      }
+    }
+    // .portfolio.mmo.CharacterClass character_class = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_character_class() != 0) {
+        total_size += 1 +
+                      ::_pbi::WireFormatLite::EnumSize(this_._internal_character_class());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void CreateCharacter::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<CreateCharacter*>(&to_msg);
+  auto& from = static_cast<const CreateCharacter&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.CreateCharacter)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (!from._internal_name().empty()) {
+        _this->_internal_set_name(from._internal_name());
+      } else {
+        if (_this->_impl_.name_.IsDefault()) {
+          _this->_internal_set_name("");
+        }
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_character_class() != 0) {
+        _this->_impl_.character_class_ = from._impl_.character_class_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void CreateCharacter::CopyFrom(const CreateCharacter& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.CreateCharacter)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void CreateCharacter::InternalSwap(CreateCharacter* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  auto* arena = GetArena();
+  ABSL_DCHECK_EQ(arena, other->GetArena());
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_, &other->_impl_.name_, arena);
+  swap(_impl_.character_class_, other->_impl_.character_class_);
+}
+
+::google::protobuf::Metadata CreateCharacter::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+CreateCharacterResult::CreateCharacterResult(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, CreateCharacterResult_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.CreateCharacterResult)
+}
+CreateCharacterResult::CreateCharacterResult(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const CreateCharacterResult& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, CreateCharacterResult_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE CreateCharacterResult::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void CreateCharacterResult::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.result_ = {};
+}
+CreateCharacterResult::~CreateCharacterResult() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.CreateCharacterResult)
+  SharedDtor(*this);
+}
+inline void CreateCharacterResult::SharedDtor(MessageLite& self) {
+  CreateCharacterResult& this_ = static_cast<CreateCharacterResult&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull CreateCharacterResult_class_data_ =
+        CreateCharacterResult::InternalGenerateClassData_(CreateCharacterResult_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+CreateCharacterResult::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&CreateCharacterResult_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(CreateCharacterResult_class_data_.tc_table);
+  return CreateCharacterResult_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+CreateCharacterResult::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&CreateCharacterResult_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&CreateCharacterResult_globals_));
+  return CreateCharacterResult_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const CreateCharacterResult::ParseTableT_
+    CreateCharacterResult::_table_ =
+        CreateCharacterResult::InternalGenerateParseTable_(CreateCharacterResult_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void CreateCharacterResult::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.CreateCharacterResult)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  this_._impl_.result_ = 0;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL CreateCharacterResult::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const CreateCharacterResult& this_ = static_cast<const CreateCharacterResult&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL CreateCharacterResult::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const CreateCharacterResult& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.CreateCharacterResult)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // .portfolio.mmo.CreateCharacterResultCode result = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_result() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteEnumToArray(
+          1, this_._internal_result(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.CreateCharacterResult)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t CreateCharacterResult::ByteSizeLong(const MessageLite& base) {
+  const CreateCharacterResult& this_ = static_cast<const CreateCharacterResult&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t CreateCharacterResult::ByteSizeLong() const {
+  const CreateCharacterResult& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.CreateCharacterResult)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+   {
+    // .portfolio.mmo.CreateCharacterResultCode result = 1;
+    cached_has_bits = this_._impl_._has_bits_[0];
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_result() != 0) {
+        total_size += 1 +
+                      ::_pbi::WireFormatLite::EnumSize(this_._internal_result());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void CreateCharacterResult::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<CreateCharacterResult*>(&to_msg);
+  auto& from = static_cast<const CreateCharacterResult&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.CreateCharacterResult)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (from._internal_result() != 0) {
+      _this->_impl_.result_ = from._impl_.result_;
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void CreateCharacterResult::CopyFrom(const CreateCharacterResult& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.CreateCharacterResult)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void CreateCharacterResult::InternalSwap(CreateCharacterResult* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  swap(_impl_.result_, other->_impl_.result_);
+}
+
+::google::protobuf::Metadata CreateCharacterResult::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+EnterWorld::EnterWorld(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, EnterWorld_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.EnterWorld)
+}
+EnterWorld::EnterWorld(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const EnterWorld& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, EnterWorld_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE EnterWorld::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void EnterWorld::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.character_id_ = {};
+}
+EnterWorld::~EnterWorld() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.EnterWorld)
+  SharedDtor(*this);
+}
+inline void EnterWorld::SharedDtor(MessageLite& self) {
+  EnterWorld& this_ = static_cast<EnterWorld&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull EnterWorld_class_data_ =
+        EnterWorld::InternalGenerateClassData_(EnterWorld_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+EnterWorld::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&EnterWorld_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(EnterWorld_class_data_.tc_table);
+  return EnterWorld_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+EnterWorld::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&EnterWorld_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&EnterWorld_globals_));
+  return EnterWorld_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const EnterWorld::ParseTableT_
+    EnterWorld::_table_ =
+        EnterWorld::InternalGenerateParseTable_(EnterWorld_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void EnterWorld::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.EnterWorld)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  this_._impl_.character_id_ = ::uint64_t{0u};
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL EnterWorld::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const EnterWorld& this_ = static_cast<const EnterWorld&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL EnterWorld::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const EnterWorld& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.EnterWorld)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint64 character_id = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_character_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt64ToArray(
+          1, this_._internal_character_id(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.EnterWorld)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t EnterWorld::ByteSizeLong(const MessageLite& base) {
+  const EnterWorld& this_ = static_cast<const EnterWorld&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t EnterWorld::ByteSizeLong() const {
+  const EnterWorld& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.EnterWorld)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+   {
+    // uint64 character_id = 1;
+    cached_has_bits = this_._impl_._has_bits_[0];
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_character_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(
+            this_._internal_character_id());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void EnterWorld::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<EnterWorld*>(&to_msg);
+  auto& from = static_cast<const EnterWorld&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.EnterWorld)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (from._internal_character_id() != 0) {
+      _this->_impl_.character_id_ = from._impl_.character_id_;
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void EnterWorld::CopyFrom(const EnterWorld& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.EnterWorld)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void EnterWorld::InternalSwap(EnterWorld* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  swap(_impl_.character_id_, other->_impl_.character_id_);
+}
+
+::google::protobuf::Metadata EnterWorld::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+EnterWorldResult::EnterWorldResult(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, EnterWorldResult_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.EnterWorldResult)
+}
+EnterWorldResult::EnterWorldResult(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const EnterWorldResult& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, EnterWorldResult_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE EnterWorldResult::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void EnterWorldResult::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, result_),
+           0,
+           offsetof(Impl_, tick_) -
+               offsetof(Impl_, result_) +
+               sizeof(Impl_::tick_));
+}
+EnterWorldResult::~EnterWorldResult() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.EnterWorldResult)
+  SharedDtor(*this);
+}
+inline void EnterWorldResult::SharedDtor(MessageLite& self) {
+  EnterWorldResult& this_ = static_cast<EnterWorldResult&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull EnterWorldResult_class_data_ =
+        EnterWorldResult::InternalGenerateClassData_(EnterWorldResult_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+EnterWorldResult::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&EnterWorldResult_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(EnterWorldResult_class_data_.tc_table);
+  return EnterWorldResult_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+EnterWorldResult::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&EnterWorldResult_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&EnterWorldResult_globals_));
+  return EnterWorldResult_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const EnterWorldResult::ParseTableT_
+    EnterWorldResult::_table_ =
+        EnterWorldResult::InternalGenerateParseTable_(EnterWorldResult_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void EnterWorldResult::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.EnterWorldResult)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    ::memset(&this_._impl_.result_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.tick_) -
+                 reinterpret_cast<char*>(&this_._impl_.result_)) +
+                 sizeof(_impl_.tick_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL EnterWorldResult::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const EnterWorldResult& this_ = static_cast<const EnterWorldResult&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL EnterWorldResult::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const EnterWorldResult& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.EnterWorldResult)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // .portfolio.mmo.EnterWorldResultCode result = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_result() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteEnumToArray(
+          1, this_._internal_result(), target);
+    }
+  }
+
+  // uint32 self_id = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_self_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          2, this_._internal_self_id(), target);
+    }
+  }
+
+  // uint32 tick = 3;
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (this_._internal_tick() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          3, this_._internal_tick(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.EnterWorldResult)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t EnterWorldResult::ByteSizeLong(const MessageLite& base) {
+  const EnterWorldResult& this_ = static_cast<const EnterWorldResult&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t EnterWorldResult::ByteSizeLong() const {
+  const EnterWorldResult& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.EnterWorldResult)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    // .portfolio.mmo.EnterWorldResultCode result = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_result() != 0) {
+        total_size += 1 +
+                      ::_pbi::WireFormatLite::EnumSize(this_._internal_result());
+      }
+    }
+    // uint32 self_id = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_self_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_self_id());
+      }
+    }
+    // uint32 tick = 3;
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (this_._internal_tick() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_tick());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void EnterWorldResult::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<EnterWorldResult*>(&to_msg);
+  auto& from = static_cast<const EnterWorldResult&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.EnterWorldResult)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (from._internal_result() != 0) {
+        _this->_impl_.result_ = from._impl_.result_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_self_id() != 0) {
+        _this->_impl_.self_id_ = from._impl_.self_id_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (from._internal_tick() != 0) {
+        _this->_impl_.tick_ = from._impl_.tick_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void EnterWorldResult::CopyFrom(const EnterWorldResult& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.EnterWorldResult)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void EnterWorldResult::InternalSwap(EnterWorldResult* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.tick_)
+      + sizeof(EnterWorldResult::_impl_.tick_)
+      - PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.result_)>(
+          reinterpret_cast<char*>(&_impl_.result_),
+          reinterpret_cast<char*>(&other->_impl_.result_));
+}
+
+::google::protobuf::Metadata EnterWorldResult::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+LeaveWorld::LeaveWorld(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, LeaveWorld_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.LeaveWorld)
+}
+LeaveWorld::LeaveWorld(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
+    const LeaveWorld& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, LeaveWorld_get_class_data()) {
+
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  LeaveWorld* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+
+  // @@protoc_insertion_point(copy_constructor:portfolio.mmo.LeaveWorld)
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull LeaveWorld_class_data_ =
+        LeaveWorld::InternalGenerateClassData_(LeaveWorld_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+LeaveWorld::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&LeaveWorld_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(LeaveWorld_class_data_.tc_table);
+  return LeaveWorld_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+LeaveWorld::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&LeaveWorld_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&LeaveWorld_globals_));
+  return LeaveWorld_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const LeaveWorld::ParseTableT_
+    LeaveWorld::_table_ =
+        LeaveWorld::InternalGenerateParseTable_(LeaveWorld_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+
+
+
+
+
+
+
+::google::protobuf::Metadata LeaveWorld::GetMetadata() const {
   return Super_::GetMetadataImpl(GetClassData()->full());
 }
 // ===================================================================
@@ -4676,9 +7477,9 @@ EntityEnter::EntityEnter(
                offsetof(Impl_, id_),
            reinterpret_cast<const char*>(&from._impl_) +
                offsetof(Impl_, id_),
-           offsetof(Impl_, yaw_) -
+           offsetof(Impl_, character_class_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::yaw_));
+               sizeof(Impl_::character_class_));
 
   // @@protoc_insertion_point(copy_constructor:portfolio.mmo.EntityEnter)
 }
@@ -4692,9 +7493,9 @@ inline void EntityEnter::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, id_),
            0,
-           offsetof(Impl_, yaw_) -
+           offsetof(Impl_, character_class_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::yaw_));
+               sizeof(Impl_::character_class_));
 }
 EntityEnter::~EntityEnter() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.EntityEnter)
@@ -4747,12 +7548,12 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   if (CheckHasBit(cached_has_bits, 0x00000001U)) {
     this_._impl_.name_.ClearNonDefaultToEmpty();
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x0000001eU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000003eU)) {
     ::memset(&this_._impl_.id_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.yaw_) -
+                 reinterpret_cast<char*>(&this_._impl_.character_class_) -
                  reinterpret_cast<char*>(&this_._impl_.id_)) +
-                 sizeof(_impl_.yaw_));
+                 sizeof(_impl_.character_class_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -4823,6 +7624,15 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
     }
   }
 
+  // .portfolio.mmo.CharacterClass character_class = 6;
+  if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+    if (this_._internal_character_class() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteEnumToArray(
+          6, this_._internal_character_class(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -4846,7 +7656,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000003fU)) {
     // string name = 5;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (!this_._internal_name().empty()) {
@@ -4882,6 +7692,13 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
             this_._internal_yaw());
       }
     }
+    // .portfolio.mmo.CharacterClass character_class = 6;
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+      if (this_._internal_character_class() != 0) {
+        total_size += 1 +
+                      ::_pbi::WireFormatLite::EnumSize(this_._internal_character_class());
+      }
+    }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
@@ -4900,7 +7717,7 @@ void EntityEnter::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000003fU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (!from._internal_name().empty()) {
         _this->_internal_set_name(from._internal_name());
@@ -4930,6 +7747,11 @@ void EntityEnter::MergeImpl(::google::protobuf::MessageLite& to_msg,
         _this->_impl_.yaw_ = from._impl_.yaw_;
       }
     }
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+      if (from._internal_character_class() != 0) {
+        _this->_impl_.character_class_ = from._impl_.character_class_;
+      }
+    }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
@@ -4952,8 +7774,8 @@ void EntityEnter::InternalSwap(EntityEnter* PROTOBUF_RESTRICT PROTOBUF_NONNULL o
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_, &other->_impl_.name_, arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.yaw_)
-      + sizeof(EntityEnter::_impl_.yaw_)
+      PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.character_class_)
+      + sizeof(EntityEnter::_impl_.character_class_)
       - PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.id_)>(
           reinterpret_cast<char*>(&_impl_.id_),
           reinterpret_cast<char*>(&other->_impl_.id_));

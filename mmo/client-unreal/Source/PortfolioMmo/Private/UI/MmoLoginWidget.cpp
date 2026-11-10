@@ -70,12 +70,11 @@ void UMmoLoginWidget::HandlePacket(const portfolio::mmo::Packet& Packet)
 	if (Packet.body_case() == portfolio::mmo::Packet::kLoginResult)
 	{
 		const portfolio::mmo::LoginResult& Result = Packet.login_result();
-		UE_LOG(LogMmoNet, Display, TEXT("LoginResult %s (self id %u)"),
-			UTF8_TO_TCHAR(portfolio::mmo::LoginResultCode_Name(Result.result()).c_str()), Result.self_id());
+		UE_LOG(LogMmoNet, Display, TEXT("LoginResult %s"), UTF8_TO_TCHAR(portfolio::mmo::LoginResultCode_Name(Result.result()).c_str()));
 		switch (Result.result())
 		{
 		case portfolio::mmo::LOGIN_RESULT_CODE_OK:
-			SetStatus(FText::Format(LOCTEXT("LoggedIn", "{0}(으)로 로그인했습니다. 개체 번호 {1}"), FText::FromString(Session().LoginId()), Session().World().SelfId()));
+			SetStatus(FText::Format(LOCTEXT("LoggedIn", "{0}(으)로 로그인했습니다."), FText::FromString(Session().LoginId())));
 			return;
 		case portfolio::mmo::LOGIN_RESULT_CODE_INVALID_LOGIN_ID:
 			SetStatus(LOCTEXT("InvalidLoginId", "아이디 형식이 맞지 않습니다. 영문 소문자, 숫자, _로 4–16자입니다."));
