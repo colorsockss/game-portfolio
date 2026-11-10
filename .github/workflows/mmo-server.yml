@@ -1,0 +1,50 @@
+# MMO: 게임 서버를 Live VPS(키우기와 같은 VPS)에 내보낸다. 손으로 실행한다. 클라이언트는 로컬에서 패키징한다(mmo/MANUAL.md).
+# 접속 비밀값은 키우기와 같다(secrets.VPS_SSH_KEY, VPS_KNOWN_HOSTS, vars.VPS_HOST, VPS_USER). VPS는 mmo/server/deploy/setup.sh로 준비해 둔다.
+name: mmo server
+
+on:
+  workflow_dispatch:
+
+# 앞 실행을 취소하면 반쯤 내보낸 채 멈추므로 기다린다.
+concurrency:
+  group: mmo-live
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  VPS_HOST: ${{ vars.VPS_HOST }}
+  VPS_USER: ${{ vars.VPS_USER }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      # 내보내기 전에 mmo CI와 같은 검사(생성 파일, 패킷, 서버)를 돌린다.
+      - run: npm run test:mmo
+      - uses: ./.github/actions/vps-ssh
+        with:
+          key: ${{ secrets.VPS_SSH_KEY }}
+          known-hosts: ${{ secrets.VPS_KNOWN_HOSTS }}
+          host: ${{ env.VPS_HOST }}
+          user: ${{ env.VPS_USER }}
+      # VPS의 CPU에 맞는 .NET 런타임을 함께 싣는다(VPS에 .NET을 설치하지 않는다).
+      - name: Build the server for the VPS
+        run: |
+          arch=$(ssh "$VPS_HOST" uname -m)
+          case "$arch" in
+            x86_64) rid=linux-x64 ;;
+            aarch64) rid=linux-arm64 ;;
+            *) echo "Unsupported VPS architecture $arch." >&2; exit 1 ;;
+          esac
+          dotnet publish mmo/server/src -c Release -r "$rid" --self-contained -o mmo/server/dist --nologo
+      - run: mmo/server/deploy/deploy.sh "$GITHUB_SHA"

@@ -36,3 +36,4 @@ npm-debug.log*
 # MMO C# 프로젝트의 빌드 결과물(dotnet build, dotnet test)
 /mmo/**/bin/
 /mmo/**/obj/
+/mmo/server/dist/
