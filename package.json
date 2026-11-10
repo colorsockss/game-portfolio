@@ -25,7 +25,7 @@
     "test": "npm run test:idle && npm run test:tools && npm run test:mmo",
     "test:idle": "node scripts/generate.mjs --check idle && node scripts/check-boundaries.mjs && npm test -w idle/shared -w idle/client -w idle --if-present",
     "test:tools": "node scripts/check-boundaries.mjs && npm test -w tools --if-present",
-    "test:mmo": "node scripts/generate.mjs --check mmo && dotnet test mmo/mmo.slnx --nologo",
+    "test:mmo": "node scripts/generate.mjs --check mmo && dotnet test mmo/mmo.slnx --nologo && node mmo/client-unreal/Tests/run.mjs",
     "coverage": "npm run coverage --workspaces --if-present",
     "check": "node scripts/check.mjs",
     "generate": "node scripts/generate.mjs",

@@ -12,3 +12,9 @@
 .vs/
 .vscode/
 *.code-workspace
+
+# 패키징이 만드는 것. 버전 카운터와 파일 열기 순서는 실행마다 바뀌고, 플랫폼 템플릿은 엔진 기본값을 복사한 것이라 고칠 때만 커밋한다.
+/Build/*/*.PackageVersionCounter
+/Build/*/FileOpenOrder/
+/Build/Mac/Resources/
+/Build/Android/src/
