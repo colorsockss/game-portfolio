@@ -24,5 +24,10 @@ namespace PortfolioMmo.Contract
         /// 서버의 초당 틱 수. EntityMoves.tick이 틱마다 1씩 오른다.
         /// </summary>
         public const int TicksPerSecond = (int)Constant.TicksPerSecond;
+
+        /// <summary>
+        /// 최대 이동 속도(m/s). 서버의 이동 검증과 클라이언트의 걷기가 같은 값을 쓴다.
+        /// </summary>
+        public const double MaxSpeedMetersPerSecond = (double)Constant.MaxSpeedMetersPerSecond;
     }
 }

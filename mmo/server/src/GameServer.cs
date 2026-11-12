@@ -64,6 +64,11 @@ namespace PortfolioMmo.Server
         private readonly List<Connection> _connections = new List<Connection>();
 
         /// <summary>
+        /// 통계 로그의 차례(10초마다).
+        /// </summary>
+        private readonly Periodic _statsReport = new Periodic(StatsIntervalTicks, StatsIntervalTicks);
+
+        /// <summary>
         /// 이번 통계 구간의 틱 수.
         /// </summary>
         private int _statsTicks;
@@ -223,7 +228,7 @@ namespace PortfolioMmo.Server
             _statsTicks++;
             _statsTickTime += elapsed;
             _statsMaxTickTime = elapsed > _statsMaxTickTime ? elapsed : _statsMaxTickTime;
-            if (_world.Tick % StatsIntervalTicks == 0)
+            if (_statsReport.Due(_world.Tick))
             {
                 ReportStats();
             }

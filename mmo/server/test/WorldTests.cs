@@ -423,6 +423,50 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 틱이 밀려 저장 차례를 여러 번 건너뛰어도 한 번 저장하고, 다음 저장은 원래 위상(간격의 배수)에 온다.
+        /// </summary>
+        [Fact]
+        public void SkippedTicksSaveOnceAndKeepThePhase()
+        {
+            using var store = new CharacterStore(":memory:");
+            World world = NewWorld(store: store);
+            Session session = Join(world, "hero_01");
+            long id = session.Player!.CharacterId;
+            WalkTo(world, session, 100, 0);
+
+            world.Step(World.SaveIntervalTicks * 2);
+            Assert.Equal(new SavedPosition(100, 0, 0), store.Load(id)!.Position);
+
+            Move(world, session, 200, 0, ack: 0);
+            while (world.Tick % World.SaveIntervalTicks != World.SaveIntervalTicks - 1)
+            {
+                world.Step();
+            }
+
+            Assert.Equal(new SavedPosition(100, 0, 0), store.Load(id)!.Position);
+            world.Step();
+            Assert.Equal(new SavedPosition(200, 0, 0), store.Load(id)!.Position);
+        }
+
+        /// <summary>
+        /// 이동 거리는 다음 틱까지 지날 틱 수만큼 찬다.
+        /// </summary>
+        [Fact]
+        public void TheMoveBudgetFillsForTheElapsedTicks()
+        {
+            World world = NewWorld();
+            Session one = Join(world, "hero_01");
+            world.Step();
+            Move(world, one, 50, 0, ack: 0);
+            Assert.Equal(0, one.Player!.X);
+
+            Session five = Join(world, "hero_02");
+            world.Step(5);
+            Move(world, five, 50, 0, ack: 0);
+            Assert.Equal(50, five.Player!.X);
+        }
+
+        /// <summary>
         /// 접속 중인 플레이어는 움직였으면 저장 간격마다 저장된다.
         /// </summary>
         [Fact]

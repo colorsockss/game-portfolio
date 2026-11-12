@@ -98,7 +98,7 @@ namespace PortfolioMmo.LoadTest
         /// <summary>
         /// 틱마다 걷는 거리(칸). 서버가 받아 주는 최대 속도로 걷는다.
         /// </summary>
-        private const double Stride = World.MaxSpeedMetersPerSecond * Units.PerMeter / Units.TicksPerSecond;
+        private const double Stride = Units.MaxSpeedMetersPerSecond * Units.PerMeter / Units.TicksPerSecond;
 
         /// <summary>
         /// 연결.

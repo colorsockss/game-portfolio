@@ -39,7 +39,9 @@ Protobuf를 고른 이유는 언어 중립 표준 정의 하나에서 protoc가 
 `server/src/`(.NET 10 콘솔 앱)입니다.
 
 - **스레드**: 20Hz 틱 루프 하나만 월드(`World`)를 읽고 고칩니다. 연결마다 받기·보내기 작업이 있지만, 받기는 읽은 패킷을 큐에 넣기만 하고 보내기는 틱이 만든 버퍼를 보내기만 합니다. 그래서 잠금이 없고, 같은 ID의 두 연결도 틱 안에서 차례로 처리됩니다.
-- **틱**: 큐 처리(연결, 로그인, 캐릭터 요청, `Move`, 끊김) → `World.Step`(플레이어마다 시야를 지난 틱과 비교해 `EntitiesLeave` → `EntitiesEnter` → `EntityMoves`) → 연결마다 이번 틱의 패킷을 한 버퍼로 보내기.
+- **틱**: 큐 처리(연결, 로그인, 캐릭터 요청, `Move`, 끊김) → `World.Step`(시야: 플레이어마다 지난 틱과 비교해 `EntitiesLeave` → `EntitiesEnter` → `EntityMoves`, 이동 거리 채우기, 저장) → 연결마다 이번 틱의 패킷을 한 버퍼로 보내기. 차례는 [설계의 틱의 차례](docs/design.md#틱의-차례)를 따르고, 예약한 일·몬스터·전투·회복은 그 기능이 생길 때 `World.Step`의 자리에 더합니다.
+- **구조**: `World`는 데이터와 시스템을 묶고 차례만 정합니다. 데이터는 `EntityTable`(개체 번호 → 개체)과 `Grid`(32 m 칸 → 개체)이고, 시스템은 `LoginSystem`(계정, 캐릭터, 월드에 들고 나기, 끊기), `MovementSystem`(이동 검증과 이동 거리), `ViewSystem`(시야), `SaveSystem`(위치 저장)입니다. 시스템은 월드의 데이터를 고치는 코드만 가지고, 입력의 요청은 자기 플레이어의 상태만 고칩니다.
+- **지난 틱 수와 주기**: `World.Step(elapsedTicks)`의 지난 틱 수(지금은 늘 1, 틱이 밀릴 때 건너뛰는 것은 backlog 79)만큼 이동 거리가 찹니다. 주기로 하는 일(저장 60초, 통계 로그 10초)은 나머지 연산이 아니라 `Periodic`의 "다음에 할 틱 ≤ 지금 틱"으로 보아, 틱 번호가 건너뛰어도 한 번만 하고 다음 차례는 처음 위상에 둡니다.
 - **로그인과 캐릭터**: 로그인 ID가 계정이고 계정마다 캐릭터를 4개(`CONSTANT_MAX_CHARACTERS`)까지 만듭니다. 세션은 로그인 전 → 캐릭터 선택 → 월드의 세 상태이고, 상태에 맞지 않는 요청은 `KICK_REASON_MALFORMED_PACKET`으로 끊습니다.
   - 로그인: 프로토콜 버전 → ID 형식(영문 소문자·숫자·밑줄 4–16자) → 동시 접속 상한 순으로 검사하고, 실패하면 `LoginResult`를 보낸 뒤 끊습니다. 성공하면 `LoginResult`와 `CharacterList`를 보냅니다. 같은 계정이 이미 있으면 예전 연결을 `KICK_REASON_DUPLICATE_LOGIN`으로 끊고 새 연결이 이어 갑니다(상한이 가득 차도 자리를 넘겨받습니다). 연결하고 10초 안에 로그인하지 않으면 끊고, 로그인 전이든 뒤든 15초 동안 아무 패킷도 오지 않으면 `KICK_REASON_IDLE_TIMEOUT`으로 끊습니다.
   - 만들기(`CreateCharacter`): 직업은 기사·마법사, 이름은 한글·영문·숫자 2–12자이고 서버 전체에서 하나입니다(영문은 대소문자를 가리지 않음). 개수 확인과 넣기를 한 트랜잭션에서 하고, 이름은 `INSERT … ON CONFLICT (name) DO NOTHING`으로 넣어 겹치면 `NAME_TAKEN`입니다. 시작 위치는 `--spawn-half-extent` 안의 무작위 자리입니다. 성공하면 `CreateCharacterResult` 뒤에 새 `CharacterList`를 보냅니다.
