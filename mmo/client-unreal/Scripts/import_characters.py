@@ -4,7 +4,7 @@
 #   MMO_CHARACTER_SOURCE="<압축을 푼 폴더>/RPG Characters - Nov 2020" \
 #   "/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor-Cmd" "$PWD/mmo/client-unreal/PortfolioMmo.uproject" \
 #     -run=pythonscript -script="$PWD/mmo/client-unreal/Scripts/import_characters.py" -unattended -nosplash -nullrhi
-# 대기·달리기 블렌드 스페이스는 그 뒤에 에디터 모듈의 MmoCreateLocomotion 커맨드렛이 만든다(Python으로는 다시 계산되지 않음).
+# 대기·달리기 블렌드 스페이스는 그 뒤에 에디터 모듈의 MmoCreateCharacterAssets 커맨드렛이 만든다(Python으로는 다시 계산되지 않음).
 import os
 
 import unreal

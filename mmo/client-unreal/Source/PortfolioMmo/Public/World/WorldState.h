@@ -83,9 +83,11 @@ namespace MmoWorld
 		int32_t X = 0;
 		int32_t Z = 0;
 		uint32_t Yaw = 0;
-		std::string Name;
-		/** 직업. 그림을 고른다. */
-		portfolio::mmo::CharacterClass Class = portfolio::mmo::CHARACTER_CLASS_UNSPECIFIED;
+		/**
+		 * 들어올 때 받은 EntityEnter(종류, 이름, 직업, 템플릿 번호, 체력, 표시 상태 등 종류마다의 필드). 표시 상태는 EntityState가 고친다.
+		 * 위치와 방향은 들어올 때의 값이고, 지금 위치는 위의 X, Z, Yaw다. 필드를 따로 옮겨 두지 않고 패킷의 정의 하나를 쓴다.
+		 */
+		portfolio::mmo::EntityEnter Info;
 		/** 받은 자리의 기록. 화면은 Sample(RenderTick)로 그린다. */
 		FEntityTrack Track;
 	};

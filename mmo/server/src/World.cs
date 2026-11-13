@@ -16,6 +16,7 @@ namespace PortfolioMmo.Server
         public const uint SaveIntervalTicks = 60 * Units.TicksPerSecond;
 
         private readonly EntityTable _entities = new EntityTable();
+        private readonly Grid _grid = new Grid();
         private readonly LoginSystem _login;
         private readonly MovementSystem _movement;
         private readonly ViewSystem _view;
@@ -26,11 +27,10 @@ namespace PortfolioMmo.Server
         /// </summary>
         public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store, GameData data)
         {
-            var grid = new Grid();
             _save = new SaveSystem(store, _entities, SaveIntervalTicks);
-            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, _entities, grid, _save);
-            _movement = new MovementSystem(_entities, grid);
-            _view = new ViewSystem(_entities, grid);
+            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, _entities, _grid, _save);
+            _movement = new MovementSystem(_entities, _grid);
+            _view = new ViewSystem(_entities, _grid);
         }
 
         /// <summary>
@@ -119,6 +119,55 @@ namespace PortfolioMmo.Server
 
             // 저장 주기는 다음 틱 번호로 센다. Tick이 간격의 배수가 되는 Step에서 저장한다.
             _save.Step(Tick);
+        }
+
+        /// <summary>
+        /// 놓인 점(몬스터와 채집물의 자리) 하나의 개체 번호. 서버가 뜰 때 플레이어보다 먼저 받고, 그 자리의 개체가 다시 나올 때도 쓴다.
+        /// </summary>
+        public uint ReservePlacedId()
+        {
+            return _entities.ReservePlacedId();
+        }
+
+        /// <summary>
+        /// 새 바닥 아이템의 개체 번호. 사라진 지 10초가 지난 번호를 다시 쓴다.
+        /// </summary>
+        public uint NextGroundItemId()
+        {
+            return _entities.NextGroundItemId(Tick);
+        }
+
+        /// <summary>
+        /// 플레이어가 아닌 개체를 월드에 넣는다. 다음 시야 차례에 둘레의 플레이어가 EntitiesEnter로 받는다.
+        /// 플레이어는 LoginSystem이 연결과 함께 넣고 뺀다.
+        /// </summary>
+        public void AddEntity(Entity entity)
+        {
+            if (entity is Player)
+            {
+                throw new ArgumentException("Players enter the world through EnterWorld.", nameof(entity));
+            }
+
+            _entities.Add(entity);
+            _grid.Add(entity);
+        }
+
+        /// <summary>
+        /// 플레이어가 아닌 개체를 월드에서 뺀다. 다음 시야 차례에 받은 플레이어가 EntitiesLeave로 받는다.
+        /// </summary>
+        public void RemoveEntity(Entity entity)
+        {
+            if (entity is Player)
+            {
+                throw new ArgumentException("Players leave the world through LeaveWorld or a disconnect.", nameof(entity));
+            }
+
+            _entities.Remove(entity);
+            _grid.Remove(entity);
+            if (entity.Kind == EntityKind.GroundItem)
+            {
+                _entities.FreeGroundItemId(entity.Id, Tick);
+            }
         }
 
         /// <summary>

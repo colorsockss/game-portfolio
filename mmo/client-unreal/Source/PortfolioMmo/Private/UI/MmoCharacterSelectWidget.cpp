@@ -4,6 +4,7 @@
 #include "Components/TextBlock.h"
 #include "Engine/GameInstance.h"
 #include "Engine/LocalPlayer.h"
+#include "Misc/CommandLine.h"
 #include "Net/MmoSession.h"
 #include "UI/MmoUiManager.h"
 
@@ -40,6 +41,18 @@ void UMmoCharacterSelectWidget::NativeConstruct()
 	// 처음 열거나 월드에서 돌아오면 첫 캐릭터를 고른다.
 	Selected = Session().Characters().characters_size() > 0 ? 0 : INDEX_NONE;
 	Refresh();
+	EnterFromCommandLine();
+}
+
+void UMmoCharacterSelectWidget::EnterFromCommandLine()
+{
+	static bool bUsedCommandLine = false;
+	if (!bUsedCommandLine && Session().Characters().characters_size() > 0 && FParse::Param(FCommandLine::Get(), TEXT("MmoEnter")))
+	{
+		bUsedCommandLine = true;
+		Selected = 0;
+		HandleStartClicked();
+	}
 }
 
 void UMmoCharacterSelectWidget::HandleSlot0Clicked() { Select(0); }
@@ -72,6 +85,7 @@ void UMmoCharacterSelectWidget::HandlePacket(const portfolio::mmo::Packet& Packe
 		const int32 Count = Packet.character_list().characters_size();
 		Selected = (Count > ShownCount || Selected >= Count) ? Count - 1 : Selected;
 		Refresh();
+		EnterFromCommandLine();
 	}
 	else if (Packet.body_case() == portfolio::mmo::Packet::kEnterWorldResult
 		&& Packet.enter_world_result().result() != portfolio::mmo::ENTER_WORLD_RESULT_CODE_OK)

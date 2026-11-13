@@ -28,6 +28,7 @@ message Packet {
     EntitiesEnter entities_enter = 102;
     EntitiesLeave entities_leave = 103;
     EntityMoves entity_moves = 104;
+    EntityState entity_state = 105;
   }
 }
 
@@ -224,15 +225,102 @@ message EntitiesEnter {
 }
 
 // 시야에 들어온 개체 하나.
+// 종류마다 싣는 필드가 다르고, 그 종류가 쓰지 않는 필드는 기본값이라 와이어에 실리지 않는다. 값을 채우는 것은 그 기능의 항목이고
+// 그 전에는 기본값이 간다(체력 22, 효과와 진행 중인 일 26, 죽었는지 25, 레벨 31, 입은 무기 34, 이름 색 44, 바닥 아이템 33,
+// 움직이는 중 54. 그때까지 이동은 매 틱의 EntityMoves로 알린다).
 message EntityEnter {
-  // 개체 번호. 서버가 정하고, 개체가 사라질 때까지 바뀌지 않는다.
+  // 모두: 개체 번호, 종류, 위치와 방향. 번호는 서버가 정하고, 개체가 사라질 때까지 바뀌지 않는다.
   uint32 id = 1;
   sint32 x = 2;
   sint32 z = 3;
   uint32 yaw = 4;
-  // 머리 위에 보일 이름(캐릭터 이름).
+  EntityKind kind = 7;
+
+  // 플레이어: 머리 위에 보일 이름(캐릭터 이름), 직업, 레벨, 이름 색, 입은 무기(Items의 번호. 없으면 0).
   string name = 5;
   CharacterClass character_class = 6;
+  uint32 level = 8;
+  NameColor name_color = 9;
+  uint32 weapon_item_id = 10;
+
+  // 몬스터, NPC, 채집물: 템플릿 번호(Monsters, Npcs, GatherNodes의 줄).
+  uint32 template_id = 11;
+
+  // 플레이어와 몬스터: 체력과 최대 체력, 걸린 효과, 진행 중인 일, 죽었는지.
+  uint32 hp = 12;
+  uint32 max_hp = 13;
+  repeated EffectState effects = 14;
+  ProgressState progress = 15;
+  bool dead = 16;
+
+  // 움직이는 중(플레이어, 몬스터, 움직이는 경비병). 속도는 좌표 단위의 초당 값이고 0이면 서 있다. 플레이어는 가는 방향을,
+  // 몬스터와 경비병은 다음 꺾이는 점을 싣는다.
+  uint32 speed = 17;
+  uint32 move_yaw = 18;
+  sint32 next_x = 19;
+  sint32 next_z = 20;
+
+  // 바닥 아이템: 아이템 번호, 수량, 강화 수치, 주인(플레이어 번호나 파티 번호. 주인이 없으면 비움), 주인만 줍는 시간이 끝나는 틱,
+  // 플레이어가 떨어뜨렸는지.
+  uint32 item_id = 21;
+  uint32 count = 22;
+  uint32 enchant = 23;
+  oneof owner {
+    uint32 owner_player_id = 24;
+    uint32 owner_party_id = 25;
+  }
+  uint32 owner_only_end_tick = 26;
+  bool dropped_by_player = 27;
+}
+
+// 개체의 종류. 필드 위의 것은 모두 같은 개체 번호 공간과 시야를 쓴다. 소환수는 backlog 95가 더한다.
+enum EntityKind {
+  ENTITY_KIND_UNSPECIFIED = 0;
+  ENTITY_KIND_PLAYER = 1;
+  ENTITY_KIND_MONSTER = 2;
+  ENTITY_KIND_NPC = 3;
+  ENTITY_KIND_GATHER_NODE = 4;
+  ENTITY_KIND_GROUND_ITEM = 5;
+}
+
+// 플레이어의 이름 색(성향과 선공 표시. backlog 44).
+enum NameColor {
+  NAME_COLOR_NORMAL = 0;
+  // 선공 표시가 남아 있다.
+  NAME_COLOR_AGGRESSOR = 1;
+  // 성향이 0보다 낮다.
+  NAME_COLOR_OUTLAW = 2;
+}
+
+// 개체에 걸린 효과 하나(Effects의 줄과 끝나는 틱. backlog 26).
+message EffectState {
+  uint32 effect_id = 1;
+  uint32 end_tick = 2;
+}
+
+// 진행 중인 일. 같은 세 필드를 진행 패킷(Progress, backlog 26)도 쓴다. 진행 중인 일이 없으면 kind가 NONE이다.
+message ProgressState {
+  ProgressKind kind = 1;
+  // 그 일의 번호(시전이면 Skills, 채집이면 GatherNodes, 제작이면 Recipes의 줄, 귀환이면 0).
+  uint32 id = 2;
+  uint32 end_tick = 3;
+}
+
+enum ProgressKind {
+  PROGRESS_KIND_NONE = 0;
+  PROGRESS_KIND_CAST = 1;
+  PROGRESS_KIND_GATHER = 2;
+  PROGRESS_KIND_CRAFT = 3;
+  PROGRESS_KIND_RECALL = 4;
+}
+
+// 서버 → 클라이언트. 보이는 동안 바뀐 표시 상태(이름 색, 입은 무기, 레벨). 그 개체를 받은 연결과 본인에게 가고, 하나만 바뀌어도
+// 셋을 모두 싣는다. 죽음과 부활은 전투의 사건이, 효과와 진행 중인 일은 그 패킷이 알린다. 나와 있는 펫은 backlog 96이 더한다.
+message EntityState {
+  uint32 id = 1;
+  NameColor name_color = 2;
+  uint32 weapon_item_id = 3;
+  uint32 level = 4;
 }
 
 // 서버 → 클라이언트. 시야에서 나간 개체들의 번호.

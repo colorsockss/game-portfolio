@@ -2,12 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Protocol/MmoPackets.h"
 
 #include "MmoCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
+class UStaticMeshComponent;
 
 /**
  * 내 캐릭터. UMmoEntitySubsystem이 내 개체가 들어오면 만들어 플레이어 컨트롤러에 붙이고, 나가면(끊김) 지운다.
@@ -27,8 +27,7 @@ public:
 	/** 서버가 정한 자리로 순간 이동한다(PositionReset). Location은 지면의 자리다. */
 	void Teleport(const FVector& Location);
 
-	/** 직업의 모습을 입힌다. 만든 뒤 한 번 부른다. */
-	void SetClass(portfolio::mmo::CharacterClass Class);
+	UStaticMeshComponent& PlaceholderMesh() const { return *Placeholder; }
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -36,4 +35,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> Camera;
+
+	/** 모습을 불러오는 동안 보이는 단순한 메시. */
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> Placeholder;
 };

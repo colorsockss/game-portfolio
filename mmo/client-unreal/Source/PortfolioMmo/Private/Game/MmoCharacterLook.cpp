@@ -1,37 +1,28 @@
 #include "Game/MmoCharacterLook.h"
 
 #include "Animation/AnimSingleNodeInstance.h"
-#include "Animation/BlendSpace1D.h"
+#include "Animation/BlendSpace.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
+#include "Engine/StaticMesh.h"
 
 namespace MmoCharacterLook
 {
-	namespace
+	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* PlaceholderMesh)
 	{
-		struct FLook
-		{
-			const TCHAR* Mesh;
-			const TCHAR* Locomotion;
-		};
-
-		const FLook& LookOf(portfolio::mmo::CharacterClass Class)
-		{
-			static const FLook Knight{
-				TEXT("/Game/Characters/Knight/Warrior.Warrior"), TEXT("/Game/Characters/Knight/BS_Knight_Locomotion.BS_Knight_Locomotion") };
-			static const FLook Mage{
-				TEXT("/Game/Characters/Mage/Wizard.Wizard"), TEXT("/Game/Characters/Mage/BS_Mage_Locomotion.BS_Mage_Locomotion") };
-			return Class == portfolio::mmo::CHARACTER_CLASS_MAGE ? Mage : Knight;
-		}
+		Placeholder.SetStaticMesh(PlaceholderMesh);
+		Placeholder.SetVisibility(true);
+		Mesh.SetVisibility(false);
 	}
 
-	void Apply(USkeletalMeshComponent& Mesh, portfolio::mmo::CharacterClass Class)
+	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, UBlendSpace* Locomotion)
 	{
-		// 메시 하나에 수 MB라 처음 볼 때 바로 불러온다. 직업이 둘뿐이라 두 번째부터는 메모리에 있다.
-		const FLook& Look = LookOf(Class);
-		Mesh.SetSkeletalMesh(LoadObject<USkeletalMesh>(nullptr, Look.Mesh));
+		Mesh.SetSkeletalMesh(SkeletalMesh);
 		Mesh.SetAnimationMode(EAnimationMode::AnimationSingleNode);
-		Mesh.PlayAnimation(LoadObject<UBlendSpace1D>(nullptr, Look.Locomotion), true);
+		Mesh.PlayAnimation(Locomotion, true);
+		Mesh.SetVisibility(true);
+		Placeholder.SetVisibility(false);
 	}
 
 	void SetSpeed(USkeletalMeshComponent& Mesh, double Speed)
@@ -40,5 +31,15 @@ namespace MmoCharacterLook
 		{
 			Instance->SetBlendSpacePosition(FVector(Speed, 0.0, 0.0));
 		}
+	}
+
+	void SetUpPlaceholder(UStaticMeshComponent& Placeholder, const FVector& Center)
+	{
+		// 엔진의 원기둥은 지름 1 m, 높이 1 m이고 가운데가 원점이다.
+		Placeholder.SetRelativeLocation(Center);
+		Placeholder.SetRelativeScale3D(FVector(0.6, 0.6, 1.8));
+		Placeholder.SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Placeholder.SetCanEverAffectNavigation(false);
+		Placeholder.SetVisibility(false);
 	}
 }

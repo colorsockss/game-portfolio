@@ -4,7 +4,8 @@ using PortfolioMmo.Contract;
 namespace PortfolioMmo.Server
 {
     /// <summary>
-    /// 시야. 플레이어마다 둘레 3×3칸의 개체를 지난 틱과 비교해 나간 것·들어온 것·움직인 것을 보낸다.
+    /// 시야. 보는 쪽은 플레이어이고 보이는 쪽은 모든 개체다. 플레이어마다 둘레 3×3칸의 개체를 지난 틱과 비교해 나간 것·들어온 것·
+    /// 움직인 것과 표시 상태가 바뀐 것을 보낸다.
     /// </summary>
     internal sealed class ViewSystem
     {
@@ -35,7 +36,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 모두에게 이번 틱의 시야를 보내고, 움직임 표시를 지운다.
+        /// 모두에게 이번 틱의 시야를 보내고, 움직임과 표시 상태의 표시를 내린다.
         /// </summary>
         public void Step(uint tick)
         {
@@ -44,22 +45,23 @@ namespace PortfolioMmo.Server
                 SendView(observer, tick);
             }
 
-            foreach (Player player in _entities.Players)
+            foreach (Entity entity in _entities.All)
             {
-                player.Moved = false;
-                player.MoveMessage = null;
+                entity.Moved = false;
+                entity.MoveMessage = null;
+                entity.StateChanged = false;
             }
         }
 
         private void SendView(Player observer, uint tick)
         {
-            HashSet<Player> visible = observer.NextVisible;
+            HashSet<Entity> visible = observer.NextVisible;
             visible.Clear();
             _grid.CollectAround(observer.Cell, visible);
             visible.Remove(observer);
 
             EntitiesLeave? leave = null;
-            foreach (Player other in observer.Visible)
+            foreach (Entity other in observer.Visible)
             {
                 if (!visible.Contains(other))
                 {
@@ -70,24 +72,37 @@ namespace PortfolioMmo.Server
 
             EntitiesEnter? enter = null;
             EntityMoves? moves = null;
+            List<Entity>? changed = null;
             if (observer.JustEntered)
             {
-                enter = new EntitiesEnter { Entities = { EnterOf(observer) } };
+                // 처음 받는 EntityEnter가 지금 표시 상태를 실으므로 이 틱의 EntityState는 보내지 않는다.
+                enter = new EntitiesEnter { Entities = { observer.EnterMessage() } };
                 observer.JustEntered = false;
             }
+            else if (observer.StateChanged)
+            {
+                (changed ??= new List<Entity>()).Add(observer);
+            }
 
-            foreach (Player other in visible)
+            foreach (Entity other in visible)
             {
                 if (!observer.Visible.Contains(other))
                 {
                     enter ??= new EntitiesEnter();
-                    enter.Entities.Add(EnterOf(other));
+                    enter.Entities.Add(other.EnterMessage());
+                    continue;
                 }
-                else if (other.Moved)
+
+                if (other.Moved)
                 {
                     moves ??= new EntityMoves { Tick = tick };
                     other.MoveMessage ??= new EntityMove { Id = other.Id, X = other.X, Z = other.Z, Yaw = other.Yaw };
                     moves.Entities.Add(other.MoveMessage);
+                }
+
+                if (other.StateChanged)
+                {
+                    (changed ??= new List<Entity>()).Add(other);
                 }
             }
 
@@ -106,19 +121,16 @@ namespace PortfolioMmo.Server
                 observer.Session.Send(new Packet { EntityMoves = moves });
             }
 
+            if (changed != null)
+            {
+                foreach (Entity entity in changed)
+                {
+                    observer.Session.Send(new Packet { EntityState = entity.StateMessage() });
+                }
+            }
+
             observer.NextVisible = observer.Visible;
             observer.Visible = visible;
-        }
-
-        /// <summary>
-        /// 시야에 들어온 개체를 알리는 원소.
-        /// </summary>
-        private static EntityEnter EnterOf(Player player)
-        {
-            return new EntityEnter
-            {
-                Id = player.Id, X = player.X, Z = player.Z, Yaw = player.Yaw, Name = player.Name, CharacterClass = player.Class,
-            };
         }
     }
 }

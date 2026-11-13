@@ -11,7 +11,7 @@ namespace PortfolioMmo.Server.Tests
     /// 소켓 없이 월드의 로그인, 캐릭터 선택, 이동 검증, 시야를 확인한다. 모든 캐릭터는 원점에서 시작하고,
     /// Join은 로그인 ID에서 밑줄을 뺀 이름의 기사를 만들어 들어간다.
     /// </summary>
-    public class WorldTests
+    public partial class WorldTests
     {
         /// <summary>
         /// 시야 칸 한 변(칸). 둘레 3×3칸이 보이므로 두 칸 떨어지면 보이지 않는다.
@@ -401,7 +401,7 @@ namespace PortfolioMmo.Server.Tests
             Enter(restarted, again, id);
             restarted.Step();
             Assert.Equal(
-                new[] { Entered(1), Enter(new EntityEnter { Id = 1, X = 100, Yaw = 32, Name = "hero01", CharacterClass = CharacterClass.Knight }) },
+                new[] { Entered(1), Enter(new EntityEnter { Id = 1, Kind = EntityKind.Player, X = 100, Yaw = 32, Name = "hero01", CharacterClass = CharacterClass.Knight }) },
                 Take(again));
         }
 
@@ -656,7 +656,7 @@ namespace PortfolioMmo.Server.Tests
         /// </summary>
         private static EntityEnter Entity(uint id, string name, int x = 0, int z = 0, CharacterClass characterClass = CharacterClass.Knight)
         {
-            return new EntityEnter { Id = id, X = x, Z = z, Name = name, CharacterClass = characterClass };
+            return new EntityEnter { Id = id, Kind = EntityKind.Player, X = x, Z = z, Name = name, CharacterClass = characterClass };
         }
     }
 }

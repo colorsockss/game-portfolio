@@ -113,8 +113,8 @@ namespace
 		World.Apply(Enter(7, 32, -64, "hero_01"), 0);
 		World.Apply(Enter(8, 0, 0, "hero_02"), 0);
 		Expect(World.SelfId() == 7, "EnterWorldResult sets the self id");
-		Expect(World.SelfEntity() != nullptr && World.SelfEntity()->Name == "hero_01" && World.SelfEntity()->Z == -64, "the self entity comes from EntitiesEnter");
-		Expect(World.SelfEntity()->Class == portfolio::mmo::CHARACTER_CLASS_MAGE, "the class comes from EntitiesEnter");
+		Expect(World.SelfEntity() != nullptr && World.SelfEntity()->Info.name() == "hero_01" && World.SelfEntity()->Z == -64, "the self entity comes from EntitiesEnter");
+		Expect(World.SelfEntity()->Info.character_class() == portfolio::mmo::CHARACTER_CLASS_MAGE, "the class comes from EntitiesEnter");
 		Expect(World.Entities().size() == 2, "entered entities are visible");
 
 		portfolio::mmo::Packet Moved = Moves(1, 8, 96, 0, 64);
@@ -263,6 +263,39 @@ namespace
 		Expect(Track.History().size() == 2 && Track.History()[0].Tick == 40, "an entering entity is recorded at the last known tick");
 		Expect(Near(Track.Sample(40.5).X, 67), "an entering entity that keeps walking moves smoothly");
 	}
+
+	void KindsAndDisplayStatesAreKept()
+	{
+		MmoWorld::FWorldState World;
+		portfolio::mmo::Packet Entered;
+		portfolio::mmo::EntityEnter* Npc = Entered.mutable_entities_enter()->add_entities();
+		Npc->set_id(3);
+		Npc->set_kind(portfolio::mmo::ENTITY_KIND_NPC);
+		Npc->set_template_id(2);
+		portfolio::mmo::EntityEnter* Player = Entered.mutable_entities_enter()->add_entities();
+		Player->set_id(4);
+		Player->set_kind(portfolio::mmo::ENTITY_KIND_PLAYER);
+		Player->set_level(5);
+		Player->set_hp(90);
+		Player->set_max_hp(120);
+		World.Apply(Entered, 0);
+		Expect(World.Entities().at(3).Info.kind() == portfolio::mmo::ENTITY_KIND_NPC && World.Entities().at(3).Info.template_id() == 2, "an entering NPC keeps its kind and template");
+		Expect(World.Entities().at(4).Info.hp() == 90 && World.Entities().at(4).Info.max_hp() == 120, "an entering player keeps its health");
+
+		portfolio::mmo::Packet State;
+		State.mutable_entity_state()->set_id(4);
+		State.mutable_entity_state()->set_level(6);
+		State.mutable_entity_state()->set_name_color(portfolio::mmo::NAME_COLOR_OUTLAW);
+		State.mutable_entity_state()->set_weapon_item_id(1001);
+		World.Apply(State, 0);
+		const portfolio::mmo::EntityEnter& Info = World.Entities().at(4).Info;
+		Expect(Info.level() == 6 && Info.name_color() == portfolio::mmo::NAME_COLOR_OUTLAW && Info.weapon_item_id() == 1001, "EntityState updates the display state");
+		Expect(Info.hp() == 90, "EntityState keeps the rest of the entity");
+
+		State.mutable_entity_state()->set_id(99);
+		World.Apply(State, 0);
+		Expect(World.Entities().count(99) == 0, "EntityState of an unknown entity is dropped");
+	}
 }
 
 int main()
@@ -278,6 +311,7 @@ int main()
 	TrackYawTurnsTheShortWay();
 	TrackKeepsWalkersSmoothAndStartsStillOnes();
 	EnteredEntitiesStartAtTheLastTick();
+	KindsAndDisplayStatesAreKept();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

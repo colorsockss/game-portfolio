@@ -41,9 +41,30 @@ namespace PortfolioMmo.Contract.Tests
                 new Packet { Kicked = new Kicked { Reason = KickReason.DuplicateLogin } },
                 new Packet { Move = new Move { X = -3, Z = 32767, Yaw = 255, Ack = 2 } },
                 new Packet { PositionReset = new PositionReset { X = 1, Z = -1, Ack = 3 } },
-                new Packet { EntitiesEnter = new EntitiesEnter { Entities = { new EntityEnter { Id = 7, X = 48, Z = 0, Yaw = 64, Name = "기사01", CharacterClass = CharacterClass.Mage } } } },
+                new Packet
+                {
+                    EntitiesEnter = new EntitiesEnter
+                    {
+                        Entities =
+                        {
+                            new EntityEnter
+                            {
+                                Id = 7, X = 48, Z = 0, Yaw = 64, Kind = EntityKind.Player, Name = "기사01", CharacterClass = CharacterClass.Mage,
+                                Level = 12, NameColor = NameColor.Outlaw, WeaponItemId = 1001, Hp = 90, MaxHp = 120,
+                                Effects = { new EffectState { EffectId = 3, EndTick = 900 } },
+                                Progress = new ProgressState { Kind = ProgressKind.Cast, Id = 5, EndTick = 880 }, Speed = 192, MoveYaw = 32,
+                            },
+                            new EntityEnter { Id = 8, Kind = EntityKind.Monster, TemplateId = 2, Hp = 0, MaxHp = 50, Dead = true, Speed = 96, NextX = -40, NextZ = 7 },
+                            new EntityEnter
+                            {
+                                Id = 9, Kind = EntityKind.GroundItem, ItemId = 4, Count = 3, Enchant = 7, OwnerPartyId = 2, OwnerOnlyEndTick = 1200, DroppedByPlayer = true,
+                            },
+                        },
+                    },
+                },
                 new Packet { EntitiesLeave = new EntitiesLeave { Ids = { 7, 8 } } },
                 new Packet { EntityMoves = new EntityMoves { Tick = 72000, Entities = { s_sampleMove } } },
+                new Packet { EntityState = new EntityState { Id = 7, NameColor = NameColor.Aggressor, WeaponItemId = 1002, Level = 13 } },
             };
 
             using var stream = new MemoryStream();
@@ -81,6 +102,28 @@ namespace PortfolioMmo.Contract.Tests
             Assert.Equal(1, (int)Packet.BodyOneofCase.Login);
             Assert.Equal(100, (int)Packet.BodyOneofCase.Move);
             Assert.Equal(104, (int)Packet.BodyOneofCase.EntityMoves);
+            Assert.Equal(105, (int)Packet.BodyOneofCase.EntityState);
+        }
+
+        /// <summary>
+        /// EntityEnter는 종류가 쓰지 않는 필드를 싣지 않는다. NPC는 번호, 종류, 위치와 방향, 템플릿 번호만이라 10바이트다
+        /// (id 2, x 2, z는 0이라 없음, yaw 2, 종류 2, 템플릿 2). 바닥 아이템의 주인은 둘 가운데 하나다.
+        /// </summary>
+        [Fact]
+        public void EntityEnterCarriesOnlyTheFieldsOfItsKind()
+        {
+            var npc = new EntityEnter { Id = 7, X = 48, Z = 0, Yaw = 64, Kind = EntityKind.Npc, TemplateId = 2 };
+            Assert.Equal(10, npc.CalculateSize());
+            Assert.Equal(new EntityEnter { Id = 7, X = 48, Yaw = 64, Kind = EntityKind.Npc, TemplateId = 2 }.ToByteArray(), npc.ToByteArray());
+
+            // 기본값(서 있음, 효과 없음, 진행 없음, 일반 이름 색)인 플레이어는 이름과 직업만 더 실린다.
+            var player = new EntityEnter { Id = 7, X = 48, Yaw = 64, Kind = EntityKind.Player, Name = "Arthur", CharacterClass = CharacterClass.Knight };
+            Assert.Equal(10 - 2 + 8 + 2, player.CalculateSize());
+
+            var item = new EntityEnter { Id = 9, Kind = EntityKind.GroundItem, OwnerPlayerId = 7 };
+            item.OwnerPartyId = 2;
+            Assert.Equal(EntityEnter.OwnerOneofCase.OwnerPartyId, item.OwnerCase);
+            Assert.Equal(0u, item.OwnerPlayerId);
         }
 
         /// <summary>

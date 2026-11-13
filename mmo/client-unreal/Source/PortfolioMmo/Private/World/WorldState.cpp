@@ -121,7 +121,7 @@ namespace MmoWorld
 			for (const portfolio::mmo::EntityEnter& Enter : Packet.entities_enter().entities())
 			{
 				FEntity& Entity = Visible[Enter.id()];
-				Entity = { Enter.id(), Enter.x(), Enter.z(), Enter.yaw(), Enter.name(), Enter.character_class(), {} };
+				Entity = { Enter.id(), Enter.x(), Enter.z(), Enter.yaw(), Enter, {} };
 				Entity.Track.Push({ LastTick, Enter.x(), Enter.z(), Enter.yaw() });
 				Entered.push_back(Enter.id());
 			}
@@ -147,6 +147,16 @@ namespace MmoWorld
 					Found->second.Yaw = Move.yaw();
 					Found->second.Track.Push({ Packet.entity_moves().tick(), Move.x(), Move.z(), Move.yaw() });
 				}
+			}
+			break;
+		case portfolio::mmo::Packet::kEntityState:
+			// 받지 않은 개체의 것은 버린다(서버는 받은 연결에만 보내지만, 나간 뒤에 도착할 수 있다).
+			if (const auto Found = Visible.find(Packet.entity_state().id()); Found != Visible.end())
+			{
+				const portfolio::mmo::EntityState& State = Packet.entity_state();
+				Found->second.Info.set_name_color(State.name_color());
+				Found->second.Info.set_weapon_item_id(State.weapon_item_id());
+				Found->second.Info.set_level(State.level());
 			}
 			break;
 		case portfolio::mmo::Packet::kPositionReset:

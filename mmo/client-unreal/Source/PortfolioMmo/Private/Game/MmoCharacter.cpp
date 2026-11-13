@@ -2,6 +2,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Game/MmoCharacterLook.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -37,11 +38,11 @@ AMmoCharacter::AMmoCharacter()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
-}
 
-void AMmoCharacter::SetClass(portfolio::mmo::CharacterClass Class)
-{
-	MmoCharacterLook::Apply(*GetMesh(), Class);
+	// 캡슐의 가운데가 원기둥의 가운데다.
+	Placeholder = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Placeholder"));
+	Placeholder->SetupAttachment(GetCapsuleComponent());
+	MmoCharacterLook::SetUpPlaceholder(*Placeholder, FVector::ZeroVector);
 }
 
 void AMmoCharacter::Zoom(float Amount)

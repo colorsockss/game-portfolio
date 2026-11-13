@@ -59,7 +59,7 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 		{
 			continue;
 		}
-		UMmoNameTagWidget& Tag = Acquire(Id, UTF8_TO_TCHAR(Entity.Name.c_str()));
+		UMmoNameTagWidget& Tag = Acquire(Id, UTF8_TO_TCHAR(Entity.Info.name().c_str()));
 		Cast<UCanvasPanelSlot>(Tag.Slot)->SetPosition(Position);
 		Shown.Add(Id);
 	}

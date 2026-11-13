@@ -120,7 +120,7 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            var player = new Player(_entities.NextId(), character, session, _save.PositionOf(character));
+            var player = new Player(_entities.NextPlayerId(), character, session, _save.PositionOf(character));
             _entities.Add(player);
             _grid.Add(player);
             session.Player = player;

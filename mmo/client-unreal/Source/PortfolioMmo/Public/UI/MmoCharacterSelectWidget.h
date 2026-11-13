@@ -50,6 +50,8 @@ private:
 	void Select(int32 Index);
 	/** 칸과 버튼을 세션의 목록과 고른 칸에 맞춘다. */
 	void Refresh();
+	/** 명령줄에 -MmoEnter가 있으면 처음 한 번 첫 캐릭터로 들어간다(개발용. -MmoLogin과 함께 써서 클릭 없이 월드까지 간다). */
+	void EnterFromCommandLine();
 	UMmoSession& Session() const;
 
 	UPROPERTY(meta = (BindWidget))

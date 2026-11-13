@@ -1,20 +1,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Protocol/MmoPackets.h"
 
+class UBlendSpace;
+class USkeletalMesh;
 class USkeletalMeshComponent;
+class UStaticMesh;
+class UStaticMeshComponent;
 
 /**
- * 직업마다 캐릭터의 모습: 스켈레탈 메시와 대기·달리기 블렌드 스페이스(Scripts/import_characters.py가 /Game/Characters에 만듦).
- * 내 캐릭터와 다른 캐릭터가 같은 것을 쓴다.
- * shortcut: 직업 → 에셋 경로를 코드에 둔다. 개체 종류와 템플릿이 생기면(backlog 18) 데이터 에셋 UMmoEntityVisuals로 옮긴다.
+ * 개체 액터(내 캐릭터와 다른 개체)의 모습을 바꾸는 도우미. 무엇을 입힐지는 표현 표(UMmoEntityVisuals)가 정하고,
+ * 언제 입힐지(불러오기가 끝났을 때)는 UMmoEntitySubsystem이 정한다. 액터는 스켈레탈 메시와 자리 표시 메시를 하나씩 가진다.
  */
 namespace MmoCharacterLook
 {
-	/** 메시 컴포넌트에 직업의 메시와 블렌드 스페이스를 입힌다. 모르는 직업은 기사로 그린다. */
-	void Apply(USkeletalMeshComponent& Mesh, portfolio::mmo::CharacterClass Class);
+	/** 자리 표시(단순한 메시)를 보이고 스켈레탈 메시를 감춘다. 불러오는 동안과 표에 줄이 없는 개체가 이렇게 보인다. */
+	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* PlaceholderMesh);
+
+	/** 불러온 메시와 블렌드 스페이스를 입히고 자리 표시를 감춘다. 애니메이션 블루프린트 없이 단일 노드로 블렌드 스페이스를 튼다. */
+	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, UBlendSpace* Locomotion);
 
 	/** 속도(언리얼 단위/초)로 대기와 달리기를 섞는다. 0이 대기, 600(6 m/s)이 달리기다. */
 	void SetSpeed(USkeletalMeshComponent& Mesh, double Speed);
+
+	/** 자리 표시 컴포넌트를 사람 크기(지름 0.6 m, 높이 1.8 m)의 원기둥으로 둔다. Center는 그 컴포넌트에서 원기둥 가운데까지다. */
+	void SetUpPlaceholder(UStaticMeshComponent& Placeholder, const FVector& Center);
 }

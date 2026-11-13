@@ -12,40 +12,40 @@ namespace PortfolioMmo.Server
         /// </summary>
         private const int CellShift = 10;
 
-        private readonly Dictionary<long, List<Player>> _cells = new Dictionary<long, List<Player>>();
+        private readonly Dictionary<long, List<Entity>> _cells = new Dictionary<long, List<Entity>>();
 
         /// <summary>
         /// 개체를 지금 위치의 칸에 넣는다.
         /// </summary>
-        public void Add(Player player)
+        public void Add(Entity entity)
         {
-            player.Cell = CellOf(player.X, player.Z);
-            CellPlayers(player.Cell).Add(player);
+            entity.Cell = CellOf(entity.X, entity.Z);
+            CellEntities(entity.Cell).Add(entity);
         }
 
-        public void Remove(Player player)
+        public void Remove(Entity entity)
         {
-            _cells[player.Cell].Remove(player);
+            _cells[entity.Cell].Remove(entity);
         }
 
         /// <summary>
         /// 개체가 움직였다. 칸이 바뀌었으면 옮긴다.
         /// </summary>
-        public void Moved(Player player)
+        public void Moved(Entity entity)
         {
-            long cell = CellOf(player.X, player.Z);
-            if (cell != player.Cell)
+            long cell = CellOf(entity.X, entity.Z);
+            if (cell != entity.Cell)
             {
-                _cells[player.Cell].Remove(player);
-                CellPlayers(cell).Add(player);
-                player.Cell = cell;
+                _cells[entity.Cell].Remove(entity);
+                CellEntities(cell).Add(entity);
+                entity.Cell = cell;
             }
         }
 
         /// <summary>
         /// 칸 둘레 3×3칸의 개체를 result에 더한다.
         /// </summary>
-        public void CollectAround(long cell, HashSet<Player> result)
+        public void CollectAround(long cell, HashSet<Entity> result)
         {
             int cellX = (int)(cell >> 32);
             int cellZ = (int)cell;
@@ -53,9 +53,9 @@ namespace PortfolioMmo.Server
             {
                 for (int offsetZ = -1; offsetZ <= 1; offsetZ++)
                 {
-                    if (_cells.TryGetValue(CellKey(cellX + offsetX, cellZ + offsetZ), out List<Player>? players))
+                    if (_cells.TryGetValue(CellKey(cellX + offsetX, cellZ + offsetZ), out List<Entity>? entities))
                     {
-                        result.UnionWith(players);
+                        result.UnionWith(entities);
                     }
                 }
             }
@@ -64,15 +64,15 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 칸의 개체 목록. 없으면 만든다.
         /// </summary>
-        private List<Player> CellPlayers(long cell)
+        private List<Entity> CellEntities(long cell)
         {
-            if (!_cells.TryGetValue(cell, out List<Player>? players))
+            if (!_cells.TryGetValue(cell, out List<Entity>? entities))
             {
-                players = new List<Player>();
-                _cells.Add(cell, players);
+                entities = new List<Entity>();
+                _cells.Add(cell, entities);
             }
 
-            return players;
+            return entities;
         }
 
         /// <summary>
