@@ -18,11 +18,10 @@ export async function convertWorkbook(input, { out = 'generated', table = path.b
   return result;
 }
 
-// 워크북을 모두 읽고 검사한 뒤에 쓴다. ref와 enum은 함께 변환하는 워크북 안에서 찾으므로, 하나라도 실패하면
-// 아무것도 쓰지 않는다. 위반(enum, range, length, when, ref)은 모아서 한 번에 알린다.
-// format이 'proto'면 JSON·MessagePack·TS 대신 `.proto`, Protobuf 바이너리, 데이터 해시를 쓴다(writeProto).
-export async function convertWorkbooks(inputs, { out = 'generated', bigModule, format = 'typescript', protoPackage, csharpNamespace } = {}) {
-  if (!['typescript', 'proto'].includes(format)) throw new Error(`Unknown format '${format}'; use typescript or proto`);
+// 워크북을 모두 읽고 검사한다(쓰지 않음). ref와 enum은 함께 읽는 워크북 안에서 찾고, 위반(enum, range, length, when, ref)은
+// 모아서 한 번에 알린다. 돌려주는 tables는 { table, file, workbook }(workbook.fields, rows)이고 enums는 Enums 워크북의 정의다.
+// 게임이 테이블을 읽어 더 만드는 생성물(MMO의 맵)이 convertWorkbooks와 같은 검사를 거친 값을 쓰게 한다.
+export async function readTables(inputs) {
   const entries = inputs.map(({ input, table = path.basename(input, path.extname(input)) }) => {
     validateTableName(table);
     if (path.extname(input).toLowerCase() !== '.xlsx') throw new Error('Only .xlsx workbooks are supported; save legacy .xls files as .xlsx');
@@ -53,6 +52,15 @@ export async function convertWorkbooks(inputs, { out = 'generated', bigModule, f
     tables.push({ table, file: input, workbook });
   }
   checkReferences(tables, violations);
+  if (violations.length > 0) throw new Error(`${violations.length} table check(s) failed:\n  ${violations.join('\n  ')}`);
+  return { tables, enums };
+}
+
+// 워크북을 모두 읽고 검사한 뒤에 쓴다(readTables). 하나라도 실패하면 아무것도 쓰지 않는다.
+// format이 'proto'면 JSON·MessagePack·TS 대신 `.proto`, Protobuf 바이너리, 데이터 해시를 쓴다(writeProto).
+export async function convertWorkbooks(inputs, { out = 'generated', bigModule, format = 'typescript', protoPackage, csharpNamespace } = {}) {
+  if (!['typescript', 'proto'].includes(format)) throw new Error(`Unknown format '${format}'; use typescript or proto`);
+  const { tables, enums } = await readTables(inputs);
   // 문자열 id 테이블의 id와 그 테이블을 가리키는 ref 열은 id의 리터럴 유니온 타입이 된다(generate-typescript.js).
   const keyed = new Set(tables.filter(({ workbook }) => workbook.fields.some((f) => f.name === 'id' && f.base === 'string')).map(({ table }) => table));
   for (const { table, workbook } of tables) {
@@ -61,7 +69,6 @@ export async function convertWorkbooks(inputs, { out = 'generated', bigModule, f
       else if (keyed.has(field.ref)) field.keyType = `${field.ref}Id`;
     }
   }
-  if (violations.length > 0) throw new Error(`${violations.length} table check(s) failed:\n  ${violations.join('\n  ')}`);
 
   const output = path.resolve(out);
   if (format === 'proto') return writeProto(output, tables, enums, { protoPackage, csharpNamespace });
