@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 
 namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 시야 칸(32 m)마다 그 안의 개체. 개체는 Cell에 자기 칸을 기억하고, 칸을 옮길 때만 목록을 바꾼다.
+    /// 시야, 원 안의 개체 찾기(Query), 둘레 칸 보기가 모두 이 격자를 쓴다.
     /// </summary>
-    internal sealed class Grid
+    public sealed class Grid
     {
         /// <summary>
         /// 시야 칸 한 변의 크기를 2의 지수로 적은 것. 2^10칸 = 32 m이고, 둘레 3×3칸(96 m 사방)이 보인다.
@@ -56,6 +58,39 @@ namespace PortfolioMmo.Server
                     if (_cells.TryGetValue(CellKey(cellX + offsetX, cellZ + offsetZ), out List<Entity>? entities))
                     {
                         result.UnionWith(entities);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 중심에서 radius(좌표 단위) 안(경계 포함)이고 filter를 만족하는 개체를 result에 담는다. result는 먼저 비운다(질의마다 할당하지 않도록 부르는 쪽이 목록을 다시 씀).
+        /// 원이 걸친 시야 칸(중심 ± 반지름의 사각형)만 돌고, 칸 안에서는 거리의 제곱을 반지름의 제곱과 견준다. 거리만 보므로 벽 너머의 개체도 들고,
+        /// 거르는 것은 부르는 쪽이 후보마다 FieldMap.HasLine으로 한다. 차례는 칸(x, z의 차례) 안의 목록 차례라 같은 상태면 같은 결과다.
+        /// </summary>
+        public void Query(int centerX, int centerZ, int radius, Predicate<Entity> filter, List<Entity> result)
+        {
+            result.Clear();
+            long radiusSquared = (long)radius * radius;
+            int lastX = (centerX + radius) >> CellShift;
+            int lastZ = (centerZ + radius) >> CellShift;
+            for (int cellX = (centerX - radius) >> CellShift; cellX <= lastX; cellX++)
+            {
+                for (int cellZ = (centerZ - radius) >> CellShift; cellZ <= lastZ; cellZ++)
+                {
+                    if (!_cells.TryGetValue(CellKey(cellX, cellZ), out List<Entity>? entities))
+                    {
+                        continue;
+                    }
+
+                    foreach (Entity entity in entities)
+                    {
+                        long dx = entity.X - centerX;
+                        long dz = entity.Z - centerZ;
+                        if ((dx * dx) + (dz * dz) <= radiusSquared && filter(entity))
+                        {
+                            result.Add(entity);
+                        }
                     }
                 }
             }
