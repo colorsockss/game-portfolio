@@ -24,16 +24,20 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSK1AQoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLbAgoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
-            "dF9tdWx0aXBsaWVyGAYgASgBEhUKDXBsYXllcl9yYWRpdXMYByABKAFCFKoC",
-            "EVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
+            "dF9tdWx0aXBsaWVyGAYgASgBEhUKDXBsYXllcl9yYWRpdXMYByABKAESFgoO",
+            "dW5yZWFjaGFibGVfbXMYCCABKA0SFwoPcmVwYXRoX2Rpc3RhbmNlGAkgASgB",
+            "EhsKE3JldHVybl9yYW5nZV9tYXJnaW4YCiABKAESHAoUcmV0dXJuX3JlZ2Vu",
+            "X3BlcmNlbnQYCyABKA0SGwoTd2FuZGVyX3BhdXNlX21pbl9tcxgMIAEoDRIb",
+            "ChN3YW5kZXJfcGF1c2VfbWF4X21zGA0gASgNQhSqAhFQb3J0Zm9saW9NbW8u",
+            "RGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs" }, null, null, null, null)
           }));
     }
     #endregion
@@ -82,6 +86,12 @@ namespace PortfolioMmo.Data {
       critChance_ = other.critChance_;
       critMultiplier_ = other.critMultiplier_;
       playerRadius_ = other.playerRadius_;
+      unreachableMs_ = other.unreachableMs_;
+      repathDistance_ = other.repathDistance_;
+      returnRangeMargin_ = other.returnRangeMargin_;
+      returnRegenPercent_ = other.returnRegenPercent_;
+      wanderPauseMinMs_ = other.wanderPauseMinMs_;
+      wanderPauseMaxMs_ = other.wanderPauseMaxMs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -196,6 +206,96 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "unreachable_ms" field.</summary>
+    public const int UnreachableMsFieldNumber = 8;
+    private uint unreachableMs_;
+    /// <summary>
+    /// 몬스터가 길이 없는 대상을 건너뛰는 시간(ms, "닿을 수 없음")
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint UnreachableMs {
+      get { return unreachableMs_; }
+      set {
+        unreachableMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "repath_distance" field.</summary>
+    public const int RepathDistanceFieldNumber = 9;
+    private double repathDistance_;
+    /// <summary>
+    /// 몬스터가 길을 다시 찾는 대상의 이동 거리(m). 길을 찾은 때의 대상 자리에서 이만큼 넘게 옮기면 다시 찾는다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double RepathDistance {
+      get { return repathDistance_; }
+      set {
+        repathDistance_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "return_range_margin" field.</summary>
+    public const int ReturnRangeMarginFieldNumber = 10;
+    private double returnRangeMargin_;
+    /// <summary>
+    /// 복귀의 길찾기 범위에 더하는 거리(m). 범위는 놓인 점에서 지금 거리 + 이것이다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double ReturnRangeMargin {
+      get { return returnRangeMargin_; }
+      set {
+        returnRangeMargin_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "return_regen_percent" field.</summary>
+    public const int ReturnRegenPercentFieldNumber = 11;
+    private uint returnRegenPercent_;
+    /// <summary>
+    /// 복귀 중인 몬스터가 초당 채우는 최대 체력의 비율(%)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint ReturnRegenPercent {
+      get { return returnRegenPercent_; }
+      set {
+        returnRegenPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "wander_pause_min_ms" field.</summary>
+    public const int WanderPauseMinMsFieldNumber = 12;
+    private uint wanderPauseMinMs_;
+    /// <summary>
+    /// 배회에서 한 점에 서 있는 가장 짧은 시간(ms)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint WanderPauseMinMs {
+      get { return wanderPauseMinMs_; }
+      set {
+        wanderPauseMinMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "wander_pause_max_ms" field.</summary>
+    public const int WanderPauseMaxMsFieldNumber = 13;
+    private uint wanderPauseMaxMs_;
+    /// <summary>
+    /// 배회에서 한 점에 서 있는 가장 긴 시간(ms)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint WanderPauseMaxMs {
+      get { return wanderPauseMaxMs_; }
+      set {
+        wanderPauseMaxMs_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -218,6 +318,12 @@ namespace PortfolioMmo.Data {
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(CritChance, other.CritChance)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(CritMultiplier, other.CritMultiplier)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(PlayerRadius, other.PlayerRadius)) return false;
+      if (UnreachableMs != other.UnreachableMs) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(RepathDistance, other.RepathDistance)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(ReturnRangeMargin, other.ReturnRangeMargin)) return false;
+      if (ReturnRegenPercent != other.ReturnRegenPercent) return false;
+      if (WanderPauseMinMs != other.WanderPauseMinMs) return false;
+      if (WanderPauseMaxMs != other.WanderPauseMaxMs) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -232,6 +338,12 @@ namespace PortfolioMmo.Data {
       if (CritChance != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(CritChance);
       if (CritMultiplier != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(CritMultiplier);
       if (PlayerRadius != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(PlayerRadius);
+      if (UnreachableMs != 0) hash ^= UnreachableMs.GetHashCode();
+      if (RepathDistance != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(RepathDistance);
+      if (ReturnRangeMargin != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(ReturnRangeMargin);
+      if (ReturnRegenPercent != 0) hash ^= ReturnRegenPercent.GetHashCode();
+      if (WanderPauseMinMs != 0) hash ^= WanderPauseMinMs.GetHashCode();
+      if (WanderPauseMaxMs != 0) hash ^= WanderPauseMaxMs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -278,6 +390,30 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(57);
         output.WriteDouble(PlayerRadius);
       }
+      if (UnreachableMs != 0) {
+        output.WriteRawTag(64);
+        output.WriteUInt32(UnreachableMs);
+      }
+      if (RepathDistance != 0D) {
+        output.WriteRawTag(73);
+        output.WriteDouble(RepathDistance);
+      }
+      if (ReturnRangeMargin != 0D) {
+        output.WriteRawTag(81);
+        output.WriteDouble(ReturnRangeMargin);
+      }
+      if (ReturnRegenPercent != 0) {
+        output.WriteRawTag(88);
+        output.WriteUInt32(ReturnRegenPercent);
+      }
+      if (WanderPauseMinMs != 0) {
+        output.WriteRawTag(96);
+        output.WriteUInt32(WanderPauseMinMs);
+      }
+      if (WanderPauseMaxMs != 0) {
+        output.WriteRawTag(104);
+        output.WriteUInt32(WanderPauseMaxMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -316,6 +452,30 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(57);
         output.WriteDouble(PlayerRadius);
       }
+      if (UnreachableMs != 0) {
+        output.WriteRawTag(64);
+        output.WriteUInt32(UnreachableMs);
+      }
+      if (RepathDistance != 0D) {
+        output.WriteRawTag(73);
+        output.WriteDouble(RepathDistance);
+      }
+      if (ReturnRangeMargin != 0D) {
+        output.WriteRawTag(81);
+        output.WriteDouble(ReturnRangeMargin);
+      }
+      if (ReturnRegenPercent != 0) {
+        output.WriteRawTag(88);
+        output.WriteUInt32(ReturnRegenPercent);
+      }
+      if (WanderPauseMinMs != 0) {
+        output.WriteRawTag(96);
+        output.WriteUInt32(WanderPauseMinMs);
+      }
+      if (WanderPauseMaxMs != 0) {
+        output.WriteRawTag(104);
+        output.WriteUInt32(WanderPauseMaxMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -346,6 +506,24 @@ namespace PortfolioMmo.Data {
       }
       if (PlayerRadius != 0D) {
         size += 1 + 8;
+      }
+      if (UnreachableMs != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(UnreachableMs);
+      }
+      if (RepathDistance != 0D) {
+        size += 1 + 8;
+      }
+      if (ReturnRangeMargin != 0D) {
+        size += 1 + 8;
+      }
+      if (ReturnRegenPercent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ReturnRegenPercent);
+      }
+      if (WanderPauseMinMs != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(WanderPauseMinMs);
+      }
+      if (WanderPauseMaxMs != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(WanderPauseMaxMs);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -379,6 +557,24 @@ namespace PortfolioMmo.Data {
       }
       if (other.PlayerRadius != 0D) {
         PlayerRadius = other.PlayerRadius;
+      }
+      if (other.UnreachableMs != 0) {
+        UnreachableMs = other.UnreachableMs;
+      }
+      if (other.RepathDistance != 0D) {
+        RepathDistance = other.RepathDistance;
+      }
+      if (other.ReturnRangeMargin != 0D) {
+        ReturnRangeMargin = other.ReturnRangeMargin;
+      }
+      if (other.ReturnRegenPercent != 0) {
+        ReturnRegenPercent = other.ReturnRegenPercent;
+      }
+      if (other.WanderPauseMinMs != 0) {
+        WanderPauseMinMs = other.WanderPauseMinMs;
+      }
+      if (other.WanderPauseMaxMs != 0) {
+        WanderPauseMaxMs = other.WanderPauseMaxMs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -427,6 +623,30 @@ namespace PortfolioMmo.Data {
             PlayerRadius = input.ReadDouble();
             break;
           }
+          case 64: {
+            UnreachableMs = input.ReadUInt32();
+            break;
+          }
+          case 73: {
+            RepathDistance = input.ReadDouble();
+            break;
+          }
+          case 81: {
+            ReturnRangeMargin = input.ReadDouble();
+            break;
+          }
+          case 88: {
+            ReturnRegenPercent = input.ReadUInt32();
+            break;
+          }
+          case 96: {
+            WanderPauseMinMs = input.ReadUInt32();
+            break;
+          }
+          case 104: {
+            WanderPauseMaxMs = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -472,6 +692,30 @@ namespace PortfolioMmo.Data {
           }
           case 57: {
             PlayerRadius = input.ReadDouble();
+            break;
+          }
+          case 64: {
+            UnreachableMs = input.ReadUInt32();
+            break;
+          }
+          case 73: {
+            RepathDistance = input.ReadDouble();
+            break;
+          }
+          case 81: {
+            ReturnRangeMargin = input.ReadDouble();
+            break;
+          }
+          case 88: {
+            ReturnRegenPercent = input.ReadUInt32();
+            break;
+          }
+          case 96: {
+            WanderPauseMinMs = input.ReadUInt32();
+            break;
+          }
+          case 104: {
+            WanderPauseMaxMs = input.ReadUInt32();
             break;
           }
         }

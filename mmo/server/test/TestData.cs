@@ -30,7 +30,7 @@ namespace PortfolioMmo.Server.Tests
         /// 벽이 없는 600 m 필드와 원점에 부활 지점을 둔 마을 하나의 데이터. 새 캐릭터가 원점에서 시작한다.
         /// 구역과 벽의 규칙은 FieldMapTests가 FieldMap으로 직접 보고, 벽에 막히는 월드는 WithMap으로 만든다.
         /// </summary>
-        public static readonly GameData Data = new GameData(Hash, Constants(FieldSize), new Zones { Rows = { Town(0, 0) } }, EmptyGrid(FieldSize), Classes, Levels);
+        public static readonly GameData Data = new GameData(Hash, Constants(FieldSize), new Zones { Rows = { Town(0, 0) } }, EmptyGrid(FieldSize), Classes, Levels, new Monsters(), new Spawns());
 
         /// <summary>
         /// 시험용 직업 둘(기사 근접, 마법사 발사체).
@@ -66,6 +66,7 @@ namespace PortfolioMmo.Server.Tests
             return new Constants
             {
                 FieldSize = fieldSize, CombatDurationMs = 5000, RegenPercent = 5, CombatRegenPercent = 1, CritChance = 0.05, CritMultiplier = 1.5, PlayerRadius = 0.34,
+                UnreachableMs = 5000, RepathDistance = 3, ReturnRangeMargin = 4, ReturnRegenPercent = 20, WanderPauseMinMs = 3000, WanderPauseMaxMs = 6000,
             };
         }
 
@@ -132,7 +133,77 @@ namespace PortfolioMmo.Server.Tests
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             var table = new Zones { Rows = { Town(respawnX, respawnZ) } };
             table.Rows.Add(zones);
-            return new GameData(Hash, Constants(size), table, grid, Classes, Levels);
+            return new GameData(Hash, Constants(size), table, grid, Classes, Levels, new Monsters(), new Spawns());
+        }
+
+        /// <summary>
+        /// 글자로 그린 맵(Map) 위에 몬스터를 놓는 데이터. 마을은 맵의 가장 작은 모서리 칸 하나이고 안전 지대가 아니다(부활 지점만 둠).
+        /// 안전 지대는 맵의 's' 칸이다.
+        /// </summary>
+        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, params string[] rows)
+        {
+            (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
+            int min = -(int)size / 2;
+            var table = new Zones
+            {
+                Rows =
+                {
+                    new ZonesRow
+                    {
+                        Id = 2, Kind = ZoneKind.Town, MinX = min, MinZ = min, MaxX = min + 1, MaxZ = min + 1, RespawnX = min, RespawnZ = min, OutlawRespawnX = min, OutlawRespawnZ = min,
+                    },
+                },
+            };
+            table.Rows.Add(zones);
+            return new GameData(Hash, Constants(size), table, grid, Classes, Levels, new Monsters { Rows = { Monster(1, aggressive: true), Monster(2, aggressive: false) } }, new Spawns { Rows = { spawns } });
+        }
+
+        /// <summary>
+        /// 시험용 몬스터: 체력 100, 3 m/s, 인식 8 m, 추적 한계 20 m, 사거리 2 m. 1은 선공, 2는 비선공이다.
+        /// </summary>
+        public static MonstersRow Monster(uint id, bool aggressive)
+        {
+            return new MonstersRow
+            {
+                Id = id, NameKey = "monster.test", Kind = MonsterKind.Normal, Level = 1, MaxHp = 100, Attack = 10, Defense = 5, Speed = 3, Radius = 0.5,
+                DetectRange = 8, ChaseLimit = 20, AttackRange = 2, AttackIntervalMs = 1000, HitDelayMs = 300, Aggressive = aggressive,
+            };
+        }
+
+        /// <summary>
+        /// 무리 하나. 자리는 미터이고 흩는 반경과 배회 반경의 처음 값은 0이다(놓인 점에 서서 배회하지 않음).
+        /// </summary>
+        public static SpawnsRow Spawn(uint id, int x, int z, uint monsterId, uint count = 1, double scatter = 0, double wander = 0)
+        {
+            return new SpawnsRow { Id = id, X = x, Z = z, MonsterId = monsterId, Count = count, ScatterRadius = scatter, RespawnMs = 30000, WanderRadius = wander };
+        }
+
+        /// <summary>
+        /// 한 변 size m의 빈 맵에 사각형(칸, 작은 모서리 포함·큰 모서리 제외)을 글자로 칠한다. 원점이 가운데다.
+        /// </summary>
+        public static string[] Draw(int size, params (int MinX, int MinZ, int MaxX, int MaxZ, char Cell)[] boxes)
+        {
+            int min = -size / 2;
+            var rows = new char[size][];
+            for (int row = 0; row < size; row++)
+            {
+                int cellZ = min + size - 1 - row;
+                rows[row] = new char[size];
+                for (int column = 0; column < size; column++)
+                {
+                    int cellX = min + column;
+                    rows[row][column] = '.';
+                    foreach ((int minX, int minZ, int maxX, int maxZ, char cell) in boxes)
+                    {
+                        if ((cellX >= minX) && (cellX < maxX) && (cellZ >= minZ) && (cellZ < maxZ))
+                        {
+                            rows[row][column] = cell;
+                        }
+                    }
+                }
+            }
+
+            return System.Array.ConvertAll(rows, row => new string(row));
         }
 
         /// <summary>

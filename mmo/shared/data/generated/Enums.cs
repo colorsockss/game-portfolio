@@ -27,11 +27,13 @@ namespace PortfolioMmo.Data {
             "CgtFbnVtcy5wcm90bxIScG9ydGZvbGlvLm1tby5kYXRhKokBCghab25lS2lu",
             "ZBISCg5aT05FX0tJTkRfTk9ORRAAEhIKDlpPTkVfS0lORF9UT1dOEAESHAoY",
             "Wk9ORV9LSU5EX0hVTlRJTkdfR1JPVU5EEAISHgoaWk9ORV9LSU5EX0dBVEhF",
-            "UklOR19HUk9VTkQQAxIXChNaT05FX0tJTkRfQk9TU19BUkVBEARCFKoCEVBv",
-            "cnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
+            "UklOR19HUk9VTkQQAxIXChNaT05FX0tJTkRfQk9TU19BUkVBEAQqWwoLTW9u",
+            "c3RlcktpbmQSHAoYTU9OU1RFUl9LSU5EX1VOU1BFQ0lGSUVEEAASFwoTTU9O",
+            "U1RFUl9LSU5EX05PUk1BTBABEhUKEU1PTlNURVJfS0lORF9CT1NTEAJCFKoC",
+            "EVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), }, null, null));
     }
     #endregion
 
@@ -58,6 +60,21 @@ namespace PortfolioMmo.Data {
     /// 보스 자리
     /// </summary>
     [pbr::OriginalName("ZONE_KIND_BOSS_AREA")] BossArea = 4,
+  }
+
+  public enum MonsterKind {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("MONSTER_KIND_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 일반 몬스터
+    /// </summary>
+    [pbr::OriginalName("MONSTER_KIND_NORMAL")] Normal = 1,
+    /// <summary>
+    /// 필드 보스(43)
+    /// </summary>
+    [pbr::OriginalName("MONSTER_KIND_BOSS")] Boss = 2,
   }
 
   #endregion

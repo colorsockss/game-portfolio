@@ -16,9 +16,10 @@ async function workbook(file, sheets) {
   await book.xlsx.writeFile(file);
 }
 
-// 시험용 원본 폴더. 종류 1은 3×2로 막고, 2는 1×1로 막고, 3은 막지 않는 1×1이다. 마을의 부활 지점과 무법자의 부활 지점을 정할 수 있다.
+// 시험용 원본 폴더. 종류 1은 3×2로 막고, 2는 1×1로 막고, 3은 막지 않는 1×1이다. 마을의 부활 지점과 무법자의 부활 지점,
+// 스폰의 무리의 자리(몬스터 1)를 정할 수 있다. 마을(안전 지대)은 -20..20 m다.
 let folders = 0;
-async function source(objects, { fieldSize = 100, respawn = [0, 0], outlaw = [10, 10] } = {}) {
+async function source(objects, { fieldSize = 100, respawn = [0, 0], outlaw = [10, 10], spawns = [] } = {}) {
   const folder = path.join(root, `source-${folders++}`);
   await mkdir(folder);
   await workbook(path.join(folder, 'Enums.xlsx'), [
@@ -37,6 +38,14 @@ async function source(objects, { fieldSize = 100, respawn = [0, 0], outlaw = [10
   await workbook(path.join(folder, 'MapObjectKinds.xlsx'), [
     ['Data', [['id', 'width', 'depth', 'blocks', 'blocksCamera', 'meshKey'], [1, 3, 2, true, true, 'house'], [2, 1, 1, true, false, 'rock'], [3, 1, 1, false, false, 'grass']]],
     ['Schema', [['index', 'name', 'type'], [0, 'id', 'uint'], [1, 'width', 'uint'], [2, 'depth', 'uint'], [3, 'blocks', 'bool'], [4, 'blocksCamera', 'bool'], [5, 'meshKey', 'string']]],
+  ]);
+  await workbook(path.join(folder, 'Monsters.xlsx'), [
+    ['Data', [['id'], [1]]],
+    ['Schema', [['index', 'name', 'type'], [0, 'id', 'uint']]],
+  ]);
+  await workbook(path.join(folder, 'Spawns.xlsx'), [
+    ['Data', [['id', 'x', 'z', 'monsterId'], ...spawns.map(([x, z], i) => [i + 1, x, z, 1])]],
+    ['Schema', [['index', 'name', 'type', 'default', 'description', 'ref'], [0, 'id', 'uint'], [1, 'x', 'int'], [2, 'z', 'int'], [3, 'monsterId', 'uint?', null, null, 'Monsters']]],
   ]);
   await writeFile(path.join(folder, 'MapObjects.tsv'), `# 시험용\n${objects.map((row) => row.join('\t')).join('\n')}\n`);
   return folder;
@@ -81,11 +90,22 @@ for (const [name, objects, options, message] of [
   ['an outlaw respawn point on a blocked cell', [[2, 10, 10, 0]], {}, /the outlaw respawn point \(10, 10\) is on a blocked cell/],
   ['an outlaw respawn point walled in', [[2, 9, 10, 0], [2, 11, 10, 0], [2, 10, 9, 0], [2, 10, 11, 0]], {}, /cannot be walked to from the town respawn point/],
   ['a malformed line', [['1', 'a', '0', '0']], {}, /four tab-separated integers/],
+  ['a spawn on a blocked cell', [[2, 30, 30, 0]], { spawns: [[30, 30]] }, /Spawns 1: the group point \(30, 30\) is on a blocked cell/],
+  ['a spawn walled in', [[2, 29, 30, 0], [2, 31, 30, 0], [2, 30, 29, 0], [2, 30, 31, 0]], { spawns: [[30, 30]] }, /Spawns 1: the group point \(30, 30\) cannot be walked to/],
+  ['a monster group in a safe zone', [], { spawns: [[30, 30], [5, -5]] }, /Spawns 2: the monster group point \(5, -5\) is in a safe zone/],
 ]) {
   test(`the map stops on ${name}`, async () => {
     await assert.rejects(buildMap(await source(objects, options)), message);
   });
 }
+
+test('spawns outside the town on open reachable cells pass and are drawn in the preview', async () => {
+  const out = path.join(root, 'out-spawns');
+  await mkdir(path.join(out, 'data'), { recursive: true });
+  const map = await generateMap(await source([], { spawns: [[30, 30], [-30, 25]] }), out);
+  assert.deepEqual(map.spawns.map((spawn) => [spawn.x, spawn.z]), [[30, 30], [-30, 25]]);
+  assert.match(await readFile(path.join(out, 'preview/Map.svg'), 'utf8'), />2·1</);
+});
 
 test('an outlaw respawn point walled in on three sides is still reachable', async () => {
   // 네 방향 이웃 가운데 하나만 열려 있어도 닿는다. 넷이 다 막히면 대각선이 열려 있어도 닿지 않는다(위의 walled in).

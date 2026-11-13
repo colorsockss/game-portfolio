@@ -2037,11 +2037,11 @@ constexpr EntityMove::ParseTableT_ EntityMove::InternalGenerateParseTable_(const
     {
       PROTOBUF_FIELD_OFFSET(EntityMove, _impl_._has_bits_),
       0, // no _extensions_
-      4, 24,  // max_field_number, fast_idx_mask
+      5, 56,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967280,  // skipmap
+      4294967264,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      4,  // num_field_entries
+      5,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -2051,10 +2051,7 @@ constexpr EntityMove::ParseTableT_ EntityMove::InternalGenerateParseTable_(const
       ::_pbi::TcParser::GetTable<::portfolio::mmo::EntityMove>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      // uint32 yaw = 4;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EntityMove, _impl_.yaw_), 3>(),
-       {32, 3, 0,
-        PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.yaw_)}},
+      {::_pbi::TcParser::MiniParse, {}},
       // uint32 id = 1;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EntityMove, _impl_.id_), 0>(),
        {8, 0, 0,
@@ -2067,6 +2064,16 @@ constexpr EntityMove::ParseTableT_ EntityMove::InternalGenerateParseTable_(const
       {::_pbi::TcParser::FastZ32S1,
        {24, 2, 0,
         PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.z_)}},
+      // uint32 yaw = 4;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EntityMove, _impl_.yaw_), 3>(),
+       {32, 3, 0,
+        PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.yaw_)}},
+      // bool teleport = 5;
+      {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EntityMove, _impl_.teleport_), 4>(),
+       {40, 4, 0,
+        PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.teleport_)}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
     }}, {{
       65535, 65535
     }}, {{
@@ -2078,6 +2085,8 @@ constexpr EntityMove::ParseTableT_ EntityMove::InternalGenerateParseTable_(const
       {PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.z_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kSInt32)},
       // uint32 yaw = 4;
       {PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.yaw_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // bool teleport = 5;
+      {PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.teleport_), _Internal::kHasBitsOffset + 4, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
     }},
     // no aux_entries
     {{
@@ -2092,7 +2101,8 @@ inline constexpr EntityMove::Impl_::Impl_(
       : id_{0u},
         x_{0},
         z_{0},
-        yaw_{0u} {}
+        yaw_{0u},
+        teleport_{false} {}
 
 template <typename>
 constexpr EntityMove::EntityMove(::_pbi::ConstantInitialized,
@@ -4695,15 +4705,17 @@ const ::uint32_t
         0,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_._has_bits_),
-        7, // hasbit index offset
+        8, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.x_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.z_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.yaw_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.teleport_),
         0,
         1,
         2,
         3,
+        4,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::SelfVitals, _impl_._has_bits_),
         7, // hasbit index offset
@@ -4767,10 +4779,10 @@ static const ::_pbi::MigrationSchema
         {200, sizeof(::portfolio::mmo::EntitiesLeave)},
         {205, sizeof(::portfolio::mmo::EntityMoves)},
         {212, sizeof(::portfolio::mmo::EntityMove)},
-        {223, sizeof(::portfolio::mmo::SelfVitals)},
-        {234, sizeof(::portfolio::mmo::EntityVitals)},
-        {239, sizeof(::portfolio::mmo::EntityVital)},
-        {248, sizeof(::portfolio::mmo::SelfStats)},
+        {225, sizeof(::portfolio::mmo::SelfVitals)},
+        {236, sizeof(::portfolio::mmo::EntityVitals)},
+        {241, sizeof(::portfolio::mmo::EntityVital)},
+        {250, sizeof(::portfolio::mmo::SelfStats)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -4879,63 +4891,63 @@ const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "id\030\003 \001(\r\022\r\n\005level\030\004 \001(\r\"\034\n\rEntitiesLeave"
     "\022\013\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n\004tick\030\001 \001"
     "(\r\022+\n\010entities\030\002 \003(\0132\031.portfolio.mmo.Ent"
-    "ityMove\";\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002"
-    " \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\"Y\n\nSelfVita"
-    "ls\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002 \001(\r\022\027\n\017combat_end"
-    "_tick\030\003 \001(\r\022\032\n\022aggressor_end_tick\030\004 \001(\r\""
-    "<\n\014EntityVitals\022,\n\010entities\030\001 \003(\0132\032.port"
-    "folio.mmo.EntityVital\"5\n\013EntityVital\022\n\n\002"
-    "id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"L\n\t"
-    "SelfStats\022\016\n\006max_hp\030\001 \001(\r\022\016\n\006max_mp\030\002 \001("
-    "\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007defense\030\004 \001(\r*Q\n\017Pr"
-    "otocolVersion\022 \n\034PROTOCOL_VERSION_UNSPEC"
-    "IFIED\020\000\022\034\n\030PROTOCOL_VERSION_CURRENT\020\002*\256\002"
-    "\n\010Constant\022\030\n\024CONSTANT_UNSPECIFIED\020\000\022\034\n\030"
-    "CONSTANT_UNITS_PER_METER\020 \022$\n\037CONSTANT_M"
-    "AP_HALF_EXTENT_METERS\020\200\010\022\027\n\022CONSTANT_YAW"
-    "_STEPS\020\200\002\022\035\n\031CONSTANT_TICKS_PER_SECOND\020\024"
-    "\022(\n$CONSTANT_MAX_SPEED_METERS_PER_SECOND"
-    "\020\006\022\"\n\036CONSTANT_PING_INTERVAL_SECONDS\020\005\022!"
-    "\n\035CONSTANT_IDLE_TIMEOUT_SECONDS\020\017\022\033\n\027CON"
-    "STANT_MAX_CHARACTERS\020\004*\303\001\n\017LoginResultCo"
-    "de\022\030\n\024LOGIN_RESULT_CODE_OK\020\000\022&\n\"LOGIN_RE"
-    "SULT_CODE_INVALID_LOGIN_ID\020\001\022&\n\"LOGIN_RE"
-    "SULT_CODE_VERSION_MISMATCH\020\002\022!\n\035LOGIN_RE"
-    "SULT_CODE_SERVER_FULL\020\003\022#\n\037LOGIN_RESULT_"
-    "CODE_DATA_MISMATCH\020\004*\253\001\n\nKickReason\022\033\n\027K"
-    "ICK_REASON_UNSPECIFIED\020\000\022\037\n\033KICK_REASON_"
-    "DUPLICATE_LOGIN\020\001\022\037\n\033KICK_REASON_SERVER_"
-    "SHUTDOWN\020\002\022 \n\034KICK_REASON_MALFORMED_PACK"
-    "ET\020\003\022\034\n\030KICK_REASON_IDLE_TIMEOUT\020\004*g\n\016Ch"
-    "aracterClass\022\037\n\033CHARACTER_CLASS_UNSPECIF"
-    "IED\020\000\022\032\n\026CHARACTER_CLASS_KNIGHT\020\001\022\030\n\024CHA"
-    "RACTER_CLASS_MAGE\020\002*\367\001\n\031CreateCharacterR"
-    "esultCode\022#\n\037CREATE_CHARACTER_RESULT_COD"
-    "E_OK\020\000\022-\n)CREATE_CHARACTER_RESULT_CODE_I"
-    "NVALID_NAME\020\001\022+\n\'CREATE_CHARACTER_RESULT"
-    "_CODE_NAME_TAKEN\020\002\022)\n%CREATE_CHARACTER_R"
-    "ESULT_CODE_TOO_MANY\020\003\022.\n*CREATE_CHARACTE"
-    "R_RESULT_CODE_INVALID_CLASS\020\004*e\n\024EnterWo"
-    "rldResultCode\022\036\n\032ENTER_WORLD_RESULT_CODE"
-    "_OK\020\000\022-\n)ENTER_WORLD_RESULT_CODE_NO_SUCH"
-    "_CHARACTER\020\001*\251\001\n\nEntityKind\022\033\n\027ENTITY_KI"
-    "ND_UNSPECIFIED\020\000\022\026\n\022ENTITY_KIND_PLAYER\020\001"
-    "\022\027\n\023ENTITY_KIND_MONSTER\020\002\022\023\n\017ENTITY_KIND"
-    "_NPC\020\003\022\033\n\027ENTITY_KIND_GATHER_NODE\020\004\022\033\n\027E"
-    "NTITY_KIND_GROUND_ITEM\020\005*S\n\tNameColor\022\025\n"
-    "\021NAME_COLOR_NORMAL\020\000\022\030\n\024NAME_COLOR_AGGRE"
-    "SSOR\020\001\022\025\n\021NAME_COLOR_OUTLAW\020\002*\213\001\n\014Progre"
-    "ssKind\022\026\n\022PROGRESS_KIND_NONE\020\000\022\026\n\022PROGRE"
-    "SS_KIND_CAST\020\001\022\030\n\024PROGRESS_KIND_GATHER\020\002"
-    "\022\027\n\023PROGRESS_KIND_CRAFT\020\003\022\030\n\024PROGRESS_KI"
-    "ND_RECALL\020\004B\030\252\002\025PortfolioMmo.Contractb\006p"
-    "roto3"
+    "ityMove\"M\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002"
+    " \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\020\n\010teleport"
+    "\030\005 \001(\010\"Y\n\nSelfVitals\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002"
+    " \001(\r\022\027\n\017combat_end_tick\030\003 \001(\r\022\032\n\022aggress"
+    "or_end_tick\030\004 \001(\r\"<\n\014EntityVitals\022,\n\010ent"
+    "ities\030\001 \003(\0132\032.portfolio.mmo.EntityVital\""
+    "5\n\013EntityVital\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016"
+    "\n\006max_hp\030\003 \001(\r\"L\n\tSelfStats\022\016\n\006max_hp\030\001 "
+    "\001(\r\022\016\n\006max_mp\030\002 \001(\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007d"
+    "efense\030\004 \001(\r*Q\n\017ProtocolVersion\022 \n\034PROTO"
+    "COL_VERSION_UNSPECIFIED\020\000\022\034\n\030PROTOCOL_VE"
+    "RSION_CURRENT\020\002*\256\002\n\010Constant\022\030\n\024CONSTANT"
+    "_UNSPECIFIED\020\000\022\034\n\030CONSTANT_UNITS_PER_MET"
+    "ER\020 \022$\n\037CONSTANT_MAP_HALF_EXTENT_METERS\020"
+    "\200\010\022\027\n\022CONSTANT_YAW_STEPS\020\200\002\022\035\n\031CONSTANT_"
+    "TICKS_PER_SECOND\020\024\022(\n$CONSTANT_MAX_SPEED"
+    "_METERS_PER_SECOND\020\006\022\"\n\036CONSTANT_PING_IN"
+    "TERVAL_SECONDS\020\005\022!\n\035CONSTANT_IDLE_TIMEOU"
+    "T_SECONDS\020\017\022\033\n\027CONSTANT_MAX_CHARACTERS\020\004"
+    "*\303\001\n\017LoginResultCode\022\030\n\024LOGIN_RESULT_COD"
+    "E_OK\020\000\022&\n\"LOGIN_RESULT_CODE_INVALID_LOGI"
+    "N_ID\020\001\022&\n\"LOGIN_RESULT_CODE_VERSION_MISM"
+    "ATCH\020\002\022!\n\035LOGIN_RESULT_CODE_SERVER_FULL\020"
+    "\003\022#\n\037LOGIN_RESULT_CODE_DATA_MISMATCH\020\004*\253"
+    "\001\n\nKickReason\022\033\n\027KICK_REASON_UNSPECIFIED"
+    "\020\000\022\037\n\033KICK_REASON_DUPLICATE_LOGIN\020\001\022\037\n\033K"
+    "ICK_REASON_SERVER_SHUTDOWN\020\002\022 \n\034KICK_REA"
+    "SON_MALFORMED_PACKET\020\003\022\034\n\030KICK_REASON_ID"
+    "LE_TIMEOUT\020\004*g\n\016CharacterClass\022\037\n\033CHARAC"
+    "TER_CLASS_UNSPECIFIED\020\000\022\032\n\026CHARACTER_CLA"
+    "SS_KNIGHT\020\001\022\030\n\024CHARACTER_CLASS_MAGE\020\002*\367\001"
+    "\n\031CreateCharacterResultCode\022#\n\037CREATE_CH"
+    "ARACTER_RESULT_CODE_OK\020\000\022-\n)CREATE_CHARA"
+    "CTER_RESULT_CODE_INVALID_NAME\020\001\022+\n\'CREAT"
+    "E_CHARACTER_RESULT_CODE_NAME_TAKEN\020\002\022)\n%"
+    "CREATE_CHARACTER_RESULT_CODE_TOO_MANY\020\003\022"
+    ".\n*CREATE_CHARACTER_RESULT_CODE_INVALID_"
+    "CLASS\020\004*e\n\024EnterWorldResultCode\022\036\n\032ENTER"
+    "_WORLD_RESULT_CODE_OK\020\000\022-\n)ENTER_WORLD_R"
+    "ESULT_CODE_NO_SUCH_CHARACTER\020\001*\251\001\n\nEntit"
+    "yKind\022\033\n\027ENTITY_KIND_UNSPECIFIED\020\000\022\026\n\022EN"
+    "TITY_KIND_PLAYER\020\001\022\027\n\023ENTITY_KIND_MONSTE"
+    "R\020\002\022\023\n\017ENTITY_KIND_NPC\020\003\022\033\n\027ENTITY_KIND_"
+    "GATHER_NODE\020\004\022\033\n\027ENTITY_KIND_GROUND_ITEM"
+    "\020\005*S\n\tNameColor\022\025\n\021NAME_COLOR_NORMAL\020\000\022\030"
+    "\n\024NAME_COLOR_AGGRESSOR\020\001\022\025\n\021NAME_COLOR_O"
+    "UTLAW\020\002*\213\001\n\014ProgressKind\022\026\n\022PROGRESS_KIN"
+    "D_NONE\020\000\022\026\n\022PROGRESS_KIND_CAST\020\001\022\030\n\024PROG"
+    "RESS_KIND_GATHER\020\002\022\027\n\023PROGRESS_KIND_CRAF"
+    "T\020\003\022\030\n\024PROGRESS_KIND_RECALL\020\004B\030\252\002\025Portfo"
+    "lioMmo.Contractb\006proto3"
 };
 static ::absl::once_flag descriptor_table_packets_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_packets_2eproto = {
     false,
     false,
-    5005,
+    5023,
     descriptor_table_protodef_packets_2eproto,
     "packets.proto",
     &descriptor_table_packets_2eproto_once,
@@ -11288,9 +11300,9 @@ inline void EntityMove::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, id_),
            0,
-           offsetof(Impl_, yaw_) -
+           offsetof(Impl_, teleport_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::yaw_));
+               sizeof(Impl_::teleport_));
 }
 EntityMove::~EntityMove() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.EntityMove)
@@ -11339,12 +11351,12 @@ PROTOBUF_NOINLINE void EntityMove::Clear() {
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
     ::memset(&this_._impl_.id_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.yaw_) -
+                 reinterpret_cast<char*>(&this_._impl_.teleport_) -
                  reinterpret_cast<char*>(&this_._impl_.id_)) +
-                 sizeof(_impl_.yaw_));
+                 sizeof(_impl_.teleport_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -11405,6 +11417,15 @@ PROTOBUF_NOINLINE void EntityMove::Clear() {
     }
   }
 
+  // bool teleport = 5;
+  if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+    if (this_._internal_teleport() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteBoolToArray(
+          5, this_._internal_teleport(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -11428,7 +11449,7 @@ PROTOBUF_NOINLINE void EntityMove::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
     // uint32 id = 1;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (this_._internal_id() != 0) {
@@ -11457,6 +11478,12 @@ PROTOBUF_NOINLINE void EntityMove::Clear() {
             this_._internal_yaw());
       }
     }
+    // bool teleport = 5;
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      if (this_._internal_teleport() != 0) {
+        total_size += 2;
+      }
+    }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
@@ -11475,7 +11502,7 @@ void EntityMove::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (from._internal_id() != 0) {
         _this->_impl_.id_ = from._impl_.id_;
@@ -11494,6 +11521,11 @@ void EntityMove::MergeImpl(::google::protobuf::MessageLite& to_msg,
     if (CheckHasBit(cached_has_bits, 0x00000008U)) {
       if (from._internal_yaw() != 0) {
         _this->_impl_.yaw_ = from._impl_.yaw_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      if (from._internal_teleport() != 0) {
+        _this->_impl_.teleport_ = from._impl_.teleport_;
       }
     }
   }
@@ -11515,8 +11547,8 @@ void EntityMove::InternalSwap(EntityMove* PROTOBUF_RESTRICT PROTOBUF_NONNULL oth
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.yaw_)
-      + sizeof(EntityMove::_impl_.yaw_)
+      PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.teleport_)
+      + sizeof(EntityMove::_impl_.teleport_)
       - PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.id_)>(
           reinterpret_cast<char*>(&_impl_.id_),
           reinterpret_cast<char*>(&other->_impl_.id_));

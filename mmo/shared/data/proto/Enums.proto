@@ -17,3 +17,12 @@ enum ZoneKind {
   // 보스 자리
   ZONE_KIND_BOSS_AREA = 4;
 }
+
+enum MonsterKind {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  MONSTER_KIND_UNSPECIFIED = 0;
+  // 일반 몬스터
+  MONSTER_KIND_NORMAL = 1;
+  // 필드 보스(43)
+  MONSTER_KIND_BOSS = 2;
+}

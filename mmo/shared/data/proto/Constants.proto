@@ -20,4 +20,16 @@ message Constants {
   double crit_multiplier = 6;
   // 플레이어의 반지름(m). 클라이언트의 캡슐(34 cm)과 같은 값
   double player_radius = 7;
+  // 몬스터가 길이 없는 대상을 건너뛰는 시간(ms, "닿을 수 없음")
+  uint32 unreachable_ms = 8;
+  // 몬스터가 길을 다시 찾는 대상의 이동 거리(m). 길을 찾은 때의 대상 자리에서 이만큼 넘게 옮기면 다시 찾는다
+  double repath_distance = 9;
+  // 복귀의 길찾기 범위에 더하는 거리(m). 범위는 놓인 점에서 지금 거리 + 이것이다
+  double return_range_margin = 10;
+  // 복귀 중인 몬스터가 초당 채우는 최대 체력의 비율(%)
+  uint32 return_regen_percent = 11;
+  // 배회에서 한 점에 서 있는 가장 짧은 시간(ms)
+  uint32 wander_pause_min_ms = 12;
+  // 배회에서 한 점에 서 있는 가장 긴 시간(ms)
+  uint32 wander_pause_max_ms = 13;
 }

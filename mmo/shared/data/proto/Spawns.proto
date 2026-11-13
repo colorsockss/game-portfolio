@@ -1,0 +1,29 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message SpawnsRow {
+  // 무리의 번호
+  uint32 id = 1;
+  // 무리의 자리 x(m). 막힌 칸이 아니고 마을의 부활 지점에서 걸어서 닿으며, 몬스터 무리는 안전 지대 밖이다(맵 툴이 검사)
+  sint32 x = 2;
+  // 무리의 자리 z(m)
+  sint32 z = 3;
+  // 놓는 몬스터. 채집물의 열은 47이 더한다
+  uint32 monster_id = 4;
+  // 무리의 수
+  uint32 count = 5;
+  // 흩는 반경(m). 무리의 자리에서 이 안이고 곧게 걸어갈 수 있는 점에 하나씩 놓는다
+  double scatter_radius = 6;
+  // 죽은 틱부터 다시 나오기까지(ms. 25가 씀)
+  uint32 respawn_ms = 7;
+  // 배회 반경(m). 놓인 점에서 이 안의 점으로 걷는다
+  double wander_radius = 8;
+}
+
+message Spawns {
+  repeated SpawnsRow rows = 1;
+}

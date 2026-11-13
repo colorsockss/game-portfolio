@@ -63,7 +63,7 @@ namespace PortfolioMmo.Contract.Tests
                     },
                 },
                 new Packet { EntitiesLeave = new EntitiesLeave { Ids = { 7, 8 } } },
-                new Packet { EntityMoves = new EntityMoves { Tick = 72000, Entities = { s_sampleMove } } },
+                new Packet { EntityMoves = new EntityMoves { Tick = 72000, Entities = { s_sampleMove, new EntityMove { Id = 9, X = 1, Z = 2, Teleport = true } } } },
                 new Packet { EntityState = new EntityState { Id = 7, NameColor = NameColor.Aggressor, WeaponItemId = 1002, Level = 13 } },
                 new Packet { SelfVitals = new SelfVitals { Hp = 140, Mp = 0, CombatEndTick = 72100, AggressorEndTick = 72600 } },
                 new Packet { EntityVitals = new EntityVitals { Entities = { new EntityVital { Id = 7, Hp = 95, MaxHp = 120 }, new EntityVital { Id = 8, Hp = 50, MaxHp = 50 } } } },

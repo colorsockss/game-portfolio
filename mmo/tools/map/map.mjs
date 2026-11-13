@@ -4,7 +4,7 @@
 //   proto/MapGrid.proto   격자 메시지(가로, 세로, 원점, 칸마다 막힘 1바이트). protoc가 C#과 C++을 만든다
 //   data/MapGrid.bytes    격자 바이너리. 서버와 두 클라이언트가 읽는다(backlog 65)
 //   data/Map.tsv          놓인 것의 목록(종류의 줄과 놓인 줄). 두 엔진의 에디터 도구가 읽는다(backlog 87, 7)
-//   preview/Map.svg       미리 보기 그림(구역, 막힌 칸, 부활 지점). 해시에 들지 않는다
+//   preview/Map.svg       미리 보기 그림(구역, 막힌 칸, 부활 지점, 스폰). 해시에 들지 않는다
 // 격자와 목록이 data/에 들어가므로 data/data.hash를 다시 구한다. 하나라도 어긋나면 아무것도 쓰지 않는다.
 //
 //   node mmo/tools/map/map.mjs <mmo/data 폴더> <data-tool의 --out 폴더>
@@ -66,6 +66,7 @@ export async function buildMap(source) {
   const min = -size / 2;
   const kinds = new Map(table('MapObjectKinds').map((row) => [row.id, row]));
   const zones = table('Zones');
+  const spawns = table('Spawns');
   const town = enums.get('ZoneKind').members.get('Town');
 
   const errors = [];
@@ -100,6 +101,14 @@ export async function buildMap(source) {
   }
   const inside = (x, z) => x >= min && z >= min && x < min + size && z < min + size;
   const open = (x, z) => inside(x, z) && cells[index(x, z)] === 0;
+  // 칸이 든 구역의 안전 지대 여부. 겹치면 뒤 줄이 이긴다(서버의 FieldMap과 같음).
+  const safe = (x, z) => {
+    let result = false;
+    for (const zone of zones) {
+      if (x >= zone.minX && x < zone.maxX && z >= zone.minZ && z < zone.maxZ) result = zone.safe;
+    }
+    return result;
+  };
 
   // 부활 지점(m)은 막힌 칸 위에 있지 않아야 하고, 무법자의 부활 지점은 마을의 부활 지점에서 걸어서 닿아야 한다.
   const respawns = zones.filter((zone) => zone.kind === town);
@@ -109,16 +118,25 @@ export async function buildMap(source) {
       if (!open(x, z)) errors.push(`Zones ${zone.id}: the ${name} point (${x}, ${z}) is on a blocked cell or outside the field`);
     }
   }
+  // 스폰의 무리의 자리(m)는 막힌 칸 위가 아니어야 하고, 몬스터 무리는 안전 지대 밖이어야 한다(몬스터는 안전 지대를 걷지 않음).
+  for (const spawn of spawns) {
+    if (!open(spawn.x, spawn.z)) errors.push(`Spawns ${spawn.id}: the group point (${spawn.x}, ${spawn.z}) is on a blocked cell or outside the field`);
+    else if (spawn.monsterId != null && safe(spawn.x, spawn.z)) errors.push(`Spawns ${spawn.id}: the monster group point (${spawn.x}, ${spawn.z}) is in a safe zone`);
+  }
   if (errors.length === 0) {
+    // 무법자의 부활 지점과 무리의 자리는 마을의 부활 지점에서 걸어서 닿아야 한다.
     const reached = reachable(respawns[0].respawnX, respawns[0].respawnZ, size, min, open);
     for (const zone of respawns) {
       if (!reached[index(zone.outlawRespawnX, zone.outlawRespawnZ)]) {
         errors.push(`Zones ${zone.id}: the outlaw respawn point (${zone.outlawRespawnX}, ${zone.outlawRespawnZ}) cannot be walked to from the town respawn point`);
       }
     }
+    for (const spawn of spawns.filter((entry) => !reached[index(entry.x, entry.z)])) {
+      errors.push(`Spawns ${spawn.id}: the group point (${spawn.x}, ${spawn.z}) cannot be walked to from the town respawn point`);
+    }
   }
   if (errors.length > 0) throw new Error(`${errors.length} map check(s) failed:\n  ${errors.join('\n  ')}`);
-  return { size, min, cells, objects, kinds, zones, town };
+  return { size, min, cells, objects, kinds, zones, town, spawns };
 }
 
 // 시작 칸에서 걸을 수 있는 칸을 네 방향으로 채운다. 길찾기는 대각선으로 양옆 두 칸이 열려 있을 때만 가므로 닿는 칸이 같다.
@@ -182,7 +200,7 @@ function listText({ objects, kinds }) {
 const ZONE_COLORS = ['#999999', '#3fae5a', '#e08a2c', '#3d7fd6', '#d23c3c'];
 
 // 미리 보기 그림. 1 m가 1단위이고 위쪽이 +z(북)다.
-function previewSvg({ size, min, objects, zones, town }) {
+function previewSvg({ size, min, objects, zones, town, spawns }) {
   const top = min + size;
   const rect = (x, z, width, depth, attributes) => `<rect x="${x - min}" y="${top - (z + depth)}" width="${width}" height="${depth}" ${attributes}/>`;
   const point = (x, z, color) => `<circle cx="${x - min + 0.5}" cy="${top - z - 0.5}" r="3" fill="${color}" stroke="#000" stroke-width="0.5"/>`;
@@ -201,7 +219,10 @@ function previewSvg({ size, min, objects, zones, town }) {
   for (const zone of zones.filter((entry) => entry.kind === town)) {
     parts.push(point(zone.respawnX, zone.respawnZ, '#2fbf4f'), point(zone.outlawRespawnX, zone.outlawRespawnZ, '#d0302f'));
   }
-  parts.push(`<text x="4" y="${size - 6}" fill="#333">막힌 칸: 진회색 · 장식: 연두 · 부활 지점: 초록 · 무법자의 부활 지점: 빨강 · 1 m = 1</text>`, '</svg>', '');
+  for (const spawn of spawns) {
+    parts.push(point(spawn.x, spawn.z, '#8a3fd1'), `<text x="${spawn.x - min + 4}" y="${top - spawn.z + 2}" fill="#5a2590">${spawn.id}·${spawn.monsterId}</text>`);
+  }
+  parts.push(`<text x="4" y="${size - 6}" fill="#333">막힌 칸: 진회색 · 장식: 연두 · 부활 지점: 초록 · 무법자의 부활 지점: 빨강 · 스폰: 보라(무리 번호·몬스터) · 1 m = 1</text>`, '</svg>', '');
   return parts.join('\n');
 }
 

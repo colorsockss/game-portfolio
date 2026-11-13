@@ -48,6 +48,7 @@ namespace PortfolioMmo.Server
             foreach (Entity entity in _entities.All)
             {
                 entity.Moved = false;
+                entity.Teleported = false;
                 entity.MoveMessage = null;
                 entity.StateChanged = false;
             }
@@ -96,7 +97,7 @@ namespace PortfolioMmo.Server
                 if (other.Moved)
                 {
                     moves ??= new EntityMoves { Tick = tick };
-                    other.MoveMessage ??= new EntityMove { Id = other.Id, X = other.X, Z = other.Z, Yaw = other.Yaw };
+                    other.MoveMessage ??= new EntityMove { Id = other.Id, X = other.X, Z = other.Z, Yaw = other.Yaw, Teleport = other.Teleported };
                     moves.Entities.Add(other.MoveMessage);
                 }
 

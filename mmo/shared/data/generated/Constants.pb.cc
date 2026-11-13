@@ -49,11 +49,11 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
     {
       PROTOBUF_FIELD_OFFSET(Constants, _impl_._has_bits_),
       0, // no _extensions_
-      7, 56,  // max_field_number, fast_idx_mask
+      13, 120,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967168,  // skipmap
+      4294959104,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      7,  // num_field_entries
+      13,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -92,6 +92,32 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       {::_pbi::TcParser::FastF64S1,
        {57, 6, 0,
         PROTOBUF_FIELD_OFFSET(Constants, _impl_.player_radius_)}},
+      // uint32 unreachable_ms = 8;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Constants, _impl_.unreachable_ms_), 8>(),
+       {64, 8, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.unreachable_ms_)}},
+      // double repath_distance = 9;
+      {::_pbi::TcParser::FastF64S1,
+       {73, 7, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.repath_distance_)}},
+      // double return_range_margin = 10;
+      {::_pbi::TcParser::FastF64S1,
+       {81, 10, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.return_range_margin_)}},
+      // uint32 return_regen_percent = 11;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Constants, _impl_.return_regen_percent_), 9>(),
+       {88, 9, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.return_regen_percent_)}},
+      // uint32 wander_pause_min_ms = 12;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Constants, _impl_.wander_pause_min_ms_), 11>(),
+       {96, 11, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.wander_pause_min_ms_)}},
+      // uint32 wander_pause_max_ms = 13;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Constants, _impl_.wander_pause_max_ms_), 12>(),
+       {104, 12, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.wander_pause_max_ms_)}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
     }}, {{
       65535, 65535
     }}, {{
@@ -109,6 +135,18 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.crit_multiplier_), _Internal::kHasBitsOffset + 5, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
       // double player_radius = 7;
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.player_radius_), _Internal::kHasBitsOffset + 6, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      // uint32 unreachable_ms = 8;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.unreachable_ms_), _Internal::kHasBitsOffset + 8, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // double repath_distance = 9;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.repath_distance_), _Internal::kHasBitsOffset + 7, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      // double return_range_margin = 10;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.return_range_margin_), _Internal::kHasBitsOffset + 10, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      // uint32 return_regen_percent = 11;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.return_regen_percent_), _Internal::kHasBitsOffset + 9, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 wander_pause_min_ms = 12;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.wander_pause_min_ms_), _Internal::kHasBitsOffset + 11, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 wander_pause_max_ms = 13;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.wander_pause_max_ms_), _Internal::kHasBitsOffset + 12, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -126,7 +164,13 @@ inline constexpr Constants::Impl_::Impl_(
         combat_regen_percent_{0u},
         crit_chance_{0},
         crit_multiplier_{0},
-        player_radius_{0} {}
+        player_radius_{0},
+        repath_distance_{0},
+        unreachable_ms_{0u},
+        return_regen_percent_{0u},
+        return_range_margin_{0},
+        wander_pause_min_ms_{0u},
+        wander_pause_max_ms_{0u} {}
 
 template <typename>
 constexpr Constants::Constants(::_pbi::ConstantInitialized,
@@ -232,7 +276,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_._has_bits_),
-        10, // hasbit index offset
+        16, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.field_size_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.combat_duration_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.regen_percent_),
@@ -240,6 +284,12 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.crit_chance_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.crit_multiplier_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.player_radius_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.unreachable_ms_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.repath_distance_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.return_range_margin_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.return_regen_percent_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.wander_pause_min_ms_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.wander_pause_max_ms_),
         0,
         1,
         2,
@@ -247,6 +297,12 @@ const ::uint32_t
         4,
         5,
         6,
+        8,
+        7,
+        10,
+        9,
+        11,
+        12,
 };
 
 static const ::_pbi::MigrationSchema
@@ -259,19 +315,23 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\017Constants.proto\022\022portfolio.mmo.data\"\265\001"
+    "\n\017Constants.proto\022\022portfolio.mmo.data\"\333\002"
     "\n\tConstants\022\022\n\nfield_size\030\001 \001(\r\022\032\n\022comba"
     "t_duration_ms\030\002 \001(\r\022\025\n\rregen_percent\030\003 \001"
     "(\r\022\034\n\024combat_regen_percent\030\004 \001(\r\022\023\n\013crit"
     "_chance\030\005 \001(\001\022\027\n\017crit_multiplier\030\006 \001(\001\022\025"
-    "\n\rplayer_radius\030\007 \001(\001B\024\252\002\021PortfolioMmo.D"
-    "atab\006proto3"
+    "\n\rplayer_radius\030\007 \001(\001\022\026\n\016unreachable_ms\030"
+    "\010 \001(\r\022\027\n\017repath_distance\030\t \001(\001\022\033\n\023return"
+    "_range_margin\030\n \001(\001\022\034\n\024return_regen_perc"
+    "ent\030\013 \001(\r\022\033\n\023wander_pause_min_ms\030\014 \001(\r\022\033"
+    "\n\023wander_pause_max_ms\030\r \001(\rB\024\252\002\021Portfoli"
+    "oMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Constants_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Constants_2eproto = {
     false,
     false,
-    251,
+    417,
     descriptor_table_protodef_Constants_2eproto,
     "Constants.proto",
     &descriptor_table_Constants_2eproto_once,
@@ -319,9 +379,9 @@ inline void Constants::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, field_size_),
            0,
-           offsetof(Impl_, player_radius_) -
+           offsetof(Impl_, wander_pause_max_ms_) -
                offsetof(Impl_, field_size_) +
-               sizeof(Impl_::player_radius_));
+               sizeof(Impl_::wander_pause_max_ms_));
 }
 Constants::~Constants() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.Constants)
@@ -370,12 +430,19 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000007fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     ::memset(&this_._impl_.field_size_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.player_radius_) -
+                 reinterpret_cast<char*>(&this_._impl_.repath_distance_) -
                  reinterpret_cast<char*>(&this_._impl_.field_size_)) +
-                 sizeof(_impl_.player_radius_));
+                 sizeof(_impl_.repath_distance_));
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x00001f00U)) {
+    ::memset(&this_._impl_.unreachable_ms_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.wander_pause_max_ms_) -
+                 reinterpret_cast<char*>(&this_._impl_.unreachable_ms_)) +
+                 sizeof(_impl_.wander_pause_max_ms_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -463,6 +530,60 @@ PROTOBUF_NOINLINE void Constants::Clear() {
     }
   }
 
+  // uint32 unreachable_ms = 8;
+  if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+    if (this_._internal_unreachable_ms() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          8, this_._internal_unreachable_ms(), target);
+    }
+  }
+
+  // double repath_distance = 9;
+  if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+    if (::absl::bit_cast<::uint64_t>(this_._internal_repath_distance()) != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteDoubleToArray(
+          9, this_._internal_repath_distance(), target);
+    }
+  }
+
+  // double return_range_margin = 10;
+  if (CheckHasBit(cached_has_bits, 0x00000400U)) {
+    if (::absl::bit_cast<::uint64_t>(this_._internal_return_range_margin()) != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteDoubleToArray(
+          10, this_._internal_return_range_margin(), target);
+    }
+  }
+
+  // uint32 return_regen_percent = 11;
+  if (CheckHasBit(cached_has_bits, 0x00000200U)) {
+    if (this_._internal_return_regen_percent() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          11, this_._internal_return_regen_percent(), target);
+    }
+  }
+
+  // uint32 wander_pause_min_ms = 12;
+  if (CheckHasBit(cached_has_bits, 0x00000800U)) {
+    if (this_._internal_wander_pause_min_ms() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          12, this_._internal_wander_pause_min_ms(), target);
+    }
+  }
+
+  // uint32 wander_pause_max_ms = 13;
+  if (CheckHasBit(cached_has_bits, 0x00001000U)) {
+    if (this_._internal_wander_pause_max_ms() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          13, this_._internal_wander_pause_max_ms(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -486,7 +607,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000007fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     // uint32 field_size = 1;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (this_._internal_field_size() != 0) {
@@ -533,6 +654,48 @@ PROTOBUF_NOINLINE void Constants::Clear() {
         total_size += 9;
       }
     }
+    // double repath_distance = 9;
+    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+      if (::absl::bit_cast<::uint64_t>(this_._internal_repath_distance()) != 0) {
+        total_size += 9;
+      }
+    }
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x00001f00U)) {
+    // uint32 unreachable_ms = 8;
+    if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+      if (this_._internal_unreachable_ms() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_unreachable_ms());
+      }
+    }
+    // uint32 return_regen_percent = 11;
+    if (CheckHasBit(cached_has_bits, 0x00000200U)) {
+      if (this_._internal_return_regen_percent() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_return_regen_percent());
+      }
+    }
+    // double return_range_margin = 10;
+    if (CheckHasBit(cached_has_bits, 0x00000400U)) {
+      if (::absl::bit_cast<::uint64_t>(this_._internal_return_range_margin()) != 0) {
+        total_size += 9;
+      }
+    }
+    // uint32 wander_pause_min_ms = 12;
+    if (CheckHasBit(cached_has_bits, 0x00000800U)) {
+      if (this_._internal_wander_pause_min_ms() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_wander_pause_min_ms());
+      }
+    }
+    // uint32 wander_pause_max_ms = 13;
+    if (CheckHasBit(cached_has_bits, 0x00001000U)) {
+      if (this_._internal_wander_pause_max_ms() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_wander_pause_max_ms());
+      }
+    }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
@@ -551,7 +714,7 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000007fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (from._internal_field_size() != 0) {
         _this->_impl_.field_size_ = from._impl_.field_size_;
@@ -587,6 +750,38 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
         _this->_impl_.player_radius_ = from._impl_.player_radius_;
       }
     }
+    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+      if (::absl::bit_cast<::uint64_t>(from._internal_repath_distance()) != 0) {
+        _this->_impl_.repath_distance_ = from._impl_.repath_distance_;
+      }
+    }
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x00001f00U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+      if (from._internal_unreachable_ms() != 0) {
+        _this->_impl_.unreachable_ms_ = from._impl_.unreachable_ms_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000200U)) {
+      if (from._internal_return_regen_percent() != 0) {
+        _this->_impl_.return_regen_percent_ = from._impl_.return_regen_percent_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000400U)) {
+      if (::absl::bit_cast<::uint64_t>(from._internal_return_range_margin()) != 0) {
+        _this->_impl_.return_range_margin_ = from._impl_.return_range_margin_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000800U)) {
+      if (from._internal_wander_pause_min_ms() != 0) {
+        _this->_impl_.wander_pause_min_ms_ = from._impl_.wander_pause_min_ms_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00001000U)) {
+      if (from._internal_wander_pause_max_ms() != 0) {
+        _this->_impl_.wander_pause_max_ms_ = from._impl_.wander_pause_max_ms_;
+      }
+    }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
@@ -606,8 +801,8 @@ void Constants::InternalSwap(Constants* PROTOBUF_RESTRICT PROTOBUF_NONNULL other
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Constants, _impl_.player_radius_)
-      + sizeof(Constants::_impl_.player_radius_)
+      PROTOBUF_FIELD_OFFSET(Constants, _impl_.wander_pause_max_ms_)
+      + sizeof(Constants::_impl_.wander_pause_max_ms_)
       - PROTOBUF_FIELD_OFFSET(Constants, _impl_.field_size_)>(
           reinterpret_cast<char*>(&_impl_.field_size_),
           reinterpret_cast<char*>(&other->_impl_.field_size_));

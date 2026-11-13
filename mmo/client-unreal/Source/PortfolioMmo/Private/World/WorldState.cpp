@@ -146,6 +146,11 @@ namespace MmoWorld
 					Found->second.X = Move.x();
 					Found->second.Z = Move.z();
 					Found->second.Yaw = Move.yaw();
+					// 옮겨진 개체(순간 이동)는 옛 자리에서 미끄러지지 않게 기록을 비우고 그 자리에 바로 놓는다.
+					if (Move.teleport())
+					{
+						Found->second.Track.Clear();
+					}
 					Found->second.Track.Push({ Packet.entity_moves().tick(), Move.x(), Move.z(), Move.yaw() });
 				}
 			}

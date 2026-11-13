@@ -227,6 +227,12 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kCritChanceFieldNumber = 5,
     kCritMultiplierFieldNumber = 6,
     kPlayerRadiusFieldNumber = 7,
+    kRepathDistanceFieldNumber = 9,
+    kUnreachableMsFieldNumber = 8,
+    kReturnRegenPercentFieldNumber = 11,
+    kReturnRangeMarginFieldNumber = 10,
+    kWanderPauseMinMsFieldNumber = 12,
+    kWanderPauseMaxMsFieldNumber = 13,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -298,11 +304,71 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_player_radius(double value);
 
   public:
+  // double repath_distance = 9;
+  void clear_repath_distance() ;
+  [[nodiscard]] double repath_distance() const;
+  void set_repath_distance(double value);
+
+  private:
+  double _internal_repath_distance() const;
+  void _internal_set_repath_distance(double value);
+
+  public:
+  // uint32 unreachable_ms = 8;
+  void clear_unreachable_ms() ;
+  [[nodiscard]] ::uint32_t unreachable_ms() const;
+  void set_unreachable_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_unreachable_ms() const;
+  void _internal_set_unreachable_ms(::uint32_t value);
+
+  public:
+  // uint32 return_regen_percent = 11;
+  void clear_return_regen_percent() ;
+  [[nodiscard]] ::uint32_t return_regen_percent() const;
+  void set_return_regen_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_return_regen_percent() const;
+  void _internal_set_return_regen_percent(::uint32_t value);
+
+  public:
+  // double return_range_margin = 10;
+  void clear_return_range_margin() ;
+  [[nodiscard]] double return_range_margin() const;
+  void set_return_range_margin(double value);
+
+  private:
+  double _internal_return_range_margin() const;
+  void _internal_set_return_range_margin(double value);
+
+  public:
+  // uint32 wander_pause_min_ms = 12;
+  void clear_wander_pause_min_ms() ;
+  [[nodiscard]] ::uint32_t wander_pause_min_ms() const;
+  void set_wander_pause_min_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_wander_pause_min_ms() const;
+  void _internal_set_wander_pause_min_ms(::uint32_t value);
+
+  public:
+  // uint32 wander_pause_max_ms = 13;
+  void clear_wander_pause_max_ms() ;
+  [[nodiscard]] ::uint32_t wander_pause_max_ms() const;
+  void set_wander_pause_max_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_wander_pause_max_ms() const;
+  void _internal_set_wander_pause_max_ms(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<3, 7,
+      ::google::protobuf::internal::TcParseTable<4, 13,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -338,6 +404,12 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     double crit_chance_;
     double crit_multiplier_;
     double player_radius_;
+    double repath_distance_;
+    ::uint32_t unreachable_ms_;
+    ::uint32_t return_regen_percent_;
+    double return_range_margin_;
+    ::uint32_t wander_pause_min_ms_;
+    ::uint32_t wander_pause_max_ms_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -526,6 +598,150 @@ inline double Constants::_internal_player_radius() const {
 inline void Constants::_internal_set_player_radius(double value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.player_radius_ = value;
+}
+
+// uint32 unreachable_ms = 8;
+inline void Constants::clear_unreachable_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.unreachable_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000100U);
+}
+inline ::uint32_t Constants::unreachable_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.unreachable_ms)
+  return _internal_unreachable_ms();
+}
+inline void Constants::set_unreachable_ms(::uint32_t value) {
+  _internal_set_unreachable_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000100U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.unreachable_ms)
+}
+inline ::uint32_t Constants::_internal_unreachable_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.unreachable_ms_;
+}
+inline void Constants::_internal_set_unreachable_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.unreachable_ms_ = value;
+}
+
+// double repath_distance = 9;
+inline void Constants::clear_repath_distance() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.repath_distance_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000080U);
+}
+inline double Constants::repath_distance() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.repath_distance)
+  return _internal_repath_distance();
+}
+inline void Constants::set_repath_distance(double value) {
+  _internal_set_repath_distance(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000080U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.repath_distance)
+}
+inline double Constants::_internal_repath_distance() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.repath_distance_;
+}
+inline void Constants::_internal_set_repath_distance(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.repath_distance_ = value;
+}
+
+// double return_range_margin = 10;
+inline void Constants::clear_return_range_margin() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.return_range_margin_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000400U);
+}
+inline double Constants::return_range_margin() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.return_range_margin)
+  return _internal_return_range_margin();
+}
+inline void Constants::set_return_range_margin(double value) {
+  _internal_set_return_range_margin(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000400U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.return_range_margin)
+}
+inline double Constants::_internal_return_range_margin() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.return_range_margin_;
+}
+inline void Constants::_internal_set_return_range_margin(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.return_range_margin_ = value;
+}
+
+// uint32 return_regen_percent = 11;
+inline void Constants::clear_return_regen_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.return_regen_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000200U);
+}
+inline ::uint32_t Constants::return_regen_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.return_regen_percent)
+  return _internal_return_regen_percent();
+}
+inline void Constants::set_return_regen_percent(::uint32_t value) {
+  _internal_set_return_regen_percent(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000200U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.return_regen_percent)
+}
+inline ::uint32_t Constants::_internal_return_regen_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.return_regen_percent_;
+}
+inline void Constants::_internal_set_return_regen_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.return_regen_percent_ = value;
+}
+
+// uint32 wander_pause_min_ms = 12;
+inline void Constants::clear_wander_pause_min_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.wander_pause_min_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000800U);
+}
+inline ::uint32_t Constants::wander_pause_min_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.wander_pause_min_ms)
+  return _internal_wander_pause_min_ms();
+}
+inline void Constants::set_wander_pause_min_ms(::uint32_t value) {
+  _internal_set_wander_pause_min_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000800U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.wander_pause_min_ms)
+}
+inline ::uint32_t Constants::_internal_wander_pause_min_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.wander_pause_min_ms_;
+}
+inline void Constants::_internal_set_wander_pause_min_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.wander_pause_min_ms_ = value;
+}
+
+// uint32 wander_pause_max_ms = 13;
+inline void Constants::clear_wander_pause_max_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.wander_pause_max_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00001000U);
+}
+inline ::uint32_t Constants::wander_pause_max_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.wander_pause_max_ms)
+  return _internal_wander_pause_max_ms();
+}
+inline void Constants::set_wander_pause_max_ms(::uint32_t value) {
+  _internal_set_wander_pause_max_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00001000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.wander_pause_max_ms)
+}
+inline ::uint32_t Constants::_internal_wander_pause_max_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.wander_pause_max_ms_;
+}
+inline void Constants::_internal_set_wander_pause_max_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.wander_pause_max_ms_ = value;
 }
 
 #ifdef __GNUC__

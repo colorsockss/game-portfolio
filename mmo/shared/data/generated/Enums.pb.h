@@ -45,6 +45,8 @@ extern const ::google::protobuf::internal::DescriptorTable descriptor_table_Enum
 namespace portfolio {
 namespace mmo {
 namespace data {
+enum MonsterKind : int;
+extern const uint32_t MonsterKind_internal_data_[];
 enum ZoneKind : int;
 extern const uint32_t ZoneKind_internal_data_[];
 }  // namespace data
@@ -52,6 +54,9 @@ extern const uint32_t ZoneKind_internal_data_[];
 }  // namespace portfolio
 namespace google {
 namespace protobuf {
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::MonsterKind_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::MonsterKind>;
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::ZoneKind_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::ZoneKind>;
@@ -104,6 +109,47 @@ template <>
   return ::google::protobuf::internal::ParseNamedEnum<ZoneKind>(ZoneKind_descriptor(), name,
                                            value);
 }
+enum MonsterKind : int {
+  MONSTER_KIND_UNSPECIFIED = 0,
+  MONSTER_KIND_NORMAL = 1,
+  MONSTER_KIND_BOSS = 2,
+  MonsterKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  MonsterKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t MonsterKind_internal_data_[];
+inline constexpr MonsterKind MonsterKind_MIN =
+    static_cast<MonsterKind>(0);
+inline constexpr MonsterKind MonsterKind_MAX =
+    static_cast<MonsterKind>(2);
+[[nodiscard]] inline bool MonsterKind_IsValid(int value) {
+  return 0 <= value && value <= 2;
+}
+inline constexpr int MonsterKind_ARRAYSIZE = 2 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+MonsterKind_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(MonsterKind) {
+  return MonsterKind_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& MonsterKind_Name(T value) {
+  static_assert(::std::is_same<T, MonsterKind>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to MonsterKind_Name().");
+  return MonsterKind_Name(static_cast<MonsterKind>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& MonsterKind_Name(MonsterKind value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<MonsterKind_descriptor, 0, 2>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool MonsterKind_Parse(
+    ::absl::string_view name, MonsterKind* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<MonsterKind>(MonsterKind_descriptor(), name,
+                                           value);
+}
 using ::google::protobuf::internal::generated_enum::AbslParseFlag;
 using ::google::protobuf::internal::generated_enum::AbslUnparseFlag;
 
@@ -141,6 +187,12 @@ struct is_proto_enum<::portfolio::mmo::data::ZoneKind> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::ZoneKind>() {
   return ::portfolio::mmo::data::ZoneKind_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::MonsterKind> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::MonsterKind>() {
+  return ::portfolio::mmo::data::MonsterKind_descriptor();
 }
 
 }  // namespace protobuf

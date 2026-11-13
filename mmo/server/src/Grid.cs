@@ -64,6 +64,27 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 칸 둘레 3×3칸에 플레이어가 있는가(몬스터의 배회. 재우는 판단은 56).
+        /// </summary>
+        public bool HasPlayerAround(long cell)
+        {
+            int cellX = (int)(cell >> 32);
+            int cellZ = (int)cell;
+            for (int offsetX = -1; offsetX <= 1; offsetX++)
+            {
+                for (int offsetZ = -1; offsetZ <= 1; offsetZ++)
+                {
+                    if (_cells.TryGetValue(CellKey(cellX + offsetX, cellZ + offsetZ), out List<Entity>? entities) && entities.Exists(entity => entity.Kind == Contract.EntityKind.Player))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// 중심에서 radius(좌표 단위) 안(경계 포함)이고 filter를 만족하는 개체를 result에 담는다. result는 먼저 비운다(질의마다 할당하지 않도록 부르는 쪽이 목록을 다시 씀).
         /// 원이 걸친 시야 칸(중심 ± 반지름의 사각형)만 돌고, 칸 안에서는 거리의 제곱을 반지름의 제곱과 견준다. 거리만 보므로 벽 너머의 개체도 들고,
         /// 거르는 것은 부르는 쪽이 후보마다 FieldMap.HasLine으로 한다. 차례는 칸(x, z의 차례) 안의 목록 차례라 같은 상태면 같은 결과다.

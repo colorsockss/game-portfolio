@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using PortfolioMmo.Contract;
 
@@ -7,7 +8,7 @@ namespace PortfolioMmo.Server
     /// <summary>
     /// 월드의 데이터(EntityTable, Grid)와 시스템을 묶고, 틱을 정해진 차례로 돌린다. 틱 스레드 하나만 부르므로 확인과 쓰기가 늘 한 동기 구간에 있다.
     /// 차례: 1. 입력(Receive. GameServer가 큐를 비우며 부름) → 2. 예약한 일 → 3. 몬스터 → 4. 전투 → 5. 회복과 효과 → 6. 시야 → 7. 저장 → 8. 보내기(GameServer).
-    /// 3–4는 그 기능이 생길 때 Step에 더한다. 입력의 요청은 자기 플레이어의 상태만 고치고, 남을 고치는 결과는 전투 차례로 넘긴다.
+    /// 4는 그 기능이 생길 때 Step에 더한다. 입력의 요청은 자기 플레이어의 상태만 고치고, 남을 고치는 결과는 전투 차례로 넘긴다.
     /// </summary>
     public sealed class World : IScheduledRunner
     {
@@ -24,6 +25,7 @@ namespace PortfolioMmo.Server
         private readonly SaveSystem _save;
         private readonly Scheduler _scheduler = new Scheduler();
         private readonly VitalsSystem _vitals;
+        private readonly AiSystem _ai;
 
         /// <summary>
         /// 빈 월드를 만든다.
@@ -35,6 +37,9 @@ namespace PortfolioMmo.Server
             var stats = new StatSystem(data, random);
             _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, field, _entities, _grid, _save, stats);
             _vitals = new VitalsSystem(_entities, data);
+            _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random);
+            // 놓인 점의 번호는 플레이어보다 먼저 받는다.
+            new SpawnSystem(data, field, _entities, _grid, _ai, random).PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
             _view = new ViewSystem(_entities, _grid);
         }
@@ -43,6 +48,21 @@ namespace PortfolioMmo.Server
         /// 지금 계산하는 틱 번호. Step이 끝날 때 지난 틱 수만큼 오른다.
         /// </summary>
         public uint Tick { get; private set; }
+
+        /// <summary>
+        /// 몬스터들(테스트와 부하 측정이 본다).
+        /// </summary>
+        internal IReadOnlyList<Monster> Monsters => _ai.Monsters;
+
+        /// <summary>
+        /// 개체를 옮긴다(테스트가 플레이어를 둠).
+        /// </summary>
+        internal void Place(Entity entity, int x, int z)
+        {
+            entity.X = x;
+            entity.Z = z;
+            _grid.Moved(entity);
+        }
 
         /// <summary>
         /// 월드에 들어온 플레이어 수.
@@ -123,6 +143,8 @@ namespace PortfolioMmo.Server
             long started = Stopwatch.GetTimestamp();
             _scheduler.Step(Tick, this);
             long scheduled = Stopwatch.GetTimestamp();
+            _ai.Step(Tick, elapsedTicks);
+            long monsters = Stopwatch.GetTimestamp();
             _vitals.Step(Tick);
             long vitals = Stopwatch.GetTimestamp();
             _view.Step(Tick);
@@ -136,7 +158,8 @@ namespace PortfolioMmo.Server
             long saved = Stopwatch.GetTimestamp();
 
             profile?.Add(TickPhase.Scheduled, scheduled - started);
-            profile?.Add(TickPhase.Vitals, vitals - scheduled);
+            profile?.Add(TickPhase.Monsters, monsters - scheduled);
+            profile?.Add(TickPhase.Vitals, vitals - monsters);
             profile?.Add(TickPhase.View, viewed - vitals);
             profile?.Add(TickPhase.Input, filled - viewed);
             profile?.Add(TickPhase.Save, saved - filled);
@@ -192,11 +215,35 @@ namespace PortfolioMmo.Server
         }
 
         // 예약한 일의 종류마다의 갈래(주인 찾기와 세대 번호 비교, 전투 차례인지, 실행)는 예약을 넣는 항목이 더한다.
-        bool IScheduledRunner.IsCurrent(in ScheduledJob job) => throw UnknownKind(job.Kind);
+        bool IScheduledRunner.IsCurrent(in ScheduledJob job)
+        {
+            return job.Kind switch
+            {
+                ScheduledKind.UnreachableEnd => _ai.IsUnreachableCurrent(job),
+                _ => throw UnknownKind(job.Kind),
+            };
+        }
 
-        bool IScheduledRunner.ForCombat(ScheduledKind kind) => throw UnknownKind(kind);
+        bool IScheduledRunner.ForCombat(ScheduledKind kind)
+        {
+            return kind switch
+            {
+                ScheduledKind.UnreachableEnd => false,
+                _ => throw UnknownKind(kind),
+            };
+        }
 
-        void IScheduledRunner.Run(in ScheduledJob job) => throw UnknownKind(job.Kind);
+        void IScheduledRunner.Run(in ScheduledJob job)
+        {
+            switch (job.Kind)
+            {
+                case ScheduledKind.UnreachableEnd:
+                    _ai.EndUnreachable(job);
+                    break;
+                default:
+                    throw UnknownKind(job.Kind);
+            }
+        }
 
         private static InvalidOperationException UnknownKind(ScheduledKind kind)
         {

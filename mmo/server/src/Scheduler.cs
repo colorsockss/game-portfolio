@@ -9,6 +9,10 @@ namespace PortfolioMmo.Server
     /// </summary>
     public enum ScheduledKind : byte
     {
+        /// <summary>
+        /// 몬스터(주인)가 대상(A)에 건 "닿을 수 없음"의 끝(23). 세대 번호는 대상마다의 표시에 있다.
+        /// </summary>
+        UnreachableEnd = 1,
     }
 
     /// <summary>

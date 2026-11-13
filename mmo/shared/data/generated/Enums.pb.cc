@@ -32,7 +32,7 @@ namespace data {
 }  // namespace mmo
 }  // namespace portfolio
 static const ::_pb::EnumDescriptor* PROTOBUF_NONNULL
-    file_level_enum_descriptors_Enums_2eproto[1];
+    file_level_enum_descriptors_Enums_2eproto[2];
 static constexpr const ::_pb::ServiceDescriptor* PROTOBUF_NONNULL* PROTOBUF_NULLABLE
     file_level_service_descriptors_Enums_2eproto = nullptr;
 const ::uint32_t TableStruct_Enums_2eproto::offsets[1] = {};
@@ -45,14 +45,16 @@ const char descriptor_table_protodef_Enums_2eproto[] ABSL_ATTRIBUTE_SECTION_VARI
     "neKind\022\022\n\016ZONE_KIND_NONE\020\000\022\022\n\016ZONE_KIND_"
     "TOWN\020\001\022\034\n\030ZONE_KIND_HUNTING_GROUND\020\002\022\036\n\032"
     "ZONE_KIND_GATHERING_GROUND\020\003\022\027\n\023ZONE_KIN"
-    "D_BOSS_AREA\020\004B\024\252\002\021PortfolioMmo.Datab\006pro"
-    "to3"
+    "D_BOSS_AREA\020\004*[\n\013MonsterKind\022\034\n\030MONSTER_"
+    "KIND_UNSPECIFIED\020\000\022\027\n\023MONSTER_KIND_NORMA"
+    "L\020\001\022\025\n\021MONSTER_KIND_BOSS\020\002B\024\252\002\021Portfolio"
+    "Mmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Enums_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Enums_2eproto = {
     false,
     false,
-    203,
+    296,
     descriptor_table_protodef_Enums_2eproto,
     "Enums.proto",
     &descriptor_table_Enums_2eproto_once,
@@ -75,6 +77,13 @@ ZoneKind_descriptor() {
 }
 PROTOBUF_CONSTINIT const uint32_t ZoneKind_internal_data_[] = {
     327680u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+MonsterKind_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[1];
+}
+PROTOBUF_CONSTINIT const uint32_t MonsterKind_internal_data_[] = {
+    196608u, 0u, };
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace data
 }  // namespace mmo

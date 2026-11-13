@@ -3635,6 +3635,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityMove final : public ::google:
     kXFieldNumber = 2,
     kZFieldNumber = 3,
     kYawFieldNumber = 4,
+    kTeleportFieldNumber = 5,
   };
   // uint32 id = 1;
   void clear_id() ;
@@ -3676,11 +3677,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityMove final : public ::google:
   void _internal_set_yaw(::uint32_t value);
 
   public:
+  // bool teleport = 5;
+  void clear_teleport() ;
+  [[nodiscard]] bool teleport() const;
+  void set_teleport(bool value);
+
+  private:
+  bool _internal_teleport() const;
+  void _internal_set_teleport(bool value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.EntityMove)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<2, 4,
+      ::google::protobuf::internal::TcParseTable<3, 5,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -3713,6 +3724,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityMove final : public ::google:
     ::int32_t x_;
     ::int32_t z_;
     ::uint32_t yaw_;
+    bool teleport_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -11060,6 +11072,30 @@ inline ::uint32_t EntityMove::_internal_yaw() const {
 inline void EntityMove::_internal_set_yaw(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.yaw_ = value;
+}
+
+// bool teleport = 5;
+inline void EntityMove::clear_teleport() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.teleport_ = false;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000010U);
+}
+inline bool EntityMove::teleport() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.EntityMove.teleport)
+  return _internal_teleport();
+}
+inline void EntityMove::set_teleport(bool value) {
+  _internal_set_teleport(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000010U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.EntityMove.teleport)
+}
+inline bool EntityMove::_internal_teleport() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.teleport_;
+}
+inline void EntityMove::_internal_set_teleport(bool value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.teleport_ = value;
 }
 
 // -------------------------------------------------------------------

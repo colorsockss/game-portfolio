@@ -20,15 +20,22 @@ namespace PortfolioMmo.Server
         /// </summary>
         public const string HashFile = "data.hash";
 
+        private readonly Dictionary<uint, MonstersRow> _monsters = new Dictionary<uint, MonstersRow>();
         private readonly Dictionary<(uint Class, uint Level), LevelsRow> _levels = new Dictionary<(uint Class, uint Level), LevelsRow>();
 
-        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels)
+        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns)
         {
             Hash = hash;
             Constants = constants;
             Zones = zones;
             Grid = grid;
             Classes = classes;
+            Spawns = spawns;
+            foreach (MonstersRow row in monsters.Rows)
+            {
+                _monsters.Add(row.Id, row);
+            }
+
             foreach (LevelsRow row in levels.Rows)
             {
                 _levels.Add((row.Class, row.Level), row);
@@ -71,6 +78,19 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 몬스터를 놓는 무리. 줄 하나가 한 무리다.
+        /// </summary>
+        public Spawns Spawns { get; }
+
+        /// <summary>
+        /// Monsters의 줄. 없으면 던진다(Spawns의 ref를 data-tool이 검사하므로 데이터가 맞으면 없을 수 없음).
+        /// </summary>
+        public MonstersRow Monster(uint id)
+        {
+            return _monsters.TryGetValue(id, out MonstersRow? row) ? row : throw new KeyNotFoundException($"Monsters has no row {id}.");
+        }
+
+        /// <summary>
         /// 실행 파일 옆의 데이터 폴더.
         /// </summary>
         public static string DefaultFolder => Path.Combine(AppContext.BaseDirectory, "data");
@@ -86,7 +106,9 @@ namespace PortfolioMmo.Server
                 Zones.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Zones.bytes"))),
                 MapGrid.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "MapGrid.bytes"))),
                 Classes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Classes.bytes"))),
-                Levels.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Levels.bytes"))));
+                Levels.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Levels.bytes"))),
+                Monsters.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Monsters.bytes"))),
+                Spawns.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Spawns.bytes"))));
         }
 
         /// <summary>

@@ -355,6 +355,23 @@ namespace
 		Expect(!World.InCombat(1.0), "out of combat from the end tick");
 		Expect(!World.InCombat(2.0), "out of combat after the end tick");
 	}
+	/** 순간 이동 표시가 있는 움직임 뒤에는 옛 자리에서 미끄러지지 않고 새 자리에 바로 선다. 표시가 없으면 보간한다. */
+	void TeleportsDoNotSlide()
+	{
+		MmoWorld::FWorldState World;
+		World.Apply(Enter(5, 0, 0, "monster"), 0);
+		World.Apply(Moves(10, 5, 0, 0), 0);
+		World.Apply(Moves(11, 5, 32, 0), 0);
+		portfolio::mmo::Packet Teleport = Moves(12, 5, 3200, 0);
+		Teleport.mutable_entity_moves()->mutable_entities(0)->set_teleport(true);
+		World.Apply(Teleport, 0);
+		const MmoWorld::FEntity& Entity = World.Entities().at(5);
+		Expect(Entity.Track.History().size() == 1, "a teleport keeps only the new sample");
+		Expect(Near(Entity.Track.Sample(11.5).X, 3200) && Near(Entity.Track.Sample(12).X, 3200), "a teleported entity stands at the new spot");
+
+		World.Apply(Moves(13, 5, 3232, 0), 0);
+		Expect(Near(Entity.Track.Sample(12.5).X, 3216), "walking after a teleport interpolates again");
+	}
 }
 
 int main()
@@ -373,6 +390,7 @@ int main()
 	KindsAndDisplayStatesAreKept();
 	VitalsAndStatsAreKept();
 	CombatFollowsTheServerClock();
+	TeleportsDoNotSlide();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

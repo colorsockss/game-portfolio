@@ -83,6 +83,14 @@ namespace PortfolioMmo.Server
             return _nextId++;
         }
 
+        /// <summary>
+        /// 번호의 개체. 없으면 null.
+        /// </summary>
+        public Entity? Find(uint id)
+        {
+            return _entities.GetValueOrDefault(id);
+        }
+
         public void Add(Entity entity)
         {
             _entities.Add(entity.Id, entity);

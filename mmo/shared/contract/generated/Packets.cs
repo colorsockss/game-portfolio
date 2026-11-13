@@ -90,52 +90,52 @@ namespace PortfolioMmo.Contract {
             "ASgOMhgucG9ydGZvbGlvLm1tby5OYW1lQ29sb3ISFgoOd2VhcG9uX2l0ZW1f",
             "aWQYAyABKA0SDQoFbGV2ZWwYBCABKA0iHAoNRW50aXRpZXNMZWF2ZRILCgNp",
             "ZHMYASADKA0iSAoLRW50aXR5TW92ZXMSDAoEdGljaxgBIAEoDRIrCghlbnRp",
-            "dGllcxgCIAMoCzIZLnBvcnRmb2xpby5tbW8uRW50aXR5TW92ZSI7CgpFbnRp",
+            "dGllcxgCIAMoCzIZLnBvcnRmb2xpby5tbW8uRW50aXR5TW92ZSJNCgpFbnRp",
             "dHlNb3ZlEgoKAmlkGAEgASgNEgkKAXgYAiABKBESCQoBehgDIAEoERILCgN5",
-            "YXcYBCABKA0iWQoKU2VsZlZpdGFscxIKCgJocBgBIAEoDRIKCgJtcBgCIAEo",
-            "DRIXCg9jb21iYXRfZW5kX3RpY2sYAyABKA0SGgoSYWdncmVzc29yX2VuZF90",
-            "aWNrGAQgASgNIjwKDEVudGl0eVZpdGFscxIsCghlbnRpdGllcxgBIAMoCzIa",
-            "LnBvcnRmb2xpby5tbW8uRW50aXR5Vml0YWwiNQoLRW50aXR5Vml0YWwSCgoC",
-            "aWQYASABKA0SCgoCaHAYAiABKA0SDgoGbWF4X2hwGAMgASgNIkwKCVNlbGZT",
-            "dGF0cxIOCgZtYXhfaHAYASABKA0SDgoGbWF4X21wGAIgASgNEg4KBmF0dGFj",
-            "axgDIAEoDRIPCgdkZWZlbnNlGAQgASgNKlEKD1Byb3RvY29sVmVyc2lvbhIg",
-            "ChxQUk9UT0NPTF9WRVJTSU9OX1VOU1BFQ0lGSUVEEAASHAoYUFJPVE9DT0xf",
-            "VkVSU0lPTl9DVVJSRU5UEAIqrgIKCENvbnN0YW50EhgKFENPTlNUQU5UX1VO",
-            "U1BFQ0lGSUVEEAASHAoYQ09OU1RBTlRfVU5JVFNfUEVSX01FVEVSECASJAof",
-            "Q09OU1RBTlRfTUFQX0hBTEZfRVhURU5UX01FVEVSUxCACBIXChJDT05TVEFO",
-            "VF9ZQVdfU1RFUFMQgAISHQoZQ09OU1RBTlRfVElDS1NfUEVSX1NFQ09ORBAU",
-            "EigKJENPTlNUQU5UX01BWF9TUEVFRF9NRVRFUlNfUEVSX1NFQ09ORBAGEiIK",
-            "HkNPTlNUQU5UX1BJTkdfSU5URVJWQUxfU0VDT05EUxAFEiEKHUNPTlNUQU5U",
-            "X0lETEVfVElNRU9VVF9TRUNPTkRTEA8SGwoXQ09OU1RBTlRfTUFYX0NIQVJB",
-            "Q1RFUlMQBCrDAQoPTG9naW5SZXN1bHRDb2RlEhgKFExPR0lOX1JFU1VMVF9D",
-            "T0RFX09LEAASJgoiTE9HSU5fUkVTVUxUX0NPREVfSU5WQUxJRF9MT0dJTl9J",
-            "RBABEiYKIkxPR0lOX1JFU1VMVF9DT0RFX1ZFUlNJT05fTUlTTUFUQ0gQAhIh",
-            "Ch1MT0dJTl9SRVNVTFRfQ09ERV9TRVJWRVJfRlVMTBADEiMKH0xPR0lOX1JF",
-            "U1VMVF9DT0RFX0RBVEFfTUlTTUFUQ0gQBCqrAQoKS2lja1JlYXNvbhIbChdL",
-            "SUNLX1JFQVNPTl9VTlNQRUNJRklFRBAAEh8KG0tJQ0tfUkVBU09OX0RVUExJ",
-            "Q0FURV9MT0dJThABEh8KG0tJQ0tfUkVBU09OX1NFUlZFUl9TSFVURE9XThAC",
-            "EiAKHEtJQ0tfUkVBU09OX01BTEZPUk1FRF9QQUNLRVQQAxIcChhLSUNLX1JF",
-            "QVNPTl9JRExFX1RJTUVPVVQQBCpnCg5DaGFyYWN0ZXJDbGFzcxIfChtDSEFS",
-            "QUNURVJfQ0xBU1NfVU5TUEVDSUZJRUQQABIaChZDSEFSQUNURVJfQ0xBU1Nf",
-            "S05JR0hUEAESGAoUQ0hBUkFDVEVSX0NMQVNTX01BR0UQAir3AQoZQ3JlYXRl",
-            "Q2hhcmFjdGVyUmVzdWx0Q29kZRIjCh9DUkVBVEVfQ0hBUkFDVEVSX1JFU1VM",
-            "VF9DT0RFX09LEAASLQopQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9J",
-            "TlZBTElEX05BTUUQARIrCidDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RF",
-            "X05BTUVfVEFLRU4QAhIpCiVDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RF",
-            "X1RPT19NQU5ZEAMSLgoqQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9J",
-            "TlZBTElEX0NMQVNTEAQqZQoURW50ZXJXb3JsZFJlc3VsdENvZGUSHgoaRU5U",
-            "RVJfV09STERfUkVTVUxUX0NPREVfT0sQABItCilFTlRFUl9XT1JMRF9SRVNV",
-            "TFRfQ09ERV9OT19TVUNIX0NIQVJBQ1RFUhABKqkBCgpFbnRpdHlLaW5kEhsK",
-            "F0VOVElUWV9LSU5EX1VOU1BFQ0lGSUVEEAASFgoSRU5USVRZX0tJTkRfUExB",
-            "WUVSEAESFwoTRU5USVRZX0tJTkRfTU9OU1RFUhACEhMKD0VOVElUWV9LSU5E",
-            "X05QQxADEhsKF0VOVElUWV9LSU5EX0dBVEhFUl9OT0RFEAQSGwoXRU5USVRZ",
-            "X0tJTkRfR1JPVU5EX0lURU0QBSpTCglOYW1lQ29sb3ISFQoRTkFNRV9DT0xP",
-            "Ul9OT1JNQUwQABIYChROQU1FX0NPTE9SX0FHR1JFU1NPUhABEhUKEU5BTUVf",
-            "Q09MT1JfT1VUTEFXEAIqiwEKDFByb2dyZXNzS2luZBIWChJQUk9HUkVTU19L",
-            "SU5EX05PTkUQABIWChJQUk9HUkVTU19LSU5EX0NBU1QQARIYChRQUk9HUkVT",
-            "U19LSU5EX0dBVEhFUhACEhcKE1BST0dSRVNTX0tJTkRfQ1JBRlQQAxIYChRQ",
-            "Uk9HUkVTU19LSU5EX1JFQ0FMTBAEQhiqAhVQb3J0Zm9saW9NbW8uQ29udHJh",
-            "Y3RiBnByb3RvMw=="));
+            "YXcYBCABKA0SEAoIdGVsZXBvcnQYBSABKAgiWQoKU2VsZlZpdGFscxIKCgJo",
+            "cBgBIAEoDRIKCgJtcBgCIAEoDRIXCg9jb21iYXRfZW5kX3RpY2sYAyABKA0S",
+            "GgoSYWdncmVzc29yX2VuZF90aWNrGAQgASgNIjwKDEVudGl0eVZpdGFscxIs",
+            "CghlbnRpdGllcxgBIAMoCzIaLnBvcnRmb2xpby5tbW8uRW50aXR5Vml0YWwi",
+            "NQoLRW50aXR5Vml0YWwSCgoCaWQYASABKA0SCgoCaHAYAiABKA0SDgoGbWF4",
+            "X2hwGAMgASgNIkwKCVNlbGZTdGF0cxIOCgZtYXhfaHAYASABKA0SDgoGbWF4",
+            "X21wGAIgASgNEg4KBmF0dGFjaxgDIAEoDRIPCgdkZWZlbnNlGAQgASgNKlEK",
+            "D1Byb3RvY29sVmVyc2lvbhIgChxQUk9UT0NPTF9WRVJTSU9OX1VOU1BFQ0lG",
+            "SUVEEAASHAoYUFJPVE9DT0xfVkVSU0lPTl9DVVJSRU5UEAIqrgIKCENvbnN0",
+            "YW50EhgKFENPTlNUQU5UX1VOU1BFQ0lGSUVEEAASHAoYQ09OU1RBTlRfVU5J",
+            "VFNfUEVSX01FVEVSECASJAofQ09OU1RBTlRfTUFQX0hBTEZfRVhURU5UX01F",
+            "VEVSUxCACBIXChJDT05TVEFOVF9ZQVdfU1RFUFMQgAISHQoZQ09OU1RBTlRf",
+            "VElDS1NfUEVSX1NFQ09ORBAUEigKJENPTlNUQU5UX01BWF9TUEVFRF9NRVRF",
+            "UlNfUEVSX1NFQ09ORBAGEiIKHkNPTlNUQU5UX1BJTkdfSU5URVJWQUxfU0VD",
+            "T05EUxAFEiEKHUNPTlNUQU5UX0lETEVfVElNRU9VVF9TRUNPTkRTEA8SGwoX",
+            "Q09OU1RBTlRfTUFYX0NIQVJBQ1RFUlMQBCrDAQoPTG9naW5SZXN1bHRDb2Rl",
+            "EhgKFExPR0lOX1JFU1VMVF9DT0RFX09LEAASJgoiTE9HSU5fUkVTVUxUX0NP",
+            "REVfSU5WQUxJRF9MT0dJTl9JRBABEiYKIkxPR0lOX1JFU1VMVF9DT0RFX1ZF",
+            "UlNJT05fTUlTTUFUQ0gQAhIhCh1MT0dJTl9SRVNVTFRfQ09ERV9TRVJWRVJf",
+            "RlVMTBADEiMKH0xPR0lOX1JFU1VMVF9DT0RFX0RBVEFfTUlTTUFUQ0gQBCqr",
+            "AQoKS2lja1JlYXNvbhIbChdLSUNLX1JFQVNPTl9VTlNQRUNJRklFRBAAEh8K",
+            "G0tJQ0tfUkVBU09OX0RVUExJQ0FURV9MT0dJThABEh8KG0tJQ0tfUkVBU09O",
+            "X1NFUlZFUl9TSFVURE9XThACEiAKHEtJQ0tfUkVBU09OX01BTEZPUk1FRF9Q",
+            "QUNLRVQQAxIcChhLSUNLX1JFQVNPTl9JRExFX1RJTUVPVVQQBCpnCg5DaGFy",
+            "YWN0ZXJDbGFzcxIfChtDSEFSQUNURVJfQ0xBU1NfVU5TUEVDSUZJRUQQABIa",
+            "ChZDSEFSQUNURVJfQ0xBU1NfS05JR0hUEAESGAoUQ0hBUkFDVEVSX0NMQVNT",
+            "X01BR0UQAir3AQoZQ3JlYXRlQ2hhcmFjdGVyUmVzdWx0Q29kZRIjCh9DUkVB",
+            "VEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX09LEAASLQopQ1JFQVRFX0NIQVJB",
+            "Q1RFUl9SRVNVTFRfQ09ERV9JTlZBTElEX05BTUUQARIrCidDUkVBVEVfQ0hB",
+            "UkFDVEVSX1JFU1VMVF9DT0RFX05BTUVfVEFLRU4QAhIpCiVDUkVBVEVfQ0hB",
+            "UkFDVEVSX1JFU1VMVF9DT0RFX1RPT19NQU5ZEAMSLgoqQ1JFQVRFX0NIQVJB",
+            "Q1RFUl9SRVNVTFRfQ09ERV9JTlZBTElEX0NMQVNTEAQqZQoURW50ZXJXb3Js",
+            "ZFJlc3VsdENvZGUSHgoaRU5URVJfV09STERfUkVTVUxUX0NPREVfT0sQABIt",
+            "CilFTlRFUl9XT1JMRF9SRVNVTFRfQ09ERV9OT19TVUNIX0NIQVJBQ1RFUhAB",
+            "KqkBCgpFbnRpdHlLaW5kEhsKF0VOVElUWV9LSU5EX1VOU1BFQ0lGSUVEEAAS",
+            "FgoSRU5USVRZX0tJTkRfUExBWUVSEAESFwoTRU5USVRZX0tJTkRfTU9OU1RF",
+            "UhACEhMKD0VOVElUWV9LSU5EX05QQxADEhsKF0VOVElUWV9LSU5EX0dBVEhF",
+            "Ul9OT0RFEAQSGwoXRU5USVRZX0tJTkRfR1JPVU5EX0lURU0QBSpTCglOYW1l",
+            "Q29sb3ISFQoRTkFNRV9DT0xPUl9OT1JNQUwQABIYChROQU1FX0NPTE9SX0FH",
+            "R1JFU1NPUhABEhUKEU5BTUVfQ09MT1JfT1VUTEFXEAIqiwEKDFByb2dyZXNz",
+            "S2luZBIWChJQUk9HUkVTU19LSU5EX05PTkUQABIWChJQUk9HUkVTU19LSU5E",
+            "X0NBU1QQARIYChRQUk9HUkVTU19LSU5EX0dBVEhFUhACEhcKE1BST0dSRVNT",
+            "X0tJTkRfQ1JBRlQQAxIYChRQUk9HUkVTU19LSU5EX1JFQ0FMTBAEQhiqAhVQ",
+            "b3J0Zm9saW9NbW8uQ29udHJhY3RiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Contract.ProtocolVersion), typeof(global::PortfolioMmo.Contract.Constant), typeof(global::PortfolioMmo.Contract.LoginResultCode), typeof(global::PortfolioMmo.Contract.KickReason), typeof(global::PortfolioMmo.Contract.CharacterClass), typeof(global::PortfolioMmo.Contract.CreateCharacterResultCode), typeof(global::PortfolioMmo.Contract.EnterWorldResultCode), typeof(global::PortfolioMmo.Contract.EntityKind), typeof(global::PortfolioMmo.Contract.NameColor), typeof(global::PortfolioMmo.Contract.ProgressKind), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -161,7 +161,7 @@ namespace PortfolioMmo.Contract {
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityState), global::PortfolioMmo.Contract.EntityState.Parser, new[]{ "Id", "NameColor", "WeaponItemId", "Level" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntitiesLeave), global::PortfolioMmo.Contract.EntitiesLeave.Parser, new[]{ "Ids" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityMoves), global::PortfolioMmo.Contract.EntityMoves.Parser, new[]{ "Tick", "Entities" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityMove), global::PortfolioMmo.Contract.EntityMove.Parser, new[]{ "Id", "X", "Z", "Yaw" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityMove), global::PortfolioMmo.Contract.EntityMove.Parser, new[]{ "Id", "X", "Z", "Yaw", "Teleport" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.SelfVitals), global::PortfolioMmo.Contract.SelfVitals.Parser, new[]{ "Hp", "Mp", "CombatEndTick", "AggressorEndTick" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityVitals), global::PortfolioMmo.Contract.EntityVitals.Parser, new[]{ "Entities" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.EntityVital), global::PortfolioMmo.Contract.EntityVital.Parser, new[]{ "Id", "Hp", "MaxHp" }, null, null, null, null),
@@ -7556,6 +7556,7 @@ namespace PortfolioMmo.Contract {
       x_ = other.x_;
       z_ = other.z_;
       yaw_ = other.yaw_;
+      teleport_ = other.teleport_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -7613,6 +7614,21 @@ namespace PortfolioMmo.Contract {
       }
     }
 
+    /// <summary>Field number for the "teleport" field.</summary>
+    public const int TeleportFieldNumber = 5;
+    private bool teleport_;
+    /// <summary>
+    /// 걸어온 것이 아니라 옮겨졌다(길이 없어 놓인 점으로 돌아간 몬스터, 부활, 귀환 등). 클라이언트는 보간하지 않고 그 자리에 바로 놓는다.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Teleport {
+      get { return teleport_; }
+      set {
+        teleport_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -7632,6 +7648,7 @@ namespace PortfolioMmo.Contract {
       if (X != other.X) return false;
       if (Z != other.Z) return false;
       if (Yaw != other.Yaw) return false;
+      if (Teleport != other.Teleport) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -7643,6 +7660,7 @@ namespace PortfolioMmo.Contract {
       if (X != 0) hash ^= X.GetHashCode();
       if (Z != 0) hash ^= Z.GetHashCode();
       if (Yaw != 0) hash ^= Yaw.GetHashCode();
+      if (Teleport != false) hash ^= Teleport.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -7677,6 +7695,10 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(32);
         output.WriteUInt32(Yaw);
       }
+      if (Teleport != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(Teleport);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -7703,6 +7725,10 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(32);
         output.WriteUInt32(Yaw);
       }
+      if (Teleport != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(Teleport);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -7724,6 +7750,9 @@ namespace PortfolioMmo.Contract {
       }
       if (Yaw != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Yaw);
+      }
+      if (Teleport != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -7748,6 +7777,9 @@ namespace PortfolioMmo.Contract {
       }
       if (other.Yaw != 0) {
         Yaw = other.Yaw;
+      }
+      if (other.Teleport != false) {
+        Teleport = other.Teleport;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -7784,6 +7816,10 @@ namespace PortfolioMmo.Contract {
             Yaw = input.ReadUInt32();
             break;
           }
+          case 40: {
+            Teleport = input.ReadBool();
+            break;
+          }
         }
       }
     #endif
@@ -7817,6 +7853,10 @@ namespace PortfolioMmo.Contract {
           }
           case 32: {
             Yaw = input.ReadUInt32();
+            break;
+          }
+          case 40: {
+            Teleport = input.ReadBool();
             break;
           }
         }

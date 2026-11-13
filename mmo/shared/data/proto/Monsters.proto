@@ -1,0 +1,49 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+import "Enums.proto";
+
+message MonstersRow {
+  // 몬스터의 번호(EntityEnter.template_id)
+  uint32 id = 1;
+  // 이름(Strings의 키. Strings는 backlog 74가 만든다)
+  string name_key = 2;
+  // 종류
+  MonsterKind kind = 3;
+  // 레벨
+  uint32 level = 4;
+  // 최대 체력
+  uint32 max_hp = 5;
+  // 공격력
+  uint32 attack = 6;
+  // 방어력
+  uint32 defense = 7;
+  // 이동 속도(m/s). 플레이어의 최대 속도(6 m/s)를 넘지 않는다
+  double speed = 8;
+  // 반지름(m)
+  double radius = 9;
+  // 인식 범위(m). 선공 몬스터만 쓴다
+  double detect_range = 10;
+  // 추적 한계(m). 놓인 점에서의 직선거리가 이보다 멀어지면 복귀한다
+  double chase_limit = 11;
+  // 공격 사거리(m)
+  double attack_range = 12;
+  // 기본 공격의 간격(ms)
+  uint32 attack_interval_ms = 13;
+  // 공격 동작의 시작에서 타격까지의 시간(ms)
+  uint32 hit_delay_ms = 14;
+  // 기본 공격 발사체의 속도(m/s). 원거리 몬스터만 둔다
+  optional double projectile_speed = 15;
+  // 선공 몬스터인지(인식한 플레이어를 쫓음)
+  bool aggressive = 16;
+  // 잡으면 주는 경험치(31이 씀)
+  uint32 exp = 17;
+}
+
+message Monsters {
+  repeated MonstersRow rows = 1;
+}
