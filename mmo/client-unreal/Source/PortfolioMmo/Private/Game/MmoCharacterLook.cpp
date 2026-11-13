@@ -33,6 +33,16 @@ namespace MmoCharacterLook
 		}
 	}
 
+	void SetUpBody(USkeletalMeshComponent& Mesh, const FVector& Feet)
+	{
+		// Quaternius 캐릭터의 바인드 포즈에서 발바닥(0)부터 머리 끝까지가 272 단위다. 자리 표시와 캡슐에 맞춰 1.8 m로 줄인다.
+		// shortcut: 모든 모델이 같은 뼈대라 한 값이다. 키가 다른 모델이 오면 표현 표의 줄에 크기를 둔다.
+		constexpr double Scale = 180.0 / 272.0;
+		Mesh.SetRelativeLocationAndRotation(Feet, FRotator(0.0, -90.0, 0.0));
+		Mesh.SetRelativeScale3D(FVector(Scale));
+		Mesh.SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
 	void SetUpPlaceholder(UStaticMeshComponent& Placeholder, const FVector& Center)
 	{
 		// 엔진의 원기둥은 지름 1 m, 높이 1 m이고 가운데가 원점이다.

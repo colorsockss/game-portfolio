@@ -10,8 +10,12 @@
 
 namespace
 {
-	constexpr float MinArmLength = 300.0f;
-	constexpr float MaxArmLength = 1500.0f;
+	// 내려다보는 쿼터뷰(ROM 같은 리니지라이크)의 거리. 처음에는 캐릭터가 화면 높이의 11%쯤이다.
+	constexpr float DefaultArmLength = 2400.0f;
+	constexpr float MinArmLength = 1300.0f;
+	constexpr float MaxArmLength = 3600.0f;
+	/** 좁은 화각으로 원근 왜곡을 줄여 내려다보는 느낌을 낸다(엔진 기본은 90°). */
+	constexpr float FieldOfView = 45.0f;
 }
 
 AMmoCharacter::AMmoCharacter()
@@ -27,17 +31,17 @@ AMmoCharacter::AMmoCharacter()
 	bUseControllerRotationYaw = false;
 
 	// 메시의 발을 캡슐의 바닥(지면)에 맞춘다.
-	GetMesh()->SetRelativeLocation(FVector(0.0, 0.0, -90.0));
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MmoCharacterLook::SetUpBody(*GetMesh(), FVector(0.0, 0.0, -90.0));
 
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	CameraArm->SetupAttachment(GetCapsuleComponent());
-	CameraArm->TargetArmLength = 800.0f;
+	CameraArm->TargetArmLength = DefaultArmLength;
 	CameraArm->bUsePawnControlRotation = true;
 	CameraArm->bDoCollisionTest = false;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
+	Camera->SetFieldOfView(FieldOfView);
 
 	// 캡슐의 가운데가 원기둥의 가운데다.
 	Placeholder = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Placeholder"));

@@ -20,6 +20,10 @@ namespace
 	constexpr float TouchTurnRate = 0.2f;
 	/** 휠 한 칸에 당기는 거리(언리얼 단위). */
 	constexpr float WheelZoomStep = 100.0f;
+	/** 처음 내려다보는 각도와 돌릴 수 있는 범위(도, 아래가 음수). 쿼터뷰를 벗어나 눕지 않게 좁힌다. */
+	constexpr float DefaultPitch = -60.0f;
+	constexpr float MinPitch = -80.0f;
+	constexpr float MaxPitch = -45.0f;
 }
 
 AMmoPlayerController::AMmoPlayerController()
@@ -83,8 +87,8 @@ void AMmoPlayerController::BeginPlay()
 	if (PlayerCameraManager)
 	{
 		// 위에서 비스듬히 내려다보는 범위로만 돌린다.
-		PlayerCameraManager->ViewPitchMin = -75.0f;
-		PlayerCameraManager->ViewPitchMax = -5.0f;
+		PlayerCameraManager->ViewPitchMin = MinPitch;
+		PlayerCameraManager->ViewPitchMax = MaxPitch;
 	}
 	PacketHandle = GetGameInstance()->GetSubsystem<UMmoSession>()->OnPacket.AddUObject(this, &AMmoPlayerController::HandlePacket);
 }
@@ -102,7 +106,8 @@ void AMmoPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	MoveSender.Reset();
-	SetControlRotation(FRotator(-30.0, InPawn->GetActorRotation().Yaw, 0.0));
+	// 캐릭터가 보던 쪽과 상관없이 북쪽(패킷의 +z, Unreal의 +X)이 화면 위다. 미니맵(북쪽이 위로 고정)과 같은 방향이다.
+	SetControlRotation(FRotator(DefaultPitch, 0.0, 0.0));
 }
 
 void AMmoPlayerController::PlayerTick(float DeltaTime)
