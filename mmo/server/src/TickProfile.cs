@@ -7,11 +7,12 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 틱의 차례. 입력은 World.Receive(GameServer가 큐를 비움)와 다음 입력의 이동 거리를 채우는 것, 보내기는 GameServer.Flush이고
-    /// 그 사이는 World.Step이 부르는 차례다. 아직 없는 차례(예약한 일, 몬스터, 전투, 회복)는 그 기능이 World.Step에 들어올 때 더한다.
+    /// 그 사이는 World.Step이 부르는 차례다. 아직 없는 차례(몬스터, 전투, 회복)는 그 기능이 World.Step에 들어올 때 더한다.
     /// </summary>
     public enum TickPhase
     {
         Input,
+        Scheduled,
         View,
         Save,
         Send,

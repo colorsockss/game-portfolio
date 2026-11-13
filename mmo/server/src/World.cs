@@ -7,9 +7,9 @@ namespace PortfolioMmo.Server
     /// <summary>
     /// 월드의 데이터(EntityTable, Grid)와 시스템을 묶고, 틱을 정해진 차례로 돌린다. 틱 스레드 하나만 부르므로 확인과 쓰기가 늘 한 동기 구간에 있다.
     /// 차례: 1. 입력(Receive. GameServer가 큐를 비우며 부름) → 2. 예약한 일 → 3. 몬스터 → 4. 전투 → 5. 회복과 효과 → 6. 시야 → 7. 저장 → 8. 보내기(GameServer).
-    /// 2–5는 그 기능이 생길 때 Step에 더한다. 입력의 요청은 자기 플레이어의 상태만 고치고, 남을 고치는 결과는 전투 차례로 넘긴다.
+    /// 3–5는 그 기능이 생길 때 Step에 더한다. 입력의 요청은 자기 플레이어의 상태만 고치고, 남을 고치는 결과는 전투 차례로 넘긴다.
     /// </summary>
-    public sealed class World
+    public sealed class World : IScheduledRunner
     {
         /// <summary>
         /// 움직인 플레이어의 위치를 저장하는 간격(틱, 60초). 서버가 죽으면 이만큼의 이동을 잃는다. 나간 플레이어는 그 틱에 저장한다.
@@ -22,6 +22,7 @@ namespace PortfolioMmo.Server
         private readonly MovementSystem _movement;
         private readonly ViewSystem _view;
         private readonly SaveSystem _save;
+        private readonly Scheduler _scheduler = new Scheduler();
 
         /// <summary>
         /// 빈 월드를 만든다.
@@ -117,6 +118,8 @@ namespace PortfolioMmo.Server
         public void Step(uint elapsedTicks = 1, TickProfile? profile = null)
         {
             long started = Stopwatch.GetTimestamp();
+            _scheduler.Step(Tick, this);
+            long scheduled = Stopwatch.GetTimestamp();
             _view.Step(Tick);
             long viewed = Stopwatch.GetTimestamp();
             _movement.Step(elapsedTicks);
@@ -127,7 +130,8 @@ namespace PortfolioMmo.Server
             _save.Step(Tick);
             long saved = Stopwatch.GetTimestamp();
 
-            profile?.Add(TickPhase.View, viewed - started);
+            profile?.Add(TickPhase.Scheduled, scheduled - started);
+            profile?.Add(TickPhase.View, viewed - scheduled);
             profile?.Add(TickPhase.Input, filled - viewed);
             profile?.Add(TickPhase.Save, saved - filled);
         }
@@ -179,6 +183,18 @@ namespace PortfolioMmo.Server
             {
                 _entities.FreeGroundItemId(entity.Id, Tick);
             }
+        }
+
+        // 예약한 일의 종류마다의 갈래(주인 찾기와 세대 번호 비교, 전투 차례인지, 실행)는 예약을 넣는 항목이 더한다.
+        bool IScheduledRunner.IsCurrent(in ScheduledJob job) => throw UnknownKind(job.Kind);
+
+        bool IScheduledRunner.ForCombat(ScheduledKind kind) => throw UnknownKind(kind);
+
+        void IScheduledRunner.Run(in ScheduledJob job) => throw UnknownKind(job.Kind);
+
+        private static InvalidOperationException UnknownKind(ScheduledKind kind)
+        {
+            return new InvalidOperationException($"Unknown scheduled kind {kind}.");
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace PortfolioMmo.Server.Tests
             Tick(profile, 2, input: 4, view: 8, save: 10, send: 2);
 
             string report = profile.Report();
-            Assert.Contains("input 3.00/4.00 view 6.00/8.00 save 5.00/10.00 send 4.00/6.00, sum 18.00 of tick 18.00", report);
+            Assert.Contains("input 3.00/4.00 scheduled 0.00/0.00 view 6.00/8.00 save 5.00/10.00 send 4.00/6.00, sum 18.00 of tick 18.00", report);
 
             // 보고하면 구간이 다시 시작한다.
             Assert.Contains("input 0.00/0.00", profile.Report());
@@ -28,7 +28,7 @@ namespace PortfolioMmo.Server.Tests
         {
             var profile = new TickProfile(1000);
             Assert.Null(Tick(profile, 1, input: 10, view: 20, save: 0, send: 20));
-            Assert.Equal("slow tick 2: 51.00 ms (input 1.00, view 40.00, save 0.00, send 10.00)", Tick(profile, 2, input: 1, view: 40, save: 0, send: 10));
+            Assert.Equal("slow tick 2: 51.00 ms (input 1.00, scheduled 0.00, view 40.00, save 0.00, send 10.00)", Tick(profile, 2, input: 1, view: 40, save: 0, send: 10));
             Assert.Contains("view 30.00/40.00", profile.Report());
         }
 
