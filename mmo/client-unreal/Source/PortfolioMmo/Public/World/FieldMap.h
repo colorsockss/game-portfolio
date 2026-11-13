@@ -47,6 +47,13 @@ namespace MmoWorld
 		/** A에서 B까지 곧게 걸을 수 있다. 플레이어 쪽이라 HasLine과 같다(길찾기가 찾은 길을 줄일 때 쓰는 이름). */
 		bool CanWalkLine(int32_t AX, int32_t AZ, int32_t BX, int32_t BZ) const { return HasLine(AX, AZ, BX, BZ); }
 
+		/** 칸(1 m 칸 번호)을 걸을 수 있다. 격자 밖은 걸을 수 없다. 길찾기가 칸마다 묻는다. */
+		bool CanWalkCell(int32_t CellX, int32_t CellZ) const { return CellOpen(CellX, CellZ); }
+
+		/** 격자의 가장 작은 칸 번호(-FieldSize/2)와 한 변의 칸 수. */
+		int32_t GridMin() const { return Min; }
+		int32_t GridSize() const { return Size; }
+
 		/** 좌표(1/32 m) → 1 m 칸 번호. 내림이다(-1/32 m는 칸 -1). */
 		static int32_t CellOf(int32_t Coordinate);
 

@@ -130,6 +130,14 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 칸(1 m 칸 번호)을 그 걷는 쪽이 걸을 수 있다. 격자 밖은 걸을 수 없다. 길찾기가 칸마다 묻는다.
+        /// </summary>
+        public bool CanWalkCell(int cellX, int cellZ, Walker walker)
+        {
+            return CellOpen(cellX, cellZ, walker);
+        }
+
+        /// <summary>
         /// a에서 b까지의 선이 지나는 칸에 벽이 없다(벽 너머로 닿는지). 안전 지대는 막지 않는다. 좌표(1/32 m)는 패킷의 한도 안이어야 한다.
         /// </summary>
         public bool HasLine(int ax, int az, int bx, int bz)
