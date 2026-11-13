@@ -104,6 +104,11 @@ namespace PortfolioMmo.Server
         private long _statsAllocatedStarted = GC.GetTotalAllocatedBytes();
 
         /// <summary>
+        /// 차례별 시간, 패킷 종류별 수와 바이트, 보내기 큐, 타이머의 흔들림.
+        /// </summary>
+        private readonly TickProfile _profile = new TickProfile(Stopwatch.Frequency);
+
+        /// <summary>
         /// endpoint에서 연결을 받을 서버를 만든다. 포트가 0이면 RunAsync를 부른 뒤 Port에서 실제 포트를 읽는다.
         /// idleTimeoutTicks는 테스트가 짧게 줄 때만 넘긴다.
         /// </summary>
@@ -162,15 +167,19 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 이번 틱의 패킷을 한 버퍼에 이어 쓴다(길이 구분 프레임).
+        /// 이번 틱의 패킷을 한 버퍼에 이어 쓴다(길이 구분 프레임). 패킷마다 종류와 바이트를 측정에 넘긴다.
         /// </summary>
-        private static byte[] Serialize(List<Packet> packets)
+        private byte[] Serialize(List<Packet> packets)
         {
             int size = 0;
             foreach (Packet packet in packets)
             {
                 int packetSize = packet.CalculateSize();
-                size += CodedOutputStream.ComputeLengthSize(packetSize) + packetSize;
+                int framed = CodedOutputStream.ComputeLengthSize(packetSize) + packetSize;
+                size += framed;
+
+                // 보내지 못하고 끊는 연결의 것도 센다(드묾). 그래서 종류별 합이 송신량보다 조금 클 수 있다.
+                _profile.Sent(packet.BodyCase, framed);
             }
 
             byte[] frame = new byte[size];
@@ -220,14 +229,27 @@ namespace PortfolioMmo.Server
         private void RunTick()
         {
             long started = Stopwatch.GetTimestamp();
+            _profile.TickStarted(started);
             Drain();
-            _world.Step();
+            long drained = Stopwatch.GetTimestamp();
+            _profile.Add(TickPhase.Input, drained - started);
+            _world.Step(1, _profile);
+            long stepped = Stopwatch.GetTimestamp();
             _statsSentBytes += Flush();
+            long flushed = Stopwatch.GetTimestamp();
+            _profile.Add(TickPhase.Send, flushed - stepped);
 
-            TimeSpan elapsed = Stopwatch.GetElapsedTime(started);
+            TimeSpan elapsed = Stopwatch.GetElapsedTime(started, flushed);
             _statsTicks++;
             _statsTickTime += elapsed;
             _statsMaxTickTime = elapsed > _statsMaxTickTime ? elapsed : _statsMaxTickTime;
+
+            // 50 ms를 넘은 틱은 10초를 기다리지 않고 그 틱의 차례별 시간과 함께 바로 남긴다.
+            if (_profile.TickEnded(_world.Tick, flushed - started) is string slow)
+            {
+                Console.WriteLine(slow);
+            }
+
             if (_statsReport.Due(_world.Tick))
             {
                 ReportStats();
@@ -291,6 +313,7 @@ namespace PortfolioMmo.Server
                     if (connection.TrySend(frame))
                     {
                         sent += frame.Length;
+                        _profile.Queued(connection.QueuedFrames);
                     }
                     else
                     {
@@ -312,7 +335,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 지난 통계 구간의 틱 시간, 송신량, CPU, 메모리를 찍고 구간을 다시 시작한다.
+        /// 지난 통계 구간의 틱 시간, 송신량, CPU, 메모리와 그 아래 줄들에 차례별 시간, 타이머, 패킷 종류를 찍고 구간을 다시 시작한다.
         /// </summary>
         private void ReportStats()
         {
@@ -328,7 +351,7 @@ namespace PortfolioMmo.Server
                 + $"cpu {(cpu - _statsCpuStarted).TotalSeconds / seconds * 100:F0}%, "
                 + $"heap {GC.GetTotalMemory(false) / 1e6:F0} MB, working set {Environment.WorkingSet / 1e6:F0} MB, "
                 + $"alloc {(allocated - _statsAllocatedStarted) / seconds / 1e6:F1} MB/s, "
-                + $"gc {GC.CollectionCount(0)}/{GC.CollectionCount(1)}/{GC.CollectionCount(2)}");
+                + $"gc {GC.CollectionCount(0)}/{GC.CollectionCount(1)}/{GC.CollectionCount(2)}\n{_profile.Report()}");
 
             _statsTicks = 0;
             _statsTickTime = TimeSpan.Zero;

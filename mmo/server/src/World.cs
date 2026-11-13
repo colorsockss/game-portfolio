@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using PortfolioMmo.Contract;
 
 namespace PortfolioMmo.Server
@@ -111,15 +112,24 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 입력 뒤의 차례를 돌려 틱 하나를 끝낸다. elapsedTicks는 다음 틱까지 지날 틱 수다(보통 1, 틱이 밀리면 더 큼. backlog 79).
         /// 지난 틱 수만큼 진행하는 계산(이동 거리)은 그만큼 진행하고, 주기로 하는 일(저장)은 밀려도 한 번만 한다.
+        /// profile이 있으면 차례마다 든 시간을 넘긴다(이동 거리 채우기는 다음 입력의 일이라 입력에 넣음).
         /// </summary>
-        public void Step(uint elapsedTicks = 1)
+        public void Step(uint elapsedTicks = 1, TickProfile? profile = null)
         {
+            long started = Stopwatch.GetTimestamp();
             _view.Step(Tick);
+            long viewed = Stopwatch.GetTimestamp();
             _movement.Step(elapsedTicks);
             Tick += elapsedTicks;
+            long filled = Stopwatch.GetTimestamp();
 
             // 저장 주기는 다음 틱 번호로 센다. Tick이 간격의 배수가 되는 Step에서 저장한다.
             _save.Step(Tick);
+            long saved = Stopwatch.GetTimestamp();
+
+            profile?.Add(TickPhase.View, viewed - started);
+            profile?.Add(TickPhase.Input, filled - viewed);
+            profile?.Add(TickPhase.Save, saved - filled);
         }
 
         /// <summary>

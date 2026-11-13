@@ -76,6 +76,11 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 보내기를 기다리는 프레임 수(측정용).
+        /// </summary>
+        public int QueuedFrames => _frames.Reader.Count;
+
+        /// <summary>
         /// 틱 하나의 버퍼를 보내기 큐에 넣는다. 큐가 가득 차 넣지 못하면 false.
         /// </summary>
         public bool TrySend(byte[] frame)
