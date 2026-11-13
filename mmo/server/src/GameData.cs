@@ -18,11 +18,12 @@ namespace PortfolioMmo.Server
         /// </summary>
         public const string HashFile = "data.hash";
 
-        public GameData(ulong hash, Constants constants, Zones zones)
+        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid)
         {
             Hash = hash;
             Constants = constants;
             Zones = zones;
+            Grid = grid;
         }
 
         /// <summary>
@@ -41,6 +42,11 @@ namespace PortfolioMmo.Server
         public Zones Zones { get; }
 
         /// <summary>
+        /// 맵 생성기가 낸 1 m 칸 격자(칸마다 막힘). 크기는 Constants의 필드의 크기와 같다.
+        /// </summary>
+        public MapGrid Grid { get; }
+
+        /// <summary>
         /// 실행 파일 옆의 데이터 폴더.
         /// </summary>
         public static string DefaultFolder => Path.Combine(AppContext.BaseDirectory, "data");
@@ -53,7 +59,8 @@ namespace PortfolioMmo.Server
             return new GameData(
                 ReadHash(folder),
                 Constants.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Constants.bytes"))),
-                Zones.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Zones.bytes"))));
+                Zones.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Zones.bytes"))),
+                MapGrid.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "MapGrid.bytes"))));
         }
 
         /// <summary>

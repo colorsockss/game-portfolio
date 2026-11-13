@@ -28,8 +28,8 @@ namespace PortfolioMmo.Server
         public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store, GameData data)
         {
             _save = new SaveSystem(store, _entities, SaveIntervalTicks);
-            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, _entities, _grid, _save);
-            var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows);
+            var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
+            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, field, _entities, _grid, _save);
             _movement = new MovementSystem(_entities, _grid, field);
             _view = new ViewSystem(_entities, _grid);
         }

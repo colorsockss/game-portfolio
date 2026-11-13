@@ -1,6 +1,6 @@
 #pragma once
 
-// 기획 데이터의 엔진 없는 로더. data-tool이 mmo/data/의 xlsx에서 낸 mmo/shared/data/files/(Protobuf 바이너리와 데이터 해시)를
+// 기획 데이터의 엔진 없는 로더. data-tool과 맵 생성기가 mmo/data/에서 낸 mmo/shared/data/files/(Protobuf 바이너리와 데이터 해시)를
 // 서버와 같은 생성물로 읽는다. 파일을 읽는 것은 엔진 쪽(UMmoSession)이 하고, 여기는 이름으로 바이트를 받기만 한다.
 // 테이블은 그것을 쓰는 항목이 FGameData에 더한다(protoc가 만든 mmo/shared/data/generated/의 C++로 읽음).
 // UE 타입 없이 표준 C++만 쓴다.
@@ -31,6 +31,9 @@ namespace MmoData
 
 		/** 구역의 사각형. 줄의 차례가 겹친 곳을 정한다(뒤 줄이 이김). */
 		portfolio::mmo::data::Zones Zones;
+
+		/** 맵 생성기가 낸 1 m 칸 격자(칸마다 막힘). 크기는 Constants의 필드의 크기와 같다. */
+		portfolio::mmo::data::MapGrid Grid;
 	};
 
 	/** 데이터 해시 파일의 내용(16진수 16자, 끝의 줄바꿈은 무시)을 수로 읽는다. 형식이 틀리면 nullopt. */

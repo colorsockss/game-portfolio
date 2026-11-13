@@ -7,6 +7,7 @@
 #undef verify
 #undef check
 #include "Constants.pb.h"
+#include "MapGrid.pb.h"
 #include "Zones.pb.h"
 #pragma pop_macro("check")
 #pragma pop_macro("verify")

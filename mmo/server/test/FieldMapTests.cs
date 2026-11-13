@@ -69,7 +69,7 @@ namespace PortfolioMmo.Server.Tests
         [Fact]
         public void ZonesFollowTheRules()
         {
-            var field = new FieldMap(FieldSize, s_zones);
+            var field = new FieldMap(FieldSize, s_zones, TestData.EmptyGrid(FieldSize));
             foreach ((int x, int z, uint zone, bool safe, bool inside, string why) in s_points)
             {
                 Assert.True((zone, safe, inside) == (field.ZoneAt(x, z), field.IsSafe(x, z), field.Contains(x, z)), $"({x}, {z}): {why}");
@@ -79,9 +79,9 @@ namespace PortfolioMmo.Server.Tests
         [Fact]
         public void RejectsBadFieldsAndZoneIds()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new FieldMap(601, s_zones));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new FieldMap(FieldSize, new[] { new ZonesRow { Id = 0 } }));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new FieldMap(FieldSize, new[] { new ZonesRow { Id = 256 } }));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new FieldMap(601, s_zones, TestData.EmptyGrid(601)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new FieldMap(FieldSize, new[] { new ZonesRow { Id = 0 } }, TestData.EmptyGrid(FieldSize)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new FieldMap(FieldSize, new[] { new ZonesRow { Id = 256 } }, TestData.EmptyGrid(FieldSize)));
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace PortfolioMmo.Server.Tests
         [Fact]
         public void TheZoneVectorsMatchTheCommittedFile()
         {
-            var field = new FieldMap(FieldSize, s_zones);
+            var field = new FieldMap(FieldSize, s_zones, TestData.EmptyGrid(FieldSize));
             var text = new StringBuilder();
             text.Append("# 구역의 비교 벡터. 서버의 FieldMapTests가 서버 구현의 답으로 만든다(직접 고치지 않음, MMO_UPDATE_VECTORS=1로 다시 씀).\n");
             text.Append("# field\t필드 한 변(m)\n# zone\t번호\t작은 x\t작은 z\t큰 x\t큰 z(m)\t안전 지대(0, 1). 줄의 차례대로 펴서 뒤 줄이 이긴다\n");

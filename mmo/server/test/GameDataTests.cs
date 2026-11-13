@@ -31,6 +31,12 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(("zone.town", ZoneKind.Town, true, -40, 40), (town.NameKey, town.Kind, town.Safe, town.MinX, town.MaxX));
             Assert.Equal((0, -10), (town.RespawnX, town.RespawnZ));
             Assert.False(data.Zones.Rows[1].HasRespawnX);
+
+            // 맵 생성기의 격자가 필드와 같은 크기로 읽히고 FieldMap이 받아들인다.
+            Assert.Equal((600u, 600u, -300, -300, 360_000), (data.Grid.Width, data.Grid.Depth, data.Grid.OriginX, data.Grid.OriginZ, data.Grid.Cells.Length));
+            var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
+            Assert.True(field.IsWall(-300 * Units.PerMeter, 0));
+            Assert.True(field.CanWalk(town.RespawnX * Units.PerMeter, town.RespawnZ * Units.PerMeter, Walker.Player));
         }
 
         /// <summary>

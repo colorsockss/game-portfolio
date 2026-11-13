@@ -23,7 +23,7 @@ After=network.target
 [Service]
 User=deploy
 WorkingDirectory=/srv/mmo/server/current
-ExecStart=/srv/mmo/server/current/PortfolioMmo.Server --port $port --spawn-half-extent 10 --database /srv/mmo/data/mmo.sqlite
+ExecStart=/srv/mmo/server/current/PortfolioMmo.Server --port $port --database /srv/mmo/data/mmo.sqlite
 # 프로세스가 끝나면(저장 실패, 틱의 예외, 멈춤 감시. mmo backlog 38, 39) 다시 띄운다.
 Restart=always
 RestartSec=2

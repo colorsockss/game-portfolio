@@ -42,7 +42,9 @@ namespace MmoData
 		Data.Hash = *Hash;
 		const std::optional<std::string> Constants = Read("Constants.bytes");
 		const std::optional<std::string> Zones = Read("Zones.bytes");
-		if (!Constants || !Zones || !Data.Constants.ParseFromString(*Constants) || !Data.Zones.ParseFromString(*Zones))
+		const std::optional<std::string> Grid = Read("MapGrid.bytes");
+		if (!Constants || !Zones || !Grid || !Data.Constants.ParseFromString(*Constants) || !Data.Zones.ParseFromString(*Zones)
+			|| !Data.Grid.ParseFromString(*Grid))
 		{
 			return std::nullopt;
 		}

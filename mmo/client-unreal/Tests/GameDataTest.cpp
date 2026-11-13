@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "Data/GameData.h"
+#include "World/FieldMap.h"
 
 namespace
 {
@@ -66,6 +67,12 @@ namespace
 		Expect(Town.name_key() == "zone.town" && Town.kind() == portfolio::mmo::data::ZONE_KIND_TOWN && Town.safe(), "the first zone is the safe town");
 		Expect(Town.min_x() == -40 && Town.max_x() == 40 && Town.respawn_x() == 0 && Town.respawn_z() == -10, "the town keeps its rectangle and respawn point");
 		Expect(!Data->Zones.rows(1).has_respawn_x(), "only the town has a respawn point");
+
+		// 맵 생성기의 격자가 서버와 같은 크기로 읽히고 FFieldMap이 받아들인다.
+		Expect(Data->Grid.width() == 600 && Data->Grid.depth() == 600 && Data->Grid.origin_x() == -300 && Data->Grid.origin_z() == -300
+			&& Data->Grid.cells().size() == 360000, "the map grid matches the field");
+		const std::optional<MmoWorld::FFieldMap> Field = MmoWorld::FFieldMap::Make(Data->Constants.field_size(), Data->Zones.rows(), Data->Grid);
+		Expect(Field && !Field->CanWalk(-300 * 32, 0) && Field->CanWalk(Town.respawn_x() * 32, Town.respawn_z() * 32), "the border is a wall and the respawn point is open");
 	}
 }
 

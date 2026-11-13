@@ -30,7 +30,8 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// Move를 검증하고 받아들인다. 필드 밖(격자 밖)이거나 쌓인 이동 거리보다 멀면 되돌린다. 패킷이 잘못되었으면(yaw) false다.
+        /// Move를 검증하고 받아들인다. 필드 밖(격자 밖)이거나, 쌓인 이동 거리보다 멀거나, 지난 위치에서 곧게 걸을 수 없으면(벽) 되돌린다.
+        /// 서버는 캐릭터를 점으로 본다. 패킷이 잘못되었으면(yaw) false다.
         /// </summary>
         public bool Move(Player player, Move move)
         {
@@ -48,7 +49,9 @@ namespace PortfolioMmo.Server
             long deltaX = (long)move.X - player.X;
             long deltaZ = (long)move.Z - player.Z;
             double distance = Math.Sqrt((deltaX * deltaX) + (deltaZ * deltaZ));
-            if (!_field.Contains(move.X, move.Z) || (distance > player.MoveBudget))
+            // 선 검사는 좌표가 필드 안이고 거리가 짧은 것을 본 뒤에 한다(패킷의 아무 좌표로 긴 선을 세지 않게).
+            if (!_field.Contains(move.X, move.Z) || (distance > player.MoveBudget)
+                || !_field.CanWalkLine(player.X, player.Z, move.X, move.Z, Walker.Player))
             {
                 player.Ack++;
                 player.Session.Send(new Packet

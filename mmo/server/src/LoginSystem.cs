@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using PortfolioMmo.Contract;
+using PortfolioMmo.Data;
 
 namespace PortfolioMmo.Server
 {
@@ -16,9 +18,14 @@ namespace PortfolioMmo.Server
         private readonly int _maxPlayers;
 
         /// <summary>
-        /// 새 캐릭터를 놓을 정사각형의 반 너비(칸). 원점이 가운데다.
+        /// 새 캐릭터를 놓을 정사각형의 반 너비(1/32 m). 원점이 가운데다. 0이면 마을의 부활 지점에서 시작한다(부하 측정용 옵션).
         /// </summary>
         private readonly int _spawnHalfExtent;
+
+        /// <summary>
+        /// 막힌 칸이 뽑혔을 때 다시 뽑는 횟수. 다 막혀 있으면 마을의 부활 지점으로 둔다.
+        /// </summary>
+        private const int SpawnTries = 100;
 
         /// <summary>
         /// 시작 위치를 고르는 난수.
@@ -27,6 +34,7 @@ namespace PortfolioMmo.Server
 
         private readonly CharacterStore _store;
         private readonly GameData _data;
+        private readonly FieldMap _field;
         private readonly EntityTable _entities;
         private readonly Grid _grid;
         private readonly SaveSystem _save;
@@ -36,8 +44,17 @@ namespace PortfolioMmo.Server
         /// </summary>
         private readonly Dictionary<string, Session> _accounts = new Dictionary<string, Session>();
 
-        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, CharacterStore store, GameData data, EntityTable entities, Grid grid, SaveSystem save)
+        /// <summary>
+        /// 마을의 부활 지점(1/32 m). 새 캐릭터와 들어올 자리가 막힌 캐릭터가 여기서 시작한다.
+        /// </summary>
+        private readonly (int X, int Z) _respawn;
+
+        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, CharacterStore store, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save)
         {
+            ZonesRow town = data.Zones.Rows.FirstOrDefault(zone => zone.Kind == ZoneKind.Town)
+                ?? throw new System.ArgumentException("Zones needs a town row with the respawn point.", nameof(data));
+            _respawn = (town.RespawnX * Units.PerMeter, town.RespawnZ * Units.PerMeter);
+            _field = field;
             _maxPlayers = maxPlayers;
             _spawnHalfExtent = spawnHalfExtent;
             _random = random;
@@ -96,8 +113,7 @@ namespace PortfolioMmo.Server
             else
             {
                 // 처음 들어갈 자리는 만들 때 정해 저장한다.
-                int x = _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1);
-                int z = _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1);
+                (int x, int z) = StartPosition();
                 result = _store.Create(session.LoginId!, create.Name, create.CharacterClass, x, z).Result;
             }
 
@@ -120,7 +136,16 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            var player = new Player(_entities.NextPlayerId(), character, session, _save.PositionOf(character));
+            // 맵이 바뀌어 저장된 자리가 막혔거나 필드 밖이면 마을의 부활 지점으로 옮긴다(무법자도 같음. 죽은 것이 아님).
+            // 들어올 때 옮기므로 다른 연결은 옮긴 자리의 EntityEnter만 본다.
+            SavedPosition position = _save.PositionOf(character);
+            bool blocked = !_field.CanWalk(position.X, position.Z, Walker.Player);
+            if (blocked)
+            {
+                position = new SavedPosition(_respawn.X, _respawn.Z, position.Yaw);
+            }
+
+            var player = new Player(_entities.NextPlayerId(), character, session, position) { Dirty = blocked };
             _entities.Add(player);
             _grid.Add(player);
             session.Player = player;
@@ -176,6 +201,29 @@ namespace PortfolioMmo.Server
         /// </summary>
         [GeneratedRegex(@"^[가-힣A-Za-z0-9]{2,12}\z")]
         private static partial Regex CharacterNamePattern();
+
+        /// <summary>
+        /// 새 캐릭터의 자리. 옵션이 없으면 마을의 부활 지점이고, 있으면 정사각형 안의 걸을 수 있는 무작위 자리다(봇이 한 점에 몰리지 않게).
+        /// </summary>
+        private (int X, int Z) StartPosition()
+        {
+            if (_spawnHalfExtent == 0)
+            {
+                return _respawn;
+            }
+
+            for (int i = 0; i < SpawnTries; i++)
+            {
+                int x = _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1);
+                int z = _random.Next(-_spawnHalfExtent, _spawnHalfExtent + 1);
+                if (_field.CanWalk(x, z, Walker.Player))
+                {
+                    return (x, z);
+                }
+            }
+
+            return _respawn;
+        }
 
         /// <summary>
         /// 계정의 캐릭터 목록을 보낸다.
