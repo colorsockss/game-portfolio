@@ -26,6 +26,7 @@ namespace PortfolioMmo.Server
         private readonly System.Random _random;
 
         private readonly CharacterStore _store;
+        private readonly GameData _data;
         private readonly EntityTable _entities;
         private readonly Grid _grid;
         private readonly SaveSystem _save;
@@ -35,25 +36,27 @@ namespace PortfolioMmo.Server
         /// </summary>
         private readonly Dictionary<string, Session> _accounts = new Dictionary<string, Session>();
 
-        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, CharacterStore store, EntityTable entities, Grid grid, SaveSystem save)
+        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, CharacterStore store, GameData data, EntityTable entities, Grid grid, SaveSystem save)
         {
             _maxPlayers = maxPlayers;
             _spawnHalfExtent = spawnHalfExtent;
             _random = random;
             _store = store;
+            _data = data;
             _entities = entities;
             _grid = grid;
             _save = save;
         }
 
         /// <summary>
-        /// 로그인을 처리한다. 실패하면 LoginResult를 보내고 끊는다. 같은 계정이 이미 로그인해 있으면 예전 연결을 끊는다.
+        /// 로그인을 처리한다. 프로토콜 버전 → 데이터 해시 → ID 형식 → 동접 상한 순으로 보고, 실패하면 LoginResult를 보내고 끊는다. 같은 계정이 이미 로그인해 있으면 예전 연결을 끊는다.
         /// 성공하면 캐릭터 목록을 보낸다.
         /// </summary>
         public void Login(Session session, Login login)
         {
             _accounts.TryGetValue(login.LoginId, out Session? previous);
             LoginResultCode result = login.ProtocolVersion != ProtocolVersion.Current ? LoginResultCode.VersionMismatch
+                : login.DataHash != _data.Hash ? LoginResultCode.DataMismatch
                 : !LoginIdPattern().IsMatch(login.LoginId) ? LoginResultCode.InvalidLoginId
                 : (previous == null && _accounts.Count >= _maxPlayers) ? LoginResultCode.ServerFull
                 : LoginResultCode.Ok;

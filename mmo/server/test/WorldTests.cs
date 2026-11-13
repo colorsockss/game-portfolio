@@ -151,21 +151,24 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 버전이 다르거나, ID 형식이 틀리거나, 동시 접속이 가득 차면 거절하고 끊는다.
+        /// 버전이 다르거나, 데이터 해시가 다르거나, ID 형식이 틀리거나, 동시 접속이 가득 차면 거절하고 끊는다. 이 차례로 본다.
         /// </summary>
         [Theory]
-        [InlineData(ProtocolVersion.Unspecified, "hero_01", LoginResultCode.VersionMismatch)]
-        [InlineData(ProtocolVersion.Current, "abc", LoginResultCode.InvalidLoginId)]
-        [InlineData(ProtocolVersion.Current, "Hero_01", LoginResultCode.InvalidLoginId)]
-        [InlineData(ProtocolVersion.Current, "hero_01\n", LoginResultCode.InvalidLoginId)]
-        [InlineData(ProtocolVersion.Current, "a_seventeen_chars", LoginResultCode.InvalidLoginId)]
-        [InlineData(ProtocolVersion.Current, "hero_02", LoginResultCode.ServerFull)]
-        public void LoginRejects(ProtocolVersion version, string loginId, LoginResultCode expected)
+        [InlineData(ProtocolVersion.Unspecified, "abc", false, LoginResultCode.VersionMismatch)]
+        [InlineData(ProtocolVersion.Current, "abc", false, LoginResultCode.DataMismatch)]
+        [InlineData(ProtocolVersion.Current, "hero_02", false, LoginResultCode.DataMismatch)]
+        [InlineData(ProtocolVersion.Current, "abc", true, LoginResultCode.InvalidLoginId)]
+        [InlineData(ProtocolVersion.Current, "Hero_01", true, LoginResultCode.InvalidLoginId)]
+        [InlineData(ProtocolVersion.Current, "hero_01\n", true, LoginResultCode.InvalidLoginId)]
+        [InlineData(ProtocolVersion.Current, "a_seventeen_chars", true, LoginResultCode.InvalidLoginId)]
+        [InlineData(ProtocolVersion.Current, "hero_02", true, LoginResultCode.ServerFull)]
+        public void LoginRejects(ProtocolVersion version, string loginId, bool sameData, LoginResultCode expected)
         {
             World world = NewWorld(maxPlayers: 1);
             Join(world, "hero_01");
             var session = new Session();
-            world.Receive(session, new Packet { Login = new Login { ProtocolVersion = version, LoginId = loginId } });
+            ulong hash = sameData ? TestData.Hash : TestData.Hash + 1;
+            world.Receive(session, new Packet { Login = new Login { ProtocolVersion = version, LoginId = loginId, DataHash = hash } });
 
             Assert.Equal(new[] { new Packet { LoginResult = new LoginResult { Result = expected } } }, Take(session));
             Assert.True(session.IsClosing);
@@ -492,7 +495,7 @@ namespace PortfolioMmo.Server.Tests
         /// </summary>
         private static World NewWorld(int maxPlayers = 10, CharacterStore? store = null)
         {
-            return new World(maxPlayers, spawnHalfExtent: 0, new Random(1), store ?? new CharacterStore(":memory:"));
+            return new World(maxPlayers, spawnHalfExtent: 0, new Random(1), store ?? new CharacterStore(":memory:"), TestData.Data);
         }
 
         /// <summary>
@@ -549,7 +552,7 @@ namespace PortfolioMmo.Server.Tests
         /// </summary>
         private static Packet LoginPacket(string loginId)
         {
-            return new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = loginId } };
+            return new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = loginId, DataHash = TestData.Hash } };
         }
 
         /// <summary>

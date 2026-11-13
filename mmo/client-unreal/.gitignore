@@ -18,3 +18,5 @@
 /Build/*/FileOpenOrder/
 /Build/Mac/Resources/
 /Build/Android/src/
+# package.mjs가 패키징 동안만 mmo/shared/data/files/를 복사해 두는 곳.
+/Content/Data/

@@ -15,7 +15,7 @@ npm test            # test:idle → test:tools → test:mmo (생성 파일 검�
 npm run generate    # 게임의 원본(data/, packets.proto) → 생성 파일. -- idle처럼 게임을 주면 그 게임만
 ```
 
-끝내기 전에 `npm run check`를 통과시킵니다. 커밋하지 않은 변경(추적하지 않는 파일 포함)을 영역으로 나눠 문서(`*.md`)만이면 건너뛰고, 바뀐 영역의 `typecheck:*`와 `test:*`(mmo는 `test:mmo`만)를 돌립니다(`tools/`는 idle도, `idle/shared/big-number/`와 `idle/tsconfig.base.json`은 tools도, 루트의 `package.json`·`scripts/` 등은 모든 영역). 검사를 건너뛰었으면 그렇다고 밝히고, Unity에서만 확인되는 변경은 확인하지 못했다고 밝힙니다. CI도 같은 영역으로 나눠 `idle-ci`, `tools-ci`, `mmo-ci`가 바뀐 영역만 돌리므로, 영역 규칙(`scripts/check.mjs`와 워크플로의 `paths`)은 함께 고칩니다.
+끝내기 전에 `npm run check`를 통과시킵니다. 커밋하지 않은 변경(추적하지 않는 파일 포함)을 영역으로 나눠 문서(`*.md`)만이면 건너뛰고, 바뀐 영역의 `typecheck:*`와 `test:*`(mmo는 `test:mmo`만)를 돌립니다(`tools/`는 idle과 mmo도, `idle/shared/big-number/`와 `idle/tsconfig.base.json`은 tools도, 루트의 `package.json`·`scripts/` 등은 모든 영역). 검사를 건너뛰었으면 그렇다고 밝히고, Unity에서만 확인되는 변경은 확인하지 못했다고 밝힙니다. CI도 같은 영역으로 나눠 `idle-ci`, `tools-ci`, `mmo-ci`가 바뀐 영역만 돌리므로, 영역 규칙(`scripts/check.mjs`와 워크플로의 `paths`)은 함께 고칩니다.
 
 ## 구조
 
@@ -36,7 +36,7 @@ npm run generate    # 게임의 원본(data/, packets.proto) → 생성 파일. 
 
 ## 생성 파일
 
-`idle/shared/data-schema/src/tables/`, `idle/shared/data-schema/data/`, `idle/shared/game-core/src/formulas.ts`, `idle/shared/game-core/src/ability-type.ts`, `mmo/shared/contract/generated/`는 `npm run generate`의 출력입니다. 직접 고치지 않고 원본(`idle/data/`, `mmo/shared/contract/packets.proto`)과 함께 커밋합니다.
+`idle/shared/data-schema/src/tables/`, `idle/shared/data-schema/data/`, `idle/shared/game-core/src/formulas.ts`, `idle/shared/game-core/src/ability-type.ts`, `mmo/shared/contract/generated/`, `mmo/shared/data/`의 `proto/`·`files/`·`generated/`는 `npm run generate`의 출력입니다. 직접 고치지 않고 원본(`idle/data/`, `mmo/shared/contract/packets.proto`, `mmo/data/`)과 함께 커밋합니다.
 
 ## 스타일
 

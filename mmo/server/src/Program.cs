@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -15,10 +16,23 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 인자: --port(기본 7777), --max-players(동시 접속 상한, 기본 1000),
         /// --spawn-half-extent(처음 들어온 플레이어를 놓을 정사각형의 반 너비, m, 기본 0),
-        /// --database(SQLite 파일, 작업 디렉터리 기준, 기본 mmo.sqlite).
+        /// --database(SQLite 파일, 작업 디렉터리 기준, 기본 mmo.sqlite), --data(기획 데이터 폴더, 기본 실행 파일 옆의 data/).
+        /// 데이터를 읽지 못하면 뜨지 않는다.
         /// </summary>
-        public static async Task Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
+            string dataFolder = Option(args, "--data", GameData.DefaultFolder);
+            GameData data;
+            try
+            {
+                data = GameData.Load(dataFolder);
+            }
+            catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException)
+            {
+                Console.Error.WriteLine($"Could not load the game data from {dataFolder}: {exception.Message}");
+                return 1;
+            }
+
             int port = int.Parse(Option(args, "--port", "7777"));
             int maxPlayers = int.Parse(Option(args, "--max-players", "1000"));
             int spawnHalfExtent = int.Parse(Option(args, "--spawn-half-extent", "0")) * Units.PerMeter;
@@ -33,11 +47,12 @@ namespace PortfolioMmo.Server
             using PosixSignalRegistration interrupt = PosixSignalRegistration.Create(PosixSignal.SIGINT, stop);
             using PosixSignalRegistration terminate = PosixSignalRegistration.Create(PosixSignal.SIGTERM, stop);
 
-            var server = new GameServer(new IPEndPoint(IPAddress.Any, port), new World(maxPlayers, spawnHalfExtent, new Random(), store));
+            var server = new GameServer(new IPEndPoint(IPAddress.Any, port), new World(maxPlayers, spawnHalfExtent, new Random(), store, data));
             Task running = server.RunAsync(cancellation.Token);
-            Console.WriteLine($"Listening on port {server.Port} (max players {maxPlayers})");
+            Console.WriteLine($"Listening on port {server.Port} (max players {maxPlayers}, data {data.Hash:x16})");
             await running;
             Console.WriteLine("Stopped");
+            return 0;
         }
 
         /// <summary>

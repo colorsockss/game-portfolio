@@ -55,7 +55,7 @@ enum Constant {
   CONSTANT_YAW_STEPS = 256;
   // 서버의 초당 틱 수. EntityMoves.tick이 틱마다 1씩 오른다.
   CONSTANT_TICKS_PER_SECOND = 20;
-  // 최대 이동 속도(m/s). 데이터(backlog 4)가 생기면 데이터로 옮긴다.
+  // 최대 이동 속도(m/s). 서버가 검증하고 클라이언트의 화면도 쓰는 수라 데이터가 아니라 여기에 둔다.
   CONSTANT_MAX_SPEED_METERS_PER_SECOND = 6;
   // 클라이언트가 Ping을 보내는 간격(초).
   CONSTANT_PING_INTERVAL_SECONDS = 5;
@@ -73,6 +73,9 @@ message Login {
   ProtocolVersion protocol_version = 1;
   // 로그인 ID(계정). 영문 소문자, 숫자, 밑줄 4–16자이고 형식은 서버가 검사한다. 머리 위에는 캐릭터 이름이 보인다.
   string login_id = 2;
+  // 클라이언트가 실은 기획 데이터의 해시(data-tool이 낸 mmo/shared/data/files/data.hash. 생성물 전체의 SHA-256 앞 8바이트를
+  // 16진수 그대로 읽은 수). 서버와 다르면 DATA_MISMATCH. 태그까지 9바이트다.
+  fixed64 data_hash = 3;
 }
 
 // 서버 → 클라이언트. Login의 답. 성공하면 이어서 CharacterList가 온다.
@@ -92,6 +95,8 @@ enum LoginResultCode {
   LOGIN_RESULT_CODE_VERSION_MISMATCH = 2;
   // 동시 접속이 가득 찼다.
   LOGIN_RESULT_CODE_SERVER_FULL = 3;
+  // 클라이언트와 서버의 기획 데이터(테이블, 맵)가 다르다. 클라이언트를 업데이트해야 한다.
+  LOGIN_RESULT_CODE_DATA_MISMATCH = 4;
 }
 
 // 서버 → 클라이언트. 연결을 끊기 바로 전에 보낸다.

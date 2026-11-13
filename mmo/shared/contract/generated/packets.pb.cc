@@ -806,11 +806,11 @@ constexpr Login::ParseTableT_ Login::InternalGenerateParseTable_(const ::_pbi::C
     {
       PROTOBUF_FIELD_OFFSET(Login, _impl_._has_bits_),
       0, // no _extensions_
-      2, 8,  // max_field_number, fast_idx_mask
+      3, 24,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967292,  // skipmap
+      4294967288,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      2,  // num_field_entries
+      3,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -820,21 +820,28 @@ constexpr Login::ParseTableT_ Login::InternalGenerateParseTable_(const ::_pbi::C
       ::_pbi::TcParser::GetTable<::portfolio::mmo::Login>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
+      {::_pbi::TcParser::MiniParse, {}},
+      // .portfolio.mmo.ProtocolVersion protocol_version = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Login, _impl_.protocol_version_), 2>(),
+       {8, 2, 0,
+        PROTOBUF_FIELD_OFFSET(Login, _impl_.protocol_version_)}},
       // string login_id = 2;
       {::_pbi::TcParser::FastUS1,
        {18, 0, 0,
         PROTOBUF_FIELD_OFFSET(Login, _impl_.login_id_)}},
-      // .portfolio.mmo.ProtocolVersion protocol_version = 1;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Login, _impl_.protocol_version_), 1>(),
-       {8, 1, 0,
-        PROTOBUF_FIELD_OFFSET(Login, _impl_.protocol_version_)}},
+      // fixed64 data_hash = 3;
+      {::_pbi::TcParser::FastF64S1,
+       {25, 1, 0,
+        PROTOBUF_FIELD_OFFSET(Login, _impl_.data_hash_)}},
     }}, {{
       65535, 65535
     }}, {{
       // .portfolio.mmo.ProtocolVersion protocol_version = 1;
-      {PROTOBUF_FIELD_OFFSET(Login, _impl_.protocol_version_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
+      {PROTOBUF_FIELD_OFFSET(Login, _impl_.protocol_version_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
       // string login_id = 2;
       {PROTOBUF_FIELD_OFFSET(Login, _impl_.login_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
+      // fixed64 data_hash = 3;
+      {PROTOBUF_FIELD_OFFSET(Login, _impl_.data_hash_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kFixed64)},
     }},
     // no aux_entries
     {{
@@ -852,6 +859,7 @@ inline constexpr Login::Impl_::Impl_(
       : login_id_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
+        data_hash_{::uint64_t{0u}},
         protocol_version_{static_cast< ::portfolio::mmo::ProtocolVersion >(0)} {}
 
 template <typename>
@@ -3187,11 +3195,13 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Login, _impl_._has_bits_),
-        5, // hasbit index offset
+        6, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Login, _impl_.protocol_version_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Login, _impl_.login_id_),
-        1,
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Login, _impl_.data_hash_),
+        2,
         0,
+        1,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::LoginResult, _impl_._has_bits_),
         4, // hasbit index offset
@@ -3318,24 +3328,24 @@ static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::Packet)},
         {19, sizeof(::portfolio::mmo::Login)},
-        {26, sizeof(::portfolio::mmo::LoginResult)},
-        {31, sizeof(::portfolio::mmo::Kicked)},
-        {36, sizeof(::portfolio::mmo::Ping)},
-        {37, sizeof(::portfolio::mmo::CharacterSummary)},
-        {46, sizeof(::portfolio::mmo::CharacterList)},
-        {51, sizeof(::portfolio::mmo::CreateCharacter)},
-        {58, sizeof(::portfolio::mmo::CreateCharacterResult)},
-        {63, sizeof(::portfolio::mmo::EnterWorld)},
-        {68, sizeof(::portfolio::mmo::EnterWorldResult)},
-        {77, sizeof(::portfolio::mmo::LeaveWorld)},
-        {78, sizeof(::portfolio::mmo::Pong)},
-        {83, sizeof(::portfolio::mmo::Move)},
-        {94, sizeof(::portfolio::mmo::PositionReset)},
-        {103, sizeof(::portfolio::mmo::EntitiesEnter)},
-        {108, sizeof(::portfolio::mmo::EntityEnter)},
-        {123, sizeof(::portfolio::mmo::EntitiesLeave)},
-        {128, sizeof(::portfolio::mmo::EntityMoves)},
-        {135, sizeof(::portfolio::mmo::EntityMove)},
+        {28, sizeof(::portfolio::mmo::LoginResult)},
+        {33, sizeof(::portfolio::mmo::Kicked)},
+        {38, sizeof(::portfolio::mmo::Ping)},
+        {39, sizeof(::portfolio::mmo::CharacterSummary)},
+        {48, sizeof(::portfolio::mmo::CharacterList)},
+        {53, sizeof(::portfolio::mmo::CreateCharacter)},
+        {60, sizeof(::portfolio::mmo::CreateCharacterResult)},
+        {65, sizeof(::portfolio::mmo::EnterWorld)},
+        {70, sizeof(::portfolio::mmo::EnterWorldResult)},
+        {79, sizeof(::portfolio::mmo::LeaveWorld)},
+        {80, sizeof(::portfolio::mmo::Pong)},
+        {85, sizeof(::portfolio::mmo::Move)},
+        {96, sizeof(::portfolio::mmo::PositionReset)},
+        {105, sizeof(::portfolio::mmo::EntitiesEnter)},
+        {110, sizeof(::portfolio::mmo::EntityEnter)},
+        {125, sizeof(::portfolio::mmo::EntitiesLeave)},
+        {130, sizeof(::portfolio::mmo::EntityMoves)},
+        {137, sizeof(::portfolio::mmo::EntityMove)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -3383,74 +3393,75 @@ const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "ortfolio.mmo.EntitiesEnterH\000\0226\n\016entities"
     "_leave\030g \001(\0132\034.portfolio.mmo.EntitiesLea"
     "veH\000\0222\n\014entity_moves\030h \001(\0132\032.portfolio.m"
-    "mo.EntityMovesH\000B\006\n\004body\"S\n\005Login\0228\n\020pro"
+    "mo.EntityMovesH\000B\006\n\004body\"f\n\005Login\0228\n\020pro"
     "tocol_version\030\001 \001(\0162\036.portfolio.mmo.Prot"
-    "ocolVersion\022\020\n\010login_id\030\002 \001(\t\"I\n\013LoginRe"
-    "sult\022.\n\006result\030\001 \001(\0162\036.portfolio.mmo.Log"
-    "inResultCodeJ\004\010\002\020\003J\004\010\003\020\004\"3\n\006Kicked\022)\n\006re"
-    "ason\030\001 \001(\0162\031.portfolio.mmo.KickReason\"\006\n"
-    "\004Ping\"d\n\020CharacterSummary\022\n\n\002id\030\001 \001(\004\022\014\n"
-    "\004name\030\002 \001(\t\0226\n\017character_class\030\003 \001(\0162\035.p"
-    "ortfolio.mmo.CharacterClass\"D\n\rCharacter"
-    "List\0223\n\ncharacters\030\001 \003(\0132\037.portfolio.mmo"
-    ".CharacterSummary\"W\n\017CreateCharacter\022\014\n\004"
-    "name\030\001 \001(\t\0226\n\017character_class\030\002 \001(\0162\035.po"
-    "rtfolio.mmo.CharacterClass\"Q\n\025CreateChar"
-    "acterResult\0228\n\006result\030\001 \001(\0162(.portfolio."
-    "mmo.CreateCharacterResultCode\"\"\n\nEnterWo"
-    "rld\022\024\n\014character_id\030\001 \001(\004\"f\n\020EnterWorldR"
-    "esult\0223\n\006result\030\001 \001(\0162#.portfolio.mmo.En"
-    "terWorldResultCode\022\017\n\007self_id\030\002 \001(\r\022\014\n\004t"
-    "ick\030\003 \001(\r\"\014\n\nLeaveWorld\"\024\n\004Pong\022\014\n\004tick\030"
-    "\001 \001(\r\"6\n\004Move\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003y"
-    "aw\030\003 \001(\r\022\013\n\003ack\030\004 \001(\r\"2\n\rPositionReset\022\t"
-    "\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEnt"
-    "itiesEnter\022,\n\010entities\030\001 \003(\0132\032.portfolio"
-    ".mmo.EntityEnter\"\202\001\n\013EntityEnter\022\n\n\002id\030\001"
-    " \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022"
-    "\014\n\004name\030\005 \001(\t\0226\n\017character_class\030\006 \001(\0162\035"
-    ".portfolio.mmo.CharacterClass\"\034\n\rEntitie"
-    "sLeave\022\013\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n\004ti"
-    "ck\030\001 \001(\r\022+\n\010entities\030\002 \003(\0132\031.portfolio.m"
-    "mo.EntityMove\";\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022"
-    "\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r*Q\n\017Pr"
-    "otocolVersion\022 \n\034PROTOCOL_VERSION_UNSPEC"
-    "IFIED\020\000\022\034\n\030PROTOCOL_VERSION_CURRENT\020\002*\256\002"
-    "\n\010Constant\022\030\n\024CONSTANT_UNSPECIFIED\020\000\022\034\n\030"
-    "CONSTANT_UNITS_PER_METER\020 \022$\n\037CONSTANT_M"
-    "AP_HALF_EXTENT_METERS\020\200\010\022\027\n\022CONSTANT_YAW"
-    "_STEPS\020\200\002\022\035\n\031CONSTANT_TICKS_PER_SECOND\020\024"
-    "\022(\n$CONSTANT_MAX_SPEED_METERS_PER_SECOND"
-    "\020\006\022\"\n\036CONSTANT_PING_INTERVAL_SECONDS\020\005\022!"
-    "\n\035CONSTANT_IDLE_TIMEOUT_SECONDS\020\017\022\033\n\027CON"
-    "STANT_MAX_CHARACTERS\020\004*\236\001\n\017LoginResultCo"
-    "de\022\030\n\024LOGIN_RESULT_CODE_OK\020\000\022&\n\"LOGIN_RE"
-    "SULT_CODE_INVALID_LOGIN_ID\020\001\022&\n\"LOGIN_RE"
-    "SULT_CODE_VERSION_MISMATCH\020\002\022!\n\035LOGIN_RE"
-    "SULT_CODE_SERVER_FULL\020\003*\253\001\n\nKickReason\022\033"
-    "\n\027KICK_REASON_UNSPECIFIED\020\000\022\037\n\033KICK_REAS"
-    "ON_DUPLICATE_LOGIN\020\001\022\037\n\033KICK_REASON_SERV"
-    "ER_SHUTDOWN\020\002\022 \n\034KICK_REASON_MALFORMED_P"
-    "ACKET\020\003\022\034\n\030KICK_REASON_IDLE_TIMEOUT\020\004*g\n"
-    "\016CharacterClass\022\037\n\033CHARACTER_CLASS_UNSPE"
-    "CIFIED\020\000\022\032\n\026CHARACTER_CLASS_KNIGHT\020\001\022\030\n\024"
-    "CHARACTER_CLASS_MAGE\020\002*\367\001\n\031CreateCharact"
-    "erResultCode\022#\n\037CREATE_CHARACTER_RESULT_"
-    "CODE_OK\020\000\022-\n)CREATE_CHARACTER_RESULT_COD"
-    "E_INVALID_NAME\020\001\022+\n\'CREATE_CHARACTER_RES"
-    "ULT_CODE_NAME_TAKEN\020\002\022)\n%CREATE_CHARACTE"
-    "R_RESULT_CODE_TOO_MANY\020\003\022.\n*CREATE_CHARA"
-    "CTER_RESULT_CODE_INVALID_CLASS\020\004*e\n\024Ente"
-    "rWorldResultCode\022\036\n\032ENTER_WORLD_RESULT_C"
-    "ODE_OK\020\000\022-\n)ENTER_WORLD_RESULT_CODE_NO_S"
-    "UCH_CHARACTER\020\001B\030\252\002\025PortfolioMmo.Contrac"
-    "tb\006proto3"
+    "ocolVersion\022\020\n\010login_id\030\002 \001(\t\022\021\n\tdata_ha"
+    "sh\030\003 \001(\006\"I\n\013LoginResult\022.\n\006result\030\001 \001(\0162"
+    "\036.portfolio.mmo.LoginResultCodeJ\004\010\002\020\003J\004\010"
+    "\003\020\004\"3\n\006Kicked\022)\n\006reason\030\001 \001(\0162\031.portfoli"
+    "o.mmo.KickReason\"\006\n\004Ping\"d\n\020CharacterSum"
+    "mary\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\0226\n\017charac"
+    "ter_class\030\003 \001(\0162\035.portfolio.mmo.Characte"
+    "rClass\"D\n\rCharacterList\0223\n\ncharacters\030\001 "
+    "\003(\0132\037.portfolio.mmo.CharacterSummary\"W\n\017"
+    "CreateCharacter\022\014\n\004name\030\001 \001(\t\0226\n\017charact"
+    "er_class\030\002 \001(\0162\035.portfolio.mmo.Character"
+    "Class\"Q\n\025CreateCharacterResult\0228\n\006result"
+    "\030\001 \001(\0162(.portfolio.mmo.CreateCharacterRe"
+    "sultCode\"\"\n\nEnterWorld\022\024\n\014character_id\030\001"
+    " \001(\004\"f\n\020EnterWorldResult\0223\n\006result\030\001 \001(\016"
+    "2#.portfolio.mmo.EnterWorldResultCode\022\017\n"
+    "\007self_id\030\002 \001(\r\022\014\n\004tick\030\003 \001(\r\"\014\n\nLeaveWor"
+    "ld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r\"6\n\004Move\022\t\n\001x\030\001 "
+    "\001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack\030\004 \001(\r"
+    "\"2\n\rPositionReset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022"
+    "\013\n\003ack\030\003 \001(\r\"=\n\rEntitiesEnter\022,\n\010entitie"
+    "s\030\001 \003(\0132\032.portfolio.mmo.EntityEnter\"\202\001\n\013"
+    "EntityEnter\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030"
+    "\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\014\n\004name\030\005 \001(\t\0226\n\017char"
+    "acter_class\030\006 \001(\0162\035.portfolio.mmo.Charac"
+    "terClass\"\034\n\rEntitiesLeave\022\013\n\003ids\030\001 \003(\r\"H"
+    "\n\013EntityMoves\022\014\n\004tick\030\001 \001(\r\022+\n\010entities\030"
+    "\002 \003(\0132\031.portfolio.mmo.EntityMove\";\n\nEnti"
+    "tyMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021"
+    "\022\013\n\003yaw\030\004 \001(\r*Q\n\017ProtocolVersion\022 \n\034PROT"
+    "OCOL_VERSION_UNSPECIFIED\020\000\022\034\n\030PROTOCOL_V"
+    "ERSION_CURRENT\020\002*\256\002\n\010Constant\022\030\n\024CONSTAN"
+    "T_UNSPECIFIED\020\000\022\034\n\030CONSTANT_UNITS_PER_ME"
+    "TER\020 \022$\n\037CONSTANT_MAP_HALF_EXTENT_METERS"
+    "\020\200\010\022\027\n\022CONSTANT_YAW_STEPS\020\200\002\022\035\n\031CONSTANT"
+    "_TICKS_PER_SECOND\020\024\022(\n$CONSTANT_MAX_SPEE"
+    "D_METERS_PER_SECOND\020\006\022\"\n\036CONSTANT_PING_I"
+    "NTERVAL_SECONDS\020\005\022!\n\035CONSTANT_IDLE_TIMEO"
+    "UT_SECONDS\020\017\022\033\n\027CONSTANT_MAX_CHARACTERS\020"
+    "\004*\303\001\n\017LoginResultCode\022\030\n\024LOGIN_RESULT_CO"
+    "DE_OK\020\000\022&\n\"LOGIN_RESULT_CODE_INVALID_LOG"
+    "IN_ID\020\001\022&\n\"LOGIN_RESULT_CODE_VERSION_MIS"
+    "MATCH\020\002\022!\n\035LOGIN_RESULT_CODE_SERVER_FULL"
+    "\020\003\022#\n\037LOGIN_RESULT_CODE_DATA_MISMATCH\020\004*"
+    "\253\001\n\nKickReason\022\033\n\027KICK_REASON_UNSPECIFIE"
+    "D\020\000\022\037\n\033KICK_REASON_DUPLICATE_LOGIN\020\001\022\037\n\033"
+    "KICK_REASON_SERVER_SHUTDOWN\020\002\022 \n\034KICK_RE"
+    "ASON_MALFORMED_PACKET\020\003\022\034\n\030KICK_REASON_I"
+    "DLE_TIMEOUT\020\004*g\n\016CharacterClass\022\037\n\033CHARA"
+    "CTER_CLASS_UNSPECIFIED\020\000\022\032\n\026CHARACTER_CL"
+    "ASS_KNIGHT\020\001\022\030\n\024CHARACTER_CLASS_MAGE\020\002*\367"
+    "\001\n\031CreateCharacterResultCode\022#\n\037CREATE_C"
+    "HARACTER_RESULT_CODE_OK\020\000\022-\n)CREATE_CHAR"
+    "ACTER_RESULT_CODE_INVALID_NAME\020\001\022+\n\'CREA"
+    "TE_CHARACTER_RESULT_CODE_NAME_TAKEN\020\002\022)\n"
+    "%CREATE_CHARACTER_RESULT_CODE_TOO_MANY\020\003"
+    "\022.\n*CREATE_CHARACTER_RESULT_CODE_INVALID"
+    "_CLASS\020\004*e\n\024EnterWorldResultCode\022\036\n\032ENTE"
+    "R_WORLD_RESULT_CODE_OK\020\000\022-\n)ENTER_WORLD_"
+    "RESULT_CODE_NO_SUCH_CHARACTER\020\001B\030\252\002\025Port"
+    "folioMmo.Contractb\006proto3"
 };
 static ::absl::once_flag descriptor_table_packets_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_packets_2eproto = {
     false,
     false,
-    3289,
+    3345,
     descriptor_table_protodef_packets_2eproto,
     "packets.proto",
     &descriptor_table_packets_2eproto_once,
@@ -3485,7 +3496,7 @@ LoginResultCode_descriptor() {
   return file_level_enum_descriptors_packets_2eproto[2];
 }
 PROTOBUF_CONSTINIT const uint32_t LoginResultCode_internal_data_[] = {
-    262144u, 0u, };
+    327680u, 0u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 KickReason_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
@@ -4466,7 +4477,13 @@ Login::Login(
   _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
-  _impl_.protocol_version_ = from._impl_.protocol_version_;
+  ::memcpy(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, data_hash_),
+           reinterpret_cast<const char*>(&from._impl_) +
+               offsetof(Impl_, data_hash_),
+           offsetof(Impl_, protocol_version_) -
+               offsetof(Impl_, data_hash_) +
+               sizeof(Impl_::protocol_version_));
 
   // @@protoc_insertion_point(copy_constructor:portfolio.mmo.Login)
 }
@@ -4477,7 +4494,12 @@ PROTOBUF_NDEBUG_INLINE Login::Impl_::Impl_(
 
 inline void Login::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
-  _impl_.protocol_version_ = {};
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, data_hash_),
+           0,
+           offsetof(Impl_, protocol_version_) -
+               offsetof(Impl_, data_hash_) +
+               sizeof(Impl_::protocol_version_));
 }
 Login::~Login() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.Login)
@@ -4530,7 +4552,13 @@ PROTOBUF_NOINLINE void Login::Clear() {
   if (CheckHasBit(cached_has_bits, 0x00000001U)) {
     this_._impl_.login_id_.ClearNonDefaultToEmpty();
   }
-  this_._impl_.protocol_version_ = 0;
+  if (BatchCheckHasBit(cached_has_bits, 0x00000006U)) {
+    ::memset(&this_._impl_.data_hash_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.protocol_version_) -
+                 reinterpret_cast<char*>(&this_._impl_.data_hash_)) +
+                 sizeof(_impl_.protocol_version_));
+  }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -4555,7 +4583,7 @@ PROTOBUF_NOINLINE void Login::Clear() {
 
   cached_has_bits = this_._impl_._has_bits_[0];
   // .portfolio.mmo.ProtocolVersion protocol_version = 1;
-  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
     if (this_._internal_protocol_version() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteEnumToArray(
@@ -4570,6 +4598,15 @@ PROTOBUF_NOINLINE void Login::Clear() {
       ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "portfolio.mmo.Login.login_id");
       target = stream->WriteStringMaybeAliased(2, _s, target);
+    }
+  }
+
+  // fixed64 data_hash = 3;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_data_hash() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteFixed64ToArray(
+          3, this_._internal_data_hash(), target);
     }
   }
 
@@ -4596,7 +4633,7 @@ PROTOBUF_NOINLINE void Login::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
     // string login_id = 2;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (!this_._internal_login_id().empty()) {
@@ -4604,8 +4641,14 @@ PROTOBUF_NOINLINE void Login::Clear() {
                                         this_._internal_login_id());
       }
     }
-    // .portfolio.mmo.ProtocolVersion protocol_version = 1;
+    // fixed64 data_hash = 3;
     if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_data_hash() != 0) {
+        total_size += 9;
+      }
+    }
+    // .portfolio.mmo.ProtocolVersion protocol_version = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
       if (this_._internal_protocol_version() != 0) {
         total_size += 1 +
                       ::_pbi::WireFormatLite::EnumSize(this_._internal_protocol_version());
@@ -4629,7 +4672,7 @@ void Login::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (!from._internal_login_id().empty()) {
         _this->_internal_set_login_id(from._internal_login_id());
@@ -4640,6 +4683,11 @@ void Login::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
     if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_data_hash() != 0) {
+        _this->_impl_.data_hash_ = from._impl_.data_hash_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
       if (from._internal_protocol_version() != 0) {
         _this->_impl_.protocol_version_ = from._impl_.protocol_version_;
       }
@@ -4665,7 +4713,12 @@ void Login::InternalSwap(Login* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.login_id_, &other->_impl_.login_id_, arena);
-  swap(_impl_.protocol_version_, other->_impl_.protocol_version_);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(Login, _impl_.protocol_version_)
+      + sizeof(Login::_impl_.protocol_version_)
+      - PROTOBUF_FIELD_OFFSET(Login, _impl_.data_hash_)>(
+          reinterpret_cast<char*>(&_impl_.data_hash_),
+          reinterpret_cast<char*>(&other->_impl_.data_hash_));
 }
 
 ::google::protobuf::Metadata Login::GetMetadata() const {

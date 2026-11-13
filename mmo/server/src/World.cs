@@ -24,11 +24,11 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 빈 월드를 만든다.
         /// </summary>
-        public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store)
+        public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store, GameData data)
         {
             var grid = new Grid();
             _save = new SaveSystem(store, _entities, SaveIntervalTicks);
-            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, _entities, grid, _save);
+            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, _entities, grid, _save);
             _movement = new MovementSystem(_entities, grid);
             _view = new ViewSystem(_entities, grid);
         }

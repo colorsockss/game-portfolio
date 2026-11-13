@@ -43,66 +43,67 @@ namespace PortfolioMmo.Contract {
             "b3J0Zm9saW8ubW1vLkVudGl0aWVzRW50ZXJIABI2Cg5lbnRpdGllc19sZWF2",
             "ZRhnIAEoCzIcLnBvcnRmb2xpby5tbW8uRW50aXRpZXNMZWF2ZUgAEjIKDGVu",
             "dGl0eV9tb3ZlcxhoIAEoCzIaLnBvcnRmb2xpby5tbW8uRW50aXR5TW92ZXNI",
-            "AEIGCgRib2R5IlMKBUxvZ2luEjgKEHByb3RvY29sX3ZlcnNpb24YASABKA4y",
+            "AEIGCgRib2R5ImYKBUxvZ2luEjgKEHByb3RvY29sX3ZlcnNpb24YASABKA4y",
             "Hi5wb3J0Zm9saW8ubW1vLlByb3RvY29sVmVyc2lvbhIQCghsb2dpbl9pZBgC",
-            "IAEoCSJJCgtMb2dpblJlc3VsdBIuCgZyZXN1bHQYASABKA4yHi5wb3J0Zm9s",
-            "aW8ubW1vLkxvZ2luUmVzdWx0Q29kZUoECAIQA0oECAMQBCIzCgZLaWNrZWQS",
-            "KQoGcmVhc29uGAEgASgOMhkucG9ydGZvbGlvLm1tby5LaWNrUmVhc29uIgYK",
-            "BFBpbmciZAoQQ2hhcmFjdGVyU3VtbWFyeRIKCgJpZBgBIAEoBBIMCgRuYW1l",
-            "GAIgASgJEjYKD2NoYXJhY3Rlcl9jbGFzcxgDIAEoDjIdLnBvcnRmb2xpby5t",
-            "bW8uQ2hhcmFjdGVyQ2xhc3MiRAoNQ2hhcmFjdGVyTGlzdBIzCgpjaGFyYWN0",
-            "ZXJzGAEgAygLMh8ucG9ydGZvbGlvLm1tby5DaGFyYWN0ZXJTdW1tYXJ5IlcK",
-            "D0NyZWF0ZUNoYXJhY3RlchIMCgRuYW1lGAEgASgJEjYKD2NoYXJhY3Rlcl9j",
-            "bGFzcxgCIAEoDjIdLnBvcnRmb2xpby5tbW8uQ2hhcmFjdGVyQ2xhc3MiUQoV",
-            "Q3JlYXRlQ2hhcmFjdGVyUmVzdWx0EjgKBnJlc3VsdBgBIAEoDjIoLnBvcnRm",
-            "b2xpby5tbW8uQ3JlYXRlQ2hhcmFjdGVyUmVzdWx0Q29kZSIiCgpFbnRlcldv",
-            "cmxkEhQKDGNoYXJhY3Rlcl9pZBgBIAEoBCJmChBFbnRlcldvcmxkUmVzdWx0",
-            "EjMKBnJlc3VsdBgBIAEoDjIjLnBvcnRmb2xpby5tbW8uRW50ZXJXb3JsZFJl",
-            "c3VsdENvZGUSDwoHc2VsZl9pZBgCIAEoDRIMCgR0aWNrGAMgASgNIgwKCkxl",
-            "YXZlV29ybGQiFAoEUG9uZxIMCgR0aWNrGAEgASgNIjYKBE1vdmUSCQoBeBgB",
-            "IAEoERIJCgF6GAIgASgREgsKA3lhdxgDIAEoDRILCgNhY2sYBCABKA0iMgoN",
-            "UG9zaXRpb25SZXNldBIJCgF4GAEgASgREgkKAXoYAiABKBESCwoDYWNrGAMg",
-            "ASgNIj0KDUVudGl0aWVzRW50ZXISLAoIZW50aXRpZXMYASADKAsyGi5wb3J0",
-            "Zm9saW8ubW1vLkVudGl0eUVudGVyIoIBCgtFbnRpdHlFbnRlchIKCgJpZBgB",
-            "IAEoDRIJCgF4GAIgASgREgkKAXoYAyABKBESCwoDeWF3GAQgASgNEgwKBG5h",
-            "bWUYBSABKAkSNgoPY2hhcmFjdGVyX2NsYXNzGAYgASgOMh0ucG9ydGZvbGlv",
-            "Lm1tby5DaGFyYWN0ZXJDbGFzcyIcCg1FbnRpdGllc0xlYXZlEgsKA2lkcxgB",
-            "IAMoDSJICgtFbnRpdHlNb3ZlcxIMCgR0aWNrGAEgASgNEisKCGVudGl0aWVz",
-            "GAIgAygLMhkucG9ydGZvbGlvLm1tby5FbnRpdHlNb3ZlIjsKCkVudGl0eU1v",
-            "dmUSCgoCaWQYASABKA0SCQoBeBgCIAEoERIJCgF6GAMgASgREgsKA3lhdxgE",
-            "IAEoDSpRCg9Qcm90b2NvbFZlcnNpb24SIAocUFJPVE9DT0xfVkVSU0lPTl9V",
-            "TlNQRUNJRklFRBAAEhwKGFBST1RPQ09MX1ZFUlNJT05fQ1VSUkVOVBACKq4C",
-            "CghDb25zdGFudBIYChRDT05TVEFOVF9VTlNQRUNJRklFRBAAEhwKGENPTlNU",
-            "QU5UX1VOSVRTX1BFUl9NRVRFUhAgEiQKH0NPTlNUQU5UX01BUF9IQUxGX0VY",
-            "VEVOVF9NRVRFUlMQgAgSFwoSQ09OU1RBTlRfWUFXX1NURVBTEIACEh0KGUNP",
-            "TlNUQU5UX1RJQ0tTX1BFUl9TRUNPTkQQFBIoCiRDT05TVEFOVF9NQVhfU1BF",
-            "RURfTUVURVJTX1BFUl9TRUNPTkQQBhIiCh5DT05TVEFOVF9QSU5HX0lOVEVS",
-            "VkFMX1NFQ09ORFMQBRIhCh1DT05TVEFOVF9JRExFX1RJTUVPVVRfU0VDT05E",
-            "UxAPEhsKF0NPTlNUQU5UX01BWF9DSEFSQUNURVJTEAQqngEKD0xvZ2luUmVz",
-            "dWx0Q29kZRIYChRMT0dJTl9SRVNVTFRfQ09ERV9PSxAAEiYKIkxPR0lOX1JF",
-            "U1VMVF9DT0RFX0lOVkFMSURfTE9HSU5fSUQQARImCiJMT0dJTl9SRVNVTFRf",
-            "Q09ERV9WRVJTSU9OX01JU01BVENIEAISIQodTE9HSU5fUkVTVUxUX0NPREVf",
-            "U0VSVkVSX0ZVTEwQAyqrAQoKS2lja1JlYXNvbhIbChdLSUNLX1JFQVNPTl9V",
-            "TlNQRUNJRklFRBAAEh8KG0tJQ0tfUkVBU09OX0RVUExJQ0FURV9MT0dJThAB",
-            "Eh8KG0tJQ0tfUkVBU09OX1NFUlZFUl9TSFVURE9XThACEiAKHEtJQ0tfUkVB",
-            "U09OX01BTEZPUk1FRF9QQUNLRVQQAxIcChhLSUNLX1JFQVNPTl9JRExFX1RJ",
-            "TUVPVVQQBCpnCg5DaGFyYWN0ZXJDbGFzcxIfChtDSEFSQUNURVJfQ0xBU1Nf",
-            "VU5TUEVDSUZJRUQQABIaChZDSEFSQUNURVJfQ0xBU1NfS05JR0hUEAESGAoU",
-            "Q0hBUkFDVEVSX0NMQVNTX01BR0UQAir3AQoZQ3JlYXRlQ2hhcmFjdGVyUmVz",
-            "dWx0Q29kZRIjCh9DUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX09LEAAS",
-            "LQopQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9JTlZBTElEX05BTUUQ",
-            "ARIrCidDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX05BTUVfVEFLRU4Q",
-            "AhIpCiVDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX1RPT19NQU5ZEAMS",
-            "LgoqQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9JTlZBTElEX0NMQVNT",
-            "EAQqZQoURW50ZXJXb3JsZFJlc3VsdENvZGUSHgoaRU5URVJfV09STERfUkVT",
-            "VUxUX0NPREVfT0sQABItCilFTlRFUl9XT1JMRF9SRVNVTFRfQ09ERV9OT19T",
-            "VUNIX0NIQVJBQ1RFUhABQhiqAhVQb3J0Zm9saW9NbW8uQ29udHJhY3RiBnBy",
-            "b3RvMw=="));
+            "IAEoCRIRCglkYXRhX2hhc2gYAyABKAYiSQoLTG9naW5SZXN1bHQSLgoGcmVz",
+            "dWx0GAEgASgOMh4ucG9ydGZvbGlvLm1tby5Mb2dpblJlc3VsdENvZGVKBAgC",
+            "EANKBAgDEAQiMwoGS2lja2VkEikKBnJlYXNvbhgBIAEoDjIZLnBvcnRmb2xp",
+            "by5tbW8uS2lja1JlYXNvbiIGCgRQaW5nImQKEENoYXJhY3RlclN1bW1hcnkS",
+            "CgoCaWQYASABKAQSDAoEbmFtZRgCIAEoCRI2Cg9jaGFyYWN0ZXJfY2xhc3MY",
+            "AyABKA4yHS5wb3J0Zm9saW8ubW1vLkNoYXJhY3RlckNsYXNzIkQKDUNoYXJh",
+            "Y3Rlckxpc3QSMwoKY2hhcmFjdGVycxgBIAMoCzIfLnBvcnRmb2xpby5tbW8u",
+            "Q2hhcmFjdGVyU3VtbWFyeSJXCg9DcmVhdGVDaGFyYWN0ZXISDAoEbmFtZRgB",
+            "IAEoCRI2Cg9jaGFyYWN0ZXJfY2xhc3MYAiABKA4yHS5wb3J0Zm9saW8ubW1v",
+            "LkNoYXJhY3RlckNsYXNzIlEKFUNyZWF0ZUNoYXJhY3RlclJlc3VsdBI4CgZy",
+            "ZXN1bHQYASABKA4yKC5wb3J0Zm9saW8ubW1vLkNyZWF0ZUNoYXJhY3RlclJl",
+            "c3VsdENvZGUiIgoKRW50ZXJXb3JsZBIUCgxjaGFyYWN0ZXJfaWQYASABKAQi",
+            "ZgoQRW50ZXJXb3JsZFJlc3VsdBIzCgZyZXN1bHQYASABKA4yIy5wb3J0Zm9s",
+            "aW8ubW1vLkVudGVyV29ybGRSZXN1bHRDb2RlEg8KB3NlbGZfaWQYAiABKA0S",
+            "DAoEdGljaxgDIAEoDSIMCgpMZWF2ZVdvcmxkIhQKBFBvbmcSDAoEdGljaxgB",
+            "IAEoDSI2CgRNb3ZlEgkKAXgYASABKBESCQoBehgCIAEoERILCgN5YXcYAyAB",
+            "KA0SCwoDYWNrGAQgASgNIjIKDVBvc2l0aW9uUmVzZXQSCQoBeBgBIAEoERIJ",
+            "CgF6GAIgASgREgsKA2FjaxgDIAEoDSI9Cg1FbnRpdGllc0VudGVyEiwKCGVu",
+            "dGl0aWVzGAEgAygLMhoucG9ydGZvbGlvLm1tby5FbnRpdHlFbnRlciKCAQoL",
+            "RW50aXR5RW50ZXISCgoCaWQYASABKA0SCQoBeBgCIAEoERIJCgF6GAMgASgR",
+            "EgsKA3lhdxgEIAEoDRIMCgRuYW1lGAUgASgJEjYKD2NoYXJhY3Rlcl9jbGFz",
+            "cxgGIAEoDjIdLnBvcnRmb2xpby5tbW8uQ2hhcmFjdGVyQ2xhc3MiHAoNRW50",
+            "aXRpZXNMZWF2ZRILCgNpZHMYASADKA0iSAoLRW50aXR5TW92ZXMSDAoEdGlj",
+            "axgBIAEoDRIrCghlbnRpdGllcxgCIAMoCzIZLnBvcnRmb2xpby5tbW8uRW50",
+            "aXR5TW92ZSI7CgpFbnRpdHlNb3ZlEgoKAmlkGAEgASgNEgkKAXgYAiABKBES",
+            "CQoBehgDIAEoERILCgN5YXcYBCABKA0qUQoPUHJvdG9jb2xWZXJzaW9uEiAK",
+            "HFBST1RPQ09MX1ZFUlNJT05fVU5TUEVDSUZJRUQQABIcChhQUk9UT0NPTF9W",
+            "RVJTSU9OX0NVUlJFTlQQAiquAgoIQ29uc3RhbnQSGAoUQ09OU1RBTlRfVU5T",
+            "UEVDSUZJRUQQABIcChhDT05TVEFOVF9VTklUU19QRVJfTUVURVIQIBIkCh9D",
+            "T05TVEFOVF9NQVBfSEFMRl9FWFRFTlRfTUVURVJTEIAIEhcKEkNPTlNUQU5U",
+            "X1lBV19TVEVQUxCAAhIdChlDT05TVEFOVF9USUNLU19QRVJfU0VDT05EEBQS",
+            "KAokQ09OU1RBTlRfTUFYX1NQRUVEX01FVEVSU19QRVJfU0VDT05EEAYSIgoe",
+            "Q09OU1RBTlRfUElOR19JTlRFUlZBTF9TRUNPTkRTEAUSIQodQ09OU1RBTlRf",
+            "SURMRV9USU1FT1VUX1NFQ09ORFMQDxIbChdDT05TVEFOVF9NQVhfQ0hBUkFD",
+            "VEVSUxAEKsMBCg9Mb2dpblJlc3VsdENvZGUSGAoUTE9HSU5fUkVTVUxUX0NP",
+            "REVfT0sQABImCiJMT0dJTl9SRVNVTFRfQ09ERV9JTlZBTElEX0xPR0lOX0lE",
+            "EAESJgoiTE9HSU5fUkVTVUxUX0NPREVfVkVSU0lPTl9NSVNNQVRDSBACEiEK",
+            "HUxPR0lOX1JFU1VMVF9DT0RFX1NFUlZFUl9GVUxMEAMSIwofTE9HSU5fUkVT",
+            "VUxUX0NPREVfREFUQV9NSVNNQVRDSBAEKqsBCgpLaWNrUmVhc29uEhsKF0tJ",
+            "Q0tfUkVBU09OX1VOU1BFQ0lGSUVEEAASHwobS0lDS19SRUFTT05fRFVQTElD",
+            "QVRFX0xPR0lOEAESHwobS0lDS19SRUFTT05fU0VSVkVSX1NIVVRET1dOEAIS",
+            "IAocS0lDS19SRUFTT05fTUFMRk9STUVEX1BBQ0tFVBADEhwKGEtJQ0tfUkVB",
+            "U09OX0lETEVfVElNRU9VVBAEKmcKDkNoYXJhY3RlckNsYXNzEh8KG0NIQVJB",
+            "Q1RFUl9DTEFTU19VTlNQRUNJRklFRBAAEhoKFkNIQVJBQ1RFUl9DTEFTU19L",
+            "TklHSFQQARIYChRDSEFSQUNURVJfQ0xBU1NfTUFHRRACKvcBChlDcmVhdGVD",
+            "aGFyYWN0ZXJSZXN1bHRDb2RlEiMKH0NSRUFURV9DSEFSQUNURVJfUkVTVUxU",
+            "X0NPREVfT0sQABItCilDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX0lO",
+            "VkFMSURfTkFNRRABEisKJ0NSRUFURV9DSEFSQUNURVJfUkVTVUxUX0NPREVf",
+            "TkFNRV9UQUtFThACEikKJUNSRUFURV9DSEFSQUNURVJfUkVTVUxUX0NPREVf",
+            "VE9PX01BTlkQAxIuCipDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX0lO",
+            "VkFMSURfQ0xBU1MQBCplChRFbnRlcldvcmxkUmVzdWx0Q29kZRIeChpFTlRF",
+            "Ul9XT1JMRF9SRVNVTFRfQ09ERV9PSxAAEi0KKUVOVEVSX1dPUkxEX1JFU1VM",
+            "VF9DT0RFX05PX1NVQ0hfQ0hBUkFDVEVSEAFCGKoCFVBvcnRmb2xpb01tby5D",
+            "b250cmFjdGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Contract.ProtocolVersion), typeof(global::PortfolioMmo.Contract.Constant), typeof(global::PortfolioMmo.Contract.LoginResultCode), typeof(global::PortfolioMmo.Contract.KickReason), typeof(global::PortfolioMmo.Contract.CharacterClass), typeof(global::PortfolioMmo.Contract.CreateCharacterResultCode), typeof(global::PortfolioMmo.Contract.EnterWorldResultCode), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Packet), global::PortfolioMmo.Contract.Packet.Parser, new[]{ "Login", "LoginResult", "Kicked", "Ping", "Pong", "CharacterList", "CreateCharacter", "CreateCharacterResult", "EnterWorld", "EnterWorldResult", "LeaveWorld", "Move", "PositionReset", "EntitiesEnter", "EntitiesLeave", "EntityMoves" }, new[]{ "Body" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Login), global::PortfolioMmo.Contract.Login.Parser, new[]{ "ProtocolVersion", "LoginId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Login), global::PortfolioMmo.Contract.Login.Parser, new[]{ "ProtocolVersion", "LoginId", "DataHash" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.LoginResult), global::PortfolioMmo.Contract.LoginResult.Parser, new[]{ "Result" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Kicked), global::PortfolioMmo.Contract.Kicked.Parser, new[]{ "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Ping), global::PortfolioMmo.Contract.Ping.Parser, null, null, null, null, null),
@@ -161,7 +162,7 @@ namespace PortfolioMmo.Contract {
     /// </summary>
     [pbr::OriginalName("CONSTANT_TICKS_PER_SECOND")] TicksPerSecond = 20,
     /// <summary>
-    /// 최대 이동 속도(m/s). 데이터(backlog 4)가 생기면 데이터로 옮긴다.
+    /// 최대 이동 속도(m/s). 서버가 검증하고 클라이언트의 화면도 쓰는 수라 데이터가 아니라 여기에 둔다.
     /// </summary>
     [pbr::OriginalName("CONSTANT_MAX_SPEED_METERS_PER_SECOND")] MaxSpeedMetersPerSecond = 6,
     /// <summary>
@@ -198,6 +199,10 @@ namespace PortfolioMmo.Contract {
     /// 동시 접속이 가득 찼다.
     /// </summary>
     [pbr::OriginalName("LOGIN_RESULT_CODE_SERVER_FULL")] ServerFull = 3,
+    /// <summary>
+    /// 클라이언트와 서버의 기획 데이터(테이블, 맵)가 다르다. 클라이언트를 업데이트해야 한다.
+    /// </summary>
+    [pbr::OriginalName("LOGIN_RESULT_CODE_DATA_MISMATCH")] DataMismatch = 4,
   }
 
   /// <summary>
@@ -1360,6 +1365,7 @@ namespace PortfolioMmo.Contract {
     public Login(Login other) : this() {
       protocolVersion_ = other.protocolVersion_;
       loginId_ = other.loginId_;
+      dataHash_ = other.dataHash_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1399,6 +1405,22 @@ namespace PortfolioMmo.Contract {
       }
     }
 
+    /// <summary>Field number for the "data_hash" field.</summary>
+    public const int DataHashFieldNumber = 3;
+    private ulong dataHash_;
+    /// <summary>
+    /// 클라이언트가 실은 기획 데이터의 해시(data-tool이 낸 mmo/shared/data/files/data.hash. 생성물 전체의 SHA-256 앞 8바이트를
+    /// 16진수 그대로 읽은 수). 서버와 다르면 DATA_MISMATCH. 태그까지 9바이트다.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong DataHash {
+      get { return dataHash_; }
+      set {
+        dataHash_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1416,6 +1438,7 @@ namespace PortfolioMmo.Contract {
       }
       if (ProtocolVersion != other.ProtocolVersion) return false;
       if (LoginId != other.LoginId) return false;
+      if (DataHash != other.DataHash) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1425,6 +1448,7 @@ namespace PortfolioMmo.Contract {
       int hash = 1;
       if (ProtocolVersion != global::PortfolioMmo.Contract.ProtocolVersion.Unspecified) hash ^= ProtocolVersion.GetHashCode();
       if (LoginId.Length != 0) hash ^= LoginId.GetHashCode();
+      if (DataHash != 0UL) hash ^= DataHash.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1451,6 +1475,10 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(18);
         output.WriteString(LoginId);
       }
+      if (DataHash != 0UL) {
+        output.WriteRawTag(25);
+        output.WriteFixed64(DataHash);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1469,6 +1497,10 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(18);
         output.WriteString(LoginId);
       }
+      if (DataHash != 0UL) {
+        output.WriteRawTag(25);
+        output.WriteFixed64(DataHash);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1484,6 +1516,9 @@ namespace PortfolioMmo.Contract {
       }
       if (LoginId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(LoginId);
+      }
+      if (DataHash != 0UL) {
+        size += 1 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1502,6 +1537,9 @@ namespace PortfolioMmo.Contract {
       }
       if (other.LoginId.Length != 0) {
         LoginId = other.LoginId;
+      }
+      if (other.DataHash != 0UL) {
+        DataHash = other.DataHash;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1530,6 +1568,10 @@ namespace PortfolioMmo.Contract {
             LoginId = input.ReadString();
             break;
           }
+          case 25: {
+            DataHash = input.ReadFixed64();
+            break;
+          }
         }
       }
     #endif
@@ -1555,6 +1597,10 @@ namespace PortfolioMmo.Contract {
           }
           case 18: {
             LoginId = input.ReadString();
+            break;
+          }
+          case 25: {
+            DataHash = input.ReadFixed64();
             break;
           }
         }

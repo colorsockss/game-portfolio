@@ -2,7 +2,10 @@
 //   idle/data/*.xlsx                   → idle/shared/data-schema/src/tables/ (로더) + idle/shared/data-schema/data/
 //   idle/data/formulas.json            → idle/shared/game-core/src/formulas.ts + ability-type.ts
 //   mmo/shared/contract/packets.proto  → mmo/shared/contract/generated/ (C#과 C++, Contract.csproj의 Google.Protobuf.Tools protoc)
-// 게임 이름(idle, mmo)을 주면 그 게임만 생성하므로 다른 게임이 쓰는 도구(idle의 xlsx LFS와 npm 의존성, mmo의 dotnet)가 없어도 된다.
+//   mmo/data/*.xlsx                    → mmo/shared/data/proto/ + files/ (data-tool의 proto 출력: 바이너리와 데이터 해시)
+//                                        + generated/ (C#과 C++, Data.csproj의 같은 protoc)
+// 게임 이름(idle, mmo)을 주면 그 게임만 생성하므로 다른 게임이 쓰는 도구(idle의 xlsx LFS, mmo의 dotnet)가 없어도 된다. 두 게임 모두 data-tool의
+// npm 의존성(npm ci)과 자기 xlsx의 LFS가 필요하다.
 // 이름이 없으면 모두 생성한다. --check를 주면 아무것도 쓰지 않고, 생성 파일이 낡았으면 명령이 실패한다.
 import { spawnSync } from "node:child_process";
 import { rmSync } from "node:fs";
@@ -40,8 +43,17 @@ const GAMES = {
       // protoc 버전은 Contract.csproj의 Google.Protobuf.Tools 버전이 고정한다.
       // 생성 타깃만 돌린다. Units.cs가 생성된 코드를 쓰므로, 전체를 빌드하면 새 enum이 생성되기 전의 코드로 컴파일하다 실패한다.
       dotnet("build", "mmo/shared/contract/Contract.csproj", "-t:GenerateContract", "-nologo", "-v", "q", `-p:ContractOutputDir=${path.join(staging, "contract")}`);
+      // 테이블이 없어도 데이터 해시(files/data.hash)는 나온다. 그때 proto/와 generated/는 생기지 않는다.
+      run("tools/data-tool/src/cli.js", "mmo/data", "--out", path.join(staging, "data"), "--format", "proto", "--proto-package", "portfolio.mmo.data", "--csharp-namespace", "PortfolioMmo.Data");
+      dotnet("build", "mmo/shared/data/Data.csproj", "-t:GenerateData", "-nologo", "-v", "q",
+        `-p:DataProtoDir=${path.join(staging, "data/proto")}`, `-p:DataOutputDir=${path.join(staging, "data/generated")}`);
     },
-    outputs: [["contract", "mmo/shared/contract/generated"]],
+    outputs: [
+      ["contract", "mmo/shared/contract/generated"],
+      ["data/proto", "mmo/shared/data/proto"],
+      ["data/data", "mmo/shared/data/files"],
+      ["data/generated", "mmo/shared/data/generated"],
+    ],
   },
 };
 
@@ -78,7 +90,8 @@ if (check) {
 } else {
   for (const [from, to] of outputs) {
     await rm(path.join(root, to), { recursive: true, force: true });
-    await cp(from, path.join(root, to), { recursive: true });
+    // 테이블이 없는 게임은 생성물 폴더가 생기지 않는다(git은 빈 폴더를 남기지 않음).
+    if (await stat(from).catch(() => null)) await cp(from, path.join(root, to), { recursive: true });
     console.log(`Updated ${to}`);
   }
 }

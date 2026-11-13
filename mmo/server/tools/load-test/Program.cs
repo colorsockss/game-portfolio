@@ -25,7 +25,8 @@ namespace PortfolioMmo.LoadTest
 
         /// <summary>
         /// 인자: --host(기본 127.0.0.1), --port(기본 7777), --bots(기본 1000), --seconds(측정 시간, 기본 30),
-        /// --half-extent(봇이 걷는 정사각형의 반 너비, m, 기본 200).
+        /// --half-extent(봇이 걷는 정사각형의 반 너비, m, 기본 200), --data(Login에 실을 데이터 해시의 폴더, 기본 실행 파일 옆의 data/).
+        /// 서버와 같은 생성물(mmo/shared/data/files/)을 써야 로그인이 된다.
         /// </summary>
         public static async Task Main(string[] args)
         {
@@ -34,11 +35,12 @@ namespace PortfolioMmo.LoadTest
             int botCount = int.Parse(Option(args, "--bots", "1000"));
             int seconds = int.Parse(Option(args, "--seconds", "30"));
             double halfExtent = int.Parse(Option(args, "--half-extent", "200")) * Units.PerMeter;
+            ulong dataHash = GameData.ReadHash(Option(args, "--data", GameData.DefaultFolder));
 
             var bots = new List<Bot>();
             for (int index = 0; index < botCount; index++)
             {
-                bots.Add(await Bot.ConnectAsync(host, port, $"bot_{index:D4}"));
+                bots.Add(await Bot.ConnectAsync(host, port, $"bot_{index:D4}", dataHash));
             }
 
             Console.WriteLine($"Connected {bots.Count} bots");
@@ -187,12 +189,12 @@ namespace PortfolioMmo.LoadTest
         /// <summary>
         /// 연결하고 로그인을 보낸다. 캐릭터 목록이 오면 첫 캐릭터로(없으면 만들어) 들어간다.
         /// </summary>
-        public static async Task<Bot> ConnectAsync(string host, int port, string loginId)
+        public static async Task<Bot> ConnectAsync(string host, int port, string loginId, ulong dataHash)
         {
             var client = new TcpClient { NoDelay = true };
             await client.ConnectAsync(host, port);
             var bot = new Bot(client) { _characterName = loginId.Replace("_", string.Empty) };
-            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = loginId } }.WriteDelimitedTo(bot._stream);
+            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = loginId, DataHash = dataHash } }.WriteDelimitedTo(bot._stream);
             _ = bot.ReceiveAsync();
             return bot;
         }

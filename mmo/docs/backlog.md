@@ -9,6 +9,7 @@ Unreal 클라이언트를 기능, 최적화, 완성도까지 다 만든 뒤(M7�
 ## 현재 있는 것
 
 - 계약: `packets.proto`의 패킷 16개(로그인, 캐릭터 목록·만들기·입장, 이동, 시야, 연결 확인)와 함께 쓰는 수(`Constant`), 축·`yaw` 규약. protoc 36.2가 C#과 C++을 함께 만듭니다(3).
+- 데이터: `mmo/data/`의 xlsx → data-tool의 proto 출력 → `mmo/shared/data/`의 `.proto`, 바이너리, 데이터 해시, C#·C++. 서버와 클라이언트가 같은 생성물을 읽고 데이터 해시가 다르면 로그인을 거절합니다. 테이블은 아직 없습니다(4).
 - 서버: 로그인(텍스트 ID), 계정마다 캐릭터 4개(기사·마법사), 20Hz 틱 루프, 시야(32 m 칸, 3×3), 이동 검증, 마지막 위치의 SQLite 저장, 15초 무응답 끊기. 봇 2,000명 부하를 쟀습니다(6).
 - Unreal 클라이언트: Mac·Android 빌드, 서버 연결(`UMmoConnection`), 세션과 엔진 없는 월드 모델(`UMmoSession`, `FWorldState`), 로그인 화면(8). Mac에서 로그인해 `Field` 레벨을 걷고, 시야 안의 다른 플레이어를 보간해 그립니다. 캐릭터를 만들고 골라 들어가며(82), 기사와 마법사는 Quaternius의 CC0 메시로 대기·달리기를 합니다(14). 화면 관리자와 층, HUD의 가상 조이스틱, 이름표, 설정·확인 창이 있고 위젯 블루프린트는 생성기가 만듭니다(16). Mac `.app`과 Android APK를 대상 서버 주소로 패키징하고 BlueStacks에서 돌립니다(15).
 
@@ -49,7 +50,7 @@ data/                기획 데이터 원본
 
 - [x] **3. 패킷 정의** `M1` — `shared/contract/packets.proto`(proto3)에 첫 기능(로그인, 이동, 주변 플레이어 표시)의 패킷 8개와 연결 확인(`Ping`, `Pong`)이 있습니다. 함께 쓰는 수는 `Constant` enum 값으로 두어 C#과 C++이 같이 생성됩니다(2026-11-10). `Packet`의 oneof 필드 번호가 패킷 번호이고, 배포된 번호와 enum 값은 바꾸지 않습니다. `npm run generate`가 Google.Protobuf.Tools(NuGet 3.36.2)의 protoc로 C#(`generated/Packets.cs`, Google.Protobuf 3.36.2)과 C++(`packets.pb.h`, `packets.pb.cc`)을 만들어 커밋하고 서버, Unity, Unreal이 함께 씁니다. `npm run test:mmo`가 왕복과 와이어 크기를 확인하고, 형식을 고른 근거와 수치는 [MANUAL](../MANUAL.md#형식을-고른-근거-2026-11-06)에 있습니다. C++ 생성을 더하며 protoc를 Grpc.Tools 2.85.0의 35.1에서 런타임과 같은 36.2로 바꿨습니다(2026-11-09, C# 출력은 같음). 직접 만든 형식(`.def` 문법과 `tools/contract-tool`)은 Protobuf로 정하며 지웠습니다(2026-11-06).
 
-- [ ] **4. 데이터** `M3` — `data/`의 xlsx를 data-tool이 테이블마다 `.proto`와 Protobuf 바이너리로 내고, 서버와 클라이언트가 같은 생성물을 읽습니다. 생성물 전체의 해시가 서버와 다른 클라이언트는 로그인이 거절됩니다. [설계: 데이터 테이블](design.md#데이터-테이블), [계약과 데이터](design.md#계약과-데이터)
+- [x] **4. 데이터** `M3` — `data/`의 xlsx를 data-tool이 테이블마다 `.proto`와 Protobuf 바이너리로 내고, 서버와 클라이언트가 같은 생성물을 읽습니다. 생성물 전체의 해시가 서버와 다른 클라이언트는 로그인이 거절됩니다. [설계: 데이터 테이블](design.md#데이터-테이블), [계약과 데이터](design.md#계약과-데이터)
   - **계약·데이터**:
     - 패킷: `Login`에 데이터 해시 필드(`data_hash`, 초안. 생성물 전체의 SHA-256의 앞 8바이트를 `fixed64`로 실어 태그까지 9바이트)를, `LoginResultCode`에 `LOGIN_RESULT_CODE_DATA_MISMATCH`를 더합니다. 필드를 더하기만 하므로 프로토콜 버전은 올리지 않습니다.
     - `Constant`: 최대 이동 속도(`CONSTANT_MAX_SPEED_METERS_PER_SECOND`)의 주석 "데이터가 생기면 데이터로 옮긴다"를 지웁니다. 이동 속도는 서버가 검증하고 클라이언트의 화면도 쓰는 수라 `Constant`에 남습니다.
@@ -78,6 +79,13 @@ data/                기획 데이터 원본
     - `--check`: 원본을 고치고 생성하지 않으면 실패하는 것.
     - 실제 테이블로 서버와 엔진 없는 테스트가 같은 줄 수와 값을 읽는 것은 첫 테이블(`Zones`)이 생기는 19에서 봅니다.
     - 눈으로: 릴리스 묶음에 데이터 파일이 들어 있어 배포한 서버가 뜨는 것, 해시가 다른 빌드로 로그인하면 안내와 받는 곳이 보이고 다시 붙지 않는 것(테이블이 없는 동안에는 해시 파일을 손으로 바꿔 보고, 실제 테이블로는 19에서 다시 봅니다).
+  - 한 것(2026-11-13):
+    - 툴: data-tool의 `--format proto`(`src/generate-proto.js`, `src/protobuf.js`)와 테스트 7개. 낸 바이너리를 protoc 36.2가 `--decode`로 읽고, 그 값을 protoc가 `--encode`로 다시 쓴 바이트와 같은 것을 봤습니다. formula-tool의 C# 내보내기(`export/codegen-csharp.ts`, `scripts/export-csharp.mjs`)와 정해 둔 글의 테스트. 낸 C#을 C# 9, 경고는 오류로 컴파일해 실행했고 JS 계산과 같은 값을 냈습니다.
+    - 생성물의 자리: `mmo/shared/data/`의 `proto/`, `files/`(바이너리와 `data.hash`), `generated/`(C#과 C++, `Data.csproj`의 `GenerateData`). `bin/`은 .NET 빌드 출력이라 `.gitignore`에 걸려 `files/`로 했습니다. 원본 폴더 `mmo/data/`는 README만 있습니다. 시험용 워크북 셋을 잠시 넣어 생성, C# 컴파일(Unity 조건)까지 도는 것을 봤습니다.
+    - 해시 파일은 16진수 16자와 줄바꿈입니다(사람이 읽고 diff로 보이게). 테이블이 없는 지금 값은 빈 입력의 SHA-256 앞부분인 `e3b0c44298fc1c14`입니다.
+    - 계약(`Login.data_hash`, `LOGIN_RESULT_CODE_DATA_MISMATCH`, 최대 속도의 주석), `Units.TicksFromMilliseconds`, 서버(`GameData`, `--data`, 버전 → 해시 → ID → 동접의 검사 차례), 부하 봇의 `--data`, 영역 규칙(`tools/`가 mmo도 검사, `mmo-ci.yml`의 `paths`·LFS·`npm ci`). 서버 테스트 52개(해시 검사의 차례, 루프백의 `DATA_MISMATCH`, 데이터가 없으면 1로 끝남, 밀리초의 올림)와 패킷 테스트(데이터 해시 9바이트).
+    - 클라이언트: 엔진 없는 로더 `Data/GameData`(엔진 없는 테스트가 커밋된 생성물을 실제로 읽음), `UMmoSession`의 데이터 읽기와 `Login`의 해시, 새 빌드 안내(`UMmoSettings::ReleasesUrl`). Mac에서 해시가 다른 서버에 붙으면 로그인 화면에 안내와 릴리스 주소가 보이고, 같은 서버에는 로그인되는 것을 봤습니다. Mac Development 패키지가 `Content/Data`에서 데이터를 읽어 로그인하는 것도 봤습니다.
+    - 확인하지 못한 것: Android APK는 만들었지만 BlueStacks가 꺼져 있어 데이터를 읽는 것은 보지 못했습니다(Mac 패키지와 같은 UFS 싣기). Live 배포는 하지 않았습니다(다음 배포 때 릴리스 묶음의 `data/`와 서버가 뜨는 것을 봅니다).
 
 - [ ] **5. 규칙 비교 벡터** `M3` — 서버와 두 클라이언트가 같은 답을 내야 하는 규칙을, 서버의 테스트가 입력과 답을 적어 낸 파일로 맞춥니다. 따로 하지 않고 그 규칙을 만드는 항목(19, 65, 86, 26)과 함께 합니다. [설계: 구조 원칙](design.md#구조-원칙)
   - **계약·데이터**: 없음. 벡터 파일은 `shared/vectors/`(초안)에 커밋합니다.

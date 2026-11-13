@@ -3,6 +3,7 @@
   <Folder Name="/shared/">
     <Project Path="shared/contract/Contract.csproj" />
     <Project Path="shared/contract/Contract.Tests/Contract.Tests.csproj" />
+    <Project Path="shared/data/Data.csproj" />
   </Folder>
   <Folder Name="/server/">
     <Project Path="server/src/Server.csproj" />

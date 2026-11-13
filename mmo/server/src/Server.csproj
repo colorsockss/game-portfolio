@@ -13,5 +13,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.14" />
     <ProjectReference Include="../../shared/contract/Contract.csproj" />
+    <ProjectReference Include="../../shared/data/Data.csproj" />
+    <!-- 기획 데이터(바이너리와 해시)를 실행 파일 옆의 data/에 싣는다. 참조하는 프로젝트(테스트, 부하 봇)와 publish에도 따라간다. -->
+    <None Include="../../shared/data/files/**" LinkBase="data" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

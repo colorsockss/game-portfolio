@@ -29,5 +29,18 @@ namespace PortfolioMmo.Contract
         /// 최대 이동 속도(m/s). 서버의 이동 검증과 클라이언트의 걷기가 같은 값을 쓴다.
         /// </summary>
         public const double MaxSpeedMetersPerSecond = (double)Constant.MaxSpeedMetersPerSecond;
+
+        /// <summary>
+        /// 틱 하나의 길이(밀리초).
+        /// </summary>
+        public const uint MillisecondsPerTick = 1000 / TicksPerSecond;
+
+        /// <summary>
+        /// 데이터의 밀리초를 틱 수로 바꾼다(올림). 밀리초 열을 읽는 곳은 모두 이것을 쓴다. 0 ms는 0틱, 1–50 ms는 1틱이다.
+        /// </summary>
+        public static uint TicksFromMilliseconds(uint milliseconds)
+        {
+            return (uint)(((ulong)milliseconds + MillisecondsPerTick - 1) / MillisecondsPerTick);
+        }
     }
 }

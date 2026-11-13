@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Protocol/MmoPackets.h"
+#include "Data/GameData.h"
 #include "World/WorldState.h"
 
 #include "MmoSession.generated.h"
@@ -62,6 +63,8 @@ public:
 private:
 	void HandleConnected();
 	void HandlePacket(const portfolio::mmo::Packet& Packet);
+	/** 기획 데이터를 읽는다. 개발 중(에디터, -game)에는 저장소의 생성물을, 패키지에서는 package.mjs가 실은 Content/Data를 읽는다. */
+	void LoadData();
 	void HandleClosed(const FString& Reason);
 	UMmoConnection& Connection() const;
 
@@ -71,4 +74,6 @@ private:
 	FString CurrentLoginId;
 	MmoWorld::FWorldState WorldState;
 	portfolio::mmo::CharacterList CharacterList;
+	/** 시작할 때 한 번 읽은 기획 데이터. 읽지 못하면 해시가 0이라 서버가 DATA_MISMATCH로 거절한다. */
+	MmoData::FGameData GameData;
 };

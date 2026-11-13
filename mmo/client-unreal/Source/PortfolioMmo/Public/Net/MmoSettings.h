@@ -20,4 +20,8 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, Category = "Server")
 	int32 ServerPort = 7777;
+
+	/** 새 빌드를 받는 곳. 서버가 버전이나 데이터가 다르다고 거절하면 로그인 화면이 이 주소를 보인다. */
+	UPROPERTY(Config, EditAnywhere, Category = "Build")
+	FString ReleasesUrl = TEXT("https://github.com/colorsockss/game-portfolio/releases");
 };

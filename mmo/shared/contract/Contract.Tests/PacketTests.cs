@@ -24,7 +24,7 @@ namespace PortfolioMmo.Contract.Tests
         {
             Packet[] packets =
             {
-                new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01" } },
+                new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = 0xe3b0c44298fc1c14 } },
                 new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok } },
                 new Packet
                 {
@@ -56,6 +56,20 @@ namespace PortfolioMmo.Contract.Tests
             Packet[] read = packets.Select(_ => Packet.Parser.ParseDelimitedFrom(stream)).ToArray();
             Assert.Equal(packets, read);
             Assert.Equal(stream.Length, stream.Position);
+        }
+
+        /// <summary>
+        /// Login의 데이터 해시는 값과 상관없이 태그까지 9바이트(fixed64)다.
+        /// </summary>
+        [Fact]
+        public void TheDataHashCostsNineBytes()
+        {
+            var login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01" };
+            int without = login.CalculateSize();
+            login.DataHash = 1;
+            Assert.Equal(without + 9, login.CalculateSize());
+            login.DataHash = ulong.MaxValue;
+            Assert.Equal(without + 9, login.CalculateSize());
         }
 
         /// <summary>

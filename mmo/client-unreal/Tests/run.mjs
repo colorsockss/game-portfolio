@@ -12,6 +12,8 @@ import { fileURLToPath } from "node:url";
 const client = fileURLToPath(new URL("../", import.meta.url));
 const protobuf = path.join(client, "Source/ThirdParty/MmoProtobuf/36.2");
 const generated = path.join(client, "../shared/contract/generated");
+// 기획 데이터의 생성물. 테스트에 폴더를 넘겨 커밋된 파일을 실제로 읽게 한다.
+const data = path.join(client, "../shared/data/files");
 // shortcut: 커밋된 라이브러리가 Mac용뿐이라 다른 OS에서는 건너뛴다. GitHub에서 돌리는 것은 backlog 66.
 if (process.platform !== "darwin") {
   console.log("Skipped the engine-free Unreal tests: only macOS has prebuilt MmoProtobuf libraries.");
@@ -23,7 +25,7 @@ const out = mkdtempSync(path.join(tmpdir(), "mmo-unreal-tests-"));
 process.on("exit", () => rmSync(out, { recursive: true, force: true }));
 
 // UE 타입을 쓰지 않는 폴더. Unity 클라이언트가 C#으로 옮기는 부분이다.
-const ENGINE_FREE = ["Protocol", "World", "Screen"];
+const ENGINE_FREE = ["Protocol", "World", "Screen", "Data"];
 const sources = ENGINE_FREE.flatMap((folder) => {
   const directory = path.join(client, "Source/PortfolioMmo/Private", folder);
   return readdirSync(directory).filter((file) => file.endsWith(".cpp")).map((file) => path.join(directory, file));
@@ -53,7 +55,7 @@ for (const test of readdirSync(path.join(client, "Tests")).filter((file) => file
     "-o",
     binary,
   ]);
-  run(binary, []);
+  run(binary, [data]);
 }
 
 function run(command, args) {

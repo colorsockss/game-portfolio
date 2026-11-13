@@ -6,6 +6,7 @@
 #include "Misc/CommandLine.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSession.h"
+#include "Net/MmoSettings.h"
 
 #define LOCTEXT_NAMESPACE "MmoLogin"
 
@@ -80,7 +81,13 @@ void UMmoLoginWidget::HandlePacket(const portfolio::mmo::Packet& Packet)
 			SetStatus(LOCTEXT("InvalidLoginId", "아이디 형식이 맞지 않습니다. 영문 소문자, 숫자, _로 4–16자입니다."));
 			break;
 		case portfolio::mmo::LOGIN_RESULT_CODE_VERSION_MISMATCH:
-			SetStatus(LOCTEXT("VersionMismatch", "서버와 버전이 다릅니다. 클라이언트를 업데이트해 주세요."));
+		case portfolio::mmo::LOGIN_RESULT_CODE_DATA_MISMATCH:
+			// 버전(패킷)이나 데이터(테이블, 맵)가 서버와 다르면 다시 붙어도 같으므로 새 빌드를 받는 곳을 보인다.
+			SetStatus(FText::Format(
+				Result.result() == portfolio::mmo::LOGIN_RESULT_CODE_VERSION_MISMATCH
+					? LOCTEXT("VersionMismatch", "서버와 버전이 다릅니다. 새 빌드를 받아 주세요.\n{0}")
+					: LOCTEXT("DataMismatch", "서버와 게임 데이터가 다릅니다. 새 빌드를 받아 주세요.\n{0}"),
+				FText::FromString(GetDefault<UMmoSettings>()->ReleasesUrl)));
 			break;
 		case portfolio::mmo::LOGIN_RESULT_CODE_SERVER_FULL:
 			SetStatus(LOCTEXT("ServerFull", "서버가 가득 찼습니다. 잠시 뒤에 다시 시도해 주세요."));

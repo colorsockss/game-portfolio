@@ -339,6 +339,7 @@ enum LoginResultCode : int {
   LOGIN_RESULT_CODE_INVALID_LOGIN_ID = 1,
   LOGIN_RESULT_CODE_VERSION_MISMATCH = 2,
   LOGIN_RESULT_CODE_SERVER_FULL = 3,
+  LOGIN_RESULT_CODE_DATA_MISMATCH = 4,
   LoginResultCode_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   LoginResultCode_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -349,11 +350,11 @@ extern const uint32_t LoginResultCode_internal_data_[];
 inline constexpr LoginResultCode LoginResultCode_MIN =
     static_cast<LoginResultCode>(0);
 inline constexpr LoginResultCode LoginResultCode_MAX =
-    static_cast<LoginResultCode>(3);
+    static_cast<LoginResultCode>(4);
 [[nodiscard]] inline bool LoginResultCode_IsValid(int value) {
-  return 0 <= value && value <= 3;
+  return 0 <= value && value <= 4;
 }
-inline constexpr int LoginResultCode_ARRAYSIZE = 3 + 1;
+inline constexpr int LoginResultCode_ARRAYSIZE = 4 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 LoginResultCode_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(LoginResultCode) {
@@ -368,7 +369,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& LoginResultCode_Name(LoginResultCode value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<LoginResultCode_descriptor, 0, 3>(
+  return ::google::protobuf::internal::NameOfDenseEnum<LoginResultCode_descriptor, 0, 4>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool LoginResultCode_Parse(
@@ -1702,6 +1703,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Login final : public ::google::prot
   // accessors -------------------------------------------------------
   enum : int {
     kLoginIdFieldNumber = 2,
+    kDataHashFieldNumber = 3,
     kProtocolVersionFieldNumber = 1,
   };
   // string login_id = 2;
@@ -1719,6 +1721,16 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Login final : public ::google::prot
   ::std::string* PROTOBUF_NONNULL _internal_mutable_login_id();
 
   public:
+  // fixed64 data_hash = 3;
+  void clear_data_hash() ;
+  [[nodiscard]] ::uint64_t data_hash() const;
+  void set_data_hash(::uint64_t value);
+
+  private:
+  ::uint64_t _internal_data_hash() const;
+  void _internal_set_data_hash(::uint64_t value);
+
+  public:
   // .portfolio.mmo.ProtocolVersion protocol_version = 1;
   void clear_protocol_version() ;
   [[nodiscard]] ::portfolio::mmo::ProtocolVersion protocol_version() const;
@@ -1733,7 +1745,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Login final : public ::google::prot
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<1, 2,
+      ::google::protobuf::internal::TcParseTable<2, 3,
                           0, 36,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -1763,6 +1775,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Login final : public ::google::prot
     ::google::protobuf::internal::HasBits<1> _has_bits_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::google::protobuf::internal::ArenaStringPtr login_id_;
+    ::uint64_t data_hash_;
     int protocol_version_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -6440,7 +6453,7 @@ inline Packet::BodyCase Packet::body_case() const {
 inline void Login::clear_protocol_version() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.protocol_version_ = 0;
-  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00000004U);
 }
 inline ::portfolio::mmo::ProtocolVersion Login::protocol_version() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.Login.protocol_version)
@@ -6448,7 +6461,7 @@ inline ::portfolio::mmo::ProtocolVersion Login::protocol_version() const {
 }
 inline void Login::set_protocol_version(::portfolio::mmo::ProtocolVersion value) {
   _internal_set_protocol_version(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.Login.protocol_version)
 }
 inline ::portfolio::mmo::ProtocolVersion Login::_internal_protocol_version() const {
@@ -6522,6 +6535,30 @@ inline void Login::set_allocated_login_id(::std::string* PROTOBUF_NULLABLE value
     _impl_.login_id_.Set("", GetArena());
   }
   // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Login.login_id)
+}
+
+// fixed64 data_hash = 3;
+inline void Login::clear_data_hash() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.data_hash_ = ::uint64_t{0u};
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint64_t Login::data_hash() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Login.data_hash)
+  return _internal_data_hash();
+}
+inline void Login::set_data_hash(::uint64_t value) {
+  _internal_set_data_hash(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Login.data_hash)
+}
+inline ::uint64_t Login::_internal_data_hash() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.data_hash_;
+}
+inline void Login::_internal_set_data_hash(::uint64_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.data_hash_ = value;
 }
 
 // -------------------------------------------------------------------

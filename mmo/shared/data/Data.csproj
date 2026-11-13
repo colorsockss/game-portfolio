@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    기획 데이터의 로더. data-tool이 mmo/data/의 xlsx에서 낸 proto/*.proto를 Contract.csproj와 같은 protoc(Google.Protobuf.Tools)로
+    C#과 C++로 바꿔 generated/에 두고, 그 파일을 커밋해 서버, Unity, Unreal이 그대로 쓴다. 바이너리와 데이터 해시는 files/에 있다.
+    Unity와 같은 조건(.NET Standard 2.1, C# 9)으로 컴파일한다. 루트의 generate 스크립트가 GenerateData 타깃만 돌리고,
+    검사할 때는 DataProtoDir과 DataOutputDir을 다른 폴더로 주고 비교한다. 테이블이 없으면 아무것도 만들지 않는다.
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <RootNamespace>PortfolioMmo.Data</RootNamespace>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DataProtoDir Condition="'$(DataProtoDir)' == ''">$(MSBuildThisFileDirectory)proto</DataProtoDir>
+    <DataOutputDir Condition="'$(DataOutputDir)' == ''">$(MSBuildThisFileDirectory)generated</DataOutputDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.36.2" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.36.2" PrivateAssets="all" />
+    <Compile Include="generated/*.cs" />
+  </ItemGroup>
+  <Target Name="GenerateData">
+    <ItemGroup>
+      <DataProto Include="$(DataProtoDir)/*.proto" />
+    </ItemGroup>
+    <PropertyGroup>
+      <Protoc Condition="$([MSBuild]::IsOSPlatform('OSX'))">$(protoc_macosx64)</Protoc>
+      <Protoc Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(protoc_linux64)</Protoc>
+      <Protoc Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(protoc_windows64)</Protoc>
+    </PropertyGroup>
+    <MakeDir Directories="$(DataOutputDir)" Condition="'@(DataProto)' != ''" />
+    <Exec Condition="'@(DataProto)' != ''" Command="&quot;$(Protoc)&quot; -I &quot;$(DataProtoDir)&quot; --csharp_out=&quot;$(DataOutputDir)&quot; --cpp_out=&quot;$(DataOutputDir)&quot; @(DataProto->'&quot;%(Filename)%(Extension)&quot;', ' ')" WorkingDirectory="$(DataProtoDir)" />
+  </Target>
+</Project>

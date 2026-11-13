@@ -4,7 +4,7 @@
 //   idle/shared/big-number/, idle/tsconfig.base.json
 //                              → idle, tools (툴의 테스트가 생성 코드를 실제 Big으로 실행하고, Big을 변환할 때 이 tsconfig를 따른다)
 //   idle/                      → idle
-//   tools/                     → tools, idle (idle이 툴의 출력을 생성 파일로 커밋한다)
+//   tools/                     → tools, idle, mmo (두 게임이 툴의 출력을 생성 파일로 커밋한다)
 //   mmo/                       → mmo
 //   그 밖                      → 모든 영역 (루트의 package.json, scripts/ 등)
 import assert from "node:assert/strict";
@@ -25,7 +25,7 @@ const RULES = [
   [(file) => file.endsWith(".md"), []],
   [(file) => file.startsWith("idle/shared/big-number/") || file === "idle/tsconfig.base.json", ["idle", "tools"]],
   [(file) => file.startsWith("idle/"), ["idle"]],
-  [(file) => file.startsWith("tools/"), ["tools", "idle"]],
+  [(file) => file.startsWith("tools/"), ["tools", "idle", "mmo"]],
   [(file) => file.startsWith("mmo/"), ["mmo"]],
   [() => true, Object.keys(COMMANDS)],
 ];
@@ -41,7 +41,7 @@ assert.deepEqual(plan(["mmo/shared/contract/packets.proto", "mmo/README.md"]), [
 assert.deepEqual(plan(["idle/server/src/main.ts"]), ["idle"]);
 assert.deepEqual(plan(["idle/shared/big-number/src/index.ts"]), ["idle", "tools"]);
 assert.deepEqual(plan(["idle/tsconfig.base.json"]), ["idle", "tools"]);
-assert.deepEqual(plan(["tools/data-tool/src/cli.js"]), ["idle", "tools"]);
+assert.deepEqual(plan(["tools/data-tool/src/cli.js"]), ["idle", "tools", "mmo"]);
 assert.deepEqual(plan(["mmo/server/src/World.cs", "idle/server/src/main.ts"]), ["idle", "mmo"]);
 assert.deepEqual(plan(["package.json"]), ["idle", "tools", "mmo"]);
 

@@ -6,7 +6,7 @@
 //   local  Mac은 127.0.0.1, Android는 이 Mac의 LAN 주소(같은 Wi-Fi의 휴대폰과 BlueStacks가 붙는다). 포트는 7777.
 //   live   Live 서버(mmo.dennou.cloud:7777).
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { cpSync, existsSync, rmSync } from "node:fs";
 import { networkInterfaces } from "node:os";
 import path from "node:path";
 import { parseArgs } from "node:util";
@@ -55,6 +55,13 @@ const args = [
 ];
 console.log(`Packaging ${platform} ${values.config} for ${values.target} server ${server}`);
 const runUat = path.join(ENGINE, "Engine/Build/BatchFiles/RunUAT.sh");
+// 기획 데이터를 패키지에 싣는다(DefaultGame.ini의 DirectoriesToAlwaysStageAsUFS). 원본은 저장소의 생성물 하나이고,
+// 복사본은 패키징 동안만 둔다.
+const stagedData = path.join(client, "Content/Data");
+rmSync(stagedData, { recursive: true, force: true });
+cpSync(path.join(client, "../shared/data/files"), stagedData, { recursive: true });
+// run이 실패하면 process.exit로 끝나 finally가 돌지 않으므로 프로세스가 끝날 때 지운다.
+process.on("exit", () => rmSync(stagedData, { recursive: true, force: true }));
 // Android 빌드는 setup-android.mjs가 만든 env.sh의 JDK·SDK·NDK를 쓴다.
 run("bash", ["-c", platform === "android" ? `source "${ANDROID_ENV}" && exec "$0" "$@"` : `exec "$0" "$@"`, runUat, ...args]);
 

@@ -1,6 +1,8 @@
 #include "Net/MmoSession.h"
 
 #include "Engine/GameInstance.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 #include "Misc/CommandLine.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSettings.h"
@@ -29,6 +31,47 @@ void UMmoSession::Initialize(FSubsystemCollectionBase& Collection)
 			Host = Server;
 		}
 	}
+
+	LoadData();
+}
+
+void UMmoSession::LoadData()
+{
+	// 저장소의 생성물을 먼저 본다. 지난 패키징이 남긴 Content/Data가 있어도 개발 중에는 늘 지금 생성물을 읽는다.
+	const FString Folders[] = {
+		FPaths::ProjectDir() / TEXT("../shared/data/files"),
+		FPaths::ProjectContentDir() / TEXT("Data"),
+	};
+	for (const FString& Folder : Folders)
+	{
+		if (!FPaths::FileExists(Folder / UTF8_TO_TCHAR(MmoData::HashFile.data())))
+		{
+			continue;
+		}
+
+		const std::optional<MmoData::FGameData> Loaded = MmoData::Load([&Folder](std::string_view Name) -> std::optional<std::string>
+		{
+			TArray<uint8> Bytes;
+			const FString Path = Folder / FString(static_cast<int32>(Name.size()), Name.data());
+			if (!FFileHelper::LoadFileToArray(Bytes, *Path, FILEREAD_Silent))
+			{
+				return std::nullopt;
+			}
+
+			return std::string(reinterpret_cast<const char*>(Bytes.GetData()), Bytes.Num());
+		});
+		if (Loaded)
+		{
+			GameData = *Loaded;
+			UE_LOG(LogMmoNet, Display, TEXT("Loaded game data %016llx from %s"), GameData.Hash, *Folder);
+			return;
+		}
+
+		UE_LOG(LogMmoNet, Error, TEXT("Could not read the game data in %s"), *Folder);
+		return;
+	}
+
+	UE_LOG(LogMmoNet, Error, TEXT("No game data found in %s or %s"), *Folders[0], *Folders[1]);
 }
 
 void UMmoSession::Deinitialize()
@@ -88,6 +131,7 @@ void UMmoSession::HandleConnected()
 	Login->set_protocol_version(portfolio::mmo::PROTOCOL_VERSION_CURRENT);
 	const FTCHARToUTF8 Utf8(*CurrentLoginId);
 	Login->set_login_id(Utf8.Get(), Utf8.Length());
+	Login->set_data_hash(GameData.Hash);
 	Connection().Send(Packet);
 	OnConnected.Broadcast();
 }

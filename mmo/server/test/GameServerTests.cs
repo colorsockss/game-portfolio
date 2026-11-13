@@ -28,13 +28,13 @@ namespace PortfolioMmo.Server.Tests
         public async Task LogsInOverTcpAndKicksAnOversizedFrame()
         {
             using var cancellation = new CancellationTokenSource();
-            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new CharacterStore(":memory:")));
+            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new CharacterStore(":memory:"), TestData.Data));
             Task running = server.RunAsync(cancellation.Token);
 
             using var client = new TcpClient();
             await client.ConnectAsync(IPAddress.Loopback, server.Port);
             NetworkStream stream = client.GetStream();
-            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01" } }.WriteDelimitedTo(stream);
+            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = TestData.Hash } }.WriteDelimitedTo(stream);
             Assert.Equal(LoginResultCode.Ok, (await ReadAsync(stream))!.LoginResult.Result);
             Assert.Empty((await ReadAsync(stream))!.CharacterList.Characters);
 
@@ -56,6 +56,27 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 데이터 해시가 다른 Login은 DATA_MISMATCH를 받고 끊긴다.
+        /// </summary>
+        [Fact]
+        public async Task RejectsAnotherDataHashOverTcp()
+        {
+            using var cancellation = new CancellationTokenSource();
+            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new CharacterStore(":memory:"), TestData.Data));
+            Task running = server.RunAsync(cancellation.Token);
+
+            using var client = new TcpClient();
+            await client.ConnectAsync(IPAddress.Loopback, server.Port);
+            NetworkStream stream = client.GetStream();
+            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = TestData.Hash ^ 1 } }.WriteDelimitedTo(stream);
+            Assert.Equal(LoginResultCode.DataMismatch, (await ReadAsync(stream))!.LoginResult.Result);
+            Assert.Null(await ReadAsync(stream));
+
+            cancellation.Cancel();
+            await running;
+        }
+
+        /// <summary>
         /// Ping을 보내는 동안은 연결이 유지되고, 아무것도 보내지 않으면 IDLE_TIMEOUT을 받고 끊긴다.
         /// </summary>
         [Fact]
@@ -64,13 +85,13 @@ namespace PortfolioMmo.Server.Tests
             using var cancellation = new CancellationTokenSource();
             // 시간 제한 10틱(0.5초).
             var server = new GameServer(
-                new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new CharacterStore(":memory:")), idleTimeoutTicks: 10);
+                new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new CharacterStore(":memory:"), TestData.Data), idleTimeoutTicks: 10);
             Task running = server.RunAsync(cancellation.Token);
 
             using var client = new TcpClient();
             await client.ConnectAsync(IPAddress.Loopback, server.Port);
             NetworkStream stream = client.GetStream();
-            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01" } }.WriteDelimitedTo(stream);
+            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = TestData.Hash } }.WriteDelimitedTo(stream);
             Assert.Equal(LoginResultCode.Ok, (await ReadAsync(stream))!.LoginResult.Result);
             await ReadAsync(stream);
 
@@ -98,13 +119,13 @@ namespace PortfolioMmo.Server.Tests
             using var cancellation = new CancellationTokenSource();
             using var store = new CharacterStore(":memory:");
             long id = store.Create("hero_01", "Arthur", CharacterClass.Knight, 0, 0).Character!.Id;
-            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), store));
+            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), store, TestData.Data));
             Task running = server.RunAsync(cancellation.Token);
 
             using var client = new TcpClient();
             await client.ConnectAsync(IPAddress.Loopback, server.Port);
             NetworkStream stream = client.GetStream();
-            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01" } }.WriteDelimitedTo(stream);
+            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = TestData.Hash } }.WriteDelimitedTo(stream);
             new Packet { EnterWorld = new EnterWorld { CharacterId = (ulong)id } }.WriteDelimitedTo(stream);
             Packet? entered;
             do
