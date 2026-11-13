@@ -3,6 +3,7 @@
 //   idle/data/formulas.json            → idle/shared/game-core/src/formulas.ts + ability-type.ts
 //   mmo/shared/contract/packets.proto  → mmo/shared/contract/generated/ (C#과 C++, Contract.csproj의 Google.Protobuf.Tools protoc)
 //   mmo/data/*.xlsx                    → mmo/shared/data/proto/ + files/ (data-tool의 proto 출력: 바이너리와 데이터 해시)
+//   mmo/data/MapObjects.tsv + xlsx      → 같은 폴더에 맵의 격자와 목록, preview/ (mmo/tools/map/map.mjs. 해시를 다시 구함)
 //                                        + generated/ (C#과 C++, Data.csproj의 같은 protoc)
 // 게임 이름(idle, mmo)을 주면 그 게임만 생성하므로 다른 게임이 쓰는 도구(idle의 xlsx LFS, mmo의 dotnet)가 없어도 된다. 두 게임 모두 data-tool의
 // npm 의존성(npm ci)과 자기 xlsx의 LFS가 필요하다.
@@ -45,6 +46,8 @@ const GAMES = {
       dotnet("build", "mmo/shared/contract/Contract.csproj", "-t:GenerateContract", "-nologo", "-v", "q", `-p:ContractOutputDir=${path.join(staging, "contract")}`);
       // 테이블이 없어도 데이터 해시(files/data.hash)는 나온다. 그때 proto/와 generated/는 생기지 않는다.
       run("tools/data-tool/src/cli.js", "mmo/data", "--out", path.join(staging, "data"), "--format", "proto", "--proto-package", "portfolio.mmo.data", "--csharp-namespace", "PortfolioMmo.Data");
+      // 맵은 MMO의 테이블과 규칙을 아는 생성기가 data-tool의 출력에 더하고 데이터 해시를 다시 구한다.
+      run("mmo/tools/map/map.mjs", "mmo/data", path.join(staging, "data"));
       dotnet("build", "mmo/shared/data/Data.csproj", "-t:GenerateData", "-nologo", "-v", "q",
         `-p:DataProtoDir=${path.join(staging, "data/proto")}`, `-p:DataOutputDir=${path.join(staging, "data/generated")}`);
     },
@@ -53,6 +56,7 @@ const GAMES = {
       ["data/proto", "mmo/shared/data/proto"],
       ["data/data", "mmo/shared/data/files"],
       ["data/generated", "mmo/shared/data/generated"],
+      ["data/preview", "mmo/shared/data/preview"],
     ],
   },
 };

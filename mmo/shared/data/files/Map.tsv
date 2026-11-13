@@ -1,0 +1,16 @@
+# 자동 생성된 파일 — 직접 수정하지 마세요. mmo/tools/map/map.mjs가 맵 원본(mmo/data/)에서 만듭니다.
+# kind	번호	가로	세로(m, 방향 0)	막는지	카메라를 막는지	메시의 키. 놓인 것이 쓰는 종류만 싣는다
+# object	종류	x	z(m, 돌린 뒤의 작은 모서리)	방향(도)
+kind	1	6	4	1	1	house_small
+kind	2	1	1	1	0	tree
+kind	3	4	1	1	0	fence
+kind	4	1	1	0	0	grass
+kind	5	10	10	1	1	mountain
+object	1	10	10	0
+object	1	-20	10	90
+object	3	-10	-30	0
+object	4	5	-5	0
+object	2	60	20	0
+object	2	70	-40	0
+object	2	100	50	0
+object	5	200	200	0

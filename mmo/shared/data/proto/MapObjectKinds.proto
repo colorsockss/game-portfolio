@@ -1,0 +1,25 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message MapObjectKindsRow {
+  // 종류 번호(MapObjects.tsv의 첫 칸)
+  uint32 id = 1;
+  // 방향 0일 때 차지하는 x 칸 수(m)
+  uint32 width = 2;
+  // 방향 0일 때 차지하는 z 칸 수(m)
+  uint32 depth = 3;
+  // 걷기와 선을 막는지. 끄면 막지 않는 장식(풀, 꽃)
+  bool blocks = 4;
+  // 카메라를 막는지
+  bool blocks_camera = 5;
+  // 두 엔진의 에디터 도구가 메시를 고르는 키(표현의 키를 가지는 유일한 테이블)
+  string mesh_key = 6;
+}
+
+message MapObjectKinds {
+  repeated MapObjectKindsRow rows = 1;
+}

@@ -1,0 +1,15 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. mmo/tools/map/map.mjs가 맵 원본에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+// 필드의 1 m 칸 격자. 칸 (x, z)는 cells[(z - origin_z) * width + (x - origin_x)]이고, 값이 1이면 막힌 칸이다.
+message MapGrid {
+  uint32 width = 1;
+  uint32 depth = 2;
+  sint32 origin_x = 3;
+  sint32 origin_z = 4;
+  bytes cells = 5;
+}
