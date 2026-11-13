@@ -27,10 +27,13 @@ Options:
   --out, -o        Output directory (default: generated)
   --table, -t      PascalCase table name for a single file (default: workbook filename)
   --big-module     Module that exports Big, imported by loaders of big columns (e.g. @idle/big-number)
+  --format         typescript (default) or proto: proto/*.proto, data/*.bytes (Protobuf) and data/data.hash
+  --proto-package  proto package of the proto output (e.g. portfolio.mmo.data)
+  --csharp-namespace  csharp_namespace option of the proto output (e.g. PortfolioMmo.Data)
   --help, -h      Show help
 `;
 
-async function collectInputs(input, { out = 'generated', table }) {
+async function collectInputs(input, { out = 'generated', table, format }) {
   const info = await stat(input);
   if (!info.isDirectory()) {
     if (!info.isFile()) throw new Error(`Input is not a regular file or directory: ${input}`);
@@ -52,7 +55,8 @@ async function collectInputs(input, { out = 'generated', table }) {
   }
   await visit(input);
   files.sort();
-  if (files.length === 0) throw new Error(`No .xlsx files found in directory '${input}' or its subdirectories.`);
+  // proto 출력은 테이블이 아직 없는 게임도 데이터 해시를 내야 하므로 빈 폴더를 받는다.
+  if (files.length === 0 && format !== 'proto') throw new Error(`No .xlsx files found in directory '${input}' or its subdirectories.`);
 
   // 쓰기 전에 출력 이름을 모두 검증한다. 폴더가 달라도 파일 이름이 겹칠 수 있고,
   // 대소문자를 구분하지 않는 파일 시스템에서도 겹친다. 워크북은 같은 출력 폴더를 공유한다.
@@ -73,6 +77,7 @@ try {
     allowPositionals: true,
     options: {
       out: { type: 'string', short: 'o' }, table: { type: 'string', short: 't' }, 'big-module': { type: 'string' },
+      format: { type: 'string' }, 'proto-package': { type: 'string' }, 'csharp-namespace': { type: 'string' },
       help: { type: 'boolean', short: 'h' },
     },
   });
@@ -80,7 +85,10 @@ try {
   else {
     if (positionals.length !== 1) throw new Error('Provide one .xlsx file or directory. Run with --help for usage.');
     const { files, directory } = await collectInputs(positionals[0], values);
-    const results = await convertWorkbooks(files.map((input) => ({ input, table: values.table })), { out: values.out, bigModule: values['big-module'] });
+    const results = await convertWorkbooks(files.map((input) => ({ input, table: values.table })), {
+      out: values.out, bigModule: values['big-module'],
+      format: values.format, protoPackage: values['proto-package'], csharpNamespace: values['csharp-namespace'],
+    });
     for (const result of results) {
       process.stdout.write(`${result.table}: ${result.rowCount} rows, ${result.fieldCount} fields → ${values.out ?? 'generated'}\n`);
       for (const file of result.files) process.stdout.write(`  ${file}\n`);

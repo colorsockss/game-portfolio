@@ -1,6 +1,6 @@
 # formula-lab
 
-공식을 편집·시뮬레이션하고 TypeScript로 내보내는 데스크톱 앱(Tauri + SvelteKit)입니다.
+공식을 편집·시뮬레이션하고 TypeScript와 C#으로 내보내는 데스크톱 앱(Tauri + SvelteKit)입니다.
 
 ## 실행
 
@@ -26,6 +26,21 @@ Big 모드의 규칙:
 - `Formula.debug` 로그는 값을 `Big.toNumber`로 바꿔 찍습니다.
 
 `numeric`이 없으면 `number` 코드를 만듭니다(`pow`는 `Math.pow`, `rand`는 `Math.random`).
+
+## C# 내보내기
+
+MMO 서버처럼 C#으로 공식을 계산하는 쪽은 `node scripts/export-csharp.mjs <project.json> <output.cs>`로 내보냅니다. TS 내보내기와 같은 검증을 거치고, 설정은 `exportSettings`의 두 키입니다.
+
+| 키 | 뜻 |
+| --- | --- |
+| `csharpNamespace` | 생성 코드의 namespace (필수) |
+| `csharpAbilityType` | 능력치 enum의 전체 이름(예: `PortfolioMmo.Data.AbilityType`, 필수). `caster.attack`은 `caster.Get(AbilityType.Attack)`이 됩니다 |
+
+- `double`로 계산하는 정적 함수(`Formulas.Damage(caster, target, input, random)`)를 냅니다. Big 모드(`numeric: "big"`)는 받지 않습니다. 공식, 상수, 입력, 능력치의 C# 이름은 key의 첫 글자를 대문자로 바꾼 것입니다.
+- 난수(`rand`, `randInt`)는 넘겨받은 `System.Random`에서만 뽑아, 서버가 주입한 `Random`과 고정한 씨앗으로 테스트합니다. 조건(`?:`, `&&`, `||`)은 툴의 시뮬레이션처럼 고른 쪽만 계산합니다.
+- `round`는 JS의 `Math.round`(반은 위로)와 같게 `Math.Floor(x + 0.5)`입니다. 정수 리터럴에는 `.0`을 붙여 정수 나눗셈이 되지 않게 합니다.
+- C#은 수와 불리언을 바꾸지 않으므로 둘을 섞으면 내보내기가 실패합니다. 읽는 입력을 넘기지 않으면 `ArgumentException`을 던집니다.
+- 생성 코드는 Unity와 같은 조건(C# 9)에서 컴파일됩니다.
 
 ## 입력
 

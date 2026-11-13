@@ -196,7 +196,7 @@ test('failed validation preserves previous generated files', async () => {
 test('CLI help, custom names, output and nonzero error status', async () => {
   const { stdout } = await exec(process.execPath, ['src/cli.js', '--help']);
   assert.match(stdout, /Usage/);
-  assert.doesNotMatch(stdout, /C#|csharp|--namespace/);
+  assert.match(stdout, /--format\s+typescript \(default\) or proto/);
   const filename = path.join(dir, '한글.xlsx');
   await fixture(filename, [[0, 'id', 'int']], [[1]]);
   await exec(process.execPath, ['src/cli.js', filename, '--table', 'Custom', '--out', path.join(dir, 'cli')]);

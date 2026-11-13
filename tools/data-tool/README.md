@@ -198,6 +198,33 @@ MessagePack: [[1,    "체력 물약",       100,        [],      nil]]
 
 스키마를 변경하면 데이터와 로더를 함께 다시 생성하고 배포하세요. 역직렬화는 생성된 데이터를 그대로 읽으며, 이전 데이터에 없는 필드의 기본값을 보충하지 않습니다. 삭제된 인덱스는 빈 슬롯(`nil`)으로 저장하고, 로더가 모르는 뒤쪽 필드는 무시합니다. 큰 인덱스 간격은 빈 슬롯 때문에 파일 크기를 늘립니다. 바이너리에 스키마 해시가 없으므로 데이터와 로더의 버전 일치를 자동 검사하지 않습니다.
 
+## Protobuf 출력
+
+`--format proto`(API는 `format: 'proto'`)는 JSON·MessagePack·TS 대신 아래를 냅니다. MMO(`mmo/data/`)가 쓰는 출력이고, 서버(C#)와 클라이언트(C#, C++)는 protoc가 `.proto`에서 만든 코드로 바이너리를 읽습니다. 세 곳에 이미 있는 Protobuf 런타임으로 읽어 라이브러리를 더하지 않습니다.
+
+```text
+generated/
+  proto/Enums.proto      Enums 워크북의 proto enum
+  proto/Zones.proto      ZonesRow(행)와 Zones(repeated ZonesRow rows = 1)
+  proto/Constants.proto  키-값 시트는 메시지 하나
+  data/Zones.bytes       Zones 메시지(행 목록)의 바이너리
+  data/Constants.bytes   Constants 메시지의 바이너리
+  data/data.hash         data/의 다른 파일을 이름 순으로 이은 SHA-256의 앞 8바이트(16진수 16자와 줄바꿈)
+```
+
+```sh
+node src/cli.js ../../mmo/data --out generated --format proto --proto-package portfolio.mmo.data --csharp-namespace PortfolioMmo.Data
+```
+
+- `--proto-package`와 `--csharp-namespace`는 필수이고 모든 `.proto`에 들어갑니다. 툴은 게임 이름을 모릅니다.
+- 필드 번호는 스키마의 `index` + 1이고, 이름은 snake_case입니다(`nameKey` → `name_key`. protoc가 C#에서는 `NameKey`로 씁니다). `index`를 바꾸지 않으면 열을 더하고 지워도 옛 데이터와 코드가 서로 읽힙니다.
+- 타입: `int` → `sint32`, `uint` → `uint32`, `long` → `sint64`, `float`, `double`, `bool`, `string`은 그대로입니다. 정수 Enum 열은 그 enum 형입니다. `[]`는 `repeated`(수와 불리언은 packed), `?`와 `when`이 있는 열은 `optional`(null은 빠지고, 값이 있으면 기본값이어도 실림)입니다.
+- 받지 않는 것: `big` 열, nullable 배열(`int[]?`), `when`이 있는 배열, 문자열 Enum, 값이 0인 멤버가 없는 Enum(proto3의 enum은 0에서 시작). 쓰기 전에 그 열을 짚고 실패합니다.
+- Enum 멤버의 이름은 Enum 이름을 앞에 붙인 UPPER_SNAKE이고(`ZoneKind.Town` → `ZONE_KIND_TOWN`. C#은 앞을 떼고 `Town`), 값이 0인 멤버를 처음에 둡니다.
+- 바이너리는 필드 번호 순서로 쓰고 기본값(0, false, "", 빈 배열)은 쓰지 않아, protoc가 같은 값에서 내는 바이트와 같습니다. 기본값만 있는 행도 길이 0으로 실려 행 수가 지켜집니다.
+- 워크북이 없는 폴더도 받아 `data/data.hash`(빈 입력의 해시)만 씁니다. 테이블이 아직 없는 게임도 서버와 클라이언트가 같은 해시를 쓰게 하려는 것입니다.
+- 게임은 이 해시를 로그인할 때 맞춰, 데이터만 바뀐 배포에서 옛 클라이언트가 틀린 수치를 쓰는 것을 막습니다. 게임이 `data/`에 더 쓰는 생성물(맵)도 `dataHash`(API)로 함께 묶습니다.
+
 ## 생성 파일
 
 ```text

@@ -52,6 +52,10 @@ export interface ExportSettings {
   numeric?: 'number' | 'big';
   /** numeric이 big일 때 Big을 가져올 경로. 없으면 '@idle/big-number'. */
   bigImport?: string;
+  /** C# 내보내기(scripts/export-csharp.mjs)의 namespace. */
+  csharpNamespace?: string;
+  /** C# 내보내기가 쓰는 능력치 enum의 전체 이름(예: PortfolioMmo.Data.AbilityType). */
+  csharpAbilityType?: string;
 }
 
 export interface Project {
