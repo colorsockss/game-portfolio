@@ -37,7 +37,9 @@ AMmoCharacter::AMmoCharacter()
 	CameraArm->SetupAttachment(GetCapsuleComponent());
 	CameraArm->TargetArmLength = DefaultArmLength;
 	CameraArm->bUsePawnControlRotation = true;
-	CameraArm->bDoCollisionTest = false;
+	// 건물과 테두리의 산(카메라를 막는 맵 액터의 상자)만 카메라를 막고, 나무·바위·울타리와 캐릭터는 막지 않는다.
+	CameraArm->bDoCollisionTest = true;
+	CameraArm->ProbeChannel = ECC_Camera;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);

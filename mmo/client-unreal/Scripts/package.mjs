@@ -1,4 +1,4 @@
-// Unreal 클라이언트를 대상 서버의 주소로 패키징해 Saved/Archive/에 둔다. 주소는 패키지의 명령줄(UECommandLine.txt)에
+// Unreal 클라이언트를 대상 서버의 주소로 패키징해 Saved/Archive/에 둔다. 먼저 Field 레벨의 맵 액터가 맵의 목록과 같은지 본다(MmoExportMap -Check). 주소는 패키지의 명령줄(UECommandLine.txt)에
 // -MmoServer=로 넣으므로 커밋한 ini는 바뀌지 않는다. Mac은 실행 파일의 로컬 심볼을 지우고(약 100 MB) 다시 서명한다.
 //
 //   node mmo/client-unreal/Scripts/package.mjs <mac|android> [--target local|live] [--config Shipping|Development]
@@ -54,6 +54,16 @@ const args = [
   "-unattended",
 ];
 console.log(`Packaging ${platform} ${values.config} for ${values.target} server ${server}`);
+// 레벨의 맵 액터가 맵 생성기의 목록(shared/data/files/Map.tsv)과 다르면 멈춘다(원본만 고침, 레벨만 고침, 놓인 종류의 줄만 고침을 함께 잡음).
+// 에디터 모듈의 커맨드렛이라 에디터 타깃이 빌드되어 있어야 한다.
+run(path.join(ENGINE, "Engine/Binaries/Mac/UnrealEditor-Cmd"), [
+  path.join(client, "PortfolioMmo.uproject"),
+  "-run=MmoExportMap",
+  "-Check",
+  "-unattended",
+  "-nosplash",
+  "-nullrhi",
+]);
 const runUat = path.join(ENGINE, "Engine/Build/BatchFiles/RunUAT.sh");
 // 기획 데이터를 패키지에 싣는다(DefaultGame.ini의 DirectoriesToAlwaysStageAsUFS). 원본은 저장소의 생성물 하나이고,
 // 복사본은 패키징 동안만 둔다.
