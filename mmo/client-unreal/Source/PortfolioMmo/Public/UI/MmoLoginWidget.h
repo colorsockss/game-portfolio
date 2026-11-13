@@ -5,7 +5,7 @@
 
 #include "MmoLoginWidget.generated.h"
 
-class UButton;
+class UMmoButtonWidget;
 class UEditableTextBox;
 class UTextBlock;
 class UMmoSession;
@@ -49,7 +49,7 @@ private:
 	TObjectPtr<UEditableTextBox> LoginIdBox;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> LogInButton;
+	TObjectPtr<UMmoButtonWidget> LogInButton;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> StatusText;

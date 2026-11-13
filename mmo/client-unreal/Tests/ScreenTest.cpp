@@ -1,8 +1,9 @@
-// Screen/의 엔진 없는 코드(화면 스택)를 UE 없이 컴파일해 확인한다. run.mjs가 빌드하고 실행한다.
+// Screen/의 엔진 없는 코드(화면 스택, 터치 나눔)를 UE 없이 컴파일해 확인한다. run.mjs가 빌드하고 실행한다.
 #include <cstdio>
 #include <cstdlib>
 
 #include "Screen/ScreenStack.h"
+#include "Screen/TouchOwners.h"
 
 namespace
 {
@@ -82,6 +83,34 @@ namespace
 		Expect(Stack.InputMode() == EInputMode::Ui, "closing creation keeps the selection screen's input");
 	}
 
+	void QuantityIsAPopupClosedByBack()
+	{
+		MmoScreen::FScreenStack Stack;
+		Stack.Open(EScreen::Hud);
+		Stack.Open(EScreen::Quantity);
+		Expect(Stack.InputMode() == EInputMode::Window && Stack.BackTarget() == EScreen::Quantity, "the quantity popup stops the hands and closes with back");
+	}
+
+	// 누른 순간 정해진 주인은 뗄 때까지 바뀌지 않고, 세 손가락이 저마다 다른 주인을 가진다.
+	void FingersKeepTheirOwnerUntilReleased()
+	{
+		using MmoScreen::ETouchOwner;
+		MmoScreen::FTouchOwners Owners;
+		Expect(Owners.Claim(0, ETouchOwner::Joystick), "the joystick takes the first finger");
+		Expect(Owners.Claim(1, ETouchOwner::Button), "a button takes the second finger");
+		Expect(Owners.Claim(2, ETouchOwner::Camera), "the camera takes the third finger");
+		Expect(Owners.OwnerOf(0) == ETouchOwner::Joystick && Owners.OwnerOf(1) == ETouchOwner::Button && Owners.OwnerOf(2) == ETouchOwner::Camera,
+			"three fingers have three owners");
+
+		Expect(!Owners.Claim(2, ETouchOwner::Button) && Owners.OwnerOf(2) == ETouchOwner::Camera, "a camera finger sliding over a button stays the camera's");
+		Expect(Owners.Claim(0, ETouchOwner::Joystick), "claiming again by the same owner keeps it");
+
+		Owners.Release(2);
+		Expect(Owners.OwnerOf(2) == ETouchOwner::None, "lifting a finger frees it");
+		Expect(Owners.Claim(2, ETouchOwner::Button) && Owners.OwnerOf(2) == ETouchOwner::Button, "the next press decides the new owner");
+		Expect(!Owners.Claim(10, ETouchOwner::Camera) && !Owners.Claim(-1, ETouchOwner::Camera), "fingers outside the range have no owner");
+	}
+
 	void LoginWinsOverWindows()
 	{
 		MmoScreen::FScreenStack Stack;
@@ -99,6 +128,8 @@ int main()
 	OpeningAgainMovesToTheTop();
 	LoginWinsOverWindows();
 	CharacterSelectionTakesInputAndCreateClosesWithBack();
+	QuantityIsAPopupClosedByBack();
+	FingersKeepTheirOwnerUntilReleased();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

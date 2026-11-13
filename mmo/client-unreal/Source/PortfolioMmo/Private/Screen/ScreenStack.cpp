@@ -14,6 +14,7 @@ namespace MmoScreen
 			{ ELayer::Hud, false, EInputMode::Game },     // Hud
 			{ ELayer::Window, true, EInputMode::Window }, // Settings
 			{ ELayer::Popup, true, EInputMode::Window },  // Confirm
+			{ ELayer::Popup, true, EInputMode::Window },  // Quantity
 		};
 		return Rules[static_cast<size_t>(Screen)];
 	}

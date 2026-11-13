@@ -4,6 +4,7 @@
 #include "Engine/AssetManager.h"
 #include "Engine/GameInstance.h"
 #include "Engine/LocalPlayer.h"
+#include "Framework/Application/IInputProcessor.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Game/MmoPlayerController.h"
 #include "GameFramework/PlayerController.h"
@@ -11,6 +12,7 @@
 #include "Net/MmoSession.h"
 #include "UI/MmoConfirmWidget.h"
 #include "UI/MmoNoticeWidget.h"
+#include "UI/MmoQuantityWidget.h"
 #include "UI/MmoUiPaths.h"
 #include "UI/MmoUiRoot.h"
 
@@ -41,15 +43,45 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::Settings);
 		case EScreen::Confirm:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Confirm);
+		case EScreen::Quantity:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Quantity);
 		}
 		checkNoEntry();
 		return {};
 	}
 }
 
+/** 터치를 떼면(위젯이 잡았든 뷰포트든) 그 손가락의 주인을 놓는다. 이벤트는 먹지 않는다. */
+class FMmoTouchReleaser : public IInputProcessor
+{
+public:
+	explicit FMmoTouchReleaser(MmoScreen::FTouchOwners& InOwners) : Owners(InOwners) {}
+
+	virtual void Tick(const float DeltaTime, FSlateApplication& SlateApp, TSharedRef<ICursor> Cursor) override {}
+
+	virtual bool HandleMouseButtonUpEvent(FSlateApplication& SlateApp, const FPointerEvent& Event) override
+	{
+		if (Event.IsTouchEvent())
+		{
+			Owners.Release(Event.GetPointerIndex());
+		}
+		return false;
+	}
+
+	virtual const TCHAR* GetDebugName() const override { return TEXT("MmoTouchReleaser"); }
+
+private:
+	MmoScreen::FTouchOwners& Owners;
+};
+
 void UMmoUiManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+	if (FSlateApplication::IsInitialized())
+	{
+		TouchReleaser = MakeShared<FMmoTouchReleaser>(Touches);
+		FSlateApplication::Get().RegisterInputPreProcessor(TouchReleaser);
+	}
 	UMmoSession& Net = Session();
 	PacketHandle = Net.OnPacket.AddUObject(this, &UMmoUiManager::HandlePacket);
 	ClosedHandle = Net.OnClosed.AddUObject(this, &UMmoUiManager::HandleClosed);
@@ -57,6 +89,10 @@ void UMmoUiManager::Initialize(FSubsystemCollectionBase& Collection)
 
 void UMmoUiManager::Deinitialize()
 {
+	if (TouchReleaser && FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().UnregisterInputPreProcessor(TouchReleaser);
+	}
 	if (UMmoSession* Net = GetLocalPlayer()->GetGameInstance()->GetSubsystem<UMmoSession>())
 	{
 		Net->OnPacket.Remove(PacketHandle);
@@ -165,6 +201,14 @@ void UMmoUiManager::Confirm(const FText& Message, TFunction<void()> OnYes)
 	});
 }
 
+void UMmoUiManager::Quantity(const FText& Title, int32 Max, TFunction<void(int32)> OnChosen)
+{
+	Open(EScreen::Quantity, [Title, Max, OnChosen = MoveTemp(OnChosen)](UUserWidget& Widget)
+	{
+		CastChecked<UMmoQuantityWidget>(&Widget)->SetUp(Title, Max, OnChosen);
+	});
+}
+
 void UMmoUiManager::LogOut()
 {
 	Confirm(LOCTEXT("LogOutQuestion", "로그아웃할까요?"), [this]
@@ -233,6 +277,40 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		Close(EScreen::CharacterCreate);
 		Close(EScreen::CharacterSelect);
 		Open(EScreen::Hud);
+		OpenFromCommandLine();
+	}
+}
+
+void UMmoUiManager::OpenFromCommandLine()
+{
+	// 개발용: -MmoOpen=Settings|Confirm|Quantity|Notice면 처음 월드에 들어간 뒤 한 번 그 화면을 연다(화면 크기마다의 배치를 클릭 없이 봄).
+	static bool bOpened = false;
+	FString Screen;
+	if (bOpened || !FParse::Value(FCommandLine::Get(), TEXT("MmoOpen="), Screen))
+	{
+		return;
+	}
+	bOpened = true;
+	if (Screen == TEXT("Settings"))
+	{
+		Open(EScreen::Settings);
+	}
+	else if (Screen == TEXT("Confirm"))
+	{
+		Confirm(LOCTEXT("PreviewConfirm", "확인 팝업의 배치를 봅니다. 긴 문장은 판의 폭에서 줄을 바꿉니다."), nullptr);
+	}
+	else if (Screen == TEXT("Quantity"))
+	{
+		Quantity(LOCTEXT("PreviewQuantity", "몇 개를 버릴까요?"), 99, nullptr);
+	}
+	else if (Screen == TEXT("Notice"))
+	{
+		// 줄이 이어 와 쌓이고 3초 뒤에 사라지는 것을 보도록 1초마다 한 줄을 더한다.
+		FTimerHandle Timer;
+		PlayerController()->GetWorldTimerManager().SetTimer(Timer, FTimerDelegate::CreateWeakLambda(this, [this, Count = 0]() mutable
+		{
+			ShowNotice(FText::Format(LOCTEXT("PreviewNotice", "알림 {0}번째 줄"), FText::AsNumber(++Count)));
+		}), 1.0f, true);
 	}
 }
 

@@ -1,6 +1,6 @@
 #include "UI/MmoCharacterSelectWidget.h"
 
-#include "Components/Button.h"
+#include "UI/MmoButtonWidget.h"
 #include "Components/TextBlock.h"
 #include "Engine/GameInstance.h"
 #include "Engine/LocalPlayer.h"
@@ -17,7 +17,6 @@ namespace
 		return Class == portfolio::mmo::CHARACTER_CLASS_MAGE ? LOCTEXT("Mage", "마법사") : LOCTEXT("Knight", "기사");
 	}
 
-	const FLinearColor SelectedColor(1.0f, 0.78f, 0.3f);
 }
 
 void UMmoCharacterSelectWidget::NativeOnInitialized()
@@ -106,14 +105,13 @@ void UMmoCharacterSelectWidget::Refresh()
 {
 	const portfolio::mmo::CharacterList& List = Session().Characters();
 	ShownCount = List.characters_size();
-	UButton* const Buttons[] = { Slot0Button, Slot1Button, Slot2Button, Slot3Button };
-	UTextBlock* const Texts[] = { Slot0Text, Slot1Text, Slot2Text, Slot3Text };
+	UMmoButtonWidget* const Buttons[] = { Slot0Button, Slot1Button, Slot2Button, Slot3Button };
 	for (int32 Index = 0; Index < UE_ARRAY_COUNT(Buttons); ++Index)
 	{
 		const bool bFilled = Index < List.characters_size();
 		Buttons[Index]->SetIsEnabled(bFilled && !bEntering);
-		Buttons[Index]->SetBackgroundColor(Index == Selected ? SelectedColor : FLinearColor::White);
-		Texts[Index]->SetText(bFilled
+		Buttons[Index]->SetSelected(Index == Selected);
+		Buttons[Index]->SetLabel(bFilled
 			? FText::Format(LOCTEXT("Slot", "{0}  ({1})"), FText::FromString(UTF8_TO_TCHAR(List.characters(Index).name().c_str())), ClassName(List.characters(Index).character_class()))
 			: LOCTEXT("EmptySlot", "빈 칸"));
 	}

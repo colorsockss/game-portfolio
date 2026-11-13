@@ -1,6 +1,6 @@
 #include "UI/MmoCharacterCreateWidget.h"
 
-#include "Components/Button.h"
+#include "UI/MmoButtonWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Engine/GameInstance.h"
@@ -9,11 +9,6 @@
 #include "UI/MmoUiManager.h"
 
 #define LOCTEXT_NAMESPACE "MmoCharacterCreate"
-
-namespace
-{
-	const FLinearColor SelectedColor(1.0f, 0.78f, 0.3f);
-}
 
 void UMmoCharacterCreateWidget::NativeOnInitialized()
 {
@@ -31,7 +26,7 @@ void UMmoCharacterCreateWidget::NativeConstruct()
 	bCreating = false;
 	NameBox->SetText(FText::GetEmpty());
 	StatusText->SetText(FText::GetEmpty());
-	CreateButton->SetIsEnabled(true);
+	CreateButton->SetWaiting(false);
 	SelectClass(false);
 	NameBox->SetKeyboardFocus();
 }
@@ -49,7 +44,7 @@ void UMmoCharacterCreateWidget::HandleMageClicked()
 void UMmoCharacterCreateWidget::HandleCreateClicked()
 {
 	bCreating = true;
-	CreateButton->SetIsEnabled(false);
+	CreateButton->SetWaiting(true);
 	StatusText->SetText(LOCTEXT("Creating", "만드는 중…"));
 	Session().CreateCharacter(
 		NameBox->GetText().ToString().TrimStartAndEnd(), bMageSelected ? portfolio::mmo::CHARACTER_CLASS_MAGE : portfolio::mmo::CHARACTER_CLASS_KNIGHT);
@@ -67,7 +62,7 @@ void UMmoCharacterCreateWidget::HandlePacket(const portfolio::mmo::Packet& Packe
 		return;
 	}
 	bCreating = false;
-	CreateButton->SetIsEnabled(true);
+	CreateButton->SetWaiting(false);
 	switch (Packet.create_character_result().result())
 	{
 	case portfolio::mmo::CREATE_CHARACTER_RESULT_CODE_OK:
@@ -91,8 +86,8 @@ void UMmoCharacterCreateWidget::HandlePacket(const portfolio::mmo::Packet& Packe
 void UMmoCharacterCreateWidget::SelectClass(bool bMage)
 {
 	bMageSelected = bMage;
-	KnightButton->SetBackgroundColor(bMage ? FLinearColor::White : SelectedColor);
-	MageButton->SetBackgroundColor(bMage ? SelectedColor : FLinearColor::White);
+	KnightButton->SetSelected(!bMage);
+	MageButton->SetSelected(bMage);
 }
 
 void UMmoCharacterCreateWidget::Close()

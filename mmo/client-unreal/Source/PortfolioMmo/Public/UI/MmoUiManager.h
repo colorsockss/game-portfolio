@@ -2,10 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "Screen/ScreenStack.h"
+#include "Screen/TouchOwners.h"
 #include "Subsystems/LocalPlayerSubsystem.h"
 
 #include "MmoUiManager.generated.h"
 
+class IInputProcessor;
 class UMmoNoticeWidget;
 class UMmoSession;
 class UMmoUiRoot;
@@ -22,7 +24,7 @@ namespace portfolio::mmo
  * 세션을 들어 로그인하면 캐릭터 선택으로, 월드에 들어가면 HUD로, 연결이 끊기면 로그인 화면으로 바꾼다.
  */
 UCLASS()
-class UMmoUiManager : public ULocalPlayerSubsystem
+class PORTFOLIOMMO_API UMmoUiManager : public ULocalPlayerSubsystem
 {
 	GENERATED_BODY()
 
@@ -48,6 +50,12 @@ public:
 	/** 예·아니요를 묻는 팝업. 예를 누르면 OnYes를 부른다. */
 	void Confirm(const FText& Message, TFunction<void()> OnYes);
 
+	/** 1부터 Max까지의 수를 고르는 팝업(떨어뜨리기, 상점, 창고). 확인을 누르면 고른 수로 OnChosen을 부른다. */
+	void Quantity(const FText& Title, int32 Max, TFunction<void(int32)> OnChosen);
+
+	/** 손가락마다의 주인(조이스틱, 버튼, 카메라). 위젯과 컨트롤러가 누를 때 가지고, 뗄 때는 입력 전처리기가 놓는다. */
+	MmoScreen::FTouchOwners& TouchOwners() { return Touches; }
+
 	/** 확인을 받은 뒤 로그아웃한다(설정 창의 버튼). */
 	void LogOut();
 
@@ -57,6 +65,7 @@ public:
 private:
 	void Show(MmoScreen::EScreen Screen, UUserWidget& Widget, const FOnShown& OnShown);
 	void ApplyInputMode();
+	void OpenFromCommandLine();
 	void HandlePacket(const portfolio::mmo::Packet& Packet);
 	void HandleClosed(const FString& Reason);
 	APlayerController* PlayerController() const;
@@ -73,6 +82,9 @@ private:
 	TObjectPtr<UMmoNoticeWidget> Notice;
 
 	MmoScreen::FScreenStack Stack;
+	MmoScreen::FTouchOwners Touches;
+	/** 모든 터치의 뗌을 위젯보다 먼저 보는 Slate 입력 전처리기(손가락의 주인을 놓음). */
+	TSharedPtr<IInputProcessor> TouchReleaser;
 	FDelegateHandle PacketHandle;
 	FDelegateHandle ClosedHandle;
 };

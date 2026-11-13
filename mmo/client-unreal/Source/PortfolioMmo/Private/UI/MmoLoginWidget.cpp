@@ -1,6 +1,6 @@
 #include "UI/MmoLoginWidget.h"
 
-#include "Components/Button.h"
+#include "UI/MmoButtonWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Misc/CommandLine.h"
@@ -14,7 +14,7 @@ void UMmoLoginWidget::LogIn(const FString& LoginId)
 {
 	bExplained = false;
 	LoginIdBox->SetText(FText::FromString(LoginId));
-	LogInButton->SetIsEnabled(false);
+	LogInButton->SetWaiting(true);
 	SetStatus(LOCTEXT("Connecting", "서버에 연결하는 중…"));
 	Session().LogIn(LoginId);
 }
@@ -135,7 +135,7 @@ void UMmoLoginWidget::HandleClosed(const FString& Reason)
 	{
 		SetStatus(LOCTEXT("Disconnected", "서버와 연결이 끊겼습니다."));
 	}
-	LogInButton->SetIsEnabled(true);
+	LogInButton->SetWaiting(false);
 }
 
 void UMmoLoginWidget::SetStatus(const FText& Status)

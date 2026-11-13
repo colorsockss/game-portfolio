@@ -268,38 +268,46 @@ void AMmoPlayerController::HandleZoom(const FInputActionValue& Value)
 
 void AMmoPlayerController::UpdateTouchCamera()
 {
-	FVector2D Now[2];
-	bool bDown[2];
-	for (int32 Finger = 0; Finger < 2; ++Finger)
+	// 손가락마다 주인이 하나다(조이스틱, 버튼, 카메라. MmoScreen::FTouchOwners). 조이스틱과 버튼은 누른 순간 가져가고 그 터치는 뷰포트에
+	// 오지 않으므로, 여기서 눌린 것으로 보이고 주인이 없는 손가락은 카메라가 가진다. 카메라의 손가락만 돌리고 당기는 데 쓴다.
+	MmoScreen::FTouchOwners& Owners = GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->TouchOwners();
+	int32 CameraFingers[2];
+	int32 CameraCount = 0;
+	FVector2D Now[MmoScreen::FTouchOwners::MaxFingers];
+	bool bDown[MmoScreen::FTouchOwners::MaxFingers];
+	for (int32 Finger = 0; Finger < MmoScreen::FTouchOwners::MaxFingers; ++Finger)
 	{
 		float X, Y;
 		GetInputTouchState(static_cast<ETouchIndex::Type>(Finger), X, Y, bDown[Finger]);
 		Now[Finger] = FVector2D(X, Y);
+		if (bDown[Finger] && Owners.Claim(Finger, MmoScreen::ETouchOwner::Camera) && CameraCount < 2)
+		{
+			CameraFingers[CameraCount++] = Finger;
+		}
 	}
 
-	// 같은 손가락들이 지난 프레임에도 닿아 있었을 때만 움직인 만큼 쓴다(새로 닿은 손가락은 튀지 않게 건너뛴다).
-	const bool bSameFingers = bDown[0] == bTouchWasDown[0] && bDown[1] == bTouchWasDown[1];
-	if (bSameFingers && bDown[0] && bDown[1])
+	// 같은 손가락이 지난 프레임에도 닿아 있었을 때만 움직인 만큼 쓴다(새로 닿은 손가락은 튀지 않게 건너뛴다).
+	const auto Held = [this, &bDown](int32 Finger) { return bDown[Finger] && bTouchWasDown[Finger]; };
+	if (CameraCount == 2 && Held(CameraFingers[0]) && Held(CameraFingers[1]))
 	{
 		// 두 손가락 사이가 벌어진 만큼 당긴다.
-		const double Spread = FVector2D::Distance(Now[0], Now[1]) - FVector2D::Distance(TouchWas[0], TouchWas[1]);
+		const int32 A = CameraFingers[0];
+		const int32 B = CameraFingers[1];
+		const double Spread = FVector2D::Distance(Now[A], Now[B]) - FVector2D::Distance(TouchWas[A], TouchWas[B]);
 		if (AMmoCharacter* Self = GetPawn<AMmoCharacter>())
 		{
 			Self->Zoom(Spread * 2.0);
 		}
 	}
-	else if (bSameFingers && (bDown[0] || bDown[1]))
+	else if (CameraCount == 1 && Held(CameraFingers[0]))
 	{
-		// 손가락 하나면 그 번호가 무엇이든 돌린다. 가상 조이스틱을 누른 손가락은 조이스틱이 가져가 여기 오지 않으므로,
-		// 걷는 동안 카메라를 돌리는 손가락은 둘째 번호일 수 있다.
 		// 화면 좌표는 아래가 +y다. 끄는 쪽으로 화면이 따라오게 돌린다(DefaultInput.ini에서 옛 입력 배율을 꺼 값이 곧 각도다).
-		const int32 Finger = bDown[0] ? 0 : 1;
-		const FVector2D Delta = Now[Finger] - TouchWas[Finger];
+		const FVector2D Delta = Now[CameraFingers[0]] - TouchWas[CameraFingers[0]];
 		AddYawInput(Delta.X * TouchTurnRate);
 		AddPitchInput(-Delta.Y * TouchTurnRate);
 	}
 
-	for (int32 Finger = 0; Finger < 2; ++Finger)
+	for (int32 Finger = 0; Finger < MmoScreen::FTouchOwners::MaxFingers; ++Finger)
 	{
 		TouchWas[Finger] = Now[Finger];
 		bTouchWasDown[Finger] = bDown[Finger];

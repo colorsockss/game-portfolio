@@ -5,7 +5,7 @@
 
 #include "MmoSettingsWidget.generated.h"
 
-class UButton;
+class UMmoButtonWidget;
 
 /** 설정 창(WBP_Settings의 기반). 게임 중에 Esc나 Android 뒤로 버튼으로 연다. 지금은 캐릭터 선택, 로그아웃, 닫기뿐이다. */
 UCLASS(Abstract)
@@ -27,11 +27,11 @@ private:
 	void HandleCloseClicked();
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> CharacterSelectButton;
+	TObjectPtr<UMmoButtonWidget> CharacterSelectButton;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> LogOutButton;
+	TObjectPtr<UMmoButtonWidget> LogOutButton;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> CloseButton;
+	TObjectPtr<UMmoButtonWidget> CloseButton;
 };

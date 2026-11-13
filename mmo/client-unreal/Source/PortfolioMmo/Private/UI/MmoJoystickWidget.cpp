@@ -1,11 +1,15 @@
 #include "UI/MmoJoystickWidget.h"
 
 #include "Components/Image.h"
+#include "Engine/LocalPlayer.h"
 #include "Game/MmoPlayerController.h"
+#include "UI/MmoUiManager.h"
 
 FReply UMmoJoystickWidget::NativeOnTouchStarted(const FGeometry& Geometry, const FPointerEvent& Event)
 {
-	if (Finger != INDEX_NONE)
+	// 이미 다른 손가락을 쥐었거나, 이 손가락의 주인이 이미 정해졌으면(터치 나눔) 받지 않는다.
+	UMmoUiManager* Manager = GetOwningLocalPlayer() ? GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>() : nullptr;
+	if (Finger != INDEX_NONE || (Manager && !Manager->TouchOwners().Claim(Event.GetPointerIndex(), MmoScreen::ETouchOwner::Joystick)))
 	{
 		return FReply::Unhandled();
 	}

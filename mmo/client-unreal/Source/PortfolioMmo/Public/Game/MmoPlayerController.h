@@ -4,6 +4,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Protocol/MmoPackets.h"
 #include "World/MoveSender.h"
+#include "Screen/TouchOwners.h"
 #include "World/PathFinder.h"
 
 #include <optional>
@@ -86,8 +87,8 @@ private:
 	MmoWorld::FPathFollower PathFollower;
 	std::vector<MmoWorld::FPoint> Path;
 	bool bManualMoveBlocked = false;
-	/** 지난 프레임의 첫째·둘째 손가락. */
-	FVector2D TouchWas[2];
-	bool bTouchWasDown[2] = { false, false };
+	/** 지난 프레임의 손가락마다의 자리와 눌림. */
+	FVector2D TouchWas[MmoScreen::FTouchOwners::MaxFingers];
+	bool bTouchWasDown[MmoScreen::FTouchOwners::MaxFingers] = {};
 	FDelegateHandle PacketHandle;
 };

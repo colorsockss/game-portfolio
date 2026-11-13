@@ -5,7 +5,7 @@
 
 #include "MmoCharacterSelectWidget.generated.h"
 
-class UButton;
+class UMmoButtonWidget;
 class UTextBlock;
 class UMmoSession;
 
@@ -55,34 +55,26 @@ private:
 	UMmoSession& Session() const;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> Slot0Button;
+	TObjectPtr<UMmoButtonWidget> Slot0Button;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> Slot1Button;
+	TObjectPtr<UMmoButtonWidget> Slot1Button;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> Slot2Button;
+	TObjectPtr<UMmoButtonWidget> Slot2Button;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> Slot3Button;
+	TObjectPtr<UMmoButtonWidget> Slot3Button;
+
+
+
+
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> Slot0Text;
+	TObjectPtr<UMmoButtonWidget> StartButton;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> Slot1Text;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> Slot2Text;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> Slot3Text;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> StartButton;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> CreateButton;
+	TObjectPtr<UMmoButtonWidget> CreateButton;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> StatusText;

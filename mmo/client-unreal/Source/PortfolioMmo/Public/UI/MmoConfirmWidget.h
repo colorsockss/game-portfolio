@@ -5,7 +5,7 @@
 
 #include "MmoConfirmWidget.generated.h"
 
-class UButton;
+class UMmoButtonWidget;
 class UTextBlock;
 
 /** 예·아니요를 묻는 팝업(WBP_Confirm의 기반). UMmoUiManager::Confirm이 연다. */
@@ -32,10 +32,10 @@ private:
 	TObjectPtr<UTextBlock> MessageText;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> YesButton;
+	TObjectPtr<UMmoButtonWidget> YesButton;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> NoButton;
+	TObjectPtr<UMmoButtonWidget> NoButton;
 
 	TFunction<void()> OnYes;
 };

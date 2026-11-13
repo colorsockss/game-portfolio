@@ -5,7 +5,7 @@
 
 #include "MmoCharacterCreateWidget.generated.h"
 
-class UButton;
+class UMmoButtonWidget;
 class UEditableTextBox;
 class UTextBlock;
 class UMmoSession;
@@ -50,16 +50,16 @@ private:
 	TObjectPtr<UEditableTextBox> NameBox;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> KnightButton;
+	TObjectPtr<UMmoButtonWidget> KnightButton;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> MageButton;
+	TObjectPtr<UMmoButtonWidget> MageButton;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> CreateButton;
+	TObjectPtr<UMmoButtonWidget> CreateButton;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> CancelButton;
+	TObjectPtr<UMmoButtonWidget> CancelButton;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> StatusText;

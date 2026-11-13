@@ -1,6 +1,6 @@
 #include "UI/MmoSettingsWidget.h"
 
-#include "Components/Button.h"
+#include "UI/MmoButtonWidget.h"
 #include "Engine/LocalPlayer.h"
 #include "UI/MmoUiManager.h"
 

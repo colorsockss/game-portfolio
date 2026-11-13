@@ -1,6 +1,6 @@
 #include "UI/MmoConfirmWidget.h"
 
-#include "Components/Button.h"
+#include "UI/MmoButtonWidget.h"
 #include "Components/TextBlock.h"
 #include "Engine/LocalPlayer.h"
 #include "UI/MmoUiManager.h"
