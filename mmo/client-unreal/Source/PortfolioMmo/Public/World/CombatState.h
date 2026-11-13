@@ -1,0 +1,116 @@
+#pragma once
+
+// 내 대상과 기본 공격, 화면이 꺼내 갈 전투 사건, 따라가는 발사체(엔진 없는 코드). Unity 클라이언트가 같은 구조를 C#으로 옮긴다.
+// 서버의 패킷은 FWorldState에 먼저 반영(체력, 죽음)한 뒤 여기에 넘긴다. 보낼 요청(AttackStart, AttackStop)은 함수가 돌려주고 부르는 쪽이 보낸다.
+#include <cstdint>
+#include <optional>
+#include <vector>
+
+#include "Data/GameData.h"
+#include "Protocol/MmoPackets.h"
+#include "World/FieldMap.h"
+#include "World/WorldState.h"
+
+namespace MmoWorld
+{
+	enum class ECombatEventKind : uint8_t
+	{
+		/** 공격 동작의 시작(AttackSwing, 또는 내 첫 공격의 예측). */
+		Swing,
+		/** 피해(Damaged). 체력은 이미 개체에 반영했다. */
+		Damage,
+		/** 죽음(Died). 죽음 표시는 이미 개체에 반영했다. */
+		Death,
+	};
+
+	/** 화면이 받은 순서대로 그릴 사건. 공격자 번호 0은 받지 않은 개체다(개체를 찾지 않고 대상 쪽만 그린다). */
+	struct FCombatEvent
+	{
+		ECombatEventKind Kind = ECombatEventKind::Swing;
+		uint32_t Attacker = 0;
+		uint32_t Target = 0;
+		uint32_t Damage = 0;
+		bool bCritical = false;
+		/** 내가 주거나 받은 것(피해 숫자는 이것만 띄운다). */
+		bool bMine = false;
+	};
+
+	/** 대상을 따라가는 발사체 하나(마법사의 기본 공격, 원거리 몬스터). 좌표는 패킷의 단위다. */
+	struct FProjectile
+	{
+		uint32_t Attacker = 0;
+		uint32_t Target = 0;
+		/** 나가는 때(내 시간, 초): AttackSwing을 받은 때 + 타격까지의 시간. */
+		double LaunchSeconds = 0;
+		bool bLaunched = false;
+		double X = 0;
+		double Z = 0;
+		double LastSeconds = 0;
+		/** 속도(단위/초). */
+		double Speed = 0;
+	};
+
+	class FCombatState
+	{
+	public:
+		/** 내 대상(0이면 없음). 고르는 것은 클라이언트 안의 일이다. */
+		uint32_t Target() const { return TargetId; }
+
+		/** 서버에 AttackStart를 보낸 뒤 공격 중이다(AttackStop, 공격의 ActionFailed, 대상을 풀거나 바꿈으로 끝남). */
+		bool IsAttacking() const { return bAttacking; }
+
+		/** 내 첫 공격의 동작을 AttackStart를 보낼 때 미리 시작했고 그 공격의 AttackSwing을 아직 받지 않았다. */
+		bool IsPredicted() const { return bPredicted; }
+
+		/** 대상을 고른다(0이면 푼다). 공격 중에 풀거나 다른 대상으로 바꾸면 공격을 끝내고 AttackStop을 돌려준다. */
+		std::optional<portfolio::mmo::Packet> SetTarget(uint32_t Id);
+
+		/** 대상을 공격하기 시작한다(다가간 뒤, 밀린 위치를 보낸 뒤). 이미 공격 중이면 nullopt. 첫 공격이면 내 공격 동작을 미리 쌓는다. */
+		std::optional<portfolio::mmo::Packet> StartAttack(uint32_t SelfId);
+
+		/** 공격을 멈춘다. 공격 중이 아니었으면 nullopt. */
+		std::optional<portfolio::mmo::Packet> StopAttack();
+
+		/**
+		 * 서버의 패킷 하나를 반영한다(FWorldState에 먼저 반영한 뒤). 사건을 쌓고, 따라가는 발사체를 만들고, 대상이 죽거나 나가면 대상을 푼다
+		 * (공격 중이었으면 AttackStop을 돌려줌). NowSeconds는 받은 때(단조 증가하는 내 시간, 초)다.
+		 */
+		std::optional<portfolio::mmo::Packet> Apply(const portfolio::mmo::Packet& Packet, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds);
+
+		/** 지난번에 꺼낸 뒤로 쌓인 사건(받은 순서). */
+		std::vector<FCombatEvent> TakeEvents();
+
+		/** 발사체를 NowSeconds까지 옮긴다: 나갈 때가 된 것은 공격자의 자리에서 나가고, 나간 것은 대상의 지금 자리 쪽으로 간다. 닿거나 대상이 없으면 지운다. */
+		void UpdateProjectiles(const FWorldState& World, double NowSeconds);
+
+		const std::vector<FProjectile>& Projectiles() const { return Flying; }
+
+		/** 월드를 떠날 때 비운다. */
+		void Reset();
+
+		/** 받은 개체 가운데 살아 있는 몬스터에서 (X, Z)에 직선거리가 가장 가까운 것. 없으면 0. */
+		static uint32_t NearestEnemy(const FWorldState& World, int32_t X, int32_t Z);
+
+		/** (X, Z)에서 대상을 칠 수 있는가: 사거리 안이고 선이 트였으며, 대상이 몬스터면 내 자리가 안전 지대 밖이다(안에서는 CanAttack이 거짓). */
+		static bool CanStrikeFrom(const FFieldMap& Field, int32_t X, int32_t Z, const FEntity& Target, double RangeMeters);
+
+		/** 개체의 기본 공격(사거리 m, 타격까지의 시간 ms, 발사체 속도 m/s. 없으면 0). 플레이어는 Classes, 몬스터는 Monsters. 모르는 개체면 nullopt. */
+		struct FAttack
+		{
+			double RangeMeters = 0;
+			uint32_t HitDelayMs = 0;
+			double ProjectileSpeed = 0;
+		};
+		static std::optional<FAttack> AttackOf(const portfolio::mmo::EntityEnter& Info, const MmoData::FGameData& Data);
+
+	private:
+		void Release(std::optional<portfolio::mmo::Packet>& Stop);
+
+		uint32_t TargetId = 0;
+		bool bAttacking = false;
+		bool bPredicted = false;
+		uint32_t Self = 0;
+		std::vector<FCombatEvent> Events;
+		std::vector<FProjectile> Flying;
+	};
+}

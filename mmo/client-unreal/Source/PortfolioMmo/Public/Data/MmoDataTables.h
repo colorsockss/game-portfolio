@@ -6,8 +6,10 @@
 #pragma push_macro("check")
 #undef verify
 #undef check
+#include "Classes.pb.h"
 #include "Constants.pb.h"
 #include "MapGrid.pb.h"
+#include "Monsters.pb.h"
 #include "Zones.pb.h"
 #pragma pop_macro("check")
 #pragma pop_macro("verify")

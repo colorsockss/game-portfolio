@@ -20,16 +20,18 @@ namespace PortfolioMmo.Server
         private readonly EntityTable _entities;
         private readonly Grid _grid;
         private readonly AiSystem _ai;
+        private readonly Scheduler _scheduler;
         private readonly Random _random;
         private readonly List<PlacedPoint> _placed = new List<PlacedPoint>();
 
-        public SpawnSystem(GameData data, FieldMap field, EntityTable entities, Grid grid, AiSystem ai, Random random)
+        public SpawnSystem(GameData data, FieldMap field, EntityTable entities, Grid grid, AiSystem ai, Scheduler scheduler, Random random)
         {
             _data = data;
             _field = field;
             _entities = entities;
             _grid = grid;
             _ai = ai;
+            _scheduler = scheduler;
             _random = random;
         }
 
@@ -61,7 +63,8 @@ namespace PortfolioMmo.Server
         /// </summary>
         public Monster Respawn(PlacedPoint placed)
         {
-            var monster = new Monster(placed);
+            // 같은 번호의 옛 몬스터가 건 타격이 새 몬스터의 것으로 읽히지 않게 새 세대 번호로 시작한다.
+            var monster = new Monster(placed) { StrikeGeneration = _scheduler.NewGeneration() };
             MonstersRow template = placed.Template;
             monster.SetStats(new Stats(template.MaxHp, 0, template.Attack, template.Defense));
             monster.Hp = monster.MaxHp;

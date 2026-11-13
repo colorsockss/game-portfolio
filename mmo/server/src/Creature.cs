@@ -38,9 +38,24 @@ namespace PortfolioMmo.Server
         public uint CombatEndTick { get; internal set; }
 
         /// <summary>
-        /// 죽어 있다(25).
+        /// 죽어 있다. 죽은 개체는 치지도 맞지도 회복하지도 않는다. 죽은 뒤의 일은 25가 한다.
         /// </summary>
         public bool Dead { get; internal set; }
+
+        /// <summary>
+        /// 기본 공격의 대상(0이면 공격 상태가 아님). 플레이어는 AttackStart·AttackStop이, 몬스터는 AiSystem의 공격 상태가 정한다.
+        /// </summary>
+        public uint AttackTarget { get; internal set; }
+
+        /// <summary>
+        /// 다음 기본 공격을 시작할 수 있는 틱. 공격을 멈춰도 남아 껐다 켜서 빨리 치지 못한다.
+        /// </summary>
+        internal uint NextAttackTick { get; set; }
+
+        /// <summary>
+        /// 건 타격의 세대 번호. 죽거나 기절하면(26) 새 번호를 써서 걸린 타격을 버린다. 번호를 다시 쓰는 몬스터는 놓일 때 새 번호를 받는다.
+        /// </summary>
+        internal ulong StrikeGeneration { get; set; }
 
         /// <summary>
         /// 피해가 아닌 까닭으로 체력이나 최대 체력이 바뀌었다. VitalsSystem이 1초마다 이 개체를 받은 연결에 EntityVitals로 보낸 뒤 내린다.

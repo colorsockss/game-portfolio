@@ -2,7 +2,8 @@
 
 #include "CoreMinimal.h"
 
-class UBlendSpace;
+class UAnimSequenceBase;
+class UMmoAnimInstance;
 class USkeletalMesh;
 class USkeletalMeshComponent;
 class UStaticMesh;
@@ -17,11 +18,14 @@ namespace MmoCharacterLook
 	/** 자리 표시(단순한 메시)를 보이고 스켈레탈 메시를 감춘다. 불러오는 동안과 표에 줄이 없는 개체가 이렇게 보인다. */
 	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* PlaceholderMesh);
 
-	/** 불러온 메시와 블렌드 스페이스를 입히고 자리 표시를 감춘다. 애니메이션 블루프린트 없이 단일 노드로 블렌드 스페이스를 튼다. */
-	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, UBlendSpace* Locomotion);
+	/** 불러온 메시와 애니메이션 블루프린트를 입히고 자리 표시를 감춘다. */
+	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, TSubclassOf<UMmoAnimInstance> Animation);
 
 	/** 속도(언리얼 단위/초)로 대기와 달리기를 섞는다. 0이 대기, 600(6 m/s)이 달리기다. */
 	void SetSpeed(USkeletalMeshComponent& Mesh, double Speed);
+
+	/** 공격·피격 같은 동작을 한 번 튼다. 모습을 아직 입히지 않았으면(자리 표시) 아무것도 하지 않는다. */
+	void PlayAction(USkeletalMeshComponent& Mesh, UAnimSequenceBase* Sequence);
 
 	/**
 	 * 스켈레탈 메시 컴포넌트를 액터의 앞(+X)을 보는 사람 크기로 둔다. Feet는 그 컴포넌트의 부모에서 발(지면)까지다.

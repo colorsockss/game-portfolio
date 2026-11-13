@@ -5,11 +5,12 @@
 
 #include "MmoEntityVisuals.generated.h"
 
-class UBlendSpace;
+class UAnimSequence;
+class UMmoAnimInstance;
 class USkeletalMesh;
 class UStaticMesh;
 
-/** 표현 표의 줄 하나: (개체 종류, 키) → 메시와 대기·달리기 블렌드 스페이스. */
+/** 표현 표의 줄 하나: (개체 종류, 키) → 메시, 애니메이션 블루프린트(대기·달리기), 공격과 피격 동작. */
 USTRUCT()
 struct FMmoEntityVisual
 {
@@ -26,8 +27,17 @@ struct FMmoEntityVisual
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr<USkeletalMesh> Mesh;
 
+	/** 애니메이션 블루프린트(UMmoAnimInstance를 부모로 하는 ABP_<직업>). */
 	UPROPERTY(EditAnywhere)
-	TSoftObjectPtr<UBlendSpace> Locomotion;
+	TSoftClassPtr<UMmoAnimInstance> Animation;
+
+	/** 공격 동작의 시작(AttackSwing)에 트는 동작. */
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UAnimSequence> Attack;
+
+	/** 피해(Damaged)를 받을 때 트는 동작. */
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UAnimSequence> Hit;
 };
 
 /**

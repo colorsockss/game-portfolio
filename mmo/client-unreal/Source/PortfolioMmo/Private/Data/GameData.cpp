@@ -29,6 +29,30 @@ namespace MmoData
 		return Hash;
 	}
 
+	const portfolio::mmo::data::ClassesRow* FGameData::Class(uint32_t Id) const
+	{
+		for (const portfolio::mmo::data::ClassesRow& Row : Classes.rows())
+		{
+			if (Row.id() == Id)
+			{
+				return &Row;
+			}
+		}
+		return nullptr;
+	}
+
+	const portfolio::mmo::data::MonstersRow* FGameData::Monster(uint32_t Id) const
+	{
+		for (const portfolio::mmo::data::MonstersRow& Row : Monsters.rows())
+		{
+			if (Row.id() == Id)
+			{
+				return &Row;
+			}
+		}
+		return nullptr;
+	}
+
 	std::optional<FGameData> Load(const FFileReader& Read)
 	{
 		const std::optional<std::string> HashText = Read(HashFile);
@@ -43,8 +67,10 @@ namespace MmoData
 		const std::optional<std::string> Constants = Read("Constants.bytes");
 		const std::optional<std::string> Zones = Read("Zones.bytes");
 		const std::optional<std::string> Grid = Read("MapGrid.bytes");
-		if (!Constants || !Zones || !Grid || !Data.Constants.ParseFromString(*Constants) || !Data.Zones.ParseFromString(*Zones)
-			|| !Data.Grid.ParseFromString(*Grid))
+		const std::optional<std::string> Classes = Read("Classes.bytes");
+		const std::optional<std::string> Monsters = Read("Monsters.bytes");
+		if (!Constants || !Zones || !Grid || !Classes || !Monsters || !Data.Constants.ParseFromString(*Constants) || !Data.Zones.ParseFromString(*Zones)
+			|| !Data.Grid.ParseFromString(*Grid) || !Data.Classes.ParseFromString(*Classes) || !Data.Monsters.ParseFromString(*Monsters))
 		{
 			return std::nullopt;
 		}

@@ -50,6 +50,19 @@ namespace MmoScreen
 		return Target;
 	}
 
+	FScreenStack::EBack FScreenStack::Back(bool bHasTarget) const
+	{
+		if (BackTarget())
+		{
+			return EBack::Close;
+		}
+		if (!IsOpen(EScreen::Hud))
+		{
+			return EBack::None;
+		}
+		return bHasTarget ? EBack::ReleaseTarget : EBack::OpenSettings;
+	}
+
 	EInputMode FScreenStack::InputMode() const
 	{
 		EInputMode Mode = EInputMode::Game;

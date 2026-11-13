@@ -1,7 +1,6 @@
 #include "Game/MmoCharacterLook.h"
 
-#include "Animation/AnimSingleNodeInstance.h"
-#include "Animation/BlendSpace.h"
+#include "Game/MmoAnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
@@ -16,20 +15,28 @@ namespace MmoCharacterLook
 		Mesh.SetVisibility(false);
 	}
 
-	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, UBlendSpace* Locomotion)
+	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, TSubclassOf<UMmoAnimInstance> Animation)
 	{
 		Mesh.SetSkeletalMesh(SkeletalMesh);
-		Mesh.SetAnimationMode(EAnimationMode::AnimationSingleNode);
-		Mesh.PlayAnimation(Locomotion, true);
+		Mesh.SetAnimationMode(EAnimationMode::AnimationBlueprint);
+		Mesh.SetAnimInstanceClass(Animation);
 		Mesh.SetVisibility(true);
 		Placeholder.SetVisibility(false);
 	}
 
 	void SetSpeed(USkeletalMeshComponent& Mesh, double Speed)
 	{
-		if (UAnimSingleNodeInstance* Instance = Mesh.GetSingleNodeInstance())
+		if (UMmoAnimInstance* Instance = Cast<UMmoAnimInstance>(Mesh.GetAnimInstance()))
 		{
-			Instance->SetBlendSpacePosition(FVector(Speed, 0.0, 0.0));
+			Instance->Speed = static_cast<float>(Speed);
+		}
+	}
+
+	void PlayAction(USkeletalMeshComponent& Mesh, UAnimSequenceBase* Sequence)
+	{
+		if (UMmoAnimInstance* Instance = Cast<UMmoAnimInstance>(Mesh.GetAnimInstance()))
+		{
+			Instance->PlayAction(Sequence);
 		}
 	}
 

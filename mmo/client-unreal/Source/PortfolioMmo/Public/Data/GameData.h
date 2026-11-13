@@ -34,6 +34,18 @@ namespace MmoData
 
 		/** 맵 생성기가 낸 1 m 칸 격자(칸마다 막힘). 크기는 Constants의 필드의 크기와 같다. */
 		portfolio::mmo::data::MapGrid Grid;
+
+		/** 직업마다의 기본 공격(사거리, 타격까지의 시간, 발사체). id가 CharacterClass의 값이다. */
+		portfolio::mmo::data::Classes Classes;
+
+		/** 몬스터(이름의 키, 레벨, 선공인지, 기본 공격). id가 EntityEnter.template_id다. */
+		portfolio::mmo::data::Monsters Monsters;
+
+		/** 직업의 줄. 없으면 nullptr. */
+		const portfolio::mmo::data::ClassesRow* Class(uint32_t Id) const;
+
+		/** 몬스터의 줄. 없으면 nullptr. */
+		const portfolio::mmo::data::MonstersRow* Monster(uint32_t Id) const;
 	};
 
 	/** 데이터 해시 파일의 내용(16진수 16자, 끝의 줄바꿈은 무시)을 수로 읽는다. 형식이 틀리면 nullopt. */

@@ -165,6 +165,20 @@ namespace MmoWorld
 				Found->second.Info.set_level(State.level());
 			}
 			break;
+		case portfolio::mmo::Packet::kDamaged:
+			// 받지 않은 개체의 것은 버린다. 내 체력은 SelfVitals가 따로 온다.
+			if (const auto Found = Visible.find(Packet.damaged().target_id()); Found != Visible.end())
+			{
+				Found->second.Info.set_hp(Packet.damaged().hp());
+			}
+			break;
+		case portfolio::mmo::Packet::kDied:
+			if (const auto Found = Visible.find(Packet.died().id()); Found != Visible.end())
+			{
+				Found->second.Info.set_dead(true);
+				Found->second.Info.set_hp(0);
+			}
+			break;
 		case portfolio::mmo::Packet::kSelfVitals:
 			Mine.Hp = Packet.self_vitals().hp();
 			Mine.Mp = Packet.self_vitals().mp();

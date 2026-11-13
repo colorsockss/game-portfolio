@@ -65,6 +65,22 @@ namespace MmoScreen
 		/** 뒤로 가기가 닫을 화면: 뒤로 닫히는 화면 중 가장 위 층(팝업 → 창)에서 마지막으로 연 것. 없으면 비어 있다. */
 		std::optional<EScreen> BackTarget() const;
 
+		/** 뒤로 가기(Esc, Android의 뒤로 버튼)가 할 일. */
+		enum class EBack : uint8_t
+		{
+			/** BackTarget을 닫는다. */
+			Close,
+			/** 내 대상을 푼다. */
+			ReleaseTarget,
+			/** 설정 창을 연다. */
+			OpenSettings,
+			/** 아무것도 하지 않는다(로그인, 캐릭터 선택). */
+			None,
+		};
+
+		/** 열린 창이 있으면 맨 위 창을 닫고, 없으면(HUD에서) 대상을 풀고, 대상도 없으면 설정 창을 연다. */
+		EBack Back(bool bHasTarget) const;
+
 		/** 하나라도 Ui면 Ui, 아니면 하나라도 Window면 Window, 아니면 Game. */
 		EInputMode InputMode() const;
 

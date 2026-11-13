@@ -160,13 +160,23 @@ void UMmoUiManager::Close(EScreen Screen)
 
 void UMmoUiManager::Back()
 {
-	if (const std::optional<EScreen> Target = Stack.BackTarget())
+	UMmoSession* Session = GetLocalPlayer()->GetGameInstance()->GetSubsystem<UMmoSession>();
+	switch (Stack.Back(Session->Combat().Target() != 0))
 	{
-		Close(*Target);
-	}
-	else if (Stack.IsOpen(EScreen::Hud))
-	{
+	case MmoScreen::FScreenStack::EBack::Close:
+		Close(*Stack.BackTarget());
+		break;
+	case MmoScreen::FScreenStack::EBack::ReleaseTarget:
+		if (const std::optional<portfolio::mmo::Packet> Stop = Session->Combat().SetTarget(0))
+		{
+			Session->Send(*Stop);
+		}
+		break;
+	case MmoScreen::FScreenStack::EBack::OpenSettings:
 		Open(EScreen::Settings);
+		break;
+	case MmoScreen::FScreenStack::EBack::None:
+		break;
 	}
 }
 

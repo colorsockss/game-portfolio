@@ -68,6 +68,22 @@ namespace PortfolioMmo.Server
         public Classes Classes { get; }
 
         /// <summary>
+        /// 직업의 Classes 줄. 없으면 던진다.
+        /// </summary>
+        public ClassesRow Class(CharacterClass characterClass)
+        {
+            foreach (ClassesRow row in Classes.Rows)
+            {
+                if (row.Id == (uint)characterClass)
+                {
+                    return row;
+                }
+            }
+
+            throw new KeyNotFoundException($"Classes has no row for {characterClass}.");
+        }
+
+        /// <summary>
         /// 직업과 레벨의 Levels 줄(필요 경험치와 기본 능력치). 없으면 던진다(데이터가 그 직업과 레벨을 빠뜨림).
         /// </summary>
         public LevelsRow Level(CharacterClass characterClass, uint level)

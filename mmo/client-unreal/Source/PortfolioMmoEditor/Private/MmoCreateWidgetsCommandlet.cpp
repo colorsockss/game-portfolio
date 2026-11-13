@@ -98,6 +98,9 @@ namespace
 		/** HUD의 체력·마나 바 크기. */
 		float BarWidth = 320.0f;
 		float BarHeight = 24.0f;
+		/** 이름표의 체력 바 크기. */
+		float TagBarWidth = 80.0f;
+		float TagBarHeight = 6.0f;
 		float NoticeTop = 80.0f;
 	};
 
@@ -250,6 +253,8 @@ namespace
 		TopRight,
 		BottomLeft,
 		BottomRight,
+		/** 위 가운데(대상 정보). */
+		TopCenter,
 	};
 
 	/**
@@ -260,10 +265,11 @@ namespace
 	{
 		const bool bRight = Where == ECorner::TopRight || Where == ECorner::BottomRight;
 		const bool bBottom = Where == ECorner::BottomLeft || Where == ECorner::BottomRight;
+		const float Horizontal = Where == ECorner::TopCenter ? 0.5f : (bRight ? 1.0f : 0.0f);
 		UCanvasPanelSlot* Slot = Canvas.AddChildToCanvas(Widget);
-		Slot->SetAnchors(FAnchors(bRight ? 1.0f : 0.0f, bBottom ? 1.0f : 0.0f));
-		Slot->SetAlignment(FVector2D(bRight ? 1.0 : 0.0, bBottom ? 1.0 : 0.0));
-		Slot->SetPosition(FVector2D(bRight ? -Offset.X : Offset.X, bBottom ? -Offset.Y : Offset.Y));
+		Slot->SetAnchors(FAnchors(Horizontal, bBottom ? 1.0f : 0.0f));
+		Slot->SetAlignment(FVector2D(Horizontal, bBottom ? 1.0 : 0.0));
+		Slot->SetPosition(FVector2D(Where == ECorner::TopCenter ? 0.0 : (bRight ? -Offset.X : Offset.X), bBottom ? -Offset.Y : Offset.Y));
 		Slot->SetAutoSize(true);
 		return Slot;
 	}
@@ -374,12 +380,12 @@ namespace
 		return Builder.Save() ? Builder.GeneratedClass() : nullptr;
 	}
 
-	/** 체력·마나 바 하나: 둥근 바탕 위의 채움(<Name>Bar)과 가운데의 "지금 / 최대"(<Name>Text). 값은 UMmoHudWidget이 넣는다. */
-	UWidget* Bar(FWidgetBlueprintBuilder& Builder, const TCHAR* Name, const FLinearColor& Fill)
+	/** 체력·마나 바 하나: 둥근 바탕 위의 채움(<Name>Bar)과 가운데의 "지금 / 최대"(<Name>Text). 값은 UMmoHudWidget이 넣는다. Text가 거짓이면 글 없이 바만. */
+	UWidget* Bar(FWidgetBlueprintBuilder& Builder, const TCHAR* Name, const FLinearColor& Fill, float Width = Style.BarWidth, float Height = Style.BarHeight, bool bText = true)
 	{
 		USizeBox* Size = Builder.Add<USizeBox>(*FString::Printf(TEXT("%sBarSize"), Name));
-		Size->SetWidthOverride(Style.BarWidth);
-		Size->SetHeightOverride(Style.BarHeight);
+		Size->SetWidthOverride(Width);
+		Size->SetHeightOverride(Height);
 		UOverlay* Stack = Builder.Add<UOverlay>(*FString::Printf(TEXT("%sBarStack"), Name));
 		Size->SetContent(Stack);
 
@@ -394,6 +400,10 @@ namespace
 		BarSlot->SetHorizontalAlignment(HAlign_Fill);
 		BarSlot->SetVerticalAlignment(VAlign_Fill);
 
+		if (!bText)
+		{
+			return Size;
+		}
 		UTextBlock* Value = Builder.Text(*FString::Printf(TEXT("%sText"), Name), FText::GetEmpty(), Style.SmallSize, true);
 		UOverlaySlot* ValueSlot = Stack->AddChildToOverlay(Value);
 		ValueSlot->SetHorizontalAlignment(HAlign_Center);
@@ -420,6 +430,20 @@ namespace
 		UTextBlock* SafeZoneText = Builder.Text(TEXT("SafeZoneText"), LOCTEXT("SafeZone", "안전 지대"), Style.SmallSize, true, Style.Positive);
 		SafeZoneText->SetVisibility(ESlateVisibility::Collapsed);
 		Zone->AddChildToVerticalBox(SafeZoneText);
+
+		// 위 가운데에 내 대상의 정보(이름과 레벨, 체력 바). 대상이 없으면 UMmoHudWidget이 감춘다.
+		UVerticalBox* Target = Builder.Add<UVerticalBox>(TEXT("TargetPanel"), true);
+		Target->SetVisibility(ESlateVisibility::Collapsed);
+		Corner(*Root, Target, ECorner::TopCenter);
+		UTextBlock* TargetName = Builder.Text(TEXT("TargetNameText"), FText::GetEmpty(), Style.BodySize, true);
+		Target->AddChildToVerticalBox(TargetName)->SetHorizontalAlignment(HAlign_Center);
+		Target->AddChildToVerticalBox(Bar(Builder, TEXT("TargetHp"), Style.Hp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
+
+		// 오른쪽 아래에 터치 기기에서만 보이는 공격 버튼과 대상 고르기 버튼.
+		Corner(*Root, Row(Builder, TEXT("TouchButtons"), {
+			Builder.Button(TEXT("TargetButton"), LOCTEXT("TargetButton", "대상"), true),
+			Builder.Button(TEXT("AttackButton"), LOCTEXT("AttackButton", "공격"), true),
+		}), ECorner::BottomRight, FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5));
 		return Builder.Save();
 	}
 
@@ -450,10 +474,13 @@ namespace
 
 	bool CreateNameTag()
 	{
+		// 이름과 그 아래 작은 체력 바(플레이어와 몬스터만 보임. UMmoNameTagWidget).
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::NameTag, UMmoNameTagWidget::StaticClass());
-		UTextBlock* Name = Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.SmallSize, true);
-		Name->SetVisibility(ESlateVisibility::HitTestInvisible);
-		Builder.SetRoot(Name);
+		UVerticalBox* Column = Builder.Add<UVerticalBox>(TEXT("Column"));
+		Column->SetVisibility(ESlateVisibility::HitTestInvisible);
+		Builder.SetRoot(Column);
+		Column->AddChildToVerticalBox(Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.SmallSize, true))->SetHorizontalAlignment(HAlign_Center);
+		Column->AddChildToVerticalBox(Bar(Builder, TEXT("Hp"), Style.Hp, Style.TagBarWidth, Style.TagBarHeight, false))->SetHorizontalAlignment(HAlign_Center);
 		return Builder.Save();
 	}
 

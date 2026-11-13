@@ -14,10 +14,13 @@
 
 class UInputAction;
 class UInputMappingContext;
+class UMmoSession;
 struct FInputActionValue;
 
 /**
  * 내 캐릭터의 조작과 Move 보내기. 이동(WASD, 게임패드, 가상 조이스틱), 눌러서 이동(PC에서 땅을 왼쪽 클릭하면 길을 찾아 걸음),
+ * 대상과 공격(개체를 누르면 대상, 대상인 몬스터를 다시 누르거나 F면 공격하러 감, Tab은 가장 가까운 적. 다가가서 사거리 안이고 선이 트인
+ * 곳에 서면 AttackStart를 보냄),
  * 카메라(마우스 오른쪽 끌기와 휠, 터치 끌기와 두 손가락 벌리기), 뒤로 가기(Esc, Android 뒤로 버튼. 화면 관리자에 넘김)를 받고,
  * 프레임마다 캐릭터의 자리를 FMoveSender에 넘겨 보낼 때가 되면 Move를 보낸다. PositionReset이 오면 그 자리로 옮긴다.
  * 입력 액션과 매핑은 에셋 없이 여기서 만든다.
@@ -44,6 +47,12 @@ public:
 	/** 땅의 자리(월드, 높이는 버림)까지 길을 찾아 걷기 시작한다. 길이 없으면 걷지 않고 false다. 걷던 경로는 바꾼다. */
 	bool WalkTo(const FVector& Ground);
 
+	/** 공격 키(F)와 HUD의 공격 버튼: 대상이 없으면 가장 가까운 적을 대상으로 잡고, 대상에게 공격하러 간다. */
+	void AttackOrTargetNearest();
+
+	/** Tab과 HUD의 대상 고르기 버튼: 가장 가까운 적(몬스터만)을 대상으로 잡는다. */
+	void TargetNearest();
+
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
@@ -59,6 +68,20 @@ private:
 	void HandleClick();
 	/** 경로를 따라가는 중이면 다음 점 쪽을 이번 프레임의 이동 입력으로 넣는다. */
 	void FollowPath();
+
+	/** 대상을 고른다(0이면 푼다). 공격 중에 바뀌면 AttackStop을 보낸다. 공격하러 가던 것은 그만둔다. */
+	void SelectTarget(uint32 Id);
+
+	/** 대상에게 공격하러 간다(UpdateEngagement가 이어 감). */
+	void Engage();
+
+	/**
+	 * 공격하러 가는 중이면: 지금 자리에서 칠 수 있으면(사거리 안, 선이 트임, 몬스터면 안전 지대 밖) 서서 밀린 위치를 보내고 AttackStart를 보낸다.
+	 * 아니면 대상까지 길을 찾아 걷는다(대상이 1 m 넘게 옮기면 다시 찾음). 공격 중에 대상이 사거리 밖으로 나가면 같은 방법으로 다시 다가간다.
+	 */
+	void UpdateEngagement();
+
+	UMmoSession& Session() const;
 	/** 터치: 한 손가락으로 끌면 카메라를 돌리고, 두 손가락을 벌리면 당긴다. */
 	void UpdateTouchCamera();
 	void HandlePacket(const portfolio::mmo::Packet& Packet);
@@ -80,6 +103,10 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UInputAction> ClickAction;
+	UPROPERTY()
+	TObjectPtr<UInputAction> AttackAction;
+	UPROPERTY()
+	TObjectPtr<UInputAction> TargetAction;
 
 	MmoWorld::FMoveSender MoveSender;
 	/** 세션의 필드로 처음 걸을 때 만든다(버퍼가 필드 크기라 한 번만). */
@@ -87,6 +114,10 @@ private:
 	MmoWorld::FPathFollower PathFollower;
 	std::vector<MmoWorld::FPoint> Path;
 	bool bManualMoveBlocked = false;
+	/** 대상에게 공격하러 가는 중(손 이동 입력, 대상 바꿈, 대상이 풀림으로 끝남). */
+	bool bEngaged = false;
+	/** 공격하러 가는 길을 찾은 때의 대상 자리. */
+	MmoWorld::FPoint EngagedGoal;
 	/** 지난 프레임의 손가락마다의 자리와 눌림. */
 	FVector2D TouchWas[MmoScreen::FTouchOwners::MaxFingers];
 	bool bTouchWasDown[MmoScreen::FTouchOwners::MaxFingers] = {};

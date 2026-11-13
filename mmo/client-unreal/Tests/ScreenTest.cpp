@@ -49,6 +49,11 @@ namespace
 
 		Stack.Close(*Stack.BackTarget());
 		Expect(!Stack.BackTarget() && Stack.InputMode() == EInputMode::Game, "then nothing, and the game has input again");
+		Expect(Stack.Back(true) == MmoScreen::FScreenStack::EBack::ReleaseTarget, "with no window open back releases the target");
+		Expect(Stack.Back(false) == MmoScreen::FScreenStack::EBack::OpenSettings, "with no target either back opens the settings");
+		Stack.Open(EScreen::Settings);
+		Expect(Stack.Back(true) == MmoScreen::FScreenStack::EBack::Close, "an open window is closed before the target is released");
+		Stack.Close(EScreen::Settings);
 	}
 
 	void PopupWinsOverALaterWindow()

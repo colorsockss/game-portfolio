@@ -88,6 +88,8 @@ namespace PortfolioMmo.Server
             // 월드에서 빠진 플레이어는 표에서 뺀다(플레이어의 번호는 다시 쓰지 않음). 죽은 플레이어는 25가 뺀다.
             monster.Damage.RemoveWhere(id => _entities.Find(id) is not Player);
             double step = monster.Template.Speed * Units.PerMeter / Units.TicksPerSecond * elapsedTicks;
+            // 공격 상태는 아래의 공격 갈래에서만 켠다(치는 것은 CombatSystem).
+            monster.AttackTarget = 0;
             if (monster.State == MonsterState.Return)
             {
                 Return(monster, step, regenerate);
@@ -128,6 +130,7 @@ namespace PortfolioMmo.Server
             {
                 // 공격: 서서 대상을 본다. 치는 것은 24다.
                 monster.State = MonsterState.Attack;
+                monster.AttackTarget = target.Id;
                 monster.Path.Clear();
                 Face(monster, target.X - monster.X, target.Z - monster.Z);
                 return;

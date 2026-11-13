@@ -58,6 +58,8 @@ enum EnterWorldResultCode : int;
 extern const uint32_t EnterWorldResultCode_internal_data_[];
 enum EntityKind : int;
 extern const uint32_t EntityKind_internal_data_[];
+enum FailReason : int;
+extern const uint32_t FailReason_internal_data_[];
 enum KickReason : int;
 extern const uint32_t KickReason_internal_data_[];
 enum LoginResultCode : int;
@@ -68,6 +70,40 @@ enum ProgressKind : int;
 extern const uint32_t ProgressKind_internal_data_[];
 enum ProtocolVersion : int;
 extern const uint32_t ProtocolVersion_internal_data_[];
+enum RequestKind : int;
+extern const uint32_t RequestKind_internal_data_[];
+class ActionFailed;
+struct ActionFailedGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern ActionFailedGlobalsTypeInternal ActionFailed_globals_;
+extern const ::google::protobuf::internal::ClassDataFull ActionFailed_class_data_;
+#else
+extern const ActionFailedGlobalsTypeInternal ActionFailed_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class AttackStart;
+struct AttackStartGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern AttackStartGlobalsTypeInternal AttackStart_globals_;
+extern const ::google::protobuf::internal::ClassDataFull AttackStart_class_data_;
+#else
+extern const AttackStartGlobalsTypeInternal AttackStart_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class AttackStop;
+struct AttackStopGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern AttackStopGlobalsTypeInternal AttackStop_globals_;
+extern const ::google::protobuf::internal::ClassDataFull AttackStop_class_data_;
+#else
+extern const AttackStopGlobalsTypeInternal AttackStop_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class AttackSwing;
+struct AttackSwingGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern AttackSwingGlobalsTypeInternal AttackSwing_globals_;
+extern const ::google::protobuf::internal::ClassDataFull AttackSwing_class_data_;
+#else
+extern const AttackSwingGlobalsTypeInternal AttackSwing_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
 class CharacterList;
 struct CharacterListGlobalsTypeInternal;
 #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -99,6 +135,22 @@ extern CreateCharacterResultGlobalsTypeInternal CreateCharacterResult_globals_;
 extern const ::google::protobuf::internal::ClassDataFull CreateCharacterResult_class_data_;
 #else
 extern const CreateCharacterResultGlobalsTypeInternal CreateCharacterResult_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class Damaged;
+struct DamagedGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern DamagedGlobalsTypeInternal Damaged_globals_;
+extern const ::google::protobuf::internal::ClassDataFull Damaged_class_data_;
+#else
+extern const DamagedGlobalsTypeInternal Damaged_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class Died;
+struct DiedGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern DiedGlobalsTypeInternal Died_globals_;
+extern const ::google::protobuf::internal::ClassDataFull Died_class_data_;
+#else
+extern const DiedGlobalsTypeInternal Died_globals_;
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 class EffectState;
 struct EffectStateGlobalsTypeInternal;
@@ -304,6 +356,9 @@ template <>
 internal::EnumTraitsT<::portfolio::mmo::EntityKind_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::EntityKind>;
 template <>
+internal::EnumTraitsT<::portfolio::mmo::FailReason_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::FailReason>;
+template <>
 internal::EnumTraitsT<::portfolio::mmo::KickReason_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::KickReason>;
 template <>
@@ -318,6 +373,9 @@ internal::EnumTraitsT<::portfolio::mmo::ProgressKind_internal_data_>
 template <>
 internal::EnumTraitsT<::portfolio::mmo::ProtocolVersion_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::ProtocolVersion>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::RequestKind_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::RequestKind>;
 }  // namespace protobuf
 }  // namespace google
 
@@ -741,6 +799,87 @@ template <>
 [[nodiscard]] inline bool ProgressKind_Parse(
     ::absl::string_view name, ProgressKind* PROTOBUF_NONNULL value) {
   return ::google::protobuf::internal::ParseNamedEnum<ProgressKind>(ProgressKind_descriptor(), name,
+                                           value);
+}
+enum FailReason : int {
+  FAIL_REASON_NONE = 0,
+  FAIL_REASON_NO_TARGET = 1,
+  FAIL_REASON_INVALID_TARGET = 2,
+  FailReason_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  FailReason_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t FailReason_internal_data_[];
+inline constexpr FailReason FailReason_MIN =
+    static_cast<FailReason>(0);
+inline constexpr FailReason FailReason_MAX =
+    static_cast<FailReason>(2);
+[[nodiscard]] inline bool FailReason_IsValid(int value) {
+  return 0 <= value && value <= 2;
+}
+inline constexpr int FailReason_ARRAYSIZE = 2 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+FailReason_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(FailReason) {
+  return FailReason_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& FailReason_Name(T value) {
+  static_assert(::std::is_same<T, FailReason>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to FailReason_Name().");
+  return FailReason_Name(static_cast<FailReason>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& FailReason_Name(FailReason value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<FailReason_descriptor, 0, 2>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool FailReason_Parse(
+    ::absl::string_view name, FailReason* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<FailReason>(FailReason_descriptor(), name,
+                                           value);
+}
+enum RequestKind : int {
+  REQUEST_KIND_UNSPECIFIED = 0,
+  REQUEST_KIND_ATTACK = 1,
+  RequestKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  RequestKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t RequestKind_internal_data_[];
+inline constexpr RequestKind RequestKind_MIN =
+    static_cast<RequestKind>(0);
+inline constexpr RequestKind RequestKind_MAX =
+    static_cast<RequestKind>(1);
+[[nodiscard]] inline bool RequestKind_IsValid(int value) {
+  return 0 <= value && value <= 1;
+}
+inline constexpr int RequestKind_ARRAYSIZE = 1 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+RequestKind_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(RequestKind) {
+  return RequestKind_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& RequestKind_Name(T value) {
+  static_assert(::std::is_same<T, RequestKind>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to RequestKind_Name().");
+  return RequestKind_Name(static_cast<RequestKind>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& RequestKind_Name(RequestKind value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<RequestKind_descriptor, 0, 1>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool RequestKind_Parse(
+    ::absl::string_view name, RequestKind* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<RequestKind>(RequestKind_descriptor(), name,
                                            value);
 }
 using ::google::protobuf::internal::generated_enum::AbslParseFlag;
@@ -4582,6 +4721,468 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EffectState final : public ::google
 };
 // -------------------------------------------------------------------
 
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Died final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.Died) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline Died() : Died(nullptr) {}
+  ~Died() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(Died* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(Died));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr Died(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline Died(const Died& from) : Died(nullptr, from) {}
+  inline Died(Died&& from) noexcept : Died(nullptr, ::std::move(from)) {}
+  inline Died& operator=(const Died& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Died& operator=(Died&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const Died& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Died>(&Died_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 32;
+  friend void swap(Died& a, Died& b) { a.Swap(&b); }
+  inline void Swap(Died* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Died* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] Died* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<Died>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const Died& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const Died& from) { Died::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(Died* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.Died"; }
+
+  explicit Died(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  Died(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Died& from);
+  Died(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, Died&& from) noexcept
+      : Died(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kIdFieldNumber = 1,
+    kKillerIdFieldNumber = 2,
+  };
+  // uint32 id = 1;
+  void clear_id() ;
+  [[nodiscard]] ::uint32_t id() const;
+  void set_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_id() const;
+  void _internal_set_id(::uint32_t value);
+
+  public:
+  // uint32 killer_id = 2;
+  void clear_killer_id() ;
+  [[nodiscard]] ::uint32_t killer_id() const;
+  void set_killer_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_killer_id() const;
+  void _internal_set_killer_id(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.Died)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const Died& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::uint32_t id_;
+    ::uint32_t killer_id_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Damaged final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.Damaged) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline Damaged() : Damaged(nullptr) {}
+  ~Damaged() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(Damaged* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(Damaged));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr Damaged(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline Damaged(const Damaged& from) : Damaged(nullptr, from) {}
+  inline Damaged(Damaged&& from) noexcept : Damaged(nullptr, ::std::move(from)) {}
+  inline Damaged& operator=(const Damaged& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Damaged& operator=(Damaged&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const Damaged& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Damaged>(&Damaged_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 31;
+  friend void swap(Damaged& a, Damaged& b) { a.Swap(&b); }
+  inline void Swap(Damaged* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Damaged* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] Damaged* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<Damaged>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const Damaged& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const Damaged& from) { Damaged::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(Damaged* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.Damaged"; }
+
+  explicit Damaged(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  Damaged(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Damaged& from);
+  Damaged(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, Damaged&& from) noexcept
+      : Damaged(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kAttackerIdFieldNumber = 1,
+    kTargetIdFieldNumber = 2,
+    kDamageFieldNumber = 3,
+    kHpFieldNumber = 4,
+    kCriticalFieldNumber = 5,
+  };
+  // uint32 attacker_id = 1;
+  void clear_attacker_id() ;
+  [[nodiscard]] ::uint32_t attacker_id() const;
+  void set_attacker_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_attacker_id() const;
+  void _internal_set_attacker_id(::uint32_t value);
+
+  public:
+  // uint32 target_id = 2;
+  void clear_target_id() ;
+  [[nodiscard]] ::uint32_t target_id() const;
+  void set_target_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_target_id() const;
+  void _internal_set_target_id(::uint32_t value);
+
+  public:
+  // uint32 damage = 3;
+  void clear_damage() ;
+  [[nodiscard]] ::uint32_t damage() const;
+  void set_damage(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_damage() const;
+  void _internal_set_damage(::uint32_t value);
+
+  public:
+  // uint32 hp = 4;
+  void clear_hp() ;
+  [[nodiscard]] ::uint32_t hp() const;
+  void set_hp(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_hp() const;
+  void _internal_set_hp(::uint32_t value);
+
+  public:
+  // bool critical = 5;
+  void clear_critical() ;
+  [[nodiscard]] bool critical() const;
+  void set_critical(bool value);
+
+  private:
+  bool _internal_critical() const;
+  void _internal_set_critical(bool value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.Damaged)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<3, 5,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const Damaged& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::uint32_t attacker_id_;
+    ::uint32_t target_id_;
+    ::uint32_t damage_;
+    ::uint32_t hp_;
+    bool critical_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
 class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED CreateCharacterResult final : public ::google::protobuf::Message
 /* @@protoc_insertion_point(class_definition:portfolio.mmo.CreateCharacterResult) */ {
   using Super_ = ::google::protobuf::Message;
@@ -5224,6 +5825,771 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED CharacterSummary final : public ::g
     ::google::protobuf::internal::ArenaStringPtr name_;
     ::uint64_t id_;
     int character_class_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackSwing final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.AttackSwing) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline AttackSwing() : AttackSwing(nullptr) {}
+  ~AttackSwing() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(AttackSwing* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(AttackSwing));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr AttackSwing(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline AttackSwing(const AttackSwing& from) : AttackSwing(nullptr, from) {}
+  inline AttackSwing(AttackSwing&& from) noexcept : AttackSwing(nullptr, ::std::move(from)) {}
+  inline AttackSwing& operator=(const AttackSwing& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline AttackSwing& operator=(AttackSwing&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const AttackSwing& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackSwing>(&AttackSwing_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 30;
+  friend void swap(AttackSwing& a, AttackSwing& b) { a.Swap(&b); }
+  inline void Swap(AttackSwing* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(AttackSwing* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] AttackSwing* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<AttackSwing>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const AttackSwing& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const AttackSwing& from) { AttackSwing::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(AttackSwing* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.AttackSwing"; }
+
+  explicit AttackSwing(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  AttackSwing(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const AttackSwing& from);
+  AttackSwing(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, AttackSwing&& from) noexcept
+      : AttackSwing(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kAttackerIdFieldNumber = 1,
+    kTargetIdFieldNumber = 2,
+  };
+  // uint32 attacker_id = 1;
+  void clear_attacker_id() ;
+  [[nodiscard]] ::uint32_t attacker_id() const;
+  void set_attacker_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_attacker_id() const;
+  void _internal_set_attacker_id(::uint32_t value);
+
+  public:
+  // uint32 target_id = 2;
+  void clear_target_id() ;
+  [[nodiscard]] ::uint32_t target_id() const;
+  void set_target_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_target_id() const;
+  void _internal_set_target_id(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.AttackSwing)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const AttackSwing& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::uint32_t attacker_id_;
+    ::uint32_t target_id_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackStop final : public ::google::protobuf::internal::ZeroFieldsBase
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.AttackStop) */ {
+  using Super_ = ::google::protobuf::internal::ZeroFieldsBase;
+
+ public:
+  inline AttackStop() : AttackStop(nullptr) {}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(AttackStop* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(AttackStop));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr AttackStop(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline AttackStop(const AttackStop& from) : AttackStop(nullptr, from) {}
+  inline AttackStop(AttackStop&& from) noexcept : AttackStop(nullptr, ::std::move(from)) {}
+  inline AttackStop& operator=(const AttackStop& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline AttackStop& operator=(AttackStop&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const AttackStop& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackStop>(&AttackStop_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 29;
+  friend void swap(AttackStop& a, AttackStop& b) { a.Swap(&b); }
+  inline void Swap(AttackStop* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(AttackStop* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] AttackStop* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<AttackStop>(arena);
+  }
+  using Super_::CopyFrom;
+  inline void CopyFrom(const AttackStop& from) { Super_::CopyImpl(*this, from); }
+  using Super_::MergeFrom;
+  void MergeFrom(const AttackStop& from) { Super_::MergeImpl(*this, from); }
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.AttackStop"; }
+
+  explicit AttackStop(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  AttackStop(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const AttackStop& from);
+  AttackStop(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, AttackStop&& from) noexcept
+      : AttackStop(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.AttackStop)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<0, 0,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackStart final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.AttackStart) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline AttackStart() : AttackStart(nullptr) {}
+  ~AttackStart() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(AttackStart* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(AttackStart));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr AttackStart(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline AttackStart(const AttackStart& from) : AttackStart(nullptr, from) {}
+  inline AttackStart(AttackStart&& from) noexcept : AttackStart(nullptr, ::std::move(from)) {}
+  inline AttackStart& operator=(const AttackStart& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline AttackStart& operator=(AttackStart&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const AttackStart& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackStart>(&AttackStart_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 28;
+  friend void swap(AttackStart& a, AttackStart& b) { a.Swap(&b); }
+  inline void Swap(AttackStart* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(AttackStart* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] AttackStart* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<AttackStart>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const AttackStart& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const AttackStart& from) { AttackStart::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(AttackStart* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.AttackStart"; }
+
+  explicit AttackStart(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  AttackStart(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const AttackStart& from);
+  AttackStart(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, AttackStart&& from) noexcept
+      : AttackStart(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kTargetIdFieldNumber = 1,
+  };
+  // uint32 target_id = 1;
+  void clear_target_id() ;
+  [[nodiscard]] ::uint32_t target_id() const;
+  void set_target_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_target_id() const;
+  void _internal_set_target_id(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.AttackStart)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<0, 1,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const AttackStart& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::uint32_t target_id_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ActionFailed final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.ActionFailed) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline ActionFailed() : ActionFailed(nullptr) {}
+  ~ActionFailed() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(ActionFailed* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(ActionFailed));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr ActionFailed(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline ActionFailed(const ActionFailed& from) : ActionFailed(nullptr, from) {}
+  inline ActionFailed(ActionFailed&& from) noexcept : ActionFailed(nullptr, ::std::move(from)) {}
+  inline ActionFailed& operator=(const ActionFailed& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ActionFailed& operator=(ActionFailed&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const ActionFailed& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ActionFailed>(&ActionFailed_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 27;
+  friend void swap(ActionFailed& a, ActionFailed& b) { a.Swap(&b); }
+  inline void Swap(ActionFailed* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ActionFailed* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] ActionFailed* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<ActionFailed>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const ActionFailed& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const ActionFailed& from) { ActionFailed::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(ActionFailed* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.ActionFailed"; }
+
+  explicit ActionFailed(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  ActionFailed(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const ActionFailed& from);
+  ActionFailed(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, ActionFailed&& from) noexcept
+      : ActionFailed(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kReasonFieldNumber = 1,
+    kRequestFieldNumber = 2,
+  };
+  // .portfolio.mmo.FailReason reason = 1;
+  void clear_reason() ;
+  [[nodiscard]] ::portfolio::mmo::FailReason reason() const;
+  void set_reason(::portfolio::mmo::FailReason value);
+
+  private:
+  ::portfolio::mmo::FailReason _internal_reason() const;
+  void _internal_set_reason(::portfolio::mmo::FailReason value);
+
+  public:
+  // .portfolio.mmo.RequestKind request = 2;
+  void clear_request() ;
+  [[nodiscard]] ::portfolio::mmo::RequestKind request() const;
+  void set_request(::portfolio::mmo::RequestKind value);
+
+  private:
+  ::portfolio::mmo::RequestKind _internal_request() const;
+  void _internal_set_request(::portfolio::mmo::RequestKind value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.ActionFailed)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const ActionFailed& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    int reason_;
+    int request_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -6708,6 +8074,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kEnterWorld = 9,
     kEnterWorldResult = 10,
     kLeaveWorld = 11,
+    kActionFailed = 12,
     kMove = 100,
     kPositionReset = 101,
     kEntitiesEnter = 102,
@@ -6716,6 +8083,11 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kEntityState = 105,
     kSelfVitals = 200,
     kEntityVitals = 201,
+    kAttackStart = 202,
+    kAttackStop = 203,
+    kAttackSwing = 204,
+    kDamaged = 205,
+    kDied = 206,
     kSelfStats = 300,
     BODY_NOT_SET = 0,
   };
@@ -6820,6 +8192,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kEnterWorldFieldNumber = 9,
     kEnterWorldResultFieldNumber = 10,
     kLeaveWorldFieldNumber = 11,
+    kActionFailedFieldNumber = 12,
     kMoveFieldNumber = 100,
     kPositionResetFieldNumber = 101,
     kEntitiesEnterFieldNumber = 102,
@@ -6828,6 +8201,11 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kEntityStateFieldNumber = 105,
     kSelfVitalsFieldNumber = 200,
     kEntityVitalsFieldNumber = 201,
+    kAttackStartFieldNumber = 202,
+    kAttackStopFieldNumber = 203,
+    kAttackSwingFieldNumber = 204,
+    kDamagedFieldNumber = 205,
+    kDiedFieldNumber = 206,
     kSelfStatsFieldNumber = 300,
   };
   // .portfolio.mmo.Login login = 1;
@@ -7039,6 +8417,25 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   ::portfolio::mmo::LeaveWorld* PROTOBUF_NONNULL _internal_mutable_leave_world();
 
   public:
+  // .portfolio.mmo.ActionFailed action_failed = 12;
+  [[nodiscard]] bool has_action_failed() const;
+  private:
+  bool _internal_has_action_failed() const;
+
+  public:
+  void clear_action_failed() ;
+  [[nodiscard]] const ::portfolio::mmo::ActionFailed& action_failed() const;
+  [[nodiscard]] ::portfolio::mmo::ActionFailed* PROTOBUF_NULLABLE release_action_failed();
+  ::portfolio::mmo::ActionFailed* PROTOBUF_NONNULL mutable_action_failed();
+  void set_allocated_action_failed(::portfolio::mmo::ActionFailed* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_action_failed(::portfolio::mmo::ActionFailed* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::ActionFailed* PROTOBUF_NULLABLE unsafe_arena_release_action_failed();
+
+  private:
+  const ::portfolio::mmo::ActionFailed& _internal_action_failed() const;
+  ::portfolio::mmo::ActionFailed* PROTOBUF_NONNULL _internal_mutable_action_failed();
+
+  public:
   // .portfolio.mmo.Move move = 100;
   [[nodiscard]] bool has_move() const;
   private:
@@ -7191,6 +8588,101 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   ::portfolio::mmo::EntityVitals* PROTOBUF_NONNULL _internal_mutable_entity_vitals();
 
   public:
+  // .portfolio.mmo.AttackStart attack_start = 202;
+  [[nodiscard]] bool has_attack_start() const;
+  private:
+  bool _internal_has_attack_start() const;
+
+  public:
+  void clear_attack_start() ;
+  [[nodiscard]] const ::portfolio::mmo::AttackStart& attack_start() const;
+  [[nodiscard]] ::portfolio::mmo::AttackStart* PROTOBUF_NULLABLE release_attack_start();
+  ::portfolio::mmo::AttackStart* PROTOBUF_NONNULL mutable_attack_start();
+  void set_allocated_attack_start(::portfolio::mmo::AttackStart* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_attack_start(::portfolio::mmo::AttackStart* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::AttackStart* PROTOBUF_NULLABLE unsafe_arena_release_attack_start();
+
+  private:
+  const ::portfolio::mmo::AttackStart& _internal_attack_start() const;
+  ::portfolio::mmo::AttackStart* PROTOBUF_NONNULL _internal_mutable_attack_start();
+
+  public:
+  // .portfolio.mmo.AttackStop attack_stop = 203;
+  [[nodiscard]] bool has_attack_stop() const;
+  private:
+  bool _internal_has_attack_stop() const;
+
+  public:
+  void clear_attack_stop() ;
+  [[nodiscard]] const ::portfolio::mmo::AttackStop& attack_stop() const;
+  [[nodiscard]] ::portfolio::mmo::AttackStop* PROTOBUF_NULLABLE release_attack_stop();
+  ::portfolio::mmo::AttackStop* PROTOBUF_NONNULL mutable_attack_stop();
+  void set_allocated_attack_stop(::portfolio::mmo::AttackStop* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_attack_stop(::portfolio::mmo::AttackStop* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::AttackStop* PROTOBUF_NULLABLE unsafe_arena_release_attack_stop();
+
+  private:
+  const ::portfolio::mmo::AttackStop& _internal_attack_stop() const;
+  ::portfolio::mmo::AttackStop* PROTOBUF_NONNULL _internal_mutable_attack_stop();
+
+  public:
+  // .portfolio.mmo.AttackSwing attack_swing = 204;
+  [[nodiscard]] bool has_attack_swing() const;
+  private:
+  bool _internal_has_attack_swing() const;
+
+  public:
+  void clear_attack_swing() ;
+  [[nodiscard]] const ::portfolio::mmo::AttackSwing& attack_swing() const;
+  [[nodiscard]] ::portfolio::mmo::AttackSwing* PROTOBUF_NULLABLE release_attack_swing();
+  ::portfolio::mmo::AttackSwing* PROTOBUF_NONNULL mutable_attack_swing();
+  void set_allocated_attack_swing(::portfolio::mmo::AttackSwing* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_attack_swing(::portfolio::mmo::AttackSwing* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::AttackSwing* PROTOBUF_NULLABLE unsafe_arena_release_attack_swing();
+
+  private:
+  const ::portfolio::mmo::AttackSwing& _internal_attack_swing() const;
+  ::portfolio::mmo::AttackSwing* PROTOBUF_NONNULL _internal_mutable_attack_swing();
+
+  public:
+  // .portfolio.mmo.Damaged damaged = 205;
+  [[nodiscard]] bool has_damaged() const;
+  private:
+  bool _internal_has_damaged() const;
+
+  public:
+  void clear_damaged() ;
+  [[nodiscard]] const ::portfolio::mmo::Damaged& damaged() const;
+  [[nodiscard]] ::portfolio::mmo::Damaged* PROTOBUF_NULLABLE release_damaged();
+  ::portfolio::mmo::Damaged* PROTOBUF_NONNULL mutable_damaged();
+  void set_allocated_damaged(::portfolio::mmo::Damaged* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_damaged(::portfolio::mmo::Damaged* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::Damaged* PROTOBUF_NULLABLE unsafe_arena_release_damaged();
+
+  private:
+  const ::portfolio::mmo::Damaged& _internal_damaged() const;
+  ::portfolio::mmo::Damaged* PROTOBUF_NONNULL _internal_mutable_damaged();
+
+  public:
+  // .portfolio.mmo.Died died = 206;
+  [[nodiscard]] bool has_died() const;
+  private:
+  bool _internal_has_died() const;
+
+  public:
+  void clear_died() ;
+  [[nodiscard]] const ::portfolio::mmo::Died& died() const;
+  [[nodiscard]] ::portfolio::mmo::Died* PROTOBUF_NULLABLE release_died();
+  ::portfolio::mmo::Died* PROTOBUF_NONNULL mutable_died();
+  void set_allocated_died(::portfolio::mmo::Died* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_died(::portfolio::mmo::Died* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::Died* PROTOBUF_NULLABLE unsafe_arena_release_died();
+
+  private:
+  const ::portfolio::mmo::Died& _internal_died() const;
+  ::portfolio::mmo::Died* PROTOBUF_NONNULL _internal_mutable_died();
+
+  public:
   // .portfolio.mmo.SelfStats self_stats = 300;
   [[nodiscard]] bool has_self_stats() const;
   private:
@@ -7226,6 +8718,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   void set_has_enter_world();
   void set_has_enter_world_result();
   void set_has_leave_world();
+  void set_has_action_failed();
   void set_has_move();
   void set_has_position_reset();
   void set_has_entities_enter();
@@ -7234,12 +8727,17 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   void set_has_entity_state();
   void set_has_self_vitals();
   void set_has_entity_vitals();
+  void set_has_attack_start();
+  void set_has_attack_stop();
+  void set_has_attack_swing();
+  void set_has_damaged();
+  void set_has_died();
   void set_has_self_stats();
   [[nodiscard]] inline bool has_body() const;
   inline void clear_has_body();
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<0, 20,
-                          20, 0,
+      ::google::protobuf::internal::TcParseTable<0, 26,
+                          26, 0,
                           17>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
       const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
@@ -7279,6 +8777,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
       ::google::protobuf::Message* PROTOBUF_NULLABLE enter_world_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE enter_world_result_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE leave_world_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE action_failed_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE move_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE position_reset_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE entities_enter_;
@@ -7287,6 +8786,11 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
       ::google::protobuf::Message* PROTOBUF_NULLABLE entity_state_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE self_vitals_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE entity_vitals_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE attack_start_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE attack_stop_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE attack_swing_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE damaged_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE died_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE self_stats_;
     } body_;
     ::google::protobuf::internal::CachedSize _cached_size_;
@@ -8204,6 +9708,87 @@ inline ::portfolio::mmo::LeaveWorld* PROTOBUF_NONNULL Packet::mutable_leave_worl
   return _msg;
 }
 
+// .portfolio.mmo.ActionFailed action_failed = 12;
+inline bool Packet::has_action_failed() const {
+  return body_case() == kActionFailed;
+}
+inline bool Packet::_internal_has_action_failed() const {
+  return body_case() == kActionFailed;
+}
+inline void Packet::set_has_action_failed() {
+  _impl_._oneof_case_[0] = kActionFailed;
+}
+inline void Packet::clear_action_failed() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kActionFailed) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.action_failed_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.action_failed_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::ActionFailed* PROTOBUF_NULLABLE Packet::release_action_failed() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.action_failed)
+  if (body_case() == kActionFailed) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::ActionFailed*>(_impl_.body_.action_failed_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.action_failed_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::ActionFailed& Packet::_internal_action_failed() const {
+  return body_case() == kActionFailed ? static_cast<const ::portfolio::mmo::ActionFailed&>(*reinterpret_cast<::portfolio::mmo::ActionFailed*>(_impl_.body_.action_failed_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::ActionFailed>(&::portfolio::mmo::ActionFailed_globals_);
+}
+inline const ::portfolio::mmo::ActionFailed& Packet::action_failed() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.action_failed)
+  return _internal_action_failed();
+}
+inline ::portfolio::mmo::ActionFailed* PROTOBUF_NULLABLE Packet::unsafe_arena_release_action_failed() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.action_failed)
+  if (body_case() == kActionFailed) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::ActionFailed*>(_impl_.body_.action_failed_);
+    _impl_.body_.action_failed_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_action_failed(
+    ::portfolio::mmo::ActionFailed* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_action_failed();
+    _impl_.body_.action_failed_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.action_failed)
+}
+inline ::portfolio::mmo::ActionFailed* PROTOBUF_NONNULL Packet::_internal_mutable_action_failed() {
+  if (body_case() != kActionFailed) {
+    clear_body();
+    set_has_action_failed();
+    _impl_.body_.action_failed_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::ActionFailed>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::ActionFailed*>(_impl_.body_.action_failed_);
+}
+inline ::portfolio::mmo::ActionFailed* PROTOBUF_NONNULL Packet::mutable_action_failed()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::ActionFailed* _msg = _internal_mutable_action_failed();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.action_failed)
+  return _msg;
+}
+
 // .portfolio.mmo.Move move = 100;
 inline bool Packet::has_move() const {
   return body_case() == kMove;
@@ -8849,6 +10434,411 @@ inline ::portfolio::mmo::EntityVitals* PROTOBUF_NONNULL Packet::mutable_entity_v
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
   ::portfolio::mmo::EntityVitals* _msg = _internal_mutable_entity_vitals();
   // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.entity_vitals)
+  return _msg;
+}
+
+// .portfolio.mmo.AttackStart attack_start = 202;
+inline bool Packet::has_attack_start() const {
+  return body_case() == kAttackStart;
+}
+inline bool Packet::_internal_has_attack_start() const {
+  return body_case() == kAttackStart;
+}
+inline void Packet::set_has_attack_start() {
+  _impl_._oneof_case_[0] = kAttackStart;
+}
+inline void Packet::clear_attack_start() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kAttackStart) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.attack_start_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.attack_start_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::AttackStart* PROTOBUF_NULLABLE Packet::release_attack_start() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.attack_start)
+  if (body_case() == kAttackStart) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::AttackStart*>(_impl_.body_.attack_start_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.attack_start_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::AttackStart& Packet::_internal_attack_start() const {
+  return body_case() == kAttackStart ? static_cast<const ::portfolio::mmo::AttackStart&>(*reinterpret_cast<::portfolio::mmo::AttackStart*>(_impl_.body_.attack_start_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::AttackStart>(&::portfolio::mmo::AttackStart_globals_);
+}
+inline const ::portfolio::mmo::AttackStart& Packet::attack_start() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.attack_start)
+  return _internal_attack_start();
+}
+inline ::portfolio::mmo::AttackStart* PROTOBUF_NULLABLE Packet::unsafe_arena_release_attack_start() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.attack_start)
+  if (body_case() == kAttackStart) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::AttackStart*>(_impl_.body_.attack_start_);
+    _impl_.body_.attack_start_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_attack_start(
+    ::portfolio::mmo::AttackStart* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_attack_start();
+    _impl_.body_.attack_start_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.attack_start)
+}
+inline ::portfolio::mmo::AttackStart* PROTOBUF_NONNULL Packet::_internal_mutable_attack_start() {
+  if (body_case() != kAttackStart) {
+    clear_body();
+    set_has_attack_start();
+    _impl_.body_.attack_start_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::AttackStart>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::AttackStart*>(_impl_.body_.attack_start_);
+}
+inline ::portfolio::mmo::AttackStart* PROTOBUF_NONNULL Packet::mutable_attack_start()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::AttackStart* _msg = _internal_mutable_attack_start();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.attack_start)
+  return _msg;
+}
+
+// .portfolio.mmo.AttackStop attack_stop = 203;
+inline bool Packet::has_attack_stop() const {
+  return body_case() == kAttackStop;
+}
+inline bool Packet::_internal_has_attack_stop() const {
+  return body_case() == kAttackStop;
+}
+inline void Packet::set_has_attack_stop() {
+  _impl_._oneof_case_[0] = kAttackStop;
+}
+inline void Packet::clear_attack_stop() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kAttackStop) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.attack_stop_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.attack_stop_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::AttackStop* PROTOBUF_NULLABLE Packet::release_attack_stop() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.attack_stop)
+  if (body_case() == kAttackStop) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::AttackStop*>(_impl_.body_.attack_stop_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.attack_stop_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::AttackStop& Packet::_internal_attack_stop() const {
+  return body_case() == kAttackStop ? static_cast<const ::portfolio::mmo::AttackStop&>(*reinterpret_cast<::portfolio::mmo::AttackStop*>(_impl_.body_.attack_stop_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::AttackStop>(&::portfolio::mmo::AttackStop_globals_);
+}
+inline const ::portfolio::mmo::AttackStop& Packet::attack_stop() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.attack_stop)
+  return _internal_attack_stop();
+}
+inline ::portfolio::mmo::AttackStop* PROTOBUF_NULLABLE Packet::unsafe_arena_release_attack_stop() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.attack_stop)
+  if (body_case() == kAttackStop) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::AttackStop*>(_impl_.body_.attack_stop_);
+    _impl_.body_.attack_stop_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_attack_stop(
+    ::portfolio::mmo::AttackStop* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_attack_stop();
+    _impl_.body_.attack_stop_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.attack_stop)
+}
+inline ::portfolio::mmo::AttackStop* PROTOBUF_NONNULL Packet::_internal_mutable_attack_stop() {
+  if (body_case() != kAttackStop) {
+    clear_body();
+    set_has_attack_stop();
+    _impl_.body_.attack_stop_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::AttackStop>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::AttackStop*>(_impl_.body_.attack_stop_);
+}
+inline ::portfolio::mmo::AttackStop* PROTOBUF_NONNULL Packet::mutable_attack_stop()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::AttackStop* _msg = _internal_mutable_attack_stop();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.attack_stop)
+  return _msg;
+}
+
+// .portfolio.mmo.AttackSwing attack_swing = 204;
+inline bool Packet::has_attack_swing() const {
+  return body_case() == kAttackSwing;
+}
+inline bool Packet::_internal_has_attack_swing() const {
+  return body_case() == kAttackSwing;
+}
+inline void Packet::set_has_attack_swing() {
+  _impl_._oneof_case_[0] = kAttackSwing;
+}
+inline void Packet::clear_attack_swing() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kAttackSwing) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.attack_swing_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.attack_swing_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::AttackSwing* PROTOBUF_NULLABLE Packet::release_attack_swing() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.attack_swing)
+  if (body_case() == kAttackSwing) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::AttackSwing*>(_impl_.body_.attack_swing_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.attack_swing_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::AttackSwing& Packet::_internal_attack_swing() const {
+  return body_case() == kAttackSwing ? static_cast<const ::portfolio::mmo::AttackSwing&>(*reinterpret_cast<::portfolio::mmo::AttackSwing*>(_impl_.body_.attack_swing_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::AttackSwing>(&::portfolio::mmo::AttackSwing_globals_);
+}
+inline const ::portfolio::mmo::AttackSwing& Packet::attack_swing() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.attack_swing)
+  return _internal_attack_swing();
+}
+inline ::portfolio::mmo::AttackSwing* PROTOBUF_NULLABLE Packet::unsafe_arena_release_attack_swing() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.attack_swing)
+  if (body_case() == kAttackSwing) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::AttackSwing*>(_impl_.body_.attack_swing_);
+    _impl_.body_.attack_swing_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_attack_swing(
+    ::portfolio::mmo::AttackSwing* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_attack_swing();
+    _impl_.body_.attack_swing_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.attack_swing)
+}
+inline ::portfolio::mmo::AttackSwing* PROTOBUF_NONNULL Packet::_internal_mutable_attack_swing() {
+  if (body_case() != kAttackSwing) {
+    clear_body();
+    set_has_attack_swing();
+    _impl_.body_.attack_swing_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::AttackSwing>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::AttackSwing*>(_impl_.body_.attack_swing_);
+}
+inline ::portfolio::mmo::AttackSwing* PROTOBUF_NONNULL Packet::mutable_attack_swing()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::AttackSwing* _msg = _internal_mutable_attack_swing();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.attack_swing)
+  return _msg;
+}
+
+// .portfolio.mmo.Damaged damaged = 205;
+inline bool Packet::has_damaged() const {
+  return body_case() == kDamaged;
+}
+inline bool Packet::_internal_has_damaged() const {
+  return body_case() == kDamaged;
+}
+inline void Packet::set_has_damaged() {
+  _impl_._oneof_case_[0] = kDamaged;
+}
+inline void Packet::clear_damaged() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kDamaged) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.damaged_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.damaged_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::Damaged* PROTOBUF_NULLABLE Packet::release_damaged() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.damaged)
+  if (body_case() == kDamaged) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::Damaged*>(_impl_.body_.damaged_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.damaged_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::Damaged& Packet::_internal_damaged() const {
+  return body_case() == kDamaged ? static_cast<const ::portfolio::mmo::Damaged&>(*reinterpret_cast<::portfolio::mmo::Damaged*>(_impl_.body_.damaged_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::Damaged>(&::portfolio::mmo::Damaged_globals_);
+}
+inline const ::portfolio::mmo::Damaged& Packet::damaged() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.damaged)
+  return _internal_damaged();
+}
+inline ::portfolio::mmo::Damaged* PROTOBUF_NULLABLE Packet::unsafe_arena_release_damaged() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.damaged)
+  if (body_case() == kDamaged) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::Damaged*>(_impl_.body_.damaged_);
+    _impl_.body_.damaged_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_damaged(
+    ::portfolio::mmo::Damaged* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_damaged();
+    _impl_.body_.damaged_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.damaged)
+}
+inline ::portfolio::mmo::Damaged* PROTOBUF_NONNULL Packet::_internal_mutable_damaged() {
+  if (body_case() != kDamaged) {
+    clear_body();
+    set_has_damaged();
+    _impl_.body_.damaged_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::Damaged>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::Damaged*>(_impl_.body_.damaged_);
+}
+inline ::portfolio::mmo::Damaged* PROTOBUF_NONNULL Packet::mutable_damaged()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::Damaged* _msg = _internal_mutable_damaged();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.damaged)
+  return _msg;
+}
+
+// .portfolio.mmo.Died died = 206;
+inline bool Packet::has_died() const {
+  return body_case() == kDied;
+}
+inline bool Packet::_internal_has_died() const {
+  return body_case() == kDied;
+}
+inline void Packet::set_has_died() {
+  _impl_._oneof_case_[0] = kDied;
+}
+inline void Packet::clear_died() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kDied) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.died_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.died_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::Died* PROTOBUF_NULLABLE Packet::release_died() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.died)
+  if (body_case() == kDied) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::Died*>(_impl_.body_.died_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.died_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::Died& Packet::_internal_died() const {
+  return body_case() == kDied ? static_cast<const ::portfolio::mmo::Died&>(*reinterpret_cast<::portfolio::mmo::Died*>(_impl_.body_.died_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::Died>(&::portfolio::mmo::Died_globals_);
+}
+inline const ::portfolio::mmo::Died& Packet::died() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.died)
+  return _internal_died();
+}
+inline ::portfolio::mmo::Died* PROTOBUF_NULLABLE Packet::unsafe_arena_release_died() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.died)
+  if (body_case() == kDied) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::Died*>(_impl_.body_.died_);
+    _impl_.body_.died_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_died(
+    ::portfolio::mmo::Died* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_died();
+    _impl_.body_.died_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.died)
+}
+inline ::portfolio::mmo::Died* PROTOBUF_NONNULL Packet::_internal_mutable_died() {
+  if (body_case() != kDied) {
+    clear_body();
+    set_has_died();
+    _impl_.body_.died_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::Died>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::Died*>(_impl_.body_.died_);
+}
+inline ::portfolio::mmo::Died* PROTOBUF_NONNULL Packet::mutable_died()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::Died* _msg = _internal_mutable_died();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.died)
   return _msg;
 }
 
@@ -11433,6 +13423,318 @@ inline void SelfStats::_internal_set_defense(::uint32_t value) {
   _impl_.defense_ = value;
 }
 
+// -------------------------------------------------------------------
+
+// ActionFailed
+
+// .portfolio.mmo.FailReason reason = 1;
+inline void ActionFailed::clear_reason() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.reason_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::portfolio::mmo::FailReason ActionFailed::reason() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.ActionFailed.reason)
+  return _internal_reason();
+}
+inline void ActionFailed::set_reason(::portfolio::mmo::FailReason value) {
+  _internal_set_reason(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.ActionFailed.reason)
+}
+inline ::portfolio::mmo::FailReason ActionFailed::_internal_reason() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::portfolio::mmo::FailReason>(_impl_.reason_);
+}
+inline void ActionFailed::_internal_set_reason(::portfolio::mmo::FailReason value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.reason_ = value;
+}
+
+// .portfolio.mmo.RequestKind request = 2;
+inline void ActionFailed::clear_request() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.request_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::portfolio::mmo::RequestKind ActionFailed::request() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.ActionFailed.request)
+  return _internal_request();
+}
+inline void ActionFailed::set_request(::portfolio::mmo::RequestKind value) {
+  _internal_set_request(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.ActionFailed.request)
+}
+inline ::portfolio::mmo::RequestKind ActionFailed::_internal_request() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::portfolio::mmo::RequestKind>(_impl_.request_);
+}
+inline void ActionFailed::_internal_set_request(::portfolio::mmo::RequestKind value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.request_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AttackStart
+
+// uint32 target_id = 1;
+inline void AttackStart::clear_target_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.target_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::uint32_t AttackStart::target_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.AttackStart.target_id)
+  return _internal_target_id();
+}
+inline void AttackStart::set_target_id(::uint32_t value) {
+  _internal_set_target_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.AttackStart.target_id)
+}
+inline ::uint32_t AttackStart::_internal_target_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.target_id_;
+}
+inline void AttackStart::_internal_set_target_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.target_id_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AttackStop
+
+// -------------------------------------------------------------------
+
+// AttackSwing
+
+// uint32 attacker_id = 1;
+inline void AttackSwing::clear_attacker_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.attacker_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::uint32_t AttackSwing::attacker_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.AttackSwing.attacker_id)
+  return _internal_attacker_id();
+}
+inline void AttackSwing::set_attacker_id(::uint32_t value) {
+  _internal_set_attacker_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.AttackSwing.attacker_id)
+}
+inline ::uint32_t AttackSwing::_internal_attacker_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.attacker_id_;
+}
+inline void AttackSwing::_internal_set_attacker_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.attacker_id_ = value;
+}
+
+// uint32 target_id = 2;
+inline void AttackSwing::clear_target_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.target_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t AttackSwing::target_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.AttackSwing.target_id)
+  return _internal_target_id();
+}
+inline void AttackSwing::set_target_id(::uint32_t value) {
+  _internal_set_target_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.AttackSwing.target_id)
+}
+inline ::uint32_t AttackSwing::_internal_target_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.target_id_;
+}
+inline void AttackSwing::_internal_set_target_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.target_id_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// Damaged
+
+// uint32 attacker_id = 1;
+inline void Damaged::clear_attacker_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.attacker_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::uint32_t Damaged::attacker_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Damaged.attacker_id)
+  return _internal_attacker_id();
+}
+inline void Damaged::set_attacker_id(::uint32_t value) {
+  _internal_set_attacker_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Damaged.attacker_id)
+}
+inline ::uint32_t Damaged::_internal_attacker_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.attacker_id_;
+}
+inline void Damaged::_internal_set_attacker_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.attacker_id_ = value;
+}
+
+// uint32 target_id = 2;
+inline void Damaged::clear_target_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.target_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t Damaged::target_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Damaged.target_id)
+  return _internal_target_id();
+}
+inline void Damaged::set_target_id(::uint32_t value) {
+  _internal_set_target_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Damaged.target_id)
+}
+inline ::uint32_t Damaged::_internal_target_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.target_id_;
+}
+inline void Damaged::_internal_set_target_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.target_id_ = value;
+}
+
+// uint32 damage = 3;
+inline void Damaged::clear_damage() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.damage_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000004U);
+}
+inline ::uint32_t Damaged::damage() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Damaged.damage)
+  return _internal_damage();
+}
+inline void Damaged::set_damage(::uint32_t value) {
+  _internal_set_damage(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Damaged.damage)
+}
+inline ::uint32_t Damaged::_internal_damage() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.damage_;
+}
+inline void Damaged::_internal_set_damage(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.damage_ = value;
+}
+
+// uint32 hp = 4;
+inline void Damaged::clear_hp() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.hp_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000008U);
+}
+inline ::uint32_t Damaged::hp() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Damaged.hp)
+  return _internal_hp();
+}
+inline void Damaged::set_hp(::uint32_t value) {
+  _internal_set_hp(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000008U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Damaged.hp)
+}
+inline ::uint32_t Damaged::_internal_hp() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.hp_;
+}
+inline void Damaged::_internal_set_hp(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.hp_ = value;
+}
+
+// bool critical = 5;
+inline void Damaged::clear_critical() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.critical_ = false;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000010U);
+}
+inline bool Damaged::critical() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Damaged.critical)
+  return _internal_critical();
+}
+inline void Damaged::set_critical(bool value) {
+  _internal_set_critical(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000010U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Damaged.critical)
+}
+inline bool Damaged::_internal_critical() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.critical_;
+}
+inline void Damaged::_internal_set_critical(bool value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.critical_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// Died
+
+// uint32 id = 1;
+inline void Died::clear_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::uint32_t Died::id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Died.id)
+  return _internal_id();
+}
+inline void Died::set_id(::uint32_t value) {
+  _internal_set_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Died.id)
+}
+inline ::uint32_t Died::_internal_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.id_;
+}
+inline void Died::_internal_set_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.id_ = value;
+}
+
+// uint32 killer_id = 2;
+inline void Died::clear_killer_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.killer_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t Died::killer_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Died.killer_id)
+  return _internal_killer_id();
+}
+inline void Died::set_killer_id(::uint32_t value) {
+  _internal_set_killer_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Died.killer_id)
+}
+inline ::uint32_t Died::_internal_killer_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.killer_id_;
+}
+inline void Died::_internal_set_killer_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.killer_id_ = value;
+}
+
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif  // __GNUC__
@@ -11504,6 +13806,18 @@ struct is_proto_enum<::portfolio::mmo::ProgressKind> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::ProgressKind>() {
   return ::portfolio::mmo::ProgressKind_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::FailReason> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::FailReason>() {
+  return ::portfolio::mmo::FailReason_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::RequestKind> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::RequestKind>() {
+  return ::portfolio::mmo::RequestKind_descriptor();
 }
 
 }  // namespace protobuf

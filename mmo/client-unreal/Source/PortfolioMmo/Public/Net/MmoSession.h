@@ -5,6 +5,7 @@
 #include "Protocol/MmoPackets.h"
 #include "Data/GameData.h"
 #include "World/FieldMap.h"
+#include "World/CombatState.h"
 #include "World/WorldState.h"
 
 #include "MmoSession.generated.h"
@@ -54,6 +55,12 @@ public:
 	/** 들어오고 나간 개체의 큐를 꺼내는 화면(UMmoEntitySubsystem)만 쓴다. */
 	MmoWorld::FWorldState& World() { return WorldState; }
 
+	/** 내 대상과 기본 공격, 전투 사건. 서버의 패킷은 월드에 반영한 뒤 여기에 넘기고, 대상이 죽거나 나가 생긴 AttackStop은 세션이 보낸다. */
+	MmoWorld::FCombatState& Combat() { return CombatState; }
+
+	/** 월드 안의 요청(AttackStart 등)을 보낸다. 연결이 없으면 버린다. */
+	void Send(const portfolio::mmo::Packet& Packet);
+
 	/** 시작할 때 읽은 기획 데이터. */
 	const MmoData::FGameData& Data() const { return GameData; }
 
@@ -80,6 +87,7 @@ private:
 	int32 Port = 0;
 	FString CurrentLoginId;
 	MmoWorld::FWorldState WorldState;
+	MmoWorld::FCombatState CombatState;
 	portfolio::mmo::CharacterList CharacterList;
 	/** 시작할 때 한 번 읽은 기획 데이터. 읽지 못하면 해시가 0이라 서버가 DATA_MISMATCH로 거절한다. */
 	MmoData::FGameData GameData;

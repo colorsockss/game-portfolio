@@ -127,6 +127,15 @@ void UMmoSession::LeaveWorld()
 	Packet.mutable_leave_world();
 	Connection().Send(Packet);
 	WorldState.Reset();
+	CombatState.Reset();
+}
+
+void UMmoSession::Send(const portfolio::mmo::Packet& Packet)
+{
+	if (Connection().IsConnected())
+	{
+		Connection().Send(Packet);
+	}
 }
 
 void UMmoSession::HandleConnected()
@@ -147,7 +156,12 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 	{
 		CharacterList = Packet.character_list();
 	}
-	WorldState.Apply(Packet, FPlatformTime::Seconds());
+	const double Now = FPlatformTime::Seconds();
+	WorldState.Apply(Packet, Now);
+	if (const std::optional<portfolio::mmo::Packet> Stop = CombatState.Apply(Packet, WorldState, GameData, Now))
+	{
+		Send(*Stop);
+	}
 	OnPacket.Broadcast(Packet);
 }
 
@@ -155,6 +169,7 @@ void UMmoSession::HandleClosed(const FString& Reason)
 {
 	// 보이던 개체(내 캐릭터 포함)가 모두 나간 것으로 큐에 들어가 화면이 지운다.
 	WorldState.Reset();
+	CombatState.Reset();
 	OnClosed.Broadcast(Reason);
 }
 

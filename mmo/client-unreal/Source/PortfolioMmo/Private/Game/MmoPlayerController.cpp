@@ -7,6 +7,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Game/MmoCharacter.h"
 #include "Game/MmoCoordinates.h"
+#include "Game/MmoEntityActor.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
@@ -46,6 +47,10 @@ void AMmoPlayerController::SetupInputComponent()
 	BackAction->ValueType = EInputActionValueType::Boolean;
 	ClickAction = NewObject<UInputAction>(this, TEXT("Click"));
 	ClickAction->ValueType = EInputActionValueType::Boolean;
+	AttackAction = NewObject<UInputAction>(this, TEXT("Attack"));
+	AttackAction->ValueType = EInputActionValueType::Boolean;
+	TargetAction = NewObject<UInputAction>(this, TEXT("Target"));
+	TargetAction->ValueType = EInputActionValueType::Boolean;
 
 	// 이동은 (x: 오른쪽, y: 앞). 키 하나의 값은 x로 들어오므로 앞뒤 키는 y로 옮기고(Swizzle) 반대쪽 키는 뒤집는다(Negate).
 	Mapping = NewObject<UInputMappingContext>(this, TEXT("Mapping"));
@@ -72,6 +77,9 @@ void AMmoPlayerController::SetupInputComponent()
 	Mapping->MapKey(BackAction, EKeys::Escape);
 	Mapping->MapKey(BackAction, EKeys::Android_Back);
 	Mapping->MapKey(ClickAction, EKeys::LeftMouseButton);
+	// 키는 backlog 89가 한 곳으로 모은다.
+	Mapping->MapKey(AttackAction, EKeys::F);
+	Mapping->MapKey(TargetAction, EKeys::Tab);
 
 	if (UEnhancedInputLocalPlayerSubsystem* Input = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -84,6 +92,8 @@ void AMmoPlayerController::SetupInputComponent()
 	Enhanced->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &AMmoPlayerController::HandleZoom);
 	Enhanced->BindAction(BackAction, ETriggerEvent::Started, this, &AMmoPlayerController::HandleBack);
 	Enhanced->BindAction(ClickAction, ETriggerEvent::Started, this, &AMmoPlayerController::HandleClick);
+	Enhanced->BindAction(AttackAction, ETriggerEvent::Started, this, &AMmoPlayerController::AttackOrTargetNearest);
+	Enhanced->BindAction(TargetAction, ETriggerEvent::Started, this, &AMmoPlayerController::TargetNearest);
 }
 
 void AMmoPlayerController::BeginPlay()
@@ -119,6 +129,7 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 {
 	// 회전 입력은 Super::PlayerTick 안에서 적용되고 액터 틱 끝에 지워지므로, 그 앞에서 넣어야 한다.
 	UpdateTouchCamera();
+	UpdateEngagement();
 	FollowPath();
 	Super::PlayerTick(DeltaTime);
 
@@ -140,6 +151,12 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 	if (!Self || !Connection->IsConnected())
 	{
 		return;
+	}
+
+	// 개발용: -MmoAttack이면 걷기가 끝난 뒤 대상이 없을 때마다 가장 가까운 적에게 공격하러 간다(키 입력 없이 전투를 확인).
+	if (PathFollower.IsDone() && !bEngaged && Session().Combat().Target() == 0 && FParse::Param(FCommandLine::Get(), TEXT("MmoAttack")))
+	{
+		AttackOrTargetNearest();
 	}
 
 	const FVector Location = Self->GetActorLocation();
@@ -206,6 +223,104 @@ void AMmoPlayerController::FollowPath()
 	}
 }
 
+UMmoSession& AMmoPlayerController::Session() const
+{
+	return *GetGameInstance()->GetSubsystem<UMmoSession>();
+}
+
+void AMmoPlayerController::SelectTarget(uint32 Id)
+{
+	bEngaged = false;
+	if (const std::optional<portfolio::mmo::Packet> Stop = Session().Combat().SetTarget(Id))
+	{
+		Session().Send(*Stop);
+	}
+}
+
+void AMmoPlayerController::Engage()
+{
+	bEngaged = Session().Combat().Target() != 0;
+	// 길은 다음 UpdateEngagement가 찾는다.
+	EngagedGoal = { MIN_int32, MIN_int32 };
+	PathFollower.Start({});
+}
+
+void AMmoPlayerController::AttackOrTargetNearest()
+{
+	if (bManualMoveBlocked)
+	{
+		return;
+	}
+	if (Session().Combat().Target() == 0)
+	{
+		TargetNearest();
+	}
+	Engage();
+}
+
+void AMmoPlayerController::TargetNearest()
+{
+	const APawn* Self = GetPawn();
+	if (!Self || bManualMoveBlocked)
+	{
+		return;
+	}
+	const FVector Location = Self->GetActorLocation();
+	SelectTarget(MmoWorld::FCombatState::NearestEnemy(Session().World(), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location)));
+}
+
+void AMmoPlayerController::UpdateEngagement()
+{
+	UMmoSession& Net = Session();
+	MmoWorld::FCombatState& Combat = Net.Combat();
+	const APawn* Self = GetPawn();
+	const MmoWorld::FFieldMap* Field = Net.Field();
+	const MmoWorld::FEntity* Me = Net.World().SelfEntity();
+	const auto& Entities = Net.World().Entities();
+	const auto Target = Entities.find(Combat.Target());
+	if (!bEngaged || !Self || !Field || !Me || Target == Entities.end() || Target->second.Info.dead())
+	{
+		bEngaged = false;
+		return;
+	}
+	const std::optional<MmoWorld::FCombatState::FAttack> Attack = MmoWorld::FCombatState::AttackOf(Me->Info, Net.Data());
+	if (!Attack)
+	{
+		bEngaged = false;
+		return;
+	}
+
+	const FVector Location = Self->GetActorLocation();
+	const int32 X = MmoCoordinates::ToX(Location);
+	const int32 Z = MmoCoordinates::ToZ(Location);
+	const MmoWorld::FEntity& Goal = Target->second;
+	if (MmoWorld::FCombatState::CanStrikeFrom(*Field, X, Z, Goal, Attack->RangeMeters))
+	{
+		PathFollower.Start({});
+		if (!Combat.IsAttacking())
+		{
+			// 밀린 위치를 먼저 보내 서버가 지금 자리에서 사거리와 선을 보게 한다.
+			portfolio::mmo::Packet Move;
+			if (MoveSender.Flush(X, Z, MmoCoordinates::ToYaw(Self->GetActorRotation()), Net.World().Ack(), *Move.mutable_move()))
+			{
+				Net.Send(Move);
+			}
+			if (const std::optional<portfolio::mmo::Packet> Start = Combat.StartAttack(Net.World().SelfId()))
+			{
+				Net.Send(*Start);
+			}
+		}
+		return;
+	}
+
+	const double Moved = FMath::Sqrt(FMath::Square(static_cast<double>(Goal.X) - EngagedGoal.X) + FMath::Square(static_cast<double>(Goal.Z) - EngagedGoal.Z));
+	if (PathFollower.IsDone() || Moved > MmoWorld::Units::PerMeter)
+	{
+		EngagedGoal = { Goal.X, Goal.Z };
+		bEngaged = WalkTo(MmoCoordinates::ToWorld(Goal.X, Goal.Z));
+	}
+}
+
 void AMmoPlayerController::HandleClick()
 {
 	// 터치 기기에서는 이동을 조이스틱만 쓴다(빈 땅을 누르는 것은 대상 풀기. backlog 24). 창이 열린 동안은 손 조작을 막는다.
@@ -214,7 +329,28 @@ void AMmoPlayerController::HandleClick()
 		return;
 	}
 
-	// 땅은 평지(높이 0)라 커서 광선과 땅의 평면이 만나는 곳이다. 맵의 것(건물 등)을 눌러도 그 뒤의 땅이다.
+	// 개체를 누르면 대상이 되고, 이미 대상인 몬스터를 다시 누르면 공격하러 간다. 다른 플레이어도 대상이 된다(공격은 44 전에는 서버가 거절).
+	FHitResult Hit;
+	if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+	{
+		if (const AMmoEntityActor* Picked = Cast<AMmoEntityActor>(Hit.GetActor()))
+		{
+			const auto& Entities = Session().World().Entities();
+			const auto Found = Entities.find(Picked->EntityId);
+			if (Found != Entities.end() && Picked->EntityId == Session().Combat().Target() && Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER)
+			{
+				Engage();
+			}
+			else
+			{
+				SelectTarget(Picked->EntityId);
+			}
+			return;
+		}
+	}
+
+	// 땅은 평지(높이 0)라 커서 광선과 땅의 평면이 만나는 곳이다. 맵의 것(건물 등)을 눌러도 그 뒤의 땅이다. 대상은 그대로다.
+	bEngaged = false;
 	FVector Origin, Direction;
 	if (!DeprojectMousePositionToWorld(Origin, Direction) || Direction.Z >= -KINDA_SMALL_NUMBER)
 	{
@@ -240,6 +376,7 @@ void AMmoPlayerController::HandleMove(const FInputActionValue& Value)
 	if (!Axis.IsNearlyZero())
 	{
 		PathFollower.Start({});
+		bEngaged = false;
 	}
 	const FRotationMatrix Facing(FRotator(0.0, GetControlRotation().Yaw, 0.0));
 	Self->AddMovementInput(Facing.GetUnitAxis(EAxis::X), Axis.Y);

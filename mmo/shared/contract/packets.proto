@@ -21,6 +21,7 @@ message Packet {
     EnterWorld enter_world = 9;
     EnterWorldResult enter_world_result = 10;
     LeaveWorld leave_world = 11;
+    ActionFailed action_failed = 12;
 
     // 100–199: 월드(이동과 시야)
     Move move = 100;
@@ -33,6 +34,11 @@ message Packet {
     // 200–299: 전투
     SelfVitals self_vitals = 200;
     EntityVitals entity_vitals = 201;
+    AttackStart attack_start = 202;
+    AttackStop attack_stop = 203;
+    AttackSwing attack_swing = 204;
+    Damaged damaged = 205;
+    Died died = 206;
 
     // 300–399: 성장과 아이템
     SelfStats self_stats = 300;
@@ -379,4 +385,55 @@ message SelfStats {
   uint32 max_mp = 2;
   uint32 attack = 3;
   uint32 defense = 4;
+}
+
+// 서버 → 클라이언트. 요청 번호가 없는 요청이 실패했다(어느 요청인지와 이유). 끊지 않는다.
+message ActionFailed {
+  FailReason reason = 1;
+  RequestKind request = 2;
+}
+
+// 실패한 이유. 0은 성공이다. 값마다의 글은 클라이언트의 문자열 표가 가진다(backlog 28). 뒤의 항목이 자기 이유를 더한다.
+enum FailReason {
+  FAIL_REASON_NONE = 0;
+  // 대상이 없음(없는 번호, 죽었음, 그 연결이 받지 않은 개체).
+  FAIL_REASON_NO_TARGET = 1;
+  // 공격할 수 없는 대상(CanAttack이 거짓, 복귀 중인 몬스터).
+  FAIL_REASON_INVALID_TARGET = 2;
+}
+
+// ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
+enum RequestKind {
+  REQUEST_KIND_UNSPECIFIED = 0;
+  REQUEST_KIND_ATTACK = 1;
+}
+
+// 클라이언트 → 서버. 대상을 기본 공격한다. 이미 공격 중이면 대상만 바꾼다. 다가가는 것은 클라이언트의 이동이다.
+message AttackStart {
+  uint32 target_id = 1;
+}
+
+// 클라이언트 → 서버. 기본 공격을 멈춘다. 이미 시작한 타격은 맞는다.
+message AttackStop {}
+
+// 서버 → 클라이언트. 공격 동작의 시작(그 틱). 결과는 타격까지의 시간 뒤의 Damaged가 알린다. 대상을 받은 연결과 대상 자신에게 가고,
+// 받는 연결이 받지 않은 공격자의 번호는 0이다.
+message AttackSwing {
+  uint32 attacker_id = 1;
+  uint32 target_id = 2;
+}
+
+// 서버 → 클라이언트. 피해. hp는 맞은 뒤의 체력이다. 받는 연결과 공격자 번호 0의 규칙은 AttackSwing과 같다.
+message Damaged {
+  uint32 attacker_id = 1;
+  uint32 target_id = 2;
+  uint32 damage = 3;
+  uint32 hp = 4;
+  bool critical = 5;
+}
+
+// 서버 → 클라이언트. 죽음. 죽은 개체를 받은 연결과 본인에게 가고, 받는 연결이 받지 않은 죽인 개체의 번호는 0이다.
+message Died {
+  uint32 id = 1;
+  uint32 killer_id = 2;
 }

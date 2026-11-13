@@ -142,6 +142,14 @@ namespace PortfolioMmo.Server.Tests
         /// </summary>
         public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, params string[] rows)
         {
+            return WithMonsters(spawns, rows, null, null, null);
+        }
+
+        /// <summary>
+        /// WithMonsters에 직업, 상수, 몬스터를 바꾼 데이터. null이면 처음 값이다.
+        /// </summary>
+        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters)
+        {
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             int min = -(int)size / 2;
             var table = new Zones
@@ -155,7 +163,9 @@ namespace PortfolioMmo.Server.Tests
                 },
             };
             table.Rows.Add(zones);
-            return new GameData(Hash, Constants(size), table, grid, Classes, Levels, new Monsters { Rows = { Monster(1, aggressive: true), Monster(2, aggressive: false) } }, new Spawns { Rows = { spawns } });
+            return new GameData(
+                Hash, constants ?? Constants(size), table, grid, classes ?? Classes, Levels,
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } });
         }
 
         /// <summary>

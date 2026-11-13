@@ -68,6 +68,12 @@ namespace PortfolioMmo.Contract.Tests
                 new Packet { SelfVitals = new SelfVitals { Hp = 140, Mp = 0, CombatEndTick = 72100, AggressorEndTick = 72600 } },
                 new Packet { EntityVitals = new EntityVitals { Entities = { new EntityVital { Id = 7, Hp = 95, MaxHp = 120 }, new EntityVital { Id = 8, Hp = 50, MaxHp = 50 } } } },
                 new Packet { SelfStats = new SelfStats { MaxHp = 150, MaxMp = 50, Attack = 12, Defense = 10 } },
+                new Packet { ActionFailed = new ActionFailed { Reason = FailReason.InvalidTarget, Request = RequestKind.Attack } },
+                new Packet { AttackStart = new AttackStart { TargetId = 1234 } },
+                new Packet { AttackStop = new AttackStop() },
+                new Packet { AttackSwing = new AttackSwing { AttackerId = 0, TargetId = 1234 } },
+                new Packet { Damaged = new Damaged { AttackerId = 7, TargetId = 1234, Damage = 18, Hp = 42, Critical = true } },
+                new Packet { Died = new Died { Id = 1234, KillerId = 7 } },
             };
 
             using var stream = new MemoryStream();
@@ -143,6 +149,24 @@ namespace PortfolioMmo.Contract.Tests
             using var stream = new MemoryStream();
             packet.WriteDelimitedTo(stream);
             Assert.Equal(760, stream.Length);
+        }
+
+        /// <summary>
+        /// AttackSwing의 프레임은 번호가 1바이트 varint(127 이하)면 8바이트, 2바이트(16,383 이하)면 10바이트다
+        /// (길이 1 + 필드 204의 태그 2 + 본문 길이 1 + 번호 둘마다 태그 1과 varint). 설계의 "약 8바이트"는 앞의 경우다.
+        /// </summary>
+        [Fact]
+        public void AttackSwingIsEightToTenBytes()
+        {
+            Assert.Equal(8, FrameSize(new Packet { AttackSwing = new AttackSwing { AttackerId = 12, TargetId = 34 } }));
+            Assert.Equal(10, FrameSize(new Packet { AttackSwing = new AttackSwing { AttackerId = 1234, TargetId = 1235 } }));
+        }
+
+        private static long FrameSize(Packet packet)
+        {
+            using var stream = new MemoryStream();
+            packet.WriteDelimitedTo(stream);
+            return stream.Length;
         }
     }
 }

@@ -13,6 +13,11 @@ namespace PortfolioMmo.Server
         /// 몬스터(주인)가 대상(A)에 건 "닿을 수 없음"의 끝(23). 세대 번호는 대상마다의 표시에 있다.
         /// </summary>
         UnreachableEnd = 1,
+
+        /// <summary>
+        /// 공격자(주인)의 기본 공격이 대상(A)에 맞는 틱(24). 세대 번호는 공격자의 StrikeGeneration이고 전투 차례로 넘긴다.
+        /// </summary>
+        Strike = 2,
     }
 
     /// <summary>
@@ -76,6 +81,23 @@ namespace PortfolioMmo.Server
         {
             generation = ++_lastGeneration;
             Add(due, new ScheduledJob(kind, owner, a, b, generation));
+        }
+
+        /// <summary>
+        /// 주인의 칸에 이미 있는 세대 번호(generation)로 일을 넣는다. 한 칸의 번호로 여럿이 함께 걸리는 일(공격자의 타격들)이 쓰고,
+        /// 버릴 때는 칸에 NewGeneration을 쓴다.
+        /// </summary>
+        public void Add(uint due, ScheduledKind kind, uint owner, uint a, uint b, ulong generation)
+        {
+            Add(due, new ScheduledJob(kind, owner, a, b, generation));
+        }
+
+        /// <summary>
+        /// 아직 준 적 없는 세대 번호. 칸에 써서 그 칸의 옛 일을 모두 버리거나, 번호를 다시 쓴 새 개체의 칸을 처음 채운다.
+        /// </summary>
+        public ulong NewGeneration()
+        {
+            return ++_lastGeneration;
         }
 
         /// <summary>

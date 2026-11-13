@@ -62,6 +62,13 @@
 			]
 		},
 		{
+			"Name": "PropertyAccessEditor",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		},
+		{
 			"Name": "PythonScriptPlugin",
 			"Enabled": true,
 			"TargetAllowList": [

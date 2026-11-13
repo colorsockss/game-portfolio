@@ -8,7 +8,7 @@ namespace PortfolioMmo.Server
     /// <summary>
     /// 월드의 데이터(EntityTable, Grid)와 시스템을 묶고, 틱을 정해진 차례로 돌린다. 틱 스레드 하나만 부르므로 확인과 쓰기가 늘 한 동기 구간에 있다.
     /// 차례: 1. 입력(Receive. GameServer가 큐를 비우며 부름) → 2. 예약한 일 → 3. 몬스터 → 4. 전투 → 5. 회복과 효과 → 6. 시야 → 7. 저장 → 8. 보내기(GameServer).
-    /// 4는 그 기능이 생길 때 Step에 더한다. 입력의 요청은 자기 플레이어의 상태만 고치고, 남을 고치는 결과는 전투 차례로 넘긴다.
+    /// 차례마다의 시스템은 아래의 Step에 있다. 입력의 요청은 자기 플레이어의 상태만 고치고, 남을 고치는 결과는 전투 차례로 넘긴다.
     /// </summary>
     public sealed class World : IScheduledRunner
     {
@@ -26,6 +26,8 @@ namespace PortfolioMmo.Server
         private readonly Scheduler _scheduler = new Scheduler();
         private readonly VitalsSystem _vitals;
         private readonly AiSystem _ai;
+        private readonly CombatSystem _combat;
+        private readonly TickEvents _events;
 
         /// <summary>
         /// 빈 월드를 만든다.
@@ -38,8 +40,10 @@ namespace PortfolioMmo.Server
             _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, field, _entities, _grid, _save, stats);
             _vitals = new VitalsSystem(_entities, data);
             _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random);
+            _events = new TickEvents(_grid);
+            _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events);
             // 놓인 점의 번호는 플레이어보다 먼저 받는다.
-            new SpawnSystem(data, field, _entities, _grid, _ai, random).PlaceAll();
+            new SpawnSystem(data, field, _entities, _grid, _ai, _scheduler, random).PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
             _view = new ViewSystem(_entities, _grid);
         }
@@ -107,6 +111,12 @@ namespace PortfolioMmo.Server
                     }
 
                     break;
+                case Packet.BodyOneofCase.AttackStart when player != null:
+                    _combat.Start(player, packet.AttackStart);
+                    break;
+                case Packet.BodyOneofCase.AttackStop when player != null:
+                    _combat.Stop(player);
+                    break;
                 case Packet.BodyOneofCase.Ping:
                     session.Send(new Packet { Pong = new Pong { Tick = Tick } });
                     break;
@@ -145,9 +155,13 @@ namespace PortfolioMmo.Server
             long scheduled = Stopwatch.GetTimestamp();
             _ai.Step(Tick, elapsedTicks);
             long monsters = Stopwatch.GetTimestamp();
+            _combat.Step(Tick);
+            long combat = Stopwatch.GetTimestamp();
             _vitals.Step(Tick);
             long vitals = Stopwatch.GetTimestamp();
             _view.Step(Tick);
+            // 사건은 같은 틱의 들어옴·나감·움직임 뒤에 간다.
+            _events.Deliver();
             long viewed = Stopwatch.GetTimestamp();
             _movement.Step(elapsedTicks);
             Tick += elapsedTicks;
@@ -159,7 +173,8 @@ namespace PortfolioMmo.Server
 
             profile?.Add(TickPhase.Scheduled, scheduled - started);
             profile?.Add(TickPhase.Monsters, monsters - scheduled);
-            profile?.Add(TickPhase.Vitals, vitals - monsters);
+            profile?.Add(TickPhase.Combat, combat - monsters);
+            profile?.Add(TickPhase.Vitals, vitals - combat);
             profile?.Add(TickPhase.View, viewed - vitals);
             profile?.Add(TickPhase.Input, filled - viewed);
             profile?.Add(TickPhase.Save, saved - filled);
@@ -220,6 +235,7 @@ namespace PortfolioMmo.Server
             return job.Kind switch
             {
                 ScheduledKind.UnreachableEnd => _ai.IsUnreachableCurrent(job),
+                ScheduledKind.Strike => _combat.IsStrikeCurrent(job),
                 _ => throw UnknownKind(job.Kind),
             };
         }
@@ -229,6 +245,7 @@ namespace PortfolioMmo.Server
             return kind switch
             {
                 ScheduledKind.UnreachableEnd => false,
+                ScheduledKind.Strike => true,
                 _ => throw UnknownKind(kind),
             };
         }

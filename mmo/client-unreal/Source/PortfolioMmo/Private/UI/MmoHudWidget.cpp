@@ -5,9 +5,70 @@
 #include "Engine/GameInstance.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Game/MmoCoordinates.h"
+#include "Game/MmoPlayerController.h"
+#include "UI/MmoButtonWidget.h"
 #include "GameFramework/Pawn.h"
 #include "Net/MmoSession.h"
 #include "UI/MmoJoystickWidget.h"
+
+void UMmoHudWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	AttackButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleAttackClicked);
+	TargetButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleTargetClicked);
+}
+
+void UMmoHudWidget::HandleAttackClicked()
+{
+	if (AMmoPlayerController* Controller = GetOwningPlayer<AMmoPlayerController>())
+	{
+		Controller->AttackOrTargetNearest();
+	}
+}
+
+void UMmoHudWidget::HandleTargetClicked()
+{
+	if (AMmoPlayerController* Controller = GetOwningPlayer<AMmoPlayerController>())
+	{
+		Controller->TargetNearest();
+	}
+}
+
+void UMmoHudWidget::ShowTarget()
+{
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const auto& Entities = Session->World().Entities();
+	const auto Found = Entities.find(Session->Combat().Target());
+	if (Found == Entities.end())
+	{
+		if (ShownTarget != 0)
+		{
+			ShownTarget = 0;
+			TargetPanel->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		return;
+	}
+
+	const portfolio::mmo::EntityEnter& Info = Found->second.Info;
+	if (ShownTarget != Found->first)
+	{
+		ShownTarget = Found->first;
+		ShownTargetHp = MAX_uint64;
+		FString Name = UTF8_TO_TCHAR(Info.name().c_str());
+		if (const portfolio::mmo::data::MonstersRow* Row = Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER ? Session->Data().Monster(Info.template_id()) : nullptr)
+		{
+			// shortcut: 이름은 Strings의 키 그대로(74 전).
+			Name = FString::Printf(TEXT("%s  Lv %u"), UTF8_TO_TCHAR(Row->name_key().c_str()), Row->level());
+		}
+		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER)
+		{
+			Name += FString::Printf(TEXT("  Lv %u"), Info.level());
+		}
+		TargetNameText->SetText(FText::FromString(Name));
+		TargetPanel->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+	ShowBar(*TargetHpBar, *TargetHpText, Info.hp(), Info.max_hp(), ShownTargetHp);
+}
 
 void UMmoHudWidget::NativeConstruct()
 {
@@ -18,6 +79,7 @@ void UMmoHudWidget::NativeConstruct()
 	ShownZone = MAX_uint32;
 	ShownHp = MAX_uint64;
 	ShownMp = MAX_uint64;
+	ShownTarget = MAX_uint32;
 }
 
 void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -27,6 +89,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	const MmoWorld::FSelfState& Vitals = Session->World().SelfState();
 	ShowBar(*HpBar, *HpText, Vitals.Hp, Vitals.MaxHp, ShownHp);
 	ShowBar(*MpBar, *MpText, Vitals.Mp, Vitals.MaxMp, ShownMp);
+	ShowTarget();
 
 	const MmoWorld::FFieldMap* Field = Session->Field();
 	const APawn* Self = GetOwningPlayerPawn();
