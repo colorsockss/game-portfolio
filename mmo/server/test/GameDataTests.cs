@@ -1,8 +1,9 @@
 using System;
 using System.IO;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using System.Threading.Tasks;
 using PortfolioMmo.Contract;
+using PortfolioMmo.Data;
 using PortfolioMmo.Server;
 using Xunit;
 
@@ -19,12 +20,21 @@ namespace PortfolioMmo.Server.Tests
         [Fact]
         public void LoadsTheGeneratedDataNextToTheExecutable()
         {
-            string generated = File.ReadAllText(Path.Combine(TestFolder(), "../../shared/data/files", GameData.HashFile)).Trim();
-            Assert.Equal(generated, GameData.Load(GameData.DefaultFolder).Hash.ToString("x16"));
+            string generated = File.ReadAllText(TestData.Shared(Path.Combine("data/files", GameData.HashFile))).Trim();
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            Assert.Equal(generated, data.Hash.ToString("x16"));
+
+            // 클라이언트의 엔진 없는 테스트(GameDataTest)가 같은 생성물에서 같은 값을 읽는다.
+            Assert.Equal(600u, data.Constants.FieldSize);
+            Assert.Equal(new uint[] { 1, 2, 3, 4, 5, 6 }, data.Zones.Rows.Select(zone => zone.Id));
+            ZonesRow town = data.Zones.Rows[0];
+            Assert.Equal(("zone.town", ZoneKind.Town, true, -40, 40), (town.NameKey, town.Kind, town.Safe, town.MinX, town.MaxX));
+            Assert.Equal((0, -10), (town.RespawnX, town.RespawnZ));
+            Assert.False(data.Zones.Rows[1].HasRespawnX);
         }
 
         /// <summary>
-        /// 해시 파일이 없거나 16진수 16자가 아니면 읽지 못한다.
+        /// 해시 파일이 없거나 16진수 16자가 아니면 읽지 못한다. 테이블의 파일이 없어도 읽지 못한다.
         /// </summary>
         [Fact]
         public void RejectsAMissingOrBrokenHash()
@@ -32,13 +42,14 @@ namespace PortfolioMmo.Server.Tests
             string folder = Directory.CreateTempSubdirectory("mmo-data-").FullName;
             try
             {
-                Assert.Throws<FileNotFoundException>(() => GameData.Load(folder));
+                Assert.Throws<FileNotFoundException>(() => GameData.ReadHash(folder));
                 File.WriteAllText(Path.Combine(folder, GameData.HashFile), "e3b0c442\n");
-                Assert.Throws<InvalidDataException>(() => GameData.Load(folder));
+                Assert.Throws<InvalidDataException>(() => GameData.ReadHash(folder));
                 File.WriteAllText(Path.Combine(folder, GameData.HashFile), "e3b0c44298fc1c1g\n");
-                Assert.Throws<InvalidDataException>(() => GameData.Load(folder));
+                Assert.Throws<InvalidDataException>(() => GameData.ReadHash(folder));
                 File.WriteAllText(Path.Combine(folder, GameData.HashFile), "e3b0c44298fc1c14\n");
-                Assert.Equal(0xe3b0c44298fc1c14, GameData.Load(folder).Hash);
+                Assert.Equal(0xe3b0c44298fc1c14, GameData.ReadHash(folder));
+                Assert.Throws<FileNotFoundException>(() => GameData.Load(folder));
             }
             finally
             {
@@ -54,14 +65,6 @@ namespace PortfolioMmo.Server.Tests
         {
             string folder = Path.Combine(Path.GetTempPath(), $"mmo-no-data-{Guid.NewGuid():N}");
             Assert.Equal(1, await Program.Main(new[] { "--data", folder, "--port", "0", "--database", ":memory:" }));
-        }
-
-        /// <summary>
-        /// 이 파일이 있는 폴더(mmo/server/test).
-        /// </summary>
-        private static string TestFolder([CallerFilePath] string path = "")
-        {
-            return Path.GetDirectoryName(path)!;
         }
 
         /// <summary>

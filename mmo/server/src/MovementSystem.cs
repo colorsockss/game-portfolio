@@ -20,15 +20,17 @@ namespace PortfolioMmo.Server
 
         private readonly EntityTable _entities;
         private readonly Grid _grid;
+        private readonly FieldMap _field;
 
-        public MovementSystem(EntityTable entities, Grid grid)
+        public MovementSystem(EntityTable entities, Grid grid, FieldMap field)
         {
             _entities = entities;
             _grid = grid;
+            _field = field;
         }
 
         /// <summary>
-        /// Move를 검증하고 받아들인다. 맵 밖이거나 쌓인 이동 거리보다 멀면 되돌린다. 패킷이 잘못되었으면(yaw) false다.
+        /// Move를 검증하고 받아들인다. 필드 밖(격자 밖)이거나 쌓인 이동 거리보다 멀면 되돌린다. 패킷이 잘못되었으면(yaw) false다.
         /// </summary>
         public bool Move(Player player, Move move)
         {
@@ -46,7 +48,7 @@ namespace PortfolioMmo.Server
             long deltaX = (long)move.X - player.X;
             long deltaZ = (long)move.Z - player.Z;
             double distance = Math.Sqrt((deltaX * deltaX) + (deltaZ * deltaZ));
-            if (!InsideMap(move.X) || !InsideMap(move.Z) || (distance > player.MoveBudget))
+            if (!_field.Contains(move.X, move.Z) || (distance > player.MoveBudget))
             {
                 player.Ack++;
                 player.Session.Send(new Packet
@@ -75,14 +77,6 @@ namespace PortfolioMmo.Server
             {
                 player.MoveBudget = Math.Min(player.MoveBudget + (BudgetPerTick * elapsedTicks), MaxBudget);
             }
-        }
-
-        /// <summary>
-        /// 좌표 하나가 맵 안이다.
-        /// </summary>
-        private static bool InsideMap(int coordinate)
-        {
-            return Math.Abs((long)coordinate) <= Units.MapHalfExtent;
         }
     }
 }

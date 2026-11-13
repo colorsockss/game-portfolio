@@ -27,7 +27,7 @@ namespace PortfolioMmo.Server
             {
                 data = GameData.Load(dataFolder);
             }
-            catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException)
+            catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException or Google.Protobuf.InvalidProtocolBufferException)
             {
                 Console.Error.WriteLine($"Could not load the game data from {dataFolder}: {exception.Message}");
                 return 1;

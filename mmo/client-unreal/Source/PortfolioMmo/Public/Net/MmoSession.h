@@ -4,6 +4,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Protocol/MmoPackets.h"
 #include "Data/GameData.h"
+#include "World/FieldMap.h"
 #include "World/WorldState.h"
 
 #include "MmoSession.generated.h"
@@ -53,6 +54,12 @@ public:
 	/** 들어오고 나간 개체의 큐를 꺼내는 화면(UMmoEntitySubsystem)만 쓴다. */
 	MmoWorld::FWorldState& World() { return WorldState; }
 
+	/** 시작할 때 읽은 기획 데이터. */
+	const MmoData::FGameData& Data() const { return GameData; }
+
+	/** 기획 데이터로 편 필드의 격자. 데이터를 읽지 못했으면 nullptr. */
+	const MmoWorld::FFieldMap* Field() const { return FieldMap ? &*FieldMap : nullptr; }
+
 	/** 연결되어 Login을 보냈다. */
 	FOnConnected OnConnected;
 	/** 서버가 보낸 패킷. 월드에는 이미 반영되어 있다. */
@@ -76,4 +83,5 @@ private:
 	portfolio::mmo::CharacterList CharacterList;
 	/** 시작할 때 한 번 읽은 기획 데이터. 읽지 못하면 해시가 0이라 서버가 DATA_MISMATCH로 거절한다. */
 	MmoData::FGameData GameData;
+	std::optional<MmoWorld::FFieldMap> FieldMap;
 };

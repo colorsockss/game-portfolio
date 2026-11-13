@@ -40,6 +40,13 @@ namespace MmoData
 
 		FGameData Data;
 		Data.Hash = *Hash;
+		const std::optional<std::string> Constants = Read("Constants.bytes");
+		const std::optional<std::string> Zones = Read("Zones.bytes");
+		if (!Constants || !Zones || !Data.Constants.ParseFromString(*Constants) || !Data.Zones.ParseFromString(*Zones))
+		{
+			return std::nullopt;
+		}
+
 		return Data;
 	}
 }

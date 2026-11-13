@@ -1,0 +1,43 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+import "Enums.proto";
+
+message ZonesRow {
+  // 구역 번호. 0은 어느 구역에도 들지 않는 칸이라 쓰지 않는다
+  uint32 id = 1;
+  // 이름(Strings의 키. Strings는 backlog 74가 만든다)
+  string name_key = 2;
+  // 종류
+  ZoneKind kind = 3;
+  // 사각형의 작은 모서리 x(m). 이 칸부터 덮는다
+  sint32 min_x = 4;
+  // 사각형의 작은 모서리 z(m)
+  sint32 min_z = 5;
+  // 사각형의 큰 모서리 x(m). 이 칸의 바로 앞까지 덮는다
+  sint32 max_x = 6;
+  // 사각형의 큰 모서리 z(m)
+  sint32 max_z = 7;
+  // 안전 지대인지(마을만 켬)
+  bool safe = 8;
+  // 권장 레벨의 아래
+  optional uint32 min_level = 9;
+  // 권장 레벨의 위
+  optional uint32 max_level = 10;
+  // 부활 지점 x(m). 마을의 줄에 둔다
+  optional sint32 respawn_x = 11;
+  // 부활 지점 z(m)
+  optional sint32 respawn_z = 12;
+  // 무법자의 부활 지점 x(m)
+  optional sint32 outlaw_respawn_x = 13;
+  // 무법자의 부활 지점 z(m)
+  optional sint32 outlaw_respawn_z = 14;
+}
+
+message Zones {
+  repeated ZonesRow rows = 1;
+}

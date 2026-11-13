@@ -227,6 +227,23 @@ namespace
 		Slot->SetAlignment(FVector2D(0.0, 1.0));
 		Slot->SetPosition(FVector2D(60.0, -60.0));
 		Slot->SetAutoSize(true);
+
+		// 왼쪽 위에 지금 구역(이름과 권장 레벨)과 그 아래 안전 지대 표시.
+		UVerticalBox* Zone = Builder.Add<UVerticalBox>(TEXT("Zone"));
+		Zone->SetVisibility(ESlateVisibility::HitTestInvisible);
+		UCanvasPanelSlot* ZoneSlot = Root->AddChildToCanvas(Zone);
+		ZoneSlot->SetPosition(FVector2D(24.0, 20.0));
+		ZoneSlot->SetAutoSize(true);
+		UTextBlock* ZoneText = Builder.Text(TEXT("ZoneText"), FText::GetEmpty(), 18, true);
+		ZoneText->SetShadowOffset(FVector2D(1.0, 1.0));
+		ZoneText->SetShadowColorAndOpacity(FLinearColor(0.0f, 0.0f, 0.0f, 0.8f));
+		Zone->AddChildToVerticalBox(ZoneText);
+		UTextBlock* SafeZoneText = Builder.Text(TEXT("SafeZoneText"), LOCTEXT("SafeZone", "안전 지대"), 14, true);
+		SafeZoneText->SetColorAndOpacity(FSlateColor(FLinearColor(0.45f, 0.9f, 0.55f)));
+		SafeZoneText->SetShadowOffset(FVector2D(1.0, 1.0));
+		SafeZoneText->SetShadowColorAndOpacity(FLinearColor(0.0f, 0.0f, 0.0f, 0.8f));
+		SafeZoneText->SetVisibility(ESlateVisibility::Collapsed);
+		Zone->AddChildToVerticalBox(SafeZoneText);
 		return Builder.Save();
 	}
 

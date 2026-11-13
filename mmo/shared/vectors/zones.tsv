@@ -1,0 +1,26 @@
+# 구역의 비교 벡터. 서버의 FieldMapTests가 서버 구현의 답으로 만든다(직접 고치지 않음, MMO_UPDATE_VECTORS=1로 다시 씀).
+# field	필드 한 변(m)
+# zone	번호	작은 x	작은 z	큰 x	큰 z(m)	안전 지대(0, 1). 줄의 차례대로 펴서 뒤 줄이 이긴다
+# point	x	z(1/32 m)	구역	안전 지대	격자 안(0, 1)
+field	600
+zone	1	-40	-40	40	40	1
+zone	2	40	-100	160	100	0
+zone	3	-100	100	100	280	0
+zone	4	-30	220	30	280	0
+zone	5	250	250	400	400	0
+point	0	0	1	1	1
+point	-1	0	1	1	1
+point	1279	0	1	1	1
+point	1280	0	2	0	1
+point	-1280	0	1	1	1
+point	-1281	0	0	0	1
+point	0	-1281	0	0	1
+point	6400	0	0	0	1
+point	0	7039	3	0	1
+point	0	7040	4	0	1
+point	0	8960	0	0	1
+point	9599	9599	5	0	1
+point	9600	0	0	0	0
+point	0	9600	0	0	0
+point	-9600	-9600	0	0	1
+point	-9601	0	0	0	0

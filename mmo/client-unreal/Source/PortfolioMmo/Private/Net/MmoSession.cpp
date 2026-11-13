@@ -63,6 +63,11 @@ void UMmoSession::LoadData()
 		if (Loaded)
 		{
 			GameData = *Loaded;
+			FieldMap = MmoWorld::FFieldMap::Make(GameData.Constants.field_size(), GameData.Zones.rows());
+			if (!FieldMap)
+			{
+				UE_LOG(LogMmoNet, Error, TEXT("The field size or a zone id in %s is out of range"), *Folder);
+			}
 			UE_LOG(LogMmoNet, Display, TEXT("Loaded game data %016llx from %s"), GameData.Hash, *Folder);
 			return;
 		}

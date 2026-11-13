@@ -54,6 +54,18 @@ namespace
 			return Bytes.str();
 		});
 		Expect(Data.has_value(), "the generated files load");
+		if (!Data)
+		{
+			return;
+		}
+
+		// 서버의 GameDataTests가 같은 생성물에서 같은 값을 읽는다.
+		Expect(Data->Constants.field_size() == 600, "the field size comes from Constants");
+		Expect(Data->Zones.rows_size() == 6 && Data->Zones.rows(5).id() == 6, "Zones has six rows");
+		const portfolio::mmo::data::ZonesRow& Town = Data->Zones.rows(0);
+		Expect(Town.name_key() == "zone.town" && Town.kind() == portfolio::mmo::data::ZONE_KIND_TOWN && Town.safe(), "the first zone is the safe town");
+		Expect(Town.min_x() == -40 && Town.max_x() == 40 && Town.respawn_x() == 0 && Town.respawn_z() == -10, "the town keeps its rectangle and respawn point");
+		Expect(!Data->Zones.rows(1).has_respawn_x(), "only the town has a respawn point");
 	}
 }
 

@@ -12,8 +12,10 @@ import { fileURLToPath } from "node:url";
 const client = fileURLToPath(new URL("../", import.meta.url));
 const protobuf = path.join(client, "Source/ThirdParty/MmoProtobuf/36.2");
 const generated = path.join(client, "../shared/contract/generated");
-// 기획 데이터의 생성물. 테스트에 폴더를 넘겨 커밋된 파일을 실제로 읽게 한다.
+// 기획 데이터의 생성물과 비교 벡터. 테스트에 두 폴더를 넘겨 커밋된 파일을 실제로 읽게 한다.
 const data = path.join(client, "../shared/data/files");
+const vectors = path.join(client, "../shared/vectors");
+const dataCode = path.join(client, "../shared/data/generated");
 // shortcut: 커밋된 라이브러리가 Mac용뿐이라 다른 OS에서는 건너뛴다. GitHub에서 돌리는 것은 backlog 66.
 if (process.platform !== "darwin") {
   console.log("Skipped the engine-free Unreal tests: only macOS has prebuilt MmoProtobuf libraries.");
@@ -32,7 +34,7 @@ const sources = ENGINE_FREE.flatMap((folder) => {
 });
 
 // UE와 같은 C++20, RTTI·예외 없이 컴파일한다. abseil의 시간대 코드가 CoreFoundation을 쓴다.
-// 생성된 packets.pb.cc는 UE에서처럼 Protocol/Packets.cpp가 include해 컴파일한다.
+// 생성된 packets.pb.cc와 데이터의 .pb.cc는 UE에서처럼 Protocol/Packets.cpp와 Data/DataTables.cpp가 include해 컴파일한다.
 for (const test of readdirSync(path.join(client, "Tests")).filter((file) => file.endsWith("Test.cpp"))) {
   const binary = path.join(out, path.basename(test, ".cpp"));
   run("clang++", [
@@ -47,6 +49,8 @@ for (const test of readdirSync(path.join(client, "Tests")).filter((file) => file
     path.join(protobuf, "include"),
     "-isystem",
     generated,
+    "-isystem",
+    dataCode,
     path.join(client, "Tests", test),
     ...sources,
     ...readdirSync(libraries).filter((file) => file.endsWith(".a")).map((file) => path.join(libraries, file)),
@@ -55,7 +59,7 @@ for (const test of readdirSync(path.join(client, "Tests")).filter((file) => file
     "-o",
     binary,
   ]);
-  run(binary, [data]);
+  run(binary, [data, vectors]);
 }
 
 function run(command, args) {

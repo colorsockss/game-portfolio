@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using PortfolioMmo.Data;
 
 namespace PortfolioMmo.Server
 {
@@ -17,15 +18,27 @@ namespace PortfolioMmo.Server
         /// </summary>
         public const string HashFile = "data.hash";
 
-        public GameData(ulong hash)
+        public GameData(ulong hash, Constants constants, Zones zones)
         {
             Hash = hash;
+            Constants = constants;
+            Zones = zones;
         }
 
         /// <summary>
         /// 생성물 전체의 해시. 클라이언트가 Login.data_hash에 실어 보낸 값과 다르면 로그인을 거절한다.
         /// </summary>
         public ulong Hash { get; }
+
+        /// <summary>
+        /// 밸런스의 수(키-값 테이블).
+        /// </summary>
+        public Constants Constants { get; }
+
+        /// <summary>
+        /// 구역의 사각형. 줄의 차례가 겹친 곳을 정한다(뒤 줄이 이김).
+        /// </summary>
+        public Zones Zones { get; }
 
         /// <summary>
         /// 실행 파일 옆의 데이터 폴더.
@@ -37,7 +50,10 @@ namespace PortfolioMmo.Server
         /// </summary>
         public static GameData Load(string folder)
         {
-            return new GameData(ReadHash(folder));
+            return new GameData(
+                ReadHash(folder),
+                Constants.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Constants.bytes"))),
+                Zones.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Zones.bytes"))));
         }
 
         /// <summary>

@@ -29,7 +29,8 @@ namespace PortfolioMmo.Server
         {
             _save = new SaveSystem(store, _entities, SaveIntervalTicks);
             _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, _entities, _grid, _save);
-            _movement = new MovementSystem(_entities, _grid);
+            var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows);
+            _movement = new MovementSystem(_entities, _grid, field);
             _view = new ViewSystem(_entities, _grid);
         }
 

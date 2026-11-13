@@ -10,6 +10,8 @@
 #include <string>
 #include <string_view>
 
+#include "Data/MmoDataTables.h"
+
 namespace MmoData
 {
 	/** 데이터 해시 파일의 이름(data-tool의 proto 출력). */
@@ -23,6 +25,12 @@ namespace MmoData
 	{
 		/** 생성물 전체의 해시. Login.data_hash에 실어 서버의 것과 맞춘다. */
 		uint64_t Hash = 0;
+
+		/** 밸런스의 수(키-값 테이블). */
+		portfolio::mmo::data::Constants Constants;
+
+		/** 구역의 사각형. 줄의 차례가 겹친 곳을 정한다(뒤 줄이 이김). */
+		portfolio::mmo::data::Zones Zones;
 	};
 
 	/** 데이터 해시 파일의 내용(16진수 16자, 끝의 줄바꿈은 무시)을 수로 읽는다. 형식이 틀리면 nullopt. */

@@ -1,0 +1,19 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+enum ZoneKind {
+  // 구역 없음(어느 사각형에도 들지 않는 칸)
+  ZONE_KIND_NONE = 0;
+  // 마을
+  ZONE_KIND_TOWN = 1;
+  // 사냥터
+  ZONE_KIND_HUNTING_GROUND = 2;
+  // 채집지
+  ZONE_KIND_GATHERING_GROUND = 3;
+  // 보스 자리
+  ZONE_KIND_BOSS_AREA = 4;
+}

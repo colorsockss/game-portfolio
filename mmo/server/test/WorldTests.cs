@@ -226,20 +226,26 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 맵 밖으로 가는 Move는 거리가 맞아도 되돌린다.
+        /// 필드 밖으로 가는 Move는 거리가 맞아도 되돌린다. 필드는 -300 m 이상 300 m 미만이라 정확히 +300 m는 밖이다.
         /// </summary>
         [Fact]
-        public void MoveOutsideTheMapIsReset()
+        public void MoveOutsideTheFieldIsReset()
         {
+            const int Edge = (int)TestData.FieldSize / 2 * Units.PerMeter;
             World world = NewWorld();
             Session session = Join(world, "hero_01");
-            WalkTo(world, session, Units.MapHalfExtent, 0);
+            WalkTo(world, session, Edge - 1, 0);
             Take(session);
 
-            Move(world, session, Units.MapHalfExtent + 1, 0, ack: 0);
+            Move(world, session, Edge, 0, ack: 0);
             Assert.Equal(
-                new[] { new Packet { PositionReset = new PositionReset { X = Units.MapHalfExtent, Z = 0, Ack = 1 } } },
+                new[] { new Packet { PositionReset = new PositionReset { X = Edge - 1, Z = 0, Ack = 1 } } },
                 Take(session));
+
+            // 정확히 -300 m는 안이다.
+            WalkTo(world, session, -Edge, 0);
+            Assert.Equal(-Edge, session.Player!.X);
+            Assert.DoesNotContain(Take(session), packet => packet.BodyCase == Packet.BodyOneofCase.PositionReset);
         }
 
         /// <summary>

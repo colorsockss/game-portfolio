@@ -1,0 +1,11 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message Constants {
+  // 필드 한 변의 길이(m). 필드는 -fieldSize/2 이상 fieldSize/2 미만이다
+  uint32 field_size = 1;
+}

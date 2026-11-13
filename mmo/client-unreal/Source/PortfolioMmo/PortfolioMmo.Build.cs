@@ -32,5 +32,9 @@ public class PortfolioMmo : ModuleRules
         // 서버·Unity와 같은 packets.proto에서 만든 C++. 모듈 폴더 밖이라 Protocol/Packets.cpp가 .cc를 include해 컴파일하고,
         // 시스템 경로로 넣어 생성 코드의 경고를 UE 설정에서 뺀다.
         PublicSystemIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "../../../shared/contract/generated")));
+        // 기획 데이터(mmo/data/의 xlsx)에서 만든 C++. Private/Data/Data<테이블>.cpp가 .cc를 하나씩 include한다. protoc의 .pb.cc는
+        // 파일 안의 정적 이름(schemas 등)이 같아 한 번역 단위에 둘이 들어가면 컴파일되지 않으므로 이 모듈은 유니티 빌드를 쓰지 않는다.
+        bUseUnity = false;
+        PublicSystemIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory, "../../../shared/data/generated")));
     }
 }
