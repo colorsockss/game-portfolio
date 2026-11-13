@@ -223,7 +223,8 @@ namespace PortfolioMmo.LoadTest
 
                 _x = x;
                 _z = z;
-                double turns = _heading / (2 * Math.PI);
+                // heading은 +x에서 반시계로 잰 각이고, yaw는 +z(앞)에서 시계로 잰다.
+                double turns = ((Math.PI / 2) - _heading) / (2 * Math.PI);
                 uint yaw = (uint)((turns - Math.Floor(turns)) * Units.YawSteps) % Units.YawSteps;
                 move = new Move { X = (int)Math.Round(x), Z = (int)Math.Round(z), Yaw = yaw, Ack = _ack };
             }
