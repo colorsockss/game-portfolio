@@ -1,8 +1,14 @@
 
  (2house_small
- 2tree
+ 2tree
  2fence
 2grass
 
 
  (2mountain
+
+ (2house_large
+ 2rock
+ 2
+rock_large
+	2flower

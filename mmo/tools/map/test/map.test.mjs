@@ -108,3 +108,42 @@ test('moving one object changes the data hash and the same source gives the same
   assert.match(first.list, /^kind\t1\t3\t2\t1\t1\thouse$/m);
   assert.match(first.list, /^object\t1\t30\t30\t0$/m);
 });
+
+// 커밋된 격자(npm run generate의 출력)를 읽는다. MapGrid는 varint 필드 넷과 칸 바이트 하나다.
+function decodeGrid(bytes) {
+  const fields = {};
+  let offset = 0;
+  const varint = () => {
+    let value = 0n;
+    for (let shift = 0n; ; shift += 7n) {
+      const byte = bytes[offset++];
+      value |= BigInt(byte & 0x7f) << shift;
+      if (byte < 0x80) return value;
+    }
+  };
+  while (offset < bytes.length) {
+    const key = Number(varint());
+    const number = key >> 3;
+    if ((key & 7) === 2) {
+      const length = Number(varint());
+      fields[number] = bytes.subarray(offset, offset + length);
+      offset += length;
+    } else {
+      fields[number] = Number(varint());
+    }
+  }
+  return { width: fields[1], depth: fields[2], cells: fields[5] };
+}
+
+test('the committed grid blocks every outermost cell with the border mountains', async () => {
+  const { width, depth, cells } = decodeGrid(await readFile(new URL('../../../shared/data/files/MapGrid.bytes', import.meta.url)));
+  assert.equal(cells.length, width * depth);
+  const open = [];
+  for (let z = 0; z < depth; z++) {
+    for (let x = 0; x < width; x++) {
+      const edge = x === 0 || z === 0 || x === width - 1 || z === depth - 1;
+      if (edge && cells[z * width + x] !== 1) open.push([x, z]);
+    }
+  }
+  assert.deepEqual(open, []);
+});
