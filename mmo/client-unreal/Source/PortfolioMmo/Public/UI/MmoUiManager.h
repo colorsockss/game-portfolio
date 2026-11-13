@@ -73,8 +73,6 @@ private:
 	TObjectPtr<UMmoNoticeWidget> Notice;
 
 	MmoScreen::FScreenStack Stack;
-	/** 지금 캐릭터 이동을 막고 있는가. SetIgnoreMoveInput은 횟수를 세므로 바뀔 때만 부른다. */
-	bool bMoveIgnored = false;
 	FDelegateHandle PacketHandle;
 	FDelegateHandle ClosedHandle;
 };

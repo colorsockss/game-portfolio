@@ -52,8 +52,11 @@ class PORTFOLIOMMO_API AMmoMapObject : public AActor
 public:
 	AMmoMapObject();
 
-	/** 종류와 놓인 줄(작은 모서리 x, z(m), 방향(도))로 자리, 방향, 충돌 상자를 맞춘다. 메시는 부르는 쪽이 고른다. */
+	/** 종류와 놓인 줄(작은 모서리 x, z(m), 방향(도))로 자리, 방향, 충돌 상자를 맞춘다. 메시는 부르는 쪽이 고르고 SetHeight로 상자의 높이를 맞춘다. */
 	void Place(const FMmoMapObjectKind& InKind, int32 X, int32 Z, int32 Rotation);
+
+	/** 충돌 상자의 높이(m)를 메시의 높이로 맞춘다. 캡슐(1.8 m)을 막도록 MinBlockHeight보다 낮게 두지 않는다. */
+	void SetHeight(double Meters);
 
 	/**
 	 * 지금의 자리와 방향을 놓인 줄로 읽는다(에디터에서 옮긴 뒤 내보낼 때). 방향이 90도의 배수가 아니거나 작은 모서리가 정수 미터가
@@ -64,9 +67,8 @@ public:
 	const FMmoMapObjectKind& Kind() const { return KindRow; }
 	UStaticMeshComponent& Mesh() const { return *MeshComponent; }
 
-	/** 충돌 상자의 높이(m). 캡슐(1.8 m)보다 높고, 카메라를 막는 종류는 카메라가 넘어가지 않게 더 높다. */
-	static constexpr double BlockHeight = 4.0;
-	static constexpr double CameraBlockHeight = 30.0;
+	/** 충돌 상자의 가장 낮은 높이(m). 캡슐(1.8 m)보다 높다. 카메라는 놓일 자리가 상자 안일 때만 당기므로(AMmoCharacter) 상자는 메시만큼만 높다. */
+	static constexpr double MinBlockHeight = 2.5;
 
 private:
 	UPROPERTY(VisibleAnywhere)

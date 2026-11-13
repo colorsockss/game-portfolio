@@ -12,6 +12,7 @@
 #include "InputModifiers.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSession.h"
+#include "Framework/Application/SlateApplication.h"
 #include "UI/MmoUiManager.h"
 
 namespace
@@ -43,6 +44,8 @@ void AMmoPlayerController::SetupInputComponent()
 	ZoomAction->ValueType = EInputActionValueType::Axis1D;
 	BackAction = NewObject<UInputAction>(this, TEXT("Back"));
 	BackAction->ValueType = EInputActionValueType::Boolean;
+	ClickAction = NewObject<UInputAction>(this, TEXT("Click"));
+	ClickAction->ValueType = EInputActionValueType::Boolean;
 
 	// 이동은 (x: 오른쪽, y: 앞). 키 하나의 값은 x로 들어오므로 앞뒤 키는 y로 옮기고(Swizzle) 반대쪽 키는 뒤집는다(Negate).
 	Mapping = NewObject<UInputMappingContext>(this, TEXT("Mapping"));
@@ -68,6 +71,7 @@ void AMmoPlayerController::SetupInputComponent()
 	Mapping->MapKey(ZoomAction, EKeys::MouseWheelAxis);
 	Mapping->MapKey(BackAction, EKeys::Escape);
 	Mapping->MapKey(BackAction, EKeys::Android_Back);
+	Mapping->MapKey(ClickAction, EKeys::LeftMouseButton);
 
 	if (UEnhancedInputLocalPlayerSubsystem* Input = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -79,6 +83,7 @@ void AMmoPlayerController::SetupInputComponent()
 	Enhanced->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMmoPlayerController::HandleLook);
 	Enhanced->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &AMmoPlayerController::HandleZoom);
 	Enhanced->BindAction(BackAction, ETriggerEvent::Started, this, &AMmoPlayerController::HandleBack);
+	Enhanced->BindAction(ClickAction, ETriggerEvent::Started, this, &AMmoPlayerController::HandleClick);
 }
 
 void AMmoPlayerController::BeginPlay()
@@ -114,10 +119,24 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 {
 	// 회전 입력은 Super::PlayerTick 안에서 적용되고 액터 틱 끝에 지워지므로, 그 앞에서 넣어야 한다.
 	UpdateTouchCamera();
+	FollowPath();
 	Super::PlayerTick(DeltaTime);
 
 	const APawn* Self = GetPawn();
 	UMmoConnection* Connection = GetGameInstance()->GetSubsystem<UMmoConnection>();
+
+	// 개발용: -MmoWalkTo=x,z(m)면 들어온 뒤 한 번 땅을 누른 것처럼 그곳까지 걷는다(눌러서 이동을 키 입력 없이 확인).
+	static bool bWalkedFromCommandLine = false;
+	FString WalkTo;
+	if (Self && !bWalkedFromCommandLine && FParse::Value(FCommandLine::Get(), TEXT("MmoWalkTo="), WalkTo, false))
+	{
+		bWalkedFromCommandLine = true;
+		FString X, Z;
+		if (WalkTo.Split(TEXT(","), &X, &Z))
+		{
+			this->WalkTo(MmoCoordinates::ToWorld(FCString::Atod(*X) * MmoWorld::Units::PerMeter, FCString::Atod(*Z) * MmoWorld::Units::PerMeter));
+		}
+	}
 	if (!Self || !Connection->IsConnected())
 	{
 		return;
@@ -140,6 +159,70 @@ void AMmoPlayerController::InjectMove(const FVector2D& Axis)
 	}
 }
 
+bool AMmoPlayerController::WalkTo(const FVector& Ground)
+{
+	const APawn* Self = GetPawn();
+	const MmoWorld::FFieldMap* Field = GetGameInstance()->GetSubsystem<UMmoSession>()->Field();
+	if (!Self || !Field)
+	{
+		return false;
+	}
+	if (!PathFinder)
+	{
+		PathFinder.emplace(*Field);
+	}
+
+	const FVector Location = Self->GetActorLocation();
+	const MmoWorld::FPoint From{ MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location) };
+	const MmoWorld::FPoint To{ MmoCoordinates::ToX(Ground), MmoCoordinates::ToZ(Ground) };
+	if (!PathFinder->Find(From, To, Path))
+	{
+		UE_LOG(LogMmoNet, Display, TEXT("No path from (%d, %d) to (%d, %d), closed %d cells"), From.X, From.Z, To.X, To.Z, PathFinder->ClosedCells());
+		return false;
+	}
+
+	UE_LOG(LogMmoNet, Display, TEXT("Walking from (%d, %d) to (%d, %d) through %d points"), From.X, From.Z, To.X, To.Z, static_cast<int32>(Path.size()));
+	PathFollower.Start(Path);
+	return true;
+}
+
+void AMmoPlayerController::FollowPath()
+{
+	APawn* Self = GetPawn();
+	if (!Self || PathFollower.IsDone())
+	{
+		return;
+	}
+
+	const FVector Location = Self->GetActorLocation();
+	if (const std::optional<std::pair<double, double>> Direction = PathFollower.Direction({ MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location) }))
+	{
+		// 패킷의 z(앞)가 Unreal의 X, x(오른쪽)가 Y다.
+		Self->AddMovementInput(FVector(Direction->second, Direction->first, 0.0));
+	}
+	else
+	{
+		UE_LOG(LogMmoNet, Display, TEXT("Reached the end of the path at (%d, %d)"), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location));
+	}
+}
+
+void AMmoPlayerController::HandleClick()
+{
+	// 터치 기기에서는 이동을 조이스틱만 쓴다(빈 땅을 누르는 것은 대상 풀기. backlog 24). 창이 열린 동안은 손 조작을 막는다.
+	if (bManualMoveBlocked || FPlatformMisc::SupportsTouchInput() || FSlateApplication::Get().IsFakingTouchEvents())
+	{
+		return;
+	}
+
+	// 땅은 평지(높이 0)라 커서 광선과 땅의 평면이 만나는 곳이다. 맵의 것(건물 등)을 눌러도 그 뒤의 땅이다.
+	FVector Origin, Direction;
+	if (!DeprojectMousePositionToWorld(Origin, Direction) || Direction.Z >= -KINDA_SMALL_NUMBER)
+	{
+		return;
+	}
+	WalkTo(Origin + Direction * (-Origin.Z / Direction.Z));
+}
+
 void AMmoPlayerController::HandleBack()
 {
 	GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->Back();
@@ -148,12 +231,16 @@ void AMmoPlayerController::HandleBack()
 void AMmoPlayerController::HandleMove(const FInputActionValue& Value)
 {
 	APawn* Self = GetPawn();
-	if (!Self)
+	if (!Self || bManualMoveBlocked)
 	{
 		return;
 	}
-	// 카메라가 보는 쪽이 앞이다.
+	// 카메라가 보는 쪽이 앞이다. 손으로 걸으면 따라가던 경로를 버린다.
 	const FVector2D Axis = Value.Get<FVector2D>();
+	if (!Axis.IsNearlyZero())
+	{
+		PathFollower.Start({});
+	}
 	const FRotationMatrix Facing(FRotator(0.0, GetControlRotation().Yaw, 0.0));
 	Self->AddMovementInput(Facing.GetUnitAxis(EAxis::X), Axis.Y);
 	Self->AddMovementInput(Facing.GetUnitAxis(EAxis::Y), Axis.X);

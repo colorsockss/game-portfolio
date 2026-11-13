@@ -111,6 +111,7 @@ namespace
 		if (UStaticMesh* Real = LoadObject<UStaticMesh>(nullptr, *Asset, nullptr, LOAD_NoWarn | LOAD_Quiet))
 		{
 			Mesh.SetStaticMesh(Real);
+			Object.SetHeight(Real->GetBoundingBox().Max.Z / 100.0);
 			return;
 		}
 
@@ -121,6 +122,7 @@ namespace
 		Mesh.SetRelativeScale3D(FVector(Kind.Depth * Shape.Fill, Kind.Width * Shape.Fill, Shape.Height));
 		Mesh.SetRelativeLocation(FVector(0.0, 0.0, Shape.Height * 50.0));
 		Mesh.SetDefaultCustomPrimitiveDataVector4(0, FVector4(Shape.Color.R, Shape.Color.G, Shape.Color.B, 1.0));
+		Object.SetHeight(Shape.Height);
 	}
 
 	UWorld* LoadField()

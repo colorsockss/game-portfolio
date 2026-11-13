@@ -47,14 +47,19 @@ void AMmoMapObject::Place(const FMmoMapObjectKind& InKind, int32 X, int32 Z, int
 	}
 
 	// 상자는 돌리기 전의 크기로 두고 액터와 함께 돈다(로컬 X가 세로, Y가 가로).
-	const double Height = (KindRow.bBlocksCamera ? CameraBlockHeight : BlockHeight) * 100.0;
-	Collision->SetBoxExtent(FVector(KindRow.Depth * 50.0, KindRow.Width * 50.0, Height * 0.5));
-	Collision->SetRelativeLocation(FVector(0.0, 0.0, Height * 0.5));
+	SetHeight(MinBlockHeight);
 	Collision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Collision->SetCollisionObjectType(ECC_WorldStatic);
 	Collision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Collision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	Collision->SetCollisionResponseToChannel(ECC_Camera, KindRow.bBlocksCamera ? ECR_Block : ECR_Ignore);
+}
+
+void AMmoMapObject::SetHeight(double Meters)
+{
+	const double Height = FMath::Max(Meters, MinBlockHeight) * 100.0;
+	Collision->SetBoxExtent(FVector(KindRow.Depth * 50.0, KindRow.Width * 50.0, Height * 0.5));
+	Collision->SetRelativeLocation(FVector(0.0, 0.0, Height * 0.5));
 }
 
 bool AMmoMapObject::ReadPlacement(int32& X, int32& Z, int32& Rotation, FString& Error) const

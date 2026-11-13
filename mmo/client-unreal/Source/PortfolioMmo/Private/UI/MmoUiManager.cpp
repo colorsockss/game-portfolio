@@ -5,6 +5,7 @@
 #include "Engine/GameInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "Framework/Application/SlateApplication.h"
+#include "Game/MmoPlayerController.h"
 #include "GameFramework/PlayerController.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSession.h"
@@ -211,12 +212,10 @@ void UMmoUiManager::ApplyInputMode()
 		FSlateApplication::Get().SetAllUserFocusToGameViewport();
 	}
 
-	// 창이 열린 동안은 캐릭터가 걷지 않는다(카메라는 돈다).
-	const bool bIgnore = Mode != MmoScreen::EInputMode::Game;
-	if (bIgnore != bMoveIgnored)
+	// 창이 열린 동안은 손 조작(WASD, 조이스틱, 땅 누르기)으로 걷지 않는다(카메라는 돌고, 따라가던 경로는 이어 걷는다).
+	if (AMmoPlayerController* Mmo = Cast<AMmoPlayerController>(Controller))
 	{
-		Controller->SetIgnoreMoveInput(bIgnore);
-		bMoveIgnored = bIgnore;
+		Mmo->SetManualMoveBlocked(Mode != MmoScreen::EInputMode::Game);
 	}
 }
 

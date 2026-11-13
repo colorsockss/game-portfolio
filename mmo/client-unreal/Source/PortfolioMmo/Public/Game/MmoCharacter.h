@@ -21,6 +21,8 @@ class AMmoCharacter : public ACharacter
 public:
 	AMmoCharacter();
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	/** 카메라를 당기거나 민다. 양수가 가까이다. */
 	void Zoom(float Amount);
 
@@ -35,6 +37,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> Camera;
+
+	/** 고른 카메라 거리(휠과 두 손가락). 카메라가 놓일 자리가 막는 것 안이면 그보다 당긴다. */
+	float WantedArmLength = 0.0f;
 
 	/** 모습을 불러오는 동안 보이는 단순한 메시. */
 	UPROPERTY(VisibleAnywhere)
