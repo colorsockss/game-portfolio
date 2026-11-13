@@ -80,7 +80,9 @@ Protobuf를 고른 이유는 언어 중립 표준 정의 하나에서 protoc가 
 
 ### 부하 측정 (2026-11-06)
 
-`server/tools/load-test`의 봇이 정사각형 안을 틱마다 최대 속도로 걷습니다(모든 개체가 매 틱 움직이는 최악의 경우). 봇이 보는 개체가 [형식을 고른 근거](#형식을-고른-근거-2026-11-06)의 기준(50명)과 비슷하도록 봇 수에 맞춰 정사각형 크기를 정했습니다. 서버와 봇을 한 Mac(Apple M4 Max, 14코어)에서 루프백으로 돌린 Release 빌드이고, 봇이 들어온 뒤 10초 단위 구간의 값입니다(첫 구간은 로그인과 JIT로 최대 틱이 67–73 ms).
+잰 날, 커밋, 환경과 함께 남기는 기록은 [docs/performance.md](docs/performance.md)에 모읍니다(재는 순서와 방법도 거기에 있음). 여기에는 처음 잰 값과 그 해석을 둡니다.
+
+`server/tools/load-test`의 봇이 정사각형 안을 틱마다 최대 속도로 걷습니다(모든 개체가 매 틱 움직이는 최악의 경우). 봇은 서버와 같은 격자를 읽어 서버의 `FieldMap.CanWalkLine`으로 다음 자리까지 걸을 수 있는지 보고, 막혔으면 걷지 않고 돌아섭니다(받은 `PositionReset`이 0이어야 정상 클라이언트의 부하). 봇이 보는 개체가 [형식을 고른 근거](#형식을-고른-근거-2026-11-06)의 기준(50명)과 비슷하도록 봇 수에 맞춰 정사각형 크기를 정했습니다. 서버와 봇을 한 Mac(Apple M4 Max, 14코어)에서 루프백으로 돌린 Release 빌드이고, 봇이 들어온 뒤 10초 단위 구간의 값입니다(첫 구간은 로그인과 JIT로 최대 틱이 67–73 ms).
 
 | 봇 | 정사각형 | 평균 시야 | 틱 평균(최대) | 서버 CPU | 클라이언트당 송신 | 작업 집합(힙) | 할당 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -88,7 +90,7 @@ Protobuf를 고른 이유는 언어 중립 표준 정의 하나에서 protoc가 
 | 2,000 | ±285 m | 55.2명 | 15.4 ms (23.5 ms) | 2.0코어 | 15,354 B/s | 101 MB (69 MB) | 131 MB/s |
 
 - 틱 시간은 플레이어 수에 비례합니다. 2,000명의 틱을 나눠 재면(따로 돌린 14.3 ms 구간) 큐 처리 0.2 ms, 시야 비교 7.0 ms, 직렬화와 보내기 큐 넣기 7.1 ms입니다. 틱 하나의 예산(50 ms)으로 이 Mac에서 약 6,000명까지이고, 그 전에 줄일 곳은 `HashSet`으로 하는 시야 비교와, 직렬화할 때 개체마다 여러 번 도는 `CalculateSize`입니다.
-- 차례별 시간(2026-11-13, 맵을 넣은 뒤, 같은 조건의 봇 2,000명, 평균 시야 약 54명): 틱 평균 12.8 ms 가운데 입력 0.5 ms, 시야 7.4 ms, 저장 0.0 ms(60초마다의 틱은 5.4 ms), 보내기 4.9 ms입니다. 10초에 `EntityMoves` 40만 개가 약 200 MB로 송신량의 98%입니다. 봇이 아직 벽을 모르고 걸어 받은 `Move`의 약 4분의 1이 `PositionReset`으로 되돌려집니다(backlog 30이 고침). 재는 코드를 넣기 전과 후를 번갈아 세 번씩 잰 틱 평균은 12.13 ms와 12.07 ms로 같았습니다(구간마다 11.2–13.2 ms로 흔들림). 타이머가 늦게 시작한 시간은 평균 1.3 ms, 최대 4.6 ms였고 건너뛴 틱은 없었습니다.
+- 맵을 넣은 뒤(2026-11-13, 봇이 벽을 피함, 되돌림 0)의 같은 조건은 틱 평균 14.6 ms(최대 22.5 ms), 클라이언트당 14,776 B/s이고 차례별로 입력 0.45 ms, 시야 7.47 ms, 저장 0.01 ms, 보내기 6.70 ms입니다([docs/performance.md](docs/performance.md)).
 - 2,000명의 위치를 한 트랜잭션으로 저장하는 데 4.8 ms(60초마다 한 틱), 2,000명이 한 틱에 한꺼번에 나갈 때 3.2 ms가 더 걸렸습니다. 데이터베이스 파일은 2,000명에 57 KB입니다.
 - 틱 밖의 CPU(1,000명 1.2코어, 2,000명 1.7코어)는 소켓 받기·보내기입니다. 연결마다 초당 받기 20번, 보내기 20번입니다.
 - 클라이언트당 송신 15,354 B/s는 개체 하나 평균 약 14바이트입니다. 좌표가 ±285 m 안이라 예시 개체(15바이트)보다 varint가 짧습니다. TCP/IP 머리(틱마다 한 세그먼트, 52 × 20 = 1,040 B/s)를 더하면 16,394 B/s이고, 한 달(30.4일) 43 GB입니다. 동접 1,000명이면 AWS 송신 요금($0.09/GB)으로 월 약 $3,900, Hostinger KVM 4(월 16 TB, 4 vCPU)로는 약 370명입니다.
@@ -170,7 +172,7 @@ Protobuf를 고른 이유는 언어 중립 표준 정의 하나에서 protoc가 
 | `npm run check` | 바뀐 영역의 검사. `mmo/`만 바뀌었으면 `test:mmo` |
 | `dotnet run -c Release --project mmo/server/src -- --port 7777` | 서버. `--data`(기획 데이터 폴더, 기본 실행 파일 옆의 `data/`), `--max-players`(동시 접속 상한, 기본 1000), `--spawn-half-extent`(부하 측정용. 새 캐릭터의 시작 위치를 고르는 정사각형의 반 너비, m, 기본 0이면 마을의 부활 지점), `--database`(SQLite 파일, 기본 `mmo.sqlite`. `dotnet run`의 작업 디렉터리는 `mmo/server/`) |
 | `node mmo/server/deploy/check.mjs mmo.dennou.cloud 7777` | 그 주소의 MMO 서버가 `Ping`에 `Pong`으로 답하는지 본다(배포 뒤 확인과 같음) |
-| `dotnet run -c Release --project mmo/server/tools/load-test -- --bots 2000 --half-extent 285` | 봇 부하. 서버는 같은 `--spawn-half-extent`와 빈 `--database`로 띄우고, 틱 시간·CPU·메모리는 서버 로그에서 읽는다. `--host`, `--port`, `--seconds`(측정 시간, 기본 30) |
+| `dotnet run -c Release --project mmo/server/tools/load-test -- --bots 2000 --half-extent 285` | 봇 부하. 서버는 같은 `--spawn-half-extent`와 빈 `--database`로 띄우고, 틱 시간·CPU·메모리는 서버 로그에서 읽는다. 봇은 서버와 같은 맵을 읽어 벽을 피한다. `--host`, `--port`, `--seconds`(측정 시간, 기본 30), `--data`(데이터 해시와 맵의 폴더). 절차는 `docs/performance.md` |
 | `node mmo/client-unreal/Tests/run.mjs` | Unreal 클라이언트의 엔진 없는 코드(`Protocol/`, `World/`, `Screen/`, `Data/`)와 생성된 C++을 clang으로 빌드해 테스트한다. 커밋된 Mac 라이브러리를 써서 지금은 Mac에서만 돌고, 다른 OS에서는 건너뛴다. `test:mmo`가 부른다 |
 | `"/Users/Shared/Epic Games/UE_5.8/Engine/Build/BatchFiles/Mac/Build.sh" PortfolioMmoEditor Mac Development -Project="$PWD/mmo/client-unreal/PortfolioMmo.uproject"` | Unreal 에디터 타깃 빌드(Mac). 에디터에서 열거나 아래처럼 게임으로 돌리기 전에 한다 |
 | `"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PWD/mmo/client-unreal/PortfolioMmo.uproject" -game -MmoLogin=hero_01` | Unreal 클라이언트를 게임으로 실행해 바로 로그인한다. `-MmoServer=호스트:포트`, 화면 없이 확인하려면 `-nullrhi -stdout`(연결 로그까지 보려면 `-FullStdOutLogOutput`) |

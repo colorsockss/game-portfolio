@@ -13,7 +13,8 @@ using PortfolioMmo.Server;
 namespace PortfolioMmo.LoadTest
 {
     /// <summary>
-    /// 봇 여러 명을 서버에 붙여 틱마다 최대 속도로 걷게 하고, 봇 하나가 받는 양을 잰다.
+    /// 봇 여러 명을 서버에 붙여 틱마다 최대 속도로 걷게 하고, 봇 하나가 받는 양을 잰다. 봇은 서버와 같은 맵(격자)을 읽어
+    /// 서버의 FieldMap.CanWalkLine으로 벽을 피하므로 정상 클라이언트처럼 되돌려지지 않는다.
     /// 서버는 따로 띄우고(--spawn-half-extent를 이 도구의 --half-extent와 같게), 틱 시간·CPU·메모리는 서버 로그에서 읽는다.
     /// </summary>
     public static class Program
@@ -25,7 +26,7 @@ namespace PortfolioMmo.LoadTest
 
         /// <summary>
         /// 인자: --host(기본 127.0.0.1), --port(기본 7777), --bots(기본 1000), --seconds(측정 시간, 기본 30),
-        /// --half-extent(봇이 걷는 정사각형의 반 너비, m, 기본 200), --data(Login에 실을 데이터 해시의 폴더, 기본 실행 파일 옆의 data/).
+        /// --half-extent(봇이 걷는 정사각형의 반 너비, m, 기본 200), --data(Login에 실을 데이터 해시와 맵의 폴더, 기본 실행 파일 옆의 data/).
         /// 서버와 같은 생성물(mmo/shared/data/files/)을 써야 로그인이 된다.
         /// </summary>
         public static async Task Main(string[] args)
@@ -35,12 +36,13 @@ namespace PortfolioMmo.LoadTest
             int botCount = int.Parse(Option(args, "--bots", "1000"));
             int seconds = int.Parse(Option(args, "--seconds", "30"));
             double halfExtent = int.Parse(Option(args, "--half-extent", "200")) * Units.PerMeter;
-            ulong dataHash = GameData.ReadHash(Option(args, "--data", GameData.DefaultFolder));
+            GameData data = GameData.Load(Option(args, "--data", GameData.DefaultFolder));
+            var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
 
             var bots = new List<Bot>();
             for (int index = 0; index < botCount; index++)
             {
-                bots.Add(await Bot.ConnectAsync(host, port, $"bot_{index:D4}", dataHash));
+                bots.Add(await Bot.ConnectAsync(host, port, $"bot_{index:D4}", data.Hash));
             }
 
             Console.WriteLine($"Connected {bots.Count} bots");
@@ -54,7 +56,7 @@ namespace PortfolioMmo.LoadTest
             {
                 foreach (Bot bot in bots)
                 {
-                    bot.Step(random, halfExtent);
+                    bot.Step(random, halfExtent, field);
                 }
 
                 if (!measuring && (clock.Elapsed >= s_warmUp))
@@ -200,9 +202,11 @@ namespace PortfolioMmo.LoadTest
         }
 
         /// <summary>
-        /// 한 틱 걷고 Move를 보낸다. 정사각형 밖으로 나가려 하면 돌아선다.
+        /// 한 틱 걷고 Move를 보낸다. 정사각형 밖으로 나가거나 벽에 막히면 걷지 않고 돌아선다.
+        /// 벽은 서버가 가진 지난 위치(보낸 반올림 좌표나 되돌림의 자리)에서 다음 자리까지를 서버와 같은 선 검사로 본다.
+        /// 칸만 보면 모서리를 지나는 걸음을 서버가 되돌린다.
         /// </summary>
-        public void Step(Random random, double halfExtent)
+        public void Step(Random random, double halfExtent, FieldMap field)
         {
             Move move;
             lock (_gate)
@@ -215,7 +219,8 @@ namespace PortfolioMmo.LoadTest
                 _heading += (random.NextDouble() - 0.5) * 0.4;
                 double x = _x + (Math.Cos(_heading) * Stride);
                 double z = _z + (Math.Sin(_heading) * Stride);
-                if ((Math.Abs(x) > halfExtent) || (Math.Abs(z) > halfExtent))
+                if ((Math.Abs(x) > halfExtent) || (Math.Abs(z) > halfExtent)
+                    || !field.CanWalkLine((int)Math.Round(_x), (int)Math.Round(_z), (int)Math.Round(x), (int)Math.Round(z), Walker.Player))
                 {
                     _heading += Math.PI;
                     return;
