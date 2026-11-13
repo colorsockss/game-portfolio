@@ -221,6 +221,12 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   // accessors -------------------------------------------------------
   enum : int {
     kFieldSizeFieldNumber = 1,
+    kCombatDurationMsFieldNumber = 2,
+    kRegenPercentFieldNumber = 3,
+    kCombatRegenPercentFieldNumber = 4,
+    kCritChanceFieldNumber = 5,
+    kCritMultiplierFieldNumber = 6,
+    kPlayerRadiusFieldNumber = 7,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -232,11 +238,71 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_field_size(::uint32_t value);
 
   public:
+  // uint32 combat_duration_ms = 2;
+  void clear_combat_duration_ms() ;
+  [[nodiscard]] ::uint32_t combat_duration_ms() const;
+  void set_combat_duration_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_combat_duration_ms() const;
+  void _internal_set_combat_duration_ms(::uint32_t value);
+
+  public:
+  // uint32 regen_percent = 3;
+  void clear_regen_percent() ;
+  [[nodiscard]] ::uint32_t regen_percent() const;
+  void set_regen_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_regen_percent() const;
+  void _internal_set_regen_percent(::uint32_t value);
+
+  public:
+  // uint32 combat_regen_percent = 4;
+  void clear_combat_regen_percent() ;
+  [[nodiscard]] ::uint32_t combat_regen_percent() const;
+  void set_combat_regen_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_combat_regen_percent() const;
+  void _internal_set_combat_regen_percent(::uint32_t value);
+
+  public:
+  // double crit_chance = 5;
+  void clear_crit_chance() ;
+  [[nodiscard]] double crit_chance() const;
+  void set_crit_chance(double value);
+
+  private:
+  double _internal_crit_chance() const;
+  void _internal_set_crit_chance(double value);
+
+  public:
+  // double crit_multiplier = 6;
+  void clear_crit_multiplier() ;
+  [[nodiscard]] double crit_multiplier() const;
+  void set_crit_multiplier(double value);
+
+  private:
+  double _internal_crit_multiplier() const;
+  void _internal_set_crit_multiplier(double value);
+
+  public:
+  // double player_radius = 7;
+  void clear_player_radius() ;
+  [[nodiscard]] double player_radius() const;
+  void set_player_radius(double value);
+
+  private:
+  double _internal_player_radius() const;
+  void _internal_set_player_radius(double value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<0, 1,
+      ::google::protobuf::internal::TcParseTable<3, 7,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -266,6 +332,12 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::google::protobuf::internal::HasBits<1> _has_bits_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::uint32_t field_size_;
+    ::uint32_t combat_duration_ms_;
+    ::uint32_t regen_percent_;
+    ::uint32_t combat_regen_percent_;
+    double crit_chance_;
+    double crit_multiplier_;
+    double player_radius_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -310,6 +382,150 @@ inline ::uint32_t Constants::_internal_field_size() const {
 inline void Constants::_internal_set_field_size(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.field_size_ = value;
+}
+
+// uint32 combat_duration_ms = 2;
+inline void Constants::clear_combat_duration_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.combat_duration_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t Constants::combat_duration_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.combat_duration_ms)
+  return _internal_combat_duration_ms();
+}
+inline void Constants::set_combat_duration_ms(::uint32_t value) {
+  _internal_set_combat_duration_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.combat_duration_ms)
+}
+inline ::uint32_t Constants::_internal_combat_duration_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.combat_duration_ms_;
+}
+inline void Constants::_internal_set_combat_duration_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.combat_duration_ms_ = value;
+}
+
+// uint32 regen_percent = 3;
+inline void Constants::clear_regen_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.regen_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000004U);
+}
+inline ::uint32_t Constants::regen_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.regen_percent)
+  return _internal_regen_percent();
+}
+inline void Constants::set_regen_percent(::uint32_t value) {
+  _internal_set_regen_percent(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.regen_percent)
+}
+inline ::uint32_t Constants::_internal_regen_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.regen_percent_;
+}
+inline void Constants::_internal_set_regen_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.regen_percent_ = value;
+}
+
+// uint32 combat_regen_percent = 4;
+inline void Constants::clear_combat_regen_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.combat_regen_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000008U);
+}
+inline ::uint32_t Constants::combat_regen_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.combat_regen_percent)
+  return _internal_combat_regen_percent();
+}
+inline void Constants::set_combat_regen_percent(::uint32_t value) {
+  _internal_set_combat_regen_percent(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000008U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.combat_regen_percent)
+}
+inline ::uint32_t Constants::_internal_combat_regen_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.combat_regen_percent_;
+}
+inline void Constants::_internal_set_combat_regen_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.combat_regen_percent_ = value;
+}
+
+// double crit_chance = 5;
+inline void Constants::clear_crit_chance() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.crit_chance_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000010U);
+}
+inline double Constants::crit_chance() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.crit_chance)
+  return _internal_crit_chance();
+}
+inline void Constants::set_crit_chance(double value) {
+  _internal_set_crit_chance(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000010U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.crit_chance)
+}
+inline double Constants::_internal_crit_chance() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.crit_chance_;
+}
+inline void Constants::_internal_set_crit_chance(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.crit_chance_ = value;
+}
+
+// double crit_multiplier = 6;
+inline void Constants::clear_crit_multiplier() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.crit_multiplier_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000020U);
+}
+inline double Constants::crit_multiplier() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.crit_multiplier)
+  return _internal_crit_multiplier();
+}
+inline void Constants::set_crit_multiplier(double value) {
+  _internal_set_crit_multiplier(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000020U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.crit_multiplier)
+}
+inline double Constants::_internal_crit_multiplier() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.crit_multiplier_;
+}
+inline void Constants::_internal_set_crit_multiplier(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.crit_multiplier_ = value;
+}
+
+// double player_radius = 7;
+inline void Constants::clear_player_radius() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.player_radius_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000040U);
+}
+inline double Constants::player_radius() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.player_radius)
+  return _internal_player_radius();
+}
+inline void Constants::set_player_radius(double value) {
+  _internal_set_player_radius(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000040U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.player_radius)
+}
+inline double Constants::_internal_player_radius() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.player_radius_;
+}
+inline void Constants::_internal_set_player_radius(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.player_radius_ = value;
 }
 
 #ifdef __GNUC__

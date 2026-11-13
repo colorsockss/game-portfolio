@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using PortfolioMmo.Contract;
 using PortfolioMmo.Data;
 
 namespace PortfolioMmo.Server
@@ -18,12 +20,19 @@ namespace PortfolioMmo.Server
         /// </summary>
         public const string HashFile = "data.hash";
 
-        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid)
+        private readonly Dictionary<(uint Class, uint Level), LevelsRow> _levels = new Dictionary<(uint Class, uint Level), LevelsRow>();
+
+        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels)
         {
             Hash = hash;
             Constants = constants;
             Zones = zones;
             Grid = grid;
+            Classes = classes;
+            foreach (LevelsRow row in levels.Rows)
+            {
+                _levels.Add((row.Class, row.Level), row);
+            }
         }
 
         /// <summary>
@@ -47,6 +56,21 @@ namespace PortfolioMmo.Server
         public MapGrid Grid { get; }
 
         /// <summary>
+        /// 직업마다의 기본 공격과 처음 상태. id가 CharacterClass의 값이다.
+        /// </summary>
+        public Classes Classes { get; }
+
+        /// <summary>
+        /// 직업과 레벨의 Levels 줄(필요 경험치와 기본 능력치). 없으면 던진다(데이터가 그 직업과 레벨을 빠뜨림).
+        /// </summary>
+        public LevelsRow Level(CharacterClass characterClass, uint level)
+        {
+            return _levels.TryGetValue(((uint)characterClass, level), out LevelsRow? row)
+                ? row
+                : throw new KeyNotFoundException($"Levels has no row for {characterClass} level {level}.");
+        }
+
+        /// <summary>
         /// 실행 파일 옆의 데이터 폴더.
         /// </summary>
         public static string DefaultFolder => Path.Combine(AppContext.BaseDirectory, "data");
@@ -60,7 +84,9 @@ namespace PortfolioMmo.Server
                 ReadHash(folder),
                 Constants.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Constants.bytes"))),
                 Zones.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Zones.bytes"))),
-                MapGrid.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "MapGrid.bytes"))));
+                MapGrid.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "MapGrid.bytes"))),
+                Classes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Classes.bytes"))),
+                Levels.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Levels.bytes"))));
         }
 
         /// <summary>

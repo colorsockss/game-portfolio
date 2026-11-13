@@ -407,7 +407,7 @@ namespace PortfolioMmo.Server.Tests
             Enter(restarted, again, id);
             restarted.Step();
             Assert.Equal(
-                new[] { Entered(1), Enter(new EntityEnter { Id = 1, Kind = EntityKind.Player, X = 100, Yaw = 32, Name = "hero01", CharacterClass = CharacterClass.Knight }) },
+                new[] { Entered(1), Enter(new EntityEnter { Id = 1, Kind = EntityKind.Player, X = 100, Yaw = 32, Name = "hero01", CharacterClass = CharacterClass.Knight, Level = 1, Hp = 150, MaxHp = 150 }) },
                 Take(again));
         }
 
@@ -587,11 +587,29 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// 쌓인 패킷을 꺼내고 비운다.
         /// </summary>
+        /// <summary>
+        /// 쌓인 패킷을 꺼낸다. 체력·마나·능력치의 알림은 빼고 돌려준다(그것은 TakeVitals로 보며 VitalsTests가 확인함).
+        /// </summary>
         private static List<Packet> Take(Session session)
         {
-            List<Packet> packets = session.Outbox.ToList();
+            List<Packet> packets = session.Outbox.Where(packet => !IsVitals(packet)).ToList();
             session.Outbox.Clear();
             return packets;
+        }
+
+        /// <summary>
+        /// 쌓인 패킷 가운데 체력·마나·능력치의 알림만 꺼낸다(나머지도 비움).
+        /// </summary>
+        private static List<Packet> TakeVitals(Session session)
+        {
+            List<Packet> packets = session.Outbox.Where(IsVitals).ToList();
+            session.Outbox.Clear();
+            return packets;
+        }
+
+        private static bool IsVitals(Packet packet)
+        {
+            return packet.BodyCase is Packet.BodyOneofCase.SelfVitals or Packet.BodyOneofCase.SelfStats or Packet.BodyOneofCase.EntityVitals;
         }
 
         /// <summary>
@@ -662,7 +680,8 @@ namespace PortfolioMmo.Server.Tests
         /// </summary>
         private static EntityEnter Entity(uint id, string name, int x = 0, int z = 0, CharacterClass characterClass = CharacterClass.Knight)
         {
-            return new EntityEnter { Id = id, Kind = EntityKind.Player, X = x, Z = z, Name = name, CharacterClass = characterClass };
+            uint maxHp = characterClass == CharacterClass.Mage ? TestData.MageLevel1.MaxHp : TestData.KnightLevel1.MaxHp;
+            return new EntityEnter { Id = id, Kind = EntityKind.Player, X = x, Z = z, Name = name, CharacterClass = characterClass, Level = 1, Hp = maxHp, MaxHp = maxHp };
         }
     }
 }

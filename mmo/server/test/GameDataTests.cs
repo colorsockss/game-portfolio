@@ -40,6 +40,33 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 직업은 2줄, 레벨은 직업 2 × 레벨 1–30의 60줄이고, 같은 레벨에서 기사는 최대 체력과 방어력이, 마법사는 최대 마나와 공격력이 높다.
+        /// 마법사만 기본 공격의 발사체가 있다.
+        /// </summary>
+        [Fact]
+        public void ClassesAndLevelsCoverBothClassesUpToThirty()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            Assert.Equal(new uint[] { 1, 2 }, data.Classes.Rows.Select(row => row.Id));
+            Assert.False(data.Classes.Rows[0].HasProjectileSpeed);
+            Assert.True(data.Classes.Rows[1].HasProjectileSpeed);
+            Assert.Equal(300u, data.Classes.Rows[0].HitDelayMs);
+
+            for (uint level = 1; level <= 30; level++)
+            {
+                LevelsRow knight = data.Level(CharacterClass.Knight, level);
+                LevelsRow mage = data.Level(CharacterClass.Mage, level);
+                Assert.Equal((100 + level, 200 + level), (knight.Id, mage.Id));
+                Assert.True(knight.MaxHp > mage.MaxHp);
+                Assert.True(knight.Defense > mage.Defense);
+                Assert.True(mage.MaxMp > knight.MaxMp);
+                Assert.True(mage.Attack > knight.Attack);
+            }
+
+            Assert.Throws<System.Collections.Generic.KeyNotFoundException>(() => data.Level(CharacterClass.Knight, 31));
+        }
+
+        /// <summary>
         /// 해시 파일이 없거나 16진수 16자가 아니면 읽지 못한다. 테이블의 파일이 없어도 읽지 못한다.
         /// </summary>
         [Fact]

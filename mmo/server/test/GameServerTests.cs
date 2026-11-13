@@ -22,7 +22,7 @@ namespace PortfolioMmo.Server.Tests
         private static readonly TimeSpan s_timeout = TimeSpan.FromSeconds(5);
 
         /// <summary>
-        /// 로그인하고 캐릭터를 만들어 들어가면 내 EntitiesEnter가 오고, 상한을 넘는 길이를 보내면 MALFORMED_PACKET을 받고 끊긴다.
+        /// 로그인하고 캐릭터를 만들어 들어가면 내 능력치와 상태(SelfStats, SelfVitals), 내 EntitiesEnter가 차례로 오고, 상한을 넘는 길이를 보내면 MALFORMED_PACKET을 받고 끊긴다.
         /// </summary>
         [Fact]
         public async Task LogsInOverTcpAndKicksAnOversizedFrame()
@@ -44,6 +44,8 @@ namespace PortfolioMmo.Server.Tests
 
             new Packet { EnterWorld = new EnterWorld { CharacterId = created.Id } }.WriteDelimitedTo(stream);
             Assert.Equal(EnterWorldResultCode.Ok, (await ReadAsync(stream))!.EnterWorldResult.Result);
+            Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(stream))!.SelfStats.MaxHp);
+            Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(stream))!.SelfVitals.Hp);
             Assert.Equal("Arthur", (await ReadAsync(stream))!.EntitiesEnter.Entities[0].Name);
 
             // varint 길이 16383. 서버가 받는 상한(256바이트)을 넘는다.

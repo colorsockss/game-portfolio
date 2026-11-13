@@ -7,7 +7,7 @@ namespace PortfolioMmo.Server
     /// <summary>
     /// 월드의 데이터(EntityTable, Grid)와 시스템을 묶고, 틱을 정해진 차례로 돌린다. 틱 스레드 하나만 부르므로 확인과 쓰기가 늘 한 동기 구간에 있다.
     /// 차례: 1. 입력(Receive. GameServer가 큐를 비우며 부름) → 2. 예약한 일 → 3. 몬스터 → 4. 전투 → 5. 회복과 효과 → 6. 시야 → 7. 저장 → 8. 보내기(GameServer).
-    /// 3–5는 그 기능이 생길 때 Step에 더한다. 입력의 요청은 자기 플레이어의 상태만 고치고, 남을 고치는 결과는 전투 차례로 넘긴다.
+    /// 3–4는 그 기능이 생길 때 Step에 더한다. 입력의 요청은 자기 플레이어의 상태만 고치고, 남을 고치는 결과는 전투 차례로 넘긴다.
     /// </summary>
     public sealed class World : IScheduledRunner
     {
@@ -23,6 +23,7 @@ namespace PortfolioMmo.Server
         private readonly ViewSystem _view;
         private readonly SaveSystem _save;
         private readonly Scheduler _scheduler = new Scheduler();
+        private readonly VitalsSystem _vitals;
 
         /// <summary>
         /// 빈 월드를 만든다.
@@ -31,7 +32,9 @@ namespace PortfolioMmo.Server
         {
             _save = new SaveSystem(store, _entities, SaveIntervalTicks);
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
-            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, field, _entities, _grid, _save);
+            var stats = new StatSystem(data, random);
+            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, field, _entities, _grid, _save, stats);
+            _vitals = new VitalsSystem(_entities, data);
             _movement = new MovementSystem(_entities, _grid, field);
             _view = new ViewSystem(_entities, _grid);
         }
@@ -120,6 +123,8 @@ namespace PortfolioMmo.Server
             long started = Stopwatch.GetTimestamp();
             _scheduler.Step(Tick, this);
             long scheduled = Stopwatch.GetTimestamp();
+            _vitals.Step(Tick);
+            long vitals = Stopwatch.GetTimestamp();
             _view.Step(Tick);
             long viewed = Stopwatch.GetTimestamp();
             _movement.Step(elapsedTicks);
@@ -131,7 +136,8 @@ namespace PortfolioMmo.Server
             long saved = Stopwatch.GetTimestamp();
 
             profile?.Add(TickPhase.Scheduled, scheduled - started);
-            profile?.Add(TickPhase.View, viewed - scheduled);
+            profile?.Add(TickPhase.Vitals, vitals - scheduled);
+            profile?.Add(TickPhase.View, viewed - vitals);
             profile?.Add(TickPhase.Input, filled - viewed);
             profile?.Add(TickPhase.Save, saved - filled);
         }

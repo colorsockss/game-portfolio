@@ -102,6 +102,7 @@ namespace MmoWorld
 		LastAck = 0;
 		LastTick = 0;
 		ServerClock.Reset();
+		Mine = {};
 		Visible.clear();
 		Entered.clear();
 	}
@@ -157,6 +158,29 @@ namespace MmoWorld
 				Found->second.Info.set_name_color(State.name_color());
 				Found->second.Info.set_weapon_item_id(State.weapon_item_id());
 				Found->second.Info.set_level(State.level());
+			}
+			break;
+		case portfolio::mmo::Packet::kSelfVitals:
+			Mine.Hp = Packet.self_vitals().hp();
+			Mine.Mp = Packet.self_vitals().mp();
+			Mine.CombatEndTick = Packet.self_vitals().combat_end_tick();
+			Mine.AggressorEndTick = Packet.self_vitals().aggressor_end_tick();
+			break;
+		case portfolio::mmo::Packet::kSelfStats:
+			Mine.MaxHp = Packet.self_stats().max_hp();
+			Mine.MaxMp = Packet.self_stats().max_mp();
+			Mine.Attack = Packet.self_stats().attack();
+			Mine.Defense = Packet.self_stats().defense();
+			break;
+		case portfolio::mmo::Packet::kEntityVitals:
+			// 받지 않은 개체의 것은 버린다(EntityState와 같음).
+			for (const portfolio::mmo::EntityVital& Vital : Packet.entity_vitals().entities())
+			{
+				if (const auto Found = Visible.find(Vital.id()); Found != Visible.end())
+				{
+					Found->second.Info.set_hp(Vital.hp());
+					Found->second.Info.set_max_hp(Vital.max_hp());
+				}
 			}
 			break;
 		case portfolio::mmo::Packet::kPositionReset:

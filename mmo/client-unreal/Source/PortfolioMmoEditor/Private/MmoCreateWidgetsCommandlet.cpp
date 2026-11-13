@@ -14,6 +14,7 @@
 #include "Components/HorizontalBoxSlot.h"
 #include "Components/Image.h"
 #include "Components/Overlay.h"
+#include "Components/ProgressBar.h"
 #include "Components/OverlaySlot.h"
 #include "Components/SafeZone.h"
 #include "Components/SafeZoneSlot.h"
@@ -64,6 +65,10 @@ namespace
 		FLinearColor ButtonPressed{ 0.62f, 0.60f, 0.55f, 1.0f };
 		FLinearColor ButtonDisabled{ 0.40f, 0.40f, 0.40f, 1.0f };
 		FLinearColor ButtonText{ 0.05f, 0.05f, 0.05f, 1.0f };
+		/** 체력·마나 바의 채움과 바탕. */
+		FLinearColor Hp{ 0.75f, 0.12f, 0.10f, 1.0f };
+		FLinearColor Mp{ 0.15f, 0.35f, 0.85f, 1.0f };
+		FLinearColor BarBack{ 0.0f, 0.0f, 0.0f, 0.6f };
 		/** 고른 버튼(캐릭터 칸, 직업)의 배경 곱. */
 		FLinearColor Selected{ 1.0f, 0.78f, 0.3f, 1.0f };
 
@@ -90,6 +95,9 @@ namespace
 		/** HUD의 요소가 화면 모서리(안전 영역 안)에서 떨어지는 거리. */
 		float HudMargin = 24.0f;
 		float JoystickSize = 240.0f;
+		/** HUD의 체력·마나 바 크기. */
+		float BarWidth = 320.0f;
+		float BarHeight = 24.0f;
 		float NoticeTop = 80.0f;
 	};
 
@@ -366,6 +374,33 @@ namespace
 		return Builder.Save() ? Builder.GeneratedClass() : nullptr;
 	}
 
+	/** 체력·마나 바 하나: 둥근 바탕 위의 채움(<Name>Bar)과 가운데의 "지금 / 최대"(<Name>Text). 값은 UMmoHudWidget이 넣는다. */
+	UWidget* Bar(FWidgetBlueprintBuilder& Builder, const TCHAR* Name, const FLinearColor& Fill)
+	{
+		USizeBox* Size = Builder.Add<USizeBox>(*FString::Printf(TEXT("%sBarSize"), Name));
+		Size->SetWidthOverride(Style.BarWidth);
+		Size->SetHeightOverride(Style.BarHeight);
+		UOverlay* Stack = Builder.Add<UOverlay>(*FString::Printf(TEXT("%sBarStack"), Name));
+		Size->SetContent(Stack);
+
+		UProgressBar* Progress = Builder.Add<UProgressBar>(*FString::Printf(TEXT("%sBar"), Name), true);
+		FProgressBarStyle BarStyle = Progress->GetWidgetStyle();
+		BarStyle.BackgroundImage = FSlateRoundedBoxBrush(Style.BarBack, Style.ButtonRadius);
+		BarStyle.FillImage = FSlateRoundedBoxBrush(FLinearColor::White, Style.ButtonRadius);
+		Progress->SetWidgetStyle(BarStyle);
+		Progress->SetFillColorAndOpacity(Fill);
+		Progress->SetPercent(1.0f);
+		UOverlaySlot* BarSlot = Stack->AddChildToOverlay(Progress);
+		BarSlot->SetHorizontalAlignment(HAlign_Fill);
+		BarSlot->SetVerticalAlignment(VAlign_Fill);
+
+		UTextBlock* Value = Builder.Text(*FString::Printf(TEXT("%sText"), Name), FText::GetEmpty(), Style.SmallSize, true);
+		UOverlaySlot* ValueSlot = Stack->AddChildToOverlay(Value);
+		ValueSlot->SetHorizontalAlignment(HAlign_Center);
+		ValueSlot->SetVerticalAlignment(VAlign_Center);
+		return Size;
+	}
+
 	bool CreateHud(UClass* JoystickClass)
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Hud, UMmoHudWidget::StaticClass());
@@ -375,10 +410,12 @@ namespace
 		Corner(*Root, Builder.Add<UUserWidget>(JoystickClass, TEXT("Joystick"), true), ECorner::BottomLeft,
 			FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5));
 
-		// 왼쪽 위에 지금 구역(이름과 권장 레벨)과 그 아래 안전 지대 표시.
+		// 왼쪽 위에 내 체력·마나 바, 그 아래 지금 구역(이름과 권장 레벨)과 안전 지대 표시.
 		UVerticalBox* Zone = Builder.Add<UVerticalBox>(TEXT("Zone"));
 		Zone->SetVisibility(ESlateVisibility::HitTestInvisible);
 		Corner(*Root, Zone, ECorner::TopLeft);
+		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Hp"), Style.Hp));
+		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Mp"), Style.Mp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, Style.Gap));
 		Zone->AddChildToVerticalBox(Builder.Text(TEXT("ZoneText"), FText::GetEmpty(), Style.BodySize, true));
 		UTextBlock* SafeZoneText = Builder.Text(TEXT("SafeZoneText"), LOCTEXT("SafeZone", "안전 지대"), Style.SmallSize, true, Style.Positive);
 		SafeZoneText->SetVisibility(ESlateVisibility::Collapsed);

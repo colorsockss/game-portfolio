@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 3,
+  "name": "portfolio-mmo",
+  "stats": [
+    { "id": "6f0e3c1a-2b8d-4c51-9a07-1d2e3f405162", "key": "attack", "defaults": { "caster": 20, "target": 15 }, "description": "공격력 (Levels.attack, Monsters.attack)" },
+    { "id": "7a1f4d2b-3c9e-4d62-8b18-2e3f40516273", "key": "defense", "defaults": { "caster": 10, "target": 12 }, "description": "방어력 (Levels.defense, Monsters.defense)" }
+  ],
+  "constants": [
+    { "id": "8b205e3c-4daf-4e73-9c29-3f4051627384", "key": "defenseRate", "value": 0.5, "description": "피해에서 빼는 방어력의 비율" },
+    { "id": "9c316f4d-5eb0-4f84-8d3a-405162738495", "key": "minDamage", "value": 1, "description": "방어력이 커도 들어가는 최소 피해" }
+  ],
+  "inputs": [
+    { "id": "ad427a5e-6fc1-4095-9e4b-5162738495a6", "key": "coefficient", "value": 1, "description": "공격의 계수 (기본 공격 1, Skills의 계수)" }
+  ],
+  "formulas": [
+    { "id": "be538b6f-70d2-41a6-8f5c-62738495a6b7", "key": "damage", "expression": "max(minDamage, (caster.attack * coefficient - target.defense * defenseRate) * rand(0.9, 1.1))", "description": "치명타 전의 피해. 서버가 치명타의 배수를 곱하고 소수를 버린다" }
+  ],
+  "exportSettings": { "csharpNamespace": "PortfolioMmo.Server", "csharpAbilityType": "PortfolioMmo.Server.AbilityType" }
+}

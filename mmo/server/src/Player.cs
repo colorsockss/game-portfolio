@@ -41,9 +41,9 @@ namespace PortfolioMmo.Server
         public Session Session { get; }
 
         /// <summary>
-        /// 표시 상태: 레벨(31), 이름 색(44), 입은 무기(34. Items의 번호, 없으면 0).
+        /// 표시 상태: 레벨(31. 그 전에는 모두 1), 이름 색(44), 입은 무기(34. Items의 번호, 없으면 0).
         /// </summary>
-        public uint Level { get; private set; }
+        public uint Level { get; private set; } = 1;
 
         public NameColor NameColor { get; private set; }
 
@@ -68,6 +68,16 @@ namespace PortfolioMmo.Server
         /// 로그인한 뒤 아직 자기 EntityEnter를 보내지 않았다.
         /// </summary>
         internal bool JustEntered { get; set; } = true;
+
+        /// <summary>
+        /// 마지막으로 본인에게 보낸 SelfVitals. null이면 아직 보내지 않았다(월드에 들어온 틱).
+        /// </summary>
+        internal SelfVitals? SentVitals { get; set; }
+
+        /// <summary>
+        /// 능력치를 다시 구했다. 이 틱의 VitalsSystem이 본인에게 SelfStats를 보낸 뒤 내린다.
+        /// </summary>
+        internal bool StatsChanged { get; set; }
 
         /// <summary>
         /// 지난 틱까지 이 플레이어에게 보였던 개체.

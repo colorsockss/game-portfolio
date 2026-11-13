@@ -19,11 +19,64 @@ namespace PortfolioMmo.Server.Tests
         /// </summary>
         public const uint FieldSize = 600;
 
+        // 정적 필드는 적은 차례로 채워지므로 Data보다 먼저 둔다.
+        /// <summary>
+        /// 1레벨의 능력치: 기사 (150, 50, 12, 10), 마법사 (100, 120, 15, 6).
+        /// </summary>
+        public static readonly Stats KnightLevel1 = new Stats(150, 50, 12, 10);
+        public static readonly Stats MageLevel1 = new Stats(100, 120, 15, 6);
+
         /// <summary>
         /// 벽이 없는 600 m 필드와 원점에 부활 지점을 둔 마을 하나의 데이터. 새 캐릭터가 원점에서 시작한다.
         /// 구역과 벽의 규칙은 FieldMapTests가 FieldMap으로 직접 보고, 벽에 막히는 월드는 WithMap으로 만든다.
         /// </summary>
-        public static readonly GameData Data = new GameData(Hash, new Constants { FieldSize = FieldSize }, new Zones { Rows = { Town(0, 0) } }, EmptyGrid(FieldSize));
+        public static readonly GameData Data = new GameData(Hash, Constants(FieldSize), new Zones { Rows = { Town(0, 0) } }, EmptyGrid(FieldSize), Classes, Levels);
+
+        /// <summary>
+        /// 시험용 직업 둘(기사 근접, 마법사 발사체).
+        /// </summary>
+        public static Classes Classes => new Classes
+        {
+            Rows =
+            {
+                new ClassesRow { Id = 1, AttackRange = 2, AttackIntervalMs = 1000, HitDelayMs = 300 },
+                new ClassesRow { Id = 2, AttackRange = 12, AttackIntervalMs = 1200, HitDelayMs = 300, ProjectileSpeed = 20 },
+            },
+        };
+
+        /// <summary>
+        /// 직업마다 1–2레벨. 2레벨은 최대값이 줄어드는 경우를 보려고 1레벨보다 최대 체력과 최대 마나가 낮다.
+        /// </summary>
+        public static Levels Levels => new Levels
+        {
+            Rows =
+            {
+                Level(1, 1, KnightLevel1),
+                Level(1, 2, new Stats(120, 40, 14, 11)),
+                Level(2, 1, MageLevel1),
+                Level(2, 2, new Stats(90, 100, 17, 7)),
+            },
+        };
+
+        /// <summary>
+        /// 시험용 상수. 회복은 5%와 전투 상태의 1%, 치명타는 5%와 1.5배다.
+        /// </summary>
+        public static Constants Constants(uint fieldSize)
+        {
+            return new Constants
+            {
+                FieldSize = fieldSize, CombatDurationMs = 5000, RegenPercent = 5, CombatRegenPercent = 1, CritChance = 0.05, CritMultiplier = 1.5, PlayerRadius = 0.34,
+            };
+        }
+
+        private static LevelsRow Level(uint characterClass, uint level, Stats stats)
+        {
+            return new LevelsRow
+            {
+                Id = (characterClass * 100) + level, Class = characterClass, Level = level, Exp = 100,
+                MaxHp = stats.MaxHp, MaxMp = stats.MaxMp, Attack = stats.Attack, Defense = stats.Defense,
+            };
+        }
 
         /// <summary>
         /// 원점 둘레 80 m의 안전한 마을. 부활 지점은 (x, z) m다.
@@ -79,7 +132,7 @@ namespace PortfolioMmo.Server.Tests
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             var table = new Zones { Rows = { Town(respawnX, respawnZ) } };
             table.Rows.Add(zones);
-            return new GameData(Hash, new Constants { FieldSize = size }, table, grid);
+            return new GameData(Hash, Constants(size), table, grid, Classes, Levels);
         }
 
         /// <summary>

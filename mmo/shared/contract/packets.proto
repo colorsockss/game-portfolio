@@ -29,6 +29,13 @@ message Packet {
     EntitiesLeave entities_leave = 103;
     EntityMoves entity_moves = 104;
     EntityState entity_state = 105;
+
+    // 200–299: 전투
+    SelfVitals self_vitals = 200;
+    EntityVitals entity_vitals = 201;
+
+    // 300–399: 성장과 아이템
+    SelfStats self_stats = 300;
   }
 }
 
@@ -341,4 +348,33 @@ message EntityMove {
   sint32 x = 2;
   sint32 z = 3;
   uint32 yaw = 4;
+}
+
+// 서버 → 클라이언트. 내 체력, 마나, 전투 상태와 선공 표시가 끝나는 틱(그 틱부터 아님). 하나라도 바뀐 틱에 본인에게만 가고,
+// 월드에 들어올 때 EnterWorldResult 뒤에 한 번 간다. 선공 표시는 backlog 44가 채운다.
+message SelfVitals {
+  uint32 hp = 1;
+  uint32 mp = 2;
+  uint32 combat_end_tick = 3;
+  uint32 aggressor_end_tick = 4;
+}
+
+// 서버 → 클라이언트. 피해가 아닌 까닭(회복, 물약, 회복 스킬)으로 체력이나 최대 체력이 바뀐 개체들. 1초마다 그 개체를 받은 연결에
+// 모아 보낸다. 피해는 전투의 피해 사건이 남은 체력과 함께 알린다.
+message EntityVitals {
+  repeated EntityVital entities = 1;
+}
+
+message EntityVital {
+  uint32 id = 1;
+  uint32 hp = 2;
+  uint32 max_hp = 3;
+}
+
+// 서버 → 클라이언트. 내 능력치. 다시 구한 뒤(레벨, 장비, 강화, 효과가 바뀜)와 월드에 들어올 때 본인에게만 간다.
+message SelfStats {
+  uint32 max_hp = 1;
+  uint32 max_mp = 2;
+  uint32 attack = 3;
+  uint32 defense = 4;
 }

@@ -296,6 +296,65 @@ namespace
 		World.Apply(State, 0);
 		Expect(World.Entities().count(99) == 0, "EntityState of an unknown entity is dropped");
 	}
+	/** SelfVitals와 SelfStats가 내 상태에 그대로 들고, 떠나면 비운다. EntityVitals는 받은 개체의 체력만 고친다. */
+	void VitalsAndStatsAreKept()
+	{
+		MmoWorld::FWorldState World;
+		portfolio::mmo::Packet Entered;
+		Entered.mutable_enter_world_result()->set_self_id(1);
+		World.Apply(Entered, 0);
+		World.Apply(Enter(2, 0, 0, "other"), 0);
+
+		portfolio::mmo::Packet Stats;
+		Stats.mutable_self_stats()->set_max_hp(150);
+		Stats.mutable_self_stats()->set_max_mp(50);
+		Stats.mutable_self_stats()->set_attack(12);
+		Stats.mutable_self_stats()->set_defense(10);
+		portfolio::mmo::Packet Vitals;
+		Vitals.mutable_self_vitals()->set_hp(140);
+		Vitals.mutable_self_vitals()->set_mp(20);
+		Vitals.mutable_self_vitals()->set_combat_end_tick(500);
+		Vitals.mutable_self_vitals()->set_aggressor_end_tick(900);
+		World.Apply(Stats, 0);
+		World.Apply(Vitals, 0);
+		const MmoWorld::FSelfState& Self = World.SelfState();
+		Expect(Self.MaxHp == 150 && Self.MaxMp == 50 && Self.Attack == 12 && Self.Defense == 10, "SelfStats fills the stats");
+		Expect(Self.Hp == 140 && Self.Mp == 20 && Self.CombatEndTick == 500 && Self.AggressorEndTick == 900, "SelfVitals fills hp, mp and end ticks");
+
+		portfolio::mmo::Packet Others;
+		portfolio::mmo::EntityVital* Known = Others.mutable_entity_vitals()->add_entities();
+		Known->set_id(2);
+		Known->set_hp(70);
+		Known->set_max_hp(90);
+		portfolio::mmo::EntityVital* Unknown = Others.mutable_entity_vitals()->add_entities();
+		Unknown->set_id(3);
+		Unknown->set_hp(1);
+		World.Apply(Others, 0);
+		const MmoWorld::FEntity& Other = World.Entities().at(2);
+		Expect(Other.Info.hp() == 70 && Other.Info.max_hp() == 90, "EntityVitals updates a known entity");
+		Expect(World.Entities().count(3) == 0, "EntityVitals does not create unknown entities");
+
+		World.Reset();
+		Expect(World.SelfState().Hp == 0 && World.SelfState().MaxHp == 0, "leaving the world clears my state");
+	}
+
+	/** 전투 상태는 어림한 서버 틱이 끝나는 틱 앞일 때만이다. 틱 100을 0초에 받았으니 1초 뒤는 틱 120이다. */
+	void CombatFollowsTheServerClock()
+	{
+		MmoWorld::FWorldState World;
+		portfolio::mmo::Packet Entered;
+		Entered.mutable_enter_world_result()->set_self_id(1);
+		Entered.mutable_enter_world_result()->set_tick(100);
+		World.Apply(Entered, 0);
+		Expect(!World.InCombat(0), "no combat before any SelfVitals");
+
+		portfolio::mmo::Packet Vitals;
+		Vitals.mutable_self_vitals()->set_combat_end_tick(120);
+		World.Apply(Vitals, 0);
+		Expect(World.InCombat(0.5), "in combat before the end tick");
+		Expect(!World.InCombat(1.0), "out of combat from the end tick");
+		Expect(!World.InCombat(2.0), "out of combat after the end tick");
+	}
 }
 
 int main()
@@ -312,6 +371,8 @@ int main()
 	TrackKeepsWalkersSmoothAndStartsStillOnes();
 	EnteredEntitiesStartAtTheLastTick();
 	KindsAndDisplayStatesAreKept();
+	VitalsAndStatsAreKept();
+	CombatFollowsTheServerClock();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

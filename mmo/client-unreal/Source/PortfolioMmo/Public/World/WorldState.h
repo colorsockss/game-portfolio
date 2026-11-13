@@ -92,6 +92,21 @@ namespace MmoWorld
 		FEntityTrack Track;
 	};
 
+	/** 내 체력, 마나, 능력치와 전투 상태·선공 표시가 끝나는 틱(SelfVitals, SelfStats를 그대로 둠). 받기 전에는 모두 0이다. */
+	struct FSelfState
+	{
+		uint32_t Hp = 0;
+		uint32_t Mp = 0;
+		uint32_t MaxHp = 0;
+		uint32_t MaxMp = 0;
+		uint32_t Attack = 0;
+		uint32_t Defense = 0;
+		/** 이 틱부터 전투 상태가 아니다. */
+		uint32_t CombatEndTick = 0;
+		/** 이 틱부터 선공 표시가 없다(44). */
+		uint32_t AggressorEndTick = 0;
+	};
+
 	/**
 	 * 서버가 알려 준 월드: 내 개체 번호, 서버 시계, 시야 안의 개체들. 월드에 들어가 있는 동안(EnterWorldResult부터 끊기거나 LeaveWorld까지)의
 	 * 상태이고, 화면(위젯·액터)은 이것을 읽기만 한다.
@@ -114,6 +129,12 @@ namespace MmoWorld
 
 		/** 내 개체. 월드에 들어가기 전이거나 아직 EntitiesEnter를 받지 못했으면 nullptr. */
 		const FEntity* SelfEntity() const;
+
+		/** 내 체력, 마나, 능력치. 다른 개체의 체력은 Entities()의 Info(hp, max_hp)에 있다. */
+		const FSelfState& SelfState() const { return Mine; }
+
+		/** 내가 전투 상태인가: 어림한 서버의 지금 틱이 전투 상태가 끝나는 틱 앞이다. */
+		bool InCombat(double NowSeconds) const { return ServerClock.Now(NowSeconds) < Mine.CombatEndTick; }
 
 		/** 다음 Move에 실을 ack(마지막으로 받은 PositionReset의 값). */
 		uint32_t Ack() const { return LastAck; }
@@ -142,6 +163,7 @@ namespace MmoWorld
 		/** 마지막으로 받은 서버 틱 번호(EnterWorldResult, Pong, EntityMoves). EntityEnter에는 틱이 없어 들어온 개체의 첫 기록에 쓴다. */
 		uint32_t LastTick = 0;
 		FServerClock ServerClock;
+		FSelfState Mine;
 		std::unordered_map<uint32_t, FEntity> Visible;
 		std::vector<uint32_t> Left;
 		std::vector<uint32_t> Entered;

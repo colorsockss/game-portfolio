@@ -24,13 +24,16 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSIfCglDb25z",
-            "dGFudHMSEgoKZmllbGRfc2l6ZRgBIAEoDUIUqgIRUG9ydGZvbGlvTW1vLkRh",
-            "dGFiBnByb3RvMw=="));
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSK1AQoJQ29u",
+            "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
+            "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
+            "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
+            "dF9tdWx0aXBsaWVyGAYgASgBEhUKDXBsYXllcl9yYWRpdXMYByABKAFCFKoC",
+            "EVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius" }, null, null, null, null)
           }));
     }
     #endregion
@@ -73,6 +76,12 @@ namespace PortfolioMmo.Data {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public Constants(Constants other) : this() {
       fieldSize_ = other.fieldSize_;
+      combatDurationMs_ = other.combatDurationMs_;
+      regenPercent_ = other.regenPercent_;
+      combatRegenPercent_ = other.combatRegenPercent_;
+      critChance_ = other.critChance_;
+      critMultiplier_ = other.critMultiplier_;
+      playerRadius_ = other.playerRadius_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -97,6 +106,96 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "combat_duration_ms" field.</summary>
+    public const int CombatDurationMsFieldNumber = 2;
+    private uint combatDurationMs_;
+    /// <summary>
+    /// 전투 상태 시간(ms). 공격하거나 피해·상태 이상을 받으면 이만큼 미룬다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CombatDurationMs {
+      get { return combatDurationMs_; }
+      set {
+        combatDurationMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "regen_percent" field.</summary>
+    public const int RegenPercentFieldNumber = 3;
+    private uint regenPercent_;
+    /// <summary>
+    /// 전투 상태가 아닐 때 초당 채우는 최대 체력·마나의 비율(%)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RegenPercent {
+      get { return regenPercent_; }
+      set {
+        regenPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "combat_regen_percent" field.</summary>
+    public const int CombatRegenPercentFieldNumber = 4;
+    private uint combatRegenPercent_;
+    /// <summary>
+    /// 전투 상태에서 초당 채우는 최대 체력·마나의 비율(%)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint CombatRegenPercent {
+      get { return combatRegenPercent_; }
+      set {
+        combatRegenPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "crit_chance" field.</summary>
+    public const int CritChanceFieldNumber = 5;
+    private double critChance_;
+    /// <summary>
+    /// 치명타의 확률(0–1)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double CritChance {
+      get { return critChance_; }
+      set {
+        critChance_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "crit_multiplier" field.</summary>
+    public const int CritMultiplierFieldNumber = 6;
+    private double critMultiplier_;
+    /// <summary>
+    /// 치명타가 피해에 곱하는 배수
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double CritMultiplier {
+      get { return critMultiplier_; }
+      set {
+        critMultiplier_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "player_radius" field.</summary>
+    public const int PlayerRadiusFieldNumber = 7;
+    private double playerRadius_;
+    /// <summary>
+    /// 플레이어의 반지름(m). 클라이언트의 캡슐(34 cm)과 같은 값
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double PlayerRadius {
+      get { return playerRadius_; }
+      set {
+        playerRadius_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -113,6 +212,12 @@ namespace PortfolioMmo.Data {
         return true;
       }
       if (FieldSize != other.FieldSize) return false;
+      if (CombatDurationMs != other.CombatDurationMs) return false;
+      if (RegenPercent != other.RegenPercent) return false;
+      if (CombatRegenPercent != other.CombatRegenPercent) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(CritChance, other.CritChance)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(CritMultiplier, other.CritMultiplier)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(PlayerRadius, other.PlayerRadius)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -121,6 +226,12 @@ namespace PortfolioMmo.Data {
     public override int GetHashCode() {
       int hash = 1;
       if (FieldSize != 0) hash ^= FieldSize.GetHashCode();
+      if (CombatDurationMs != 0) hash ^= CombatDurationMs.GetHashCode();
+      if (RegenPercent != 0) hash ^= RegenPercent.GetHashCode();
+      if (CombatRegenPercent != 0) hash ^= CombatRegenPercent.GetHashCode();
+      if (CritChance != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(CritChance);
+      if (CritMultiplier != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(CritMultiplier);
+      if (PlayerRadius != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(PlayerRadius);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -143,6 +254,30 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(8);
         output.WriteUInt32(FieldSize);
       }
+      if (CombatDurationMs != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(CombatDurationMs);
+      }
+      if (RegenPercent != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(RegenPercent);
+      }
+      if (CombatRegenPercent != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(CombatRegenPercent);
+      }
+      if (CritChance != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(CritChance);
+      }
+      if (CritMultiplier != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(CritMultiplier);
+      }
+      if (PlayerRadius != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(PlayerRadius);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -157,6 +292,30 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(8);
         output.WriteUInt32(FieldSize);
       }
+      if (CombatDurationMs != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(CombatDurationMs);
+      }
+      if (RegenPercent != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(RegenPercent);
+      }
+      if (CombatRegenPercent != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(CombatRegenPercent);
+      }
+      if (CritChance != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(CritChance);
+      }
+      if (CritMultiplier != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(CritMultiplier);
+      }
+      if (PlayerRadius != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(PlayerRadius);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -169,6 +328,24 @@ namespace PortfolioMmo.Data {
       int size = 0;
       if (FieldSize != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FieldSize);
+      }
+      if (CombatDurationMs != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CombatDurationMs);
+      }
+      if (RegenPercent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RegenPercent);
+      }
+      if (CombatRegenPercent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(CombatRegenPercent);
+      }
+      if (CritChance != 0D) {
+        size += 1 + 8;
+      }
+      if (CritMultiplier != 0D) {
+        size += 1 + 8;
+      }
+      if (PlayerRadius != 0D) {
+        size += 1 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -184,6 +361,24 @@ namespace PortfolioMmo.Data {
       }
       if (other.FieldSize != 0) {
         FieldSize = other.FieldSize;
+      }
+      if (other.CombatDurationMs != 0) {
+        CombatDurationMs = other.CombatDurationMs;
+      }
+      if (other.RegenPercent != 0) {
+        RegenPercent = other.RegenPercent;
+      }
+      if (other.CombatRegenPercent != 0) {
+        CombatRegenPercent = other.CombatRegenPercent;
+      }
+      if (other.CritChance != 0D) {
+        CritChance = other.CritChance;
+      }
+      if (other.CritMultiplier != 0D) {
+        CritMultiplier = other.CritMultiplier;
+      }
+      if (other.PlayerRadius != 0D) {
+        PlayerRadius = other.PlayerRadius;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -208,6 +403,30 @@ namespace PortfolioMmo.Data {
             FieldSize = input.ReadUInt32();
             break;
           }
+          case 16: {
+            CombatDurationMs = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            RegenPercent = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            CombatRegenPercent = input.ReadUInt32();
+            break;
+          }
+          case 41: {
+            CritChance = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            CritMultiplier = input.ReadDouble();
+            break;
+          }
+          case 57: {
+            PlayerRadius = input.ReadDouble();
+            break;
+          }
         }
       }
     #endif
@@ -229,6 +448,30 @@ namespace PortfolioMmo.Data {
             break;
           case 8: {
             FieldSize = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            CombatDurationMs = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            RegenPercent = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            CombatRegenPercent = input.ReadUInt32();
+            break;
+          }
+          case 41: {
+            CritChance = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            CritMultiplier = input.ReadDouble();
+            break;
+          }
+          case 57: {
+            PlayerRadius = input.ReadDouble();
             break;
           }
         }

@@ -1,0 +1,29 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message LevelsRow {
+  // 직업 × 100 + 레벨
+  uint32 id = 1;
+  // 직업(Classes의 id)
+  uint32 class = 2;
+  // 레벨
+  uint32 level = 3;
+  // 이 레벨에서 다음 레벨까지 쌓을 경험치. 최대 레벨의 값은 쓰지 않는다(31)
+  uint32 exp = 4;
+  // 최대 체력
+  uint32 max_hp = 5;
+  // 최대 마나
+  uint32 max_mp = 6;
+  // 공격력
+  uint32 attack = 7;
+  // 방어력
+  uint32 defense = 8;
+}
+
+message Levels {
+  repeated LevelsRow rows = 1;
+}

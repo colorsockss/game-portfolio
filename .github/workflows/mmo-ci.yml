@@ -61,7 +61,7 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      # generate --check가 data-tool(exceljs)을 돌린다.
+      # generate --check가 data-tool(exceljs)과 formula-tool의 C# 내보내기(esbuild)를 돌린다.
       - run: npm ci
       # 패킷과 데이터 코드 생성(Google.Protobuf.Tools의 protoc)과 C# 테스트가 쓴다.
       - uses: actions/setup-dotnet@v6

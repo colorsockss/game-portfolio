@@ -38,6 +38,7 @@ namespace PortfolioMmo.Server
         private readonly EntityTable _entities;
         private readonly Grid _grid;
         private readonly SaveSystem _save;
+        private readonly StatSystem _stats;
 
         /// <summary>
         /// 로그인한 계정의 연결. 로그인 ID가 키다.
@@ -49,7 +50,7 @@ namespace PortfolioMmo.Server
         /// </summary>
         private readonly (int X, int Z) _respawn;
 
-        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, CharacterStore store, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save)
+        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, CharacterStore store, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save, StatSystem stats)
         {
             ZonesRow town = data.Zones.Rows.FirstOrDefault(zone => zone.Kind == ZoneKind.Town)
                 ?? throw new System.ArgumentException("Zones needs a town row with the respawn point.", nameof(data));
@@ -63,6 +64,7 @@ namespace PortfolioMmo.Server
             _entities = entities;
             _grid = grid;
             _save = save;
+            _stats = stats;
         }
 
         /// <summary>
@@ -146,6 +148,7 @@ namespace PortfolioMmo.Server
             }
 
             var player = new Player(_entities.NextPlayerId(), character, session, position) { Dirty = blocked };
+            _stats.Enter(player);
             _entities.Add(player);
             _grid.Add(player);
             session.Player = player;

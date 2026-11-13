@@ -1,5 +1,6 @@
 #include "UI/MmoHudWidget.h"
 
+#include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Engine/GameInstance.h"
 #include "Framework/Application/SlateApplication.h"
@@ -15,12 +16,19 @@ void UMmoHudWidget::NativeConstruct()
 	const bool bTouch = FPlatformMisc::SupportsTouchInput() || FSlateApplication::Get().IsFakingTouchEvents();
 	Joystick->SetVisibility(bTouch ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	ShownZone = MAX_uint32;
+	ShownHp = MAX_uint64;
+	ShownMp = MAX_uint64;
 }
 
 void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	const MmoWorld::FFieldMap* Field = GetGameInstance()->GetSubsystem<UMmoSession>()->Field();
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const MmoWorld::FSelfState& Vitals = Session->World().SelfState();
+	ShowBar(*HpBar, *HpText, Vitals.Hp, Vitals.MaxHp, ShownHp);
+	ShowBar(*MpBar, *MpText, Vitals.Mp, Vitals.MaxMp, ShownMp);
+
+	const MmoWorld::FFieldMap* Field = Session->Field();
 	const APawn* Self = GetOwningPlayerPawn();
 	if (!Field || !Self)
 	{
@@ -31,6 +39,19 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	// 내 캐릭터는 이동 컴포넌트가 옮기므로 월드 모델이 아니라 액터의 자리로 구역을 구한다.
 	const FVector Location = Self->GetActorLocation();
 	ShowZone(Field->ZoneAt(MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location)));
+}
+
+void UMmoHudWidget::ShowBar(UProgressBar& Bar, UTextBlock& Text, uint32 Value, uint32 Max, uint64& Shown)
+{
+	const uint64 Pair = (static_cast<uint64>(Value) << 32) | Max;
+	if (Pair == Shown)
+	{
+		return;
+	}
+
+	Shown = Pair;
+	Bar.SetPercent(Max == 0 ? 0.0f : static_cast<float>(Value) / Max);
+	Text.SetText(FText::FromString(FString::Printf(TEXT("%u / %u"), Value, Max)));
 }
 
 void UMmoHudWidget::ShowZone(uint32 Zone)

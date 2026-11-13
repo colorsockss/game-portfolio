@@ -544,7 +544,7 @@ data/                기획 데이터 원본
     - 서버: `Grid.Query(centerX, centerZ, radius, filter, result)`(좌표 단위, `Predicate<Entity>`, 결과 목록을 먼저 비움). 거리의 제곱은 `long`으로 셉니다. 테스트에서 부르려고 `Grid`를 `public`으로 바꿨습니다.
     - 확인: 서버 테스트 `GridQueryTests` 7개(위 목록과 같음. 벽 너머는 글자 맵의 `FieldMap.HasLine`이 거짓인 개체가 결과에 드는 것으로 봄). 서버 테스트 97개 통과.
 
-- [ ] **22. 능력치와 공식** `M3` — 직업과 레벨의 능력치를 구하고, 피해 공식과 회복을 넣고, 내 체력과 마나를 HUD에 보입니다. [설계: 캐릭터와 능력치](design.md#캐릭터와-능력치), [전투](design.md#전투)
+- [x] **22. 능력치와 공식** `M3` — 직업과 레벨의 능력치를 구하고, 피해 공식과 회복을 넣고, 내 체력과 마나를 HUD에 보입니다. [설계: 캐릭터와 능력치](design.md#캐릭터와-능력치), [전투](design.md#전투)
   - **계약·데이터**:
     - `Classes`(2줄: 기사, 마법사): 기본 공격의 사거리(기사 2 m, 마법사 12 m)와 간격, 타격까지의 시간(밀리초. 처음 값 300 ms = 6틱), 기본 공격 발사체의 속도(기사는 비움), 처음 상태(기본 무기, 물약, 첫 스킬), 체험용 처음 상태. 처음 상태의 칸은 가리키는 테이블이 생길 때 그 항목이 채웁니다(첫 스킬은 26, 물약은 32, 기본 무기는 34, 체험용은 94). 공격 간격과 발사체 속도의 처음 값은 설계에 없어 72의 기준으로 넣습니다.
     - `Levels`(60줄: 직업 2 × 레벨 1–30): 필요 경험치, 기본 능력치 넷(최대 체력, 최대 마나, 공격력, 방어력). 기사는 체력과 방어력이, 마법사는 마나와 공격력이 높고 체력이 낮게 넣습니다. 값은 72가 맞추고, 필요 경험치는 31이 씁니다.
@@ -568,6 +568,14 @@ data/                기획 데이터 원본
     - 생성한 데이터: `Classes` 2줄, `Levels` 60줄, 같은 레벨에서 기사의 최대 체력과 방어력이 마법사보다 높고 마법사의 최대 마나와 공격력이 기사보다 높은 것. `Contract.Tests`에 새 패킷의 왕복을 더합니다.
     - 엔진 없는 테스트: `SelfVitals`, `SelfStats`, `EntityVitals`의 반영과 "전투 상태인가"의 답.
     - 눈으로: HUD의 바가 들어올 때 가득 차 있는 것(줄고 차는 것은 피해가 생기는 24에서 봅니다).
+  - 한 것(2026-11-14):
+    - 데이터: `Classes`(2줄), `Levels`(60줄, `id` = 직업 × 100 + 레벨), `Constants`에 전투 상태 시간·회복 둘·치명타 둘·플레이어의 반지름. 공격 간격(기사 1,000 ms, 마법사 1,200 ms), 발사체 속도(20 m/s), 레벨의 능력치와 필요 경험치(50 × 레벨 × (레벨 + 1))는 72가 맞출 자리 값입니다. `Classes`의 처음 상태 열은 지금 만들지 않았습니다: 가리킬 테이블이 없어 `ref`로 검사할 수 없으므로, 그 테이블을 만드는 항목(26 첫 스킬, 32 물약, 34 기본 무기, 94 체험용)이 `ref`와 함께 더합니다. 직업은 `packets.proto`의 `CharacterClass` 값이라 `Enums`에 다시 두지 않고 `range`(1..2)로 막았습니다.
+    - 공식: `mmo/data/formulas.json`(formula-tool 프로젝트: 능력치 attack·defense, 상수 defenseRate·minDamage, 입력 coefficient, 공식 damage). `npm run generate -- mmo`가 `mmo/server/src/generated/Formulas.cs`와 `AbilityType.cs`를 냅니다(생성 파일 목록은 루트 AGENTS.md).
+    - 계약: `SelfVitals`(200), `EntityVitals`(201, 원소 `EntityVital`), `SelfStats`(300). 필드만 더해 프로토콜 버전은 그대로입니다.
+    - 서버: `Creature`의 `Stats`·체력·마나·`CombatEndTick`과 `IAbilityOwner`, `StatSystem`(`Enter`, `Recalculate`, `Damage`), `VitalsSystem`(회복, `EntityVitals`, `SelfStats`·`SelfVitals`), 틱 측정의 `vitals` 차례. `GameData`가 `Classes`, `Levels`를 읽고 `Level(직업, 레벨)`로 찾습니다. 테스트가 체력과 전투 상태를 바꾸려고 `Server.Tests`에 internal을 열었습니다(`InternalsVisibleTo`).
+    - 모델과 화면: `FSelfState`와 `FWorldState::SelfState`·`InCombat`, `EntityVitals`의 반영. HUD 왼쪽 위의 체력·마나 바(생성기의 `Bar`, 스타일 표의 `Hp`·`Mp`·`BarBack`·`BarWidth`·`BarHeight`).
+    - 확인: 서버 테스트 11개 더함(`WorldVitalsTests` 6, `DamageTests` 4, `GameDataTests`의 직업·레벨 1), 기존 월드 테스트의 기대값에 레벨 1과 체력을 넣고 `Take`가 체력·마나·능력치의 알림을 빼게 했습니다(그것은 `TakeVitals`로 봄). 서버 테스트 108개, `Contract.Tests`의 왕복, 엔진 없는 테스트(`VitalsAndStatsAreKept`, `CombatFollowsTheServerClock`) 통과. Mac에서 들어오면 HUD에 체력 150 / 150, 마나 50 / 50이 가득 찬 바로 보이는 것을 봤습니다.
+    - 확인하지 못한 것: 바가 줄고 차는 것은 피해가 생기는 24에서 봅니다. 휴대폰에서의 바 크기는 보지 않았습니다.
 
 - [ ] **23. 몬스터 스폰과 AI** `M3` — 사냥터에 몬스터를 놓고, 인식하고 쫓고 돌아가게 합니다. [설계: 몬스터](design.md#몬스터), [월드](design.md#월드)
   - **계약·데이터**:

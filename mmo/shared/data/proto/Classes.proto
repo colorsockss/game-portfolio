@@ -1,0 +1,23 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message ClassesRow {
+  // 직업(packets.proto의 CharacterClass 값: 1 기사, 2 마법사)
+  uint32 id = 1;
+  // 기본 공격의 사거리(m)
+  double attack_range = 2;
+  // 기본 공격의 간격(ms). 처음 값은 72의 기준을 기다리는 자리 값
+  uint32 attack_interval_ms = 3;
+  // 공격 동작의 시작에서 타격까지의 시간(ms). 동작에서 무기가 닿는 때에 맞춘다(80)
+  uint32 hit_delay_ms = 4;
+  // 기본 공격 발사체의 속도(m/s). 비우면 발사체 없이 타격한다(기사)
+  optional double projectile_speed = 5;
+}
+
+message Classes {
+  repeated ClassesRow rows = 1;
+}

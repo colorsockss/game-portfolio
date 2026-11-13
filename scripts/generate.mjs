@@ -5,12 +5,13 @@
 //   mmo/data/*.xlsx                    → mmo/shared/data/proto/ + files/ (data-tool의 proto 출력: 바이너리와 데이터 해시)
 //   mmo/data/MapObjects.tsv + xlsx      → 같은 폴더에 맵의 격자와 목록, preview/ (mmo/tools/map/map.mjs. 해시를 다시 구함)
 //                                        + generated/ (C#과 C++, Data.csproj의 같은 protoc)
+//   mmo/data/formulas.json             → mmo/server/src/generated/Formulas.cs + AbilityType.cs (공식은 서버만 계산)
 // 게임 이름(idle, mmo)을 주면 그 게임만 생성하므로 다른 게임이 쓰는 도구(idle의 xlsx LFS, mmo의 dotnet)가 없어도 된다. 두 게임 모두 data-tool의
 // npm 의존성(npm ci)과 자기 xlsx의 LFS가 필요하다.
 // 이름이 없으면 모두 생성한다. --check를 주면 아무것도 쓰지 않고, 생성 파일이 낡았으면 명령이 실패한다.
 import { spawnSync } from "node:child_process";
 import { rmSync } from "node:fs";
-import { cp, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -50,6 +51,11 @@ const GAMES = {
       run("mmo/tools/map/map.mjs", "mmo/data", path.join(staging, "data"));
       dotnet("build", "mmo/shared/data/Data.csproj", "-t:GenerateData", "-nologo", "-v", "q",
         `-p:DataProtoDir=${path.join(staging, "data/proto")}`, `-p:DataOutputDir=${path.join(staging, "data/generated")}`);
+      // 공식은 서버만 계산한다(클라이언트에 두지 않음). Formulas.cs가 읽는 AbilityType도 같은 프로젝트의 능력치 키로 만든다.
+      await mkdir(path.join(staging, "formulas"));
+      run("tools/formula-tool/scripts/export-csharp.mjs", "mmo/data/formulas.json", path.join(staging, "formulas/Formulas.cs"));
+      const formulas = JSON.parse(await readFile(path.join(root, "mmo/data/formulas.json"), "utf8"));
+      await writeFile(path.join(staging, "formulas/AbilityType.cs"), abilityTypeCSharp(formulas));
     },
     outputs: [
       ["contract", "mmo/shared/contract/generated"],
@@ -57,6 +63,7 @@ const GAMES = {
       ["data/data", "mmo/shared/data/files"],
       ["data/generated", "mmo/shared/data/generated"],
       ["data/preview", "mmo/shared/data/preview"],
+      ["formulas", "mmo/server/src/generated"],
     ],
   },
 };
@@ -104,6 +111,14 @@ if (check) {
 function abilityType({ name, stats, formulas }) {
   const keys = [...stats, ...formulas].map((entry) => `  ${entry.key},\n`).join("");
   return `// 자동 생성된 파일 — 직접 수정하지 마세요. 프로젝트: ${name}\n// 공식 프로젝트(idle/data/formulas.json)의 능력치와 공식 키. formulas.ts가 가져온다.\nexport enum E_AbilityType {\n${keys}}\n`;
+}
+
+// 공식 프로젝트의 능력치 키(첫 글자를 대문자로)를 담은 C# enum. Formulas.cs가 caster.Get(AbilityType.Attack)처럼 읽는다. 값은 메모리 안에서만 쓰인다.
+function abilityTypeCSharp({ name, stats, exportSettings }) {
+  const full = exportSettings.csharpAbilityType;
+  const dot = full.lastIndexOf(".");
+  const keys = stats.map((stat) => `        ${stat.key[0].toUpperCase()}${stat.key.slice(1)},\n`).join("");
+  return `// 자동 생성된 파일 — 직접 수정하지 마세요. 프로젝트: ${name}\n// 공식 프로젝트(mmo/data/formulas.json)의 능력치 키. Formulas.cs가 읽는다.\nnamespace ${full.slice(0, dot)}\n{\n    public enum ${full.slice(dot + 1)}\n    {\n${keys}    }\n}\n`;
 }
 
 function run(script, ...args) {
