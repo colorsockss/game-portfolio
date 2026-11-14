@@ -65,6 +65,8 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::Enchant);
 		case EScreen::Skills:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Skills);
+		case EScreen::Shop:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Shop);
 		}
 		checkNoEntry();
 		return {};
@@ -296,6 +298,7 @@ void UMmoUiManager::ReturnToCharacterSelect()
 	Close(EScreen::ItemDetail);
 	Close(EScreen::Enchant);
 	Close(EScreen::Skills);
+	Close(EScreen::Shop);
 	Close(EScreen::Hud);
 	Open(EScreen::CharacterSelect);
 }
@@ -383,6 +386,7 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		Close(EScreen::ItemDetail);
 		Close(EScreen::Enchant);
 		Close(EScreen::Skills);
+		Close(EScreen::Shop);
 		Close(EScreen::Confirm);
 		Close(EScreen::Quantity);
 		Open(EScreen::Death);
@@ -402,6 +406,14 @@ void UMmoUiManager::ToggleCharacter()
 	else if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
 	{
 		Open(EScreen::Character);
+	}
+}
+
+void UMmoUiManager::ShowShop()
+{
+	if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
+	{
+		Open(EScreen::Shop);
 	}
 }
 
@@ -502,6 +514,7 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Close(EScreen::ItemDetail);
 	Close(EScreen::Enchant);
 	Close(EScreen::Skills);
+	Close(EScreen::Shop);
 	Close(EScreen::Hud);
 	Close(EScreen::CharacterCreate);
 	Close(EScreen::CharacterSelect);

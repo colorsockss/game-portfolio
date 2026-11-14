@@ -26,6 +26,11 @@ FLinearColor UMmoItemSlotWidget::GradeColor(int32 Grade)
 void UMmoItemSlotWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	const UMmoItemSlotEntry* Entry = Cast<UMmoItemSlotEntry>(ListItemObject);
+	if (Entry && Entry->ItemId != 0)
+	{
+		Show(Entry->ItemId, 0);
+		return;
+	}
 	const MmoWorld::FInventory& Inventory = GetGameInstance()->GetSubsystem<UMmoSession>()->Inventory();
 	const std::map<uint32_t, portfolio::mmo::ItemSlot>& Place = Entry && Entry->bEquipment ? Inventory.Worn() : Inventory.Slots();
 	const auto Found = Entry ? Place.find(static_cast<uint32>(Entry->SlotIndex)) : Place.end();
@@ -46,5 +51,5 @@ void UMmoItemSlotWidget::Show(uint32 ItemId, uint32 Count)
 	}
 	// 그림이 없으면 이름의 첫 글자(73의 글자 아이콘).
 	LetterText->SetText(Item && !Texture ? FText::FromString(MmoText::Get(this, UTF8_TO_TCHAR(Item->name_key().c_str())).ToString().Left(1)) : FText::GetEmpty());
-	CountText->SetText(Item && Item->stackable() ? FText::AsNumber(Count) : FText::GetEmpty());
+	CountText->SetText(Item && Item->stackable() && Count > 0 ? FText::AsNumber(Count) : FText::GetEmpty());
 }

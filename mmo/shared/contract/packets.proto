@@ -68,6 +68,8 @@ message Packet {
     SkillLearned skill_learned = 313;
     SetQuickslot set_quickslot = 314;
     Quickslots quickslots = 315;
+    Buy buy = 316;
+    Sell sell = 317;
   }
 }
 
@@ -462,6 +464,8 @@ enum GainReason {
   GAIN_REASON_DEV_COMMAND = 1;
   // 바닥 아이템을 주움(펫이 주운 것도 같음. 33, 96).
   GAIN_REASON_PICK_UP = 2;
+  // 상점에서 삼(37).
+  GAIN_REASON_BUY = 3;
 }
 
 message ItemAmount {
@@ -567,6 +571,20 @@ message Quickslots {
   repeated Quickslot slots = 1;
 }
 
+// 클라이언트 → 서버. 상점 NPC에게서 Shops의 아이템을 count개 산다(37). 상점이 하나라 NPC를 싣지 않는다. 바뀐 골드와 칸은 InventoryChanged가 싣는다.
+message Buy {
+  uint32 item_id = 1;
+  uint32 count = 2;
+  uint32 request_id = 3;
+}
+
+// 클라이언트 → 서버. 인벤토리 칸의 아이템을 count개 상점에 판다(37. 입은 장비는 벗어야 팜). 값은 Items의 파는 값이다.
+message Sell {
+  uint32 slot = 1;
+  uint32 count = 2;
+  uint32 request_id = 3;
+}
+
 // 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
 message RequestResult {
   uint32 request_id = 1;
@@ -630,6 +648,10 @@ enum FailReason {
   FAIL_REASON_MAX_ENCHANT = 23;
   // 이미 배운 스킬의 스킬북이다(36).
   FAIL_REASON_ALREADY_LEARNED = 24;
+  // 골드가 모자란다(37).
+  FAIL_REASON_NOT_ENOUGH_GOLD = 25;
+  // 상점에 팔 수 없는 아이템이다(파는 값이 없음. 37).
+  FAIL_REASON_UNSELLABLE = 26;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.

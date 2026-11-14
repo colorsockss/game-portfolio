@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using PortfolioMmo.Contract;
+using PortfolioMmo.Data;
 
 namespace PortfolioMmo.Server
 {
@@ -33,6 +34,7 @@ namespace PortfolioMmo.Server
         private readonly GrowthSystem _growth;
         private readonly InventorySystem _inventory;
         private readonly QuickslotSystem _quickslots;
+        private readonly ShopSystem _shop;
         private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
@@ -68,6 +70,17 @@ namespace PortfolioMmo.Server
             _quickslots = new QuickslotSystem(data);
             _inventory = new InventorySystem(data, _progress, _movement, stats, _quickslots, random);
             _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, random);
+            // NPC도 놓인 점의 번호를 플레이어보다 먼저 받는다(37). 움직이지 않고 칸을 막지 않는다.
+            Npc? shop = null;
+            foreach (NpcsRow row in data.Npcs.Rows)
+            {
+                var npc = new Npc(_entities.ReservePlacedId(), row);
+                _entities.Add(npc);
+                _grid.Add(npc);
+                shop = row.Role == NpcRole.Shop ? npc : shop;
+            }
+
+            _shop = new ShopSystem(data, field, _inventory, shop);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
             _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
@@ -217,6 +230,12 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.SetQuickslot when player != null:
                     Answer(player, _quickslots.Set(player, packet.SetQuickslot), RequestKind.Quickslot);
                     break;
+                case Packet.BodyOneofCase.Buy when player != null:
+                    Respond(player, packet.Buy.RequestId, _shop.Buy(player, packet.Buy));
+                    break;
+                case Packet.BodyOneofCase.Sell when player != null:
+                    Respond(player, packet.Sell.RequestId, _shop.Sell(player, packet.Sell));
+                    break;
                 case Packet.BodyOneofCase.AttackStart when player != null:
                     Answer(player, _combat.Start(player, packet.AttackStart), RequestKind.Attack);
                     break;
@@ -263,6 +282,8 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.Equip => packet.Equip.RequestId,
                 Packet.BodyOneofCase.Unequip => packet.Unequip.RequestId,
                 Packet.BodyOneofCase.Enchant => packet.Enchant.RequestId,
+                Packet.BodyOneofCase.Buy => packet.Buy.RequestId,
+                Packet.BodyOneofCase.Sell => packet.Sell.RequestId,
                 _ => null,
             };
         }

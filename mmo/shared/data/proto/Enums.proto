@@ -123,3 +123,18 @@ enum ItemUse {
   // 펫 얻기(값은 Pets의 줄. 96)
   ITEM_USE_GET_PET = 6;
 }
+
+enum NpcRole {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  NPC_ROLE_UNSPECIFIED = 0;
+  // 상점(37)
+  NPC_ROLE_SHOP = 1;
+  // 창고(75)
+  NPC_ROLE_STORAGE = 2;
+  // 제작(48)
+  NPC_ROLE_CRAFT = 3;
+  // 퀘스트(50)
+  NPC_ROLE_QUEST = 4;
+  // 경비병(44)
+  NPC_ROLE_GUARD = 5;
+}

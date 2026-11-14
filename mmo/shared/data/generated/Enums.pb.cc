@@ -32,7 +32,7 @@ namespace data {
 }  // namespace mmo
 }  // namespace portfolio
 static const ::_pb::EnumDescriptor* PROTOBUF_NONNULL
-    file_level_enum_descriptors_Enums_2eproto[9];
+    file_level_enum_descriptors_Enums_2eproto[10];
 static constexpr const ::_pb::ServiceDescriptor* PROTOBUF_NONNULL* PROTOBUF_NULLABLE
     file_level_service_descriptors_Enums_2eproto = nullptr;
 const ::uint32_t TableStruct_Enums_2eproto::offsets[1] = {};
@@ -73,13 +73,17 @@ const char descriptor_table_protodef_Enums_2eproto[] ABSL_ATTRIBUTE_SECTION_VARI
     "EAL_HP\020\001\022\024\n\020ITEM_USE_HEAL_MP\020\002\022\023\n\017ITEM_U"
     "SE_RECALL\020\003\022\030\n\024ITEM_USE_LEARN_SKILL\020\004\022\024\n"
     "\020ITEM_USE_ENCHANT\020\005\022\024\n\020ITEM_USE_GET_PET\020"
-    "\006B\024\252\002\021PortfolioMmo.Datab\006proto3"
+    "\006*\210\001\n\007NpcRole\022\030\n\024NPC_ROLE_UNSPECIFIED\020\000\022"
+    "\021\n\rNPC_ROLE_SHOP\020\001\022\024\n\020NPC_ROLE_STORAGE\020\002"
+    "\022\022\n\016NPC_ROLE_CRAFT\020\003\022\022\n\016NPC_ROLE_QUEST\020\004"
+    "\022\022\n\016NPC_ROLE_GUARD\020\005B\024\252\002\021PortfolioMmo.Da"
+    "tab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Enums_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Enums_2eproto = {
     false,
     false,
-    1311,
+    1450,
     descriptor_table_protodef_Enums_2eproto,
     "Enums.proto",
     &descriptor_table_Enums_2eproto_once,
@@ -158,6 +162,13 @@ ItemUse_descriptor() {
 }
 PROTOBUF_CONSTINIT const uint32_t ItemUse_internal_data_[] = {
     458752u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+NpcRole_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[9];
+}
+PROTOBUF_CONSTINIT const uint32_t NpcRole_internal_data_[] = {
+    393216u, 0u, };
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace data
 }  // namespace mmo

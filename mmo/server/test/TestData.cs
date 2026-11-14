@@ -34,17 +34,17 @@ namespace PortfolioMmo.Server.Tests
 
         /// <summary>
         /// 시험용 아이템(32): 2001 체력 물약(50, 쿨다운 10초), 2002 상급 체력 물약(100, 같은 쿨다운), 2003 마나 물약(40), 2005 귀환 주문서(3초),
-        /// 3001 겹치는 재료, 4001 골드, 장비 1001 기사의 검(공격력 5), 1002 마법사의 지팡이(6), 1003 공용 투구(방어력 3), 1004 레벨 2의 갑옷(방어력 6, 최대 체력 20), 2006 강화 주문서, 스킬북 2102(기사 102), 2106(기사 106, 레벨 3), 2202(마법사 202). 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
+        /// 3001 겹치는 재료, 4001 골드, 장비 1001 기사의 검(공격력 5), 1002 마법사의 지팡이(6), 1003 공용 투구(방어력 3), 1004 레벨 2의 갑옷(방어력 6, 최대 체력 20), 2006 강화 주문서, 스킬북 2102(기사 102), 2106(기사 106, 레벨 3), 2202(마법사 202). 상점에 파는 값은 2001이 5, 3001이 2이고 나머지는 없다. 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
         /// </summary>
         public static Items Items => new Items
         {
             Rows =
             {
-                new ItemsRow { Id = 2001, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.HealHp, UseValue = 50, CooldownMs = 10000 },
+                new ItemsRow { Id = 2001, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.HealHp, UseValue = 50, CooldownMs = 10000, SellPrice = 5 },
                 new ItemsRow { Id = 2002, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Uncommon, Stackable = true, Use = ItemUse.HealHp, UseValue = 100, CooldownMs = 10000 },
                 new ItemsRow { Id = 2003, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.HealMp, UseValue = 40, CooldownMs = 10000 },
                 new ItemsRow { Id = 2005, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.Recall, UseMs = 3000 },
-                new ItemsRow { Id = 3001, NameKey = "item.test", Kind = ItemKind.Material, Grade = ItemGrade.Common, Stackable = true },
+                new ItemsRow { Id = 3001, NameKey = "item.test", Kind = ItemKind.Material, Grade = ItemGrade.Common, Stackable = true, SellPrice = 2 },
                 new ItemsRow { Id = 1001, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 1, Slot = EquipSlot.Weapon, Class = 1, Level = 1, Attack = 5 },
                 new ItemsRow { Id = 1002, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 2, Slot = EquipSlot.Weapon, Class = 2, Level = 1, Attack = 6 },
                 new ItemsRow { Id = 1003, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 3, Slot = EquipSlot.Helmet, Level = 1, Defense = 3 },
@@ -270,6 +270,20 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 시험용 상점(37): 2001 체력 물약 20골드, 2002 상급 체력 물약 30골드, 2005 귀환 주문서 50골드, 1003 공용 투구(겹치지 않음) 100골드.
+        /// </summary>
+        public static Shops Shops => new Shops
+        {
+            Rows =
+            {
+                new ShopsRow { Id = 1, ItemId = 2001, Price = 20 },
+                new ShopsRow { Id = 2, ItemId = 2002, Price = 30 },
+                new ShopsRow { Id = 3, ItemId = 2005, Price = 50 },
+                new ShopsRow { Id = 4, ItemId = 1003, Price = 100 },
+            },
+        };
+
+        /// <summary>
         /// 글자로 그린 맵(Map) 위에 몬스터를 놓는 데이터. 마을은 맵의 가장 작은 모서리 칸 하나이고 안전 지대가 아니다(부활 지점만 둠).
         /// 안전 지대는 맵의 's' 칸이다.
         /// </summary>
@@ -279,9 +293,9 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// WithMonsters에 직업, 상수, 몬스터를 바꾼 데이터. null이면 처음 값이다.
+        /// WithMonsters에 직업, 상수, 몬스터, 레벨, NPC를 바꾼 데이터. null이면 처음 값이다(NPC는 없음, 상점은 Shops).
         /// </summary>
-        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters, Levels? levels = null)
+        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters, Levels? levels = null, Npcs? npcs = null)
         {
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             int min = -(int)size / 2;
@@ -298,7 +312,7 @@ namespace PortfolioMmo.Server.Tests
             table.Rows.Add(zones);
             return new GameData(
                 Hash, constants ?? Constants(size), table, grid, classes ?? Classes, levels ?? Levels,
-                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants);
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants, npcs, Shops);
         }
 
         /// <summary>

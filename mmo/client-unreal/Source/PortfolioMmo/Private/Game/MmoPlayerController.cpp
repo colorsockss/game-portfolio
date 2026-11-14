@@ -769,6 +769,16 @@ void AMmoPlayerController::Act(const MmoWorld::FInteractTarget& Target)
 		// 실패(남의 것, 이미 없음, 가득)는 인벤토리 모델이 사건으로 쌓고 HUD가 띄운다.
 		Session().Send(Session().Inventory().PickUp(Target.Id));
 	}
+	else if (Target.Kind == MmoWorld::EInteractKind::Talk)
+	{
+		// NPC의 역할에 맞는 창을 연다(상점 37. 제작 48, 퀘스트 50, 창고 75가 더함).
+		const auto Found = Session().World().Entities().find(Target.Id);
+		const portfolio::mmo::data::NpcsRow* Npc = Found != Session().World().Entities().end() ? Session().Data().Npc(Found->second.Info.template_id()) : nullptr;
+		if (Npc && Npc->role() == portfolio::mmo::data::NPC_ROLE_SHOP)
+		{
+			GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowShop();
+		}
+	}
 }
 
 void AMmoPlayerController::HandleBack()

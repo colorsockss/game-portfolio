@@ -16,6 +16,8 @@
 #include "Levels.pb.h"
 #include "Items.pb.h"
 #include "Enchants.pb.h"
+#include "Npcs.pb.h"
+#include "Shops.pb.h"
 #include "Zones.pb.h"
 #pragma pop_macro("check")
 #pragma pop_macro("verify")

@@ -178,8 +178,30 @@ namespace
 	}
 }
 
+namespace
+{
+	/** 상점(37): 살 수 있는 가장 많은 수는 골드 ÷ 값(상점에 없으면 0), 사고파는 요청은 번호를 붙여 기다리는 중으로 둔다. */
+	void ShopRequestsAndAffordableCounts()
+	{
+		MmoData::FGameData Data;
+		portfolio::mmo::data::ShopsRow* Row = Data.Shops.add_rows();
+		Row->set_item_id(2001);
+		Row->set_price(40);
+		MmoWorld::FInventory Inventory;
+		portfolio::mmo::Packet Whole;
+		Whole.mutable_inventory()->set_gold(130);
+		Inventory.Apply(Whole);
+		Expect(Inventory.MaxBuy(Data, 2001) == 3 && Inventory.MaxBuy(Data, 3001) == 0, "the affordable count is gold over price");
+		const portfolio::mmo::Packet Buy = Inventory.Buy(2001, 2);
+		Expect(Buy.buy().item_id() == 2001 && Buy.buy().count() == 2 && Inventory.IsWaiting(Buy.buy().request_id()), "Buy waits for its result");
+		const portfolio::mmo::Packet Sell = Inventory.Sell(4, 1);
+		Expect(Sell.sell().slot() == 4 && Sell.sell().request_id() == Buy.buy().request_id() + 1 && Inventory.IsWaiting(Sell.sell().request_id()), "Sell takes the next request id");
+	}
+}
+
 int main()
 {
+	ShopRequestsAndAffordableCounts();
 	EnchantChancesComeFromTheTable();
 	EquipmentChecksAndCompares();
 	SlotsAndRoomFollowTheServer();

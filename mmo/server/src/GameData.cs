@@ -27,8 +27,10 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<uint, ItemsRow> _items = new Dictionary<uint, ItemsRow>();
         private readonly Dictionary<uint, DropGroupsRow> _dropGroups = new Dictionary<uint, DropGroupsRow>();
         private readonly Dictionary<uint, EnchantsRow> _enchants = new Dictionary<uint, EnchantsRow>();
+        private readonly Dictionary<uint, ShopsRow> _shopItems = new Dictionary<uint, ShopsRow>();
 
-        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null, DropGroups? dropGroups = null, Enchants? enchants = null)
+        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null, DropGroups? dropGroups = null, Enchants? enchants = null,
+            Npcs? npcs = null, Shops? shops = null)
         {
             Hash = hash;
             Constants = constants;
@@ -73,6 +75,31 @@ namespace PortfolioMmo.Server
             {
                 _enchants.Add(row.Id, row);
             }
+
+            Npcs = npcs ?? new Npcs();
+            Shops = shops ?? new Shops();
+            foreach (ShopsRow row in Shops.Rows)
+            {
+                _shopItems.Add(row.ItemId, row);
+            }
+        }
+
+        /// <summary>
+        /// 마을의 NPC(37). 서버가 뜰 때 줄마다 NPC 개체를 놓는다.
+        /// </summary>
+        public Npcs Npcs { get; }
+
+        /// <summary>
+        /// 상점의 목록(37. 상점이 하나라 상점을 가리키는 열이 없음).
+        /// </summary>
+        public Shops Shops { get; }
+
+        /// <summary>
+        /// 그 아이템의 상점 줄. 상점에 없으면 null.
+        /// </summary>
+        public ShopsRow? ShopItem(uint itemId)
+        {
+            return _shopItems.GetValueOrDefault(itemId);
         }
 
         /// <summary>
@@ -227,7 +254,9 @@ namespace PortfolioMmo.Server
                 Effects.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Effects.bytes"))),
                 Items.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Items.bytes"))),
                 DropGroups.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "DropGroups.bytes"))),
-                Enchants.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Enchants.bytes"))));
+                Enchants.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Enchants.bytes"))),
+                Npcs.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Npcs.bytes"))),
+                Shops.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Shops.bytes"))));
         }
 
         /// <summary>

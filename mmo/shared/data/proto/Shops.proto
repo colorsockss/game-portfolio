@@ -1,0 +1,19 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message ShopsRow {
+  // 상점 목록의 차례(창에 보이는 차례)
+  uint32 id = 1;
+  // 파는 아이템(Items의 줄). 상점이 하나라 상점을 가리키는 열은 없다
+  uint32 item_id = 2;
+  // 사는 값(골드 하나에). Items의 파는 값보다 크다
+  uint32 price = 3;
+}
+
+message Shops {
+  repeated ShopsRow rows = 1;
+}

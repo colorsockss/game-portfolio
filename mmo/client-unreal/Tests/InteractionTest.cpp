@@ -127,6 +127,9 @@ namespace
 		MmoWorld::FEntity Monster;
 		Monster.Info.set_kind(portfolio::mmo::ENTITY_KIND_MONSTER);
 		Expect(FInteraction::KindOf(Monster) == EInteractKind::None, "a monster is not an interaction");
+		MmoWorld::FEntity Npc;
+		Npc.Info.set_kind(portfolio::mmo::ENTITY_KIND_NPC);
+		Expect(FInteraction::KindOf(Npc) == EInteractKind::Talk, "an NPC is talked to");
 	}
 }
 

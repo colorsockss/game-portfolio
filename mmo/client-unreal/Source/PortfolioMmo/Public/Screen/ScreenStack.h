@@ -30,6 +30,8 @@ namespace MmoScreen
 		Enchant,
 		/** 스킬 창(36). */
 		Skills,
+		/** 상점 창(37). */
+		Shop,
 	};
 
 	/** 화면이 올라가는 층. 아래에서 위로 그린다. */

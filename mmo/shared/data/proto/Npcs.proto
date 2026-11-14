@@ -1,0 +1,27 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+import "Enums.proto";
+
+message NpcsRow {
+  // NPC의 번호(EntityEnter.template_id)
+  uint32 id = 1;
+  // 이름(Strings의 키)
+  string name_key = 2;
+  // 역할. 상점, 창고, 제작, 퀘스트 NPC는 하나씩이다
+  NpcRole role = 3;
+  // 자리 x(m). 막힌 칸이 아니고 마을의 부활 지점에서 걸어서 닿는다(맵 툴이 검사)
+  sint32 x = 4;
+  // 자리 z(m)
+  sint32 z = 5;
+  // 경비병의 수치(Monsters의 줄. 44)
+  optional uint32 monster_id = 6;
+}
+
+message Npcs {
+  repeated NpcsRow rows = 1;
+}

@@ -10,7 +10,7 @@ class UBorder;
 class UImage;
 class UTextBlock;
 
-/** 목록 위젯(UTileView)의 항목 하나: 인벤토리의 칸 번호. 그리는 내용은 칸 위젯이 세션의 인벤토리에서 읽는다. */
+/** 목록 위젯(UTileView)의 항목 하나: 인벤토리의 칸 번호, 또는 아이템 번호. 칸의 내용은 칸 위젯이 세션의 인벤토리에서 읽는다. */
 UCLASS()
 class UMmoItemSlotEntry : public UObject
 {
@@ -21,6 +21,9 @@ public:
 
 	/** 입은 장비의 칸이다(SlotIndex는 장비 칸 번호. 34). */
 	bool bEquipment = false;
+
+	/** 0이 아니면 칸이 아니라 그 아이템을 수 없이 그린다(상점의 사기 목록. 37). */
+	uint32 ItemId = 0;
 };
 
 /**
@@ -33,7 +36,7 @@ class UMmoItemSlotWidget : public UUserWidget, public IUserObjectListEntry
 	GENERATED_BODY()
 
 public:
-	/** 칸을 그린다. ItemId가 0이면 빈 칸이다. */
+	/** 칸을 그린다. ItemId가 0이면 빈 칸이고, Count가 0이면 수를 쓰지 않는다. */
 	void Show(uint32 ItemId, uint32 Count);
 
 	/** 등급의 이름 색(일반 흰색, 고급 초록, 희귀 파랑, 영웅 보라). */

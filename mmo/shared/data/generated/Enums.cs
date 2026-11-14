@@ -52,11 +52,14 @@ namespace PortfolioMmo.Data {
             "c2USEQoNSVRFTV9VU0VfTk9ORRAAEhQKEElURU1fVVNFX0hFQUxfSFAQARIU",
             "ChBJVEVNX1VTRV9IRUFMX01QEAISEwoPSVRFTV9VU0VfUkVDQUxMEAMSGAoU",
             "SVRFTV9VU0VfTEVBUk5fU0tJTEwQBBIUChBJVEVNX1VTRV9FTkNIQU5UEAUS",
-            "FAoQSVRFTV9VU0VfR0VUX1BFVBAGQhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIG",
-            "cHJvdG8z"));
+            "FAoQSVRFTV9VU0VfR0VUX1BFVBAGKogBCgdOcGNSb2xlEhgKFE5QQ19ST0xF",
+            "X1VOU1BFQ0lGSUVEEAASEQoNTlBDX1JPTEVfU0hPUBABEhQKEE5QQ19ST0xF",
+            "X1NUT1JBR0UQAhISCg5OUENfUk9MRV9DUkFGVBADEhIKDk5QQ19ST0xFX1FV",
+            "RVNUEAQSEgoOTlBDX1JPTEVfR1VBUkQQBUIUqgIRUG9ydGZvbGlvTW1vLkRh",
+            "dGFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), typeof(global::PortfolioMmo.Data.ItemKind), typeof(global::PortfolioMmo.Data.ItemGrade), typeof(global::PortfolioMmo.Data.EquipSlot), typeof(global::PortfolioMmo.Data.ItemUse), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), typeof(global::PortfolioMmo.Data.ItemKind), typeof(global::PortfolioMmo.Data.ItemGrade), typeof(global::PortfolioMmo.Data.EquipSlot), typeof(global::PortfolioMmo.Data.ItemUse), typeof(global::PortfolioMmo.Data.NpcRole), }, null, null));
     }
     #endregion
 
@@ -271,6 +274,33 @@ namespace PortfolioMmo.Data {
     /// 펫 얻기(값은 Pets의 줄. 96)
     /// </summary>
     [pbr::OriginalName("ITEM_USE_GET_PET")] GetPet = 6,
+  }
+
+  public enum NpcRole {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("NPC_ROLE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 상점(37)
+    /// </summary>
+    [pbr::OriginalName("NPC_ROLE_SHOP")] Shop = 1,
+    /// <summary>
+    /// 창고(75)
+    /// </summary>
+    [pbr::OriginalName("NPC_ROLE_STORAGE")] Storage = 2,
+    /// <summary>
+    /// 제작(48)
+    /// </summary>
+    [pbr::OriginalName("NPC_ROLE_CRAFT")] Craft = 3,
+    /// <summary>
+    /// 퀘스트(50)
+    /// </summary>
+    [pbr::OriginalName("NPC_ROLE_QUEST")] Quest = 4,
+    /// <summary>
+    /// 경비병(44)
+    /// </summary>
+    [pbr::OriginalName("NPC_ROLE_GUARD")] Guard = 5,
   }
 
   #endregion

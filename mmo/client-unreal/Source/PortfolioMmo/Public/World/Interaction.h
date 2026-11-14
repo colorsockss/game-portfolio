@@ -2,7 +2,7 @@
 
 // 상호작용(엔진 없는 코드). 받은 개체 가운데 고르는 거리(Constants.interact_pick_range) 안의 가장 가까운 "상호작용할 수 있는 것"을 후보로
 // 답하고, 고른 것까지 걸어가 실행 거리(Constants.interact_range) 안이고 선이 트인 곳에서 그 종류의 일을 하게 한다. 무엇이 상호작용할 수
-// 있는지(KindOf)는 그 기능의 항목이 더한다(바닥 아이템 33, NPC 37·48·50·75, 채집물 47). 지금은 바닥 아이템이 줍기이고 나머지는 None이다.
+// 있는지(KindOf)는 그 기능의 항목이 더한다(바닥 아이템 33, NPC 37·48·50·75, 채집물 47). 지금은 바닥 아이템이 줍기, NPC가 말하기이고 나머지는 None이다.
 // Unity 클라이언트가 같은 구조를 C#으로 옮긴다.
 #include <cstdint>
 #include <functional>
@@ -47,7 +47,7 @@ namespace MmoWorld
 		/** 개체가 어떤 상호작용을 받는가. 시험은 시험용 종류를 넣는다. */
 		using FKindOf = std::function<EInteractKind(const FEntity&)>;
 
-		/** 지금의 판단: 바닥 아이템은 줍기(주인은 보지 않음. 내 것만 고르려면 CanPickUp을 함께 쓴 FKindOf를 넘김), 나머지는 None(37, 47이 더함). */
+		/** 지금의 판단: 바닥 아이템은 줍기(주인은 보지 않음. 내 것만 고르려면 CanPickUp을 함께 쓴 FKindOf를 넘김), NPC는 말하기, 나머지는 None(47이 더함). */
 		static EInteractKind KindOf(const FEntity& Entity);
 
 		/**

@@ -85,6 +85,22 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 상점(37)은 8줄(1단계 체력·마나 물약, 귀환 주문서, 강화 주문서, 직업마다 둘째와 셋째 스킬의 책)이고, 사는 값이 파는 값보다 커서 사고팔아 골드가 늘지 않는다.
+        /// 상점 NPC는 하나이고 마을 안에 선다. 첫째 펫(96)이 한 줄을 더하면 줄 수를 고친다.
+        /// </summary>
+        [Fact]
+        public void TheShopSellsTheStarterGoodsFromTheTownMerchant()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            Assert.Equal(new uint[] { 2001, 2003, 2005, 2006, 2102, 2103, 2202, 2203 }, data.Shops.Rows.Select(row => row.ItemId));
+            Assert.All(data.Shops.Rows, row => Assert.True(row.Price > data.Item(row.ItemId)!.SellPrice));
+            NpcsRow merchant = Assert.Single(data.Npcs.Rows, npc => npc.Role == NpcRole.Shop);
+            ZonesRow town = data.Zones.Rows.Single(zone => zone.Kind == ZoneKind.Town);
+            Assert.InRange(merchant.X, town.MinX, town.MaxX - 1);
+            Assert.InRange(merchant.Z, town.MinZ, town.MaxZ - 1);
+        }
+
+        /// <summary>
         /// 직업은 2줄, 레벨은 직업 2 × 레벨 1–30의 60줄이고, 같은 레벨에서 기사는 최대 체력과 방어력이, 마법사는 최대 마나와 공격력이 높다.
         /// 마법사만 기본 공격의 발사체가 있다.
         /// </summary>

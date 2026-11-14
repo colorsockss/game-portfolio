@@ -751,3 +751,42 @@ S
 fail.alreadyLearned이미 배운 스킬입니다.You already know that skill.
 Q
 skills.pickClear!비울 퀵슬롯을 고르세요.Pick a quickslot to clear.
+0
+npc.merchant상인 보리Bori the Merchant
+
+npcRole.shop상점Shop
+"
+npcRole.storage창고Storage
+!
+npcRole.craft제작Crafting
+"
+npcRole.quest	퀘스트Quests
+!
+npcRole.guard	경비병Guard
+
+
+shop.title상점Shop
+
+shop.buy사기Buy
+
+	shop.sell팔기Sell
+,
+
+shop.price{0}  {1} 골드{0}  {1} gold
+E
+shop.sellPrice{0}  파는 값 {1} 골드{0}  sells for {1} gold
+!
+	shop.gold
+골드 {0}{0} gold
+8
+shop.buyCount몇 개를 살까요?How many to buy?
+:
+shop.sellCount몇 개를 팔까요?How many to sell?
+A
+shop.pickBuy살 물건을 고르세요.Pick an item to buy.
+F
+shop.pickSell팔 아이템을 고르세요.Pick an item to sell.
+B
+fail.notEnoughGold골드가 모자랍니다.Not enough gold.
+K
+fail.unsellable"팔 수 없는 아이템입니다.That cannot be sold.

@@ -1,5 +1,6 @@
 #include "World/Inventory.h"
 
+#include <algorithm>
 #include <utility>
 
 namespace MmoWorld
@@ -205,6 +206,32 @@ namespace MmoWorld
 		Packet.mutable_drop_item()->set_request_id(++NextRequest);
 		Waiting.insert(NextRequest);
 		return Packet;
+	}
+
+	portfolio::mmo::Packet FInventory::Buy(uint32_t ItemId, uint32_t Count)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_buy()->set_item_id(ItemId);
+		Packet.mutable_buy()->set_count(Count);
+		Packet.mutable_buy()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
+	portfolio::mmo::Packet FInventory::Sell(uint32_t Slot, uint32_t Count)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_sell()->set_slot(Slot);
+		Packet.mutable_sell()->set_count(Count);
+		Packet.mutable_sell()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
+	uint32_t FInventory::MaxBuy(const MmoData::FGameData& Data, uint32_t ItemId) const
+	{
+		const portfolio::mmo::data::ShopsRow* Row = Data.ShopItem(ItemId);
+		return Row && Row->price() > 0 ? static_cast<uint32_t>(std::min<uint64_t>(Money / Row->price(), UINT32_MAX)) : 0;
 	}
 
 	std::vector<FItemGain> FInventory::TakeGains()

@@ -44,6 +44,12 @@ namespace MmoData
 		/** 강화 단계(+1–+9)의 성공 확률과 능력치 비율(35). */
 		portfolio::mmo::data::Enchants Enchants;
 
+		/** 마을의 NPC(37: 이름의 키, 역할, 자리). id가 EntityEnter.template_id다. */
+		portfolio::mmo::data::Npcs Npcs;
+
+		/** 상점의 목록(37: 아이템, 사는 값. 줄의 차례가 창의 차례). 패킷으로 받지 않는다. */
+		portfolio::mmo::data::Shops Shops;
+
 		/** 직업과 레벨마다의 필요 경험치와 기본 능력치(31: 경험치 바의 비율). */
 		portfolio::mmo::data::Levels Levels;
 
@@ -73,6 +79,12 @@ namespace MmoData
 
 		/** 몬스터의 줄. 없으면 nullptr. */
 		const portfolio::mmo::data::MonstersRow* Monster(uint32_t Id) const;
+
+		/** NPC의 줄. 없으면 nullptr. */
+		const portfolio::mmo::data::NpcsRow* Npc(uint32_t Id) const;
+
+		/** 그 아이템의 상점 줄. 상점에 없으면 nullptr. */
+		const portfolio::mmo::data::ShopsRow* ShopItem(uint32_t ItemId) const;
 
 		/** 스킬의 줄. 없으면 nullptr. */
 		const portfolio::mmo::data::SkillsRow* Skill(uint32_t Id) const;

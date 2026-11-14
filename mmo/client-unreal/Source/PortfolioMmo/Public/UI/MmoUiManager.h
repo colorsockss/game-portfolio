@@ -56,6 +56,9 @@ public:
 	/** 캐릭터 창을 열고 닫는다(HUD의 캐릭터 버튼과 C 키. 31). 게임 중이고 죽어 있지 않을 때만 연다. */
 	void ToggleCharacter();
 
+	/** 상점 창을 연다(상점 NPC에게 말하면. 37). */
+	void ShowShop();
+
 	/** 스킬 창을 열고 닫는다(HUD의 스킬 버튼과 K 키. 36). 여는 조건은 캐릭터 창과 같다. */
 	void ToggleSkills();
 

@@ -32,6 +32,21 @@ namespace
 	const FLinearColor AggressiveColor(1.0f, 0.45f, 0.3f);
 	const FLinearColor ReceivedColor(1.0f, 0.3f, 0.25f);
 	const FLinearColor CriticalColor(1.0f, 0.85f, 0.2f);
+	/** NPC의 이름 색(37). */
+	const FLinearColor NpcColor(0.55f, 0.9f, 0.6f);
+
+	/** NPC 역할의 글 키(37). */
+	const TCHAR* RoleKey(int32 Role)
+	{
+		switch (Role)
+		{
+		case portfolio::mmo::data::NPC_ROLE_STORAGE: return TEXT("npcRole.storage");
+		case portfolio::mmo::data::NPC_ROLE_CRAFT: return TEXT("npcRole.craft");
+		case portfolio::mmo::data::NPC_ROLE_QUEST: return TEXT("npcRole.quest");
+		case portfolio::mmo::data::NPC_ROLE_GUARD: return TEXT("npcRole.guard");
+		default: return TEXT("npcRole.shop");
+		}
+	}
 }
 
 void UMmoNameTagLayer::NativeConstruct()
@@ -160,6 +175,13 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 			Tag.SetName(Row ? MmoText::Format(this, TEXT("hud.level"), { MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString(), FString::FromInt(Row->level()) }).ToString() : FString(),
 				Row && Row->aggressive() ? AggressiveColor : FLinearColor::White);
 			Hp = Info.max_hp() > 0 ? static_cast<float>(Info.hp()) / Info.max_hp() : -1.0f;
+		}
+		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_NPC)
+		{
+			// 이름과 역할(37).
+			const portfolio::mmo::data::NpcsRow* Row = Session->Data().Npc(Info.template_id());
+			Tag.SetName(Row ? FString::Printf(TEXT("%s [%s]"), *MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString(), *MmoText::Get(this, RoleKey(Row->role())).ToString()) : FString(),
+				NpcColor);
 		}
 		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_GROUND_ITEM)
 		{

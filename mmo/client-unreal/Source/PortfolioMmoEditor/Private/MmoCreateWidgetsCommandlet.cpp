@@ -47,6 +47,7 @@
 #include "UI/MmoNoticeWidget.h"
 #include "UI/MmoQuantityWidget.h"
 #include "UI/MmoQuickslotBarWidget.h"
+#include "UI/MmoShopWidget.h"
 #include "UI/MmoSkillsWidget.h"
 #include "UI/MmoSettingsWidget.h"
 #include "UI/MmoTextBlock.h"
@@ -706,6 +707,33 @@ namespace
 		return Builder.Save();
 	}
 
+	/** 상점 창(37): 제목, 사기 목록(한 줄 6칸), 팔 내 인벤토리(보이는 줄만), 고른 것의 이름과 값, 골드, 사기·팔기와 닫기. */
+	bool CreateShop(UClass* ItemSlotClass)
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Shop, UMmoShopWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 6 + Style.Gap * 2, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("shop.title"), Style.TitleSize), Style.Section);
+		const auto Grid = [&](const TCHAR* Name, const TCHAR* TitleName, const TCHAR* TitleKey, int32 Rows)
+		{
+			AddWithGap(*Column, Builder.KeyText(TitleName, TitleKey, Style.SmallSize + 2));
+			UTileView* Tiles = Builder.Add<UTileView>(Name, true);
+			Tiles->SetEntryWidth(Style.ItemSlot);
+			Tiles->SetEntryHeight(Style.ItemSlot);
+			FindFProperty<FClassProperty>(UListViewBase::StaticClass(), TEXT("EntryWidgetClass"))->SetObjectPropertyValue_InContainer(Tiles, ItemSlotClass);
+			USizeBox* Size = Builder.Add<USizeBox>(*FString::Printf(TEXT("%sSize"), Name));
+			Size->SetHeightOverride(Style.ItemSlot * Rows);
+			Size->SetContent(Tiles);
+			AddWithGap(*Column, Size, Style.Section);
+		};
+		Grid(TEXT("BuyGrid"), TEXT("BuyTitle"), TEXT("shop.buy"), 2);
+		Grid(TEXT("SellGrid"), TEXT("SellTitle"), TEXT("shop.sell"), 3);
+		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.BodySize, true));
+		AddWithGap(*Column, Builder.Text(TEXT("GoldText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
+		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
+			Builder.Button(TEXT("ActButton"), TEXT("shop.buy")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+		return Builder.Save();
+	}
+
 	/** 인벤토리 창(32): 제목, 칸의 목록 위젯(한 줄에 6칸, 보이는 줄만 만듦), 골드, 닫기. */
 	bool CreateInventory(UClass* ItemSlotClass)
 	{
@@ -885,7 +913,7 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	UClass* ItemSlot = CreateItemSlot();
 	UClass* QuickslotBar = CreateQuickslotBar();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && QuickslotBar && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 

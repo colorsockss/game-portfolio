@@ -57,6 +57,8 @@ enum ItemUse : int;
 extern const uint32_t ItemUse_internal_data_[];
 enum MonsterKind : int;
 extern const uint32_t MonsterKind_internal_data_[];
+enum NpcRole : int;
+extern const uint32_t NpcRole_internal_data_[];
 enum SkillCenter : int;
 extern const uint32_t SkillCenter_internal_data_[];
 enum SkillKind : int;
@@ -86,6 +88,9 @@ internal::EnumTraitsT<::portfolio::mmo::data::ItemUse_internal_data_>
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::MonsterKind_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::MonsterKind>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::NpcRole_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::NpcRole>;
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::SkillCenter_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::SkillCenter>;
@@ -489,6 +494,50 @@ template <>
   return ::google::protobuf::internal::ParseNamedEnum<ItemUse>(ItemUse_descriptor(), name,
                                            value);
 }
+enum NpcRole : int {
+  NPC_ROLE_UNSPECIFIED = 0,
+  NPC_ROLE_SHOP = 1,
+  NPC_ROLE_STORAGE = 2,
+  NPC_ROLE_CRAFT = 3,
+  NPC_ROLE_QUEST = 4,
+  NPC_ROLE_GUARD = 5,
+  NpcRole_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  NpcRole_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t NpcRole_internal_data_[];
+inline constexpr NpcRole NpcRole_MIN =
+    static_cast<NpcRole>(0);
+inline constexpr NpcRole NpcRole_MAX =
+    static_cast<NpcRole>(5);
+[[nodiscard]] inline bool NpcRole_IsValid(int value) {
+  return 0 <= value && value <= 5;
+}
+inline constexpr int NpcRole_ARRAYSIZE = 5 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+NpcRole_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(NpcRole) {
+  return NpcRole_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& NpcRole_Name(T value) {
+  static_assert(::std::is_same<T, NpcRole>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to NpcRole_Name().");
+  return NpcRole_Name(static_cast<NpcRole>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& NpcRole_Name(NpcRole value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<NpcRole_descriptor, 0, 5>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool NpcRole_Parse(
+    ::absl::string_view name, NpcRole* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<NpcRole>(NpcRole_descriptor(), name,
+                                           value);
+}
 using ::google::protobuf::internal::generated_enum::AbslParseFlag;
 using ::google::protobuf::internal::generated_enum::AbslUnparseFlag;
 
@@ -574,6 +623,12 @@ struct is_proto_enum<::portfolio::mmo::data::ItemUse> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::ItemUse>() {
   return ::portfolio::mmo::data::ItemUse_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::NpcRole> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::NpcRole>() {
+  return ::portfolio::mmo::data::NpcRole_descriptor();
 }
 
 }  // namespace protobuf
