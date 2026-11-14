@@ -86,6 +86,10 @@ void UMmoUiManager::Initialize(FSubsystemCollectionBase& Collection)
 		TouchReleaser = MakeShared<FMmoTouchReleaser>(Touches);
 		FSlateApplication::Get().RegisterInputPreProcessor(TouchReleaser);
 		KeyCodeInput = MakeShared<FMmoKeyCodeInput>();
+#if !UE_BUILD_SHIPPING
+		// 개발용: -MmoStats면 시연 표시를 켠 채 시작한다(클릭 없이 확인하고 영상을 찍는 데 씀).
+		bShowStats = FParse::Param(FCommandLine::Get(), TEXT("MmoStats"));
+#endif
 		FSlateApplication::Get().RegisterInputPreProcessor(KeyCodeInput);
 	}
 	UMmoSession& Net = Session();

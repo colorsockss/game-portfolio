@@ -9,7 +9,9 @@
 #include "Engine/LocalPlayer.h"
 #include "Game/MmoCharacter.h"
 #include "Game/MmoCoordinates.h"
+#include "DrawDebugHelpers.h"
 #include "Game/MmoEntityActor.h"
+#include "Game/MmoEntitySubsystem.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HAL/PlatformTime.h"
 #include "InputAction.h"
@@ -101,6 +103,9 @@ void AMmoPlayerController::SetupInputComponent()
 	FreeCameraAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(HideUiAction, MmoKeys::KeyOf(EMmoAction::HideUi));
 	Mapping->MapKey(FreeCameraAction, MmoKeys::KeyOf(EMmoAction::FreeCamera));
+	DevOverlayAction = NewObject<UInputAction>(this, TEXT("DevOverlay"));
+	DevOverlayAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(DevOverlayAction, MmoKeys::KeyOf(EMmoAction::DevOverlay));
 #endif
 	for (int32 Index = 0; Index < 8; ++Index)
 	{
@@ -131,6 +136,66 @@ void AMmoPlayerController::SetupInputComponent()
 #if !UE_BUILD_SHIPPING
 	Enhanced->BindAction(HideUiAction, ETriggerEvent::Started, this, &AMmoPlayerController::ToggleHideUi);
 	Enhanced->BindAction(FreeCameraAction, ETriggerEvent::Started, this, &AMmoPlayerController::ToggleFreeCamera);
+	Enhanced->BindActionValueLambda(DevOverlayAction, ETriggerEvent::Started, [this](const FInputActionValue&) { bDevOverlay = !bDevOverlay; });
+#endif
+}
+
+void AMmoPlayerController::DrawDevOverlay()
+{
+#if ENABLE_DRAW_DEBUG
+	UWorld* World = GetWorld();
+	const MmoWorld::FWorldState& State = Session().World();
+	const FVector Chest(0.0, 0.0, 100.0);
+	// 다른 개체: 마지막으로 받은 서버 위치(빨강)와 보간해 그린 위치(초록). 둘 사이의 선이 보간의 늦음이다.
+	if (const UMmoEntitySubsystem* Entities = World->GetSubsystem<UMmoEntitySubsystem>())
+	{
+		for (const auto& [Id, Entity] : State.Entities())
+		{
+			const AActor* Actor = Id != State.SelfId() ? Entities->FindActor(Id) : nullptr;
+			if (!Actor)
+			{
+				continue;
+			}
+			const FVector Server = MmoCoordinates::ToWorld(Entity.X, Entity.Z) + Chest;
+			const FVector Drawn = Actor->GetActorLocation() + Chest;
+			// 메시 안에 가리지 않게 앞에 그린다.
+			DrawDebugSphere(World, Server, 20.0f, 8, FColor::Red, false, -1.0f, SDPG_Foreground);
+			DrawDebugSphere(World, Drawn, 20.0f, 8, FColor::Green, false, -1.0f, SDPG_Foreground);
+			DrawDebugLine(World, Server, Drawn, FColor::White, false, -1.0f, SDPG_Foreground);
+		}
+	}
+	// 내 길찾기 경로(꺾이는 점).
+	for (size_t Index = 1; Index < Path.size(); ++Index)
+	{
+		DrawDebugLine(World, MmoCoordinates::ToWorld(Path[Index - 1].X, Path[Index - 1].Z) + FVector(0.0, 0.0, 20.0),
+			MmoCoordinates::ToWorld(Path[Index].X, Path[Index].Z) + FVector(0.0, 0.0, 20.0), FColor::Yellow, false, -1.0f, 0, 4.0f);
+	}
+	// 둘레 8 m의 막힌 칸.
+	const APawn* Self = GetPawn();
+	const MmoWorld::FFieldMap* Field = Session().Field();
+	if (Self && Field)
+	{
+		const int32 CellX = FMath::FloorToInt32(MmoCoordinates::ToX(Self->GetActorLocation()) / static_cast<double>(MmoWorld::Units::PerMeter));
+		const int32 CellZ = FMath::FloorToInt32(MmoCoordinates::ToZ(Self->GetActorLocation()) / static_cast<double>(MmoWorld::Units::PerMeter));
+		for (int32 X = CellX - 8; X <= CellX + 8; ++X)
+		{
+			for (int32 Z = CellZ - 8; Z <= CellZ + 8; ++Z)
+			{
+				if (!Field->CanWalkCell(X, Z))
+				{
+					const FVector Center = MmoCoordinates::ToWorld((X * 2 + 1) * MmoWorld::Units::PerMeter / 2, (Z * 2 + 1) * MmoWorld::Units::PerMeter / 2);
+					DrawDebugBox(World, Center + FVector(0.0, 0.0, 5.0), FVector(50.0, 50.0, 5.0), FColor::Orange);
+				}
+			}
+		}
+	}
+	// 넣은 지연.
+	if (GEngine)
+	{
+		const UMmoConnection* Connection = GetGameInstance()->GetSubsystem<UMmoConnection>();
+		GEngine->AddOnScreenDebugMessage(static_cast<uint64>(reinterpret_cast<UPTRINT>(this)), 0.0f, FColor::Cyan,
+			FString::Printf(TEXT("Injected lag %.0f ms, stalls %.2f/s"), Connection->InjectedLagMs(), Connection->InjectedLoss()));
+	}
 #endif
 }
 
@@ -181,6 +246,10 @@ void AMmoPlayerController::BeginPlay()
 		PlayerCameraManager->ViewPitchMax = MaxPitch;
 	}
 	PacketHandle = GetGameInstance()->GetSubsystem<UMmoSession>()->OnPacket.AddUObject(this, &AMmoPlayerController::HandlePacket);
+#if !UE_BUILD_SHIPPING
+	// 개발용: -MmoDevOverlay면 개발용 표시(F3)를 켠 채 시작한다.
+	bDevOverlay = FParse::Param(FCommandLine::Get(), TEXT("MmoDevOverlay"));
+#endif
 }
 
 void AMmoPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -217,6 +286,10 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 		UpdateEngagement();
 	}
 	FollowPath();
+	if (bDevOverlay)
+	{
+		DrawDevOverlay();
+	}
 	Super::PlayerTick(DeltaTime);
 	// 이번 프레임에 이동 입력이 없었으면 시전 때 쥐고 있던 입력을 놓은 것이다.
 	if (!bMoveInput)

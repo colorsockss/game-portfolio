@@ -53,6 +53,8 @@ enum class EMmoAction : uint8
 	HideUi,
 	/** 개발 빌드만: 자유 카메라(시연 영상, 68). */
 	FreeCamera,
+	/** 개발 빌드만: 개발용 표시(서버 위치와 그린 위치, 길찾기 경로, 막힌 칸, 넣은 지연. 30). */
+	DevOverlay,
 };
 
 struct FMmoKeyRow

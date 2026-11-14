@@ -10,6 +10,7 @@
 #include "Input/MmoKeys.h"
 #include "UI/MmoButtonWidget.h"
 #include "GameFramework/Pawn.h"
+#include "Net/MmoConnection.h"
 #include "Net/MmoSession.h"
 #include "UI/MmoJoystickWidget.h"
 #include "UI/MmoUiManager.h"
@@ -189,6 +190,29 @@ void UMmoHudWidget::HandleSettingsClicked()
 	GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->Open(MmoScreen::EScreen::Settings);
 }
 
+void UMmoHudWidget::ShowStats(float DeltaTime)
+{
+	const bool bShown = GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->IsStatsShown();
+	StatsText->SetVisibility(bShown ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	StatsSeconds += DeltaTime;
+	++StatsFrames;
+	if (!bShown || StatsSeconds < 0.5f)
+	{
+		return;
+	}
+	const MmoWorld::FWorldState& World = GetGameInstance()->GetSubsystem<UMmoSession>()->World();
+	int32 Players = 0;
+	for (const auto& [Id, Entity] : World.Entities())
+	{
+		Players += Id != World.SelfId() && Entity.Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER ? 1 : 0;
+	}
+	const std::optional<double> Latency = GetGameInstance()->GetSubsystem<UMmoConnection>()->Latency().Milliseconds();
+	StatsText->SetText(FText::FromString(FString::Printf(TEXT("%.0f FPS  캐릭터 %d  지연 %s"), StatsFrames / StatsSeconds, Players,
+		Latency ? *FString::Printf(TEXT("%.0f ms"), *Latency) : TEXT("-"))));
+	StatsSeconds = 0.0f;
+	StatsFrames = 0;
+}
+
 void UMmoHudWidget::ShowInteract()
 {
 	const AMmoPlayerController* Controller = GetOwningPlayer<AMmoPlayerController>();
@@ -276,6 +300,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	ShowProgress(Now);
 	ShowEffects(ServerTick);
 	ShowInteract();
+	ShowStats(InDeltaTime);
 	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀).
 	for (const portfolio::mmo::FailReason Reason : Session->Combat().TakeNotices())
 	{

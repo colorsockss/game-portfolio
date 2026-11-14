@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # 서버 빌드(mmo/server/dist)를 Live VPS에 내보낸다. 커밋마다 releases/<커밋>/에 올리고, current 링크를 한 번에 바꿔 다시
 # 시작한 뒤 바깥에서 7777로 Ping을 보내 Pong이 오는지 본다. 이미 올린 커밋을 주면 올리기 없이 그 릴리스로 돌아간다(롤백).
-#   dotnet publish mmo/server/src -c Release -r linux-x64 --self-contained -o mmo/server/dist && mmo/server/deploy/deploy.sh <커밋>
+#   dotnet publish mmo/server/src -c Release -r linux-x64 --self-contained -o mmo/server/dist
+#   dotnet publish mmo/server/tools/load-test -c Release -r linux-x64 --self-contained -o mmo/server/dist/bots && mmo/server/deploy/deploy.sh <커밋>
+# 사냥하는 봇(dist/bots, 서비스 mmo-bots)도 새 릴리스로 다시 시작한다.
 # ssh 접속은 키우기와 같은 VPS_HOST(기본 idle.dennou.cloud), VPS_USER(기본 deploy), VPS_SSH(ssh 명령과 옵션, 기본 ssh)로 받고,
 # 게임 서버의 주소는 MMO_HOST(기본 mmo.dennou.cloud)다. VPS는 setup.sh로 준비해 둔다.
 set -euo pipefail
@@ -21,6 +23,7 @@ if "${ssh_cmd[@]}" "$remote" test -d "$root/releases/$release"; then
   echo "[deploy] releases/$release is already on the VPS"
 else
   test -x "$dist/PortfolioMmo.Server" || { echo "No server build in $dist; run dotnet publish first." >&2; exit 1; }
+  test -x "$dist/bots/LoadTest" || { echo "No bot build in $dist/bots; publish mmo/server/tools/load-test there." >&2; exit 1; }
   rsync -rlt -e "${ssh_cmd[*]}" "$dist/" "$remote:$root/releases/.$release.tmp/"
   "${ssh_cmd[@]}" "$remote" mv "$root/releases/.$release.tmp" "$root/releases/$release"
   echo "[deploy] uploaded releases/$release"
@@ -33,6 +36,12 @@ fi
 for _ in $(seq 1 20); do
   if node "$here/check.mjs" "$game_host" 7777 2>/dev/null; then
     echo "[deploy] mmo-server answers on $game_host:7777 with releases/$release"
+    # 봇 서비스는 setup.sh를 다시 돌린 VPS에만 있다. 없으면 서버의 배포는 그대로 두고 알리기만 한다.
+    if "${ssh_cmd[@]}" "$remote" "systemctl cat mmo-bots >/dev/null 2>&1 && sudo -n systemctl restart mmo-bots"; then
+      echo "[deploy] restarted mmo-bots"
+    else
+      echo "[deploy] mmo-bots is not set up on the VPS; rerun mmo/server/deploy/setup.sh there to run the hunting bots"
+    fi
     # 릴리스 하나가 .NET 런타임을 함께 실어 약 81 MB라 가장 최근 5개만 남긴다(지금 것은 지우지 않음). 롤백은 그 안에서만 된다.
     "${ssh_cmd[@]}" "$remote" "cd $root/releases && ls -1t | grep -vxF '$release' | tail -n +5 | xargs -r rm -rf --"
     exit 0

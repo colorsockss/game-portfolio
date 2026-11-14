@@ -52,6 +52,9 @@ private:
 	/** 상호작용 버튼: 후보의 종류에 따라 글을 바꾸고, 후보가 없으면 누를 수 없게 한다. */
 	void ShowInteract();
 
+	/** 시연 표시: 켰으면 오른쪽 위에 프레임, 보이는 캐릭터 수(시야 안의 다른 플레이어), 지연을 0.5초마다 보인다. */
+	void ShowStats(float DeltaTime);
+
 	UFUNCTION()
 	void HandleInteractClicked();
 
@@ -127,6 +130,14 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> SettingsButton;
+
+	/** 시연 표시의 글(설정 창의 줄로 켬). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> StatsText;
+
+	/** 시연 표시: 프레임을 고르게 보이려고 모은 시간과 프레임 수, 다음에 고칠 때까지 남은 시간. */
+	float StatsSeconds = 0.0f;
+	int32 StatsFrames = 0;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> EffectsText;

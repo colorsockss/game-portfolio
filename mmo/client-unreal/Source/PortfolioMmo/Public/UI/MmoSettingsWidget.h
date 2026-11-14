@@ -26,6 +26,9 @@ private:
 	UFUNCTION()
 	void HandleCloseClicked();
 
+	/** 시연 표시의 줄에 지금 켰는지를 보인다. */
+	void ShowStatsLabel();
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> CharacterSelectButton;
 
@@ -34,4 +37,8 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> CloseButton;
+
+	/** 시연 표시(프레임, 보이는 캐릭터 수, 지연)를 켜고 끄는 줄. Shipping 빌드에서도 있다. */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> StatsButton;
 };

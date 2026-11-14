@@ -14,7 +14,8 @@ namespace PortfolioMmo.LoadTest
 {
     /// <summary>
     /// 봇 여러 명을 서버에 붙여 틱마다 최대 속도로 걷게 하고, 봇 하나가 받는 양을 잰다. 봇은 서버와 같은 맵(격자)을 읽어
-    /// 서버의 FieldMap.CanWalkLine으로 벽을 피하므로 정상 클라이언트처럼 되돌려지지 않는다.
+    /// 서버의 FieldMap.CanWalkLine으로 벽을 피하므로 정상 클라이언트처럼 되돌려지지 않는다. --hunt면 가까운 몬스터에 다가가 기본 공격과
+    /// 쿨다운이 돈 스킬을 쓰고 죽으면 부활하며(기사), --gather x,z면 그 점(m) 둘레(--gather-radius m)로 모인다(클라이언트 200명 측정).
     /// 서버는 따로 띄우고(--spawn-half-extent를 이 도구의 --half-extent와 같게), 틱 시간·CPU·메모리는 서버 로그에서 읽는다.
     /// </summary>
     public static class Program
@@ -26,7 +27,9 @@ namespace PortfolioMmo.LoadTest
 
         /// <summary>
         /// 인자: --host(기본 127.0.0.1), --port(기본 7777), --bots(기본 1000), --seconds(측정 시간, 기본 30),
-        /// --half-extent(봇이 걷는 정사각형의 반 너비, m, 기본 200), --data(Login에 실을 데이터 해시와 맵의 폴더, 기본 실행 파일 옆의 data/).
+        /// --half-extent(봇이 걷는 정사각형의 반 너비, m, 기본 200), --data(Login에 실을 데이터 해시와 맵의 폴더, 기본 실행 파일 옆의 data/),
+        /// --hunt(사냥), --gather x,z(모일 점, m), --gather-radius(모이는 반지름, m, 기본 15), --prefix(로그인 ID의 앞, 기본 bot. 같은 서버에 두 무리를 붙일 때).
+        /// --seconds 0이면 끝없이 돌고 끊기면 다시 붙는다(Live의 봇).
         /// 서버와 같은 생성물(mmo/shared/data/files/)을 써야 로그인이 된다.
         /// </summary>
         public static async Task Main(string[] args)
@@ -38,11 +41,16 @@ namespace PortfolioMmo.LoadTest
             double halfExtent = int.Parse(Option(args, "--half-extent", "200")) * Units.PerMeter;
             GameData data = GameData.Load(Option(args, "--data", GameData.DefaultFolder));
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
+            string prefix = Option(args, "--prefix", "bot");
+            var behavior = new Behavior(
+                Array.IndexOf(args, "--hunt") >= 0,
+                Point(Option(args, "--gather", string.Empty)),
+                double.Parse(Option(args, "--gather-radius", "15"), System.Globalization.CultureInfo.InvariantCulture) * Units.PerMeter);
 
             var bots = new List<Bot>();
             for (int index = 0; index < botCount; index++)
             {
-                bots.Add(await Bot.ConnectAsync(host, port, $"bot_{index:D4}", data.Hash));
+                bots.Add(await Bot.ConnectAsync(host, port, $"{prefix}_{index:D4}", data.Hash));
             }
 
             Console.WriteLine($"Connected {bots.Count} bots");
@@ -52,11 +60,26 @@ namespace PortfolioMmo.LoadTest
             long startBytes = 0;
             int startResets = 0;
             bool measuring = false;
+            long tick = 0;
             while (await timer.WaitForNextTickAsync())
             {
-                foreach (Bot bot in bots)
+                tick++;
+                for (int index = 0; index < bots.Count; index++)
                 {
-                    bot.Step(random, halfExtent, field);
+                    bots[index].Step(random, halfExtent, field, behavior, tick);
+                    // 끝없이 도는 봇(Live)은 서버가 다시 뜨면 다시 붙는다(10초마다 한 번 시도).
+                    if ((seconds == 0) && !bots[index].IsAlive && (tick % (10 * Units.TicksPerSecond) == index % (10 * Units.TicksPerSecond)))
+                    {
+                        bots[index].Dispose();
+                        try
+                        {
+                            bots[index] = await Bot.ConnectAsync(host, port, $"{prefix}_{index:D4}", data.Hash);
+                        }
+                        catch (SocketException)
+                        {
+                            // 서버가 아직 뜨지 않았다. 다음 차례에 다시 본다.
+                        }
+                    }
                 }
 
                 if (!measuring && (clock.Elapsed >= s_warmUp))
@@ -66,7 +89,7 @@ namespace PortfolioMmo.LoadTest
                     startResets = bots.Sum(bot => bot.Resets);
                     clock.Restart();
                 }
-                else if (measuring && (clock.Elapsed.TotalSeconds >= seconds))
+                else if (measuring && (seconds > 0) && (clock.Elapsed.TotalSeconds >= seconds))
                 {
                     break;
                 }
@@ -77,11 +100,22 @@ namespace PortfolioMmo.LoadTest
             int alive = bots.Count(bot => bot.IsAlive);
             Console.WriteLine(
                 $"bots {alive}/{bots.Count} alive, received {bytes / elapsed / bots.Count:F0} B/s per bot, "
-                + $"resets {bots.Sum(bot => bot.Resets) - startResets} in {elapsed:F0} s");
+                + $"resets {bots.Sum(bot => bot.Resets) - startResets} in {elapsed:F0} s, kills {bots.Sum(bot => bot.Kills)}, deaths {bots.Sum(bot => bot.Deaths)}");
             foreach (Bot bot in bots)
             {
                 bot.Dispose();
             }
+        }
+
+        /// <summary>
+        /// "x,z"(m) → 좌표. 빈 글이면 null.
+        /// </summary>
+        private static (double X, double Z)? Point(string text)
+        {
+            string[] parts = text.Split(',');
+            return parts.Length == 2
+                ? (double.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture) * Units.PerMeter, double.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture) * Units.PerMeter)
+                : null;
         }
 
         /// <summary>
@@ -95,6 +129,11 @@ namespace PortfolioMmo.LoadTest
     }
 
     /// <summary>
+    /// 봇의 행동: 사냥, 모일 점(좌표)과 반지름(좌표 단위).
+    /// </summary>
+    internal readonly record struct Behavior(bool Hunt, (double X, double Z)? Gather, double GatherRadius);
+
+    /// <summary>
     /// 로그인하고 걸어 다니는 봇 하나. 받기는 자기 작업에서, 걷기는 Program의 틱 루프에서 하므로 위치는 잠그고 고친다.
     /// </summary>
     internal sealed class Bot : IDisposable
@@ -103,6 +142,20 @@ namespace PortfolioMmo.LoadTest
         /// 틱마다 걷는 거리(칸). 서버가 받아 주는 최대 속도로 걷는다.
         /// </summary>
         private const double Stride = Units.MaxSpeedMetersPerSecond * Units.PerMeter / Units.TicksPerSecond;
+
+        /// <summary>
+        /// 사냥: 대상을 고르는 거리, 서서 치는 거리(기사의 사거리 2 m 안쪽), 쓰는 스킬(기사의 첫째, 쿨다운 4초)과 다시 쓰는 간격(틱), 부활을 다시 보내는 간격(틱).
+        /// </summary>
+        private const double HuntRange = 25 * Units.PerMeter;
+        private const double StrikeRange = 1.5 * Units.PerMeter;
+        private const uint SkillId = 101;
+        private const long SkillTicks = 4 * Units.TicksPerSecond + 2;
+        private const long ReviveTicks = 2 * Units.TicksPerSecond;
+
+        /// <summary>
+        /// Ping의 간격(틱). 실제 클라이언트와 같다.
+        /// </summary>
+        private const long PingTicks = (long)Constant.PingIntervalSeconds * Units.TicksPerSecond;
 
         /// <summary>
         /// 연결.
@@ -165,6 +218,23 @@ namespace PortfolioMmo.LoadTest
         private int _resets;
 
         /// <summary>
+        /// 사냥: 받은 몬스터(번호 → 자리와 죽었는지), 내가 죽었는지, 대상, 그 대상에 AttackStart를 보냈는지, 다음 스킬과 부활의 틱, 잡은 수와 죽은 수.
+        /// </summary>
+        private readonly Dictionary<uint, (int X, int Z, bool Dead)> _monsters = new Dictionary<uint, (int X, int Z, bool Dead)>();
+        private bool _dead;
+        private uint _target;
+        private bool _attacking;
+        private long _nextSkillTick;
+        private long _nextReviveTick;
+        /// <summary>
+        /// 길이 막혀 버린 대상과 다시 고를 수 있는 틱. 막힌 대상을 틱마다 다시 고르지 않게 한다.
+        /// </summary>
+        private uint _skipped;
+        private long _skipUntil;
+        private int _kills;
+        private int _deaths;
+
+        /// <summary>
         /// 연결된 봇을 만든다.
         /// </summary>
         private Bot(TcpClient client)
@@ -182,6 +252,13 @@ namespace PortfolioMmo.LoadTest
         /// 받은 PositionReset 수.
         /// </summary>
         public int Resets => Volatile.Read(ref _resets);
+
+        /// <summary>
+        /// 내가 잡은 몬스터 수(Died의 죽인 개체가 나)와 내가 죽은 수.
+        /// </summary>
+        public int Kills => Volatile.Read(ref _kills);
+
+        public int Deaths => Volatile.Read(ref _deaths);
 
         /// <summary>
         /// 서버가 아직 끊지 않았다.
@@ -206,9 +283,10 @@ namespace PortfolioMmo.LoadTest
         /// 벽은 서버가 가진 지난 위치(보낸 반올림 좌표나 되돌림의 자리)에서 다음 자리까지를 서버와 같은 선 검사로 본다.
         /// 칸만 보면 모서리를 지나는 걸음을 서버가 되돌린다.
         /// </summary>
-        public void Step(Random random, double halfExtent, FieldMap field)
+        public void Step(Random random, double halfExtent, FieldMap field, in Behavior behavior, long tick)
         {
             Move move;
+            var requests = new List<Packet>();
             lock (_gate)
             {
                 if (!_ready || !IsAlive)
@@ -216,13 +294,45 @@ namespace PortfolioMmo.LoadTest
                     return;
                 }
 
+                // 실제 클라이언트처럼 Ping을 보낸다(서서 치거나 막혀 걷지 못해도 무응답으로 끊기지 않게).
+                if (tick % PingTicks == _selfId % PingTicks)
+                {
+                    requests.Add(new Packet { Ping = new Ping() });
+                }
+
+                if (behavior.Hunt && Hunt(tick, requests))
+                {
+                    Send(requests);
+                    return;
+                }
+
                 _heading += (random.NextDouble() - 0.5) * 0.4;
+                if (_target != 0)
+                {
+                    // 대상 쪽으로 걷는다(막히면 아래에서 돌아섬).
+                    (int X, int Z, bool Dead) goal = _monsters[_target];
+                    _heading = Math.Atan2(goal.Z - _z, goal.X - _x);
+                }
+                else if (behavior.Gather is (double gatherX, double gatherZ) && (Math.Pow(gatherX - _x, 2) + Math.Pow(gatherZ - _z, 2) > behavior.GatherRadius * behavior.GatherRadius))
+                {
+                    _heading = Math.Atan2(gatherZ - _z, gatherX - _x);
+                }
+
                 double x = _x + (Math.Cos(_heading) * Stride);
                 double z = _z + (Math.Sin(_heading) * Stride);
-                if ((Math.Abs(x) > halfExtent) || (Math.Abs(z) > halfExtent)
+                if (((behavior.Gather == null) && ((Math.Abs(x) > halfExtent) || (Math.Abs(z) > halfExtent)))
                     || !field.CanWalkLine((int)Math.Round(_x), (int)Math.Round(_z), (int)Math.Round(x), (int)Math.Round(z), Walker.Player))
                 {
-                    _heading += Math.PI;
+                    // 막힌 대상은 10초 동안 고르지 않고 돌아선다.
+                    if (_target != 0)
+                    {
+                        _skipped = _target;
+                        _skipUntil = tick + (10 * Units.TicksPerSecond);
+                    }
+
+                    _target = 0;
+                    Send(requests);
+                    _heading += Math.PI + ((random.NextDouble() - 0.5) * 1.5);
                     return;
                 }
 
@@ -234,9 +344,77 @@ namespace PortfolioMmo.LoadTest
                 move = new Move { X = (int)Math.Round(x), Z = (int)Math.Round(z), Yaw = yaw, Ack = _ack };
             }
 
+            requests.Add(new Packet { Move = move });
+            Send(requests);
+        }
+
+        /// <summary>
+        /// 사냥의 한 틱. 이번 틱에 걷지 않으면(죽음, 서서 침) true다. 걸어야 하면(대상에게 다가감, 대상이 없음) 대상만 정하고 false다.
+        /// </summary>
+        private bool Hunt(long tick, List<Packet> requests)
+        {
+            if (_dead)
+            {
+                if (tick >= _nextReviveTick)
+                {
+                    requests.Add(new Packet { Revive = new Revive() });
+                    _nextReviveTick = tick + ReviveTicks;
+                }
+
+                return true;
+            }
+
+            if ((_target == 0) || !_monsters.TryGetValue(_target, out (int X, int Z, bool Dead) target) || target.Dead)
+            {
+                _target = 0;
+                _attacking = false;
+                double best = HuntRange * HuntRange;
+                foreach ((uint id, (int X, int Z, bool Dead) monster) in _monsters)
+                {
+                    double distance = Math.Pow(monster.X - _x, 2) + Math.Pow(monster.Z - _z, 2);
+                    if (!monster.Dead && (distance < best) && ((id != _skipped) || (tick >= _skipUntil)))
+                    {
+                        _target = id;
+                        best = distance;
+                    }
+                }
+
+                if (_target == 0)
+                {
+                    return false;
+                }
+
+                target = _monsters[_target];
+            }
+
+            if (Math.Pow(target.X - _x, 2) + Math.Pow(target.Z - _z, 2) > StrikeRange * StrikeRange)
+            {
+                return false;
+            }
+
+            if (!_attacking)
+            {
+                requests.Add(new Packet { AttackStart = new AttackStart { TargetId = _target } });
+                _attacking = true;
+            }
+
+            if (tick >= _nextSkillTick)
+            {
+                requests.Add(new Packet { UseSkill = new UseSkill { SkillId = SkillId, TargetId = _target } });
+                _nextSkillTick = tick + SkillTicks;
+            }
+
+            return true;
+        }
+
+        private void Send(List<Packet> packets)
+        {
             try
             {
-                new Packet { Move = move }.WriteDelimitedTo(_stream);
+                foreach (Packet packet in packets)
+                {
+                    packet.WriteDelimitedTo(_stream);
+                }
             }
             catch (IOException)
             {
@@ -307,13 +485,60 @@ namespace PortfolioMmo.LoadTest
                         _selfId = packet.EnterWorldResult.SelfId;
                         break;
                     case Packet.BodyOneofCase.EntitiesEnter:
-                        foreach (EntityEnter entity in packet.EntitiesEnter.Entities.Where(entity => entity.Id == _selfId))
+                        foreach (EntityEnter entity in packet.EntitiesEnter.Entities)
                         {
-                            _x = entity.X;
-                            _z = entity.Z;
-                            _ready = true;
+                            if (entity.Id == _selfId)
+                            {
+                                _x = entity.X;
+                                _z = entity.Z;
+                                _dead = entity.Dead;
+                                _ready = true;
+                            }
+                            else if (entity.Kind == EntityKind.Monster)
+                            {
+                                _monsters[entity.Id] = (entity.X, entity.Z, entity.Dead);
+                            }
                         }
 
+                        break;
+                    case Packet.BodyOneofCase.EntityMoves:
+                        foreach (EntityMove moved in packet.EntityMoves.Entities)
+                        {
+                            if (_monsters.TryGetValue(moved.Id, out (int X, int Z, bool Dead) monster))
+                            {
+                                _monsters[moved.Id] = (moved.X, moved.Z, monster.Dead);
+                            }
+                        }
+
+                        break;
+                    case Packet.BodyOneofCase.EntitiesLeave:
+                        foreach (uint id in packet.EntitiesLeave.Ids)
+                        {
+                            _monsters.Remove(id);
+                        }
+
+                        break;
+                    case Packet.BodyOneofCase.Died when packet.Died.Id == _selfId:
+                        _dead = true;
+                        _deaths++;
+                        _target = 0;
+                        _attacking = false;
+                        break;
+                    case Packet.BodyOneofCase.Died:
+                        if (_monsters.TryGetValue(packet.Died.Id, out (int X, int Z, bool Dead) died))
+                        {
+                            _monsters[packet.Died.Id] = (died.X, died.Z, true);
+                        }
+
+                        _kills += packet.Died.KillerId == _selfId ? 1 : 0;
+                        break;
+                    case Packet.BodyOneofCase.Revived when packet.Revived.Id == _selfId:
+                        _dead = false;
+                        break;
+                    case Packet.BodyOneofCase.ActionFailed when packet.ActionFailed.Request == RequestKind.Attack:
+                        // 칠 수 없는 대상(안전 지대, 복귀 중)은 버리고 다른 대상을 고른다.
+                        _attacking = false;
+                        _target = 0;
                         break;
                     case Packet.BodyOneofCase.PositionReset:
                         _x = packet.PositionReset.X;

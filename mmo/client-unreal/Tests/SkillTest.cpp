@@ -11,6 +11,7 @@
 #include "World/CombatState.h"
 #include "World/DevCommand.h"
 #include "World/FailMessages.h"
+#include "World/Latency.h"
 
 namespace
 {
@@ -507,6 +508,19 @@ namespace
 		Expect(!Scene.World.InWorld(), "outside the world after leaving");
 	}
 
+	/** 지연은 Ping을 보내고 Pong을 받기까지의 시간이고, 기다리던 Ping이 없는 Pong은 버린다. */
+	void LatencyIsPingToPong()
+	{
+		MmoWorld::FLatency Latency;
+		Latency.Received(1.0);
+		Expect(!Latency.Milliseconds(), "a pong without a ping is ignored");
+		Latency.Sent(10.0);
+		Latency.Received(10.25);
+		Expect(Latency.Milliseconds() && Near(*Latency.Milliseconds(), 250.0), "the latency is the time from ping to pong");
+		Latency.Received(11.0);
+		Expect(Near(*Latency.Milliseconds(), 250.0), "a second pong does not change it");
+	}
+
 	/** 개발 명령의 글 한 줄은 앞뒤 빈칸을 뺀 채 DevCommand로 나간다. */
 	void DevCommandsCarryTheLine()
 	{
@@ -556,6 +570,7 @@ int main(int ArgumentCount, char** Arguments)
 	LeavingTheWorldStopsRequests();
 	EveryFailReasonHasAMessage();
 	DevCommandsCarryTheLine();
+	LatencyIsPingToPong();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

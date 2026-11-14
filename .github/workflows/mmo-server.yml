@@ -47,4 +47,6 @@ jobs:
             *) echo "Unsupported VPS architecture $arch." >&2; exit 1 ;;
           esac
           dotnet publish mmo/server/src -c Release -r "$rid" --self-contained -o mmo/server/dist --nologo
+          # 같은 VPS에서 늘 도는 사냥하는 봇(서비스 mmo-bots, mmo backlog 30).
+          dotnet publish mmo/server/tools/load-test -c Release -r "$rid" --self-contained -o mmo/server/dist/bots --nologo
       - run: mmo/server/deploy/deploy.sh "$GITHUB_SHA"

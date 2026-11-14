@@ -39,6 +39,7 @@ namespace MmoKeys
 			{ EMmoAction::Chat, EKeys::Enter },
 			{ EMmoAction::HideUi, EKeys::F9 },
 			{ EMmoAction::FreeCamera, EKeys::F10 },
+			{ EMmoAction::DevOverlay, EKeys::F3 },
 		};
 		return Table;
 	}

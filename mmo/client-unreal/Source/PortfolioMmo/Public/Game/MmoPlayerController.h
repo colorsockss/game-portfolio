@@ -105,6 +105,9 @@ private:
 	 * (캐릭터는 서 있음), 마우스 오른쪽 끌기는 카메라를 돌리고, 휠은 앞뒤로 옮긴다. 끄면 캐릭터의 카메라로 돌아온다.
 	 */
 	void ToggleFreeCamera();
+
+	/** 개발 빌드: 개발용 표시를 그린다(켠 동안 프레임마다). 다른 개체의 서버 위치(빨강)와 그린 위치(초록), 내 길찾기 경로(노랑), 둘레 8 m의 막힌 칸, 넣은 지연. */
+	void DrawDevOverlay();
 	/** 경로를 따라가는 중이면 다음 점 쪽을 이번 프레임의 이동 입력으로 넣는다. */
 	void FollowPath();
 
@@ -161,6 +164,9 @@ private:
 	TObjectPtr<UInputAction> HideUiAction;
 	UPROPERTY()
 	TObjectPtr<UInputAction> FreeCameraAction;
+	UPROPERTY()
+	TObjectPtr<UInputAction> DevOverlayAction;
+	bool bDevOverlay = false;
 
 	/** 자유 카메라를 켠 동안의 카메라 액터. 꺼져 있으면 nullptr. */
 	UPROPERTY()

@@ -113,6 +113,17 @@ void UMmoConnection::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	TickHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UMmoConnection::Tick));
+#if !UE_BUILD_SHIPPING
+	double LagMs = 0.0;
+	FParse::Value(FCommandLine::Get(), TEXT("MmoLag="), LagMs);
+	FParse::Value(FCommandLine::Get(), TEXT("MmoLoss="), LossChance);
+	LagSeconds = FMath::Max(0.0, LagMs) / 1000.0;
+	LossChance = FMath::Clamp(LossChance, 0.0, 1.0);
+	if (LagSeconds > 0.0 || LossChance > 0.0)
+	{
+		UE_LOG(LogMmoNet, Display, TEXT("Injecting %.0f ms lag and %.2f stalls per second into received packets"), LagSeconds * 1000.0, LossChance);
+	}
+#endif
 }
 
 void UMmoConnection::Deinitialize()
@@ -161,28 +172,77 @@ void UMmoConnection::Send(const portfolio::mmo::Packet& Packet)
 	}
 }
 
+bool UMmoConnection::Handle(FInbound& Item, double Now)
+{
+	LastReceivedSeconds = Now;
+	switch (Item.Kind)
+	{
+	case FInbound::EKind::Connected:
+		bConnected = true;
+		LastPingSeconds = Now;
+		LatencyMeter.Reset();
+		OnConnected.Broadcast();
+		break;
+	case FInbound::EKind::Packet:
+		if (Item.Packet->has_pong())
+		{
+			LatencyMeter.Received(Now);
+		}
+		OnPacket.Broadcast(*Item.Packet);
+		break;
+	case FInbound::EKind::Closed:
+		CloseWithReason(Item.Reason);
+		// 델리게이트가 다시 연결했을 수 있으므로 새 연결의 일은 다음 틱에 처리한다.
+		return false;
+	}
+	return true;
+}
+
 bool UMmoConnection::Tick(float DeltaTime)
 {
 	const double Now = FPlatformTime::Seconds();
 	FInbound Item;
-	while (Inbox.Dequeue(Item))
+	if (LagSeconds <= 0.0 && LossChance <= 0.0)
 	{
-		LastReceivedSeconds = Now;
-		switch (Item.Kind)
+		while (Inbox.Dequeue(Item))
 		{
-		case FInbound::EKind::Connected:
-			bConnected = true;
-			LastPingSeconds = Now;
-			OnConnected.Broadcast();
-			break;
-		case FInbound::EKind::Packet:
-			OnPacket.Broadcast(*Item.Packet);
-			break;
-		case FInbound::EKind::Closed:
-			CloseWithReason(Item.Reason);
-			// 델리게이트가 다시 연결했을 수 있으므로 새 연결의 일은 다음 틱에 처리한다.
-			return true;
+			if (!Handle(Item, Now))
+			{
+				return true;
+			}
 		}
+	}
+	else
+	{
+		// 넣는 지연: 받은 차례를 지키며 늦춰 넘긴다. 멈추는 동안 받은 것과 이미 기다리던 것은 멈춤이 끝날 때 몰아서 넘긴다.
+		if (LossChance > 0.0 && Now >= NextLossCheck)
+		{
+			NextLossCheck = Now + 1.0;
+			if (FMath::FRand() < LossChance)
+			{
+				StallUntil = Now + 0.5;
+				for (FDelayed& Waiting : Delayed)
+				{
+					Waiting.At = FMath::Max(Waiting.At, StallUntil);
+				}
+			}
+		}
+		while (Inbox.Dequeue(Item))
+		{
+			LastReleaseSeconds = FMath::Max3(LastReleaseSeconds, Now + LagSeconds, StallUntil);
+			Delayed.Add({ LastReleaseSeconds, MoveTemp(Item) });
+		}
+		int32 Released = 0;
+		while (Released < Delayed.Num() && Delayed[Released].At <= Now)
+		{
+			const bool bOpen = Handle(Delayed[Released].Item, Now);
+			++Released;
+			if (!bOpen)
+			{
+				break;
+			}
+		}
+		Delayed.RemoveAt(0, Released);
 	}
 
 	// 쌓인 것을 다 꺼낸 뒤에 잰다. 게임 스레드가 오래 멈췄다 돌아와도 그동안 받은 것이 있으면 살아 있는 연결이다.
@@ -197,6 +257,7 @@ bool UMmoConnection::Tick(float DeltaTime)
 			LastPingSeconds = Now;
 			portfolio::mmo::Packet Ping;
 			Ping.mutable_ping();
+			LatencyMeter.Sent(Now);
 			Send(Ping);
 		}
 	}
@@ -218,6 +279,9 @@ void UMmoConnection::Shutdown()
 		Socket = nullptr;
 	}
 	Inbox.Empty();
+	Delayed.Empty();
+	LastReleaseSeconds = 0.0;
+	StallUntil = 0.0;
 	bConnected = false;
 }
 

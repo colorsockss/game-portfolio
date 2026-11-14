@@ -20,6 +20,13 @@
   봇은 서버와 같은 격자를 읽어 서버의 `FieldMap.CanWalkLine`으로 막힌 곳으로 걷지 않고 돌아섭니다. 봇이 끝에 찍는 `resets`(받은 `PositionReset`)가 0이어야 정상 클라이언트의 부하입니다. 서버 로그의 줄은 [MANUAL의 서버](../MANUAL.md#서버)에 있습니다.
 - **어느 함수에 시간이 드는지**: `dotnet-trace`로 틱 스레드를 봅니다. `dotnet tool install -g dotnet-trace` 뒤 `dotnet-trace collect -p <서버 pid> --duration 00:00:20 --format speedscope`로 20초를 기록하고 speedscope에서 `GameServer.RunTick` 아래를 봅니다.
 - **할당과 GC**: `dotnet-counters`로 봅니다. `dotnet tool install -g dotnet-counters` 뒤 `dotnet-counters monitor -p <서버 pid> --counters System.Runtime`에서 할당률, 세대별 GC 횟수, GC에 든 시간의 비율을 봅니다.
+- **사냥하는 서버 부하**: 위와 같은 서버에 봇을 `--hunt`로 붙입니다(맵, 몬스터, 전투가 다 도는 기준). 봇은 기사이고 가까운 몬스터를 치며 죽으면 마을에서 부활합니다. 죽은 봇이 마을에 모여 평균 시야가 구간마다 늘어나므로 평균 시야를 함께 적습니다. 봇이 끝에 찍는 `kills`와 `deaths`로 사냥이 돌았는지 봅니다.
+
+  ```sh
+  dotnet run -c Release --project mmo/server/tools/load-test -- --port 7800 --bots 2000 --half-extent 285 --seconds 70 --hunt
+  ```
+- **클라이언트 프레임**: Development 빌드에서 콘솔의 `stat unit`으로 프레임(Frame), 게임 스레드(Game), 그리기(Draw), GPU를 봅니다. 시간이 어디에 드는지는 Unreal Insights로 기록합니다: 게임을 `-trace=cpu,frame,memory,bookmark -statnamedevents`로 띄우고 `UnrealInsights`(엔진의 `Engine/Binaries/Mac/UnrealInsights.app`)에서 그 세션을 엽니다. 휴대폰은 Development APK를 `-tracehost=<Mac의 IP>`로 띄워 Mac의 Insights에 기록합니다.
+- **봇 200명을 내 캐릭터 둘레에 모아 재기**(59에서 잼): `--dev` 서버를 띄우고 휴대폰(Development 빌드)으로 들어가 개발 명령 `Mmo.Dev tp x z`로 자리를 정한 뒤, 같은 자리로 봇을 모읍니다(`--bots 200 --gather x,z --gather-radius 15`). 시연 표시(설정 창)의 보이는 캐릭터 수가 200 가까이 된 뒤 `stat unit`을 30초 보고 평균을 적습니다.
 - **송신량을 비용으로**: 클라이언트당 송신(B/s)에 TCP/IP 머리(틱마다 한 세그먼트, 52 × 20 = 1,040 B/s)를 더해 한 달(30.4일, 2,626,560초)을 곱합니다. VPS의 동시 접속은 Hostinger KVM 4(월 16 TB, 4 vCPU)의 송신량을 그 값으로 나눈 것입니다.
 
 ## 기록
@@ -37,6 +44,16 @@
 
 - 셋째 줄은 봇이 벽을 모르고 걸어 받은 `Move`의 약 4분의 1이 되돌려진 값이라(움직이지 않은 봇이 많아 `EntityMoves`가 작음) 견주는 기준으로 쓰지 않습니다. 재는 코드(29)를 넣기 전과 후의 틱 평균을 번갈아 세 번씩 재서 12.13 ms와 12.07 ms로 같은 것을 본 줄입니다.
 - 넷째 줄이 맵을 넣은 뒤의 기준입니다. 봇이 받은 `PositionReset`은 0이었습니다. 첫째·둘째 줄과의 차이는 맵의 막힌 칸만큼 봇이 고르게 흩어지지 않은 것과 측정의 흔들림 안입니다.
+
+#### 사냥하는 봇 (30)
+
+| 잰 날 | 커밋 | 봇과 넓이 | 평균 시야 | 틱 평균(최대) | 서버 CPU | 클라이언트당 송신 | 한 달 / KVM 4 동접 | 작업 집합(힙) | 할당 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-11-14 | db7e4c3 + 봇의 사냥 | 2,000, ±285 m, 맵, 몬스터, `--hunt` | 89.5명(87–95) | 20.7 ms (32.9 ms) | 2.3코어 | 21,202 B/s | 58 GB / 274명 | 137–148 MB (116–138 MB) | 158–182 MB/s |
+
+- M3의 기준 줄입니다. M7의 최적화(51부터)는 전과 후를 이 줄과 견줍니다. 70초 동안 봇이 몬스터 338마리를 잡고 477번 죽었고, 받은 `PositionReset`은 446번(2,000명 70초에. 부활과 겹친 `Move`가 대부분)이었습니다.
+- 걷기만 한 줄보다 틱이 6 ms 길고 송신이 43% 많은 것은 대부분 평균 시야가 54명에서 90명으로 는 탓입니다(죽은 봇이 마을의 부활 지점에 모임). 시야(9.85 ms)와 보내기(10.13 ms)가 여전히 틱의 97%이고, 전투 패킷(`AttackSwing`, `Damaged`, `SkillUsed`, `Died`, `Revived`)을 다 합쳐도 10초에 약 3.5 MB로 `EntityMoves`(약 400 MB)의 1%입니다.
+- 틱의 차례별 평균은 입력 0.39, 예약한 일 0.01, 몬스터 0.05(최대 0.12), 전투 0.02, 회복 0.25, 시야 9.85, 저장 0.01, 보내기 10.13 ms입니다. 몬스터의 차례(길찾기 포함)는 86의 시험(한 틱에 100번이 "길 없음"이면 17–31 ms)과 달리 실제 몬스터로는 0.1 ms 아래라, 길찾기를 틱에 나누는 것은 넣지 않습니다.
 
 ### 틱의 차례별 시간 (29)
 

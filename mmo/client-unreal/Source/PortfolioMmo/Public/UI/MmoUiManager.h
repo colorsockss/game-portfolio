@@ -47,6 +47,10 @@ public:
 	/** 개발 빌드의 UI 숨기기(68): 뿌리 위젯의 층(이름표, HUD, 창, 팝업, 알림)을 모두 감추거나 다시 보인다. */
 	void ToggleHidden();
 
+	/** 시연 표시(프레임, 보이는 캐릭터 수, 지연. 30)를 켰다. 설정 창의 줄로 바꾸고, 기기에 남기지 않는다(앱을 다시 켜면 꺼짐). */
+	bool IsStatsShown() const { return bShowStats; }
+	void SetStatsShown(bool bShown) { bShowStats = bShown; }
+
 	/** 알림 층에 잠깐 글을 띄운다. */
 	void ShowNotice(const FText& Message);
 
@@ -88,6 +92,8 @@ private:
 	MmoScreen::FTouchOwners Touches;
 	/** 모든 터치의 뗌을 위젯보다 먼저 보는 Slate 입력 전처리기(손가락의 주인을 놓음). */
 	TSharedPtr<IInputProcessor> TouchReleaser;
+
+	bool bShowStats = false;
 
 	/** 글자·숫자 키를 키 코드로 다시 읽는다(Mac의 입력기, 89). */
 	TSharedPtr<IInputProcessor> KeyCodeInput;
