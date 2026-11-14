@@ -15,6 +15,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HAL/PlatformTime.h"
 #include "InputAction.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
 #include "Input/MmoKeys.h"
@@ -101,6 +102,9 @@ void AMmoPlayerController::SetupInputComponent()
 	CharacterAction = NewObject<UInputAction>(this, TEXT("Character"));
 	CharacterAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(CharacterAction, MmoKeys::KeyOf(EMmoAction::Character));
+	AutoHuntAction = NewObject<UInputAction>(this, TEXT("AutoHunt"));
+	AutoHuntAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(AutoHuntAction, MmoKeys::KeyOf(EMmoAction::AutoHunt));
 	SkillsAction = NewObject<UInputAction>(this, TEXT("Skills"));
 	SkillsAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(SkillsAction, MmoKeys::KeyOf(EMmoAction::Skills));
@@ -150,6 +154,7 @@ void AMmoPlayerController::SetupInputComponent()
 	{
 		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter();
 	});
+	Enhanced->BindActionValueLambda(AutoHuntAction, ETriggerEvent::Started, [this](const FInputActionValue&) { ToggleAutoHunt(); });
 	Enhanced->BindActionValueLambda(SkillsAction, ETriggerEvent::Started, [this](const FInputActionValue&)
 	{
 		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleSkills();
@@ -294,6 +299,10 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 {
 	// 회전 입력은 Super::PlayerTick 안에서 적용되고 액터 틱 끝에 지워지므로, 그 앞에서 넣어야 한다.
 	UpdateTouchCamera();
+	if (AutoHunt.IsOn())
+	{
+		UpdateAutoHunt();
+	}
 	if (Interaction.IsPending())
 	{
 		UpdateInteraction();
@@ -415,6 +424,7 @@ bool AMmoPlayerController::WalkTo(const FVector& Ground)
 	if (!PathFinder->Find(From, To, Path))
 	{
 		UE_LOG(LogMmoNet, Display, TEXT("No path from (%d, %d) to (%d, %d), closed %d cells"), From.X, From.Z, To.X, To.Z, PathFinder->ClosedCells());
+		bPathFailed = true;
 		return false;
 	}
 
@@ -455,6 +465,7 @@ bool AMmoPlayerController::IsStunned() const
 
 void AMmoPlayerController::UseQuickslot(int32 Index)
 {
+	NoteManual();
 	const std::vector<portfolio::mmo::Quickslot>& Slots = Session().Skills().Slots();
 	if (bManualMoveBlocked || !Session().World().SelfEntity() || Index < 0 || Index >= static_cast<int32>(Slots.size()))
 	{
@@ -552,6 +563,7 @@ void AMmoPlayerController::Engage()
 
 void AMmoPlayerController::AttackOrTargetNearest()
 {
+	NoteManual();
 	if (bManualMoveBlocked || Session().World().SelfState().bDead)
 	{
 		return;
@@ -565,6 +577,7 @@ void AMmoPlayerController::AttackOrTargetNearest()
 
 void AMmoPlayerController::TargetNearest()
 {
+	NoteManual();
 	const APawn* Self = GetPawn();
 	if (!Self || bManualMoveBlocked || Session().World().SelfState().bDead)
 	{
@@ -628,6 +641,7 @@ void AMmoPlayerController::UpdateEngagement()
 
 void AMmoPlayerController::HandleClick()
 {
+	NoteManual();
 	// 터치 기기에서는 탭이 누르기다(UpdateTouchCamera). 이동은 조이스틱만 쓴다.
 	FVector2D Mouse;
 	if (!UMmoButtonWidget::IsTouchDevice() && GetMousePosition(Mouse.X, Mouse.Y))
@@ -717,6 +731,7 @@ std::optional<MmoWorld::FInteractTarget> AMmoPlayerController::InteractCandidate
 
 void AMmoPlayerController::Interact()
 {
+	NoteManual();
 	if (bManualMoveBlocked || Session().World().SelfState().bDead || IsStunned())
 	{
 		return;
@@ -807,6 +822,7 @@ void AMmoPlayerController::HandleMove(const FInputActionValue& Value)
 	}
 	if (!Axis.IsNearlyZero())
 	{
+		NoteManual();
 		PathFollower.Start({});
 		bEngaged = false;
 		Session().Combat().CancelSkill();
@@ -924,6 +940,15 @@ void AMmoPlayerController::UpdateTouchCamera()
 
 void AMmoPlayerController::HandlePacket(const portfolio::mmo::Packet& Packet)
 {
+	if (AutoHunt.IsOn())
+	{
+		// "공격할 수 없는 대상"의 실패와 같은 이유의 시전 취소는 그때의 대상을 후보에서 뺀다. 내가 죽으면 끈다(40).
+		AutoHunt.OnPacket(Packet, Session().World().SelfId(), Session().Combat().Target(), FPlatformTime::Seconds(), Session().Data().Constants.auto_hunt_exclude_ms() / 1000.0);
+		if (Packet.body_case() == portfolio::mmo::Packet::kDied && Packet.died().id() == Session().World().SelfId())
+		{
+			SetAutoHunt(false);
+		}
+	}
 	if (Packet.body_case() != portfolio::mmo::Packet::kPositionReset)
 	{
 		return;
@@ -933,5 +958,119 @@ void AMmoPlayerController::HandlePacket(const portfolio::mmo::Packet& Packet)
 		const portfolio::mmo::PositionReset& Reset = Packet.position_reset();
 		UE_LOG(LogMmoNet, Display, TEXT("PositionReset to (%d, %d), ack %u"), Reset.x(), Reset.z(), Reset.ack());
 		Self->Teleport(MmoCoordinates::ToWorld(Reset.x(), Reset.z()));
+	}
+}
+
+void AMmoPlayerController::ToggleAutoHunt()
+{
+	if (!GetPawn() || Session().World().SelfState().bDead)
+	{
+		return;
+	}
+	SetAutoHunt(!AutoHunt.IsOn());
+}
+
+void AMmoPlayerController::SetAutoHunt(bool bOn)
+{
+	if (bOn)
+	{
+		const FVector Location = GetPawn()->GetActorLocation();
+		AutoHunt.Start({ MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location) });
+		NextAutoSeconds = 0;
+		ManualUntil = 0;
+		bPathFailed = false;
+		AutoGoal = 0;
+	}
+	else
+	{
+		AutoHunt.Stop();
+	}
+	// 자동 사냥 중에는 기기의 화면이 꺼지지 않게 한다.
+	UKismetSystemLibrary::ControlScreensaver(!bOn);
+	UE_LOG(LogMmoNet, Display, TEXT("Auto hunt %s"), bOn ? TEXT("on") : TEXT("off"));
+}
+
+void AMmoPlayerController::NoteManual()
+{
+	ManualUntil = FPlatformTime::Seconds() + Session().Data().Constants.auto_hunt_manual_pause_ms() / 1000.0;
+}
+
+void AMmoPlayerController::UpdateAutoHunt()
+{
+	const double Now = FPlatformTime::Seconds();
+	if (Now < NextAutoSeconds || Now < ManualUntil)
+	{
+		return;
+	}
+	NextAutoSeconds = Now + 0.2;
+	UMmoSession& Net = Session();
+	const APawn* Self = GetPawn();
+	const MmoWorld::FFieldMap* Field = Net.Field();
+	if (!Self || !Field || !Net.World().SelfEntity())
+	{
+		SetAutoHunt(false);
+		return;
+	}
+	const portfolio::mmo::data::Constants& Constants = Net.Data().Constants;
+	const double ExcludeSeconds = Constants.auto_hunt_exclude_ms() / 1000.0;
+	if (bPathFailed)
+	{
+		// 걸어갈 길이 없는 몬스터와 바닥 아이템은 잠시 후보에서 뺀다.
+		bPathFailed = false;
+		AutoHunt.Exclude(AutoGoal, Now, ExcludeSeconds);
+		bEngaged = false;
+		Interaction.Cancel();
+	}
+	const FVector Location = Self->GetActorLocation();
+	const MmoWorld::FPoint Here{ MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location) };
+	MmoWorld::FCombatState& Combat = Net.Combat();
+	const MmoWorld::FAutoHuntInput Input{ Net.World(), Net.Data(), *Field, Net.Inventory(), Net.Skills(), Combat.Cooldowns(), Here, AutoHunt.Origin(), Combat.Target(),
+		Combat.IsAttacking(), Combat.IsSkillBusy() || Net.Inventory().HasWaiting(), Now, Net.World().Clock().Now(Now), AutoHunt.Excluded(Now) };
+	const MmoWorld::FAutoDecision Decision = MmoWorld::FAutoHunt::Decide(Input);
+
+	const auto Target = Net.World().Entities().find(Decision.Id);
+	const double Distance = Target != Net.World().Entities().end() ? FMath::Sqrt(FMath::Square(static_cast<double>(Target->second.X) - Here.X) + FMath::Square(static_cast<double>(Target->second.Z) - Here.Z)) : 0.0;
+	if (AutoHunt.Observe(Decision, Distance, Now, Constants.auto_hunt_stall_ms() / 1000.0, ExcludeSeconds))
+	{
+		// 가까워지지 못한 대상은 뺐다. 다음 판단이 다른 대상을 고른다.
+		bEngaged = false;
+		PathFollower.Start({});
+		return;
+	}
+
+	switch (Decision.Kind)
+	{
+	case MmoWorld::EAutoAction::Stop:
+		SetAutoHunt(false);
+		break;
+	case MmoWorld::EAutoAction::UsePotion:
+		if (const std::optional<uint32_t> Slot = Net.Inventory().FirstSlotOf(Decision.Id))
+		{
+			Net.Send(Net.Inventory().UseItem(*Slot));
+		}
+		break;
+	case MmoWorld::EAutoAction::UseSkill:
+		// 손으로 쓸 때와 같은 길(누른 스킬을 UpdateSkillUse가 다가가거나 보냄)이다.
+		Combat.PressSkill(Decision.Id, Net.World(), Net.Data(), Now);
+		break;
+	case MmoWorld::EAutoAction::PickUp:
+		AutoGoal = Decision.Id;
+		bEngaged = false;
+		Interaction.Start({ Decision.Id, MmoWorld::EInteractKind::PickUp });
+		InteractGoal = { MIN_int32, MIN_int32 };
+		break;
+	case MmoWorld::EAutoAction::SelectTarget:
+		SelectTarget(Decision.Id);
+		break;
+	case MmoWorld::EAutoAction::Approach:
+	case MmoWorld::EAutoAction::Attack:
+		AutoGoal = Decision.Id;
+		if (!bEngaged)
+		{
+			Engage();
+		}
+		break;
+	case MmoWorld::EAutoAction::Wait:
+		break;
 	}
 }

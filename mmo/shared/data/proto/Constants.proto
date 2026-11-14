@@ -56,4 +56,16 @@ message Constants {
   uint32 owner_only_ms = 24;
   // 드롭을 흩는 거리(m). 죽은 자리에서 이 안의 점에 놓는다
   double drop_scatter = 25;
+  // 자동 사냥이 대상과 주울 것을 고르는 범위(m). 시작한 자리에서 잰다(40)
+  double auto_hunt_range = 27;
+  // 자동 사냥이 회복 스킬이나 체력 물약을 쓰는 체력(최대의 %)
+  uint32 auto_hunt_hp_percent = 28;
+  // 자동 사냥이 마나 물약을 쓰는 마나(최대의 %)
+  uint32 auto_hunt_mp_percent = 29;
+  // 자동 사냥이 길이 없거나, 공격할 수 없거나, 가까워지지 못한 대상을 후보에서 빼는 시간(ms)
+  uint32 auto_hunt_exclude_ms = 30;
+  // 자동 사냥이 다가가는 동안 이만큼 대상에 가까워지지 못하면 그 대상을 뺀다(ms. 기다리는 동안은 세지 않음)
+  uint32 auto_hunt_stall_ms = 31;
+  // 손으로 조작한 뒤 자동 사냥이 멈추는 시간(ms)
+  uint32 auto_hunt_manual_pause_ms = 32;
 }

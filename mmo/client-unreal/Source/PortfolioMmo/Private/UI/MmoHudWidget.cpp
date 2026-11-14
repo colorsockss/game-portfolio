@@ -47,6 +47,14 @@ void UMmoHudWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	AttackButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleAttackClicked);
+	AutoButton->SetKeyHint(MmoKeys::Hint(EMmoAction::AutoHunt));
+	AutoButton->OnClickedNative.AddWeakLambda(this, [this]
+	{
+		if (AMmoPlayerController* Controller = GetOwningPlayer<AMmoPlayerController>())
+		{
+			Controller->ToggleAutoHunt();
+		}
+	});
 	TargetButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleTargetClicked);
 	InteractButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleInteractClicked);
 	SettingsButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleSettingsClicked);
@@ -368,6 +376,10 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	ShowSlots(ServerTick);
 	ShowProgress(Now);
 	ShowEffects(ServerTick);
+	if (const AMmoPlayerController* Controller = GetOwningPlayer<AMmoPlayerController>())
+	{
+		AutoButton->SetSelected(Controller->IsAutoHunting());
+	}
 	ShowInteract();
 	ShowStats(InDeltaTime);
 	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀). 요청 번호가 있는 요청의 실패와 얻은 것(32)도 같다.

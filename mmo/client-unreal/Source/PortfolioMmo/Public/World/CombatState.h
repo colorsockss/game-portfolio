@@ -160,6 +160,9 @@ namespace MmoWorld
 		/** 누른 스킬이 기다리는가(다가가는 중 포함). */
 		uint32_t PendingSkill() const { return Pending; }
 
+		/** 누른 스킬이 기다리거나 보낸 스킬의 답을 기다리는 중이다(자동 사냥이 기다림. 40). */
+		bool IsSkillBusy() const { return Pending != 0 || Awaiting != 0; }
+
 		/** 누른 스킬을 그만둔다(손 이동 입력, 대상을 바꿈). */
 		void CancelSkill() { Pending = 0; }
 

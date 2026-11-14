@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKeBQoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLQBgoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -39,12 +39,16 @@ namespace PortfolioMmo.Data {
             "X3Blcl9zZWNvbmQYEyABKA0SGgoScmF0ZV9saW1pdF9raWNrX21zGBQgASgN",
             "EhsKE3JhdGVfbGltaXRfcmVzZXRfbXMYFSABKA0SFwoPaW52ZW50b3J5X3Ns",
             "b3RzGBYgASgNEhgKEGRyb3BfbGlmZXRpbWVfbXMYFyABKA0SFQoNb3duZXJf",
-            "b25seV9tcxgYIAEoDRIUCgxkcm9wX3NjYXR0ZXIYGSABKAFCFKoCEVBvcnRm",
-            "b2xpb01tby5EYXRhYgZwcm90bzM="));
+            "b25seV9tcxgYIAEoDRIUCgxkcm9wX3NjYXR0ZXIYGSABKAESFwoPYXV0b19o",
+            "dW50X3JhbmdlGBsgASgBEhwKFGF1dG9faHVudF9ocF9wZXJjZW50GBwgASgN",
+            "EhwKFGF1dG9faHVudF9tcF9wZXJjZW50GB0gASgNEhwKFGF1dG9faHVudF9l",
+            "eGNsdWRlX21zGB4gASgNEhoKEmF1dG9faHVudF9zdGFsbF9tcxgfIAEoDRIh",
+            "ChlhdXRvX2h1bnRfbWFudWFsX3BhdXNlX21zGCAgASgNQhSqAhFQb3J0Zm9s",
+            "aW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs" }, null, null, null, null)
           }));
     }
     #endregion
@@ -111,6 +115,12 @@ namespace PortfolioMmo.Data {
       dropLifetimeMs_ = other.dropLifetimeMs_;
       ownerOnlyMs_ = other.ownerOnlyMs_;
       dropScatter_ = other.dropScatter_;
+      autoHuntRange_ = other.autoHuntRange_;
+      autoHuntHpPercent_ = other.autoHuntHpPercent_;
+      autoHuntMpPercent_ = other.autoHuntMpPercent_;
+      autoHuntExcludeMs_ = other.autoHuntExcludeMs_;
+      autoHuntStallMs_ = other.autoHuntStallMs_;
+      autoHuntManualPauseMs_ = other.autoHuntManualPauseMs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -495,6 +505,96 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "auto_hunt_range" field.</summary>
+    public const int AutoHuntRangeFieldNumber = 27;
+    private double autoHuntRange_;
+    /// <summary>
+    /// 자동 사냥이 대상과 주울 것을 고르는 범위(m). 시작한 자리에서 잰다(40)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double AutoHuntRange {
+      get { return autoHuntRange_; }
+      set {
+        autoHuntRange_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "auto_hunt_hp_percent" field.</summary>
+    public const int AutoHuntHpPercentFieldNumber = 28;
+    private uint autoHuntHpPercent_;
+    /// <summary>
+    /// 자동 사냥이 회복 스킬이나 체력 물약을 쓰는 체력(최대의 %)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint AutoHuntHpPercent {
+      get { return autoHuntHpPercent_; }
+      set {
+        autoHuntHpPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "auto_hunt_mp_percent" field.</summary>
+    public const int AutoHuntMpPercentFieldNumber = 29;
+    private uint autoHuntMpPercent_;
+    /// <summary>
+    /// 자동 사냥이 마나 물약을 쓰는 마나(최대의 %)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint AutoHuntMpPercent {
+      get { return autoHuntMpPercent_; }
+      set {
+        autoHuntMpPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "auto_hunt_exclude_ms" field.</summary>
+    public const int AutoHuntExcludeMsFieldNumber = 30;
+    private uint autoHuntExcludeMs_;
+    /// <summary>
+    /// 자동 사냥이 길이 없거나, 공격할 수 없거나, 가까워지지 못한 대상을 후보에서 빼는 시간(ms)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint AutoHuntExcludeMs {
+      get { return autoHuntExcludeMs_; }
+      set {
+        autoHuntExcludeMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "auto_hunt_stall_ms" field.</summary>
+    public const int AutoHuntStallMsFieldNumber = 31;
+    private uint autoHuntStallMs_;
+    /// <summary>
+    /// 자동 사냥이 다가가는 동안 이만큼 대상에 가까워지지 못하면 그 대상을 뺀다(ms. 기다리는 동안은 세지 않음)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint AutoHuntStallMs {
+      get { return autoHuntStallMs_; }
+      set {
+        autoHuntStallMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "auto_hunt_manual_pause_ms" field.</summary>
+    public const int AutoHuntManualPauseMsFieldNumber = 32;
+    private uint autoHuntManualPauseMs_;
+    /// <summary>
+    /// 손으로 조작한 뒤 자동 사냥이 멈추는 시간(ms)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint AutoHuntManualPauseMs {
+      get { return autoHuntManualPauseMs_; }
+      set {
+        autoHuntManualPauseMs_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -535,6 +635,12 @@ namespace PortfolioMmo.Data {
       if (DropLifetimeMs != other.DropLifetimeMs) return false;
       if (OwnerOnlyMs != other.OwnerOnlyMs) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(DropScatter, other.DropScatter)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(AutoHuntRange, other.AutoHuntRange)) return false;
+      if (AutoHuntHpPercent != other.AutoHuntHpPercent) return false;
+      if (AutoHuntMpPercent != other.AutoHuntMpPercent) return false;
+      if (AutoHuntExcludeMs != other.AutoHuntExcludeMs) return false;
+      if (AutoHuntStallMs != other.AutoHuntStallMs) return false;
+      if (AutoHuntManualPauseMs != other.AutoHuntManualPauseMs) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -567,6 +673,12 @@ namespace PortfolioMmo.Data {
       if (DropLifetimeMs != 0) hash ^= DropLifetimeMs.GetHashCode();
       if (OwnerOnlyMs != 0) hash ^= OwnerOnlyMs.GetHashCode();
       if (DropScatter != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(DropScatter);
+      if (AutoHuntRange != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(AutoHuntRange);
+      if (AutoHuntHpPercent != 0) hash ^= AutoHuntHpPercent.GetHashCode();
+      if (AutoHuntMpPercent != 0) hash ^= AutoHuntMpPercent.GetHashCode();
+      if (AutoHuntExcludeMs != 0) hash ^= AutoHuntExcludeMs.GetHashCode();
+      if (AutoHuntStallMs != 0) hash ^= AutoHuntStallMs.GetHashCode();
+      if (AutoHuntManualPauseMs != 0) hash ^= AutoHuntManualPauseMs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -685,6 +797,30 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(201, 1);
         output.WriteDouble(DropScatter);
       }
+      if (AutoHuntRange != 0D) {
+        output.WriteRawTag(217, 1);
+        output.WriteDouble(AutoHuntRange);
+      }
+      if (AutoHuntHpPercent != 0) {
+        output.WriteRawTag(224, 1);
+        output.WriteUInt32(AutoHuntHpPercent);
+      }
+      if (AutoHuntMpPercent != 0) {
+        output.WriteRawTag(232, 1);
+        output.WriteUInt32(AutoHuntMpPercent);
+      }
+      if (AutoHuntExcludeMs != 0) {
+        output.WriteRawTag(240, 1);
+        output.WriteUInt32(AutoHuntExcludeMs);
+      }
+      if (AutoHuntStallMs != 0) {
+        output.WriteRawTag(248, 1);
+        output.WriteUInt32(AutoHuntStallMs);
+      }
+      if (AutoHuntManualPauseMs != 0) {
+        output.WriteRawTag(128, 2);
+        output.WriteUInt32(AutoHuntManualPauseMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -795,6 +931,30 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(201, 1);
         output.WriteDouble(DropScatter);
       }
+      if (AutoHuntRange != 0D) {
+        output.WriteRawTag(217, 1);
+        output.WriteDouble(AutoHuntRange);
+      }
+      if (AutoHuntHpPercent != 0) {
+        output.WriteRawTag(224, 1);
+        output.WriteUInt32(AutoHuntHpPercent);
+      }
+      if (AutoHuntMpPercent != 0) {
+        output.WriteRawTag(232, 1);
+        output.WriteUInt32(AutoHuntMpPercent);
+      }
+      if (AutoHuntExcludeMs != 0) {
+        output.WriteRawTag(240, 1);
+        output.WriteUInt32(AutoHuntExcludeMs);
+      }
+      if (AutoHuntStallMs != 0) {
+        output.WriteRawTag(248, 1);
+        output.WriteUInt32(AutoHuntStallMs);
+      }
+      if (AutoHuntManualPauseMs != 0) {
+        output.WriteRawTag(128, 2);
+        output.WriteUInt32(AutoHuntManualPauseMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -879,6 +1039,24 @@ namespace PortfolioMmo.Data {
       }
       if (DropScatter != 0D) {
         size += 2 + 8;
+      }
+      if (AutoHuntRange != 0D) {
+        size += 2 + 8;
+      }
+      if (AutoHuntHpPercent != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(AutoHuntHpPercent);
+      }
+      if (AutoHuntMpPercent != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(AutoHuntMpPercent);
+      }
+      if (AutoHuntExcludeMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(AutoHuntExcludeMs);
+      }
+      if (AutoHuntStallMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(AutoHuntStallMs);
+      }
+      if (AutoHuntManualPauseMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(AutoHuntManualPauseMs);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -966,6 +1144,24 @@ namespace PortfolioMmo.Data {
       }
       if (other.DropScatter != 0D) {
         DropScatter = other.DropScatter;
+      }
+      if (other.AutoHuntRange != 0D) {
+        AutoHuntRange = other.AutoHuntRange;
+      }
+      if (other.AutoHuntHpPercent != 0) {
+        AutoHuntHpPercent = other.AutoHuntHpPercent;
+      }
+      if (other.AutoHuntMpPercent != 0) {
+        AutoHuntMpPercent = other.AutoHuntMpPercent;
+      }
+      if (other.AutoHuntExcludeMs != 0) {
+        AutoHuntExcludeMs = other.AutoHuntExcludeMs;
+      }
+      if (other.AutoHuntStallMs != 0) {
+        AutoHuntStallMs = other.AutoHuntStallMs;
+      }
+      if (other.AutoHuntManualPauseMs != 0) {
+        AutoHuntManualPauseMs = other.AutoHuntManualPauseMs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1086,6 +1282,30 @@ namespace PortfolioMmo.Data {
             DropScatter = input.ReadDouble();
             break;
           }
+          case 217: {
+            AutoHuntRange = input.ReadDouble();
+            break;
+          }
+          case 224: {
+            AutoHuntHpPercent = input.ReadUInt32();
+            break;
+          }
+          case 232: {
+            AutoHuntMpPercent = input.ReadUInt32();
+            break;
+          }
+          case 240: {
+            AutoHuntExcludeMs = input.ReadUInt32();
+            break;
+          }
+          case 248: {
+            AutoHuntStallMs = input.ReadUInt32();
+            break;
+          }
+          case 256: {
+            AutoHuntManualPauseMs = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -1203,6 +1423,30 @@ namespace PortfolioMmo.Data {
           }
           case 201: {
             DropScatter = input.ReadDouble();
+            break;
+          }
+          case 217: {
+            AutoHuntRange = input.ReadDouble();
+            break;
+          }
+          case 224: {
+            AutoHuntHpPercent = input.ReadUInt32();
+            break;
+          }
+          case 232: {
+            AutoHuntMpPercent = input.ReadUInt32();
+            break;
+          }
+          case 240: {
+            AutoHuntExcludeMs = input.ReadUInt32();
+            break;
+          }
+          case 248: {
+            AutoHuntStallMs = input.ReadUInt32();
+            break;
+          }
+          case 256: {
+            AutoHuntManualPauseMs = input.ReadUInt32();
             break;
           }
         }

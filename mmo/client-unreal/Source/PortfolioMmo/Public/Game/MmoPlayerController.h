@@ -6,6 +6,7 @@
 #include "World/MoveSender.h"
 #include "Screen/TouchGestures.h"
 #include "Screen/TouchOwners.h"
+#include "World/AutoHunt.h"
 #include "World/Interaction.h"
 #include "World/PathFinder.h"
 
@@ -64,6 +65,11 @@ public:
 
 	/** 상호작용 키(E)와 HUD의 상호작용 버튼: 10 m 안의 가장 가까운 상호작용할 수 있는 것까지 걸어가 그 종류의 일을 한다. 없으면 아무것도 하지 않는다. */
 	void Interact();
+
+	/** 자동 사냥을 켜고 끈다(HUD의 자동 사냥 버튼과 Z 키. 40). 켠 자리가 시작한 자리다. */
+	void ToggleAutoHunt();
+
+	bool IsAutoHunting() const { return AutoHunt.IsOn(); }
 
 	/** 내 자리에서 상호작용 버튼이 고를 후보(HUD가 글을 바꾸는 데 씀). */
 	std::optional<MmoWorld::FInteractTarget> InteractCandidate() const;
@@ -192,6 +198,22 @@ private:
 	std::optional<MmoWorld::FPathFinder> PathFinder;
 	MmoWorld::FPathFollower PathFollower;
 	MmoWorld::FInteraction Interaction;
+
+	/** 자동 사냥(40): 0.2초마다 FAutoHunt::Decide를 불러 그 일을 이동과 패킷으로 옮긴다. 손으로 조작하면 ManualUntil까지 부르지 않는다. */
+	void UpdateAutoHunt();
+	void SetAutoHunt(bool bOn);
+	/** 손 조작(이동 입력, 대상 고르기, 공격·스킬·상호작용)이 있었다. 자동 사냥을 잠시 멈춘다. */
+	void NoteManual();
+	MmoWorld::FAutoHuntState AutoHunt;
+	double NextAutoSeconds = 0;
+	double ManualUntil = 0;
+	/** 마지막으로 다가가거나 주우러 간 개체. 길이 없으면 이것을 후보에서 뺀다. */
+	uint32 AutoGoal = 0;
+	/** WalkTo가 길을 내지 못했다(자동 사냥이 꺼내 감). */
+	bool bPathFailed = false;
+
+	UPROPERTY()
+	TObjectPtr<UInputAction> AutoHuntAction;
 	/** 상호작용하러 가는 길을 찾은 때의 개체 자리. */
 	MmoWorld::FPoint InteractGoal;
 	MmoScreen::FTouchGestures Gestures;

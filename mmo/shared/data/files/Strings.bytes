@@ -792,3 +792,5 @@ a
 notice.revivedOnEnter&부활 지점에서 부활했습니다 You revived at the respawn point
 �
 kick.serverErrort서버에서 오류가 나 연결을 끊었습니다. 다시 접속하면 마지막으로 저장된 상태입니다.iThe server hit an error and closed the connection. Your last saved state will be back when you reconnect.
+
+hud.auto자동 사냥Auto

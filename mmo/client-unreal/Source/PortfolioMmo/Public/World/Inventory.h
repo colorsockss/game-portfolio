@@ -112,6 +112,9 @@ namespace MmoWorld
 		/** 그 요청의 답을 기다리는 중이다. */
 		bool IsWaiting(uint32_t RequestId) const { return Waiting.count(RequestId) > 0; }
 
+		/** 답을 기다리는 요청이 하나라도 있다(자동 사냥이 물약의 답을 기다림. 40). */
+		bool HasWaiting() const { return !Waiting.empty(); }
+
 		/** 지난번에 꺼낸 뒤로 쌓인 "얻음" 사건(InventoryChanged의 gains만. 칸의 차이나 Inventory 전체로는 쌓지 않음). */
 		std::vector<FItemGain> TakeGains();
 

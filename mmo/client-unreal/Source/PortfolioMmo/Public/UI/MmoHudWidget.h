@@ -125,6 +125,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TargetHpText;
 
+	/** 자동 사냥(40). PC와 터치 기기 모두 보이고 켜져 있으면 고른 상태다. */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> AutoButton;
+
 	/** 터치 기기에서만 보이는 버튼(공용 버튼의 bTouchOnly). */
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> AttackButton;

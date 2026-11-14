@@ -245,6 +245,12 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kDropLifetimeMsFieldNumber = 23,
     kDropScatterFieldNumber = 25,
     kOwnerOnlyMsFieldNumber = 24,
+    kAutoHuntHpPercentFieldNumber = 28,
+    kAutoHuntRangeFieldNumber = 27,
+    kAutoHuntMpPercentFieldNumber = 29,
+    kAutoHuntExcludeMsFieldNumber = 30,
+    kAutoHuntStallMsFieldNumber = 31,
+    kAutoHuntManualPauseMsFieldNumber = 32,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -496,11 +502,71 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_owner_only_ms(::uint32_t value);
 
   public:
+  // uint32 auto_hunt_hp_percent = 28;
+  void clear_auto_hunt_hp_percent() ;
+  [[nodiscard]] ::uint32_t auto_hunt_hp_percent() const;
+  void set_auto_hunt_hp_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_auto_hunt_hp_percent() const;
+  void _internal_set_auto_hunt_hp_percent(::uint32_t value);
+
+  public:
+  // double auto_hunt_range = 27;
+  void clear_auto_hunt_range() ;
+  [[nodiscard]] double auto_hunt_range() const;
+  void set_auto_hunt_range(double value);
+
+  private:
+  double _internal_auto_hunt_range() const;
+  void _internal_set_auto_hunt_range(double value);
+
+  public:
+  // uint32 auto_hunt_mp_percent = 29;
+  void clear_auto_hunt_mp_percent() ;
+  [[nodiscard]] ::uint32_t auto_hunt_mp_percent() const;
+  void set_auto_hunt_mp_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_auto_hunt_mp_percent() const;
+  void _internal_set_auto_hunt_mp_percent(::uint32_t value);
+
+  public:
+  // uint32 auto_hunt_exclude_ms = 30;
+  void clear_auto_hunt_exclude_ms() ;
+  [[nodiscard]] ::uint32_t auto_hunt_exclude_ms() const;
+  void set_auto_hunt_exclude_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_auto_hunt_exclude_ms() const;
+  void _internal_set_auto_hunt_exclude_ms(::uint32_t value);
+
+  public:
+  // uint32 auto_hunt_stall_ms = 31;
+  void clear_auto_hunt_stall_ms() ;
+  [[nodiscard]] ::uint32_t auto_hunt_stall_ms() const;
+  void set_auto_hunt_stall_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_auto_hunt_stall_ms() const;
+  void _internal_set_auto_hunt_stall_ms(::uint32_t value);
+
+  public:
+  // uint32 auto_hunt_manual_pause_ms = 32;
+  void clear_auto_hunt_manual_pause_ms() ;
+  [[nodiscard]] ::uint32_t auto_hunt_manual_pause_ms() const;
+  void set_auto_hunt_manual_pause_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_auto_hunt_manual_pause_ms() const;
+  void _internal_set_auto_hunt_manual_pause_ms(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 25,
+      ::google::protobuf::internal::TcParseTable<5, 31,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -554,6 +620,12 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t drop_lifetime_ms_;
     double drop_scatter_;
     ::uint32_t owner_only_ms_;
+    ::uint32_t auto_hunt_hp_percent_;
+    double auto_hunt_range_;
+    ::uint32_t auto_hunt_mp_percent_;
+    ::uint32_t auto_hunt_exclude_ms_;
+    ::uint32_t auto_hunt_stall_ms_;
+    ::uint32_t auto_hunt_manual_pause_ms_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1174,6 +1246,150 @@ inline double Constants::_internal_drop_scatter() const {
 inline void Constants::_internal_set_drop_scatter(double value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.drop_scatter_ = value;
+}
+
+// double auto_hunt_range = 27;
+inline void Constants::clear_auto_hunt_range() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_range_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x04000000U);
+}
+inline double Constants::auto_hunt_range() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_range)
+  return _internal_auto_hunt_range();
+}
+inline void Constants::set_auto_hunt_range(double value) {
+  _internal_set_auto_hunt_range(value);
+  SetHasBit(_impl_._has_bits_[0], 0x04000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_range)
+}
+inline double Constants::_internal_auto_hunt_range() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.auto_hunt_range_;
+}
+inline void Constants::_internal_set_auto_hunt_range(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_range_ = value;
+}
+
+// uint32 auto_hunt_hp_percent = 28;
+inline void Constants::clear_auto_hunt_hp_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_hp_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x02000000U);
+}
+inline ::uint32_t Constants::auto_hunt_hp_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_hp_percent)
+  return _internal_auto_hunt_hp_percent();
+}
+inline void Constants::set_auto_hunt_hp_percent(::uint32_t value) {
+  _internal_set_auto_hunt_hp_percent(value);
+  SetHasBit(_impl_._has_bits_[0], 0x02000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_hp_percent)
+}
+inline ::uint32_t Constants::_internal_auto_hunt_hp_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.auto_hunt_hp_percent_;
+}
+inline void Constants::_internal_set_auto_hunt_hp_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_hp_percent_ = value;
+}
+
+// uint32 auto_hunt_mp_percent = 29;
+inline void Constants::clear_auto_hunt_mp_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_mp_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x08000000U);
+}
+inline ::uint32_t Constants::auto_hunt_mp_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_mp_percent)
+  return _internal_auto_hunt_mp_percent();
+}
+inline void Constants::set_auto_hunt_mp_percent(::uint32_t value) {
+  _internal_set_auto_hunt_mp_percent(value);
+  SetHasBit(_impl_._has_bits_[0], 0x08000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_mp_percent)
+}
+inline ::uint32_t Constants::_internal_auto_hunt_mp_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.auto_hunt_mp_percent_;
+}
+inline void Constants::_internal_set_auto_hunt_mp_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_mp_percent_ = value;
+}
+
+// uint32 auto_hunt_exclude_ms = 30;
+inline void Constants::clear_auto_hunt_exclude_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_exclude_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x10000000U);
+}
+inline ::uint32_t Constants::auto_hunt_exclude_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_exclude_ms)
+  return _internal_auto_hunt_exclude_ms();
+}
+inline void Constants::set_auto_hunt_exclude_ms(::uint32_t value) {
+  _internal_set_auto_hunt_exclude_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x10000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_exclude_ms)
+}
+inline ::uint32_t Constants::_internal_auto_hunt_exclude_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.auto_hunt_exclude_ms_;
+}
+inline void Constants::_internal_set_auto_hunt_exclude_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_exclude_ms_ = value;
+}
+
+// uint32 auto_hunt_stall_ms = 31;
+inline void Constants::clear_auto_hunt_stall_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_stall_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x20000000U);
+}
+inline ::uint32_t Constants::auto_hunt_stall_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_stall_ms)
+  return _internal_auto_hunt_stall_ms();
+}
+inline void Constants::set_auto_hunt_stall_ms(::uint32_t value) {
+  _internal_set_auto_hunt_stall_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x20000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_stall_ms)
+}
+inline ::uint32_t Constants::_internal_auto_hunt_stall_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.auto_hunt_stall_ms_;
+}
+inline void Constants::_internal_set_auto_hunt_stall_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_stall_ms_ = value;
+}
+
+// uint32 auto_hunt_manual_pause_ms = 32;
+inline void Constants::clear_auto_hunt_manual_pause_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_manual_pause_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x40000000U);
+}
+inline ::uint32_t Constants::auto_hunt_manual_pause_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_manual_pause_ms)
+  return _internal_auto_hunt_manual_pause_ms();
+}
+inline void Constants::set_auto_hunt_manual_pause_ms(::uint32_t value) {
+  _internal_set_auto_hunt_manual_pause_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x40000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_manual_pause_ms)
+}
+inline ::uint32_t Constants::_internal_auto_hunt_manual_pause_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.auto_hunt_manual_pause_ms_;
+}
+inline void Constants::_internal_set_auto_hunt_manual_pause_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.auto_hunt_manual_pause_ms_ = value;
 }
 
 #ifdef __GNUC__

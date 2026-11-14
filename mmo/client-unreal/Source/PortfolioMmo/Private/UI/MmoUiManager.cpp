@@ -379,7 +379,7 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 	}
 	else if (Packet.body_case() == portfolio::mmo::Packet::kDied && Packet.died().id() == Session().World().SelfId())
 	{
-		// 내가 죽으면 열린 창을 닫고 사망 화면을 띄운다(대상은 전투 모델이 이미 풀었다. 자동 사냥을 끄는 것은 40).
+		// 내가 죽으면 열린 창을 닫고 사망 화면을 띄운다(대상은 전투 모델이 이미 풀었고, 자동 사냥은 컨트롤러가 끈다. 40).
 		Close(EScreen::Settings);
 		Close(EScreen::Character);
 		Close(EScreen::Inventory);
