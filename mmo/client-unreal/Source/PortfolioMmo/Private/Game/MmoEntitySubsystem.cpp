@@ -5,6 +5,8 @@
 #include "Game/MmoCharacter.h"
 #include "Game/MmoCharacterLook.h"
 #include "Game/MmoCoordinates.h"
+#include "Game/MmoCueSubsystem.h"
+#include "NiagaraComponent.h"
 #include "Game/MmoEntityActor.h"
 #include "Game/MmoEntityVisuals.h"
 #include "Animation/AnimSequence.h"
@@ -23,16 +25,12 @@
 
 namespace
 {
-	/** 자리 표시의 색: 내 대상의 원(노랑), 발사체(밝은 보라). */
+	/** 바닥 표시의 색: 내 대상의 원(노랑), 범위 스킬의 원(주황). 범위의 원이 보이는 시간(초). */
 	const FLinearColor TargetColor(1.0f, 0.85f, 0.2f);
-	const FLinearColor ProjectileColor(0.8f, 0.5f, 1.0f);
-	/** 부활의 자리 표시(초록 구)와 보이는 시간(초). 이펙트로 바꾸는 것은 27. */
-	const FLinearColor ReviveColor(0.3f, 1.0f, 0.4f);
-	constexpr double ReviveMarkerSeconds = 1.0;
-	/** 범위 스킬의 원(주황)과 스킬 이펙트의 자리 표시(하늘색 구), 보이는 시간(초). 이펙트로 바꾸는 것은 27. */
 	const FLinearColor AreaColor(1.0f, 0.45f, 0.1f);
-	const FLinearColor SkillColor(0.3f, 0.8f, 1.0f);
-	constexpr double SkillMarkerSeconds = 0.5;
+	constexpr double AreaMarkerSeconds = 0.5;
+	/** 연출을 트는 높이(언리얼 단위): 가슴(1 m). */
+	const FVector Chest(0.0, 0.0, 100.0);
 
 	/** 표현 표에서 개체를 찾는 키: 플레이어는 직업, 몬스터·NPC·채집물은 템플릿 번호, 바닥 아이템은 아이템 번호. */
 	int32 KeyOf(const portfolio::mmo::EntityEnter& Info)
@@ -117,6 +115,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 			AMmoCharacter* Self = CastChecked<AMmoCharacter>(Pair.Value);
 			MmoCharacterLook::SetSpeed(*Self->GetMesh(), Self->GetVelocity().Size2D());
 			const FVector SelfLocation = Self->GetActorLocation();
+			Cues().Walk(Pair.Key, CueKey(Pair.Key).Key, CueKey(Pair.Key).Value, SelfLocation, Self->GetVelocity().Size2D() * DeltaTime);
 			World.SetSelfPosition(MmoCoordinates::ToX(SelfLocation), MmoCoordinates::ToZ(SelfLocation), MmoCoordinates::ToYaw(Self->GetActorRotation()));
 			continue;
 		}
@@ -127,6 +126,11 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		const double Speed = DeltaTime > 0 ? FVector::Dist2D(Location, Other->GetActorLocation()) / DeltaTime : 0;
 		MmoCharacterLook::SetSpeed(Other->Mesh(), Speed);
 		Other->SetActorLocationAndRotation(Location, MmoCoordinates::ToRotator(Pose.Yaw));
+		if (const portfolio::mmo::EntityEnter& Info = World.Entities().at(Pair.Key).Info; !Info.dead()
+			&& (Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER || Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER))
+		{
+			Cues().Walk(Pair.Key, Info.kind(), KeyOf(Info), Location, Speed * DeltaTime);
+		}
 	}
 
 	// 사건은 받은 순서대로: 공격 동작은 시작 사건에서, 피격 동작은 피해에서 튼다(피해 숫자는 OnCombatEvent를 듣는 이름표 층).
@@ -154,6 +158,10 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		else if (Event.Kind == MmoWorld::ECombatEventKind::Damage)
 		{
 			PlayAction(Event.Target, &FMmoEntityVisual::Hit);
+			if (const AActor* Target = Actors.FindRef(Event.Target))
+			{
+				Cues().Play(EMmoCue::Hit, CueKey(Event.Attacker).Key, CueKey(Event.Attacker).Value, Target->GetActorLocation() + Chest);
+			}
 		}
 		else if (Event.Kind == MmoWorld::ECombatEventKind::Death || Event.Kind == MmoWorld::ECombatEventKind::Revive)
 		{
@@ -165,7 +173,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 				MmoCharacterLook::SetDead(*Mesh, *Placeholder, Row ? Row->Death.Get() : nullptr, bDead, false);
 				if (!bDead)
 				{
-					ShowRevive(*Actor);
+					Cues().Play(EMmoCue::Revive, 0, 0, Actor->GetActorLocation() + Chest);
 				}
 			}
 		}
@@ -191,25 +199,38 @@ void UMmoEntitySubsystem::ShowSkill(const MmoWorld::FCombatEvent& Event, const M
 	const FMmoEntityVisual* Row = Looks.FindRef(Event.Attacker);
 	PlayAction(Event.Attacker, Row && !Row->Skill.IsNull() ? &FMmoEntityVisual::Skill : &FMmoEntityVisual::Attack);
 
+	if (const AActor* Caster = Actors.FindRef(Event.Attacker))
+	{
+		Cues().Play(EMmoCue::SkillCast, 0, static_cast<int32>(Event.Skill), Caster->GetActorLocation() + Chest);
+	}
+
 	const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Event.Skill);
-	const bool bArea = Skill && Skill->kind() == portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE;
-	// 자기 중심의 범위와 그 자리에서 쓰는 스킬은 시전자에, 나머지는 대상에 둔다. 시전자를 받지 않았으면(0) 대상 쪽만.
-	const bool bAtCaster = Skill && !MmoWorld::FCombatState::TargetsOther(*Skill);
-	const AActor* At = Actors.FindRef(bAtCaster && Event.Attacker != 0 ? Event.Attacker : Event.Target);
-	if (!At)
+	if (!Skill)
 	{
 		return;
 	}
-	if (bArea)
+	// 자기 중심의 범위와 그 자리에서 쓰는 스킬은 시전자에, 나머지는 대상에 둔다. 시전자를 받지 않았으면(0) 대상 쪽만.
+	const uint32 Anchor = !MmoWorld::FCombatState::TargetsOther(*Skill) && Event.Attacker != 0 ? Event.Attacker : Event.Target;
+	PendingHits.Add({ FPlatformTime::Seconds() + Skill->hit_delay_ms() / 1000.0, Event.Skill, Anchor });
+	const AActor* At = Actors.FindRef(Anchor);
+	if (At && Skill->kind() == portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE)
 	{
 		// 엔진의 원기둥은 지름 1 m라 지름(m)을 그대로 배율로 쓴다.
 		const double Diameter = Skill->radius() * 2.0;
-		Flash(AreaMarkers, AreaUntil, TEXT("Cylinder"), AreaColor, At->GetActorLocation() + FVector(0.0, 0.0, 3.0), FVector(Diameter, Diameter, 0.02), SkillMarkerSeconds);
+		Flash(AreaMarkers, AreaUntil, TEXT("Cylinder"), AreaColor, At->GetActorLocation() + FVector(0.0, 0.0, 3.0), FVector(Diameter, Diameter, 0.02), AreaMarkerSeconds);
 	}
-	else
-	{
-		Flash(SkillMarkers, SkillUntil, TEXT("Sphere"), SkillColor, At->GetActorLocation() + FVector(0.0, 0.0, 100.0), FVector(0.6), SkillMarkerSeconds);
-	}
+}
+
+UMmoCueSubsystem& UMmoEntitySubsystem::Cues() const
+{
+	return *GetWorld()->GetSubsystem<UMmoCueSubsystem>();
+}
+
+TPair<int32, int32> UMmoEntitySubsystem::CueKey(uint32 Id) const
+{
+	const auto& Entities = GetWorld()->GetGameInstance()->GetSubsystem<UMmoSession>()->World().Entities();
+	const auto Found = Entities.find(Id);
+	return Found != Entities.end() ? TPair<int32, int32>(Found->second.Info.kind(), KeyOf(Found->second.Info)) : TPair<int32, int32>(0, 0);
 }
 
 void UMmoEntitySubsystem::StartCast(const MmoWorld::FCombatEvent& Event, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data)
@@ -269,41 +290,56 @@ void UMmoEntitySubsystem::PlayAction(uint32 Id, TSoftObjectPtr<UAnimSequence> FM
 
 void UMmoEntitySubsystem::DrawCombat(const MmoWorld::FWorldState& World, MmoWorld::FCombatState& Combat)
 {
-	Combat.UpdateProjectiles(World, FPlatformTime::Seconds());
-	int32 Shown = 0;
+	const double Now = FPlatformTime::Seconds();
+	Combat.UpdateProjectiles(World, Now);
+	// 발사체마다 되풀이하는 이펙트를 하나 붙여 가슴 높이로 옮기고, 끝난 발사체의 이펙트는 풀로 돌려놓는다.
+	TSet<uint32> Flying;
 	for (const MmoWorld::FProjectile& Projectile : Combat.Projectiles())
 	{
 		if (!Projectile.bLaunched)
 		{
 			continue;
 		}
-		if (Shown == ProjectileMarkers.Num())
+		const FVector Location = MmoCoordinates::ToWorld(Projectile.X, Projectile.Z) + Chest;
+		TObjectPtr<UNiagaraComponent>& Effect = ProjectileEffects.FindOrAdd(Projectile.Id);
+		if (!Effect)
 		{
-			ProjectileMarkers.Add(SpawnMarker(TEXT("Sphere"), FVector(0.3), ProjectileColor));
+			// 불러오는 중이거나 이펙트가 상한이면 다음 프레임에 다시 본다.
+			Effect = Cues().StartLoop(EMmoCue::Projectile, CueKey(Projectile.Attacker).Key, CueKey(Projectile.Attacker).Value, Location);
 		}
-		AStaticMeshActor* Marker = ProjectileMarkers[Shown++];
-		// 가슴 높이(1 m)로 난다.
-		Marker->SetActorLocation(MmoCoordinates::ToWorld(Projectile.X, Projectile.Z) + FVector(0.0, 0.0, 100.0));
-		Marker->SetActorHiddenInGame(false);
+		if (Effect)
+		{
+			Effect->SetWorldLocation(Location);
+		}
+		Flying.Add(Projectile.Id);
 	}
-	for (int32 Index = Shown; Index < ProjectileMarkers.Num(); ++Index)
+	for (auto It = ProjectileEffects.CreateIterator(); It; ++It)
 	{
-		ProjectileMarkers[Index]->SetActorHiddenInGame(true);
+		if (!Flying.Contains(It.Key()))
+		{
+			Cues().StopLoop(It.Value());
+			It.RemoveCurrent();
+		}
 	}
 
-	// 부활과 스킬의 자리 표시는 정한 시간이 지나면 감춘다.
-	const double Now = FPlatformTime::Seconds();
-	if (ReviveMarker && Now > ReviveMarkerUntil)
+	// 때가 된 스킬의 맞는 연출을 튼다(그 자리의 개체가 나갔으면 버림).
+	for (int32 Index = PendingHits.Num() - 1; Index >= 0; --Index)
 	{
-		ReviveMarker->SetActorHiddenInGame(true);
+		if (Now < PendingHits[Index].At)
+		{
+			continue;
+		}
+		if (const AActor* At = Actors.FindRef(PendingHits[Index].Anchor))
+		{
+			Cues().Play(EMmoCue::SkillHit, 0, static_cast<int32>(PendingHits[Index].Skill), At->GetActorLocation() + Chest);
+		}
+		PendingHits.RemoveAtSwap(Index);
 	}
+
+	// 범위의 원은 정한 시간이 지나면 감춘다.
 	for (int32 Index = 0; Index < AreaMarkers.Num(); ++Index)
 	{
 		AreaMarkers[Index]->SetActorHiddenInGame(Now > AreaUntil[Index]);
-	}
-	for (int32 Index = 0; Index < SkillMarkers.Num(); ++Index)
-	{
-		SkillMarkers[Index]->SetActorHiddenInGame(Now > SkillUntil[Index]);
 	}
 
 	// 대상의 발밑에 납작한 원을 둔다.
@@ -320,17 +356,6 @@ void UMmoEntitySubsystem::DrawCombat(const MmoWorld::FWorldState& World, MmoWorl
 			TargetMarker->SetActorLocation(Target->GetActorLocation() + FVector(0.0, 0.0, 2.0));
 		}
 	}
-}
-
-void UMmoEntitySubsystem::ShowRevive(const AActor& Actor)
-{
-	if (!ReviveMarker)
-	{
-		ReviveMarker = SpawnMarker(TEXT("Sphere"), FVector(1.0), ReviveColor);
-	}
-	ReviveMarker->SetActorLocation(Actor.GetActorLocation() + FVector(0.0, 0.0, 90.0));
-	ReviveMarker->SetActorHiddenInGame(false);
-	ReviveMarkerUntil = FPlatformTime::Seconds() + ReviveMarkerSeconds;
 }
 
 AStaticMeshActor* UMmoEntitySubsystem::SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color)

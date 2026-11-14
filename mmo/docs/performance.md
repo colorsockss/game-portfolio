@@ -77,5 +77,9 @@
 | 2026-11-11 | 49b6aed | Mac 패키지(arm64, Shipping) | 872 → 212 MB |
 | 2026-11-11 | 49b6aed | Android 라이브러리(libprotobuf) | 145 → 11 MB |
 | 2026-11-11 | 49b6aed | Android 셰이더 | 압축 전 두 벌 6.8 + 5.3 MB에서 OpenGL ES 3.1의 5.3 MB가 빠짐. 같은 콘텐츠로 APK의 전과 후는 재지 않음 |
+| 2026-11-14 | 56bd0a6 → 27 | Niagara 켜기, Mac 앱(arm64, Shipping) | 218,708 → 226,056 KB(+7,348 KB, 3.4%). 실행 파일 99.7 → 105.9 MB |
+| 2026-11-14 | 56bd0a6 → 27 | Niagara 켜기, Android APK(arm64, Shipping) | 77,646,352 → 80,755,352 B(+3.1 MB, 4.0%) |
 
 줄인 방법은 [MANUAL의 Unreal 클라이언트](../MANUAL.md#unreal-클라이언트)에 있습니다.
+
+Niagara의 전과 후(backlog 27)는 같은 날 `package.mjs`로 잰 크기입니다. 뒤의 것에는 Niagara 모듈과 함께 연출 표, 합성한 소리(에셋 약 0.6 MB), 쿠킹된 Niagara 템플릿 시스템이 들어 있어 Niagara 모듈만의 크기는 아닙니다.

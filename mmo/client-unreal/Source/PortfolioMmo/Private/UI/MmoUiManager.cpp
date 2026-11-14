@@ -6,6 +6,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Framework/Application/IInputProcessor.h"
 #include "Framework/Application/SlateApplication.h"
+#include "Game/MmoCueSubsystem.h"
 #include "Game/MmoPlayerController.h"
 #include "GameFramework/PlayerController.h"
 #include "Net/MmoConnection.h"
@@ -241,6 +242,11 @@ void UMmoUiManager::ReturnToCharacterSelect()
 void UMmoUiManager::Show(EScreen Screen, UUserWidget& Widget, const FOnShown& OnShown)
 {
 	Root->AddToLayer(MmoScreen::RuleOf(Screen).Layer, Widget);
+	UMmoCueSubsystem* Cues = Widget.GetWorld() ? Widget.GetWorld()->GetSubsystem<UMmoCueSubsystem>() : nullptr;
+	if (Cues && MmoScreen::RuleOf(Screen).Layer != MmoScreen::ELayer::Hud)
+	{
+		Cues->PlayUi(EMmoCue::UiWindow);
+	}
 	if (OnShown)
 	{
 		OnShown(Widget);

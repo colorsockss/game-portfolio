@@ -67,6 +67,8 @@ namespace MmoWorld
 	/** 대상을 따라가는 발사체 하나(마법사의 기본 공격, 원거리 몬스터). 좌표는 패킷의 단위다. */
 	struct FProjectile
 	{
+		/** 이 연결 안에서 발사체마다 다른 번호(화면이 이펙트를 이어 붙임). 서버에는 없는 번호다. */
+		uint32_t Id = 0;
 		uint32_t Attacker = 0;
 		uint32_t Target = 0;
 		/** 나가는 때(내 시간, 초): AttackSwing을 받은 때 + 타격까지의 시간. */
@@ -183,6 +185,8 @@ namespace MmoWorld
 		/** 누른 스킬(0이면 없음)과, 보내고 답(SkillUsed, Progress, 실패)을 기다리는 스킬. */
 		uint32_t Pending = 0;
 		uint32_t Awaiting = 0;
+		/** 마지막으로 준 발사체 번호. */
+		uint32_t LastProjectile = 0;
 		/** 시전 시간이 있는 스킬을 보낼 때 쥐고 있던 이동 입력을 놓을 때까지 막는다. */
 		bool bHoldMove = false;
 		FCooldowns SkillCooldowns;

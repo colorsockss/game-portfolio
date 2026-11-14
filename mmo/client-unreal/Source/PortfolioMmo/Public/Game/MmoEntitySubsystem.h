@@ -8,6 +8,8 @@
 #include "MmoEntitySubsystem.generated.h"
 
 class AStaticMeshActor;
+class UMmoCueSubsystem;
+class UNiagaraComponent;
 class UMaterialInterface;
 class USkeletalMeshComponent;
 class UStaticMeshComponent;
@@ -55,16 +57,22 @@ private:
 	/** 모습을 입힌 개체에 표현 줄의 동작(공격, 피격)을 튼다. */
 	void PlayAction(uint32 Id, TSoftObjectPtr<UAnimSequence> FMmoEntityVisual::* Action);
 
-	/** 발사체와 대상의 원을 그린다. */
+	/** 발사체(되풀이하는 이펙트)와 대상의 원, 때가 된 스킬의 맞는 연출을 그린다. */
 	void DrawCombat(const MmoWorld::FWorldState& World, MmoWorld::FCombatState& Combat);
 
 	/** 개체가 죽어 있으면 쓰러진 자세로 둔다(모습을 입히거나 불러온 뒤). */
 	void ShowDeadIfDead(uint32 Id, USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, const FMmoEntityVisual* Row);
 
-	/** 부활한 액터에 잠깐 부활의 자리 표시를 보인다. */
-	void ShowRevive(const AActor& Actor);
+	/** 연출을 트는 곳(같은 월드). */
+	UMmoCueSubsystem& Cues() const;
 
-	/** 스킬 동작의 시작: 동작을 틀고, 범위 스킬은 중심에 범위의 원을, 나머지는 대상(그 자리에서 쓰면 시전자)에 이펙트의 자리 표시를 잠깐 둔다. */
+	/** 개체의 연출 표의 (종류, 키). 받지 않은 개체면 (0, 0)이라 그 때의 기본 줄을 쓴다. */
+	TPair<int32, int32> CueKey(uint32 Id) const;
+
+	/**
+	 * 스킬 동작의 시작: 동작과 시전자의 연출(SkillCast)을 틀고, 타격까지의 시간 뒤에 맞는 연출(SkillHit)을 대상(그 자리에서 쓰면 시전자)에
+	 * 튼다. 범위 스킬은 중심에 범위의 원을 잠깐 둔다.
+	 */
 	void ShowSkill(const MmoWorld::FCombatEvent& Event, const MmoData::FGameData& Data);
 
 	/** 시전의 시작: 시전 동작을 되풀이하고 끝나는 틱을 둔다(그 틱이나 Interrupt에서 끊음). */
@@ -93,24 +101,27 @@ private:
 	UPROPERTY()
 	TObjectPtr<AStaticMeshActor> TargetMarker;
 
-	/** 발사체의 자리 표시. 모자라면 늘리고 남으면 감춰 다시 쓴다. */
+	/** 발사체 번호 → 그 발사체에 붙인 이펙트. 발사체가 끝나면 풀로 돌려놓는다. */
 	UPROPERTY()
-	TArray<TObjectPtr<AStaticMeshActor>> ProjectileMarkers;
+	TMap<uint32, TObjectPtr<UNiagaraComponent>> ProjectileEffects;
+
+	/** 타격까지의 시간 뒤에 틀 스킬의 맞는 연출: 틀 때(초), 스킬, 그 자리의 개체. */
+	struct FPendingHit
+	{
+		double At = 0.0;
+		uint32 Skill = 0;
+		uint32 Anchor = 0;
+	};
+	TArray<FPendingHit> PendingHits;
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> MarkerMaterial;
 
-	UPROPERTY()
-	TObjectPtr<AStaticMeshActor> ReviveMarker;
-	double ReviveMarkerUntil = 0.0;
 
-	/** 범위 스킬의 원과 스킬 이펙트의 자리 표시(27 전), 그리고 저마다 감출 때(초). */
+	/** 범위 스킬의 원(바닥 표시)과 저마다 감출 때(초). */
 	UPROPERTY()
 	TArray<TObjectPtr<AStaticMeshActor>> AreaMarkers;
 	TArray<double> AreaUntil;
-	UPROPERTY()
-	TArray<TObjectPtr<AStaticMeshActor>> SkillMarkers;
-	TArray<double> SkillUntil;
 
 	/** 시전 동작을 트는 개체 → 시전이 끝나는 서버 틱. */
 	TMap<uint32, uint32> CastEnds;

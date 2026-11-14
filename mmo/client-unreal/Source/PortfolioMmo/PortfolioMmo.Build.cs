@@ -27,6 +27,7 @@ public class PortfolioMmo : ModuleRules
             "Slate",
             "SlateCore",
             "MmoProtobuf",
+            "Niagara",
         });
 
         // 서버·Unity와 같은 packets.proto에서 만든 C++. 모듈 폴더 밖이라 Protocol/Packets.cpp가 .cc를 include해 컴파일하고,

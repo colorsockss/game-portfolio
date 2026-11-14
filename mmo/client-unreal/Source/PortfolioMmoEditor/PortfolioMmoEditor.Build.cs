@@ -27,6 +27,7 @@ public class PortfolioMmoEditor : ModuleRules
             "UMGEditor",
             "UnrealEd",
             "PortfolioMmo",
+            "Niagara",
         });
     }
 }

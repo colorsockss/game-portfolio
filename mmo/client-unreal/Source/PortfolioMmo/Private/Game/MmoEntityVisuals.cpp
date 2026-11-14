@@ -12,6 +12,11 @@ int32 UMmoEntityVisuals::PlayerKind()
 	return portfolio::mmo::ENTITY_KIND_PLAYER;
 }
 
+int32 UMmoEntityVisuals::MonsterKind()
+{
+	return portfolio::mmo::ENTITY_KIND_MONSTER;
+}
+
 int32 UMmoEntityVisuals::KnightKey()
 {
 	return portfolio::mmo::CHARACTER_CLASS_KNIGHT;

@@ -79,6 +79,7 @@ public:
 
 	/** 플레이어 줄의 종류와, 직업(기사, 마법사)의 키. 에디터 모듈의 생성기가 protobuf 헤더 없이 줄을 만들 때 쓴다. */
 	static int32 PlayerKind();
+	static int32 MonsterKind();
 	static int32 KnightKey();
 	static int32 MageKey();
 };

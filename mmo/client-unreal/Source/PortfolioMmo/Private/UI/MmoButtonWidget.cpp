@@ -2,7 +2,9 @@
 
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
+#include "Engine/World.h"
 #include "Framework/Application/SlateApplication.h"
+#include "Game/MmoCueSubsystem.h"
 #include "UI/MmoUiManager.h"
 
 bool UMmoButtonWidget::IsTouchDevice()
@@ -67,6 +69,10 @@ FReply UMmoButtonWidget::NativeOnPreviewMouseButtonDown(const FGeometry& Geometr
 
 void UMmoButtonWidget::HandleClicked()
 {
+	if (UMmoCueSubsystem* Cues = GetWorld() ? GetWorld()->GetSubsystem<UMmoCueSubsystem>() : nullptr)
+	{
+		Cues->PlayUi(EMmoCue::UiClick);
+	}
 	OnClicked.Broadcast();
 	OnClickedNative.Broadcast();
 }

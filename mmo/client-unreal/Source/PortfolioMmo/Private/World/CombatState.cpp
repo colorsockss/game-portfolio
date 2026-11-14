@@ -82,6 +82,7 @@ namespace MmoWorld
 			if (Attack && Attack->ProjectileSpeed > 0)
 			{
 				FProjectile Projectile;
+				Projectile.Id = ++LastProjectile;
 				Projectile.Attacker = Swing.attacker_id();
 				Projectile.Target = Swing.target_id();
 				Projectile.LaunchSeconds = NowSeconds + Attack->HitDelayMs / 1000.0;
