@@ -24,7 +24,7 @@ namespace PortfolioMmo.Contract {
     static PacketsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1wYWNrZXRzLnByb3RvEg1wb3J0Zm9saW8ubW1vIuwXCgZQYWNrZXQSJQoF",
+            "Cg1wYWNrZXRzLnByb3RvEg1wb3J0Zm9saW8ubW1vIskYCgZQYWNrZXQSJQoF",
             "bG9naW4YASABKAsyFC5wb3J0Zm9saW8ubW1vLkxvZ2luSAASMgoMbG9naW5f",
             "cmVzdWx0GAIgASgLMhoucG9ydGZvbGlvLm1tby5Mb2dpblJlc3VsdEgAEicK",
             "BmtpY2tlZBgDIAEoCzIVLnBvcnRmb2xpby5tbW8uS2lja2VkSAASIwoEcGlu",
@@ -92,191 +92,203 @@ namespace PortfolioMmo.Contract {
             "HS5wb3J0Zm9saW8ubW1vLlN0b3JhZ2VDaGFuZ2VkSAASOQoPc3RvcmFnZV9k",
             "ZXBvc2l0GMECIAEoCzIdLnBvcnRmb2xpby5tbW8uU3RvcmFnZURlcG9zaXRI",
             "ABI7ChBzdG9yYWdlX3dpdGhkcmF3GMICIAEoCzIeLnBvcnRmb2xpby5tbW8u",
-            "U3RvcmFnZVdpdGhkcmF3SABCBgoEYm9keSJmCgVMb2dpbhI4ChBwcm90b2Nv",
-            "bF92ZXJzaW9uGAEgASgOMh4ucG9ydGZvbGlvLm1tby5Qcm90b2NvbFZlcnNp",
-            "b24SEAoIbG9naW5faWQYAiABKAkSEQoJZGF0YV9oYXNoGAMgASgGIkkKC0xv",
-            "Z2luUmVzdWx0Ei4KBnJlc3VsdBgBIAEoDjIeLnBvcnRmb2xpby5tbW8uTG9n",
-            "aW5SZXN1bHRDb2RlSgQIAhADSgQIAxAEIjMKBktpY2tlZBIpCgZyZWFzb24Y",
-            "ASABKA4yGS5wb3J0Zm9saW8ubW1vLktpY2tSZWFzb24iGgoKRGV2Q29tbWFu",
-            "ZBIMCgRsaW5lGAEgASgJIgYKBFBpbmciiwEKEENoYXJhY3RlclN1bW1hcnkS",
-            "CgoCaWQYASABKAQSDAoEbmFtZRgCIAEoCRI2Cg9jaGFyYWN0ZXJfY2xhc3MY",
-            "AyABKA4yHS5wb3J0Zm9saW8ubW1vLkNoYXJhY3RlckNsYXNzEg0KBWxldmVs",
-            "GAQgASgNEhYKDndlYXBvbl9pdGVtX2lkGAUgASgNIkQKDUNoYXJhY3Rlckxp",
-            "c3QSMwoKY2hhcmFjdGVycxgBIAMoCzIfLnBvcnRmb2xpby5tbW8uQ2hhcmFj",
-            "dGVyU3VtbWFyeSJXCg9DcmVhdGVDaGFyYWN0ZXISDAoEbmFtZRgBIAEoCRI2",
-            "Cg9jaGFyYWN0ZXJfY2xhc3MYAiABKA4yHS5wb3J0Zm9saW8ubW1vLkNoYXJh",
-            "Y3RlckNsYXNzIlEKFUNyZWF0ZUNoYXJhY3RlclJlc3VsdBI4CgZyZXN1bHQY",
-            "ASABKA4yKC5wb3J0Zm9saW8ubW1vLkNyZWF0ZUNoYXJhY3RlclJlc3VsdENv",
-            "ZGUiIgoKRW50ZXJXb3JsZBIUCgxjaGFyYWN0ZXJfaWQYASABKAQidwoQRW50",
-            "ZXJXb3JsZFJlc3VsdBIzCgZyZXN1bHQYASABKA4yIy5wb3J0Zm9saW8ubW1v",
-            "LkVudGVyV29ybGRSZXN1bHRDb2RlEg8KB3NlbGZfaWQYAiABKA0SDAoEdGlj",
-            "axgDIAEoDRIPCgdyZXZpdmVkGAQgASgIIggKBkxvZ291dCIMCgpMZWF2ZVdv",
-            "cmxkIhQKBFBvbmcSDAoEdGljaxgBIAEoDSI2CgRNb3ZlEgkKAXgYASABKBES",
-            "CQoBehgCIAEoERILCgN5YXcYAyABKA0SCwoDYWNrGAQgASgNIjIKDVBvc2l0",
-            "aW9uUmVzZXQSCQoBeBgBIAEoERIJCgF6GAIgASgREgsKA2FjaxgDIAEoDSI9",
-            "Cg1FbnRpdGllc0VudGVyEiwKCGVudGl0aWVzGAEgAygLMhoucG9ydGZvbGlv",
-            "Lm1tby5FbnRpdHlFbnRlciKEBQoLRW50aXR5RW50ZXISCgoCaWQYASABKA0S",
-            "CQoBeBgCIAEoERIJCgF6GAMgASgREgsKA3lhdxgEIAEoDRInCgRraW5kGAcg",
-            "ASgOMhkucG9ydGZvbGlvLm1tby5FbnRpdHlLaW5kEgwKBG5hbWUYBSABKAkS",
-            "NgoPY2hhcmFjdGVyX2NsYXNzGAYgASgOMh0ucG9ydGZvbGlvLm1tby5DaGFy",
-            "YWN0ZXJDbGFzcxINCgVsZXZlbBgIIAEoDRIsCgpuYW1lX2NvbG9yGAkgASgO",
+            "U3RvcmFnZVdpdGhkcmF3SAASJAoEY2hhdBiQAyABKAsyEy5wb3J0Zm9saW8u",
+            "bW1vLkNoYXRIABI1Cg1jaGF0X3JlY2VpdmVkGJEDIAEoCzIbLnBvcnRmb2xp",
+            "by5tbW8uQ2hhdFJlY2VpdmVkSABCBgoEYm9keSJmCgVMb2dpbhI4ChBwcm90",
+            "b2NvbF92ZXJzaW9uGAEgASgOMh4ucG9ydGZvbGlvLm1tby5Qcm90b2NvbFZl",
+            "cnNpb24SEAoIbG9naW5faWQYAiABKAkSEQoJZGF0YV9oYXNoGAMgASgGIkkK",
+            "C0xvZ2luUmVzdWx0Ei4KBnJlc3VsdBgBIAEoDjIeLnBvcnRmb2xpby5tbW8u",
+            "TG9naW5SZXN1bHRDb2RlSgQIAhADSgQIAxAEIjMKBktpY2tlZBIpCgZyZWFz",
+            "b24YASABKA4yGS5wb3J0Zm9saW8ubW1vLktpY2tSZWFzb24iGgoKRGV2Q29t",
+            "bWFuZBIMCgRsaW5lGAEgASgJIgYKBFBpbmciiwEKEENoYXJhY3RlclN1bW1h",
+            "cnkSCgoCaWQYASABKAQSDAoEbmFtZRgCIAEoCRI2Cg9jaGFyYWN0ZXJfY2xh",
+            "c3MYAyABKA4yHS5wb3J0Zm9saW8ubW1vLkNoYXJhY3RlckNsYXNzEg0KBWxl",
+            "dmVsGAQgASgNEhYKDndlYXBvbl9pdGVtX2lkGAUgASgNIkQKDUNoYXJhY3Rl",
+            "ckxpc3QSMwoKY2hhcmFjdGVycxgBIAMoCzIfLnBvcnRmb2xpby5tbW8uQ2hh",
+            "cmFjdGVyU3VtbWFyeSJXCg9DcmVhdGVDaGFyYWN0ZXISDAoEbmFtZRgBIAEo",
+            "CRI2Cg9jaGFyYWN0ZXJfY2xhc3MYAiABKA4yHS5wb3J0Zm9saW8ubW1vLkNo",
+            "YXJhY3RlckNsYXNzIlEKFUNyZWF0ZUNoYXJhY3RlclJlc3VsdBI4CgZyZXN1",
+            "bHQYASABKA4yKC5wb3J0Zm9saW8ubW1vLkNyZWF0ZUNoYXJhY3RlclJlc3Vs",
+            "dENvZGUiIgoKRW50ZXJXb3JsZBIUCgxjaGFyYWN0ZXJfaWQYASABKAQidwoQ",
+            "RW50ZXJXb3JsZFJlc3VsdBIzCgZyZXN1bHQYASABKA4yIy5wb3J0Zm9saW8u",
+            "bW1vLkVudGVyV29ybGRSZXN1bHRDb2RlEg8KB3NlbGZfaWQYAiABKA0SDAoE",
+            "dGljaxgDIAEoDRIPCgdyZXZpdmVkGAQgASgIIggKBkxvZ291dCIMCgpMZWF2",
+            "ZVdvcmxkIhQKBFBvbmcSDAoEdGljaxgBIAEoDSI2CgRNb3ZlEgkKAXgYASAB",
+            "KBESCQoBehgCIAEoERILCgN5YXcYAyABKA0SCwoDYWNrGAQgASgNIjIKDVBv",
+            "c2l0aW9uUmVzZXQSCQoBeBgBIAEoERIJCgF6GAIgASgREgsKA2FjaxgDIAEo",
+            "DSI9Cg1FbnRpdGllc0VudGVyEiwKCGVudGl0aWVzGAEgAygLMhoucG9ydGZv",
+            "bGlvLm1tby5FbnRpdHlFbnRlciKEBQoLRW50aXR5RW50ZXISCgoCaWQYASAB",
+            "KA0SCQoBeBgCIAEoERIJCgF6GAMgASgREgsKA3lhdxgEIAEoDRInCgRraW5k",
+            "GAcgASgOMhkucG9ydGZvbGlvLm1tby5FbnRpdHlLaW5kEgwKBG5hbWUYBSAB",
+            "KAkSNgoPY2hhcmFjdGVyX2NsYXNzGAYgASgOMh0ucG9ydGZvbGlvLm1tby5D",
+            "aGFyYWN0ZXJDbGFzcxINCgVsZXZlbBgIIAEoDRIsCgpuYW1lX2NvbG9yGAkg",
+            "ASgOMhgucG9ydGZvbGlvLm1tby5OYW1lQ29sb3ISFgoOd2VhcG9uX2l0ZW1f",
+            "aWQYCiABKA0SEwoLdGVtcGxhdGVfaWQYCyABKA0SCgoCaHAYDCABKA0SDgoG",
+            "bWF4X2hwGA0gASgNEisKB2VmZmVjdHMYDiADKAsyGi5wb3J0Zm9saW8ubW1v",
+            "LkVmZmVjdFN0YXRlEi4KCHByb2dyZXNzGA8gASgLMhwucG9ydGZvbGlvLm1t",
+            "by5Qcm9ncmVzc1N0YXRlEgwKBGRlYWQYECABKAgSDQoFc3BlZWQYESABKA0S",
+            "EAoIbW92ZV95YXcYEiABKA0SDgoGbmV4dF94GBMgASgREg4KBm5leHRfehgU",
+            "IAEoERIPCgdpdGVtX2lkGBUgASgNEg0KBWNvdW50GBYgASgNEg8KB2VuY2hh",
+            "bnQYFyABKA0SGQoPb3duZXJfcGxheWVyX2lkGBggASgNSAASGAoOb3duZXJf",
+            "cGFydHlfaWQYGSABKA1IABIbChNvd25lcl9vbmx5X2VuZF90aWNrGBogASgN",
+            "EhkKEWRyb3BwZWRfYnlfcGxheWVyGBsgASgIQgcKBW93bmVyIjIKC0VmZmVj",
+            "dFN0YXRlEhEKCWVmZmVjdF9pZBgBIAEoDRIQCghlbmRfdGljaxgCIAEoDSJY",
+            "Cg1Qcm9ncmVzc1N0YXRlEikKBGtpbmQYASABKA4yGy5wb3J0Zm9saW8ubW1v",
+            "LlByb2dyZXNzS2luZBIKCgJpZBgCIAEoDRIQCghlbmRfdGljaxgDIAEoDSJu",
+            "CgtFbnRpdHlTdGF0ZRIKCgJpZBgBIAEoDRIsCgpuYW1lX2NvbG9yGAIgASgO",
             "MhgucG9ydGZvbGlvLm1tby5OYW1lQ29sb3ISFgoOd2VhcG9uX2l0ZW1faWQY",
-            "CiABKA0SEwoLdGVtcGxhdGVfaWQYCyABKA0SCgoCaHAYDCABKA0SDgoGbWF4",
-            "X2hwGA0gASgNEisKB2VmZmVjdHMYDiADKAsyGi5wb3J0Zm9saW8ubW1vLkVm",
-            "ZmVjdFN0YXRlEi4KCHByb2dyZXNzGA8gASgLMhwucG9ydGZvbGlvLm1tby5Q",
-            "cm9ncmVzc1N0YXRlEgwKBGRlYWQYECABKAgSDQoFc3BlZWQYESABKA0SEAoI",
-            "bW92ZV95YXcYEiABKA0SDgoGbmV4dF94GBMgASgREg4KBm5leHRfehgUIAEo",
-            "ERIPCgdpdGVtX2lkGBUgASgNEg0KBWNvdW50GBYgASgNEg8KB2VuY2hhbnQY",
-            "FyABKA0SGQoPb3duZXJfcGxheWVyX2lkGBggASgNSAASGAoOb3duZXJfcGFy",
-            "dHlfaWQYGSABKA1IABIbChNvd25lcl9vbmx5X2VuZF90aWNrGBogASgNEhkK",
-            "EWRyb3BwZWRfYnlfcGxheWVyGBsgASgIQgcKBW93bmVyIjIKC0VmZmVjdFN0",
-            "YXRlEhEKCWVmZmVjdF9pZBgBIAEoDRIQCghlbmRfdGljaxgCIAEoDSJYCg1Q",
-            "cm9ncmVzc1N0YXRlEikKBGtpbmQYASABKA4yGy5wb3J0Zm9saW8ubW1vLlBy",
-            "b2dyZXNzS2luZBIKCgJpZBgCIAEoDRIQCghlbmRfdGljaxgDIAEoDSJuCgtF",
-            "bnRpdHlTdGF0ZRIKCgJpZBgBIAEoDRIsCgpuYW1lX2NvbG9yGAIgASgOMhgu",
-            "cG9ydGZvbGlvLm1tby5OYW1lQ29sb3ISFgoOd2VhcG9uX2l0ZW1faWQYAyAB",
-            "KA0SDQoFbGV2ZWwYBCABKA0iHAoNRW50aXRpZXNMZWF2ZRILCgNpZHMYASAD",
-            "KA0iSAoLRW50aXR5TW92ZXMSDAoEdGljaxgBIAEoDRIrCghlbnRpdGllcxgC",
-            "IAMoCzIZLnBvcnRmb2xpby5tbW8uRW50aXR5TW92ZSJNCgpFbnRpdHlNb3Zl",
-            "EgoKAmlkGAEgASgNEgkKAXgYAiABKBESCQoBehgDIAEoERILCgN5YXcYBCAB",
-            "KA0SEAoIdGVsZXBvcnQYBSABKAgiWQoKU2VsZlZpdGFscxIKCgJocBgBIAEo",
-            "DRIKCgJtcBgCIAEoDRIXCg9jb21iYXRfZW5kX3RpY2sYAyABKA0SGgoSYWdn",
-            "cmVzc29yX2VuZF90aWNrGAQgASgNIjwKDEVudGl0eVZpdGFscxIsCghlbnRp",
-            "dGllcxgBIAMoCzIaLnBvcnRmb2xpby5tbW8uRW50aXR5Vml0YWwiNQoLRW50",
-            "aXR5Vml0YWwSCgoCaWQYASABKA0SCgoCaHAYAiABKA0SDgoGbWF4X2hwGAMg",
-            "ASgNIkwKCVNlbGZTdGF0cxIOCgZtYXhfaHAYASABKA0SDgoGbWF4X21wGAIg",
-            "ASgNEg4KBmF0dGFjaxgDIAEoDRIPCgdkZWZlbnNlGAQgASgNIigKCUV4cEdh",
-            "aW5lZBIOCgZhbW91bnQYASABKBESCwoDZXhwGAIgASgNInMKCEl0ZW1TbG90",
-            "EicKBXBsYWNlGAEgASgOMhgucG9ydGZvbGlvLm1tby5JdGVtUGxhY2USDQoF",
-            "aW5kZXgYAiABKA0SDwoHaXRlbV9pZBgDIAEoDRINCgVjb3VudBgEIAEoDRIP",
-            "CgdlbmNoYW50GAUgASgNIkEKCUludmVudG9yeRImCgVzbG90cxgBIAMoCzIX",
-            "LnBvcnRmb2xpby5tbW8uSXRlbVNsb3QSDAoEZ29sZBgCIAEoBCIsCgpJdGVt",
-            "QW1vdW50Eg8KB2l0ZW1faWQYASABKA0SDQoFY291bnQYAiABKA0idAoER2Fp",
-            "bhIpCgZyZWFzb24YASABKA4yGS5wb3J0Zm9saW8ubW1vLkdhaW5SZWFzb24S",
-            "KQoEaXRlbRgCIAEoCzIZLnBvcnRmb2xpby5tbW8uSXRlbUFtb3VudEgAEg4K",
-            "BGdvbGQYAyABKARIAEIGCgR3aGF0ImwKEEludmVudG9yeUNoYW5nZWQSJgoF",
-            "c2xvdHMYASADKAsyFy5wb3J0Zm9saW8ubW1vLkl0ZW1TbG90EgwKBGdvbGQY",
-            "AiABKAQSIgoFZ2FpbnMYAyADKAsyEy5wb3J0Zm9saW8ubW1vLkdhaW4iKwoH",
-            "VXNlSXRlbRIMCgRzbG90GAEgASgNEhIKCnJlcXVlc3RfaWQYAiABKA0iLwoG",
-            "UGlja1VwEhEKCWVudGl0eV9pZBgBIAEoDRISCgpyZXF1ZXN0X2lkGAIgASgN",
-            "IjsKCERyb3BJdGVtEgwKBHNsb3QYASABKA0SDQoFY291bnQYAiABKA0SEgoK",
-            "cmVxdWVzdF9pZBgDIAEoDSIpCgVFcXVpcBIMCgRzbG90GAEgASgNEhIKCnJl",
-            "cXVlc3RfaWQYAiABKA0iMQoHVW5lcXVpcBISCgplcXVpcF9zbG90GAEgASgN",
-            "EhIKCnJlcXVlc3RfaWQYAiABKA0iaQoHRW5jaGFudBInCgVwbGFjZRgBIAEo",
-            "DjIYLnBvcnRmb2xpby5tbW8uSXRlbVBsYWNlEgwKBHNsb3QYAiABKA0SEwoL",
-            "c2Nyb2xsX3Nsb3QYAyABKA0SEgoKcmVxdWVzdF9pZBgEIAEoDSIxCg1FbmNo",
-            "YW50UmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSDwoHZW5jaGFudBgCIAEoDSIf",
-            "Cg1MZWFybmVkU2tpbGxzEg4KBnNraWxscxgBIAMoDSIdCgxTa2lsbExlYXJu",
-            "ZWQSDQoFc2tpbGwYASABKA0iQwoJUXVpY2tzbG90EioKBGtpbmQYASABKA4y",
-            "HC5wb3J0Zm9saW8ubW1vLlF1aWNrc2xvdEtpbmQSCgoCaWQYAiABKA0iRQoM",
-            "U2V0UXVpY2tzbG90Eg0KBWluZGV4GAEgASgNEiYKBHNsb3QYAiABKAsyGC5w",
-            "b3J0Zm9saW8ubW1vLlF1aWNrc2xvdCI1CgpRdWlja3Nsb3RzEicKBXNsb3Rz",
-            "GAEgAygLMhgucG9ydGZvbGlvLm1tby5RdWlja3Nsb3QiOQoDQnV5Eg8KB2l0",
-            "ZW1faWQYASABKA0SDQoFY291bnQYAiABKA0SEgoKcmVxdWVzdF9pZBgDIAEo",
-            "DSI3CgRTZWxsEgwKBHNsb3QYASABKA0SDQoFY291bnQYAiABKA0SEgoKcmVx",
-            "dWVzdF9pZBgDIAEoDSINCgtTdG9yYWdlT3BlbiIxCgdTdG9yYWdlEiYKBXNs",
-            "b3RzGAEgAygLMhcucG9ydGZvbGlvLm1tby5JdGVtU2xvdCI4Cg5TdG9yYWdl",
-            "Q2hhbmdlZBImCgVzbG90cxgBIAMoCzIXLnBvcnRmb2xpby5tbW8uSXRlbVNs",
-            "b3QiQQoOU3RvcmFnZURlcG9zaXQSDAoEc2xvdBgBIAEoDRINCgVjb3VudBgC",
-            "IAEoDRISCgpyZXF1ZXN0X2lkGAMgASgNIkIKD1N0b3JhZ2VXaXRoZHJhdxIM",
-            "CgRzbG90GAEgASgNEg0KBWNvdW50GAIgASgNEhIKCnJlcXVlc3RfaWQYAyAB",
-            "KA0iTgoNUmVxdWVzdFJlc3VsdBISCgpyZXF1ZXN0X2lkGAEgASgNEikKBnJl",
-            "c3VsdBgCIAEoDjIZLnBvcnRmb2xpby5tbW8uRmFpbFJlYXNvbiJmCgxBY3Rp",
-            "b25GYWlsZWQSKQoGcmVhc29uGAEgASgOMhkucG9ydGZvbGlvLm1tby5GYWls",
-            "UmVhc29uEisKB3JlcXVlc3QYAiABKA4yGi5wb3J0Zm9saW8ubW1vLlJlcXVl",
-            "c3RLaW5kIiAKC0F0dGFja1N0YXJ0EhEKCXRhcmdldF9pZBgBIAEoDSIMCgpB",
-            "dHRhY2tTdG9wIjUKC0F0dGFja1N3aW5nEhMKC2F0dGFja2VyX2lkGAEgASgN",
-            "EhEKCXRhcmdldF9pZBgCIAEoDSJfCgdEYW1hZ2VkEhMKC2F0dGFja2VyX2lk",
-            "GAEgASgNEhEKCXRhcmdldF9pZBgCIAEoDRIOCgZkYW1hZ2UYAyABKA0SCgoC",
-            "aHAYBCABKA0SEAoIY3JpdGljYWwYBSABKAgiJQoERGllZBIKCgJpZBgBIAEo",
-            "DRIRCglraWxsZXJfaWQYAiABKA0iCAoGUmV2aXZlIjEKB1Jldml2ZWQSCgoC",
-            "aWQYASABKA0SCgoCaHAYAiABKA0SDgoGbWF4X2hwGAMgASgNIkUKCFVzZVNr",
-            "aWxsEhAKCHNraWxsX2lkGAEgASgNEhEKCXRhcmdldF9pZBgCIAEoDRIUCgxm",
-            "b3JjZV9hdHRhY2sYAyABKAgiQwoJU2tpbGxVc2VkEhEKCWNhc3Rlcl9pZBgB",
-            "IAEoDRIQCghza2lsbF9pZBgCIAEoDRIRCgl0YXJnZXRfaWQYAyABKA0iQwoI",
-            "UHJvZ3Jlc3MSCgoCaWQYASABKA0SKwoFc3RhdGUYAiABKAsyHC5wb3J0Zm9s",
-            "aW8ubW1vLlByb2dyZXNzU3RhdGUiSgoRUHJvZ3Jlc3NDYW5jZWxsZWQSCgoC",
-            "aWQYASABKA0SKQoGcmVhc29uGAIgASgOMhkucG9ydGZvbGlvLm1tby5GYWls",
-            "UmVhc29uIkcKDUVmZmVjdEFwcGxpZWQSCgoCaWQYASABKA0SKgoGZWZmZWN0",
-            "GAIgASgLMhoucG9ydGZvbGlvLm1tby5FZmZlY3RTdGF0ZSI1CglDb29sZG93",
-            "bnMSKAoHZW50cmllcxgBIAMoCzIXLnBvcnRmb2xpby5tbW8uQ29vbGRvd24i",
-            "PgoIQ29vbGRvd24SEAoIc2tpbGxfaWQYASABKA0SEAoIZW5kX3RpY2sYAiAB",
-            "KA0SDgoGcG90aW9uGAMgASgNInMKElByb2plY3RpbGVMYXVuY2hlZBIKCgJp",
-            "ZBgBIAEoDRIRCgljYXN0ZXJfaWQYAiABKA0SCQoBeBgDIAEoERIJCgF6GAQg",
-            "ASgREgwKBHRpY2sYBSABKA0SCwoDeWF3GAYgASgNEg0KBXNwZWVkGAcgASgN",
-            "Ih0KD1Byb2plY3RpbGVFbmRlZBIKCgJpZBgBIAEoDSpRCg9Qcm90b2NvbFZl",
-            "cnNpb24SIAocUFJPVE9DT0xfVkVSU0lPTl9VTlNQRUNJRklFRBAAEhwKGFBS",
-            "T1RPQ09MX1ZFUlNJT05fQ1VSUkVOVBACKswCCghDb25zdGFudBIYChRDT05T",
-            "VEFOVF9VTlNQRUNJRklFRBAAEhwKGENPTlNUQU5UX1VOSVRTX1BFUl9NRVRF",
-            "UhAgEiQKH0NPTlNUQU5UX01BUF9IQUxGX0VYVEVOVF9NRVRFUlMQgAgSFwoS",
-            "Q09OU1RBTlRfWUFXX1NURVBTEIACEh0KGUNPTlNUQU5UX1RJQ0tTX1BFUl9T",
-            "RUNPTkQQFBIoCiRDT05TVEFOVF9NQVhfU1BFRURfTUVURVJTX1BFUl9TRUNP",
-            "TkQQBhIiCh5DT05TVEFOVF9QSU5HX0lOVEVSVkFMX1NFQ09ORFMQBRIhCh1D",
-            "T05TVEFOVF9JRExFX1RJTUVPVVRfU0VDT05EUxAPEhsKF0NPTlNUQU5UX01B",
-            "WF9DSEFSQUNURVJTEAQSHAoYQ09OU1RBTlRfUVVJQ0tTTE9UX0NPVU5UEAgq",
-            "wwEKD0xvZ2luUmVzdWx0Q29kZRIYChRMT0dJTl9SRVNVTFRfQ09ERV9PSxAA",
-            "EiYKIkxPR0lOX1JFU1VMVF9DT0RFX0lOVkFMSURfTE9HSU5fSUQQARImCiJM",
-            "T0dJTl9SRVNVTFRfQ09ERV9WRVJTSU9OX01JU01BVENIEAISIQodTE9HSU5f",
-            "UkVTVUxUX0NPREVfU0VSVkVSX0ZVTEwQAxIjCh9MT0dJTl9SRVNVTFRfQ09E",
-            "RV9EQVRBX01JU01BVENIEAQq5wEKCktpY2tSZWFzb24SGwoXS0lDS19SRUFT",
-            "T05fVU5TUEVDSUZJRUQQABIfChtLSUNLX1JFQVNPTl9EVVBMSUNBVEVfTE9H",
-            "SU4QARIfChtLSUNLX1JFQVNPTl9TRVJWRVJfU0hVVERPV04QAhIgChxLSUNL",
-            "X1JFQVNPTl9NQUxGT1JNRURfUEFDS0VUEAMSHAoYS0lDS19SRUFTT05fSURM",
-            "RV9USU1FT1VUEAQSHAoYS0lDS19SRUFTT05fUkFURV9MSU1JVEVEEAUSHAoY",
-            "S0lDS19SRUFTT05fU0VSVkVSX0VSUk9SEAYqZwoOQ2hhcmFjdGVyQ2xhc3MS",
-            "HwobQ0hBUkFDVEVSX0NMQVNTX1VOU1BFQ0lGSUVEEAASGgoWQ0hBUkFDVEVS",
-            "X0NMQVNTX0tOSUdIVBABEhgKFENIQVJBQ1RFUl9DTEFTU19NQUdFEAIq9wEK",
-            "GUNyZWF0ZUNoYXJhY3RlclJlc3VsdENvZGUSIwofQ1JFQVRFX0NIQVJBQ1RF",
-            "Ul9SRVNVTFRfQ09ERV9PSxAAEi0KKUNSRUFURV9DSEFSQUNURVJfUkVTVUxU",
-            "X0NPREVfSU5WQUxJRF9OQU1FEAESKwonQ1JFQVRFX0NIQVJBQ1RFUl9SRVNV",
-            "TFRfQ09ERV9OQU1FX1RBS0VOEAISKQolQ1JFQVRFX0NIQVJBQ1RFUl9SRVNV",
-            "TFRfQ09ERV9UT09fTUFOWRADEi4KKkNSRUFURV9DSEFSQUNURVJfUkVTVUxU",
-            "X0NPREVfSU5WQUxJRF9DTEFTUxAEKmUKFEVudGVyV29ybGRSZXN1bHRDb2Rl",
-            "Eh4KGkVOVEVSX1dPUkxEX1JFU1VMVF9DT0RFX09LEAASLQopRU5URVJfV09S",
-            "TERfUkVTVUxUX0NPREVfTk9fU1VDSF9DSEFSQUNURVIQASqpAQoKRW50aXR5",
-            "S2luZBIbChdFTlRJVFlfS0lORF9VTlNQRUNJRklFRBAAEhYKEkVOVElUWV9L",
-            "SU5EX1BMQVlFUhABEhcKE0VOVElUWV9LSU5EX01PTlNURVIQAhITCg9FTlRJ",
-            "VFlfS0lORF9OUEMQAxIbChdFTlRJVFlfS0lORF9HQVRIRVJfTk9ERRAEEhsK",
-            "F0VOVElUWV9LSU5EX0dST1VORF9JVEVNEAUqUwoJTmFtZUNvbG9yEhUKEU5B",
-            "TUVfQ09MT1JfTk9STUFMEAASGAoUTkFNRV9DT0xPUl9BR0dSRVNTT1IQARIV",
-            "ChFOQU1FX0NPTE9SX09VVExBVxACKosBCgxQcm9ncmVzc0tpbmQSFgoSUFJP",
-            "R1JFU1NfS0lORF9OT05FEAASFgoSUFJPR1JFU1NfS0lORF9DQVNUEAESGAoU",
-            "UFJPR1JFU1NfS0lORF9HQVRIRVIQAhIXChNQUk9HUkVTU19LSU5EX0NSQUZU",
-            "EAMSGAoUUFJPR1JFU1NfS0lORF9SRUNBTEwQBCpXCglJdGVtUGxhY2USGAoU",
-            "SVRFTV9QTEFDRV9JTlZFTlRPUlkQABIYChRJVEVNX1BMQUNFX0VRVUlQTUVO",
-            "VBABEhYKEklURU1fUExBQ0VfU1RPUkFHRRACKnQKCkdhaW5SZWFzb24SGwoX",
-            "R0FJTl9SRUFTT05fVU5TUEVDSUZJRUQQABIbChdHQUlOX1JFQVNPTl9ERVZf",
-            "Q09NTUFORBABEhcKE0dBSU5fUkVBU09OX1BJQ0tfVVAQAhITCg9HQUlOX1JF",
-            "QVNPTl9CVVkQAypcCg1RdWlja3Nsb3RLaW5kEhgKFFFVSUNLU0xPVF9LSU5E",
-            "X0VNUFRZEAASGAoUUVVJQ0tTTE9UX0tJTkRfU0tJTEwQARIXChNRVUlDS1NM",
-            "T1RfS0lORF9JVEVNEAIqoAYKCkZhaWxSZWFzb24SFAoQRkFJTF9SRUFTT05f",
-            "Tk9ORRAAEhkKFUZBSUxfUkVBU09OX05PX1RBUkdFVBABEh4KGkZBSUxfUkVB",
-            "U09OX0lOVkFMSURfVEFSR0VUEAISFAoQRkFJTF9SRUFTT05fREVBRBADEhgK",
-            "FEZBSUxfUkVBU09OX05PVF9ERUFEEAQSGwoXRkFJTF9SRUFTT05fTk9UX0xF",
-            "QVJORUQQBRIYChRGQUlMX1JFQVNPTl9DT09MRE9XThAGEh0KGUZBSUxfUkVB",
-            "U09OX05PVF9FTk9VR0hfTVAQBxIcChhGQUlMX1JFQVNPTl9PVVRfT0ZfUkFO",
-            "R0UQCBIXChNGQUlMX1JFQVNPTl9CTE9DS0VEEAkSFAoQRkFJTF9SRUFTT05f",
-            "QlVTWRAKEhcKE0ZBSUxfUkVBU09OX1NUVU5ORUQQCxIZChVGQUlMX1JFQVNP",
-            "Tl9DQU5DRUxMRUQQDBIfChtGQUlMX1JFQVNPTl9JTlZBTElEX0NPTU1BTkQQ",
-            "DRIeChpGQUlMX1JFQVNPTl9JTlZFTlRPUllfRlVMTBAOEhcKE0ZBSUxfUkVB",
-            "U09OX05PX0lURU0QDxIdChlGQUlMX1JFQVNPTl9VTlVTQUJMRV9JVEVNEBAS",
-            "GQoVRkFJTF9SRUFTT05fSU5fQ09NQkFUEBESGAoURkFJTF9SRUFTT05fVE9P",
-            "X0ZBU1QQEhIcChhGQUlMX1JFQVNPTl9BTFJFQURZX0dPTkUQExIZChVGQUlM",
-            "X1JFQVNPTl9OT1RfWU9VUlMQFBIdChlGQUlMX1JFQVNPTl9MRVZFTF9UT09f",
-            "TE9XEBUSGwoXRkFJTF9SRUFTT05fV1JPTkdfQ0xBU1MQFhIbChdGQUlMX1JF",
-            "QVNPTl9NQVhfRU5DSEFOVBAXEh8KG0ZBSUxfUkVBU09OX0FMUkVBRFlfTEVB",
-            "Uk5FRBAYEh8KG0ZBSUxfUkVBU09OX05PVF9FTk9VR0hfR09MRBAZEhoKFkZB",
-            "SUxfUkVBU09OX1VOU0VMTEFCTEUQGhIcChhGQUlMX1JFQVNPTl9TVE9SQUdF",
-            "X0ZVTEwQGyrCAQoLUmVxdWVzdEtpbmQSHAoYUkVRVUVTVF9LSU5EX1VOU1BF",
-            "Q0lGSUVEEAASFwoTUkVRVUVTVF9LSU5EX0FUVEFDSxABEhcKE1JFUVVFU1Rf",
-            "S0lORF9SRVZJVkUQAhIWChJSRVFVRVNUX0tJTkRfU0tJTEwQAxIVChFSRVFV",
-            "RVNUX0tJTkRfQ0hBVBAEEhoKFlJFUVVFU1RfS0lORF9RVUlDS1NMT1QQBRIY",
-            "ChRSRVFVRVNUX0tJTkRfU1RPUkFHRRAGQhiqAhVQb3J0Zm9saW9NbW8uQ29u",
-            "dHJhY3RiBnByb3RvMw=="));
+            "AyABKA0SDQoFbGV2ZWwYBCABKA0iHAoNRW50aXRpZXNMZWF2ZRILCgNpZHMY",
+            "ASADKA0iSAoLRW50aXR5TW92ZXMSDAoEdGljaxgBIAEoDRIrCghlbnRpdGll",
+            "cxgCIAMoCzIZLnBvcnRmb2xpby5tbW8uRW50aXR5TW92ZSJNCgpFbnRpdHlN",
+            "b3ZlEgoKAmlkGAEgASgNEgkKAXgYAiABKBESCQoBehgDIAEoERILCgN5YXcY",
+            "BCABKA0SEAoIdGVsZXBvcnQYBSABKAgiWQoKU2VsZlZpdGFscxIKCgJocBgB",
+            "IAEoDRIKCgJtcBgCIAEoDRIXCg9jb21iYXRfZW5kX3RpY2sYAyABKA0SGgoS",
+            "YWdncmVzc29yX2VuZF90aWNrGAQgASgNIjwKDEVudGl0eVZpdGFscxIsCghl",
+            "bnRpdGllcxgBIAMoCzIaLnBvcnRmb2xpby5tbW8uRW50aXR5Vml0YWwiNQoL",
+            "RW50aXR5Vml0YWwSCgoCaWQYASABKA0SCgoCaHAYAiABKA0SDgoGbWF4X2hw",
+            "GAMgASgNIkwKCVNlbGZTdGF0cxIOCgZtYXhfaHAYASABKA0SDgoGbWF4X21w",
+            "GAIgASgNEg4KBmF0dGFjaxgDIAEoDRIPCgdkZWZlbnNlGAQgASgNIigKCUV4",
+            "cEdhaW5lZBIOCgZhbW91bnQYASABKBESCwoDZXhwGAIgASgNInMKCEl0ZW1T",
+            "bG90EicKBXBsYWNlGAEgASgOMhgucG9ydGZvbGlvLm1tby5JdGVtUGxhY2US",
+            "DQoFaW5kZXgYAiABKA0SDwoHaXRlbV9pZBgDIAEoDRINCgVjb3VudBgEIAEo",
+            "DRIPCgdlbmNoYW50GAUgASgNIkEKCUludmVudG9yeRImCgVzbG90cxgBIAMo",
+            "CzIXLnBvcnRmb2xpby5tbW8uSXRlbVNsb3QSDAoEZ29sZBgCIAEoBCIsCgpJ",
+            "dGVtQW1vdW50Eg8KB2l0ZW1faWQYASABKA0SDQoFY291bnQYAiABKA0idAoE",
+            "R2FpbhIpCgZyZWFzb24YASABKA4yGS5wb3J0Zm9saW8ubW1vLkdhaW5SZWFz",
+            "b24SKQoEaXRlbRgCIAEoCzIZLnBvcnRmb2xpby5tbW8uSXRlbUFtb3VudEgA",
+            "Eg4KBGdvbGQYAyABKARIAEIGCgR3aGF0ImwKEEludmVudG9yeUNoYW5nZWQS",
+            "JgoFc2xvdHMYASADKAsyFy5wb3J0Zm9saW8ubW1vLkl0ZW1TbG90EgwKBGdv",
+            "bGQYAiABKAQSIgoFZ2FpbnMYAyADKAsyEy5wb3J0Zm9saW8ubW1vLkdhaW4i",
+            "KwoHVXNlSXRlbRIMCgRzbG90GAEgASgNEhIKCnJlcXVlc3RfaWQYAiABKA0i",
+            "LwoGUGlja1VwEhEKCWVudGl0eV9pZBgBIAEoDRISCgpyZXF1ZXN0X2lkGAIg",
+            "ASgNIjsKCERyb3BJdGVtEgwKBHNsb3QYASABKA0SDQoFY291bnQYAiABKA0S",
+            "EgoKcmVxdWVzdF9pZBgDIAEoDSIpCgVFcXVpcBIMCgRzbG90GAEgASgNEhIK",
+            "CnJlcXVlc3RfaWQYAiABKA0iMQoHVW5lcXVpcBISCgplcXVpcF9zbG90GAEg",
+            "ASgNEhIKCnJlcXVlc3RfaWQYAiABKA0iaQoHRW5jaGFudBInCgVwbGFjZRgB",
+            "IAEoDjIYLnBvcnRmb2xpby5tbW8uSXRlbVBsYWNlEgwKBHNsb3QYAiABKA0S",
+            "EwoLc2Nyb2xsX3Nsb3QYAyABKA0SEgoKcmVxdWVzdF9pZBgEIAEoDSIxCg1F",
+            "bmNoYW50UmVzdWx0Eg8KB3N1Y2Nlc3MYASABKAgSDwoHZW5jaGFudBgCIAEo",
+            "DSIfCg1MZWFybmVkU2tpbGxzEg4KBnNraWxscxgBIAMoDSIdCgxTa2lsbExl",
+            "YXJuZWQSDQoFc2tpbGwYASABKA0iQwoJUXVpY2tzbG90EioKBGtpbmQYASAB",
+            "KA4yHC5wb3J0Zm9saW8ubW1vLlF1aWNrc2xvdEtpbmQSCgoCaWQYAiABKA0i",
+            "RQoMU2V0UXVpY2tzbG90Eg0KBWluZGV4GAEgASgNEiYKBHNsb3QYAiABKAsy",
+            "GC5wb3J0Zm9saW8ubW1vLlF1aWNrc2xvdCI1CgpRdWlja3Nsb3RzEicKBXNs",
+            "b3RzGAEgAygLMhgucG9ydGZvbGlvLm1tby5RdWlja3Nsb3QiOQoDQnV5Eg8K",
+            "B2l0ZW1faWQYASABKA0SDQoFY291bnQYAiABKA0SEgoKcmVxdWVzdF9pZBgD",
+            "IAEoDSI3CgRTZWxsEgwKBHNsb3QYASABKA0SDQoFY291bnQYAiABKA0SEgoK",
+            "cmVxdWVzdF9pZBgDIAEoDSINCgtTdG9yYWdlT3BlbiIxCgdTdG9yYWdlEiYK",
+            "BXNsb3RzGAEgAygLMhcucG9ydGZvbGlvLm1tby5JdGVtU2xvdCI4Cg5TdG9y",
+            "YWdlQ2hhbmdlZBImCgVzbG90cxgBIAMoCzIXLnBvcnRmb2xpby5tbW8uSXRl",
+            "bVNsb3QiQQoOU3RvcmFnZURlcG9zaXQSDAoEc2xvdBgBIAEoDRINCgVjb3Vu",
+            "dBgCIAEoDRISCgpyZXF1ZXN0X2lkGAMgASgNIkIKD1N0b3JhZ2VXaXRoZHJh",
+            "dxIMCgRzbG90GAEgASgNEg0KBWNvdW50GAIgASgNEhIKCnJlcXVlc3RfaWQY",
+            "AyABKA0iTQoEQ2hhdBIrCgdjaGFubmVsGAEgASgOMhoucG9ydGZvbGlvLm1t",
+            "by5DaGF0Q2hhbm5lbBIKCgJ0bxgCIAEoCRIMCgR0ZXh0GAMgASgJIn0KDENo",
+            "YXRSZWNlaXZlZBIrCgdjaGFubmVsGAEgASgOMhoucG9ydGZvbGlvLm1tby5D",
+            "aGF0Q2hhbm5lbBIRCglzZW5kZXJfaWQYAiABKA0SEwoLc2VuZGVyX25hbWUY",
+            "AyABKAkSCgoCdG8YBCABKAkSDAoEdGV4dBgFIAEoCSJOCg1SZXF1ZXN0UmVz",
+            "dWx0EhIKCnJlcXVlc3RfaWQYASABKA0SKQoGcmVzdWx0GAIgASgOMhkucG9y",
+            "dGZvbGlvLm1tby5GYWlsUmVhc29uImYKDEFjdGlvbkZhaWxlZBIpCgZyZWFz",
+            "b24YASABKA4yGS5wb3J0Zm9saW8ubW1vLkZhaWxSZWFzb24SKwoHcmVxdWVz",
+            "dBgCIAEoDjIaLnBvcnRmb2xpby5tbW8uUmVxdWVzdEtpbmQiIAoLQXR0YWNr",
+            "U3RhcnQSEQoJdGFyZ2V0X2lkGAEgASgNIgwKCkF0dGFja1N0b3AiNQoLQXR0",
+            "YWNrU3dpbmcSEwoLYXR0YWNrZXJfaWQYASABKA0SEQoJdGFyZ2V0X2lkGAIg",
+            "ASgNIl8KB0RhbWFnZWQSEwoLYXR0YWNrZXJfaWQYASABKA0SEQoJdGFyZ2V0",
+            "X2lkGAIgASgNEg4KBmRhbWFnZRgDIAEoDRIKCgJocBgEIAEoDRIQCghjcml0",
+            "aWNhbBgFIAEoCCIlCgREaWVkEgoKAmlkGAEgASgNEhEKCWtpbGxlcl9pZBgC",
+            "IAEoDSIICgZSZXZpdmUiMQoHUmV2aXZlZBIKCgJpZBgBIAEoDRIKCgJocBgC",
+            "IAEoDRIOCgZtYXhfaHAYAyABKA0iRQoIVXNlU2tpbGwSEAoIc2tpbGxfaWQY",
+            "ASABKA0SEQoJdGFyZ2V0X2lkGAIgASgNEhQKDGZvcmNlX2F0dGFjaxgDIAEo",
+            "CCJDCglTa2lsbFVzZWQSEQoJY2FzdGVyX2lkGAEgASgNEhAKCHNraWxsX2lk",
+            "GAIgASgNEhEKCXRhcmdldF9pZBgDIAEoDSJDCghQcm9ncmVzcxIKCgJpZBgB",
+            "IAEoDRIrCgVzdGF0ZRgCIAEoCzIcLnBvcnRmb2xpby5tbW8uUHJvZ3Jlc3NT",
+            "dGF0ZSJKChFQcm9ncmVzc0NhbmNlbGxlZBIKCgJpZBgBIAEoDRIpCgZyZWFz",
+            "b24YAiABKA4yGS5wb3J0Zm9saW8ubW1vLkZhaWxSZWFzb24iRwoNRWZmZWN0",
+            "QXBwbGllZBIKCgJpZBgBIAEoDRIqCgZlZmZlY3QYAiABKAsyGi5wb3J0Zm9s",
+            "aW8ubW1vLkVmZmVjdFN0YXRlIjUKCUNvb2xkb3ducxIoCgdlbnRyaWVzGAEg",
+            "AygLMhcucG9ydGZvbGlvLm1tby5Db29sZG93biI+CghDb29sZG93bhIQCghz",
+            "a2lsbF9pZBgBIAEoDRIQCghlbmRfdGljaxgCIAEoDRIOCgZwb3Rpb24YAyAB",
+            "KA0icwoSUHJvamVjdGlsZUxhdW5jaGVkEgoKAmlkGAEgASgNEhEKCWNhc3Rl",
+            "cl9pZBgCIAEoDRIJCgF4GAMgASgREgkKAXoYBCABKBESDAoEdGljaxgFIAEo",
+            "DRILCgN5YXcYBiABKA0SDQoFc3BlZWQYByABKA0iHQoPUHJvamVjdGlsZUVu",
+            "ZGVkEgoKAmlkGAEgASgNKlEKD1Byb3RvY29sVmVyc2lvbhIgChxQUk9UT0NP",
+            "TF9WRVJTSU9OX1VOU1BFQ0lGSUVEEAASHAoYUFJPVE9DT0xfVkVSU0lPTl9D",
+            "VVJSRU5UEAIqzAIKCENvbnN0YW50EhgKFENPTlNUQU5UX1VOU1BFQ0lGSUVE",
+            "EAASHAoYQ09OU1RBTlRfVU5JVFNfUEVSX01FVEVSECASJAofQ09OU1RBTlRf",
+            "TUFQX0hBTEZfRVhURU5UX01FVEVSUxCACBIXChJDT05TVEFOVF9ZQVdfU1RF",
+            "UFMQgAISHQoZQ09OU1RBTlRfVElDS1NfUEVSX1NFQ09ORBAUEigKJENPTlNU",
+            "QU5UX01BWF9TUEVFRF9NRVRFUlNfUEVSX1NFQ09ORBAGEiIKHkNPTlNUQU5U",
+            "X1BJTkdfSU5URVJWQUxfU0VDT05EUxAFEiEKHUNPTlNUQU5UX0lETEVfVElN",
+            "RU9VVF9TRUNPTkRTEA8SGwoXQ09OU1RBTlRfTUFYX0NIQVJBQ1RFUlMQBBIc",
+            "ChhDT05TVEFOVF9RVUlDS1NMT1RfQ09VTlQQCCrDAQoPTG9naW5SZXN1bHRD",
+            "b2RlEhgKFExPR0lOX1JFU1VMVF9DT0RFX09LEAASJgoiTE9HSU5fUkVTVUxU",
+            "X0NPREVfSU5WQUxJRF9MT0dJTl9JRBABEiYKIkxPR0lOX1JFU1VMVF9DT0RF",
+            "X1ZFUlNJT05fTUlTTUFUQ0gQAhIhCh1MT0dJTl9SRVNVTFRfQ09ERV9TRVJW",
+            "RVJfRlVMTBADEiMKH0xPR0lOX1JFU1VMVF9DT0RFX0RBVEFfTUlTTUFUQ0gQ",
+            "BCrnAQoKS2lja1JlYXNvbhIbChdLSUNLX1JFQVNPTl9VTlNQRUNJRklFRBAA",
+            "Eh8KG0tJQ0tfUkVBU09OX0RVUExJQ0FURV9MT0dJThABEh8KG0tJQ0tfUkVB",
+            "U09OX1NFUlZFUl9TSFVURE9XThACEiAKHEtJQ0tfUkVBU09OX01BTEZPUk1F",
+            "RF9QQUNLRVQQAxIcChhLSUNLX1JFQVNPTl9JRExFX1RJTUVPVVQQBBIcChhL",
+            "SUNLX1JFQVNPTl9SQVRFX0xJTUlURUQQBRIcChhLSUNLX1JFQVNPTl9TRVJW",
+            "RVJfRVJST1IQBipnCg5DaGFyYWN0ZXJDbGFzcxIfChtDSEFSQUNURVJfQ0xB",
+            "U1NfVU5TUEVDSUZJRUQQABIaChZDSEFSQUNURVJfQ0xBU1NfS05JR0hUEAES",
+            "GAoUQ0hBUkFDVEVSX0NMQVNTX01BR0UQAir3AQoZQ3JlYXRlQ2hhcmFjdGVy",
+            "UmVzdWx0Q29kZRIjCh9DUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX09L",
+            "EAASLQopQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9JTlZBTElEX05B",
+            "TUUQARIrCidDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX05BTUVfVEFL",
+            "RU4QAhIpCiVDUkVBVEVfQ0hBUkFDVEVSX1JFU1VMVF9DT0RFX1RPT19NQU5Z",
+            "EAMSLgoqQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9JTlZBTElEX0NM",
+            "QVNTEAQqZQoURW50ZXJXb3JsZFJlc3VsdENvZGUSHgoaRU5URVJfV09STERf",
+            "UkVTVUxUX0NPREVfT0sQABItCilFTlRFUl9XT1JMRF9SRVNVTFRfQ09ERV9O",
+            "T19TVUNIX0NIQVJBQ1RFUhABKqkBCgpFbnRpdHlLaW5kEhsKF0VOVElUWV9L",
+            "SU5EX1VOU1BFQ0lGSUVEEAASFgoSRU5USVRZX0tJTkRfUExBWUVSEAESFwoT",
+            "RU5USVRZX0tJTkRfTU9OU1RFUhACEhMKD0VOVElUWV9LSU5EX05QQxADEhsK",
+            "F0VOVElUWV9LSU5EX0dBVEhFUl9OT0RFEAQSGwoXRU5USVRZX0tJTkRfR1JP",
+            "VU5EX0lURU0QBSpTCglOYW1lQ29sb3ISFQoRTkFNRV9DT0xPUl9OT1JNQUwQ",
+            "ABIYChROQU1FX0NPTE9SX0FHR1JFU1NPUhABEhUKEU5BTUVfQ09MT1JfT1VU",
+            "TEFXEAIqiwEKDFByb2dyZXNzS2luZBIWChJQUk9HUkVTU19LSU5EX05PTkUQ",
+            "ABIWChJQUk9HUkVTU19LSU5EX0NBU1QQARIYChRQUk9HUkVTU19LSU5EX0dB",
+            "VEhFUhACEhcKE1BST0dSRVNTX0tJTkRfQ1JBRlQQAxIYChRQUk9HUkVTU19L",
+            "SU5EX1JFQ0FMTBAEKlcKCUl0ZW1QbGFjZRIYChRJVEVNX1BMQUNFX0lOVkVO",
+            "VE9SWRAAEhgKFElURU1fUExBQ0VfRVFVSVBNRU5UEAESFgoSSVRFTV9QTEFD",
+            "RV9TVE9SQUdFEAIqdAoKR2FpblJlYXNvbhIbChdHQUlOX1JFQVNPTl9VTlNQ",
+            "RUNJRklFRBAAEhsKF0dBSU5fUkVBU09OX0RFVl9DT01NQU5EEAESFwoTR0FJ",
+            "Tl9SRUFTT05fUElDS19VUBACEhMKD0dBSU5fUkVBU09OX0JVWRADKlwKDVF1",
+            "aWNrc2xvdEtpbmQSGAoUUVVJQ0tTTE9UX0tJTkRfRU1QVFkQABIYChRRVUlD",
+            "S1NMT1RfS0lORF9TS0lMTBABEhcKE1FVSUNLU0xPVF9LSU5EX0lURU0QAiqO",
+            "AQoLQ2hhdENoYW5uZWwSHAoYQ0hBVF9DSEFOTkVMX1VOU1BFQ0lGSUVEEAAS",
+            "FwoTQ0hBVF9DSEFOTkVMX05FQVJCWRABEhYKEkNIQVRfQ0hBTk5FTF9QQVJU",
+            "WRACEhYKEkNIQVRfQ0hBTk5FTF9XT1JMRBADEhgKFENIQVRfQ0hBTk5FTF9X",
+            "SElTUEVSEAQqlgcKCkZhaWxSZWFzb24SFAoQRkFJTF9SRUFTT05fTk9ORRAA",
+            "EhkKFUZBSUxfUkVBU09OX05PX1RBUkdFVBABEh4KGkZBSUxfUkVBU09OX0lO",
+            "VkFMSURfVEFSR0VUEAISFAoQRkFJTF9SRUFTT05fREVBRBADEhgKFEZBSUxf",
+            "UkVBU09OX05PVF9ERUFEEAQSGwoXRkFJTF9SRUFTT05fTk9UX0xFQVJORUQQ",
+            "BRIYChRGQUlMX1JFQVNPTl9DT09MRE9XThAGEh0KGUZBSUxfUkVBU09OX05P",
+            "VF9FTk9VR0hfTVAQBxIcChhGQUlMX1JFQVNPTl9PVVRfT0ZfUkFOR0UQCBIX",
+            "ChNGQUlMX1JFQVNPTl9CTE9DS0VEEAkSFAoQRkFJTF9SRUFTT05fQlVTWRAK",
+            "EhcKE0ZBSUxfUkVBU09OX1NUVU5ORUQQCxIZChVGQUlMX1JFQVNPTl9DQU5D",
+            "RUxMRUQQDBIfChtGQUlMX1JFQVNPTl9JTlZBTElEX0NPTU1BTkQQDRIeChpG",
+            "QUlMX1JFQVNPTl9JTlZFTlRPUllfRlVMTBAOEhcKE0ZBSUxfUkVBU09OX05P",
+            "X0lURU0QDxIdChlGQUlMX1JFQVNPTl9VTlVTQUJMRV9JVEVNEBASGQoVRkFJ",
+            "TF9SRUFTT05fSU5fQ09NQkFUEBESGAoURkFJTF9SRUFTT05fVE9PX0ZBU1QQ",
+            "EhIcChhGQUlMX1JFQVNPTl9BTFJFQURZX0dPTkUQExIZChVGQUlMX1JFQVNP",
+            "Tl9OT1RfWU9VUlMQFBIdChlGQUlMX1JFQVNPTl9MRVZFTF9UT09fTE9XEBUS",
+            "GwoXRkFJTF9SRUFTT05fV1JPTkdfQ0xBU1MQFhIbChdGQUlMX1JFQVNPTl9N",
+            "QVhfRU5DSEFOVBAXEh8KG0ZBSUxfUkVBU09OX0FMUkVBRFlfTEVBUk5FRBAY",
+            "Eh8KG0ZBSUxfUkVBU09OX05PVF9FTk9VR0hfR09MRBAZEhoKFkZBSUxfUkVB",
+            "U09OX1VOU0VMTEFCTEUQGhIcChhGQUlMX1JFQVNPTl9TVE9SQUdFX0ZVTEwQ",
+            "GxIcChhGQUlMX1JFQVNPTl9OT19SRUNJUElFTlQQHBIdChlGQUlMX1JFQVNP",
+            "Tl9URVhUX1RPT19MT05HEB0SHQoZRkFJTF9SRUFTT05fQ0hBVF9UT09fRkFT",
+            "VBAeEhgKFEZBSUxfUkVBU09OX05PX1BBUlRZEB8qwgEKC1JlcXVlc3RLaW5k",
+            "EhwKGFJFUVVFU1RfS0lORF9VTlNQRUNJRklFRBAAEhcKE1JFUVVFU1RfS0lO",
+            "RF9BVFRBQ0sQARIXChNSRVFVRVNUX0tJTkRfUkVWSVZFEAISFgoSUkVRVUVT",
+            "VF9LSU5EX1NLSUxMEAMSFQoRUkVRVUVTVF9LSU5EX0NIQVQQBBIaChZSRVFV",
+            "RVNUX0tJTkRfUVVJQ0tTTE9UEAUSGAoUUkVRVUVTVF9LSU5EX1NUT1JBR0UQ",
+            "BkIYqgIVUG9ydGZvbGlvTW1vLkNvbnRyYWN0YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Contract.ProtocolVersion), typeof(global::PortfolioMmo.Contract.Constant), typeof(global::PortfolioMmo.Contract.LoginResultCode), typeof(global::PortfolioMmo.Contract.KickReason), typeof(global::PortfolioMmo.Contract.CharacterClass), typeof(global::PortfolioMmo.Contract.CreateCharacterResultCode), typeof(global::PortfolioMmo.Contract.EnterWorldResultCode), typeof(global::PortfolioMmo.Contract.EntityKind), typeof(global::PortfolioMmo.Contract.NameColor), typeof(global::PortfolioMmo.Contract.ProgressKind), typeof(global::PortfolioMmo.Contract.ItemPlace), typeof(global::PortfolioMmo.Contract.GainReason), typeof(global::PortfolioMmo.Contract.QuickslotKind), typeof(global::PortfolioMmo.Contract.FailReason), typeof(global::PortfolioMmo.Contract.RequestKind), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Packet), global::PortfolioMmo.Contract.Packet.Parser, new[]{ "Login", "LoginResult", "Kicked", "Ping", "Pong", "CharacterList", "CreateCharacter", "CreateCharacterResult", "EnterWorld", "EnterWorldResult", "LeaveWorld", "ActionFailed", "DevCommand", "Logout", "Move", "PositionReset", "EntitiesEnter", "EntitiesLeave", "EntityMoves", "EntityState", "SelfVitals", "EntityVitals", "AttackStart", "AttackStop", "AttackSwing", "Damaged", "Died", "Revive", "Revived", "UseSkill", "SkillUsed", "Progress", "ProgressCancelled", "EffectApplied", "Cooldowns", "ProjectileLaunched", "ProjectileEnded", "SelfStats", "ExpGained", "Inventory", "InventoryChanged", "UseItem", "RequestResult", "PickUp", "DropItem", "Equip", "Unequip", "Enchant", "EnchantResult", "LearnedSkills", "SkillLearned", "SetQuickslot", "Quickslots", "Buy", "Sell", "StorageOpen", "Storage", "StorageChanged", "StorageDeposit", "StorageWithdraw" }, new[]{ "Body" }, null, null, null),
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Contract.ProtocolVersion), typeof(global::PortfolioMmo.Contract.Constant), typeof(global::PortfolioMmo.Contract.LoginResultCode), typeof(global::PortfolioMmo.Contract.KickReason), typeof(global::PortfolioMmo.Contract.CharacterClass), typeof(global::PortfolioMmo.Contract.CreateCharacterResultCode), typeof(global::PortfolioMmo.Contract.EnterWorldResultCode), typeof(global::PortfolioMmo.Contract.EntityKind), typeof(global::PortfolioMmo.Contract.NameColor), typeof(global::PortfolioMmo.Contract.ProgressKind), typeof(global::PortfolioMmo.Contract.ItemPlace), typeof(global::PortfolioMmo.Contract.GainReason), typeof(global::PortfolioMmo.Contract.QuickslotKind), typeof(global::PortfolioMmo.Contract.ChatChannel), typeof(global::PortfolioMmo.Contract.FailReason), typeof(global::PortfolioMmo.Contract.RequestKind), }, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Packet), global::PortfolioMmo.Contract.Packet.Parser, new[]{ "Login", "LoginResult", "Kicked", "Ping", "Pong", "CharacterList", "CreateCharacter", "CreateCharacterResult", "EnterWorld", "EnterWorldResult", "LeaveWorld", "ActionFailed", "DevCommand", "Logout", "Move", "PositionReset", "EntitiesEnter", "EntitiesLeave", "EntityMoves", "EntityState", "SelfVitals", "EntityVitals", "AttackStart", "AttackStop", "AttackSwing", "Damaged", "Died", "Revive", "Revived", "UseSkill", "SkillUsed", "Progress", "ProgressCancelled", "EffectApplied", "Cooldowns", "ProjectileLaunched", "ProjectileEnded", "SelfStats", "ExpGained", "Inventory", "InventoryChanged", "UseItem", "RequestResult", "PickUp", "DropItem", "Equip", "Unequip", "Enchant", "EnchantResult", "LearnedSkills", "SkillLearned", "SetQuickslot", "Quickslots", "Buy", "Sell", "StorageOpen", "Storage", "StorageChanged", "StorageDeposit", "StorageWithdraw", "Chat", "ChatReceived" }, new[]{ "Body" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Login), global::PortfolioMmo.Contract.Login.Parser, new[]{ "ProtocolVersion", "LoginId", "DataHash" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.LoginResult), global::PortfolioMmo.Contract.LoginResult.Parser, new[]{ "Result" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Kicked), global::PortfolioMmo.Contract.Kicked.Parser, new[]{ "Reason" }, null, null, null, null),
@@ -330,6 +342,8 @@ namespace PortfolioMmo.Contract {
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.StorageChanged), global::PortfolioMmo.Contract.StorageChanged.Parser, new[]{ "Slots" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.StorageDeposit), global::PortfolioMmo.Contract.StorageDeposit.Parser, new[]{ "Slot", "Count", "RequestId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.StorageWithdraw), global::PortfolioMmo.Contract.StorageWithdraw.Parser, new[]{ "Slot", "Count", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Chat), global::PortfolioMmo.Contract.Chat.Parser, new[]{ "Channel", "To", "Text" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.ChatReceived), global::PortfolioMmo.Contract.ChatReceived.Parser, new[]{ "Channel", "SenderId", "SenderName", "To", "Text" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.RequestResult), global::PortfolioMmo.Contract.RequestResult.Parser, new[]{ "RequestId", "Result" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.ActionFailed), global::PortfolioMmo.Contract.ActionFailed.Parser, new[]{ "Reason", "Request" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.AttackStart), global::PortfolioMmo.Contract.AttackStart.Parser, new[]{ "TargetId" }, null, null, null, null),
@@ -597,6 +611,29 @@ namespace PortfolioMmo.Contract {
   }
 
   /// <summary>
+  /// 채팅의 채널(41). 시스템 줄은 서버가 보내는 글이 아니라 클라이언트가 알림 패킷을 받아 넣는 줄이라 여기에 없다.
+  /// </summary>
+  public enum ChatChannel {
+    [pbr::OriginalName("CHAT_CHANNEL_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 주변: 보낸 사람의 둘레 9개 시야 칸의 플레이어.
+    /// </summary>
+    [pbr::OriginalName("CHAT_CHANNEL_NEARBY")] Nearby = 1,
+    /// <summary>
+    /// 파티: 파티원(42).
+    /// </summary>
+    [pbr::OriginalName("CHAT_CHANNEL_PARTY")] Party = 2,
+    /// <summary>
+    /// 전체: 월드에 들어와 있는 모든 연결.
+    /// </summary>
+    [pbr::OriginalName("CHAT_CHANNEL_WORLD")] World = 3,
+    /// <summary>
+    /// 귓속말: 이름으로 찾은 받는 사람과 보낸 사람.
+    /// </summary>
+    [pbr::OriginalName("CHAT_CHANNEL_WHISPER")] Whisper = 4,
+  }
+
+  /// <summary>
   /// 실패한 이유. 0은 성공이다. 값마다의 글은 클라이언트의 문자열 표가 가진다(backlog 28). 뒤의 항목이 자기 이유를 더한다.
   /// </summary>
   public enum FailReason {
@@ -709,6 +746,22 @@ namespace PortfolioMmo.Contract {
     /// 창고에 넣을 자리가 없다(75).
     /// </summary>
     [pbr::OriginalName("FAIL_REASON_STORAGE_FULL")] StorageFull = 27,
+    /// <summary>
+    /// 귓속말의 받는 사람이 월드에 없다(41).
+    /// </summary>
+    [pbr::OriginalName("FAIL_REASON_NO_RECIPIENT")] NoRecipient = 28,
+    /// <summary>
+    /// 채팅의 글이 Constants의 길이(UTF-8 바이트)를 넘는다(41).
+    /// </summary>
+    [pbr::OriginalName("FAIL_REASON_TEXT_TOO_LONG")] TextTooLong = 29,
+    /// <summary>
+    /// 채팅을 너무 자주 보냈다(Constants의 초당 횟수. 연결마다의 빈도 제한 TOO_FAST와 따로 센다. 41).
+    /// </summary>
+    [pbr::OriginalName("FAIL_REASON_CHAT_TOO_FAST")] ChatTooFast = 30,
+    /// <summary>
+    /// 파티가 없는데 파티 채팅을 보냈다(41. 파티는 42).
+    /// </summary>
+    [pbr::OriginalName("FAIL_REASON_NO_PARTY")] NoParty = 31,
   }
 
   /// <summary>
@@ -954,6 +1007,12 @@ namespace PortfolioMmo.Contract {
           break;
         case BodyOneofCase.StorageWithdraw:
           StorageWithdraw = other.StorageWithdraw.Clone();
+          break;
+        case BodyOneofCase.Chat:
+          Chat = other.Chat.Clone();
+          break;
+        case BodyOneofCase.ChatReceived:
+          ChatReceived = other.ChatReceived.Clone();
           break;
       }
 
@@ -1698,6 +1757,33 @@ namespace PortfolioMmo.Contract {
       }
     }
 
+    /// <summary>Field number for the "chat" field.</summary>
+    public const int ChatFieldNumber = 400;
+    /// <summary>
+    /// 400–499: 사회(채팅, 파티)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.Chat Chat {
+      get { return bodyCase_ == BodyOneofCase.Chat ? (global::PortfolioMmo.Contract.Chat) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.Chat;
+      }
+    }
+
+    /// <summary>Field number for the "chat_received" field.</summary>
+    public const int ChatReceivedFieldNumber = 401;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.ChatReceived ChatReceived {
+      get { return bodyCase_ == BodyOneofCase.ChatReceived ? (global::PortfolioMmo.Contract.ChatReceived) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.ChatReceived;
+      }
+    }
+
     private object body_;
     /// <summary>Enum of possible cases for the "body" oneof.</summary>
     public enum BodyOneofCase {
@@ -1762,6 +1848,8 @@ namespace PortfolioMmo.Contract {
       StorageChanged = 320,
       StorageDeposit = 321,
       StorageWithdraw = 322,
+      Chat = 400,
+      ChatReceived = 401,
     }
     private BodyOneofCase bodyCase_ = BodyOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1852,6 +1940,8 @@ namespace PortfolioMmo.Contract {
       if (!object.Equals(StorageChanged, other.StorageChanged)) return false;
       if (!object.Equals(StorageDeposit, other.StorageDeposit)) return false;
       if (!object.Equals(StorageWithdraw, other.StorageWithdraw)) return false;
+      if (!object.Equals(Chat, other.Chat)) return false;
+      if (!object.Equals(ChatReceived, other.ChatReceived)) return false;
       if (BodyCase != other.BodyCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1920,6 +2010,8 @@ namespace PortfolioMmo.Contract {
       if (bodyCase_ == BodyOneofCase.StorageChanged) hash ^= StorageChanged.GetHashCode();
       if (bodyCase_ == BodyOneofCase.StorageDeposit) hash ^= StorageDeposit.GetHashCode();
       if (bodyCase_ == BodyOneofCase.StorageWithdraw) hash ^= StorageWithdraw.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.Chat) hash ^= Chat.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.ChatReceived) hash ^= ChatReceived.GetHashCode();
       hash ^= (int) bodyCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -2179,6 +2271,14 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(146, 20);
         output.WriteMessage(StorageWithdraw);
       }
+      if (bodyCase_ == BodyOneofCase.Chat) {
+        output.WriteRawTag(130, 25);
+        output.WriteMessage(Chat);
+      }
+      if (bodyCase_ == BodyOneofCase.ChatReceived) {
+        output.WriteRawTag(138, 25);
+        output.WriteMessage(ChatReceived);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2429,6 +2529,14 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(146, 20);
         output.WriteMessage(StorageWithdraw);
       }
+      if (bodyCase_ == BodyOneofCase.Chat) {
+        output.WriteRawTag(130, 25);
+        output.WriteMessage(Chat);
+      }
+      if (bodyCase_ == BodyOneofCase.ChatReceived) {
+        output.WriteRawTag(138, 25);
+        output.WriteMessage(ChatReceived);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2618,6 +2726,12 @@ namespace PortfolioMmo.Contract {
       }
       if (bodyCase_ == BodyOneofCase.StorageWithdraw) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(StorageWithdraw);
+      }
+      if (bodyCase_ == BodyOneofCase.Chat) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(Chat);
+      }
+      if (bodyCase_ == BodyOneofCase.ChatReceived) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(ChatReceived);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2991,6 +3105,18 @@ namespace PortfolioMmo.Contract {
             StorageWithdraw = new global::PortfolioMmo.Contract.StorageWithdraw();
           }
           StorageWithdraw.MergeFrom(other.StorageWithdraw);
+          break;
+        case BodyOneofCase.Chat:
+          if (Chat == null) {
+            Chat = new global::PortfolioMmo.Contract.Chat();
+          }
+          Chat.MergeFrom(other.Chat);
+          break;
+        case BodyOneofCase.ChatReceived:
+          if (ChatReceived == null) {
+            ChatReceived = new global::PortfolioMmo.Contract.ChatReceived();
+          }
+          ChatReceived.MergeFrom(other.ChatReceived);
           break;
       }
 
@@ -3553,6 +3679,24 @@ namespace PortfolioMmo.Contract {
             StorageWithdraw = subBuilder;
             break;
           }
+          case 3202: {
+            global::PortfolioMmo.Contract.Chat subBuilder = new global::PortfolioMmo.Contract.Chat();
+            if (bodyCase_ == BodyOneofCase.Chat) {
+              subBuilder.MergeFrom(Chat);
+            }
+            input.ReadMessage(subBuilder);
+            Chat = subBuilder;
+            break;
+          }
+          case 3210: {
+            global::PortfolioMmo.Contract.ChatReceived subBuilder = new global::PortfolioMmo.Contract.ChatReceived();
+            if (bodyCase_ == BodyOneofCase.ChatReceived) {
+              subBuilder.MergeFrom(ChatReceived);
+            }
+            input.ReadMessage(subBuilder);
+            ChatReceived = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -4110,6 +4254,24 @@ namespace PortfolioMmo.Contract {
             }
             input.ReadMessage(subBuilder);
             StorageWithdraw = subBuilder;
+            break;
+          }
+          case 3202: {
+            global::PortfolioMmo.Contract.Chat subBuilder = new global::PortfolioMmo.Contract.Chat();
+            if (bodyCase_ == BodyOneofCase.Chat) {
+              subBuilder.MergeFrom(Chat);
+            }
+            input.ReadMessage(subBuilder);
+            Chat = subBuilder;
+            break;
+          }
+          case 3210: {
+            global::PortfolioMmo.Contract.ChatReceived subBuilder = new global::PortfolioMmo.Contract.ChatReceived();
+            if (bodyCase_ == BodyOneofCase.ChatReceived) {
+              subBuilder.MergeFrom(ChatReceived);
+            }
+            input.ReadMessage(subBuilder);
+            ChatReceived = subBuilder;
             break;
           }
         }
@@ -18076,6 +18238,643 @@ namespace PortfolioMmo.Contract {
   }
 
   /// <summary>
+  /// 클라이언트 → 서버. 채팅 한 줄(41). 요청 번호가 없어 실패는 ActionFailed(채팅)이고, 성공하면 받는 연결들에 ChatReceived가 간다(보낸 본인 포함).
+  /// 가장 긴 것(180바이트의 글, 한글 12자의 받는 사람)도 프레임이 클라이언트 패킷의 상한(256바이트) 안이다.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class Chat : pb::IMessage<Chat>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Chat> _parser = new pb::MessageParser<Chat>(() => new Chat());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<Chat> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[54]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Chat() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Chat(Chat other) : this() {
+      channel_ = other.channel_;
+      to_ = other.to_;
+      text_ = other.text_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Chat Clone() {
+      return new Chat(this);
+    }
+
+    /// <summary>Field number for the "channel" field.</summary>
+    public const int ChannelFieldNumber = 1;
+    private global::PortfolioMmo.Contract.ChatChannel channel_ = global::PortfolioMmo.Contract.ChatChannel.Unspecified;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.ChatChannel Channel {
+      get { return channel_; }
+      set {
+        channel_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "to" field.</summary>
+    public const int ToFieldNumber = 2;
+    private string to_ = "";
+    /// <summary>
+    /// 받는 사람의 캐릭터 이름. 귓속말에만 채운다(영문은 대소문자를 가리지 않음).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string To {
+      get { return to_; }
+      set {
+        to_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "text" field.</summary>
+    public const int TextFieldNumber = 3;
+    private string text_ = "";
+    /// <summary>
+    /// 글. UTF-8로 Constants.chatMaxBytes 바이트까지다.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Text {
+      get { return text_; }
+      set {
+        text_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as Chat);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(Chat other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Channel != other.Channel) return false;
+      if (To != other.To) return false;
+      if (Text != other.Text) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) hash ^= Channel.GetHashCode();
+      if (To.Length != 0) hash ^= To.GetHashCode();
+      if (Text.Length != 0) hash ^= Text.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Channel);
+      }
+      if (To.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(To);
+      }
+      if (Text.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Text);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Channel);
+      }
+      if (To.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(To);
+      }
+      if (Text.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Text);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Channel);
+      }
+      if (To.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(To);
+      }
+      if (Text.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Text);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(Chat other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) {
+        Channel = other.Channel;
+      }
+      if (other.To.Length != 0) {
+        To = other.To;
+      }
+      if (other.Text.Length != 0) {
+        Text = other.Text;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Channel = (global::PortfolioMmo.Contract.ChatChannel) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            To = input.ReadString();
+            break;
+          }
+          case 26: {
+            Text = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Channel = (global::PortfolioMmo.Contract.ChatChannel) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            To = input.ReadString();
+            break;
+          }
+          case 26: {
+            Text = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 서버 → 클라이언트. 채팅 한 줄(41). 받는 쪽이 보낸 사람의 개체를 받지 않았어도 그릴 수 있게 이름을 함께 싣는다. 저장하지 않는다.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class ChatReceived : pb::IMessage<ChatReceived>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ChatReceived> _parser = new pb::MessageParser<ChatReceived>(() => new ChatReceived());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ChatReceived> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[55]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ChatReceived() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ChatReceived(ChatReceived other) : this() {
+      channel_ = other.channel_;
+      senderId_ = other.senderId_;
+      senderName_ = other.senderName_;
+      to_ = other.to_;
+      text_ = other.text_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ChatReceived Clone() {
+      return new ChatReceived(this);
+    }
+
+    /// <summary>Field number for the "channel" field.</summary>
+    public const int ChannelFieldNumber = 1;
+    private global::PortfolioMmo.Contract.ChatChannel channel_ = global::PortfolioMmo.Contract.ChatChannel.Unspecified;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.ChatChannel Channel {
+      get { return channel_; }
+      set {
+        channel_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "sender_id" field.</summary>
+    public const int SenderIdFieldNumber = 2;
+    private uint senderId_;
+    /// <summary>
+    /// 보낸 사람의 개체 번호. 받는 쪽이 그 개체를 받았으면 말풍선을 띄운다.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint SenderId {
+      get { return senderId_; }
+      set {
+        senderId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "sender_name" field.</summary>
+    public const int SenderNameFieldNumber = 3;
+    private string senderName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string SenderName {
+      get { return senderName_; }
+      set {
+        senderName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "to" field.</summary>
+    public const int ToFieldNumber = 4;
+    private string to_ = "";
+    /// <summary>
+    /// 받는 사람의 이름. 귓속말에만 싣는다(보낸 쪽의 채팅창이 누구에게 보냈는지를 그림).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string To {
+      get { return to_; }
+      set {
+        to_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "text" field.</summary>
+    public const int TextFieldNumber = 5;
+    private string text_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Text {
+      get { return text_; }
+      set {
+        text_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ChatReceived);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ChatReceived other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Channel != other.Channel) return false;
+      if (SenderId != other.SenderId) return false;
+      if (SenderName != other.SenderName) return false;
+      if (To != other.To) return false;
+      if (Text != other.Text) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) hash ^= Channel.GetHashCode();
+      if (SenderId != 0) hash ^= SenderId.GetHashCode();
+      if (SenderName.Length != 0) hash ^= SenderName.GetHashCode();
+      if (To.Length != 0) hash ^= To.GetHashCode();
+      if (Text.Length != 0) hash ^= Text.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Channel);
+      }
+      if (SenderId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(SenderId);
+      }
+      if (SenderName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(SenderName);
+      }
+      if (To.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(To);
+      }
+      if (Text.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Text);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Channel);
+      }
+      if (SenderId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(SenderId);
+      }
+      if (SenderName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(SenderName);
+      }
+      if (To.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(To);
+      }
+      if (Text.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Text);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Channel);
+      }
+      if (SenderId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SenderId);
+      }
+      if (SenderName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SenderName);
+      }
+      if (To.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(To);
+      }
+      if (Text.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Text);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ChatReceived other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Channel != global::PortfolioMmo.Contract.ChatChannel.Unspecified) {
+        Channel = other.Channel;
+      }
+      if (other.SenderId != 0) {
+        SenderId = other.SenderId;
+      }
+      if (other.SenderName.Length != 0) {
+        SenderName = other.SenderName;
+      }
+      if (other.To.Length != 0) {
+        To = other.To;
+      }
+      if (other.Text.Length != 0) {
+        Text = other.Text;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Channel = (global::PortfolioMmo.Contract.ChatChannel) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            SenderId = input.ReadUInt32();
+            break;
+          }
+          case 26: {
+            SenderName = input.ReadString();
+            break;
+          }
+          case 34: {
+            To = input.ReadString();
+            break;
+          }
+          case 42: {
+            Text = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Channel = (global::PortfolioMmo.Contract.ChatChannel) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            SenderId = input.ReadUInt32();
+            break;
+          }
+          case 26: {
+            SenderName = input.ReadString();
+            break;
+          }
+          case 34: {
+            To = input.ReadString();
+            break;
+          }
+          case 42: {
+            Text = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
   /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
@@ -18093,7 +18892,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[54]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[56]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18331,7 +19130,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[55]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[57]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18569,7 +19368,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[56]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[58]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18770,7 +19569,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[57]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[59]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18935,7 +19734,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[58]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[60]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19173,7 +19972,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[59]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[61]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19522,7 +20321,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[60]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[62]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19760,7 +20559,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[61]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[63]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19925,7 +20724,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[62]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[64]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20202,7 +21001,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[63]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[65]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20479,7 +21278,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[64]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[66]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20755,7 +21554,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[65]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[67]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21002,7 +21801,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[66]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[68]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21240,7 +22039,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[67]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[69]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21487,7 +22286,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[68]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[70]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21674,7 +22473,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[69]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[71]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21957,7 +22756,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[70]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[72]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -22381,7 +23180,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[71]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[73]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

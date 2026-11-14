@@ -15,6 +15,7 @@
 #include "Components/Image.h"
 #include "Components/Overlay.h"
 #include "Components/ProgressBar.h"
+#include "Components/ScrollBox.h"
 #include "Components/OverlaySlot.h"
 #include "Components/SafeZone.h"
 #include "Components/SafeZoneSlot.h"
@@ -31,6 +32,7 @@
 #include "UObject/SavePackage.h"
 #include "UI/MmoButtonWidget.h"
 #include "UI/MmoCharacterCreateWidget.h"
+#include "UI/MmoChatWidget.h"
 #include "UI/MmoCharacterWidget.h"
 #include "UI/MmoCharacterSelectWidget.h"
 #include "UI/MmoConfirmWidget.h"
@@ -93,6 +95,13 @@ namespace
 		FLinearColor CooldownShade{ 0.0f, 0.0f, 0.0f, 0.65f };
 		/** 고른 버튼(캐릭터 칸, 직업)의 배경 곱. */
 		FLinearColor Selected{ 1.0f, 0.78f, 0.3f, 1.0f };
+		/** 채팅의 줄 색(주변, 파티, 전체, 귓속말, 시스템. 41)과 채팅창·말풍선의 바탕. */
+		FLinearColor ChatNearby{ 0.92f, 0.92f, 0.90f, 1.0f };
+		FLinearColor ChatParty{ 0.45f, 0.75f, 1.0f, 1.0f };
+		FLinearColor ChatWorld{ 1.0f, 0.75f, 0.45f, 1.0f };
+		FLinearColor ChatWhisper{ 1.0f, 0.55f, 0.9f, 1.0f };
+		FLinearColor ChatSystem{ 0.95f, 0.85f, 0.3f, 1.0f };
+		FLinearColor ChatBack{ 0.0f, 0.0f, 0.0f, 0.45f };
 
 		int32 TitleSize = 24;
 		int32 BodySize = 18;
@@ -128,6 +137,11 @@ namespace
 		/** 퀵슬롯 한 칸의 폭. */
 		float SlotWidth = 80.0f;
 		float NoticeTop = 80.0f;
+		/** 채팅창의 폭, 줄 목록의 높이, 받는 사람 칸의 폭(41). 말풍선의 가장 넓은 폭. */
+		float ChatWidth = 440.0f;
+		float ChatLinesHeight = 180.0f;
+		float ChatToWidth = 110.0f;
+		float BubbleWidth = 240.0f;
 	};
 
 	const FMmoStyle Style;
@@ -468,10 +482,57 @@ namespace
 		return Size;
 	}
 
-	bool CreateHud(UClass* JoystickClass)
+	/**
+	 * 채팅창(41): 반투명한 바탕 위에 줄 목록(스크롤)과 그 아래 채널 버튼, 받는 사람 칸(귓속말만), 입력 칸, 보내기 버튼. HUD가 담는다.
+	 * 줄의 색과 크기는 HUD가 놓을 때 정한다(UMmoChatWidget의 KindColors, LineSize).
+	 */
+	UClass* CreateChat()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Chat, UMmoChatWidget::StaticClass());
+		USizeBox* Size = Builder.Add<USizeBox>(TEXT("Size"));
+		Size->SetWidthOverride(Style.ChatWidth);
+		Builder.SetRoot(Size);
+		UBorder* Back = Builder.Add<UBorder>(TEXT("Back"));
+		Back->SetBrush(FSlateRoundedBoxBrush(Style.ChatBack, Style.ButtonRadius));
+		Back->SetPadding(FMargin(Style.Gap));
+		Size->SetContent(Back);
+		UVerticalBox* Column = Builder.Add<UVerticalBox>(TEXT("Column"));
+		Back->SetContent(Column);
+		USizeBox* LinesSize = Builder.Add<USizeBox>(TEXT("LinesSize"));
+		LinesSize->SetHeightOverride(Style.ChatLinesHeight);
+		LinesSize->SetContent(Builder.Add<UScrollBox>(TEXT("LinesBox"), true));
+		AddWithGap(*Column, LinesSize);
+		UHorizontalBox* Input = Builder.Add<UHorizontalBox>(TEXT("Input"));
+		Input->AddChildToHorizontalBox(Builder.Button(TEXT("ChannelButton"), FText::GetEmpty()));
+		USizeBox* ToSize = Builder.Add<USizeBox>(TEXT("ToSize"));
+		ToSize->SetWidthOverride(Style.ChatToWidth);
+		UEditableTextBox* To = Builder.Add<UEditableTextBox>(TEXT("ToBox"), true);
+		To->SetHintText(FText::FromString(TEXT("chat.to")));
+		ToSize->SetContent(To);
+		UHorizontalBoxSlot* ToSlot = Input->AddChildToHorizontalBox(ToSize);
+		ToSlot->SetPadding(FMargin(Style.Gap * 0.5f, 0.0f, 0.0f, 0.0f));
+		ToSlot->SetVerticalAlignment(VAlign_Center);
+		UEditableTextBox* Line = Builder.Add<UEditableTextBox>(TEXT("InputBox"), true);
+		Line->SetHintText(FText::FromString(TEXT("chat.hint")));
+		UHorizontalBoxSlot* LineSlot = Input->AddChildToHorizontalBox(Line);
+		LineSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+		LineSlot->SetPadding(FMargin(Style.Gap * 0.5f, 0.0f));
+		LineSlot->SetVerticalAlignment(VAlign_Center);
+		Input->AddChildToHorizontalBox(Builder.Button(TEXT("SendButton"), TEXT("chat.send")));
+		Column->AddChildToVerticalBox(Input);
+		return Builder.Save() ? Builder.GeneratedClass() : nullptr;
+	}
+
+	bool CreateHud(UClass* JoystickClass, UClass* ChatClass)
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Hud, UMmoHudWidget::StaticClass());
 		UCanvasPanel* Root = Builder.SafeCanvas();
+
+		// 채팅창(41)은 왼쪽 아래, 터치 기기에서는 조이스틱 위다(PC에서는 UMmoHudWidget이 조이스틱 자리로 내림).
+		UMmoChatWidget* Chat = Builder.Add<UMmoChatWidget>(ChatClass, TEXT("ChatBox"), true);
+		Chat->KindColors = { Style.ChatNearby, Style.ChatParty, Style.ChatWorld, Style.ChatWhisper, Style.ChatSystem };
+		Chat->LineSize = Style.SmallSize;
+		Corner(*Root, Chat, ECorner::BottomLeft, FVector2D(Style.HudMargin, Style.HudMargin * 2.5 + Style.JoystickSize + Style.Gap));
 
 		// 조이스틱은 왼쪽 아래(터치 기기에서만 보임. UMmoHudWidget).
 		Corner(*Root, Builder.Add<UUserWidget>(JoystickClass, TEXT("Joystick"), true), ECorner::BottomLeft,
@@ -498,6 +559,10 @@ namespace
 		UTextBlock* TargetName = Builder.Text(TEXT("TargetNameText"), FText::GetEmpty(), Style.BodySize, true);
 		Target->AddChildToVerticalBox(TargetName)->SetHorizontalAlignment(HAlign_Center);
 		Target->AddChildToVerticalBox(Bar(Builder, TEXT("TargetHp"), Style.Hp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
+		// 대상이 다른 플레이어면 귓속말 버튼(41).
+		UMmoButtonWidget* Whisper = Builder.Button(TEXT("WhisperButton"), TEXT("target.whisper"));
+		Whisper->SetVisibility(ESlateVisibility::Collapsed);
+		Target->AddChildToVerticalBox(Whisper)->SetHorizontalAlignment(HAlign_Center);
 
 		// 아래 가운데에 내 진행 바(시전. 진행 중일 때만 보임)와 퀵슬롯 8칸(칸마다 버튼 위에 쿨다운 가림). 칸은 UMmoHudWidget이 이름(Slot<n>)으로 찾는다.
 		UVerticalBox* Actions = Builder.Add<UVerticalBox>(TEXT("Actions"));
@@ -617,6 +682,17 @@ namespace
 		UVerticalBox* Column = Builder.Add<UVerticalBox>(TEXT("Column"));
 		Column->SetVisibility(ESlateVisibility::HitTestInvisible);
 		Builder.SetRoot(Column);
+		// 맨 위에 주변 채팅의 말풍선(41. 채팅이 올 때만 보임).
+		UBorder* Bubble = Builder.Add<UBorder>(TEXT("Bubble"), true);
+		Bubble->SetBrush(FSlateRoundedBoxBrush(Style.NoticeBack, Style.ButtonRadius));
+		Bubble->SetPadding(FMargin(10.0f, 6.0f));
+		Bubble->SetVisibility(ESlateVisibility::Collapsed);
+		// 자동 줄바꿈은 크기를 스스로 정하는 캔버스 칸에서 폭을 받지 못해 낱말마다 줄을 바꾸므로, 정한 폭에서 줄을 바꾼다.
+		UTextBlock* BubbleText = Builder.Text(TEXT("BubbleText"), FText::GetEmpty(), Style.SmallSize, true);
+		BubbleText->SetWrapTextAt(Style.BubbleWidth);
+		Bubble->SetContent(BubbleText);
+		Column->AddChildToVerticalBox(Bubble)->SetPadding(FMargin(0.0f, 0.0f, 0.0f, Style.Gap * 0.5f));
+		Cast<UVerticalBoxSlot>(Bubble->Slot)->SetHorizontalAlignment(HAlign_Center);
 		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), Style.SmallSize, true, Style.Status);
 		Status->SetVisibility(ESlateVisibility::Collapsed);
 		Column->AddChildToVerticalBox(Status)->SetHorizontalAlignment(HAlign_Center);
@@ -1018,8 +1094,9 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	UClass* Joystick = CreateJoystick();
 	UClass* ItemSlot = CreateItemSlot();
 	UClass* QuickslotBar = CreateQuickslotBar();
-	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && QuickslotBar && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateStorage(ItemSlot) && CreateMap() && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+	UClass* Chat = CreateChat();
+	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && QuickslotBar && Chat && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
+		&& CreateHud(Joystick, Chat) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateStorage(ItemSlot) && CreateMap() && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 

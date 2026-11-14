@@ -70,4 +70,8 @@ message Constants {
   uint32 auto_hunt_manual_pause_ms = 32;
   // 창고 칸 수(75. 캐릭터마다)
   uint32 storage_slots = 33;
+  // 채팅 한 줄의 길이(UTF-8 바이트, 한글 60자. 41). Chat의 프레임이 클라이언트 패킷의 상한(256바이트) 안에 들게 하는 값이다
+  uint32 chat_max_bytes = 34;
+  // 플레이어가 1초 안에 보낼 수 있는 채팅 수(41). 넘으면 "너무 자주 보냄"이다
+  uint32 chat_per_second = 35;
 }

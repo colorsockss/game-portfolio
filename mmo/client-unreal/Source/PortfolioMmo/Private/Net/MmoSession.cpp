@@ -166,7 +166,7 @@ namespace
 			}
 		}));
 
-	/** 개발 빌드의 콘솔 명령: 글 한 줄을 DevCommand로 보낸다(채팅창 41 전). --dev 서버만 실행한다. 예: Mmo.Dev tp 100 -20 */
+	/** 개발 빌드의 콘솔 명령: 글 한 줄을 DevCommand로 보낸다(채팅 입력의 /로 시작하는 줄과 같음. 41). --dev 서버만 실행한다. 예: Mmo.Dev tp 100 -20 */
 	FAutoConsoleCommandWithWorldAndArgs GMmoDevCommand(
 		TEXT("Mmo.Dev"),
 		TEXT("Send a dev command line to a --dev server, e.g. 'Mmo.Dev tp 100 -20' or 'Mmo.Dev spawn 1'."),
@@ -224,6 +224,7 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 	InventoryState.Apply(Packet);
 	StorageState.Apply(Packet);
 	SkillBook.Apply(Packet);
+	ChatLog.Apply(Packet, WorldState);
 	if (const std::optional<portfolio::mmo::Packet> Stop = CombatState.Apply(Packet, WorldState, GameData, Now))
 	{
 		Send(*Stop);
@@ -241,6 +242,7 @@ void UMmoSession::HandleClosed(const FString& InReason)
 	InventoryState.Reset();
 	StorageState.Reset();
 	SkillBook.Reset();
+	ChatLog.Reset();
 	OnClosed.Broadcast(Reason);
 }
 

@@ -20,6 +20,11 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<uint, Player> _players = new Dictionary<uint, Player>();
 
         /// <summary>
+        /// 캐릭터 이름 → 플레이어(귓속말 41). 이름은 서버 전체에서 하나이고 영문은 대소문자를 가리지 않는다(캐릭터 만들기와 같음).
+        /// </summary>
+        private readonly Dictionary<string, Player> _playersByName = new Dictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
         /// 사라진 바닥 아이템의 번호와 사라진 틱. 사라진 차례라 앞이 가장 오래되었다.
         /// </summary>
         private readonly Queue<(uint Id, uint Tick)> _freedGroundItemIds = new Queue<(uint Id, uint Tick)>();
@@ -100,19 +105,31 @@ namespace PortfolioMmo.Server
             return _entities.GetValueOrDefault(id);
         }
 
+        /// <summary>
+        /// 이름의 플레이어(영문은 대소문자를 가리지 않음). 없으면 null.
+        /// </summary>
+        public Player? FindPlayer(string name)
+        {
+            return _playersByName.GetValueOrDefault(name);
+        }
+
         public void Add(Entity entity)
         {
             _entities.Add(entity.Id, entity);
             if (entity is Player player)
             {
                 _players.Add(player.Id, player);
+                _playersByName.Add(player.Name, player);
             }
         }
 
         public void Remove(Entity entity)
         {
             _entities.Remove(entity.Id);
-            _players.Remove(entity.Id);
+            if (_players.Remove(entity.Id, out Player? player))
+            {
+                _playersByName.Remove(player.Name);
+            }
         }
 
         /// <summary>

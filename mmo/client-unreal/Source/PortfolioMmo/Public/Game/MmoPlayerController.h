@@ -218,6 +218,10 @@ private:
 	/** 전체 지도(76). */
 	UPROPERTY()
 	TObjectPtr<UInputAction> MapAction;
+
+	/** 채팅 입력(41). */
+	UPROPERTY()
+	TObjectPtr<UInputAction> ChatAction;
 	/** 상호작용하러 가는 길을 찾은 때의 개체 자리. */
 	MmoWorld::FPoint InteractGoal;
 	MmoScreen::FTouchGestures Gestures;

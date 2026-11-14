@@ -1,4 +1,6 @@
 #include "UI/MmoUiManager.h"
+#include "UI/MmoChatWidget.h"
+#include "UI/MmoHudWidget.h"
 
 #include <utility>
 
@@ -466,6 +468,16 @@ void UMmoUiManager::ToggleMap()
 	else if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
 	{
 		Open(EScreen::Map);
+	}
+}
+
+void UMmoUiManager::FocusChat()
+{
+	UMmoHudWidget* Hud = Cast<UMmoHudWidget>(Widgets.FindRef(Key(EScreen::Hud)));
+	// 죽은 동안에도 채팅한다(서버가 받음. 41).
+	if (Hud && Stack.IsOpen(EScreen::Hud) && Hud->Chat())
+	{
+		Hud->Chat()->Focus();
 	}
 }
 

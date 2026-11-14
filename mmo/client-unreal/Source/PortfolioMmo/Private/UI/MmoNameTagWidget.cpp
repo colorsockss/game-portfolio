@@ -39,6 +39,17 @@ void UMmoNameTagWidget::SetStatus(const FString& Status)
 	StatusText->SetVisibility(Status.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
 }
 
+void UMmoNameTagWidget::SetBubble(const FString& Text)
+{
+	if (Text == ShownBubble)
+	{
+		return;
+	}
+	ShownBubble = Text;
+	BubbleText->SetText(FText::FromString(Text));
+	Bubble->SetVisibility(Text.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+}
+
 void UMmoNameTagWidget::SetProgress(float Ratio)
 {
 	if (Ratio == ShownProgress)

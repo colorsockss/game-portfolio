@@ -174,6 +174,17 @@ namespace PortfolioMmo.Contract.Tests
             Assert.Equal(10, FrameSize(new Packet { AttackSwing = new AttackSwing { AttackerId = 1234, TargetId = 1235 } }));
         }
 
+        /// <summary>
+        /// 가장 긴 Chat(180바이트의 글, 한글 12자의 받는 사람)도 프레임이 클라이언트 패킷의 상한(256바이트) 안이다(41).
+        /// </summary>
+        [Fact]
+        public void LongestChatFitsTheClientPacketLimit()
+        {
+            var chat = new Chat { Channel = ChatChannel.Whisper, To = new string('가', 12), Text = new string('가', 60) };
+            Assert.Equal(180, System.Text.Encoding.UTF8.GetByteCount(chat.Text));
+            Assert.InRange(FrameSize(new Packet { Chat = chat }), 1, 256);
+        }
+
         private static long FrameSize(Packet packet)
         {
             using var stream = new MemoryStream();

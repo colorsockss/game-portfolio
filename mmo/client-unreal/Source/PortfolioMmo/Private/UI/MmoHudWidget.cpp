@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Game/MmoCoordinates.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/ProgressBar.h"
@@ -17,6 +18,7 @@
 #include "Game/MmoPlayerController.h"
 #include "Input/MmoKeys.h"
 #include "UI/MmoButtonWidget.h"
+#include "UI/MmoChatWidget.h"
 #include "UI/MmoIcons.h"
 #include "GameFramework/Pawn.h"
 #include "Net/MmoConnection.h"
@@ -62,6 +64,15 @@ void UMmoHudWidget::NativeOnInitialized()
 		}
 	});
 	TargetButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleTargetClicked);
+	WhisperButton->OnClickedNative.AddWeakLambda(this, [this]
+	{
+		const auto& Entities = GetGameInstance()->GetSubsystem<UMmoSession>()->World().Entities();
+		const auto Found = Entities.find(ShownTarget);
+		if (Found != Entities.end())
+		{
+			ChatBox->StartWhisper(UTF8_TO_TCHAR(Found->second.Info.name().c_str()));
+		}
+	});
 	InteractButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleInteractClicked);
 	SettingsButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleSettingsClicked);
 	CharacterButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter(); });
@@ -292,7 +303,10 @@ void UMmoHudWidget::ShowTarget()
 			Name = MmoText::Format(this, TEXT("hud.level"), { Name, FString::FromInt(Info.level()) }).ToString();
 		}
 		TargetNameText->SetText(FText::FromString(Name));
-		TargetPanel->SetVisibility(ESlateVisibility::HitTestInvisible);
+		// 귓속말 버튼만 누를 수 있게 판은 자식만 입력을 받는다(41).
+		TargetPanel->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		const bool bOtherPlayer = Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER && Found->first != Session->World().SelfId();
+		WhisperButton->SetVisibility(bOtherPlayer ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	}
 	ShowBar(*TargetHpBar, *TargetHpText, Info.hp(), Info.max_hp(), ShownTargetHp);
 }
@@ -303,6 +317,11 @@ void UMmoHudWidget::NativeConstruct()
 	// 조이스틱은 터치 기기(와 Mac에서 -faketouches로 시험할 때)에만 보인다.
 	const bool bTouch = FPlatformMisc::SupportsTouchInput() || FSlateApplication::Get().IsFakingTouchEvents();
 	Joystick->SetVisibility(bTouch ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	// 채팅창은 생성기가 조이스틱 위에 두었다. 조이스틱이 없으면 그 자리로 내린다(41).
+	if (!bTouch)
+	{
+		Cast<UCanvasPanelSlot>(ChatBox->Slot)->SetPosition(Cast<UCanvasPanelSlot>(Joystick->Slot)->GetPosition());
+	}
 	ShownZone = MAX_uint32;
 	ShownHp = MAX_uint64;
 	ShownMp = MAX_uint64;

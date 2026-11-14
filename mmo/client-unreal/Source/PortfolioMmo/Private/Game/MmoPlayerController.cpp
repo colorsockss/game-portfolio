@@ -108,6 +108,9 @@ void AMmoPlayerController::SetupInputComponent()
 	AutoHuntAction = NewObject<UInputAction>(this, TEXT("AutoHunt"));
 	AutoHuntAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(AutoHuntAction, MmoKeys::KeyOf(EMmoAction::AutoHunt));
+	ChatAction = NewObject<UInputAction>(this, TEXT("Chat"));
+	ChatAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(ChatAction, MmoKeys::KeyOf(EMmoAction::Chat));
 	SkillsAction = NewObject<UInputAction>(this, TEXT("Skills"));
 	SkillsAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(SkillsAction, MmoKeys::KeyOf(EMmoAction::Skills));
@@ -159,6 +162,7 @@ void AMmoPlayerController::SetupInputComponent()
 	});
 	Enhanced->BindActionValueLambda(AutoHuntAction, ETriggerEvent::Started, [this](const FInputActionValue&) { ToggleAutoHunt(); });
 	Enhanced->BindActionValueLambda(MapAction, ETriggerEvent::Started, [this](const FInputActionValue&) { GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleMap(); });
+	Enhanced->BindActionValueLambda(ChatAction, ETriggerEvent::Started, [this](const FInputActionValue&) { GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->FocusChat(); });
 	Enhanced->BindActionValueLambda(SkillsAction, ETriggerEvent::Started, [this](const FInputActionValue&)
 	{
 		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleSkills();

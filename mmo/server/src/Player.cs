@@ -71,6 +71,13 @@ namespace PortfolioMmo.Server
         /// </summary>
         internal bool QuickslotsChanged { get; set; }
 
+        /// <summary>
+        /// 지난 채팅의 틱 + 1(0은 아직 없음)을 돌려 쓰는 칸(41). 칸 수가 Constants.chatPerSecond이고, 가장 오래된 칸이 1초 안이면 더 보내지 못한다.
+        /// </summary>
+        internal uint[] ChatTicks { get; set; } = System.Array.Empty<uint>();
+
+        internal int NextChatTick { get; set; }
+
         public NameColor NameColor { get; private set; }
 
         public uint WeaponItemId { get; private set; }

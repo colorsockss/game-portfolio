@@ -16,6 +16,7 @@ class UImage;
 class UButton;
 
 class UMmoButtonWidget;
+class UMmoChatWidget;
 class UMmoIcons;
 class UMmoJoystickWidget;
 class UProgressBar;
@@ -30,7 +31,7 @@ namespace MmoWorld
  * 게임 중의 HUD(WBP_Hud의 기반). 내 체력·마나 바(지금/최대), 걸린 효과와 전투 상태의 글자 아이콘과 남은 시간, 내 대상의 정보(이름과 레벨,
  * 체력 바), 퀵슬롯(쿨다운 가림, PC는 키 표의 키 표시)과 내 진행 바(시전), 터치 기기의 가상 조이스틱과 공격·대상 고르기·상호작용 버튼,
  * 메뉴 버튼(가방, 캐릭터, 스킬, 퀘스트, 설정. 설정 말고는 그 창을 만드는 항목 32, 31, 36, 50이 잇기 전까지 누를 수 없음),
- * 내 캐릭터가 있는 구역(이름, 권장 레벨, 안전 지대)을 보인다. 경험치 바(31) 등은 그 항목이 더한다.
+ * 내 캐릭터가 있는 구역(이름, 권장 레벨, 안전 지대)과 채팅창(41)을 보인다. 경험치 바(31) 등은 그 항목이 더한다.
  */
 UCLASS(Abstract)
 class UMmoHudWidget : public UUserWidget
@@ -44,6 +45,9 @@ public:
 	/** 미니맵 그림의 한 변(픽셀)과 보이는 둘레(m). */
 	static constexpr float MinimapSize = 180.0f;
 	static constexpr double MinimapMeters = 60.0;
+
+	/** 채팅창(41). PC의 Enter가 화면 관리자를 거쳐 초점을 준다. */
+	UMmoChatWidget* Chat() const { return ChatBox; }
 
 protected:
 	virtual void NativeOnInitialized() override;
@@ -138,6 +142,13 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TargetHpText;
+
+	/** 대상이 다른 플레이어면 보이는 귓속말 버튼(41). 누르면 채팅창을 그 이름의 귓속말로 연다. */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> WhisperButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoChatWidget> ChatBox;
 
 	/** 미니맵(76): 내 자리를 가운데에 둔 둘레 60 m. 북쪽이 위로 고정이고 내 방향은 화살표가 돈다. 누르면 전체 지도를 연다. */
 	UPROPERTY(meta = (BindWidget))

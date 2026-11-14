@@ -14,6 +14,7 @@ class UTextBlock;
  * 이름표 층. 화면 하나의 캔버스에서 프레임마다 시야 안 개체(내 캐릭터 포함)의 머리 위를 화면 좌표로 바꿔 이름표를 놓는다.
  * 이름표 위젯은 개체마다 만들지 않고 풀에서 꺼내 쓰고, 개체가 나가거나 화면 밖이면 감춰 풀로 돌린다. 몬스터는 이름(Strings의 키, 74 전)과
  * 레벨을, 선공 몬스터는 다른 색으로 보이고, 플레이어와 몬스터는 체력 바를 단다.
+ * 주변 채팅의 말풍선(41)도 이 층의 이름표가 BubbleSeconds 동안 띄운다(채팅을 받을 때 그 액터가 없으면 띄우지 않음).
  * 피해 숫자도 이 층에서 그린다: 내가 주거나 받은 피해만 맞은 개체의 머리 위에 1초 동안 떠오르며 사라지고, 치명타는 크게 그린다(풀로 돌려씀).
  */
 UCLASS()
@@ -50,6 +51,9 @@ private:
 	TArray<TObjectPtr<UTextBlock>> NumberPool;
 
 	FDelegateHandle CombatHandle;
+
+	/** 떠 있는 말풍선(개체 번호 → 글과 지우는 때). */
+	TMap<uint32, TPair<FString, double>> Bubbles;
 
 	UPROPERTY()
 	TObjectPtr<UCanvasPanel> Canvas;

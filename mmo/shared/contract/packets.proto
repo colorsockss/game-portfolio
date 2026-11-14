@@ -76,6 +76,10 @@ message Packet {
     StorageChanged storage_changed = 320;
     StorageDeposit storage_deposit = 321;
     StorageWithdraw storage_withdraw = 322;
+
+    // 400–499: 사회(채팅, 파티)
+    Chat chat = 400;
+    ChatReceived chat_received = 401;
   }
 }
 
@@ -631,6 +635,40 @@ message StorageWithdraw {
   uint32 request_id = 3;
 }
 
+// 클라이언트 → 서버. 채팅 한 줄(41). 요청 번호가 없어 실패는 ActionFailed(채팅)이고, 성공하면 받는 연결들에 ChatReceived가 간다(보낸 본인 포함).
+// 가장 긴 것(180바이트의 글, 한글 12자의 받는 사람)도 프레임이 클라이언트 패킷의 상한(256바이트) 안이다.
+message Chat {
+  ChatChannel channel = 1;
+  // 받는 사람의 캐릭터 이름. 귓속말에만 채운다(영문은 대소문자를 가리지 않음).
+  string to = 2;
+  // 글. UTF-8로 Constants.chatMaxBytes 바이트까지다.
+  string text = 3;
+}
+
+// 서버 → 클라이언트. 채팅 한 줄(41). 받는 쪽이 보낸 사람의 개체를 받지 않았어도 그릴 수 있게 이름을 함께 싣는다. 저장하지 않는다.
+message ChatReceived {
+  ChatChannel channel = 1;
+  // 보낸 사람의 개체 번호. 받는 쪽이 그 개체를 받았으면 말풍선을 띄운다.
+  uint32 sender_id = 2;
+  string sender_name = 3;
+  // 받는 사람의 이름. 귓속말에만 싣는다(보낸 쪽의 채팅창이 누구에게 보냈는지를 그림).
+  string to = 4;
+  string text = 5;
+}
+
+// 채팅의 채널(41). 시스템 줄은 서버가 보내는 글이 아니라 클라이언트가 알림 패킷을 받아 넣는 줄이라 여기에 없다.
+enum ChatChannel {
+  CHAT_CHANNEL_UNSPECIFIED = 0;
+  // 주변: 보낸 사람의 둘레 9개 시야 칸의 플레이어.
+  CHAT_CHANNEL_NEARBY = 1;
+  // 파티: 파티원(42).
+  CHAT_CHANNEL_PARTY = 2;
+  // 전체: 월드에 들어와 있는 모든 연결.
+  CHAT_CHANNEL_WORLD = 3;
+  // 귓속말: 이름으로 찾은 받는 사람과 보낸 사람.
+  CHAT_CHANNEL_WHISPER = 4;
+}
+
 // 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
 message RequestResult {
   uint32 request_id = 1;
@@ -700,6 +738,14 @@ enum FailReason {
   FAIL_REASON_UNSELLABLE = 26;
   // 창고에 넣을 자리가 없다(75).
   FAIL_REASON_STORAGE_FULL = 27;
+  // 귓속말의 받는 사람이 월드에 없다(41).
+  FAIL_REASON_NO_RECIPIENT = 28;
+  // 채팅의 글이 Constants의 길이(UTF-8 바이트)를 넘는다(41).
+  FAIL_REASON_TEXT_TOO_LONG = 29;
+  // 채팅을 너무 자주 보냈다(Constants의 초당 횟수. 연결마다의 빈도 제한 TOO_FAST와 따로 센다. 41).
+  FAIL_REASON_CHAT_TOO_FAST = 30;
+  // 파티가 없는데 파티 채팅을 보냈다(41. 파티는 42).
+  FAIL_REASON_NO_PARTY = 31;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.

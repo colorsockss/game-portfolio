@@ -249,9 +249,11 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kAutoHuntRangeFieldNumber = 27,
     kAutoHuntMpPercentFieldNumber = 29,
     kAutoHuntExcludeMsFieldNumber = 30,
+    kAutoHuntStallMsFieldNumber = 31,
     kAutoHuntManualPauseMsFieldNumber = 32,
     kStorageSlotsFieldNumber = 33,
-    kAutoHuntStallMsFieldNumber = 31,
+    kChatMaxBytesFieldNumber = 34,
+    kChatPerSecondFieldNumber = 35,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -543,6 +545,16 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_auto_hunt_exclude_ms(::uint32_t value);
 
   public:
+  // uint32 auto_hunt_stall_ms = 31;
+  void clear_auto_hunt_stall_ms() ;
+  [[nodiscard]] ::uint32_t auto_hunt_stall_ms() const;
+  void set_auto_hunt_stall_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_auto_hunt_stall_ms() const;
+  void _internal_set_auto_hunt_stall_ms(::uint32_t value);
+
+  public:
   // uint32 auto_hunt_manual_pause_ms = 32;
   void clear_auto_hunt_manual_pause_ms() ;
   [[nodiscard]] ::uint32_t auto_hunt_manual_pause_ms() const;
@@ -563,21 +575,31 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_storage_slots(::uint32_t value);
 
   public:
-  // uint32 auto_hunt_stall_ms = 31;
-  void clear_auto_hunt_stall_ms() ;
-  [[nodiscard]] ::uint32_t auto_hunt_stall_ms() const;
-  void set_auto_hunt_stall_ms(::uint32_t value);
+  // uint32 chat_max_bytes = 34;
+  void clear_chat_max_bytes() ;
+  [[nodiscard]] ::uint32_t chat_max_bytes() const;
+  void set_chat_max_bytes(::uint32_t value);
 
   private:
-  ::uint32_t _internal_auto_hunt_stall_ms() const;
-  void _internal_set_auto_hunt_stall_ms(::uint32_t value);
+  ::uint32_t _internal_chat_max_bytes() const;
+  void _internal_set_chat_max_bytes(::uint32_t value);
+
+  public:
+  // uint32 chat_per_second = 35;
+  void clear_chat_per_second() ;
+  [[nodiscard]] ::uint32_t chat_per_second() const;
+  void set_chat_per_second(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_chat_per_second() const;
+  void _internal_set_chat_per_second(::uint32_t value);
 
   public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 32,
+      ::google::protobuf::internal::TcParseTable<5, 34,
                           0, 0,
                           7>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -604,7 +626,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
         ::google::protobuf::internal::InternalVisibility visibility,
         ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
         const Constants& from_msg);
-    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::HasBits<2> _has_bits_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::uint32_t field_size_;
     ::uint32_t combat_duration_ms_;
@@ -635,9 +657,11 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     double auto_hunt_range_;
     ::uint32_t auto_hunt_mp_percent_;
     ::uint32_t auto_hunt_exclude_ms_;
+    ::uint32_t auto_hunt_stall_ms_;
     ::uint32_t auto_hunt_manual_pause_ms_;
     ::uint32_t storage_slots_;
-    ::uint32_t auto_hunt_stall_ms_;
+    ::uint32_t chat_max_bytes_;
+    ::uint32_t chat_per_second_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1360,7 +1384,7 @@ inline void Constants::_internal_set_auto_hunt_exclude_ms(::uint32_t value) {
 inline void Constants::clear_auto_hunt_stall_ms() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.auto_hunt_stall_ms_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x80000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x20000000U);
 }
 inline ::uint32_t Constants::auto_hunt_stall_ms() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_stall_ms)
@@ -1368,7 +1392,7 @@ inline ::uint32_t Constants::auto_hunt_stall_ms() const {
 }
 inline void Constants::set_auto_hunt_stall_ms(::uint32_t value) {
   _internal_set_auto_hunt_stall_ms(value);
-  SetHasBit(_impl_._has_bits_[0], 0x80000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x20000000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_stall_ms)
 }
 inline ::uint32_t Constants::_internal_auto_hunt_stall_ms() const {
@@ -1384,7 +1408,7 @@ inline void Constants::_internal_set_auto_hunt_stall_ms(::uint32_t value) {
 inline void Constants::clear_auto_hunt_manual_pause_ms() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.auto_hunt_manual_pause_ms_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x20000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x40000000U);
 }
 inline ::uint32_t Constants::auto_hunt_manual_pause_ms() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_manual_pause_ms)
@@ -1392,7 +1416,7 @@ inline ::uint32_t Constants::auto_hunt_manual_pause_ms() const {
 }
 inline void Constants::set_auto_hunt_manual_pause_ms(::uint32_t value) {
   _internal_set_auto_hunt_manual_pause_ms(value);
-  SetHasBit(_impl_._has_bits_[0], 0x20000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x40000000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_manual_pause_ms)
 }
 inline ::uint32_t Constants::_internal_auto_hunt_manual_pause_ms() const {
@@ -1408,7 +1432,7 @@ inline void Constants::_internal_set_auto_hunt_manual_pause_ms(::uint32_t value)
 inline void Constants::clear_storage_slots() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.storage_slots_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x40000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x80000000U);
 }
 inline ::uint32_t Constants::storage_slots() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.storage_slots)
@@ -1416,7 +1440,7 @@ inline ::uint32_t Constants::storage_slots() const {
 }
 inline void Constants::set_storage_slots(::uint32_t value) {
   _internal_set_storage_slots(value);
-  SetHasBit(_impl_._has_bits_[0], 0x40000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x80000000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.storage_slots)
 }
 inline ::uint32_t Constants::_internal_storage_slots() const {
@@ -1426,6 +1450,54 @@ inline ::uint32_t Constants::_internal_storage_slots() const {
 inline void Constants::_internal_set_storage_slots(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.storage_slots_ = value;
+}
+
+// uint32 chat_max_bytes = 34;
+inline void Constants::clear_chat_max_bytes() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.chat_max_bytes_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000001U);
+}
+inline ::uint32_t Constants::chat_max_bytes() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.chat_max_bytes)
+  return _internal_chat_max_bytes();
+}
+inline void Constants::set_chat_max_bytes(::uint32_t value) {
+  _internal_set_chat_max_bytes(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.chat_max_bytes)
+}
+inline ::uint32_t Constants::_internal_chat_max_bytes() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.chat_max_bytes_;
+}
+inline void Constants::_internal_set_chat_max_bytes(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.chat_max_bytes_ = value;
+}
+
+// uint32 chat_per_second = 35;
+inline void Constants::clear_chat_per_second() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.chat_per_second_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000002U);
+}
+inline ::uint32_t Constants::chat_per_second() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.chat_per_second)
+  return _internal_chat_per_second();
+}
+inline void Constants::set_chat_per_second(::uint32_t value) {
+  _internal_set_chat_per_second(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.chat_per_second)
+}
+inline ::uint32_t Constants::_internal_chat_per_second() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.chat_per_second_;
+}
+inline void Constants::_internal_set_chat_per_second(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.chat_per_second_ = value;
 }
 
 #ifdef __GNUC__

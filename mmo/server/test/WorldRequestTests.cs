@@ -57,7 +57,7 @@ namespace PortfolioMmo.Server.Tests
             List<Packet> answers = Take(knight);
             Assert.Equal(Packet.BodyOneofCase.Pong, answers[0].BodyCase);
             Assert.Equal(
-                new[] { Failed(FailReason.Stunned), SkillFailedFor(FailReason.Stunned, RequestKind.Skill), SkillFailedFor(FailReason.Stunned, RequestKind.Revive) },
+                new[] { Failed(FailReason.Stunned), FailedFor(FailReason.Stunned, RequestKind.Skill), FailedFor(FailReason.Stunned, RequestKind.Revive) },
                 answers.Skip(1).Take(3));
             Assert.Equal(Packet.BodyOneofCase.PositionReset, answers[4].BodyCase);
 
@@ -235,7 +235,7 @@ namespace PortfolioMmo.Server.Tests
             await running;
         }
 
-        private static Packet SkillFailedFor(FailReason reason, RequestKind request)
+        private static Packet FailedFor(FailReason reason, RequestKind request)
         {
             return new Packet { ActionFailed = new ActionFailed { Reason = reason, Request = request } };
         }

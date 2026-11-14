@@ -1,7 +1,7 @@
 #pragma once
 
-// 개발 명령(68. 엔진 없는 코드): 글 한 줄을 DevCommand로 보낸다. 지금은 개발 빌드의 콘솔 명령 Mmo.Dev가 부르고, 채팅(41)이 생기면
-// 채팅 입력의 /로 시작하는 줄도 이것으로 보낸다. --dev 서버만 실행하고, 실패는 다른 실패처럼 알림 층에 뜬다(28).
+// 개발 명령(68. 엔진 없는 코드): 글 한 줄을 DevCommand로 보낸다. 채팅 입력의 /로 시작하는 줄(41, ChatInputPacket)과 개발 빌드의 콘솔 명령
+// Mmo.Dev가 부른다. --dev 서버만 실행하고, 실패는 다른 실패처럼 알림 층에 뜬다(28).
 #include <string>
 
 #include "Protocol/MmoPackets.h"

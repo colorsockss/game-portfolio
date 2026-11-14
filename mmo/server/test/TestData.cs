@@ -183,6 +183,7 @@ namespace PortfolioMmo.Server.Tests
                 FieldSize = fieldSize, CombatDurationMs = 5000, RegenPercent = 5, CombatRegenPercent = 1, CritChance = 0.05, CritMultiplier = 1.5, PlayerRadius = 0.34,
                 UnreachableMs = 5000, RepathDistance = 3, ReturnRangeMargin = 4, ReturnRegenPercent = 20, WanderPauseMinMs = 3000, WanderPauseMaxMs = 6000,
                 ReviveHpPercent = 30, DeadMonsterMs = 3000, InventorySlots = 60, StorageSlots = 3, DropLifetimeMs = 60000, OwnerOnlyMs = 10000, DropScatter = 1.5, InteractRange = 3, RateLimitTokens = 40, RateLimitRefillPerSecond = 30, RateLimitKickMs = 3000, RateLimitResetMs = 1000,
+                ChatMaxBytes = 180, ChatPerSecond = 2,
             };
         }
 

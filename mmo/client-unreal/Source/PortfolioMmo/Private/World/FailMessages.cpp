@@ -34,6 +34,10 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_NOT_ENOUGH_GOLD: return "fail.notEnoughGold";
 		case portfolio::mmo::FAIL_REASON_UNSELLABLE: return "fail.unsellable";
 		case portfolio::mmo::FAIL_REASON_STORAGE_FULL: return "fail.storageFull";
+		case portfolio::mmo::FAIL_REASON_NO_RECIPIENT: return "fail.noRecipient";
+		case portfolio::mmo::FAIL_REASON_TEXT_TOO_LONG: return "fail.textTooLong";
+		case portfolio::mmo::FAIL_REASON_CHAT_TOO_FAST: return "fail.chatTooFast";
+		case portfolio::mmo::FAIL_REASON_NO_PARTY: return "fail.noParty";
 		default: return "fail.other";
 		}
 	}

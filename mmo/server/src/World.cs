@@ -32,6 +32,7 @@ namespace PortfolioMmo.Server
         private readonly QuickslotSystem _quickslots;
         private readonly ShopSystem _shop;
         private readonly StorageSystem _storage;
+        private readonly ChatSystem _chat;
         private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
@@ -83,6 +84,7 @@ namespace PortfolioMmo.Server
 
             _shop = new ShopSystem(data, field, _inventory, shop);
             _storage = new StorageSystem(data, field, _inventory, keeper);
+            _chat = new ChatSystem(data, _entities, _grid);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
             _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
@@ -287,6 +289,10 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.DevCommand when player != null:
                     Answer(player, _dev?.Run(player, packet.DevCommand.Line) ?? Outcome.Fail(FailReason.InvalidCommand), RequestKind.Chat);
                     break;
+                // 채팅(41)은 죽은 동안과 기절한 동안에도 받는다(Blocked가 막지 않음).
+                case Packet.BodyOneofCase.Chat when player != null:
+                    Answer(player, _chat.Send(player, packet.Chat, Tick), RequestKind.Chat);
+                    break;
                 case Packet.BodyOneofCase.AttackStop when player != null:
                     _combat.Stop(player);
                     break;
@@ -344,7 +350,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 죽은 동안과 기절한 동안 막는 요청의 이유. 둘 다 연결 확인, 나가기, 공격 멈춤(그만두는 것이라 받음), 개발 명령을 받고, 죽은 동안에는 부활도 받는다.
+        /// 죽은 동안과 기절한 동안 막는 요청의 이유. 둘 다 연결 확인, 나가기, 공격 멈춤(그만두는 것이라 받음), 개발 명령, 채팅, 퀵슬롯을 받고, 죽은 동안에는 부활도 받는다.
         /// Move는 MovementSystem이 되돌린다. 막지 않으면 None이다.
         /// </summary>
         private static FailReason Blocked(Player player, Packet.BodyOneofCase body)

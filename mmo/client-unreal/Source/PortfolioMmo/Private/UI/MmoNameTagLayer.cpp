@@ -27,6 +27,8 @@ namespace
 	/** 피해 숫자가 떠 있는 시간(초)과 그동안 오르는 거리(화면 픽셀). */
 	constexpr float NumberLife = 1.0f;
 	constexpr float NumberRise = 60.0f;
+	/** 말풍선이 떠 있는 시간(초. 41). */
+	constexpr double BubbleSeconds = 5.0;
 
 	/** 선공 몬스터의 이름 색, 내가 받은 피해의 색, 치명타의 색. */
 	const FLinearColor AggressiveColor(1.0f, 0.45f, 0.3f);
@@ -148,8 +150,24 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 	}
 
 	UpdateNumbers(DeltaTime);
-	const UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
 	const MmoWorld::FWorldState& World = Session->World();
+	// 주변 채팅의 말풍선(41): 그 액터가 있을 때만 띄우고, 같은 개체의 새 채팅이 옛 말풍선을 바꾼다.
+	const double Now = FPlatformTime::Seconds();
+	for (const MmoWorld::FChatBubble& Bubble : Session->Chat().TakeBubbles())
+	{
+		if (Actors->FindActor(Bubble.EntityId))
+		{
+			Bubbles.Add(Bubble.EntityId, { UTF8_TO_TCHAR(Bubble.Text.c_str()), Now + BubbleSeconds });
+		}
+	}
+	for (auto It = Bubbles.CreateIterator(); It; ++It)
+	{
+		if (It.Value().Value <= Now || !World.Entities().contains(It.Key()))
+		{
+			It.RemoveCurrent();
+		}
+	}
 	TSet<uint32> Shown;
 	for (const auto& [Id, Entity] : World.Entities())
 	{
@@ -229,6 +247,8 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 		Tag.SetStatus(Status);
 		const std::optional<double> Progress = World.ProgressRatio(Entity, Session->Data(), FPlatformTime::Seconds());
 		Tag.SetProgress(Progress ? static_cast<float>(*Progress) : -1.0f);
+		const TPair<FString, double>* Bubble = Bubbles.Find(Id);
+		Tag.SetBubble(Bubble ? Bubble->Key : FString());
 		Cast<UCanvasPanelSlot>(Tag.Slot)->SetPosition(Position);
 		Shown.Add(Id);
 	}

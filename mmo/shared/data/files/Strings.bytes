@@ -845,3 +845,37 @@ $
 settings.quitQuestion게임을 끝낼까요?Quit the game?
 h
  settings.characterSelectQuestion'캐릭터 선택으로 돌아갈까요?Return to character select?
+R
+fail.noRecipient받는 사람이 없습니다.No one by that name is online.
+G
+fail.textTooLong글이 너무 깁니다.That message is too long.
+X
+fail.chatTooFast(채팅을 너무 자주 보냈습니다.You are chatting too fast.
+@
+fail.noParty파티가 없습니다.You are not in a party.
+
+chat.nearby주변Near
+
+
+chat.party파티Party
+
+
+chat.world전체World
+"
+chat.whisper	귓속말Whisper
+
+chat.system알림System
++
+	chat.line[{0}] {1}: {2}[{0}] {1}: {2}
+9
+chat.whisperTo[{0}] {1}에게: {2}[{0}] To {1}: {2}
+'
+chat.systemLine	[{0}] {1}	[{0}] {1}
+
+chat.to받는 사람To
+
+	chat.hint채팅Chat
+
+	chat.send	보내기Send
+$
+target.whisper	귓속말Whisper

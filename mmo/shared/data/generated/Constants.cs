@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLnBgoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKYBwoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -44,11 +44,12 @@ namespace PortfolioMmo.Data {
             "EhwKFGF1dG9faHVudF9tcF9wZXJjZW50GB0gASgNEhwKFGF1dG9faHVudF9l",
             "eGNsdWRlX21zGB4gASgNEhoKEmF1dG9faHVudF9zdGFsbF9tcxgfIAEoDRIh",
             "ChlhdXRvX2h1bnRfbWFudWFsX3BhdXNlX21zGCAgASgNEhUKDXN0b3JhZ2Vf",
-            "c2xvdHMYISABKA1CFKoCEVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
+            "c2xvdHMYISABKA0SFgoOY2hhdF9tYXhfYnl0ZXMYIiABKA0SFwoPY2hhdF9w",
+            "ZXJfc2Vjb25kGCMgASgNQhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond" }, null, null, null, null)
           }));
     }
     #endregion
@@ -122,6 +123,8 @@ namespace PortfolioMmo.Data {
       autoHuntStallMs_ = other.autoHuntStallMs_;
       autoHuntManualPauseMs_ = other.autoHuntManualPauseMs_;
       storageSlots_ = other.storageSlots_;
+      chatMaxBytes_ = other.chatMaxBytes_;
+      chatPerSecond_ = other.chatPerSecond_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -611,6 +614,36 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "chat_max_bytes" field.</summary>
+    public const int ChatMaxBytesFieldNumber = 34;
+    private uint chatMaxBytes_;
+    /// <summary>
+    /// 채팅 한 줄의 길이(UTF-8 바이트, 한글 60자. 41). Chat의 프레임이 클라이언트 패킷의 상한(256바이트) 안에 들게 하는 값이다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint ChatMaxBytes {
+      get { return chatMaxBytes_; }
+      set {
+        chatMaxBytes_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "chat_per_second" field.</summary>
+    public const int ChatPerSecondFieldNumber = 35;
+    private uint chatPerSecond_;
+    /// <summary>
+    /// 플레이어가 1초 안에 보낼 수 있는 채팅 수(41). 넘으면 "너무 자주 보냄"이다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint ChatPerSecond {
+      get { return chatPerSecond_; }
+      set {
+        chatPerSecond_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -658,6 +691,8 @@ namespace PortfolioMmo.Data {
       if (AutoHuntStallMs != other.AutoHuntStallMs) return false;
       if (AutoHuntManualPauseMs != other.AutoHuntManualPauseMs) return false;
       if (StorageSlots != other.StorageSlots) return false;
+      if (ChatMaxBytes != other.ChatMaxBytes) return false;
+      if (ChatPerSecond != other.ChatPerSecond) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -697,6 +732,8 @@ namespace PortfolioMmo.Data {
       if (AutoHuntStallMs != 0) hash ^= AutoHuntStallMs.GetHashCode();
       if (AutoHuntManualPauseMs != 0) hash ^= AutoHuntManualPauseMs.GetHashCode();
       if (StorageSlots != 0) hash ^= StorageSlots.GetHashCode();
+      if (ChatMaxBytes != 0) hash ^= ChatMaxBytes.GetHashCode();
+      if (ChatPerSecond != 0) hash ^= ChatPerSecond.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -843,6 +880,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(136, 2);
         output.WriteUInt32(StorageSlots);
       }
+      if (ChatMaxBytes != 0) {
+        output.WriteRawTag(144, 2);
+        output.WriteUInt32(ChatMaxBytes);
+      }
+      if (ChatPerSecond != 0) {
+        output.WriteRawTag(152, 2);
+        output.WriteUInt32(ChatPerSecond);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -981,6 +1026,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(136, 2);
         output.WriteUInt32(StorageSlots);
       }
+      if (ChatMaxBytes != 0) {
+        output.WriteRawTag(144, 2);
+        output.WriteUInt32(ChatMaxBytes);
+      }
+      if (ChatPerSecond != 0) {
+        output.WriteRawTag(152, 2);
+        output.WriteUInt32(ChatPerSecond);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1086,6 +1139,12 @@ namespace PortfolioMmo.Data {
       }
       if (StorageSlots != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(StorageSlots);
+      }
+      if (ChatMaxBytes != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(ChatMaxBytes);
+      }
+      if (ChatPerSecond != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(ChatPerSecond);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1194,6 +1253,12 @@ namespace PortfolioMmo.Data {
       }
       if (other.StorageSlots != 0) {
         StorageSlots = other.StorageSlots;
+      }
+      if (other.ChatMaxBytes != 0) {
+        ChatMaxBytes = other.ChatMaxBytes;
+      }
+      if (other.ChatPerSecond != 0) {
+        ChatPerSecond = other.ChatPerSecond;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1342,6 +1407,14 @@ namespace PortfolioMmo.Data {
             StorageSlots = input.ReadUInt32();
             break;
           }
+          case 272: {
+            ChatMaxBytes = input.ReadUInt32();
+            break;
+          }
+          case 280: {
+            ChatPerSecond = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -1487,6 +1560,14 @@ namespace PortfolioMmo.Data {
           }
           case 264: {
             StorageSlots = input.ReadUInt32();
+            break;
+          }
+          case 272: {
+            ChatMaxBytes = input.ReadUInt32();
+            break;
+          }
+          case 280: {
+            ChatPerSecond = input.ReadUInt32();
             break;
           }
         }
