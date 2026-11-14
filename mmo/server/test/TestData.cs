@@ -34,7 +34,7 @@ namespace PortfolioMmo.Server.Tests
 
         /// <summary>
         /// 시험용 아이템(32): 2001 체력 물약(50, 쿨다운 10초), 2002 상급 체력 물약(100, 같은 쿨다운), 2003 마나 물약(40), 2005 귀환 주문서(3초),
-        /// 3001 겹치는 재료, 1001 겹치지 않는 장비. 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
+        /// 3001 겹치는 재료, 1001 겹치지 않는 장비, 4001 골드. 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
         /// </summary>
         public static Items Items => new Items
         {
@@ -46,7 +46,16 @@ namespace PortfolioMmo.Server.Tests
                 new ItemsRow { Id = 2005, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.Recall, UseMs = 3000 },
                 new ItemsRow { Id = 3001, NameKey = "item.test", Kind = ItemKind.Material, Grade = ItemGrade.Common, Stackable = true },
                 new ItemsRow { Id = 1001, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 1, Slot = EquipSlot.Weapon },
+                new ItemsRow { Id = 4001, NameKey = "item.test", Kind = ItemKind.Gold, Grade = ItemGrade.Common, Stackable = true },
             },
+        };
+
+        /// <summary>
+        /// 시험용 드롭 묶음(33): 1은 재료 3001 둘과 골드 10을 늘 떨어뜨린다.
+        /// </summary>
+        public static DropGroups DropGroups => new DropGroups
+        {
+            Rows = { new DropGroupsRow { Id = 1, Items = { 3001 }, Chances = { 1.0 }, MinCounts = { 2 }, MaxCounts = { 2 }, GoldChance = 1.0, GoldMin = 10, GoldMax = 10 } },
         };
 
         /// <summary>
@@ -149,7 +158,7 @@ namespace PortfolioMmo.Server.Tests
             {
                 FieldSize = fieldSize, CombatDurationMs = 5000, RegenPercent = 5, CombatRegenPercent = 1, CritChance = 0.05, CritMultiplier = 1.5, PlayerRadius = 0.34,
                 UnreachableMs = 5000, RepathDistance = 3, ReturnRangeMargin = 4, ReturnRegenPercent = 20, WanderPauseMinMs = 3000, WanderPauseMaxMs = 6000,
-                ReviveHpPercent = 30, DeadMonsterMs = 3000, InventorySlots = 60, RateLimitTokens = 40, RateLimitRefillPerSecond = 30, RateLimitKickMs = 3000, RateLimitResetMs = 1000,
+                ReviveHpPercent = 30, DeadMonsterMs = 3000, InventorySlots = 60, DropLifetimeMs = 60000, OwnerOnlyMs = 10000, DropScatter = 1.5, InteractRange = 3, RateLimitTokens = 40, RateLimitRefillPerSecond = 30, RateLimitKickMs = 3000, RateLimitResetMs = 1000,
             };
         }
 
@@ -265,7 +274,7 @@ namespace PortfolioMmo.Server.Tests
             table.Rows.Add(zones);
             return new GameData(
                 Hash, constants ?? Constants(size), table, grid, classes ?? Classes, levels ?? Levels,
-                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items);
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups);
         }
 
         /// <summary>

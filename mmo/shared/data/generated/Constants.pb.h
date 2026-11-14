@@ -242,6 +242,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kRateLimitKickMsFieldNumber = 20,
     kRateLimitResetMsFieldNumber = 21,
     kInventorySlotsFieldNumber = 22,
+    kDropLifetimeMsFieldNumber = 23,
+    kDropScatterFieldNumber = 25,
+    kOwnerOnlyMsFieldNumber = 24,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -463,11 +466,41 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_inventory_slots(::uint32_t value);
 
   public:
+  // uint32 drop_lifetime_ms = 23;
+  void clear_drop_lifetime_ms() ;
+  [[nodiscard]] ::uint32_t drop_lifetime_ms() const;
+  void set_drop_lifetime_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_drop_lifetime_ms() const;
+  void _internal_set_drop_lifetime_ms(::uint32_t value);
+
+  public:
+  // double drop_scatter = 25;
+  void clear_drop_scatter() ;
+  [[nodiscard]] double drop_scatter() const;
+  void set_drop_scatter(double value);
+
+  private:
+  double _internal_drop_scatter() const;
+  void _internal_set_drop_scatter(double value);
+
+  public:
+  // uint32 owner_only_ms = 24;
+  void clear_owner_only_ms() ;
+  [[nodiscard]] ::uint32_t owner_only_ms() const;
+  void set_owner_only_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_owner_only_ms() const;
+  void _internal_set_owner_only_ms(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 22,
+      ::google::protobuf::internal::TcParseTable<5, 25,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -518,6 +551,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t rate_limit_kick_ms_;
     ::uint32_t rate_limit_reset_ms_;
     ::uint32_t inventory_slots_;
+    ::uint32_t drop_lifetime_ms_;
+    double drop_scatter_;
+    ::uint32_t owner_only_ms_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1066,6 +1102,78 @@ inline ::uint32_t Constants::_internal_inventory_slots() const {
 inline void Constants::_internal_set_inventory_slots(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.inventory_slots_ = value;
+}
+
+// uint32 drop_lifetime_ms = 23;
+inline void Constants::clear_drop_lifetime_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.drop_lifetime_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00400000U);
+}
+inline ::uint32_t Constants::drop_lifetime_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.drop_lifetime_ms)
+  return _internal_drop_lifetime_ms();
+}
+inline void Constants::set_drop_lifetime_ms(::uint32_t value) {
+  _internal_set_drop_lifetime_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00400000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.drop_lifetime_ms)
+}
+inline ::uint32_t Constants::_internal_drop_lifetime_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.drop_lifetime_ms_;
+}
+inline void Constants::_internal_set_drop_lifetime_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.drop_lifetime_ms_ = value;
+}
+
+// uint32 owner_only_ms = 24;
+inline void Constants::clear_owner_only_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.owner_only_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x01000000U);
+}
+inline ::uint32_t Constants::owner_only_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.owner_only_ms)
+  return _internal_owner_only_ms();
+}
+inline void Constants::set_owner_only_ms(::uint32_t value) {
+  _internal_set_owner_only_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x01000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.owner_only_ms)
+}
+inline ::uint32_t Constants::_internal_owner_only_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.owner_only_ms_;
+}
+inline void Constants::_internal_set_owner_only_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.owner_only_ms_ = value;
+}
+
+// double drop_scatter = 25;
+inline void Constants::clear_drop_scatter() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.drop_scatter_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00800000U);
+}
+inline double Constants::drop_scatter() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.drop_scatter)
+  return _internal_drop_scatter();
+}
+inline void Constants::set_drop_scatter(double value) {
+  _internal_set_drop_scatter(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00800000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.drop_scatter)
+}
+inline double Constants::_internal_drop_scatter() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.drop_scatter_;
+}
+inline void Constants::_internal_set_drop_scatter(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.drop_scatter_ = value;
 }
 
 #ifdef __GNUC__

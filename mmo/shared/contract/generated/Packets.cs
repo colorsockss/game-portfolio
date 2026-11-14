@@ -24,7 +24,7 @@ namespace PortfolioMmo.Contract {
     static PacketsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1wYWNrZXRzLnByb3RvEg1wb3J0Zm9saW8ubW1vIvkQCgZQYWNrZXQSJQoF",
+            "Cg1wYWNrZXRzLnByb3RvEg1wb3J0Zm9saW8ubW1vItMRCgZQYWNrZXQSJQoF",
             "bG9naW4YASABKAsyFC5wb3J0Zm9saW8ubW1vLkxvZ2luSAASMgoMbG9naW5f",
             "cmVzdWx0GAIgASgLMhoucG9ydGZvbGlvLm1tby5Mb2dpblJlc3VsdEgAEicK",
             "BmtpY2tlZBgDIAEoCzIVLnBvcnRmb2xpby5tbW8uS2lja2VkSAASIwoEcGlu",
@@ -72,7 +72,9 @@ namespace PortfolioMmo.Contract {
             "cnlIABI9ChFpbnZlbnRvcnlfY2hhbmdlZBivAiABKAsyHy5wb3J0Zm9saW8u",
             "bW1vLkludmVudG9yeUNoYW5nZWRIABIrCgh1c2VfaXRlbRiwAiABKAsyFi5w",
             "b3J0Zm9saW8ubW1vLlVzZUl0ZW1IABI3Cg5yZXF1ZXN0X3Jlc3VsdBixAiAB",
-            "KAsyHC5wb3J0Zm9saW8ubW1vLlJlcXVlc3RSZXN1bHRIAEIGCgRib2R5ImYK",
+            "KAsyHC5wb3J0Zm9saW8ubW1vLlJlcXVlc3RSZXN1bHRIABIpCgdwaWNrX3Vw",
+            "GLICIAEoCzIVLnBvcnRmb2xpby5tbW8uUGlja1VwSAASLQoJZHJvcF9pdGVt",
+            "GLMCIAEoCzIXLnBvcnRmb2xpby5tbW8uRHJvcEl0ZW1IAEIGCgRib2R5ImYK",
             "BUxvZ2luEjgKEHByb3RvY29sX3ZlcnNpb24YASABKA4yHi5wb3J0Zm9saW8u",
             "bW1vLlByb3RvY29sVmVyc2lvbhIQCghsb2dpbl9pZBgCIAEoCRIRCglkYXRh",
             "X2hhc2gYAyABKAYiSQoLTG9naW5SZXN1bHQSLgoGcmVzdWx0GAEgASgOMh4u",
@@ -136,72 +138,75 @@ namespace PortfolioMmo.Contract {
             "GAMgASgESABCBgoEd2hhdCJsChBJbnZlbnRvcnlDaGFuZ2VkEiYKBXNsb3Rz",
             "GAEgAygLMhcucG9ydGZvbGlvLm1tby5JdGVtU2xvdBIMCgRnb2xkGAIgASgE",
             "EiIKBWdhaW5zGAMgAygLMhMucG9ydGZvbGlvLm1tby5HYWluIisKB1VzZUl0",
-            "ZW0SDAoEc2xvdBgBIAEoDRISCgpyZXF1ZXN0X2lkGAIgASgNIk4KDVJlcXVl",
-            "c3RSZXN1bHQSEgoKcmVxdWVzdF9pZBgBIAEoDRIpCgZyZXN1bHQYAiABKA4y",
-            "GS5wb3J0Zm9saW8ubW1vLkZhaWxSZWFzb24iZgoMQWN0aW9uRmFpbGVkEikK",
-            "BnJlYXNvbhgBIAEoDjIZLnBvcnRmb2xpby5tbW8uRmFpbFJlYXNvbhIrCgdy",
-            "ZXF1ZXN0GAIgASgOMhoucG9ydGZvbGlvLm1tby5SZXF1ZXN0S2luZCIgCgtB",
-            "dHRhY2tTdGFydBIRCgl0YXJnZXRfaWQYASABKA0iDAoKQXR0YWNrU3RvcCI1",
-            "CgtBdHRhY2tTd2luZxITCgthdHRhY2tlcl9pZBgBIAEoDRIRCgl0YXJnZXRf",
-            "aWQYAiABKA0iXwoHRGFtYWdlZBITCgthdHRhY2tlcl9pZBgBIAEoDRIRCgl0",
-            "YXJnZXRfaWQYAiABKA0SDgoGZGFtYWdlGAMgASgNEgoKAmhwGAQgASgNEhAK",
-            "CGNyaXRpY2FsGAUgASgIIiUKBERpZWQSCgoCaWQYASABKA0SEQoJa2lsbGVy",
-            "X2lkGAIgASgNIggKBlJldml2ZSIxCgdSZXZpdmVkEgoKAmlkGAEgASgNEgoK",
-            "AmhwGAIgASgNEg4KBm1heF9ocBgDIAEoDSJFCghVc2VTa2lsbBIQCghza2ls",
-            "bF9pZBgBIAEoDRIRCgl0YXJnZXRfaWQYAiABKA0SFAoMZm9yY2VfYXR0YWNr",
-            "GAMgASgIIkMKCVNraWxsVXNlZBIRCgljYXN0ZXJfaWQYASABKA0SEAoIc2tp",
-            "bGxfaWQYAiABKA0SEQoJdGFyZ2V0X2lkGAMgASgNIkMKCFByb2dyZXNzEgoK",
-            "AmlkGAEgASgNEisKBXN0YXRlGAIgASgLMhwucG9ydGZvbGlvLm1tby5Qcm9n",
-            "cmVzc1N0YXRlIkoKEVByb2dyZXNzQ2FuY2VsbGVkEgoKAmlkGAEgASgNEikK",
-            "BnJlYXNvbhgCIAEoDjIZLnBvcnRmb2xpby5tbW8uRmFpbFJlYXNvbiJHCg1F",
-            "ZmZlY3RBcHBsaWVkEgoKAmlkGAEgASgNEioKBmVmZmVjdBgCIAEoCzIaLnBv",
-            "cnRmb2xpby5tbW8uRWZmZWN0U3RhdGUiNQoJQ29vbGRvd25zEigKB2VudHJp",
-            "ZXMYASADKAsyFy5wb3J0Zm9saW8ubW1vLkNvb2xkb3duIj4KCENvb2xkb3du",
-            "EhAKCHNraWxsX2lkGAEgASgNEhAKCGVuZF90aWNrGAIgASgNEg4KBnBvdGlv",
-            "bhgDIAEoDSJzChJQcm9qZWN0aWxlTGF1bmNoZWQSCgoCaWQYASABKA0SEQoJ",
-            "Y2FzdGVyX2lkGAIgASgNEgkKAXgYAyABKBESCQoBehgEIAEoERIMCgR0aWNr",
-            "GAUgASgNEgsKA3lhdxgGIAEoDRINCgVzcGVlZBgHIAEoDSIdCg9Qcm9qZWN0",
-            "aWxlRW5kZWQSCgoCaWQYASABKA0qUQoPUHJvdG9jb2xWZXJzaW9uEiAKHFBS",
-            "T1RPQ09MX1ZFUlNJT05fVU5TUEVDSUZJRUQQABIcChhQUk9UT0NPTF9WRVJT",
-            "SU9OX0NVUlJFTlQQAirMAgoIQ29uc3RhbnQSGAoUQ09OU1RBTlRfVU5TUEVD",
-            "SUZJRUQQABIcChhDT05TVEFOVF9VTklUU19QRVJfTUVURVIQIBIkCh9DT05T",
-            "VEFOVF9NQVBfSEFMRl9FWFRFTlRfTUVURVJTEIAIEhcKEkNPTlNUQU5UX1lB",
-            "V19TVEVQUxCAAhIdChlDT05TVEFOVF9USUNLU19QRVJfU0VDT05EEBQSKAok",
-            "Q09OU1RBTlRfTUFYX1NQRUVEX01FVEVSU19QRVJfU0VDT05EEAYSIgoeQ09O",
-            "U1RBTlRfUElOR19JTlRFUlZBTF9TRUNPTkRTEAUSIQodQ09OU1RBTlRfSURM",
-            "RV9USU1FT1VUX1NFQ09ORFMQDxIbChdDT05TVEFOVF9NQVhfQ0hBUkFDVEVS",
-            "UxAEEhwKGENPTlNUQU5UX1FVSUNLU0xPVF9DT1VOVBAIKsMBCg9Mb2dpblJl",
-            "c3VsdENvZGUSGAoUTE9HSU5fUkVTVUxUX0NPREVfT0sQABImCiJMT0dJTl9S",
-            "RVNVTFRfQ09ERV9JTlZBTElEX0xPR0lOX0lEEAESJgoiTE9HSU5fUkVTVUxU",
-            "X0NPREVfVkVSU0lPTl9NSVNNQVRDSBACEiEKHUxPR0lOX1JFU1VMVF9DT0RF",
-            "X1NFUlZFUl9GVUxMEAMSIwofTE9HSU5fUkVTVUxUX0NPREVfREFUQV9NSVNN",
-            "QVRDSBAEKskBCgpLaWNrUmVhc29uEhsKF0tJQ0tfUkVBU09OX1VOU1BFQ0lG",
-            "SUVEEAASHwobS0lDS19SRUFTT05fRFVQTElDQVRFX0xPR0lOEAESHwobS0lD",
-            "S19SRUFTT05fU0VSVkVSX1NIVVRET1dOEAISIAocS0lDS19SRUFTT05fTUFM",
-            "Rk9STUVEX1BBQ0tFVBADEhwKGEtJQ0tfUkVBU09OX0lETEVfVElNRU9VVBAE",
-            "EhwKGEtJQ0tfUkVBU09OX1JBVEVfTElNSVRFRBAFKmcKDkNoYXJhY3RlckNs",
-            "YXNzEh8KG0NIQVJBQ1RFUl9DTEFTU19VTlNQRUNJRklFRBAAEhoKFkNIQVJB",
-            "Q1RFUl9DTEFTU19LTklHSFQQARIYChRDSEFSQUNURVJfQ0xBU1NfTUFHRRAC",
-            "KvcBChlDcmVhdGVDaGFyYWN0ZXJSZXN1bHRDb2RlEiMKH0NSRUFURV9DSEFS",
-            "QUNURVJfUkVTVUxUX0NPREVfT0sQABItCilDUkVBVEVfQ0hBUkFDVEVSX1JF",
-            "U1VMVF9DT0RFX0lOVkFMSURfTkFNRRABEisKJ0NSRUFURV9DSEFSQUNURVJf",
-            "UkVTVUxUX0NPREVfTkFNRV9UQUtFThACEikKJUNSRUFURV9DSEFSQUNURVJf",
-            "UkVTVUxUX0NPREVfVE9PX01BTlkQAxIuCipDUkVBVEVfQ0hBUkFDVEVSX1JF",
-            "U1VMVF9DT0RFX0lOVkFMSURfQ0xBU1MQBCplChRFbnRlcldvcmxkUmVzdWx0",
-            "Q29kZRIeChpFTlRFUl9XT1JMRF9SRVNVTFRfQ09ERV9PSxAAEi0KKUVOVEVS",
-            "X1dPUkxEX1JFU1VMVF9DT0RFX05PX1NVQ0hfQ0hBUkFDVEVSEAEqqQEKCkVu",
-            "dGl0eUtpbmQSGwoXRU5USVRZX0tJTkRfVU5TUEVDSUZJRUQQABIWChJFTlRJ",
-            "VFlfS0lORF9QTEFZRVIQARIXChNFTlRJVFlfS0lORF9NT05TVEVSEAISEwoP",
-            "RU5USVRZX0tJTkRfTlBDEAMSGwoXRU5USVRZX0tJTkRfR0FUSEVSX05PREUQ",
-            "BBIbChdFTlRJVFlfS0lORF9HUk9VTkRfSVRFTRAFKlMKCU5hbWVDb2xvchIV",
-            "ChFOQU1FX0NPTE9SX05PUk1BTBAAEhgKFE5BTUVfQ09MT1JfQUdHUkVTU09S",
-            "EAESFQoRTkFNRV9DT0xPUl9PVVRMQVcQAiqLAQoMUHJvZ3Jlc3NLaW5kEhYK",
-            "ElBST0dSRVNTX0tJTkRfTk9ORRAAEhYKElBST0dSRVNTX0tJTkRfQ0FTVBAB",
-            "EhgKFFBST0dSRVNTX0tJTkRfR0FUSEVSEAISFwoTUFJPR1JFU1NfS0lORF9D",
-            "UkFGVBADEhgKFFBST0dSRVNTX0tJTkRfUkVDQUxMEAQqJQoJSXRlbVBsYWNl",
-            "EhgKFElURU1fUExBQ0VfSU5WRU5UT1JZEAAqRgoKR2FpblJlYXNvbhIbChdH",
-            "QUlOX1JFQVNPTl9VTlNQRUNJRklFRBAAEhsKF0dBSU5fUkVBU09OX0RFVl9D",
-            "T01NQU5EEAEqkgQKCkZhaWxSZWFzb24SFAoQRkFJTF9SRUFTT05fTk9ORRAA",
+            "ZW0SDAoEc2xvdBgBIAEoDRISCgpyZXF1ZXN0X2lkGAIgASgNIi8KBlBpY2tV",
+            "cBIRCgllbnRpdHlfaWQYASABKA0SEgoKcmVxdWVzdF9pZBgCIAEoDSI7CghE",
+            "cm9wSXRlbRIMCgRzbG90GAEgASgNEg0KBWNvdW50GAIgASgNEhIKCnJlcXVl",
+            "c3RfaWQYAyABKA0iTgoNUmVxdWVzdFJlc3VsdBISCgpyZXF1ZXN0X2lkGAEg",
+            "ASgNEikKBnJlc3VsdBgCIAEoDjIZLnBvcnRmb2xpby5tbW8uRmFpbFJlYXNv",
+            "biJmCgxBY3Rpb25GYWlsZWQSKQoGcmVhc29uGAEgASgOMhkucG9ydGZvbGlv",
+            "Lm1tby5GYWlsUmVhc29uEisKB3JlcXVlc3QYAiABKA4yGi5wb3J0Zm9saW8u",
+            "bW1vLlJlcXVlc3RLaW5kIiAKC0F0dGFja1N0YXJ0EhEKCXRhcmdldF9pZBgB",
+            "IAEoDSIMCgpBdHRhY2tTdG9wIjUKC0F0dGFja1N3aW5nEhMKC2F0dGFja2Vy",
+            "X2lkGAEgASgNEhEKCXRhcmdldF9pZBgCIAEoDSJfCgdEYW1hZ2VkEhMKC2F0",
+            "dGFja2VyX2lkGAEgASgNEhEKCXRhcmdldF9pZBgCIAEoDRIOCgZkYW1hZ2UY",
+            "AyABKA0SCgoCaHAYBCABKA0SEAoIY3JpdGljYWwYBSABKAgiJQoERGllZBIK",
+            "CgJpZBgBIAEoDRIRCglraWxsZXJfaWQYAiABKA0iCAoGUmV2aXZlIjEKB1Jl",
+            "dml2ZWQSCgoCaWQYASABKA0SCgoCaHAYAiABKA0SDgoGbWF4X2hwGAMgASgN",
+            "IkUKCFVzZVNraWxsEhAKCHNraWxsX2lkGAEgASgNEhEKCXRhcmdldF9pZBgC",
+            "IAEoDRIUCgxmb3JjZV9hdHRhY2sYAyABKAgiQwoJU2tpbGxVc2VkEhEKCWNh",
+            "c3Rlcl9pZBgBIAEoDRIQCghza2lsbF9pZBgCIAEoDRIRCgl0YXJnZXRfaWQY",
+            "AyABKA0iQwoIUHJvZ3Jlc3MSCgoCaWQYASABKA0SKwoFc3RhdGUYAiABKAsy",
+            "HC5wb3J0Zm9saW8ubW1vLlByb2dyZXNzU3RhdGUiSgoRUHJvZ3Jlc3NDYW5j",
+            "ZWxsZWQSCgoCaWQYASABKA0SKQoGcmVhc29uGAIgASgOMhkucG9ydGZvbGlv",
+            "Lm1tby5GYWlsUmVhc29uIkcKDUVmZmVjdEFwcGxpZWQSCgoCaWQYASABKA0S",
+            "KgoGZWZmZWN0GAIgASgLMhoucG9ydGZvbGlvLm1tby5FZmZlY3RTdGF0ZSI1",
+            "CglDb29sZG93bnMSKAoHZW50cmllcxgBIAMoCzIXLnBvcnRmb2xpby5tbW8u",
+            "Q29vbGRvd24iPgoIQ29vbGRvd24SEAoIc2tpbGxfaWQYASABKA0SEAoIZW5k",
+            "X3RpY2sYAiABKA0SDgoGcG90aW9uGAMgASgNInMKElByb2plY3RpbGVMYXVu",
+            "Y2hlZBIKCgJpZBgBIAEoDRIRCgljYXN0ZXJfaWQYAiABKA0SCQoBeBgDIAEo",
+            "ERIJCgF6GAQgASgREgwKBHRpY2sYBSABKA0SCwoDeWF3GAYgASgNEg0KBXNw",
+            "ZWVkGAcgASgNIh0KD1Byb2plY3RpbGVFbmRlZBIKCgJpZBgBIAEoDSpRCg9Q",
+            "cm90b2NvbFZlcnNpb24SIAocUFJPVE9DT0xfVkVSU0lPTl9VTlNQRUNJRklF",
+            "RBAAEhwKGFBST1RPQ09MX1ZFUlNJT05fQ1VSUkVOVBACKswCCghDb25zdGFu",
+            "dBIYChRDT05TVEFOVF9VTlNQRUNJRklFRBAAEhwKGENPTlNUQU5UX1VOSVRT",
+            "X1BFUl9NRVRFUhAgEiQKH0NPTlNUQU5UX01BUF9IQUxGX0VYVEVOVF9NRVRF",
+            "UlMQgAgSFwoSQ09OU1RBTlRfWUFXX1NURVBTEIACEh0KGUNPTlNUQU5UX1RJ",
+            "Q0tTX1BFUl9TRUNPTkQQFBIoCiRDT05TVEFOVF9NQVhfU1BFRURfTUVURVJT",
+            "X1BFUl9TRUNPTkQQBhIiCh5DT05TVEFOVF9QSU5HX0lOVEVSVkFMX1NFQ09O",
+            "RFMQBRIhCh1DT05TVEFOVF9JRExFX1RJTUVPVVRfU0VDT05EUxAPEhsKF0NP",
+            "TlNUQU5UX01BWF9DSEFSQUNURVJTEAQSHAoYQ09OU1RBTlRfUVVJQ0tTTE9U",
+            "X0NPVU5UEAgqwwEKD0xvZ2luUmVzdWx0Q29kZRIYChRMT0dJTl9SRVNVTFRf",
+            "Q09ERV9PSxAAEiYKIkxPR0lOX1JFU1VMVF9DT0RFX0lOVkFMSURfTE9HSU5f",
+            "SUQQARImCiJMT0dJTl9SRVNVTFRfQ09ERV9WRVJTSU9OX01JU01BVENIEAIS",
+            "IQodTE9HSU5fUkVTVUxUX0NPREVfU0VSVkVSX0ZVTEwQAxIjCh9MT0dJTl9S",
+            "RVNVTFRfQ09ERV9EQVRBX01JU01BVENIEAQqyQEKCktpY2tSZWFzb24SGwoX",
+            "S0lDS19SRUFTT05fVU5TUEVDSUZJRUQQABIfChtLSUNLX1JFQVNPTl9EVVBM",
+            "SUNBVEVfTE9HSU4QARIfChtLSUNLX1JFQVNPTl9TRVJWRVJfU0hVVERPV04Q",
+            "AhIgChxLSUNLX1JFQVNPTl9NQUxGT1JNRURfUEFDS0VUEAMSHAoYS0lDS19S",
+            "RUFTT05fSURMRV9USU1FT1VUEAQSHAoYS0lDS19SRUFTT05fUkFURV9MSU1J",
+            "VEVEEAUqZwoOQ2hhcmFjdGVyQ2xhc3MSHwobQ0hBUkFDVEVSX0NMQVNTX1VO",
+            "U1BFQ0lGSUVEEAASGgoWQ0hBUkFDVEVSX0NMQVNTX0tOSUdIVBABEhgKFENI",
+            "QVJBQ1RFUl9DTEFTU19NQUdFEAIq9wEKGUNyZWF0ZUNoYXJhY3RlclJlc3Vs",
+            "dENvZGUSIwofQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9PSxAAEi0K",
+            "KUNSRUFURV9DSEFSQUNURVJfUkVTVUxUX0NPREVfSU5WQUxJRF9OQU1FEAES",
+            "KwonQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9OQU1FX1RBS0VOEAIS",
+            "KQolQ1JFQVRFX0NIQVJBQ1RFUl9SRVNVTFRfQ09ERV9UT09fTUFOWRADEi4K",
+            "KkNSRUFURV9DSEFSQUNURVJfUkVTVUxUX0NPREVfSU5WQUxJRF9DTEFTUxAE",
+            "KmUKFEVudGVyV29ybGRSZXN1bHRDb2RlEh4KGkVOVEVSX1dPUkxEX1JFU1VM",
+            "VF9DT0RFX09LEAASLQopRU5URVJfV09STERfUkVTVUxUX0NPREVfTk9fU1VD",
+            "SF9DSEFSQUNURVIQASqpAQoKRW50aXR5S2luZBIbChdFTlRJVFlfS0lORF9V",
+            "TlNQRUNJRklFRBAAEhYKEkVOVElUWV9LSU5EX1BMQVlFUhABEhcKE0VOVElU",
+            "WV9LSU5EX01PTlNURVIQAhITCg9FTlRJVFlfS0lORF9OUEMQAxIbChdFTlRJ",
+            "VFlfS0lORF9HQVRIRVJfTk9ERRAEEhsKF0VOVElUWV9LSU5EX0dST1VORF9J",
+            "VEVNEAUqUwoJTmFtZUNvbG9yEhUKEU5BTUVfQ09MT1JfTk9STUFMEAASGAoU",
+            "TkFNRV9DT0xPUl9BR0dSRVNTT1IQARIVChFOQU1FX0NPTE9SX09VVExBVxAC",
+            "KosBCgxQcm9ncmVzc0tpbmQSFgoSUFJPR1JFU1NfS0lORF9OT05FEAASFgoS",
+            "UFJPR1JFU1NfS0lORF9DQVNUEAESGAoUUFJPR1JFU1NfS0lORF9HQVRIRVIQ",
+            "AhIXChNQUk9HUkVTU19LSU5EX0NSQUZUEAMSGAoUUFJPR1JFU1NfS0lORF9S",
+            "RUNBTEwQBColCglJdGVtUGxhY2USGAoUSVRFTV9QTEFDRV9JTlZFTlRPUlkQ",
+            "ACpfCgpHYWluUmVhc29uEhsKF0dBSU5fUkVBU09OX1VOU1BFQ0lGSUVEEAAS",
+            "GwoXR0FJTl9SRUFTT05fREVWX0NPTU1BTkQQARIXChNHQUlOX1JFQVNPTl9Q",
+            "SUNLX1VQEAIqywQKCkZhaWxSZWFzb24SFAoQRkFJTF9SRUFTT05fTk9ORRAA",
             "EhkKFUZBSUxfUkVBU09OX05PX1RBUkdFVBABEh4KGkZBSUxfUkVBU09OX0lO",
             "VkFMSURfVEFSR0VUEAISFAoQRkFJTF9SRUFTT05fREVBRBADEhgKFEZBSUxf",
             "UkVBU09OX05PVF9ERUFEEAQSGwoXRkFJTF9SRUFTT05fTk9UX0xFQVJORUQQ",
@@ -213,14 +218,16 @@ namespace PortfolioMmo.Contract {
             "QUlMX1JFQVNPTl9JTlZFTlRPUllfRlVMTBAOEhcKE0ZBSUxfUkVBU09OX05P",
             "X0lURU0QDxIdChlGQUlMX1JFQVNPTl9VTlVTQUJMRV9JVEVNEBASGQoVRkFJ",
             "TF9SRUFTT05fSU5fQ09NQkFUEBESGAoURkFJTF9SRUFTT05fVE9PX0ZBU1QQ",
-            "EiqMAQoLUmVxdWVzdEtpbmQSHAoYUkVRVUVTVF9LSU5EX1VOU1BFQ0lGSUVE",
-            "EAASFwoTUkVRVUVTVF9LSU5EX0FUVEFDSxABEhcKE1JFUVVFU1RfS0lORF9S",
-            "RVZJVkUQAhIWChJSRVFVRVNUX0tJTkRfU0tJTEwQAxIVChFSRVFVRVNUX0tJ",
-            "TkRfQ0hBVBAEQhiqAhVQb3J0Zm9saW9NbW8uQ29udHJhY3RiBnByb3RvMw=="));
+            "EhIcChhGQUlMX1JFQVNPTl9BTFJFQURZX0dPTkUQExIZChVGQUlMX1JFQVNP",
+            "Tl9OT1RfWU9VUlMQFCqMAQoLUmVxdWVzdEtpbmQSHAoYUkVRVUVTVF9LSU5E",
+            "X1VOU1BFQ0lGSUVEEAASFwoTUkVRVUVTVF9LSU5EX0FUVEFDSxABEhcKE1JF",
+            "UVVFU1RfS0lORF9SRVZJVkUQAhIWChJSRVFVRVNUX0tJTkRfU0tJTEwQAxIV",
+            "ChFSRVFVRVNUX0tJTkRfQ0hBVBAEQhiqAhVQb3J0Zm9saW9NbW8uQ29udHJh",
+            "Y3RiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Contract.ProtocolVersion), typeof(global::PortfolioMmo.Contract.Constant), typeof(global::PortfolioMmo.Contract.LoginResultCode), typeof(global::PortfolioMmo.Contract.KickReason), typeof(global::PortfolioMmo.Contract.CharacterClass), typeof(global::PortfolioMmo.Contract.CreateCharacterResultCode), typeof(global::PortfolioMmo.Contract.EnterWorldResultCode), typeof(global::PortfolioMmo.Contract.EntityKind), typeof(global::PortfolioMmo.Contract.NameColor), typeof(global::PortfolioMmo.Contract.ProgressKind), typeof(global::PortfolioMmo.Contract.ItemPlace), typeof(global::PortfolioMmo.Contract.GainReason), typeof(global::PortfolioMmo.Contract.FailReason), typeof(global::PortfolioMmo.Contract.RequestKind), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Packet), global::PortfolioMmo.Contract.Packet.Parser, new[]{ "Login", "LoginResult", "Kicked", "Ping", "Pong", "CharacterList", "CreateCharacter", "CreateCharacterResult", "EnterWorld", "EnterWorldResult", "LeaveWorld", "ActionFailed", "DevCommand", "Move", "PositionReset", "EntitiesEnter", "EntitiesLeave", "EntityMoves", "EntityState", "SelfVitals", "EntityVitals", "AttackStart", "AttackStop", "AttackSwing", "Damaged", "Died", "Revive", "Revived", "UseSkill", "SkillUsed", "Progress", "ProgressCancelled", "EffectApplied", "Cooldowns", "ProjectileLaunched", "ProjectileEnded", "SelfStats", "ExpGained", "Inventory", "InventoryChanged", "UseItem", "RequestResult" }, new[]{ "Body" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Packet), global::PortfolioMmo.Contract.Packet.Parser, new[]{ "Login", "LoginResult", "Kicked", "Ping", "Pong", "CharacterList", "CreateCharacter", "CreateCharacterResult", "EnterWorld", "EnterWorldResult", "LeaveWorld", "ActionFailed", "DevCommand", "Move", "PositionReset", "EntitiesEnter", "EntitiesLeave", "EntityMoves", "EntityState", "SelfVitals", "EntityVitals", "AttackStart", "AttackStop", "AttackSwing", "Damaged", "Died", "Revive", "Revived", "UseSkill", "SkillUsed", "Progress", "ProgressCancelled", "EffectApplied", "Cooldowns", "ProjectileLaunched", "ProjectileEnded", "SelfStats", "ExpGained", "Inventory", "InventoryChanged", "UseItem", "RequestResult", "PickUp", "DropItem" }, new[]{ "Body" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Login), global::PortfolioMmo.Contract.Login.Parser, new[]{ "ProtocolVersion", "LoginId", "DataHash" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.LoginResult), global::PortfolioMmo.Contract.LoginResult.Parser, new[]{ "Result" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Kicked), global::PortfolioMmo.Contract.Kicked.Parser, new[]{ "Reason" }, null, null, null, null),
@@ -255,6 +262,8 @@ namespace PortfolioMmo.Contract {
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.Gain), global::PortfolioMmo.Contract.Gain.Parser, new[]{ "Reason", "Item", "Gold" }, new[]{ "What" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.InventoryChanged), global::PortfolioMmo.Contract.InventoryChanged.Parser, new[]{ "Slots", "Gold", "Gains" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.UseItem), global::PortfolioMmo.Contract.UseItem.Parser, new[]{ "Slot", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.PickUp), global::PortfolioMmo.Contract.PickUp.Parser, new[]{ "EntityId", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.DropItem), global::PortfolioMmo.Contract.DropItem.Parser, new[]{ "Slot", "Count", "RequestId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.RequestResult), global::PortfolioMmo.Contract.RequestResult.Parser, new[]{ "RequestId", "Result" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.ActionFailed), global::PortfolioMmo.Contract.ActionFailed.Parser, new[]{ "Reason", "Request" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Contract.AttackStart), global::PortfolioMmo.Contract.AttackStart.Parser, new[]{ "TargetId" }, null, null, null, null),
@@ -484,6 +493,10 @@ namespace PortfolioMmo.Contract {
   public enum GainReason {
     [pbr::OriginalName("GAIN_REASON_UNSPECIFIED")] Unspecified = 0,
     [pbr::OriginalName("GAIN_REASON_DEV_COMMAND")] DevCommand = 1,
+    /// <summary>
+    /// 바닥 아이템을 주움(펫이 주운 것도 같음. 33, 96).
+    /// </summary>
+    [pbr::OriginalName("GAIN_REASON_PICK_UP")] PickUp = 2,
   }
 
   /// <summary>
@@ -563,6 +576,14 @@ namespace PortfolioMmo.Contract {
     /// 요청을 너무 자주 보내 빈도 제한이 버렸다(요청 번호가 있는 요청에만 RequestResult로 답한다. 28, 32).
     /// </summary>
     [pbr::OriginalName("FAIL_REASON_TOO_FAST")] TooFast = 18,
+    /// <summary>
+    /// 그 개체가 이미 없다(다른 사람이 먼저 주움, 사라짐. 33).
+    /// </summary>
+    [pbr::OriginalName("FAIL_REASON_ALREADY_GONE")] AlreadyGone = 19,
+    /// <summary>
+    /// 주인만 줍는 시간 안의 남의 드롭이다(33).
+    /// </summary>
+    [pbr::OriginalName("FAIL_REASON_NOT_YOURS")] NotYours = 20,
   }
 
   /// <summary>
@@ -746,6 +767,12 @@ namespace PortfolioMmo.Contract {
           break;
         case BodyOneofCase.RequestResult:
           RequestResult = other.RequestResult.Clone();
+          break;
+        case BodyOneofCase.PickUp:
+          PickUp = other.PickUp.Clone();
+          break;
+        case BodyOneofCase.DropItem:
+          DropItem = other.DropItem.Clone();
           break;
       }
 
@@ -1274,6 +1301,30 @@ namespace PortfolioMmo.Contract {
       }
     }
 
+    /// <summary>Field number for the "pick_up" field.</summary>
+    public const int PickUpFieldNumber = 306;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.PickUp PickUp {
+      get { return bodyCase_ == BodyOneofCase.PickUp ? (global::PortfolioMmo.Contract.PickUp) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.PickUp;
+      }
+    }
+
+    /// <summary>Field number for the "drop_item" field.</summary>
+    public const int DropItemFieldNumber = 307;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PortfolioMmo.Contract.DropItem DropItem {
+      get { return bodyCase_ == BodyOneofCase.DropItem ? (global::PortfolioMmo.Contract.DropItem) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.DropItem;
+      }
+    }
+
     private object body_;
     /// <summary>Enum of possible cases for the "body" oneof.</summary>
     public enum BodyOneofCase {
@@ -1320,6 +1371,8 @@ namespace PortfolioMmo.Contract {
       InventoryChanged = 303,
       UseItem = 304,
       RequestResult = 305,
+      PickUp = 306,
+      DropItem = 307,
     }
     private BodyOneofCase bodyCase_ = BodyOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1392,6 +1445,8 @@ namespace PortfolioMmo.Contract {
       if (!object.Equals(InventoryChanged, other.InventoryChanged)) return false;
       if (!object.Equals(UseItem, other.UseItem)) return false;
       if (!object.Equals(RequestResult, other.RequestResult)) return false;
+      if (!object.Equals(PickUp, other.PickUp)) return false;
+      if (!object.Equals(DropItem, other.DropItem)) return false;
       if (BodyCase != other.BodyCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1442,6 +1497,8 @@ namespace PortfolioMmo.Contract {
       if (bodyCase_ == BodyOneofCase.InventoryChanged) hash ^= InventoryChanged.GetHashCode();
       if (bodyCase_ == BodyOneofCase.UseItem) hash ^= UseItem.GetHashCode();
       if (bodyCase_ == BodyOneofCase.RequestResult) hash ^= RequestResult.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.PickUp) hash ^= PickUp.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.DropItem) hash ^= DropItem.GetHashCode();
       hash ^= (int) bodyCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1629,6 +1686,14 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(138, 19);
         output.WriteMessage(RequestResult);
       }
+      if (bodyCase_ == BodyOneofCase.PickUp) {
+        output.WriteRawTag(146, 19);
+        output.WriteMessage(PickUp);
+      }
+      if (bodyCase_ == BodyOneofCase.DropItem) {
+        output.WriteRawTag(154, 19);
+        output.WriteMessage(DropItem);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1807,6 +1872,14 @@ namespace PortfolioMmo.Contract {
         output.WriteRawTag(138, 19);
         output.WriteMessage(RequestResult);
       }
+      if (bodyCase_ == BodyOneofCase.PickUp) {
+        output.WriteRawTag(146, 19);
+        output.WriteMessage(PickUp);
+      }
+      if (bodyCase_ == BodyOneofCase.DropItem) {
+        output.WriteRawTag(154, 19);
+        output.WriteMessage(DropItem);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1942,6 +2015,12 @@ namespace PortfolioMmo.Contract {
       }
       if (bodyCase_ == BodyOneofCase.RequestResult) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(RequestResult);
+      }
+      if (bodyCase_ == BodyOneofCase.PickUp) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(PickUp);
+      }
+      if (bodyCase_ == BodyOneofCase.DropItem) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(DropItem);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2207,6 +2286,18 @@ namespace PortfolioMmo.Contract {
             RequestResult = new global::PortfolioMmo.Contract.RequestResult();
           }
           RequestResult.MergeFrom(other.RequestResult);
+          break;
+        case BodyOneofCase.PickUp:
+          if (PickUp == null) {
+            PickUp = new global::PortfolioMmo.Contract.PickUp();
+          }
+          PickUp.MergeFrom(other.PickUp);
+          break;
+        case BodyOneofCase.DropItem:
+          if (DropItem == null) {
+            DropItem = new global::PortfolioMmo.Contract.DropItem();
+          }
+          DropItem.MergeFrom(other.DropItem);
           break;
       }
 
@@ -2607,6 +2698,24 @@ namespace PortfolioMmo.Contract {
             RequestResult = subBuilder;
             break;
           }
+          case 2450: {
+            global::PortfolioMmo.Contract.PickUp subBuilder = new global::PortfolioMmo.Contract.PickUp();
+            if (bodyCase_ == BodyOneofCase.PickUp) {
+              subBuilder.MergeFrom(PickUp);
+            }
+            input.ReadMessage(subBuilder);
+            PickUp = subBuilder;
+            break;
+          }
+          case 2458: {
+            global::PortfolioMmo.Contract.DropItem subBuilder = new global::PortfolioMmo.Contract.DropItem();
+            if (bodyCase_ == BodyOneofCase.DropItem) {
+              subBuilder.MergeFrom(DropItem);
+            }
+            input.ReadMessage(subBuilder);
+            DropItem = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -3002,6 +3111,24 @@ namespace PortfolioMmo.Contract {
             }
             input.ReadMessage(subBuilder);
             RequestResult = subBuilder;
+            break;
+          }
+          case 2450: {
+            global::PortfolioMmo.Contract.PickUp subBuilder = new global::PortfolioMmo.Contract.PickUp();
+            if (bodyCase_ == BodyOneofCase.PickUp) {
+              subBuilder.MergeFrom(PickUp);
+            }
+            input.ReadMessage(subBuilder);
+            PickUp = subBuilder;
+            break;
+          }
+          case 2458: {
+            global::PortfolioMmo.Contract.DropItem subBuilder = new global::PortfolioMmo.Contract.DropItem();
+            if (bodyCase_ == BodyOneofCase.DropItem) {
+              subBuilder.MergeFrom(DropItem);
+            }
+            input.ReadMessage(subBuilder);
+            DropItem = subBuilder;
             break;
           }
         }
@@ -12432,6 +12559,519 @@ namespace PortfolioMmo.Contract {
   }
 
   /// <summary>
+  /// 클라이언트 → 서버. 바닥 아이템을 줍는다(3 m 안, 선이 트임). 답은 RequestResult다.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class PickUp : pb::IMessage<PickUp>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PickUp> _parser = new pb::MessageParser<PickUp>(() => new PickUp());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<PickUp> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[35]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PickUp() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PickUp(PickUp other) : this() {
+      entityId_ = other.entityId_;
+      requestId_ = other.requestId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PickUp Clone() {
+      return new PickUp(this);
+    }
+
+    /// <summary>Field number for the "entity_id" field.</summary>
+    public const int EntityIdFieldNumber = 1;
+    private uint entityId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint EntityId {
+      get { return entityId_; }
+      set {
+        entityId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 2;
+    private uint requestId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as PickUp);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(PickUp other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (EntityId != other.EntityId) return false;
+      if (RequestId != other.RequestId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (EntityId != 0) hash ^= EntityId.GetHashCode();
+      if (RequestId != 0) hash ^= RequestId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (EntityId != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(EntityId);
+      }
+      if (RequestId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (EntityId != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(EntityId);
+      }
+      if (RequestId != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (EntityId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(EntityId);
+      }
+      if (RequestId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RequestId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(PickUp other) {
+      if (other == null) {
+        return;
+      }
+      if (other.EntityId != 0) {
+        EntityId = other.EntityId;
+      }
+      if (other.RequestId != 0) {
+        RequestId = other.RequestId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            EntityId = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            RequestId = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            EntityId = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            RequestId = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 클라이언트 → 서버. 인벤토리 칸의 아이템을 count개(1 이상, 가진 수 이하) 떨어뜨린다(내 자리의 바닥 아이템이 됨). 답은 RequestResult다.
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class DropItem : pb::IMessage<DropItem>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<DropItem> _parser = new pb::MessageParser<DropItem>(() => new DropItem());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<DropItem> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[36]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DropItem() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DropItem(DropItem other) : this() {
+      slot_ = other.slot_;
+      count_ = other.count_;
+      requestId_ = other.requestId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DropItem Clone() {
+      return new DropItem(this);
+    }
+
+    /// <summary>Field number for the "slot" field.</summary>
+    public const int SlotFieldNumber = 1;
+    private uint slot_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint Slot {
+      get { return slot_; }
+      set {
+        slot_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 2;
+    private uint count_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 3;
+    private uint requestId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as DropItem);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(DropItem other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Slot != other.Slot) return false;
+      if (Count != other.Count) return false;
+      if (RequestId != other.RequestId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Slot != 0) hash ^= Slot.GetHashCode();
+      if (Count != 0) hash ^= Count.GetHashCode();
+      if (RequestId != 0) hash ^= RequestId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Slot != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Slot);
+      }
+      if (Count != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(Count);
+      }
+      if (RequestId != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Slot != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Slot);
+      }
+      if (Count != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(Count);
+      }
+      if (RequestId != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Slot != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Slot);
+      }
+      if (Count != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Count);
+      }
+      if (RequestId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(RequestId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(DropItem other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Slot != 0) {
+        Slot = other.Slot;
+      }
+      if (other.Count != 0) {
+        Count = other.Count;
+      }
+      if (other.RequestId != 0) {
+        RequestId = other.RequestId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Slot = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            Count = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            RequestId = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Slot = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            Count = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            RequestId = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
   /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
@@ -12449,7 +13089,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[35]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[37]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12687,7 +13327,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[36]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[38]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12925,7 +13565,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[37]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[39]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13126,7 +13766,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[38]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[40]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13291,7 +13931,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[39]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[41]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13529,7 +14169,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[40]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[42]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -13878,7 +14518,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[41]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[43]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -14116,7 +14756,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[42]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[44]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -14281,7 +14921,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[43]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[45]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -14558,7 +15198,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[44]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[46]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -14835,7 +15475,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[45]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[47]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -15111,7 +15751,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[46]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[48]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -15358,7 +15998,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[47]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[49]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -15596,7 +16236,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[48]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[50]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -15843,7 +16483,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[49]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[51]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16030,7 +16670,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[50]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[52]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16313,7 +16953,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[51]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[53]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16737,7 +17377,7 @@ namespace PortfolioMmo.Contract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[52]; }
+      get { return global::PortfolioMmo.Contract.PacketsReflection.Descriptor.MessageTypes[54]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

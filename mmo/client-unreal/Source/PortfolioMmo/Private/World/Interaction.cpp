@@ -6,9 +6,16 @@
 
 namespace MmoWorld
 {
-	EInteractKind FInteraction::KindOf(const FEntity&)
+	EInteractKind FInteraction::KindOf(const FEntity& Entity)
 	{
-		return EInteractKind::None;
+		return Entity.Info.kind() == portfolio::mmo::ENTITY_KIND_GROUND_ITEM ? EInteractKind::PickUp : EInteractKind::None;
+	}
+
+	bool FInteraction::CanPickUp(const portfolio::mmo::EntityEnter& Item, uint32_t SelfId, double ServerTick)
+	{
+		return Item.owner_case() == portfolio::mmo::EntityEnter::OWNER_NOT_SET
+			|| (Item.owner_case() == portfolio::mmo::EntityEnter::kOwnerPlayerId && Item.owner_player_id() == SelfId)
+			|| ServerTick >= Item.owner_only_end_tick();
 	}
 
 	std::optional<FInteractTarget> FInteraction::Nearest(const FWorldState& World, int32_t X, int32_t Z, double PickMeters, const FKindOf& Kind)

@@ -25,7 +25,7 @@ namespace PortfolioMmo.Data {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg5Nb25zdGVycy5wcm90bxIScG9ydGZvbGlvLm1tby5kYXRhGgtFbnVtcy5w",
-            "cm90byKBAwoLTW9uc3RlcnNSb3cSCgoCaWQYASABKA0SEAoIbmFtZV9rZXkY",
+            "cm90byKpAwoLTW9uc3RlcnNSb3cSCgoCaWQYASABKA0SEAoIbmFtZV9rZXkY",
             "AiABKAkSLQoEa2luZBgDIAEoDjIfLnBvcnRmb2xpby5tbW8uZGF0YS5Nb25z",
             "dGVyS2luZBINCgVsZXZlbBgEIAEoDRIOCgZtYXhfaHAYBSABKA0SDgoGYXR0",
             "YWNrGAYgASgNEg8KB2RlZmVuc2UYByABKA0SDQoFc3BlZWQYCCABKAESDgoG",
@@ -33,13 +33,14 @@ namespace PortfolioMmo.Data {
             "aW1pdBgLIAEoARIUCgxhdHRhY2tfcmFuZ2UYDCABKAESGgoSYXR0YWNrX2lu",
             "dGVydmFsX21zGA0gASgNEhQKDGhpdF9kZWxheV9tcxgOIAEoDRIdChBwcm9q",
             "ZWN0aWxlX3NwZWVkGA8gASgBSACIAQESEgoKYWdncmVzc2l2ZRgQIAEoCBIL",
-            "CgNleHAYESABKA1CEwoRX3Byb2plY3RpbGVfc3BlZWQiOQoITW9uc3RlcnMS",
-            "LQoEcm93cxgBIAMoCzIfLnBvcnRmb2xpby5tbW8uZGF0YS5Nb25zdGVyc1Jv",
-            "d0IUqgIRUG9ydGZvbGlvTW1vLkRhdGFiBnByb3RvMw=="));
+            "CgNleHAYESABKA0SFwoKZHJvcF9ncm91cBgSIAEoDUgBiAEBQhMKEV9wcm9q",
+            "ZWN0aWxlX3NwZWVkQg0KC19kcm9wX2dyb3VwIjkKCE1vbnN0ZXJzEi0KBHJv",
+            "d3MYASADKAsyHy5wb3J0Zm9saW8ubW1vLmRhdGEuTW9uc3RlcnNSb3dCFKoC",
+            "EVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::PortfolioMmo.Data.EnumsReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.MonstersRow), global::PortfolioMmo.Data.MonstersRow.Parser, new[]{ "Id", "NameKey", "Kind", "Level", "MaxHp", "Attack", "Defense", "Speed", "Radius", "DetectRange", "ChaseLimit", "AttackRange", "AttackIntervalMs", "HitDelayMs", "ProjectileSpeed", "Aggressive", "Exp" }, new[]{ "ProjectileSpeed" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.MonstersRow), global::PortfolioMmo.Data.MonstersRow.Parser, new[]{ "Id", "NameKey", "Kind", "Level", "MaxHp", "Attack", "Defense", "Speed", "Radius", "DetectRange", "ChaseLimit", "AttackRange", "AttackIntervalMs", "HitDelayMs", "ProjectileSpeed", "Aggressive", "Exp", "DropGroup" }, new[]{ "ProjectileSpeed", "DropGroup" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Monsters), global::PortfolioMmo.Data.Monsters.Parser, new[]{ "Rows" }, null, null, null, null)
           }));
     }
@@ -101,6 +102,7 @@ namespace PortfolioMmo.Data {
       projectileSpeed_ = other.projectileSpeed_;
       aggressive_ = other.aggressive_;
       exp_ = other.exp_;
+      dropGroup_ = other.dropGroup_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -380,6 +382,36 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "drop_group" field.</summary>
+    public const int DropGroupFieldNumber = 18;
+    private readonly static uint DropGroupDefaultValue = 0;
+
+    private uint dropGroup_;
+    /// <summary>
+    /// 드롭 묶음(DropGroups의 줄). 비우면 떨어뜨리지 않는다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint DropGroup {
+      get { if ((_hasBits0 & 2) != 0) { return dropGroup_; } else { return DropGroupDefaultValue; } }
+      set {
+        _hasBits0 |= 2;
+        dropGroup_ = value;
+      }
+    }
+    /// <summary>Gets whether the "drop_group" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasDropGroup {
+      get { return (_hasBits0 & 2) != 0; }
+    }
+    /// <summary>Clears the value of the "drop_group" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearDropGroup() {
+      _hasBits0 &= ~2;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -412,6 +444,7 @@ namespace PortfolioMmo.Data {
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(ProjectileSpeed, other.ProjectileSpeed)) return false;
       if (Aggressive != other.Aggressive) return false;
       if (Exp != other.Exp) return false;
+      if (DropGroup != other.DropGroup) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -436,6 +469,7 @@ namespace PortfolioMmo.Data {
       if (HasProjectileSpeed) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(ProjectileSpeed);
       if (Aggressive != false) hash ^= Aggressive.GetHashCode();
       if (Exp != 0) hash ^= Exp.GetHashCode();
+      if (HasDropGroup) hash ^= DropGroup.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -522,6 +556,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(136, 1);
         output.WriteUInt32(Exp);
       }
+      if (HasDropGroup) {
+        output.WriteRawTag(144, 1);
+        output.WriteUInt32(DropGroup);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -600,6 +638,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(136, 1);
         output.WriteUInt32(Exp);
       }
+      if (HasDropGroup) {
+        output.WriteRawTag(144, 1);
+        output.WriteUInt32(DropGroup);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -660,6 +702,9 @@ namespace PortfolioMmo.Data {
       }
       if (Exp != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(Exp);
+      }
+      if (HasDropGroup) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(DropGroup);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -723,6 +768,9 @@ namespace PortfolioMmo.Data {
       }
       if (other.Exp != 0) {
         Exp = other.Exp;
+      }
+      if (other.HasDropGroup) {
+        DropGroup = other.DropGroup;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -811,6 +859,10 @@ namespace PortfolioMmo.Data {
             Exp = input.ReadUInt32();
             break;
           }
+          case 144: {
+            DropGroup = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -896,6 +948,10 @@ namespace PortfolioMmo.Data {
           }
           case 136: {
             Exp = input.ReadUInt32();
+            break;
+          }
+          case 144: {
+            DropGroup = input.ReadUInt32();
             break;
           }
         }

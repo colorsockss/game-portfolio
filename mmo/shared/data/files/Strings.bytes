@@ -339,3 +339,54 @@ L
 detail.count{0}개×{0}
 D
 quickslot.full빈 퀵슬롯이 없습니다.No free quickslot.
+
+	item.gold골드Gold
+t
+item.desc.40019돈입니다. 주우면 가진 골드에 더해집니다.'Money. Picking it up adds to your gold.
+=
+fail.alreadyGone이미 없습니다.It is already gone.
+N
+fail.notYours아직 주울 수 없습니다.You cannot pick that up yet.
+$
+detail.drop떨어뜨리기Drop
+Y
+detail.dropQuestion){0}을(를) 바닥에 떨어뜨릴까요?Drop {0} on the ground?
+E
+detail.dropCount몇 개를 떨어뜨릴까요?How many to drop?
+1
+item.loot.slime끈적한 젤리Sticky Jelly
+�
+item.desc.3101J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.
+.
+item.loot.mushroom
+버섯 갓Mushroom Cap
+�
+item.desc.3102J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.
+-
+item.loot.boar멧돼지 엄니	Boar Tusk
+�
+item.desc.3103J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.
+7
+item.loot.goblin고블린 귀걸이Goblin Earring
+�
+item.desc.3104J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.
+*
+item.loot.wolf늑대 가죽	Wolf Pelt
+�
+item.desc.3105J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.
+8
+item.loot.goblinArcher부러진 화살Broken Arrow
+�
+item.desc.3106J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.
+)
+item.loot.orc오크 이빨	Orc Tooth
+�
+item.desc.3107J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.
+-
+item.loot.skeleton오래된 뼈Old Bone
+�
+item.desc.3108J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.
+-
+item.loot.troll트롤의 피Troll Blood
+�
+item.desc.3109J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.

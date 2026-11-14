@@ -246,6 +246,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED MonstersRow final : public ::google
     kProjectileSpeedFieldNumber = 15,
     kAggressiveFieldNumber = 16,
     kExpFieldNumber = 17,
+    kDropGroupFieldNumber = 18,
   };
   // string name_key = 2;
   void clear_name_key() ;
@@ -423,11 +424,22 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED MonstersRow final : public ::google
   void _internal_set_exp(::uint32_t value);
 
   public:
+  // optional uint32 drop_group = 18;
+  [[nodiscard]] bool has_drop_group() const;
+  void clear_drop_group() ;
+  [[nodiscard]] ::uint32_t drop_group() const;
+  void set_drop_group(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_drop_group() const;
+  void _internal_set_drop_group(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.MonstersRow)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 17,
+      ::google::protobuf::internal::TcParseTable<5, 18,
                           0, 63,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -473,6 +485,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED MonstersRow final : public ::google
     double projectile_speed_;
     bool aggressive_;
     ::uint32_t exp_;
+    ::uint32_t drop_group_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1156,6 +1169,34 @@ inline ::uint32_t MonstersRow::_internal_exp() const {
 inline void MonstersRow::_internal_set_exp(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.exp_ = value;
+}
+
+// optional uint32 drop_group = 18;
+inline bool MonstersRow::has_drop_group() const {
+  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00020000U);
+  return value;
+}
+inline void MonstersRow::clear_drop_group() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.drop_group_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00020000U);
+}
+inline ::uint32_t MonstersRow::drop_group() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.MonstersRow.drop_group)
+  return _internal_drop_group();
+}
+inline void MonstersRow::set_drop_group(::uint32_t value) {
+  _internal_set_drop_group(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00020000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.MonstersRow.drop_group)
+}
+inline ::uint32_t MonstersRow::_internal_drop_group() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.drop_group_;
+}
+inline void MonstersRow::_internal_set_drop_group(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.drop_group_ = value;
 }
 
 // -------------------------------------------------------------------

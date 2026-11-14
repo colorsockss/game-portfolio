@@ -25,8 +25,9 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<uint, SkillsRow> _skills = new Dictionary<uint, SkillsRow>();
         private readonly Dictionary<uint, EffectsRow> _effects = new Dictionary<uint, EffectsRow>();
         private readonly Dictionary<uint, ItemsRow> _items = new Dictionary<uint, ItemsRow>();
+        private readonly Dictionary<uint, DropGroupsRow> _dropGroups = new Dictionary<uint, DropGroupsRow>();
 
-        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null)
+        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null, DropGroups? dropGroups = null)
         {
             Hash = hash;
             Constants = constants;
@@ -59,6 +60,12 @@ namespace PortfolioMmo.Server
             foreach (ItemsRow row in (items ?? new Items()).Rows)
             {
                 _items.Add(row.Id, row);
+                GoldItemId = row.Kind == ItemKind.Gold ? row.Id : GoldItemId;
+            }
+
+            foreach (DropGroupsRow row in (dropGroups ?? new DropGroups()).Rows)
+            {
+                _dropGroups.Add(row.Id, row);
             }
         }
 
@@ -171,6 +178,19 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 골드의 Items 줄 번호(바닥에 떨어진 골드가 가리킴. 33). 없으면 0.
+        /// </summary>
+        public uint GoldItemId { get; }
+
+        /// <summary>
+        /// 드롭 묶음(33). 없으면 null.
+        /// </summary>
+        public DropGroupsRow? DropGroup(uint id)
+        {
+            return _dropGroups.GetValueOrDefault(id);
+        }
+
+        /// <summary>
         /// 실행 파일 옆의 데이터 폴더.
         /// </summary>
         public static string DefaultFolder => Path.Combine(AppContext.BaseDirectory, "data");
@@ -191,7 +211,8 @@ namespace PortfolioMmo.Server
                 Spawns.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Spawns.bytes"))),
                 Skills.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Skills.bytes"))),
                 Effects.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Effects.bytes"))),
-                Items.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Items.bytes"))));
+                Items.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Items.bytes"))),
+                DropGroups.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "DropGroups.bytes"))));
         }
 
         /// <summary>

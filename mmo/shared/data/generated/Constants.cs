@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLXBAoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKeBQoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -38,11 +38,13 @@ namespace PortfolioMmo.Data {
             "EXJhdGVfbGltaXRfdG9rZW5zGBIgASgNEiQKHHJhdGVfbGltaXRfcmVmaWxs",
             "X3Blcl9zZWNvbmQYEyABKA0SGgoScmF0ZV9saW1pdF9raWNrX21zGBQgASgN",
             "EhsKE3JhdGVfbGltaXRfcmVzZXRfbXMYFSABKA0SFwoPaW52ZW50b3J5X3Ns",
-            "b3RzGBYgASgNQhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
+            "b3RzGBYgASgNEhgKEGRyb3BfbGlmZXRpbWVfbXMYFyABKA0SFQoNb3duZXJf",
+            "b25seV9tcxgYIAEoDRIUCgxkcm9wX3NjYXR0ZXIYGSABKAFCFKoCEVBvcnRm",
+            "b2xpb01tby5EYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter" }, null, null, null, null)
           }));
     }
     #endregion
@@ -106,6 +108,9 @@ namespace PortfolioMmo.Data {
       rateLimitKickMs_ = other.rateLimitKickMs_;
       rateLimitResetMs_ = other.rateLimitResetMs_;
       inventorySlots_ = other.inventorySlots_;
+      dropLifetimeMs_ = other.dropLifetimeMs_;
+      ownerOnlyMs_ = other.ownerOnlyMs_;
+      dropScatter_ = other.dropScatter_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -445,6 +450,51 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "drop_lifetime_ms" field.</summary>
+    public const int DropLifetimeMsFieldNumber = 23;
+    private uint dropLifetimeMs_;
+    /// <summary>
+    /// 바닥 아이템이 남는 시간(ms). 플레이어가 떨어뜨린 것도 같다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint DropLifetimeMs {
+      get { return dropLifetimeMs_; }
+      set {
+        dropLifetimeMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "owner_only_ms" field.</summary>
+    public const int OwnerOnlyMsFieldNumber = 24;
+    private uint ownerOnlyMs_;
+    /// <summary>
+    /// 드롭의 주인만 줍는 시간(ms)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint OwnerOnlyMs {
+      get { return ownerOnlyMs_; }
+      set {
+        ownerOnlyMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "drop_scatter" field.</summary>
+    public const int DropScatterFieldNumber = 25;
+    private double dropScatter_;
+    /// <summary>
+    /// 드롭을 흩는 거리(m). 죽은 자리에서 이 안의 점에 놓는다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double DropScatter {
+      get { return dropScatter_; }
+      set {
+        dropScatter_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -482,6 +532,9 @@ namespace PortfolioMmo.Data {
       if (RateLimitKickMs != other.RateLimitKickMs) return false;
       if (RateLimitResetMs != other.RateLimitResetMs) return false;
       if (InventorySlots != other.InventorySlots) return false;
+      if (DropLifetimeMs != other.DropLifetimeMs) return false;
+      if (OwnerOnlyMs != other.OwnerOnlyMs) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(DropScatter, other.DropScatter)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -511,6 +564,9 @@ namespace PortfolioMmo.Data {
       if (RateLimitKickMs != 0) hash ^= RateLimitKickMs.GetHashCode();
       if (RateLimitResetMs != 0) hash ^= RateLimitResetMs.GetHashCode();
       if (InventorySlots != 0) hash ^= InventorySlots.GetHashCode();
+      if (DropLifetimeMs != 0) hash ^= DropLifetimeMs.GetHashCode();
+      if (OwnerOnlyMs != 0) hash ^= OwnerOnlyMs.GetHashCode();
+      if (DropScatter != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(DropScatter);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -617,6 +673,18 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(176, 1);
         output.WriteUInt32(InventorySlots);
       }
+      if (DropLifetimeMs != 0) {
+        output.WriteRawTag(184, 1);
+        output.WriteUInt32(DropLifetimeMs);
+      }
+      if (OwnerOnlyMs != 0) {
+        output.WriteRawTag(192, 1);
+        output.WriteUInt32(OwnerOnlyMs);
+      }
+      if (DropScatter != 0D) {
+        output.WriteRawTag(201, 1);
+        output.WriteDouble(DropScatter);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -715,6 +783,18 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(176, 1);
         output.WriteUInt32(InventorySlots);
       }
+      if (DropLifetimeMs != 0) {
+        output.WriteRawTag(184, 1);
+        output.WriteUInt32(DropLifetimeMs);
+      }
+      if (OwnerOnlyMs != 0) {
+        output.WriteRawTag(192, 1);
+        output.WriteUInt32(OwnerOnlyMs);
+      }
+      if (DropScatter != 0D) {
+        output.WriteRawTag(201, 1);
+        output.WriteDouble(DropScatter);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -790,6 +870,15 @@ namespace PortfolioMmo.Data {
       }
       if (InventorySlots != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(InventorySlots);
+      }
+      if (DropLifetimeMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(DropLifetimeMs);
+      }
+      if (OwnerOnlyMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(OwnerOnlyMs);
+      }
+      if (DropScatter != 0D) {
+        size += 2 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -868,6 +957,15 @@ namespace PortfolioMmo.Data {
       }
       if (other.InventorySlots != 0) {
         InventorySlots = other.InventorySlots;
+      }
+      if (other.DropLifetimeMs != 0) {
+        DropLifetimeMs = other.DropLifetimeMs;
+      }
+      if (other.OwnerOnlyMs != 0) {
+        OwnerOnlyMs = other.OwnerOnlyMs;
+      }
+      if (other.DropScatter != 0D) {
+        DropScatter = other.DropScatter;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -976,6 +1074,18 @@ namespace PortfolioMmo.Data {
             InventorySlots = input.ReadUInt32();
             break;
           }
+          case 184: {
+            DropLifetimeMs = input.ReadUInt32();
+            break;
+          }
+          case 192: {
+            OwnerOnlyMs = input.ReadUInt32();
+            break;
+          }
+          case 201: {
+            DropScatter = input.ReadDouble();
+            break;
+          }
         }
       }
     #endif
@@ -1081,6 +1191,18 @@ namespace PortfolioMmo.Data {
           }
           case 176: {
             InventorySlots = input.ReadUInt32();
+            break;
+          }
+          case 184: {
+            DropLifetimeMs = input.ReadUInt32();
+            break;
+          }
+          case 192: {
+            OwnerOnlyMs = input.ReadUInt32();
+            break;
+          }
+          case 201: {
+            DropScatter = input.ReadDouble();
             break;
           }
         }

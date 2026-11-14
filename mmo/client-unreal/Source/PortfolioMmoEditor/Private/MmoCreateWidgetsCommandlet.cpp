@@ -661,7 +661,7 @@ namespace
 		return Builder.Save();
 	}
 
-	/** 아이템 상세 창(32): 이름(등급의 색), 등급·필요 레벨·직업·파는 값, 설명, 쓰기·퀵슬롯·닫기. 맞지 않는 버튼은 기반 클래스가 감춘다. */
+	/** 아이템 상세 창(32): 이름(등급의 색), 등급·필요 레벨·직업·파는 값, 설명, 쓰기·퀵슬롯·떨어뜨리기(33)·닫기. 맞지 않는 버튼은 기반 클래스가 감춘다. */
 	bool CreateItemDetail()
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::ItemDetail, UMmoItemDetailWidget::StaticClass());
@@ -673,6 +673,7 @@ namespace
 		AddWithGap(*Column, Desc, Style.Section);
 		AddWithGap(*Column, Builder.Button(TEXT("UseButton"), TEXT("detail.use")));
 		AddWithGap(*Column, Builder.Button(TEXT("QuickslotButton"), TEXT("detail.quickslot")));
+		AddWithGap(*Column, Builder.Button(TEXT("DropButton"), TEXT("detail.drop")));
 		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
 	}

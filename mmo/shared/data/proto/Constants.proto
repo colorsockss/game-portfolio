@@ -50,4 +50,10 @@ message Constants {
   uint32 rate_limit_reset_ms = 21;
   // 인벤토리 칸 수
   uint32 inventory_slots = 22;
+  // 바닥 아이템이 남는 시간(ms). 플레이어가 떨어뜨린 것도 같다
+  uint32 drop_lifetime_ms = 23;
+  // 드롭의 주인만 줍는 시간(ms)
+  uint32 owner_only_ms = 24;
+  // 드롭을 흩는 거리(m). 죽은 자리에서 이 안의 점에 놓는다
+  double drop_scatter = 25;
 }

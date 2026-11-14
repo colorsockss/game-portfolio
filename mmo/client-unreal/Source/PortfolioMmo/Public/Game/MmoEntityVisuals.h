@@ -69,6 +69,10 @@ struct FMmoPlaceholder
 
 	UPROPERTY(EditAnywhere)
 	FLinearColor Color = FLinearColor::White;
+
+	/** 도형의 크기 배수(엔진 도형은 1 m). 바닥에 닿게 놓는다. 서는 개체는 사람 크기(0.6, 0.6, 1.8), 바닥 아이템은 작다(33). */
+	UPROPERTY(EditAnywhere)
+	FVector Scale = FVector(0.6, 0.6, 1.8);
 };
 
 /**

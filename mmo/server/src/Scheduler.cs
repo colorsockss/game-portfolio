@@ -54,6 +54,11 @@ namespace PortfolioMmo.Server
         /// 개체(주인)에 붙은 효과(A)의 끝(26). 세대 번호는 붙은 효과의 것이다.
         /// </summary>
         EffectEnd = 9,
+
+        /// <summary>
+        /// 바닥 아이템(주인)이 사라지는 틱(33). 세대 번호는 그 바닥 아이템의 것이다(번호를 다시 쓴 새 아이템을 지우지 않게).
+        /// </summary>
+        GroundItemExpire = 10,
     }
 
     /// <summary>

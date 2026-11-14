@@ -7,6 +7,7 @@
 #include "Engine/GameInstance.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Game/MmoCoordinates.h"
+#include "Game/MmoCueSubsystem.h"
 #include "Game/MmoEntitySubsystem.h"
 #include "Game/MmoPlayerController.h"
 #include "Input/MmoKeys.h"
@@ -394,6 +395,13 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	}
 	for (const MmoWorld::FItemGain& Gain : Session->Inventory().TakeGains())
 	{
+		if (Gain.Reason == portfolio::mmo::GAIN_REASON_PICK_UP)
+		{
+			if (UMmoCueSubsystem* Cues = GetWorld()->GetSubsystem<UMmoCueSubsystem>())
+			{
+				Cues->PlayUi(EMmoCue::UiPickUp);
+			}
+		}
 		const portfolio::mmo::data::ItemsRow* Item = Session->Data().Item(Gain.ItemId);
 		Ui->ShowNotice(Item
 			? MmoText::Format(this, TEXT("notice.gainItem"), { MmoText::Get(this, UTF8_TO_TCHAR(Item->name_key().c_str())).ToString(), FString::FromInt(Gain.Count) })

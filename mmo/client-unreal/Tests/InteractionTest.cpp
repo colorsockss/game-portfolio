@@ -110,8 +110,29 @@ namespace
 	}
 }
 
+namespace
+{
+	/** 바닥 아이템(33)은 줍기이고, 주인이 없거나 나이거나 주인만 줍는 시간이 지났을 때만 내가 주울 수 있다. */
+	void GroundItemsArePickedUpByTheirOwnerFirst()
+	{
+		MmoWorld::FEntity Item;
+		Item.Info.set_kind(portfolio::mmo::ENTITY_KIND_GROUND_ITEM);
+		Expect(FInteraction::KindOf(Item) == EInteractKind::PickUp, "a ground item is picked up");
+		Expect(FInteraction::CanPickUp(Item.Info, 7, 0), "an item without an owner is anyone's");
+		Item.Info.set_owner_player_id(7);
+		Item.Info.set_owner_only_end_tick(200);
+		Expect(FInteraction::CanPickUp(Item.Info, 7, 100), "the owner picks up at once");
+		Expect(!FInteraction::CanPickUp(Item.Info, 8, 199.5), "others wait for the owner-only time");
+		Expect(FInteraction::CanPickUp(Item.Info, 8, 200), "anyone picks up after the owner-only time");
+		MmoWorld::FEntity Monster;
+		Monster.Info.set_kind(portfolio::mmo::ENTITY_KIND_MONSTER);
+		Expect(FInteraction::KindOf(Monster) == EInteractKind::None, "a monster is not an interaction");
+	}
+}
+
 int main()
 {
+	GroundItemsArePickedUpByTheirOwnerFirst();
 	TheNearestCandidateInsideThePickRange();
 	WalkThenActInsideTheRangeAndInSight();
 	if (Failures > 0)

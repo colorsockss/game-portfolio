@@ -33,6 +33,7 @@ void UMmoItemDetailWidget::NativeOnInitialized()
 	Super::NativeOnInitialized();
 	UseButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleUseClicked);
 	QuickslotButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleQuickslotClicked);
+	DropButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleDropClicked);
 	CloseButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleCloseClicked);
 }
 
@@ -50,6 +51,7 @@ void UMmoItemDetailWidget::SetUp(uint32 InSlotIndex)
 	ItemId = Item->id();
 	PendingRequest = 0;
 	UseButton->SetWaiting(false);
+	DropButton->SetWaiting(false);
 
 	NameText->SetText(MmoText::Get(this, UTF8_TO_TCHAR(Item->name_key().c_str())));
 	NameText->SetColorAndOpacity(FSlateColor(UMmoItemSlotWidget::GradeColor(Item->grade())));
@@ -81,6 +83,7 @@ void UMmoItemDetailWidget::NativeTick(const FGeometry& MyGeometry, float InDelta
 	{
 		PendingRequest = 0;
 		UseButton->SetWaiting(false);
+		DropButton->SetWaiting(false);
 	}
 	const auto Found = Session->Inventory().Slots().find(SlotIndex);
 	if (Found == Session->Inventory().Slots().end() || Found->second.item_id() != ItemId)
@@ -104,6 +107,48 @@ void UMmoItemDetailWidget::HandleQuickslotClicked()
 	{
 		GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowNotice(MmoText::Get(this, TEXT("quickslot.full")));
 	}
+}
+
+void UMmoItemDetailWidget::HandleDropClicked()
+{
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const auto Found = Session->Inventory().Slots().find(SlotIndex);
+	const portfolio::mmo::data::ItemsRow* Item = Session->Data().Item(ItemId);
+	if (Found == Session->Inventory().Slots().end() || !Item)
+	{
+		return;
+	}
+	const uint32 Count = Found->second.count();
+	UMmoUiManager* Ui = GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>();
+	const FText Question = MmoText::Format(this, TEXT("detail.dropQuestion"), { MmoText::Get(this, UTF8_TO_TCHAR(Item->name_key().c_str())).ToString() });
+	TWeakObjectPtr<UMmoItemDetailWidget> Self(this);
+	Ui->Confirm(Question, [Self, Ui, Count]
+	{
+		if (!Self.IsValid())
+		{
+			return;
+		}
+		if (Count <= 1)
+		{
+			Self->SendDrop(1);
+			return;
+		}
+		Ui->Quantity(MmoText::Get(Self.Get(), TEXT("detail.dropCount")), static_cast<int32>(Count), [Self](int32 Chosen)
+		{
+			if (Self.IsValid() && Chosen > 0)
+			{
+				Self->SendDrop(static_cast<uint32>(Chosen));
+			}
+		});
+	});
+}
+
+void UMmoItemDetailWidget::SendDrop(uint32 Count)
+{
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	Session->Send(Session->Inventory().DropItem(SlotIndex, Count));
+	PendingRequest = Session->Inventory().RequestId();
+	DropButton->SetWaiting(true);
 }
 
 void UMmoItemDetailWidget::HandleCloseClicked()

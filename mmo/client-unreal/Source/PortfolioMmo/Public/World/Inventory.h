@@ -58,6 +58,12 @@ namespace MmoWorld
 		/** UseItem을 만든다. 요청 번호를 1씩 올려 붙이고 답이 올 때까지 기다리는 중으로 둔다. 번호는 RequestId()로 읽는다. */
 		portfolio::mmo::Packet UseItem(uint32_t Slot);
 
+		/** PickUp(바닥 아이템을 줍기. 33)을 만든다. 번호는 UseItem과 같이 매긴다. */
+		portfolio::mmo::Packet PickUp(uint32_t EntityId);
+
+		/** DropItem(칸의 아이템을 Count개 떨어뜨리기. 33)을 만든다. */
+		portfolio::mmo::Packet DropItem(uint32_t Slot, uint32_t Count);
+
 		/** 마지막으로 매긴 요청 번호. */
 		uint32_t RequestId() const { return NextRequest; }
 

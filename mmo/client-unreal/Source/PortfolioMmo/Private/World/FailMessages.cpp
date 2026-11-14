@@ -25,6 +25,8 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_UNUSABLE_ITEM: return "fail.unusableItem";
 		case portfolio::mmo::FAIL_REASON_IN_COMBAT: return "fail.inCombat";
 		case portfolio::mmo::FAIL_REASON_TOO_FAST: return "fail.tooFast";
+		case portfolio::mmo::FAIL_REASON_ALREADY_GONE: return "fail.alreadyGone";
+		case portfolio::mmo::FAIL_REASON_NOT_YOURS: return "fail.notYours";
 		default: return "fail.other";
 		}
 	}

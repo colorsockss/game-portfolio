@@ -58,6 +58,8 @@ message Packet {
     InventoryChanged inventory_changed = 303;
     UseItem use_item = 304;
     RequestResult request_result = 305;
+    PickUp pick_up = 306;
+    DropItem drop_item = 307;
   }
 }
 
@@ -448,6 +450,8 @@ message Inventory {
 enum GainReason {
   GAIN_REASON_UNSPECIFIED = 0;
   GAIN_REASON_DEV_COMMAND = 1;
+  // 바닥 아이템을 주움(펫이 주운 것도 같음. 33, 96).
+  GAIN_REASON_PICK_UP = 2;
 }
 
 message ItemAmount {
@@ -475,6 +479,19 @@ message InventoryChanged {
 message UseItem {
   uint32 slot = 1;
   uint32 request_id = 2;
+}
+
+// 클라이언트 → 서버. 바닥 아이템을 줍는다(3 m 안, 선이 트임). 답은 RequestResult다.
+message PickUp {
+  uint32 entity_id = 1;
+  uint32 request_id = 2;
+}
+
+// 클라이언트 → 서버. 인벤토리 칸의 아이템을 count개(1 이상, 가진 수 이하) 떨어뜨린다(내 자리의 바닥 아이템이 됨). 답은 RequestResult다.
+message DropItem {
+  uint32 slot = 1;
+  uint32 count = 2;
+  uint32 request_id = 3;
 }
 
 // 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
@@ -528,6 +545,10 @@ enum FailReason {
   FAIL_REASON_IN_COMBAT = 17;
   // 요청을 너무 자주 보내 빈도 제한이 버렸다(요청 번호가 있는 요청에만 RequestResult로 답한다. 28, 32).
   FAIL_REASON_TOO_FAST = 18;
+  // 그 개체가 이미 없다(다른 사람이 먼저 주움, 사라짐. 33).
+  FAIL_REASON_ALREADY_GONE = 19;
+  // 주인만 줍는 시간 안의 남의 드롭이다(33).
+  FAIL_REASON_NOT_YOURS = 20;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.

@@ -562,7 +562,8 @@ void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::
 	}
 
 	const FMmoPlaceholder* Look = Visuals->PlaceholderOf(Info.kind());
-	MmoCharacterLook::ShowPlaceholder(*Mesh, *Placeholder, Look ? Look->Mesh.Get() : nullptr, Visuals->PlaceholderMaterial, Look ? Look->Color : FLinearColor::White);
+	MmoCharacterLook::ShowPlaceholder(*Mesh, *Placeholder, Look ? Look->Mesh.Get() : nullptr, Visuals->PlaceholderMaterial, Look ? Look->Color : FLinearColor::White,
+		Look ? Look->Scale : FVector(0.6, 0.6, 1.8));
 	ShowDeadIfDead(Id, *Mesh, *Placeholder, nullptr);
 	if (!Row)
 	{

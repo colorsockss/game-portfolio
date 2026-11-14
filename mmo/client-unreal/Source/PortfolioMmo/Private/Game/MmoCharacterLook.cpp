@@ -8,8 +8,12 @@
 
 namespace MmoCharacterLook
 {
-	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* Shape, UMaterialInterface* Material, const FLinearColor& Color)
+	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* Shape, UMaterialInterface* Material, const FLinearColor& Color, const FVector& Scale)
 	{
+		// 바닥(가운데 − 높이의 반)을 그대로 두고 크기를 바꾼다(엔진 도형은 높이 1 m, 가운데가 원점).
+		const double Bottom = Placeholder.GetRelativeLocation().Z - Placeholder.GetRelativeScale3D().Z * 50.0;
+		Placeholder.SetRelativeScale3D(Scale);
+		Placeholder.SetRelativeLocation(FVector(0.0, 0.0, Bottom + Scale.Z * 50.0));
 		Placeholder.SetStaticMesh(Shape);
 		Placeholder.SetMaterial(0, Material);
 		Placeholder.SetCustomPrimitiveDataVector4(0, FVector4(Color.R, Color.G, Color.B, 1.0));

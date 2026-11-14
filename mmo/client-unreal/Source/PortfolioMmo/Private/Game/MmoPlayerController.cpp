@@ -692,7 +692,15 @@ std::optional<MmoWorld::FInteractTarget> AMmoPlayerController::InteractCandidate
 		return std::nullopt;
 	}
 	const FVector Location = Self->GetActorLocation();
-	return MmoWorld::FInteraction::Nearest(Session().World(), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), Session().Data().Constants.interact_pick_range());
+	// 바닥 아이템은 내가 지금 주울 수 있는 것만 고른다(33).
+	const MmoWorld::FWorldState& World = Session().World();
+	const double ServerTick = World.Clock().Now(FPlatformTime::Seconds());
+	return MmoWorld::FInteraction::Nearest(World, MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), Session().Data().Constants.interact_pick_range(),
+		[&World, ServerTick](const MmoWorld::FEntity& Entity)
+		{
+			const MmoWorld::EInteractKind Kind = MmoWorld::FInteraction::KindOf(Entity);
+			return Kind == MmoWorld::EInteractKind::PickUp && !MmoWorld::FInteraction::CanPickUp(Entity.Info, World.SelfId(), ServerTick) ? MmoWorld::EInteractKind::None : Kind;
+		});
 }
 
 void AMmoPlayerController::Interact()
@@ -744,6 +752,11 @@ void AMmoPlayerController::UpdateInteraction()
 void AMmoPlayerController::Act(const MmoWorld::FInteractTarget& Target)
 {
 	UE_LOG(LogMmoNet, Display, TEXT("Interact with %u (kind %d)"), Target.Id, static_cast<int32>(Target.Kind));
+	if (Target.Kind == MmoWorld::EInteractKind::PickUp)
+	{
+		// 실패(남의 것, 이미 없음, 가득)는 인벤토리 모델이 사건으로 쌓고 HUD가 띄운다.
+		Session().Send(Session().Inventory().PickUp(Target.Id));
+	}
 }
 
 void AMmoPlayerController::HandleBack()

@@ -1,0 +1,29 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message DropGroupsRow {
+  // 드롭 묶음의 번호(Monsters의 dropGroup이 가리킴)
+  uint32 id = 1;
+  // 나올 수 있는 아이템(Items의 줄). 줄마다 따로 굴린다. 장비 34, 스킬북 36, 보스 43, 소환의 책 95, 펫 96이 더한다
+  repeated uint32 items = 2;
+  // items와 같은 차례의 확률(0–1)
+  repeated double chances = 3;
+  // items와 같은 차례의 가장 적은 수
+  repeated uint32 min_counts = 4;
+  // items와 같은 차례의 가장 많은 수
+  repeated uint32 max_counts = 5;
+  // 골드가 나올 확률(0–1)
+  double gold_chance = 6;
+  // 골드의 가장 적은 금액
+  uint32 gold_min = 7;
+  // 골드의 가장 많은 금액
+  uint32 gold_max = 8;
+}
+
+message DropGroups {
+  repeated DropGroupsRow rows = 1;
+}

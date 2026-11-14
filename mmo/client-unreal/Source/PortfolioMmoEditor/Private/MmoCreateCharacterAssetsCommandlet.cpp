@@ -242,12 +242,13 @@ namespace
 		UMmoEntityVisuals* Visuals = NewObject<UMmoEntityVisuals>(Package, *FPackageName::GetShortName(PackageName), RF_Public | RF_Standalone);
 		// 종류마다의 자리 표시(73): 서는 개체는 원기둥, 채집물은 원뿔, 바닥 아이템은 상자이고 색으로 종류를 가른다.
 		Visuals->PlaceholderMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Materials/M_Placeholder.M_Placeholder"));
-		const struct { int32 Kind; const TCHAR* Shape; FLinearColor Color; } Placeholders[] = {
-			{ UMmoEntityVisuals::PlayerKind(), TEXT("Cylinder"), FLinearColor(0.25f, 0.5f, 1.0f) },
-			{ UMmoEntityVisuals::MonsterKind(), TEXT("Cylinder"), FLinearColor(0.9f, 0.25f, 0.2f) },
-			{ UMmoEntityVisuals::NpcKind(), TEXT("Cylinder"), FLinearColor(0.3f, 0.8f, 0.35f) },
-			{ UMmoEntityVisuals::GatherNodeKind(), TEXT("Cone"), FLinearColor(0.6f, 0.45f, 0.25f) },
-			{ UMmoEntityVisuals::GroundItemKind(), TEXT("Cube"), FLinearColor(1.0f, 0.85f, 0.2f) },
+		const FVector Standing(0.6, 0.6, 1.8);
+		const struct { int32 Kind; const TCHAR* Shape; FLinearColor Color; FVector Scale; } Placeholders[] = {
+			{ UMmoEntityVisuals::PlayerKind(), TEXT("Cylinder"), FLinearColor(0.25f, 0.5f, 1.0f), Standing },
+			{ UMmoEntityVisuals::MonsterKind(), TEXT("Cylinder"), FLinearColor(0.9f, 0.25f, 0.2f), Standing },
+			{ UMmoEntityVisuals::NpcKind(), TEXT("Cylinder"), FLinearColor(0.3f, 0.8f, 0.35f), Standing },
+			{ UMmoEntityVisuals::GatherNodeKind(), TEXT("Cone"), FLinearColor(0.6f, 0.45f, 0.25f), FVector(1.0, 1.0, 1.2) },
+			{ UMmoEntityVisuals::GroundItemKind(), TEXT("Cube"), FLinearColor(1.0f, 0.85f, 0.2f), FVector(0.35, 0.35, 0.35) },
 		};
 		for (const auto& Placeholder : Placeholders)
 		{
@@ -257,7 +258,7 @@ namespace
 				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("The engine shape %s or /Game/Materials/M_Placeholder is missing."), Placeholder.Shape);
 				return false;
 			}
-			Visuals->Placeholders.Add({ Placeholder.Kind, Shape, Placeholder.Color });
+			Visuals->Placeholders.Add({ Placeholder.Kind, Shape, Placeholder.Color, Placeholder.Scale });
 		}
 
 		for (const FClassAnimations& Class : Classes)

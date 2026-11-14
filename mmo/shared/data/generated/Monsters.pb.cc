@@ -51,11 +51,11 @@ constexpr MonstersRow::ParseTableT_ MonstersRow::InternalGenerateParseTable_(con
     {
       PROTOBUF_FIELD_OFFSET(MonstersRow, _impl_._has_bits_),
       0, // no _extensions_
-      17, 248,  // max_field_number, fast_idx_mask
+      18, 248,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294836224,  // skipmap
+      4294705152,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      17,  // num_field_entries
+      18,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -134,7 +134,10 @@ constexpr MonstersRow::ParseTableT_ MonstersRow::InternalGenerateParseTable_(con
       {::_pbi::TcParser::FastV32S2,
        {392, 16, 0,
         PROTOBUF_FIELD_OFFSET(MonstersRow, _impl_.exp_)}},
-      {::_pbi::TcParser::MiniParse, {}},
+      // optional uint32 drop_group = 18;
+      {::_pbi::TcParser::FastV32S2,
+       {400, 17, 0,
+        PROTOBUF_FIELD_OFFSET(MonstersRow, _impl_.drop_group_)}},
       {::_pbi::TcParser::MiniParse, {}},
       {::_pbi::TcParser::MiniParse, {}},
       {::_pbi::TcParser::MiniParse, {}},
@@ -185,6 +188,8 @@ constexpr MonstersRow::ParseTableT_ MonstersRow::InternalGenerateParseTable_(con
       {PROTOBUF_FIELD_OFFSET(MonstersRow, _impl_.aggressive_), _Internal::kHasBitsOffset + 15, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
       // uint32 exp = 17;
       {PROTOBUF_FIELD_OFFSET(MonstersRow, _impl_.exp_), _Internal::kHasBitsOffset + 16, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // optional uint32 drop_group = 18;
+      {PROTOBUF_FIELD_OFFSET(MonstersRow, _impl_.drop_group_), _Internal::kHasBitsOffset + 17, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -217,7 +222,8 @@ inline constexpr MonstersRow::Impl_::Impl_(
         hit_delay_ms_{0u},
         projectile_speed_{0},
         aggressive_{false},
-        exp_{0u} {}
+        exp_{0u},
+        drop_group_{0u} {}
 
 template <typename>
 constexpr MonstersRow::MonstersRow(::_pbi::ConstantInitialized,
@@ -473,7 +479,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::MonstersRow, _impl_._has_bits_),
-        20, // hasbit index offset
+        21, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::MonstersRow, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::MonstersRow, _impl_.name_key_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::MonstersRow, _impl_.kind_),
@@ -491,6 +497,7 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::MonstersRow, _impl_.projectile_speed_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::MonstersRow, _impl_.aggressive_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::MonstersRow, _impl_.exp_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::MonstersRow, _impl_.drop_group_),
         1,
         0,
         2,
@@ -508,6 +515,7 @@ const ::uint32_t
         14,
         15,
         16,
+        17,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Monsters, _impl_._has_bits_),
         4, // hasbit index offset
@@ -518,7 +526,7 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::data::MonstersRow)},
-        {37, sizeof(::portfolio::mmo::data::Monsters)},
+        {39, sizeof(::portfolio::mmo::data::Monsters)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -528,7 +536,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 const char descriptor_table_protodef_Monsters_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
     "\n\016Monsters.proto\022\022portfolio.mmo.data\032\013En"
-    "ums.proto\"\201\003\n\013MonstersRow\022\n\n\002id\030\001 \001(\r\022\020\n"
+    "ums.proto\"\251\003\n\013MonstersRow\022\n\n\002id\030\001 \001(\r\022\020\n"
     "\010name_key\030\002 \001(\t\022-\n\004kind\030\003 \001(\0162\037.portfoli"
     "o.mmo.data.MonsterKind\022\r\n\005level\030\004 \001(\r\022\016\n"
     "\006max_hp\030\005 \001(\r\022\016\n\006attack\030\006 \001(\r\022\017\n\007defense"
@@ -537,7 +545,8 @@ const char descriptor_table_protodef_Monsters_2eproto[] ABSL_ATTRIBUTE_SECTION_V
     "\022\024\n\014attack_range\030\014 \001(\001\022\032\n\022attack_interva"
     "l_ms\030\r \001(\r\022\024\n\014hit_delay_ms\030\016 \001(\r\022\035\n\020proj"
     "ectile_speed\030\017 \001(\001H\000\210\001\001\022\022\n\naggressive\030\020 "
-    "\001(\010\022\013\n\003exp\030\021 \001(\rB\023\n\021_projectile_speed\"9\n"
+    "\001(\010\022\013\n\003exp\030\021 \001(\r\022\027\n\ndrop_group\030\022 \001(\rH\001\210\001"
+    "\001B\023\n\021_projectile_speedB\r\n\013_drop_group\"9\n"
     "\010Monsters\022-\n\004rows\030\001 \003(\0132\037.portfolio.mmo."
     "data.MonstersRowB\024\252\002\021PortfolioMmo.Datab\006"
     "proto3"
@@ -550,7 +559,7 @@ static ::absl::once_flag descriptor_table_Monsters_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Monsters_2eproto = {
     false,
     false,
-    526,
+    566,
     descriptor_table_protodef_Monsters_2eproto,
     "Monsters.proto",
     &descriptor_table_Monsters_2eproto_once,
@@ -602,9 +611,9 @@ MonstersRow::MonstersRow(
                offsetof(Impl_, id_),
            reinterpret_cast<const char*>(&from._impl_) +
                offsetof(Impl_, id_),
-           offsetof(Impl_, exp_) -
+           offsetof(Impl_, drop_group_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::exp_));
+               sizeof(Impl_::drop_group_));
 
   // @@protoc_insertion_point(copy_constructor:portfolio.mmo.data.MonstersRow)
 }
@@ -618,9 +627,9 @@ inline void MonstersRow::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, id_),
            0,
-           offsetof(Impl_, exp_) -
+           offsetof(Impl_, drop_group_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::exp_));
+               sizeof(Impl_::drop_group_));
 }
 MonstersRow::~MonstersRow() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.MonstersRow)
@@ -687,7 +696,13 @@ PROTOBUF_NOINLINE void MonstersRow::Clear() {
                  reinterpret_cast<char*>(&this_._impl_.radius_)) +
                  sizeof(_impl_.aggressive_));
   }
-  this_._impl_.exp_ = 0u;
+  if (BatchCheckHasBit(cached_has_bits, 0x00030000U)) {
+    ::memset(&this_._impl_.exp_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.drop_group_) -
+                 reinterpret_cast<char*>(&this_._impl_.exp_)) +
+                 sizeof(_impl_.drop_group_));
+  }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -863,6 +878,13 @@ PROTOBUF_NOINLINE void MonstersRow::Clear() {
     }
   }
 
+  // optional uint32 drop_group = 18;
+  if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        18, this_._internal_drop_group(), target);
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -990,13 +1012,18 @@ PROTOBUF_NOINLINE void MonstersRow::Clear() {
       }
     }
   }
-   {
+  if (BatchCheckHasBit(cached_has_bits, 0x00030000U)) {
     // uint32 exp = 17;
     if (CheckHasBit(cached_has_bits, 0x00010000U)) {
       if (this_._internal_exp() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_exp());
       }
+    }
+    // optional uint32 drop_group = 18;
+    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+      total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                      this_._internal_drop_group());
     }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
@@ -1102,9 +1129,14 @@ void MonstersRow::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
   }
-  if (CheckHasBit(cached_has_bits, 0x00010000U)) {
-    if (from._internal_exp() != 0) {
-      _this->_impl_.exp_ = from._impl_.exp_;
+  if (BatchCheckHasBit(cached_has_bits, 0x00030000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00010000U)) {
+      if (from._internal_exp() != 0) {
+        _this->_impl_.exp_ = from._impl_.exp_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+      _this->_impl_.drop_group_ = from._impl_.drop_group_;
     }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -1128,8 +1160,8 @@ void MonstersRow::InternalSwap(MonstersRow* PROTOBUF_RESTRICT PROTOBUF_NONNULL o
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_key_, &other->_impl_.name_key_, arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(MonstersRow, _impl_.exp_)
-      + sizeof(MonstersRow::_impl_.exp_)
+      PROTOBUF_FIELD_OFFSET(MonstersRow, _impl_.drop_group_)
+      + sizeof(MonstersRow::_impl_.drop_group_)
       - PROTOBUF_FIELD_OFFSET(MonstersRow, _impl_.id_)>(
           reinterpret_cast<char*>(&_impl_.id_),
           reinterpret_cast<char*>(&other->_impl_.id_));

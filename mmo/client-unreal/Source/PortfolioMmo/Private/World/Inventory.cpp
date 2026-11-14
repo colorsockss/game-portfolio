@@ -111,6 +111,25 @@ namespace MmoWorld
 		return Packet;
 	}
 
+	portfolio::mmo::Packet FInventory::PickUp(uint32_t EntityId)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_pick_up()->set_entity_id(EntityId);
+		Packet.mutable_pick_up()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
+	portfolio::mmo::Packet FInventory::DropItem(uint32_t Slot, uint32_t Count)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_drop_item()->set_slot(Slot);
+		Packet.mutable_drop_item()->set_count(Count);
+		Packet.mutable_drop_item()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
 	std::vector<FItemGain> FInventory::TakeGains()
 	{
 		return std::exchange(Gains, {});

@@ -1,5 +1,8 @@
 #include "UI/MmoNameTagLayer.h"
 
+#include "UI/MmoItemSlotWidget.h"
+#include "World/Interaction.h"
+
 #include "UI/MmoText.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Blueprint/WidgetTree.h"
@@ -18,6 +21,8 @@ namespace
 {
 	/** 이름표를 놓는 높이(언리얼 단위). 몸통 위다. shortcut: 바닥이 평평하다고 보고 높이를 고정한다. 지형이 생기면 액터의 경계 상자 위로 바꾼다. */
 	constexpr double TagHeight = 210.0;
+	/** 바닥 아이템의 이름표 높이(33). */
+	constexpr double GroundTagHeight = 60.0;
 
 	/** 피해 숫자가 떠 있는 시간(초)과 그동안 오르는 거리(화면 픽셀). */
 	constexpr float NumberLife = 1.0f;
@@ -140,7 +145,9 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 		}
 		const FVector Location = Actor->GetActorLocation();
 		FVector2D Position;
-		if (!UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(Controller, FVector(Location.X, Location.Y, TagHeight), Position, false))
+		// 바닥 아이템의 이름은 바닥 가까이에 둔다(33).
+		const double Height = Entity.Info.kind() == portfolio::mmo::ENTITY_KIND_GROUND_ITEM ? GroundTagHeight : TagHeight;
+		if (!UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(Controller, FVector(Location.X, Location.Y, Height), Position, false))
 		{
 			continue;
 		}
@@ -153,6 +160,21 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 			Tag.SetName(Row ? MmoText::Format(this, TEXT("hud.level"), { MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString(), FString::FromInt(Row->level()) }).ToString() : FString(),
 				Row && Row->aggressive() ? AggressiveColor : FLinearColor::White);
 			Hp = Info.max_hp() > 0 ? static_cast<float>(Info.hp()) / Info.max_hp() : -1.0f;
+		}
+		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_GROUND_ITEM)
+		{
+			// 이름(골드는 금액, 겹친 것은 수)과 등급의 색. 내가 아직 주울 수 없는 것은 흐리게(33).
+			const portfolio::mmo::data::ItemsRow* Item = Session->Data().Item(Info.item_id());
+			const bool bGold = Item && Item->kind() == portfolio::mmo::data::ITEM_KIND_GOLD;
+			FString Name = !Item ? FString() : bGold ? MmoText::Format(this, TEXT("inventory.gold"), { FText::AsNumber(Info.count()).ToString() }).ToString()
+				: MmoText::Get(this, UTF8_TO_TCHAR(Item->name_key().c_str())).ToString();
+			if (Item && !bGold && Info.count() > 1)
+			{
+				Name += TEXT(" ") + MmoText::Format(this, TEXT("detail.count"), { FString::FromInt(Info.count()) }).ToString();
+			}
+			FLinearColor Color = Item ? UMmoItemSlotWidget::GradeColor(Item->grade()) : FLinearColor::White;
+			Color.A = MmoWorld::FInteraction::CanPickUp(Info, World.SelfId(), World.Clock().Now(FPlatformTime::Seconds())) ? 1.0f : 0.45f;
+			Tag.SetName(Name, Color);
 		}
 		else
 		{

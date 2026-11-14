@@ -42,6 +42,8 @@ message MonstersRow {
   bool aggressive = 16;
   // 잡으면 주는 경험치(31이 씀)
   uint32 exp = 17;
+  // 드롭 묶음(DropGroups의 줄). 비우면 떨어뜨리지 않는다
+  optional uint32 drop_group = 18;
 }
 
 message Monsters {

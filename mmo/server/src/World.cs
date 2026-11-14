@@ -32,6 +32,7 @@ namespace PortfolioMmo.Server
         private readonly DeathSystem _deaths;
         private readonly GrowthSystem _growth;
         private readonly InventorySystem _inventory;
+        private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
         private readonly SkillSystem _skills;
@@ -64,7 +65,8 @@ namespace PortfolioMmo.Server
             _movement = new MovementSystem(_entities, _grid, field);
             _growth = new GrowthSystem(_entities, stats, data);
             _inventory = new InventorySystem(data, _progress, _movement);
-            _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, data);
+            _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, random);
+            _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
             _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
             _rateLimits = RateLimiter.Limits.From(data.Constants);
@@ -91,6 +93,8 @@ namespace PortfolioMmo.Server
         internal GrowthSystem Growth => _growth;
 
         internal InventorySystem Inventory => _inventory;
+
+        internal System.Collections.Generic.IEnumerable<GroundItem> GroundItems => System.Linq.Enumerable.OfType<GroundItem>(_entities.All);
 
         /// <summary>
         /// 날고 있는 직선 발사체(테스트가 수를 봄).
@@ -190,6 +194,12 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.UseItem when player != null:
                     Respond(player, packet.UseItem.RequestId, _inventory.Use(player, packet.UseItem, Tick));
                     break;
+                case Packet.BodyOneofCase.PickUp when player != null:
+                    Respond(player, packet.PickUp.RequestId, _loot.PickUp(player, packet.PickUp, Tick));
+                    break;
+                case Packet.BodyOneofCase.DropItem when player != null:
+                    Respond(player, packet.DropItem.RequestId, _loot.Drop(player, packet.DropItem, Tick));
+                    break;
                 case Packet.BodyOneofCase.AttackStart when player != null:
                     Answer(player, _combat.Start(player, packet.AttackStart), RequestKind.Attack);
                     break;
@@ -231,6 +241,8 @@ namespace PortfolioMmo.Server
             return packet.BodyCase switch
             {
                 Packet.BodyOneofCase.UseItem => packet.UseItem.RequestId,
+                Packet.BodyOneofCase.PickUp => packet.PickUp.RequestId,
+                Packet.BodyOneofCase.DropItem => packet.DropItem.RequestId,
                 _ => null,
             };
         }
@@ -391,6 +403,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.CastEnd or ScheduledKind.ProgressEnd => _progress.IsCurrent(job),
                 ScheduledKind.EffectEnd => _effects.IsEndCurrent(job),
                 ScheduledKind.Despawn => _deaths.IsDespawnCurrent(job),
+                ScheduledKind.GroundItemExpire => _loot.IsExpireCurrent(job),
                 ScheduledKind.Respawn => _spawn.PlacedAt(job.Owner) != null,
                 _ => throw UnknownKind(job.Kind),
             };
@@ -402,7 +415,7 @@ namespace PortfolioMmo.Server
             {
                 ScheduledKind.UnreachableEnd => false,
                 ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit or ScheduledKind.CastEnd => true,
-                ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd => false,
+                ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd or ScheduledKind.GroundItemExpire => false,
                 _ => throw UnknownKind(kind),
             };
         }
@@ -428,6 +441,9 @@ namespace PortfolioMmo.Server
                     break;
                 case ScheduledKind.EffectEnd:
                     _effects.End(job);
+                    break;
+                case ScheduledKind.GroundItemExpire:
+                    _loot.Expire(job, Tick);
                     break;
                 default:
                     throw UnknownKind(job.Kind);

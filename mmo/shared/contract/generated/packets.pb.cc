@@ -99,6 +99,10 @@ PROTOBUF_CONSTINIT ::google::protobuf::internal::ReflectionData
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::UseItem
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::PickUp
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::DropItem
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::RequestResult
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::ActionFailed
@@ -244,7 +248,7 @@ constexpr auto UseSkill::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[44],
+      &file_reflection_data[46],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -546,7 +550,7 @@ constexpr auto SkillUsed::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[45],
+      &file_reflection_data[47],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1023,7 +1027,7 @@ constexpr auto Revived::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[43],
+      &file_reflection_data[45],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1147,7 +1151,7 @@ constexpr auto Revive::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[42],
+      &file_reflection_data[44],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1294,7 +1298,7 @@ constexpr auto RequestResult::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[35],
+      &file_reflection_data[37],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1477,7 +1481,7 @@ constexpr auto ProjectileLaunched::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[51],
+      &file_reflection_data[53],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1617,7 +1621,7 @@ constexpr auto ProjectileEnded::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[52],
+      &file_reflection_data[54],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1919,7 +1923,7 @@ constexpr auto ProgressCancelled::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[47],
+      &file_reflection_data[49],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -2385,6 +2389,153 @@ const ::_pbi::ClassData* Ping_get_class_data() {
   return Ping_globals_.GetClassData();
 #else
   return Ping_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class PickUp::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<PickUp>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(PickUp, _impl_._has_bits_);
+};
+
+constexpr PickUp::ParseTableT_ PickUp::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(PickUp, _impl_._has_bits_),
+      0, // no _extensions_
+      2, 8,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967292,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      2,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::PickUp>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // uint32 request_id = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(PickUp, _impl_.request_id_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(PickUp, _impl_.request_id_)}},
+      // uint32 entity_id = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(PickUp, _impl_.entity_id_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(PickUp, _impl_.entity_id_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint32 entity_id = 1;
+      {PROTOBUF_FIELD_OFFSET(PickUp, _impl_.entity_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 request_id = 2;
+      {PROTOBUF_FIELD_OFFSET(PickUp, _impl_.request_id_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr PickUp::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : entity_id_{0u},
+        request_id_{0u} {}
+
+template <typename>
+constexpr PickUp::PickUp(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL PickUp::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) PickUp(arena);
+}
+constexpr auto PickUp::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(PickUp), alignof(PickUp));
+}
+constexpr auto PickUp::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &PickUp::MergeImpl,
+          Super_::GetNewImpl<PickUp>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &PickUp::SharedDtor,
+          Super_::GetClearImpl<PickUp>(), &PickUp::ByteSizeLong,
+              &PickUp::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(PickUp, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[35],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct PickUpGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr PickUpGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 PickUp_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(PickUp::InternalGenerateClassData_(
+            _default, &PickUp_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<PickUp>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~PickUpGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) PickUp _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<PickUp>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(PickUpGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST PickUpGlobalsTypeInternal PickUp_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* PickUp_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return PickUp_globals_.GetClassData();
+#else
+  return PickUp_class_data_.base();
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 }
 }  // namespace
@@ -4652,6 +4803,161 @@ const ::_pbi::ClassData* EffectState_get_class_data() {
 }
 }  // namespace
 #endif  // PROTOBUF_CUSTOM_VTABLE
+class DropItem::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<DropItem>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(DropItem, _impl_._has_bits_);
+};
+
+constexpr DropItem::ParseTableT_ DropItem::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(DropItem, _impl_._has_bits_),
+      0, // no _extensions_
+      3, 24,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967288,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      3,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::DropItem>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      {::_pbi::TcParser::MiniParse, {}},
+      // uint32 slot = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(DropItem, _impl_.slot_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(DropItem, _impl_.slot_)}},
+      // uint32 count = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(DropItem, _impl_.count_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(DropItem, _impl_.count_)}},
+      // uint32 request_id = 3;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(DropItem, _impl_.request_id_), 2>(),
+       {24, 2, 0,
+        PROTOBUF_FIELD_OFFSET(DropItem, _impl_.request_id_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint32 slot = 1;
+      {PROTOBUF_FIELD_OFFSET(DropItem, _impl_.slot_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 count = 2;
+      {PROTOBUF_FIELD_OFFSET(DropItem, _impl_.count_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 request_id = 3;
+      {PROTOBUF_FIELD_OFFSET(DropItem, _impl_.request_id_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr DropItem::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : slot_{0u},
+        count_{0u},
+        request_id_{0u} {}
+
+template <typename>
+constexpr DropItem::DropItem(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL DropItem::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) DropItem(arena);
+}
+constexpr auto DropItem::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(DropItem), alignof(DropItem));
+}
+constexpr auto DropItem::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &DropItem::MergeImpl,
+          Super_::GetNewImpl<DropItem>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &DropItem::SharedDtor,
+          Super_::GetClearImpl<DropItem>(), &DropItem::ByteSizeLong,
+              &DropItem::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(DropItem, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[36],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct DropItemGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr DropItemGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 DropItem_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(DropItem::InternalGenerateClassData_(
+            _default, &DropItem_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<DropItem>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~DropItemGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) DropItem _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<DropItem>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(DropItemGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST DropItemGlobalsTypeInternal DropItem_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* DropItem_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return DropItem_globals_.GetClassData();
+#else
+  return DropItem_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
 class Died::_Internal {
  public:
   using HasBits = decltype(::std::declval<Died>()._impl_._has_bits_);
@@ -4748,7 +5054,7 @@ constexpr auto Died::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[41],
+      &file_reflection_data[43],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5064,7 +5370,7 @@ constexpr auto Damaged::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[40],
+      &file_reflection_data[42],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5511,7 +5817,7 @@ constexpr auto Cooldown::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[50],
+      &file_reflection_data[52],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5818,7 +6124,7 @@ constexpr auto AttackSwing::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[39],
+      &file_reflection_data[41],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5942,7 +6248,7 @@ constexpr auto AttackStop::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[38],
+      &file_reflection_data[40],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -6082,7 +6388,7 @@ constexpr auto AttackStart::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[37],
+      &file_reflection_data[39],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -6229,7 +6535,7 @@ constexpr auto ActionFailed::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[36],
+      &file_reflection_data[38],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -6382,7 +6688,7 @@ constexpr auto Progress::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[46],
+      &file_reflection_data[48],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -7506,7 +7812,7 @@ constexpr auto EffectApplied::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[48],
+      &file_reflection_data[50],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -7656,7 +7962,7 @@ constexpr auto Cooldowns::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[49],
+      &file_reflection_data[51],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -8193,12 +8499,12 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       PROTOBUF_FIELD_OFFSET(Packet,
                             _impl_._cached_size_),  // no hasbits
       0, // no _extensions_
-      305, 0,  // max_field_number, fast_idx_mask
+      307, 0,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
       4294959104,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      42,  // num_field_entries
-      42,  // num_aux_entries
+      44,  // num_field_entries
+      44,  // num_aux_entries
       offsetof(ParseTableT_, aux_entries),
       class_data,
       nullptr,  // post_loop_handler
@@ -8223,7 +8529,7 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       65535, 36,
       65535, 36,
       65535, 36,
-      64527, 36,
+      61455, 36,
       65535, 65535
     }}, {{
       // .portfolio.mmo.Login login = 1;
@@ -8310,6 +8616,10 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.use_item_), _Internal::kOneofCaseOffset + 0, 40, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.RequestResult request_result = 305;
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.request_result_), _Internal::kOneofCaseOffset + 0, 41, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.PickUp pick_up = 306;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.pick_up_), _Internal::kOneofCaseOffset + 0, 42, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.DropItem drop_item = 307;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.drop_item_), _Internal::kOneofCaseOffset + 0, 43, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
     }},
     {{
         #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -8522,6 +8832,16 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
         #else
         {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::RequestResult_globals_},
         #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::PickUp>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::PickUp_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::DropItem>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::DropItem_globals_},
+        #endif
     }},
     {{
     }},
@@ -8638,6 +8958,8 @@ const ::uint32_t
         protodesc_cold) = {
         0x004, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_._oneof_case_[0]),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
@@ -8986,6 +9308,22 @@ const ::uint32_t
         0,
         1,
         0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::PickUp, _impl_._has_bits_),
+        5, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::PickUp, _impl_.entity_id_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::PickUp, _impl_.request_id_),
+        0,
+        1,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DropItem, _impl_._has_bits_),
+        6, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DropItem, _impl_.slot_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DropItem, _impl_.count_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DropItem, _impl_.request_id_),
+        0,
+        1,
+        2,
+        0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::RequestResult, _impl_._has_bits_),
         5, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::RequestResult, _impl_.request_id_),
@@ -9122,58 +9460,60 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::Packet)},
-        {45, sizeof(::portfolio::mmo::Login)},
-        {54, sizeof(::portfolio::mmo::LoginResult)},
-        {59, sizeof(::portfolio::mmo::Kicked)},
-        {64, sizeof(::portfolio::mmo::DevCommand)},
-        {69, sizeof(::portfolio::mmo::Ping)},
-        {70, sizeof(::portfolio::mmo::CharacterSummary)},
-        {79, sizeof(::portfolio::mmo::CharacterList)},
-        {84, sizeof(::portfolio::mmo::CreateCharacter)},
-        {91, sizeof(::portfolio::mmo::CreateCharacterResult)},
-        {96, sizeof(::portfolio::mmo::EnterWorld)},
-        {101, sizeof(::portfolio::mmo::EnterWorldResult)},
-        {110, sizeof(::portfolio::mmo::LeaveWorld)},
-        {111, sizeof(::portfolio::mmo::Pong)},
-        {116, sizeof(::portfolio::mmo::Move)},
-        {127, sizeof(::portfolio::mmo::PositionReset)},
-        {136, sizeof(::portfolio::mmo::EntitiesEnter)},
-        {141, sizeof(::portfolio::mmo::EntityEnter)},
-        {200, sizeof(::portfolio::mmo::EffectState)},
-        {207, sizeof(::portfolio::mmo::ProgressState)},
-        {216, sizeof(::portfolio::mmo::EntityState)},
-        {227, sizeof(::portfolio::mmo::EntitiesLeave)},
-        {232, sizeof(::portfolio::mmo::EntityMoves)},
-        {239, sizeof(::portfolio::mmo::EntityMove)},
-        {252, sizeof(::portfolio::mmo::SelfVitals)},
-        {263, sizeof(::portfolio::mmo::EntityVitals)},
-        {268, sizeof(::portfolio::mmo::EntityVital)},
-        {277, sizeof(::portfolio::mmo::SelfStats)},
-        {288, sizeof(::portfolio::mmo::ExpGained)},
-        {295, sizeof(::portfolio::mmo::ItemSlot)},
-        {308, sizeof(::portfolio::mmo::Inventory)},
-        {315, sizeof(::portfolio::mmo::ItemAmount)},
-        {322, sizeof(::portfolio::mmo::Gain)},
-        {333, sizeof(::portfolio::mmo::InventoryChanged)},
-        {342, sizeof(::portfolio::mmo::UseItem)},
-        {349, sizeof(::portfolio::mmo::RequestResult)},
-        {356, sizeof(::portfolio::mmo::ActionFailed)},
-        {363, sizeof(::portfolio::mmo::AttackStart)},
-        {368, sizeof(::portfolio::mmo::AttackStop)},
-        {369, sizeof(::portfolio::mmo::AttackSwing)},
-        {376, sizeof(::portfolio::mmo::Damaged)},
-        {389, sizeof(::portfolio::mmo::Died)},
-        {396, sizeof(::portfolio::mmo::Revive)},
-        {397, sizeof(::portfolio::mmo::Revived)},
-        {406, sizeof(::portfolio::mmo::UseSkill)},
-        {415, sizeof(::portfolio::mmo::SkillUsed)},
-        {424, sizeof(::portfolio::mmo::Progress)},
-        {431, sizeof(::portfolio::mmo::ProgressCancelled)},
-        {438, sizeof(::portfolio::mmo::EffectApplied)},
-        {445, sizeof(::portfolio::mmo::Cooldowns)},
-        {450, sizeof(::portfolio::mmo::Cooldown)},
-        {459, sizeof(::portfolio::mmo::ProjectileLaunched)},
-        {476, sizeof(::portfolio::mmo::ProjectileEnded)},
+        {47, sizeof(::portfolio::mmo::Login)},
+        {56, sizeof(::portfolio::mmo::LoginResult)},
+        {61, sizeof(::portfolio::mmo::Kicked)},
+        {66, sizeof(::portfolio::mmo::DevCommand)},
+        {71, sizeof(::portfolio::mmo::Ping)},
+        {72, sizeof(::portfolio::mmo::CharacterSummary)},
+        {81, sizeof(::portfolio::mmo::CharacterList)},
+        {86, sizeof(::portfolio::mmo::CreateCharacter)},
+        {93, sizeof(::portfolio::mmo::CreateCharacterResult)},
+        {98, sizeof(::portfolio::mmo::EnterWorld)},
+        {103, sizeof(::portfolio::mmo::EnterWorldResult)},
+        {112, sizeof(::portfolio::mmo::LeaveWorld)},
+        {113, sizeof(::portfolio::mmo::Pong)},
+        {118, sizeof(::portfolio::mmo::Move)},
+        {129, sizeof(::portfolio::mmo::PositionReset)},
+        {138, sizeof(::portfolio::mmo::EntitiesEnter)},
+        {143, sizeof(::portfolio::mmo::EntityEnter)},
+        {202, sizeof(::portfolio::mmo::EffectState)},
+        {209, sizeof(::portfolio::mmo::ProgressState)},
+        {218, sizeof(::portfolio::mmo::EntityState)},
+        {229, sizeof(::portfolio::mmo::EntitiesLeave)},
+        {234, sizeof(::portfolio::mmo::EntityMoves)},
+        {241, sizeof(::portfolio::mmo::EntityMove)},
+        {254, sizeof(::portfolio::mmo::SelfVitals)},
+        {265, sizeof(::portfolio::mmo::EntityVitals)},
+        {270, sizeof(::portfolio::mmo::EntityVital)},
+        {279, sizeof(::portfolio::mmo::SelfStats)},
+        {290, sizeof(::portfolio::mmo::ExpGained)},
+        {297, sizeof(::portfolio::mmo::ItemSlot)},
+        {310, sizeof(::portfolio::mmo::Inventory)},
+        {317, sizeof(::portfolio::mmo::ItemAmount)},
+        {324, sizeof(::portfolio::mmo::Gain)},
+        {335, sizeof(::portfolio::mmo::InventoryChanged)},
+        {344, sizeof(::portfolio::mmo::UseItem)},
+        {351, sizeof(::portfolio::mmo::PickUp)},
+        {358, sizeof(::portfolio::mmo::DropItem)},
+        {367, sizeof(::portfolio::mmo::RequestResult)},
+        {374, sizeof(::portfolio::mmo::ActionFailed)},
+        {381, sizeof(::portfolio::mmo::AttackStart)},
+        {386, sizeof(::portfolio::mmo::AttackStop)},
+        {387, sizeof(::portfolio::mmo::AttackSwing)},
+        {394, sizeof(::portfolio::mmo::Damaged)},
+        {407, sizeof(::portfolio::mmo::Died)},
+        {414, sizeof(::portfolio::mmo::Revive)},
+        {415, sizeof(::portfolio::mmo::Revived)},
+        {424, sizeof(::portfolio::mmo::UseSkill)},
+        {433, sizeof(::portfolio::mmo::SkillUsed)},
+        {442, sizeof(::portfolio::mmo::Progress)},
+        {449, sizeof(::portfolio::mmo::ProgressCancelled)},
+        {456, sizeof(::portfolio::mmo::EffectApplied)},
+        {463, sizeof(::portfolio::mmo::Cooldowns)},
+        {468, sizeof(::portfolio::mmo::Cooldown)},
+        {477, sizeof(::portfolio::mmo::ProjectileLaunched)},
+        {494, sizeof(::portfolio::mmo::ProjectileEnded)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -9212,6 +9552,8 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
         &::portfolio::mmo::Gain_globals_,
         &::portfolio::mmo::InventoryChanged_globals_,
         &::portfolio::mmo::UseItem_globals_,
+        &::portfolio::mmo::PickUp_globals_,
+        &::portfolio::mmo::DropItem_globals_,
         &::portfolio::mmo::RequestResult_globals_,
         &::portfolio::mmo::ActionFailed_globals_,
         &::portfolio::mmo::AttackStart_globals_,
@@ -9233,7 +9575,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\rpackets.proto\022\rportfolio.mmo\"\371\020\n\006Packe"
+    "\n\rpackets.proto\022\rportfolio.mmo\"\323\021\n\006Packe"
     "t\022%\n\005login\030\001 \001(\0132\024.portfolio.mmo.LoginH\000"
     "\0222\n\014login_result\030\002 \001(\0132\032.portfolio.mmo.L"
     "oginResultH\000\022\'\n\006kicked\030\003 \001(\0132\025.portfolio"
@@ -9287,79 +9629,84 @@ const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "ry_changed\030\257\002 \001(\0132\037.portfolio.mmo.Invent"
     "oryChangedH\000\022+\n\010use_item\030\260\002 \001(\0132\026.portfo"
     "lio.mmo.UseItemH\000\0227\n\016request_result\030\261\002 \001"
-    "(\0132\034.portfolio.mmo.RequestResultH\000B\006\n\004bo"
-    "dy\"f\n\005Login\0228\n\020protocol_version\030\001 \001(\0162\036."
-    "portfolio.mmo.ProtocolVersion\022\020\n\010login_i"
-    "d\030\002 \001(\t\022\021\n\tdata_hash\030\003 \001(\006\"I\n\013LoginResul"
-    "t\022.\n\006result\030\001 \001(\0162\036.portfolio.mmo.LoginR"
-    "esultCodeJ\004\010\002\020\003J\004\010\003\020\004\"3\n\006Kicked\022)\n\006reaso"
-    "n\030\001 \001(\0162\031.portfolio.mmo.KickReason\"\032\n\nDe"
-    "vCommand\022\014\n\004line\030\001 \001(\t\"\006\n\004Ping\"d\n\020Charac"
-    "terSummary\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\0226\n\017"
-    "character_class\030\003 \001(\0162\035.portfolio.mmo.Ch"
-    "aracterClass\"D\n\rCharacterList\0223\n\ncharact"
-    "ers\030\001 \003(\0132\037.portfolio.mmo.CharacterSumma"
-    "ry\"W\n\017CreateCharacter\022\014\n\004name\030\001 \001(\t\0226\n\017c"
-    "haracter_class\030\002 \001(\0162\035.portfolio.mmo.Cha"
-    "racterClass\"Q\n\025CreateCharacterResult\0228\n\006"
-    "result\030\001 \001(\0162(.portfolio.mmo.CreateChara"
-    "cterResultCode\"\"\n\nEnterWorld\022\024\n\014characte"
-    "r_id\030\001 \001(\004\"f\n\020EnterWorldResult\0223\n\006result"
-    "\030\001 \001(\0162#.portfolio.mmo.EnterWorldResultC"
-    "ode\022\017\n\007self_id\030\002 \001(\r\022\014\n\004tick\030\003 \001(\r\"\014\n\nLe"
-    "aveWorld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r\"6\n\004Move\022\t"
-    "\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack"
-    "\030\004 \001(\r\"2\n\rPositionReset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030"
-    "\002 \001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEntitiesEnter\022,\n\010e"
-    "ntities\030\001 \003(\0132\032.portfolio.mmo.EntityEnte"
-    "r\"\204\005\n\013EntityEnter\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021"
-    "\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\'\n\004kind\030\007 \001(\0162\031"
-    ".portfolio.mmo.EntityKind\022\014\n\004name\030\005 \001(\t\022"
-    "6\n\017character_class\030\006 \001(\0162\035.portfolio.mmo"
-    ".CharacterClass\022\r\n\005level\030\010 \001(\r\022,\n\nname_c"
-    "olor\030\t \001(\0162\030.portfolio.mmo.NameColor\022\026\n\016"
-    "weapon_item_id\030\n \001(\r\022\023\n\013template_id\030\013 \001("
-    "\r\022\n\n\002hp\030\014 \001(\r\022\016\n\006max_hp\030\r \001(\r\022+\n\007effects"
-    "\030\016 \003(\0132\032.portfolio.mmo.EffectState\022.\n\010pr"
-    "ogress\030\017 \001(\0132\034.portfolio.mmo.ProgressSta"
-    "te\022\014\n\004dead\030\020 \001(\010\022\r\n\005speed\030\021 \001(\r\022\020\n\010move_"
-    "yaw\030\022 \001(\r\022\016\n\006next_x\030\023 \001(\021\022\016\n\006next_z\030\024 \001("
-    "\021\022\017\n\007item_id\030\025 \001(\r\022\r\n\005count\030\026 \001(\r\022\017\n\007enc"
-    "hant\030\027 \001(\r\022\031\n\017owner_player_id\030\030 \001(\rH\000\022\030\n"
-    "\016owner_party_id\030\031 \001(\rH\000\022\033\n\023owner_only_en"
-    "d_tick\030\032 \001(\r\022\031\n\021dropped_by_player\030\033 \001(\010B"
-    "\007\n\005owner\"2\n\013EffectState\022\021\n\teffect_id\030\001 \001"
-    "(\r\022\020\n\010end_tick\030\002 \001(\r\"X\n\rProgressState\022)\n"
-    "\004kind\030\001 \001(\0162\033.portfolio.mmo.ProgressKind"
-    "\022\n\n\002id\030\002 \001(\r\022\020\n\010end_tick\030\003 \001(\r\"n\n\013Entity"
-    "State\022\n\n\002id\030\001 \001(\r\022,\n\nname_color\030\002 \001(\0162\030."
-    "portfolio.mmo.NameColor\022\026\n\016weapon_item_i"
-    "d\030\003 \001(\r\022\r\n\005level\030\004 \001(\r\"\034\n\rEntitiesLeave\022"
-    "\013\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n\004tick\030\001 \001("
-    "\r\022+\n\010entities\030\002 \003(\0132\031.portfolio.mmo.Enti"
-    "tyMove\"M\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 "
-    "\001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\020\n\010teleport\030"
-    "\005 \001(\010\"Y\n\nSelfVitals\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002 "
-    "\001(\r\022\027\n\017combat_end_tick\030\003 \001(\r\022\032\n\022aggresso"
-    "r_end_tick\030\004 \001(\r\"<\n\014EntityVitals\022,\n\010enti"
-    "ties\030\001 \003(\0132\032.portfolio.mmo.EntityVital\"5"
-    "\n\013EntityVital\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n"
-    "\006max_hp\030\003 \001(\r\"L\n\tSelfStats\022\016\n\006max_hp\030\001 \001"
-    "(\r\022\016\n\006max_mp\030\002 \001(\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007de"
-    "fense\030\004 \001(\r\"(\n\tExpGained\022\016\n\006amount\030\001 \001(\021"
-    "\022\013\n\003exp\030\002 \001(\r\"s\n\010ItemSlot\022\'\n\005place\030\001 \001(\016"
-    "2\030.portfolio.mmo.ItemPlace\022\r\n\005index\030\002 \001("
-    "\r\022\017\n\007item_id\030\003 \001(\r\022\r\n\005count\030\004 \001(\r\022\017\n\007enc"
-    "hant\030\005 \001(\r\"A\n\tInventory\022&\n\005slots\030\001 \003(\0132\027"
-    ".portfolio.mmo.ItemSlot\022\014\n\004gold\030\002 \001(\004\",\n"
-    "\nItemAmount\022\017\n\007item_id\030\001 \001(\r\022\r\n\005count\030\002 "
-    "\001(\r\"t\n\004Gain\022)\n\006reason\030\001 \001(\0162\031.portfolio."
-    "mmo.GainReason\022)\n\004item\030\002 \001(\0132\031.portfolio"
-    ".mmo.ItemAmountH\000\022\016\n\004gold\030\003 \001(\004H\000B\006\n\004wha"
-    "t\"l\n\020InventoryChanged\022&\n\005slots\030\001 \003(\0132\027.p"
-    "ortfolio.mmo.ItemSlot\022\014\n\004gold\030\002 \001(\004\022\"\n\005g"
-    "ains\030\003 \003(\0132\023.portfolio.mmo.Gain\"+\n\007UseIt"
-    "em\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"N\n\r"
+    "(\0132\034.portfolio.mmo.RequestResultH\000\022)\n\007pi"
+    "ck_up\030\262\002 \001(\0132\025.portfolio.mmo.PickUpH\000\022-\n"
+    "\tdrop_item\030\263\002 \001(\0132\027.portfolio.mmo.DropIt"
+    "emH\000B\006\n\004body\"f\n\005Login\0228\n\020protocol_versio"
+    "n\030\001 \001(\0162\036.portfolio.mmo.ProtocolVersion\022"
+    "\020\n\010login_id\030\002 \001(\t\022\021\n\tdata_hash\030\003 \001(\006\"I\n\013"
+    "LoginResult\022.\n\006result\030\001 \001(\0162\036.portfolio."
+    "mmo.LoginResultCodeJ\004\010\002\020\003J\004\010\003\020\004\"3\n\006Kicke"
+    "d\022)\n\006reason\030\001 \001(\0162\031.portfolio.mmo.KickRe"
+    "ason\"\032\n\nDevCommand\022\014\n\004line\030\001 \001(\t\"\006\n\004Ping"
+    "\"d\n\020CharacterSummary\022\n\n\002id\030\001 \001(\004\022\014\n\004name"
+    "\030\002 \001(\t\0226\n\017character_class\030\003 \001(\0162\035.portfo"
+    "lio.mmo.CharacterClass\"D\n\rCharacterList\022"
+    "3\n\ncharacters\030\001 \003(\0132\037.portfolio.mmo.Char"
+    "acterSummary\"W\n\017CreateCharacter\022\014\n\004name\030"
+    "\001 \001(\t\0226\n\017character_class\030\002 \001(\0162\035.portfol"
+    "io.mmo.CharacterClass\"Q\n\025CreateCharacter"
+    "Result\0228\n\006result\030\001 \001(\0162(.portfolio.mmo.C"
+    "reateCharacterResultCode\"\"\n\nEnterWorld\022\024"
+    "\n\014character_id\030\001 \001(\004\"f\n\020EnterWorldResult"
+    "\0223\n\006result\030\001 \001(\0162#.portfolio.mmo.EnterWo"
+    "rldResultCode\022\017\n\007self_id\030\002 \001(\r\022\014\n\004tick\030\003"
+    " \001(\r\"\014\n\nLeaveWorld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r"
+    "\"6\n\004Move\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003yaw\030\003 "
+    "\001(\r\022\013\n\003ack\030\004 \001(\r\"2\n\rPositionReset\022\t\n\001x\030\001"
+    " \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEntities"
+    "Enter\022,\n\010entities\030\001 \003(\0132\032.portfolio.mmo."
+    "EntityEnter\"\204\005\n\013EntityEnter\022\n\n\002id\030\001 \001(\r\022"
+    "\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\'\n\004ki"
+    "nd\030\007 \001(\0162\031.portfolio.mmo.EntityKind\022\014\n\004n"
+    "ame\030\005 \001(\t\0226\n\017character_class\030\006 \001(\0162\035.por"
+    "tfolio.mmo.CharacterClass\022\r\n\005level\030\010 \001(\r"
+    "\022,\n\nname_color\030\t \001(\0162\030.portfolio.mmo.Nam"
+    "eColor\022\026\n\016weapon_item_id\030\n \001(\r\022\023\n\013templa"
+    "te_id\030\013 \001(\r\022\n\n\002hp\030\014 \001(\r\022\016\n\006max_hp\030\r \001(\r\022"
+    "+\n\007effects\030\016 \003(\0132\032.portfolio.mmo.EffectS"
+    "tate\022.\n\010progress\030\017 \001(\0132\034.portfolio.mmo.P"
+    "rogressState\022\014\n\004dead\030\020 \001(\010\022\r\n\005speed\030\021 \001("
+    "\r\022\020\n\010move_yaw\030\022 \001(\r\022\016\n\006next_x\030\023 \001(\021\022\016\n\006n"
+    "ext_z\030\024 \001(\021\022\017\n\007item_id\030\025 \001(\r\022\r\n\005count\030\026 "
+    "\001(\r\022\017\n\007enchant\030\027 \001(\r\022\031\n\017owner_player_id\030"
+    "\030 \001(\rH\000\022\030\n\016owner_party_id\030\031 \001(\rH\000\022\033\n\023own"
+    "er_only_end_tick\030\032 \001(\r\022\031\n\021dropped_by_pla"
+    "yer\030\033 \001(\010B\007\n\005owner\"2\n\013EffectState\022\021\n\teff"
+    "ect_id\030\001 \001(\r\022\020\n\010end_tick\030\002 \001(\r\"X\n\rProgre"
+    "ssState\022)\n\004kind\030\001 \001(\0162\033.portfolio.mmo.Pr"
+    "ogressKind\022\n\n\002id\030\002 \001(\r\022\020\n\010end_tick\030\003 \001(\r"
+    "\"n\n\013EntityState\022\n\n\002id\030\001 \001(\r\022,\n\nname_colo"
+    "r\030\002 \001(\0162\030.portfolio.mmo.NameColor\022\026\n\016wea"
+    "pon_item_id\030\003 \001(\r\022\r\n\005level\030\004 \001(\r\"\034\n\rEnti"
+    "tiesLeave\022\013\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n"
+    "\004tick\030\001 \001(\r\022+\n\010entities\030\002 \003(\0132\031.portfoli"
+    "o.mmo.EntityMove\"M\n\nEntityMove\022\n\n\002id\030\001 \001"
+    "(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\020\n"
+    "\010teleport\030\005 \001(\010\"Y\n\nSelfVitals\022\n\n\002hp\030\001 \001("
+    "\r\022\n\n\002mp\030\002 \001(\r\022\027\n\017combat_end_tick\030\003 \001(\r\022\032"
+    "\n\022aggressor_end_tick\030\004 \001(\r\"<\n\014EntityVita"
+    "ls\022,\n\010entities\030\001 \003(\0132\032.portfolio.mmo.Ent"
+    "ityVital\"5\n\013EntityVital\022\n\n\002id\030\001 \001(\r\022\n\n\002h"
+    "p\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"L\n\tSelfStats\022\016\n\006"
+    "max_hp\030\001 \001(\r\022\016\n\006max_mp\030\002 \001(\r\022\016\n\006attack\030\003"
+    " \001(\r\022\017\n\007defense\030\004 \001(\r\"(\n\tExpGained\022\016\n\006am"
+    "ount\030\001 \001(\021\022\013\n\003exp\030\002 \001(\r\"s\n\010ItemSlot\022\'\n\005p"
+    "lace\030\001 \001(\0162\030.portfolio.mmo.ItemPlace\022\r\n\005"
+    "index\030\002 \001(\r\022\017\n\007item_id\030\003 \001(\r\022\r\n\005count\030\004 "
+    "\001(\r\022\017\n\007enchant\030\005 \001(\r\"A\n\tInventory\022&\n\005slo"
+    "ts\030\001 \003(\0132\027.portfolio.mmo.ItemSlot\022\014\n\004gol"
+    "d\030\002 \001(\004\",\n\nItemAmount\022\017\n\007item_id\030\001 \001(\r\022\r"
+    "\n\005count\030\002 \001(\r\"t\n\004Gain\022)\n\006reason\030\001 \001(\0162\031."
+    "portfolio.mmo.GainReason\022)\n\004item\030\002 \001(\0132\031"
+    ".portfolio.mmo.ItemAmountH\000\022\016\n\004gold\030\003 \001("
+    "\004H\000B\006\n\004what\"l\n\020InventoryChanged\022&\n\005slots"
+    "\030\001 \003(\0132\027.portfolio.mmo.ItemSlot\022\014\n\004gold\030"
+    "\002 \001(\004\022\"\n\005gains\030\003 \003(\0132\023.portfolio.mmo.Gai"
+    "n\"+\n\007UseItem\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequest_id"
+    "\030\002 \001(\r\"/\n\006PickUp\022\021\n\tentity_id\030\001 \001(\r\022\022\n\nr"
+    "equest_id\030\002 \001(\r\";\n\010DropItem\022\014\n\004slot\030\001 \001("
+    "\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"N\n\r"
     "RequestResult\022\022\n\nrequest_id\030\001 \001(\r\022)\n\006res"
     "ult\030\002 \001(\0162\031.portfolio.mmo.FailReason\"f\n\014"
     "ActionFailed\022)\n\006reason\030\001 \001(\0162\031.portfolio"
@@ -9430,39 +9777,41 @@ const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "\000\022\026\n\022PROGRESS_KIND_CAST\020\001\022\030\n\024PROGRESS_KI"
     "ND_GATHER\020\002\022\027\n\023PROGRESS_KIND_CRAFT\020\003\022\030\n\024"
     "PROGRESS_KIND_RECALL\020\004*%\n\tItemPlace\022\030\n\024I"
-    "TEM_PLACE_INVENTORY\020\000*F\n\nGainReason\022\033\n\027G"
+    "TEM_PLACE_INVENTORY\020\000*_\n\nGainReason\022\033\n\027G"
     "AIN_REASON_UNSPECIFIED\020\000\022\033\n\027GAIN_REASON_"
-    "DEV_COMMAND\020\001*\222\004\n\nFailReason\022\024\n\020FAIL_REA"
-    "SON_NONE\020\000\022\031\n\025FAIL_REASON_NO_TARGET\020\001\022\036\n"
-    "\032FAIL_REASON_INVALID_TARGET\020\002\022\024\n\020FAIL_RE"
-    "ASON_DEAD\020\003\022\030\n\024FAIL_REASON_NOT_DEAD\020\004\022\033\n"
-    "\027FAIL_REASON_NOT_LEARNED\020\005\022\030\n\024FAIL_REASO"
-    "N_COOLDOWN\020\006\022\035\n\031FAIL_REASON_NOT_ENOUGH_M"
-    "P\020\007\022\034\n\030FAIL_REASON_OUT_OF_RANGE\020\010\022\027\n\023FAI"
-    "L_REASON_BLOCKED\020\t\022\024\n\020FAIL_REASON_BUSY\020\n"
-    "\022\027\n\023FAIL_REASON_STUNNED\020\013\022\031\n\025FAIL_REASON"
-    "_CANCELLED\020\014\022\037\n\033FAIL_REASON_INVALID_COMM"
-    "AND\020\r\022\036\n\032FAIL_REASON_INVENTORY_FULL\020\016\022\027\n"
-    "\023FAIL_REASON_NO_ITEM\020\017\022\035\n\031FAIL_REASON_UN"
-    "USABLE_ITEM\020\020\022\031\n\025FAIL_REASON_IN_COMBAT\020\021"
-    "\022\030\n\024FAIL_REASON_TOO_FAST\020\022*\214\001\n\013RequestKi"
-    "nd\022\034\n\030REQUEST_KIND_UNSPECIFIED\020\000\022\027\n\023REQU"
-    "EST_KIND_ATTACK\020\001\022\027\n\023REQUEST_KIND_REVIVE"
-    "\020\002\022\026\n\022REQUEST_KIND_SKILL\020\003\022\025\n\021REQUEST_KI"
-    "ND_CHAT\020\004B\030\252\002\025PortfolioMmo.Contractb\006pro"
-    "to3"
+    "DEV_COMMAND\020\001\022\027\n\023GAIN_REASON_PICK_UP\020\002*\313"
+    "\004\n\nFailReason\022\024\n\020FAIL_REASON_NONE\020\000\022\031\n\025F"
+    "AIL_REASON_NO_TARGET\020\001\022\036\n\032FAIL_REASON_IN"
+    "VALID_TARGET\020\002\022\024\n\020FAIL_REASON_DEAD\020\003\022\030\n\024"
+    "FAIL_REASON_NOT_DEAD\020\004\022\033\n\027FAIL_REASON_NO"
+    "T_LEARNED\020\005\022\030\n\024FAIL_REASON_COOLDOWN\020\006\022\035\n"
+    "\031FAIL_REASON_NOT_ENOUGH_MP\020\007\022\034\n\030FAIL_REA"
+    "SON_OUT_OF_RANGE\020\010\022\027\n\023FAIL_REASON_BLOCKE"
+    "D\020\t\022\024\n\020FAIL_REASON_BUSY\020\n\022\027\n\023FAIL_REASON"
+    "_STUNNED\020\013\022\031\n\025FAIL_REASON_CANCELLED\020\014\022\037\n"
+    "\033FAIL_REASON_INVALID_COMMAND\020\r\022\036\n\032FAIL_R"
+    "EASON_INVENTORY_FULL\020\016\022\027\n\023FAIL_REASON_NO"
+    "_ITEM\020\017\022\035\n\031FAIL_REASON_UNUSABLE_ITEM\020\020\022\031"
+    "\n\025FAIL_REASON_IN_COMBAT\020\021\022\030\n\024FAIL_REASON"
+    "_TOO_FAST\020\022\022\034\n\030FAIL_REASON_ALREADY_GONE\020"
+    "\023\022\031\n\025FAIL_REASON_NOT_YOURS\020\024*\214\001\n\013Request"
+    "Kind\022\034\n\030REQUEST_KIND_UNSPECIFIED\020\000\022\027\n\023RE"
+    "QUEST_KIND_ATTACK\020\001\022\027\n\023REQUEST_KIND_REVI"
+    "VE\020\002\022\026\n\022REQUEST_KIND_SKILL\020\003\022\025\n\021REQUEST_"
+    "KIND_CHAT\020\004B\030\252\002\025PortfolioMmo.Contractb\006p"
+    "roto3"
 };
 static ::absl::once_flag descriptor_table_packets_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_packets_2eproto = {
     false,
     false,
-    8683,
+    8965,
     descriptor_table_protodef_packets_2eproto,
     "packets.proto",
     &descriptor_table_packets_2eproto_once,
     nullptr,
     0,
-    53,
+    55,
     schemas,
     file_message_globals,
     TableStruct_packets_2eproto::offsets,
@@ -9554,14 +9903,14 @@ GainReason_descriptor() {
   return file_level_enum_descriptors_packets_2eproto[11];
 }
 PROTOBUF_CONSTINIT const uint32_t GainReason_internal_data_[] = {
-    131072u, 0u, };
+    196608u, 0u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 FailReason_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
   return file_level_enum_descriptors_packets_2eproto[12];
 }
 PROTOBUF_CONSTINIT const uint32_t FailReason_internal_data_[] = {
-    1245184u, 0u, };
+    1376256u, 0u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 RequestKind_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
@@ -10117,6 +10466,32 @@ void Packet::set_allocated_request_result(::portfolio::mmo::RequestResult* PROTO
   }
   // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.request_result)
 }
+void Packet::set_allocated_pick_up(::portfolio::mmo::PickUp* PROTOBUF_NULLABLE pick_up) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (pick_up) {
+    ::google::protobuf::Arena* submessage_arena = pick_up->GetArena();
+    if (message_arena != submessage_arena) {
+      pick_up = ::google::protobuf::internal::GetOwnedMessage(message_arena, pick_up, submessage_arena);
+    }
+    set_has_pick_up();
+    _impl_.body_.pick_up_ = pick_up;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.pick_up)
+}
+void Packet::set_allocated_drop_item(::portfolio::mmo::DropItem* PROTOBUF_NULLABLE drop_item) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (drop_item) {
+    ::google::protobuf::Arena* submessage_arena = drop_item->GetArena();
+    if (message_arena != submessage_arena) {
+      drop_item = ::google::protobuf::internal::GetOwnedMessage(message_arena, drop_item, submessage_arena);
+    }
+    set_has_drop_item();
+    _impl_.body_.drop_item_ = drop_item;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.drop_item)
+}
 Packet::Packet(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
 #if defined(PROTOBUF_CUSTOM_VTABLE)
     : Super_(arena, Packet_get_class_data()) {
@@ -10275,6 +10650,12 @@ Packet::Packet(
         break;
       case kRequestResult:
         _impl_.body_.request_result_ = Super_::CopyConstruct(arena, *from._impl_.body_.request_result_);
+        break;
+      case kPickUp:
+        _impl_.body_.pick_up_ = Super_::CopyConstruct(arena, *from._impl_.body_.pick_up_);
+        break;
+      case kDropItem:
+        _impl_.body_.drop_item_ = Super_::CopyConstruct(arena, *from._impl_.body_.drop_item_);
         break;
   }
 
@@ -10646,6 +11027,22 @@ void Packet::clear_body() {
       }
       break;
     }
+    case kPickUp: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.pick_up_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.pick_up_);
+      }
+      break;
+    }
+    case kDropItem: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.drop_item_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.drop_item_);
+      }
+      break;
+    }
     case BODY_NOT_SET: {
       break;
     }
@@ -10961,6 +11358,18 @@ PROTOBUF_NOINLINE void Packet::Clear() {
           stream);
       break;
     }
+    case kPickUp: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          306, *this_._impl_.body_.pick_up_, this_._impl_.body_.pick_up_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kDropItem: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          307, *this_._impl_.body_.drop_item_, this_._impl_.body_.drop_item_->GetCachedSize(), target,
+          stream);
+      break;
+    }
     default:
       break;
   }
@@ -11236,6 +11645,18 @@ PROTOBUF_NOINLINE void Packet::Clear() {
     case kRequestResult: {
       total_size += 2 +
                     ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.request_result_);
+      break;
+    }
+    // .portfolio.mmo.PickUp pick_up = 306;
+    case kPickUp: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.pick_up_);
+      break;
+    }
+    // .portfolio.mmo.DropItem drop_item = 307;
+    case kDropItem: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.drop_item_);
       break;
     }
     case BODY_NOT_SET: {
@@ -11604,6 +12025,22 @@ void Packet::MergeImpl(::google::protobuf::MessageLite& to_msg,
           _this->_impl_.body_.request_result_ = Super_::CopyConstruct(arena, *from._impl_.body_.request_result_);
         } else {
           _this->_impl_.body_.request_result_->MergeFrom(*from._impl_.body_.request_result_);
+        }
+        break;
+      }
+      case kPickUp: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.pick_up_ = Super_::CopyConstruct(arena, *from._impl_.body_.pick_up_);
+        } else {
+          _this->_impl_.body_.pick_up_->MergeFrom(*from._impl_.body_.pick_up_);
+        }
+        break;
+      }
+      case kDropItem: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.drop_item_ = Super_::CopyConstruct(arena, *from._impl_.body_.drop_item_);
+        } else {
+          _this->_impl_.body_.drop_item_->MergeFrom(*from._impl_.body_.drop_item_);
         }
         break;
       }
@@ -20087,6 +20524,481 @@ void UseItem::InternalSwap(UseItem* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
 }
 
 ::google::protobuf::Metadata UseItem::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+PickUp::PickUp(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, PickUp_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.PickUp)
+}
+PickUp::PickUp(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const PickUp& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, PickUp_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE PickUp::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void PickUp::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, entity_id_),
+           0,
+           offsetof(Impl_, request_id_) -
+               offsetof(Impl_, entity_id_) +
+               sizeof(Impl_::request_id_));
+}
+PickUp::~PickUp() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.PickUp)
+  SharedDtor(*this);
+}
+inline void PickUp::SharedDtor(MessageLite& self) {
+  PickUp& this_ = static_cast<PickUp&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull PickUp_class_data_ =
+        PickUp::InternalGenerateClassData_(PickUp_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+PickUp::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&PickUp_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(PickUp_class_data_.tc_table);
+  return PickUp_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+PickUp::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&PickUp_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&PickUp_globals_));
+  return PickUp_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const PickUp::ParseTableT_
+    PickUp::_table_ =
+        PickUp::InternalGenerateParseTable_(PickUp_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void PickUp::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.PickUp)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    ::memset(&this_._impl_.entity_id_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.request_id_) -
+                 reinterpret_cast<char*>(&this_._impl_.entity_id_)) +
+                 sizeof(_impl_.request_id_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL PickUp::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const PickUp& this_ = static_cast<const PickUp&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL PickUp::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const PickUp& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.PickUp)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 entity_id = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_entity_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          1, this_._internal_entity_id(), target);
+    }
+  }
+
+  // uint32 request_id = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_request_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          2, this_._internal_request_id(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.PickUp)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t PickUp::ByteSizeLong(const MessageLite& base) {
+  const PickUp& this_ = static_cast<const PickUp&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t PickUp::ByteSizeLong() const {
+  const PickUp& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.PickUp)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    // uint32 entity_id = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_entity_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_entity_id());
+      }
+    }
+    // uint32 request_id = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_request_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_request_id());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void PickUp::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<PickUp*>(&to_msg);
+  auto& from = static_cast<const PickUp&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.PickUp)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (from._internal_entity_id() != 0) {
+        _this->_impl_.entity_id_ = from._impl_.entity_id_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_request_id() != 0) {
+        _this->_impl_.request_id_ = from._impl_.request_id_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void PickUp::CopyFrom(const PickUp& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.PickUp)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void PickUp::InternalSwap(PickUp* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(PickUp, _impl_.request_id_)
+      + sizeof(PickUp::_impl_.request_id_)
+      - PROTOBUF_FIELD_OFFSET(PickUp, _impl_.entity_id_)>(
+          reinterpret_cast<char*>(&_impl_.entity_id_),
+          reinterpret_cast<char*>(&other->_impl_.entity_id_));
+}
+
+::google::protobuf::Metadata PickUp::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+DropItem::DropItem(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, DropItem_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.DropItem)
+}
+DropItem::DropItem(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const DropItem& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, DropItem_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE DropItem::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void DropItem::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, slot_),
+           0,
+           offsetof(Impl_, request_id_) -
+               offsetof(Impl_, slot_) +
+               sizeof(Impl_::request_id_));
+}
+DropItem::~DropItem() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.DropItem)
+  SharedDtor(*this);
+}
+inline void DropItem::SharedDtor(MessageLite& self) {
+  DropItem& this_ = static_cast<DropItem&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull DropItem_class_data_ =
+        DropItem::InternalGenerateClassData_(DropItem_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+DropItem::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&DropItem_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(DropItem_class_data_.tc_table);
+  return DropItem_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+DropItem::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&DropItem_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&DropItem_globals_));
+  return DropItem_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const DropItem::ParseTableT_
+    DropItem::_table_ =
+        DropItem::InternalGenerateParseTable_(DropItem_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void DropItem::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.DropItem)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    ::memset(&this_._impl_.slot_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.request_id_) -
+                 reinterpret_cast<char*>(&this_._impl_.slot_)) +
+                 sizeof(_impl_.request_id_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL DropItem::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const DropItem& this_ = static_cast<const DropItem&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL DropItem::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const DropItem& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.DropItem)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 slot = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_slot() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          1, this_._internal_slot(), target);
+    }
+  }
+
+  // uint32 count = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_count() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          2, this_._internal_count(), target);
+    }
+  }
+
+  // uint32 request_id = 3;
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (this_._internal_request_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          3, this_._internal_request_id(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.DropItem)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t DropItem::ByteSizeLong(const MessageLite& base) {
+  const DropItem& this_ = static_cast<const DropItem&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t DropItem::ByteSizeLong() const {
+  const DropItem& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.DropItem)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    // uint32 slot = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_slot() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_slot());
+      }
+    }
+    // uint32 count = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_count() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_count());
+      }
+    }
+    // uint32 request_id = 3;
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (this_._internal_request_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_request_id());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void DropItem::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<DropItem*>(&to_msg);
+  auto& from = static_cast<const DropItem&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.DropItem)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (from._internal_slot() != 0) {
+        _this->_impl_.slot_ = from._impl_.slot_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_count() != 0) {
+        _this->_impl_.count_ = from._impl_.count_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (from._internal_request_id() != 0) {
+        _this->_impl_.request_id_ = from._impl_.request_id_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void DropItem::CopyFrom(const DropItem& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.DropItem)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void DropItem::InternalSwap(DropItem* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DropItem, _impl_.request_id_)
+      + sizeof(DropItem::_impl_.request_id_)
+      - PROTOBUF_FIELD_OFFSET(DropItem, _impl_.slot_)>(
+          reinterpret_cast<char*>(&_impl_.slot_),
+          reinterpret_cast<char*>(&other->_impl_.slot_));
+}
+
+::google::protobuf::Metadata DropItem::GetMetadata() const {
   return Super_::GetMetadataImpl(GetClassData()->full());
 }
 // ===================================================================

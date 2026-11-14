@@ -90,8 +90,9 @@ namespace PortfolioMmo.Server
 
         /// <summary>
         /// 아이템을 넣는다. 다 들어가지 않으면 아무것도 넣지 않고 "인벤토리 가득"이다. reason이 Unspecified가 아니면 새로 얻은 것에 든다.
+        /// enchant는 겹치지 않는 아이템(장비)의 강화 수치다(주운 장비가 수치를 그대로 가짐. 33, 35).
         /// </summary>
-        public FailReason Add(Player player, uint itemId, uint count, GainReason reason)
+        public FailReason Add(Player player, uint itemId, uint count, GainReason reason, uint enchant = 0)
         {
             ItemsRow item = _data.Item(itemId) ?? throw new ArgumentException($"Items has no row {itemId}.", nameof(itemId));
             Bag bag = player.Bag;
@@ -124,7 +125,7 @@ namespace PortfolioMmo.Server
                 {
                     slot.ItemId = itemId;
                     slot.Count = 1;
-                    slot.Enchant = 0;
+                    slot.Enchant = enchant;
                     bag.Changed.Add((int)slot.Index);
                 }
             }
