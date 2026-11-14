@@ -128,7 +128,7 @@ namespace PortfolioMmo.Data {
     public const int AttackIntervalMsFieldNumber = 3;
     private uint attackIntervalMs_;
     /// <summary>
-    /// 기본 공격의 간격(ms). 처음 값은 72의 기준을 기다리는 자리 값
+    /// 기본 공격의 간격(ms)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

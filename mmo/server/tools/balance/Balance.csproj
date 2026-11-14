@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 수치 표(백로그 72): 생성한 테이블과 서버의 피해 공식(StatSystem.Damage → Formulas.Damage)으로 싸움을 틱마다 돌려 표를 낸다. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>PortfolioMmo.Balance</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Server.csproj" />
+  </ItemGroup>
+</Project>

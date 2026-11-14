@@ -13,5 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../src/Server.csproj" />
+    <!-- 수치의 기준(72)을 실제 데이터로 본다. -->
+    <ProjectReference Include="../tools/balance/Balance.csproj" />
   </ItemGroup>
 </Project>

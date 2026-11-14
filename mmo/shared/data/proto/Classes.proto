@@ -10,7 +10,7 @@ message ClassesRow {
   uint32 id = 1;
   // 기본 공격의 사거리(m)
   double attack_range = 2;
-  // 기본 공격의 간격(ms). 처음 값은 72의 기준을 기다리는 자리 값
+  // 기본 공격의 간격(ms)
   uint32 attack_interval_ms = 3;
   // 공격 동작의 시작에서 타격까지의 시간(ms). 동작에서 무기가 닿는 때에 맞춘다(80)
   uint32 hit_delay_ms = 4;

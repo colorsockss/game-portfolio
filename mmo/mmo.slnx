@@ -8,6 +8,7 @@
   <Folder Name="/server/">
     <Project Path="server/src/Server.csproj" />
     <Project Path="server/test/Server.Tests.csproj" />
+    <Project Path="server/tools/balance/Balance.csproj" />
     <Project Path="server/tools/load-test/LoadTest.csproj" />
   </Folder>
 </Solution>
