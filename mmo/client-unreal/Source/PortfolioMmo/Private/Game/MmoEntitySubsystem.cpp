@@ -29,6 +29,9 @@ namespace
 	/** 바닥 표시의 색: 내 대상의 원(노랑), 범위 스킬의 원(주황). 범위의 원이 보이는 시간(초). */
 	const FLinearColor TargetColor(1.0f, 0.85f, 0.2f);
 	const FLinearColor AreaColor(1.0f, 0.45f, 0.1f);
+	/** 보스의 예고된 범위(43): 바깥 원(어두운 빨강)과 차오르는 안쪽 원(빨강). */
+	const FLinearColor WarningRingColor(0.35f, 0.05f, 0.05f);
+	const FLinearColor WarningFillColor(1.0f, 0.15f, 0.1f);
 	constexpr double AreaMarkerSeconds = 0.5;
 	/** 공격·스킬 동작 동안 대상 쪽을 보는 시간(초). 동작(0.75–1.2초)의 휘두름이 끝날 즈음까지이고, 그 뒤 서버의 방향으로 돌아온다. */
 	constexpr double FaceSeconds = 0.7;
@@ -243,6 +246,43 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		}
 	}
 	DrawCombat(World, Combat);
+	DrawWarnings(Session->Bosses(), World, Session->Data(), ServerTick);
+}
+
+void UMmoEntitySubsystem::DrawWarnings(MmoWorld::FBossWatch& Watch, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick)
+{
+	Watch.Expire(ServerTick, World);
+	int32 Used = 0;
+	for (const MmoWorld::FAreaWarning& Area : Watch.Warnings())
+	{
+		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Area.SkillId);
+		if (!Skill)
+		{
+			continue;
+		}
+		if (Used == WarningRings.Num())
+		{
+			WarningRings.Add(SpawnMarker(TEXT("Cylinder"), FVector::OneVector, WarningRingColor));
+			WarningFills.Add(SpawnMarker(TEXT("Cylinder"), FVector::OneVector, WarningFillColor));
+		}
+		// 엔진의 원기둥은 지름 1 m라 지름(m)을 그대로 배율로 쓴다. 안쪽 원은 받은 때부터 피해를 주는 틱까지 0에서 가득으로 자라고, 바깥 원보다 조금 위다.
+		const double Diameter = Skill->radius() * 2.0;
+		const double Span = FMath::Max(1.0, Area.HitTick - Area.ShownTick);
+		const double Ratio = FMath::Clamp((ServerTick - Area.ShownTick) / Span, 0.0, 1.0);
+		const FVector Center = MmoCoordinates::ToWorld(Area.X, Area.Z);
+		WarningRings[Used]->SetActorLocation(Center + FVector(0.0, 0.0, 2.5));
+		WarningRings[Used]->SetActorScale3D(FVector(Diameter, Diameter, 0.02));
+		WarningRings[Used]->SetActorHiddenInGame(false);
+		WarningFills[Used]->SetActorLocation(Center + FVector(0.0, 0.0, 3.5));
+		WarningFills[Used]->SetActorScale3D(FVector(Diameter * Ratio, Diameter * Ratio, 0.02));
+		WarningFills[Used]->SetActorHiddenInGame(Ratio <= 0.0);
+		++Used;
+	}
+	for (int32 Index = Used; Index < WarningRings.Num(); ++Index)
+	{
+		WarningRings[Index]->SetActorHiddenInGame(true);
+		WarningFills[Index]->SetActorHiddenInGame(true);
+	}
 }
 
 void UMmoEntitySubsystem::ShowSkill(const MmoWorld::FCombatEvent& Event, const MmoData::FGameData& Data)

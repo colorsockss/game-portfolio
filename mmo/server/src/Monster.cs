@@ -115,6 +115,13 @@ namespace PortfolioMmo.Server
         internal ulong LifeGeneration { get; set; }
 
         /// <summary>
+        /// 범위 공격(43)을 다시 걸 수 있는 틱(쿨다운의 끝)과 걸린 범위 공격의 예약과 견주는 세대 번호(0이면 아직 받지 않음. 복귀를 시작하면 0으로 돌림).
+        /// </summary>
+        internal uint AreaReadyTick { get; set; }
+
+        internal ulong AreaGeneration { get; set; }
+
+        /// <summary>
         /// 죽는 순간 피해 표에서 합이 가장 큰 편(잡은 편. 그 순간의 파티, 없으면 플레이어. PartySystem.SideOf). 경험치(31)와 드롭의 주인(33)이 쓴다. 표가 비었으면 null.
         /// </summary>
         public ulong? Killer { get; internal set; }

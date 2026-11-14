@@ -12,8 +12,8 @@ message SkillsRow {
   uint32 id = 1;
   // 이름(Strings의 키)
   string name_key = 2;
-  // 직업(Classes의 id)
-  uint32 class = 3;
+  // 직업(Classes의 id). 비우면 몬스터의 스킬(보스의 범위 공격 43)이라 배우지 않는다
+  optional uint32 class = 3;
   // 종류
   SkillKind kind = 4;
   // 계수. 피해는 공격력 × 계수의 공식, 회복은 시전자의 공격력 × 계수. 강화와 상태 이상만 건 스킬은 0

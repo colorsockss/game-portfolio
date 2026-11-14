@@ -25,22 +25,22 @@ namespace PortfolioMmo.Data {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgxTa2lsbHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YRoLRW51bXMucHJv",
-            "dG8ipwMKCVNraWxsc1JvdxIKCgJpZBgBIAEoDRIQCghuYW1lX2tleRgCIAEo",
-            "CRINCgVjbGFzcxgDIAEoDRIrCgRraW5kGAQgASgOMh0ucG9ydGZvbGlvLm1t",
-            "by5kYXRhLlNraWxsS2luZBITCgtjb2VmZmljaWVudBgFIAEoARINCgVyYW5n",
-            "ZRgGIAEoARITCgZyYWRpdXMYByABKAFIAIgBARIvCgZjZW50ZXIYCCABKA4y",
-            "Hy5wb3J0Zm9saW8ubW1vLmRhdGEuU2tpbGxDZW50ZXISEwoLY29vbGRvd25f",
-            "bXMYCSABKA0SDwoHY2FzdF9tcxgKIAEoDRIUCgxoaXRfZGVsYXlfbXMYCyAB",
-            "KA0SFAoHd2Fybl9tcxgMIAEoDUgBiAEBEgoKAm1wGA0gASgNEg0KBWxldmVs",
-            "GA4gASgNEh0KEHByb2plY3RpbGVfc3BlZWQYDyABKAFIAogBARITCgZlZmZl",
-            "Y3QYECABKA1IA4gBAUIJCgdfcmFkaXVzQgoKCF93YXJuX21zQhMKEV9wcm9q",
-            "ZWN0aWxlX3NwZWVkQgkKB19lZmZlY3QiNQoGU2tpbGxzEisKBHJvd3MYASAD",
-            "KAsyHS5wb3J0Zm9saW8ubW1vLmRhdGEuU2tpbGxzUm93QhSqAhFQb3J0Zm9s",
-            "aW9NbW8uRGF0YWIGcHJvdG8z"));
+            "dG8itgMKCVNraWxsc1JvdxIKCgJpZBgBIAEoDRIQCghuYW1lX2tleRgCIAEo",
+            "CRISCgVjbGFzcxgDIAEoDUgAiAEBEisKBGtpbmQYBCABKA4yHS5wb3J0Zm9s",
+            "aW8ubW1vLmRhdGEuU2tpbGxLaW5kEhMKC2NvZWZmaWNpZW50GAUgASgBEg0K",
+            "BXJhbmdlGAYgASgBEhMKBnJhZGl1cxgHIAEoAUgBiAEBEi8KBmNlbnRlchgI",
+            "IAEoDjIfLnBvcnRmb2xpby5tbW8uZGF0YS5Ta2lsbENlbnRlchITCgtjb29s",
+            "ZG93bl9tcxgJIAEoDRIPCgdjYXN0X21zGAogASgNEhQKDGhpdF9kZWxheV9t",
+            "cxgLIAEoDRIUCgd3YXJuX21zGAwgASgNSAKIAQESCgoCbXAYDSABKA0SDQoF",
+            "bGV2ZWwYDiABKA0SHQoQcHJvamVjdGlsZV9zcGVlZBgPIAEoAUgDiAEBEhMK",
+            "BmVmZmVjdBgQIAEoDUgEiAEBQggKBl9jbGFzc0IJCgdfcmFkaXVzQgoKCF93",
+            "YXJuX21zQhMKEV9wcm9qZWN0aWxlX3NwZWVkQgkKB19lZmZlY3QiNQoGU2tp",
+            "bGxzEisKBHJvd3MYASADKAsyHS5wb3J0Zm9saW8ubW1vLmRhdGEuU2tpbGxz",
+            "Um93QhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::PortfolioMmo.Data.EnumsReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.SkillsRow), global::PortfolioMmo.Data.SkillsRow.Parser, new[]{ "Id", "NameKey", "Class", "Kind", "Coefficient", "Range", "Radius", "Center", "CooldownMs", "CastMs", "HitDelayMs", "WarnMs", "Mp", "Level", "ProjectileSpeed", "Effect" }, new[]{ "Radius", "WarnMs", "ProjectileSpeed", "Effect" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.SkillsRow), global::PortfolioMmo.Data.SkillsRow.Parser, new[]{ "Id", "NameKey", "Class", "Kind", "Coefficient", "Range", "Radius", "Center", "CooldownMs", "CastMs", "HitDelayMs", "WarnMs", "Mp", "Level", "ProjectileSpeed", "Effect" }, new[]{ "Class", "Radius", "WarnMs", "ProjectileSpeed", "Effect" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Skills), global::PortfolioMmo.Data.Skills.Parser, new[]{ "Rows" }, null, null, null, null)
           }));
     }
@@ -142,17 +142,32 @@ namespace PortfolioMmo.Data {
 
     /// <summary>Field number for the "class" field.</summary>
     public const int ClassFieldNumber = 3;
+    private readonly static uint ClassDefaultValue = 0;
+
     private uint class_;
     /// <summary>
-    /// 직업(Classes의 id)
+    /// 직업(Classes의 id). 비우면 몬스터의 스킬(보스의 범위 공격 43)이라 배우지 않는다
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public uint Class {
-      get { return class_; }
+      get { if ((_hasBits0 & 1) != 0) { return class_; } else { return ClassDefaultValue; } }
       set {
+        _hasBits0 |= 1;
         class_ = value;
       }
+    }
+    /// <summary>Gets whether the "class" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasClass {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "class" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearClass() {
+      _hasBits0 &= ~1;
     }
 
     /// <summary>Field number for the "kind" field.</summary>
@@ -211,9 +226,9 @@ namespace PortfolioMmo.Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public double Radius {
-      get { if ((_hasBits0 & 1) != 0) { return radius_; } else { return RadiusDefaultValue; } }
+      get { if ((_hasBits0 & 2) != 0) { return radius_; } else { return RadiusDefaultValue; } }
       set {
-        _hasBits0 |= 1;
+        _hasBits0 |= 2;
         radius_ = value;
       }
     }
@@ -221,13 +236,13 @@ namespace PortfolioMmo.Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool HasRadius {
-      get { return (_hasBits0 & 1) != 0; }
+      get { return (_hasBits0 & 2) != 0; }
     }
     /// <summary>Clears the value of the "radius" field</summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void ClearRadius() {
-      _hasBits0 &= ~1;
+      _hasBits0 &= ~2;
     }
 
     /// <summary>Field number for the "center" field.</summary>
@@ -301,9 +316,9 @@ namespace PortfolioMmo.Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public uint WarnMs {
-      get { if ((_hasBits0 & 2) != 0) { return warnMs_; } else { return WarnMsDefaultValue; } }
+      get { if ((_hasBits0 & 4) != 0) { return warnMs_; } else { return WarnMsDefaultValue; } }
       set {
-        _hasBits0 |= 2;
+        _hasBits0 |= 4;
         warnMs_ = value;
       }
     }
@@ -311,13 +326,13 @@ namespace PortfolioMmo.Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool HasWarnMs {
-      get { return (_hasBits0 & 2) != 0; }
+      get { return (_hasBits0 & 4) != 0; }
     }
     /// <summary>Clears the value of the "warn_ms" field</summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void ClearWarnMs() {
-      _hasBits0 &= ~2;
+      _hasBits0 &= ~4;
     }
 
     /// <summary>Field number for the "mp" field.</summary>
@@ -361,9 +376,9 @@ namespace PortfolioMmo.Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public double ProjectileSpeed {
-      get { if ((_hasBits0 & 4) != 0) { return projectileSpeed_; } else { return ProjectileSpeedDefaultValue; } }
+      get { if ((_hasBits0 & 8) != 0) { return projectileSpeed_; } else { return ProjectileSpeedDefaultValue; } }
       set {
-        _hasBits0 |= 4;
+        _hasBits0 |= 8;
         projectileSpeed_ = value;
       }
     }
@@ -371,13 +386,13 @@ namespace PortfolioMmo.Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool HasProjectileSpeed {
-      get { return (_hasBits0 & 4) != 0; }
+      get { return (_hasBits0 & 8) != 0; }
     }
     /// <summary>Clears the value of the "projectile_speed" field</summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void ClearProjectileSpeed() {
-      _hasBits0 &= ~4;
+      _hasBits0 &= ~8;
     }
 
     /// <summary>Field number for the "effect" field.</summary>
@@ -391,9 +406,9 @@ namespace PortfolioMmo.Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public uint Effect {
-      get { if ((_hasBits0 & 8) != 0) { return effect_; } else { return EffectDefaultValue; } }
+      get { if ((_hasBits0 & 16) != 0) { return effect_; } else { return EffectDefaultValue; } }
       set {
-        _hasBits0 |= 8;
+        _hasBits0 |= 16;
         effect_ = value;
       }
     }
@@ -401,13 +416,13 @@ namespace PortfolioMmo.Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool HasEffect {
-      get { return (_hasBits0 & 8) != 0; }
+      get { return (_hasBits0 & 16) != 0; }
     }
     /// <summary>Clears the value of the "effect" field</summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void ClearEffect() {
-      _hasBits0 &= ~8;
+      _hasBits0 &= ~16;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -450,7 +465,7 @@ namespace PortfolioMmo.Data {
       int hash = 1;
       if (Id != 0) hash ^= Id.GetHashCode();
       if (NameKey.Length != 0) hash ^= NameKey.GetHashCode();
-      if (Class != 0) hash ^= Class.GetHashCode();
+      if (HasClass) hash ^= Class.GetHashCode();
       if (Kind != global::PortfolioMmo.Data.SkillKind.Unspecified) hash ^= Kind.GetHashCode();
       if (Coefficient != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Coefficient);
       if (Range != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Range);
@@ -490,7 +505,7 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(18);
         output.WriteString(NameKey);
       }
-      if (Class != 0) {
+      if (HasClass) {
         output.WriteRawTag(24);
         output.WriteUInt32(Class);
       }
@@ -564,7 +579,7 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(18);
         output.WriteString(NameKey);
       }
-      if (Class != 0) {
+      if (HasClass) {
         output.WriteRawTag(24);
         output.WriteUInt32(Class);
       }
@@ -636,7 +651,7 @@ namespace PortfolioMmo.Data {
       if (NameKey.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(NameKey);
       }
-      if (Class != 0) {
+      if (HasClass) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Class);
       }
       if (Kind != global::PortfolioMmo.Data.SkillKind.Unspecified) {
@@ -696,7 +711,7 @@ namespace PortfolioMmo.Data {
       if (other.NameKey.Length != 0) {
         NameKey = other.NameKey;
       }
-      if (other.Class != 0) {
+      if (other.HasClass) {
         Class = other.Class;
       }
       if (other.Kind != global::PortfolioMmo.Data.SkillKind.Unspecified) {

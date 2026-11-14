@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/StreamableManager.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "World/BossWatch.h"
 #include "World/CombatState.h"
 
 #include "MmoEntitySubsystem.generated.h"
@@ -68,6 +69,9 @@ private:
 
 	/** 발사체(되풀이하는 이펙트)와 대상의 원, 때가 된 스킬의 맞는 연출을 그린다. */
 	void DrawCombat(const MmoWorld::FWorldState& World, MmoWorld::FCombatState& Combat);
+
+	/** 보스의 예고된 범위(43): 바깥 원과, 피해를 주는 틱까지 차오르는 안쪽 원. 끝난 예고는 감춘다. */
+	void DrawWarnings(MmoWorld::FBossWatch& Watch, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick);
 
 	/** 개체가 죽어 있으면 쓰러진 자세로 둔다(모습을 입히거나 불러온 뒤). */
 	void ShowDeadIfDead(uint32 Id, USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, const FMmoEntityVisual* Row);
@@ -163,6 +167,13 @@ private:
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> MarkerMaterial;
 
+
+	/** 보스의 예고된 범위의 바깥 원과 차오르는 안쪽 원(43). 예고마다 하나씩 쓰고 남는 것은 감춘다. */
+	UPROPERTY()
+	TArray<TObjectPtr<AStaticMeshActor>> WarningRings;
+
+	UPROPERTY()
+	TArray<TObjectPtr<AStaticMeshActor>> WarningFills;
 
 	/** 범위 스킬의 원(바닥 표시)과 저마다 감출 때(초). */
 	UPROPERTY()

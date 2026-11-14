@@ -228,6 +228,7 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 	SkillBook.Apply(Packet);
 	ChatLog.Apply(Packet, WorldState);
 	PartyState.Apply(Packet);
+	BossState.Apply(Packet, WorldState.Clock().Now(Now), ChatLog, GameData, StringTable);
 	if (const std::optional<portfolio::mmo::Packet> Stop = CombatState.Apply(Packet, WorldState, GameData, Now))
 	{
 		Send(*Stop);
@@ -247,6 +248,7 @@ void UMmoSession::HandleClosed(const FString& InReason)
 	SkillBook.Reset();
 	ChatLog.Reset();
 	PartyState.Reset();
+	BossState.Reset();
 	OnClosed.Broadcast(Reason);
 }
 

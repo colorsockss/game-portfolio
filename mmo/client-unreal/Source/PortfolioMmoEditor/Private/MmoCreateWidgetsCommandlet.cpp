@@ -146,6 +146,9 @@ namespace
 		/** HUD의 파티 칸이 왼쪽 위에서 내려오는 거리(구역 표시 아래)와 파티원 칸의 폭(42). */
 		float PartyTop = 190.0f;
 		float PartySlotWidth = 180.0f;
+		/** HUD의 보스 체력 바가 위에서 내려오는 거리(대상 정보 아래)와 바의 폭(43). */
+		float BossTop = 120.0f;
+		float BossBarWidth = 520.0f;
 	};
 
 	const FMmoStyle Style;
@@ -569,6 +572,13 @@ namespace
 		UMmoButtonWidget* PartyInvite = Builder.Button(TEXT("PartyInviteButton"), TEXT("party.invite"));
 		PartyInvite->SetVisibility(ESlateVisibility::Collapsed);
 		Target->AddChildToVerticalBox(Row(Builder, TEXT("TargetButtons"), { Whisper, PartyInvite }))->SetHorizontalAlignment(HAlign_Center);
+
+		// 위 가운데, 대상 정보 아래에 보스 체력 바(시야 안에 보스가 있을 때만. 43).
+		UVerticalBox* Boss = Builder.Add<UVerticalBox>(TEXT("BossPanel"), true);
+		Boss->SetVisibility(ESlateVisibility::Collapsed);
+		Corner(*Root, Boss, ECorner::TopCenter, FVector2D(0.0, Style.HudMargin + Style.BossTop));
+		Boss->AddChildToVerticalBox(Builder.Text(TEXT("BossNameText"), FText::GetEmpty(), Style.BodySize, true, Style.Negative))->SetHorizontalAlignment(HAlign_Center);
+		Boss->AddChildToVerticalBox(Bar(Builder, TEXT("BossHp"), Style.Hp, Style.BossBarWidth))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
 
 		// 왼쪽, 구역 표시 아래에 파티 버튼과 파티원 칸(42. 칸마다 이름 버튼과 작은 체력 바. 파티원이 없는 칸은 UMmoHudWidget이 감춤).
 		UVerticalBox* Party = Builder.Add<UVerticalBox>(TEXT("Party"));

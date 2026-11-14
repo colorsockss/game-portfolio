@@ -32,6 +32,7 @@ message Packet {
     EntitiesLeave entities_leave = 103;
     EntityMoves entity_moves = 104;
     EntityState entity_state = 105;
+    FieldNotice field_notice = 106;
 
     // 200–299: 전투
     SelfVitals self_vitals = 200;
@@ -51,6 +52,7 @@ message Packet {
     Cooldowns cooldowns = 214;
     ProjectileLaunched projectile_launched = 215;
     ProjectileEnded projectile_ended = 216;
+    AreaWarning area_warning = 217;
 
     // 300–399: 성장과 아이템
     SelfStats self_stats = 300;
@@ -405,6 +407,27 @@ message EntityState {
   NameColor name_color = 2;
   uint32 weapon_item_id = 3;
   uint32 level = 4;
+}
+
+// 서버 → 클라이언트. 필드 전체에 가는 알림(43). 보스가 나오고 죽을 때 월드에 들어와 있는 모든 연결에, "보스가 나와 있음"은 월드에 들어오는 연결에만
+// EnterWorldResult 뒤에 나와 있는 보스마다 간다. 자리는 그 보스의 놓인 점이다.
+message FieldNotice {
+  FieldNoticeKind kind = 1;
+  // 몬스터의 템플릿 번호(Monsters의 줄).
+  uint32 template_id = 2;
+  sint32 x = 3;
+  sint32 z = 4;
+}
+
+// 필드 알림의 종류(43).
+enum FieldNoticeKind {
+  FIELD_NOTICE_KIND_UNSPECIFIED = 0;
+  // 보스가 나왔다(서버가 뜰 때와 리스폰). 클라이언트는 알림과 채팅의 시스템 줄을 띄운다.
+  FIELD_NOTICE_KIND_BOSS_APPEARED = 1;
+  // 보스가 죽었다. 채팅의 시스템 줄로만 알린다.
+  FIELD_NOTICE_KIND_BOSS_DIED = 2;
+  // 들어올 때 이미 나와 있는 보스. 지도의 자리만 더하고 알림은 띄우지 않는다.
+  FIELD_NOTICE_KIND_BOSS_PRESENT = 3;
 }
 
 // 서버 → 클라이언트. 시야에서 나간 개체들의 번호.
@@ -947,4 +970,14 @@ message ProjectileLaunched {
 // 빠져 끝난 것은 보내지 않는다(받은 쪽은 쏜 쪽의 EntitiesLeave로 지움). 맞은 결과는 Damaged와 EffectApplied가 따로 알린다.
 message ProjectileEnded {
   uint32 id = 1;
+}
+
+// 서버 → 클라이언트. 보스의 범위 공격 예고(43). 쏜 개체를 받은 연결에 그 틱에 가고, 예고 뒤에 시야에 들어온 연결은 받지 않는다.
+// 중심은 예고한 틱의 대상 자리에 고정이고, hit_tick에 원(반지름은 Skills의 범위) 안에서 중심과 선이 트인 플레이어가 맞는다.
+message AreaWarning {
+  uint32 caster_id = 1;
+  uint32 skill_id = 2;
+  sint32 x = 3;
+  sint32 z = 4;
+  uint32 hit_tick = 5;
 }

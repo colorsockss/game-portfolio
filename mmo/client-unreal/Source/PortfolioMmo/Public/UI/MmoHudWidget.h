@@ -182,6 +182,25 @@ private:
 	/** 파티가 바뀌었으면 파티원 칸을 다시 채운다. */
 	void ShowParty();
 
+	/** 시야 안의 보스가 있으면 보스 체력 바를 보인다(43). */
+	void ShowBoss();
+
+	/** 보스 체력 바(위 가운데, 대상 정보 아래. 43). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UWidget> BossPanel;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> BossNameText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UProgressBar> BossHpBar;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> BossHpText;
+
+	uint32 ShownBoss = MAX_uint32;
+	uint64 ShownBossHp = MAX_uint64;
+
 	/** 미니맵(76): 내 자리를 가운데에 둔 둘레 60 m. 북쪽이 위로 고정이고 내 방향은 화살표가 돈다. 누르면 전체 지도를 연다. */
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> MinimapButton;

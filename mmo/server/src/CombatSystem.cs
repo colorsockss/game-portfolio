@@ -38,6 +38,11 @@ namespace PortfolioMmo.Server
         public SkillSystem? Skills { get; set; }
 
         /// <summary>
+        /// 보스의 범위 공격(43). 피해를 주는 예약을 전투 차례에 넘긴다.
+        /// </summary>
+        public BossSystem? Bosses { get; set; }
+
+        /// <summary>
         /// 직선 발사체를 옮기는 쪽(83). World가 만든 뒤에 잇는다(발사체가 이곳의 피해를 씀).
         /// </summary>
         public ProjectileSystem? Projectiles { get; set; }
@@ -120,6 +125,10 @@ namespace PortfolioMmo.Server
                 if (job.Kind == ScheduledKind.CastEnd)
                 {
                     Skills!.FinishCast(job, tick);
+                }
+                else if (job.Kind == ScheduledKind.AreaHit)
+                {
+                    Bosses!.Hit(job, tick);
                 }
                 else if (!IsStrikeCurrent(job))
                 {

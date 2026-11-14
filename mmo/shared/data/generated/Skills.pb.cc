@@ -77,7 +77,7 @@ constexpr SkillsRow::ParseTableT_ SkillsRow::InternalGenerateParseTable_(const :
       {::_pbi::TcParser::FastUS1,
        {18, 0, 0,
         PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.name_key_)}},
-      // uint32 class = 3;
+      // optional uint32 class = 3;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(SkillsRow, _impl_.class__), 2>(),
        {24, 2, 0,
         PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.class__)}},
@@ -136,7 +136,7 @@ constexpr SkillsRow::ParseTableT_ SkillsRow::InternalGenerateParseTable_(const :
       {PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.id_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // string name_key = 2;
       {PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.name_key_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
-      // uint32 class = 3;
+      // optional uint32 class = 3;
       {PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.class__), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // .portfolio.mmo.data.SkillKind kind = 4;
       {PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.kind_), _Internal::kHasBitsOffset + 5, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
@@ -504,19 +504,20 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 const char descriptor_table_protodef_Skills_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
     "\n\014Skills.proto\022\022portfolio.mmo.data\032\013Enum"
-    "s.proto\"\247\003\n\tSkillsRow\022\n\n\002id\030\001 \001(\r\022\020\n\010nam"
-    "e_key\030\002 \001(\t\022\r\n\005class\030\003 \001(\r\022+\n\004kind\030\004 \001(\016"
-    "2\035.portfolio.mmo.data.SkillKind\022\023\n\013coeff"
-    "icient\030\005 \001(\001\022\r\n\005range\030\006 \001(\001\022\023\n\006radius\030\007 "
-    "\001(\001H\000\210\001\001\022/\n\006center\030\010 \001(\0162\037.portfolio.mmo"
-    ".data.SkillCenter\022\023\n\013cooldown_ms\030\t \001(\r\022\017"
-    "\n\007cast_ms\030\n \001(\r\022\024\n\014hit_delay_ms\030\013 \001(\r\022\024\n"
-    "\007warn_ms\030\014 \001(\rH\001\210\001\001\022\n\n\002mp\030\r \001(\r\022\r\n\005level"
-    "\030\016 \001(\r\022\035\n\020projectile_speed\030\017 \001(\001H\002\210\001\001\022\023\n"
-    "\006effect\030\020 \001(\rH\003\210\001\001B\t\n\007_radiusB\n\n\010_warn_m"
-    "sB\023\n\021_projectile_speedB\t\n\007_effect\"5\n\006Ski"
-    "lls\022+\n\004rows\030\001 \003(\0132\035.portfolio.mmo.data.S"
-    "killsRowB\024\252\002\021PortfolioMmo.Datab\006proto3"
+    "s.proto\"\266\003\n\tSkillsRow\022\n\n\002id\030\001 \001(\r\022\020\n\010nam"
+    "e_key\030\002 \001(\t\022\022\n\005class\030\003 \001(\rH\000\210\001\001\022+\n\004kind\030"
+    "\004 \001(\0162\035.portfolio.mmo.data.SkillKind\022\023\n\013"
+    "coefficient\030\005 \001(\001\022\r\n\005range\030\006 \001(\001\022\023\n\006radi"
+    "us\030\007 \001(\001H\001\210\001\001\022/\n\006center\030\010 \001(\0162\037.portfoli"
+    "o.mmo.data.SkillCenter\022\023\n\013cooldown_ms\030\t "
+    "\001(\r\022\017\n\007cast_ms\030\n \001(\r\022\024\n\014hit_delay_ms\030\013 \001"
+    "(\r\022\024\n\007warn_ms\030\014 \001(\rH\002\210\001\001\022\n\n\002mp\030\r \001(\r\022\r\n\005"
+    "level\030\016 \001(\r\022\035\n\020projectile_speed\030\017 \001(\001H\003\210"
+    "\001\001\022\023\n\006effect\030\020 \001(\rH\004\210\001\001B\010\n\006_classB\t\n\007_ra"
+    "diusB\n\n\010_warn_msB\023\n\021_projectile_speedB\t\n"
+    "\007_effect\"5\n\006Skills\022+\n\004rows\030\001 \003(\0132\035.portf"
+    "olio.mmo.data.SkillsRowB\024\252\002\021PortfolioMmo"
+    ".Datab\006proto3"
 };
 static const ::_pbi::DescriptorTable* PROTOBUF_NONNULL const
     descriptor_table_Skills_2eproto_deps[1] = {
@@ -526,7 +527,7 @@ static ::absl::once_flag descriptor_table_Skills_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Skills_2eproto = {
     false,
     false,
-    558,
+    573,
     descriptor_table_protodef_Skills_2eproto,
     "Skills.proto",
     &descriptor_table_Skills_2eproto_once,
@@ -705,13 +706,11 @@ PROTOBUF_NOINLINE void SkillsRow::Clear() {
     }
   }
 
-  // uint32 class = 3;
+  // optional uint32 class = 3;
   if (CheckHasBit(cached_has_bits, 0x00000004U)) {
-    if (this_._internal_class_() != 0) {
-      target = stream->EnsureSpace(target);
-      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
-          3, this_._internal_class_(), target);
-    }
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        3, this_._internal_class_(), target);
   }
 
   // .portfolio.mmo.data.SkillKind kind = 4;
@@ -862,12 +861,10 @@ PROTOBUF_NOINLINE void SkillsRow::Clear() {
             this_._internal_id());
       }
     }
-    // uint32 class = 3;
+    // optional uint32 class = 3;
     if (CheckHasBit(cached_has_bits, 0x00000004U)) {
-      if (this_._internal_class_() != 0) {
-        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
-            this_._internal_class_());
-      }
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+          this_._internal_class_());
     }
     // double coefficient = 5;
     if (CheckHasBit(cached_has_bits, 0x00000008U)) {
@@ -976,9 +973,7 @@ void SkillsRow::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
     if (CheckHasBit(cached_has_bits, 0x00000004U)) {
-      if (from._internal_class_() != 0) {
-        _this->_impl_.class__ = from._impl_.class__;
-      }
+      _this->_impl_.class__ = from._impl_.class__;
     }
     if (CheckHasBit(cached_has_bits, 0x00000008U)) {
       if (::absl::bit_cast<::uint64_t>(from._internal_coefficient()) != 0) {

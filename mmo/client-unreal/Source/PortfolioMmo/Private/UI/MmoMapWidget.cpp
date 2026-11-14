@@ -72,7 +72,7 @@ void UMmoMapWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 	const FVector Location = Self->GetActorLocation();
 	const std::vector<MmoWorld::FMapPoint> Points = MmoWorld::FMapView::Points(*Field, Session->Data(), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location),
-		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()));
+		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()), Session->Bosses().Positions());
 	MmoMapDrawing::PlaceDots(*MapDots, Dots, Points, 0, 0, 1, MapSize);
 	SelfArrow->SetRenderTransformAngle(static_cast<float>(Points[0].YawDegrees));
 	if (UCanvasPanelSlot* Slot = Cast<UCanvasPanelSlot>(SelfArrow->Slot))

@@ -68,7 +68,8 @@ namespace
 		Expect(Data->Constants.field_size() == 600, "the field size comes from Constants");
 		Expect(Data->Zones.rows_size() == 6 && Data->Zones.rows(5).id() == 6, "Zones has six rows");
 		Expect(Data->Class(2) && Data->Class(2)->has_projectile_speed() && !Data->Class(1)->has_projectile_speed(), "only the mage shoots projectiles");
-		Expect(Data->Monsters.rows_size() == 9 && Data->Monster(6) && Data->Monster(6)->aggressive() && !Data->Monster(10), "nine monsters by id");
+		Expect(Data->Monsters.rows_size() == 10 && Data->Monster(6) && Data->Monster(6)->aggressive() && !Data->Monster(11), "ten monsters by id");
+		Expect(Data->Monster(10) && Data->Monster(10)->kind() == portfolio::mmo::data::MONSTER_KIND_BOSS && Data->Monster(10)->has_skill(), "the tenth is the boss with its area attack");
 		const portfolio::mmo::data::ZonesRow& Town = Data->Zones.rows(0);
 		Expect(Town.name_key() == "zone.town" && Town.kind() == portfolio::mmo::data::ZONE_KIND_TOWN && Town.safe(), "the first zone is the safe town");
 		Expect(Town.min_x() == -40 && Town.max_x() == 40 && Town.respawn_x() == 0 && Town.respawn_z() == -10, "the town keeps its rectangle and respawn point");

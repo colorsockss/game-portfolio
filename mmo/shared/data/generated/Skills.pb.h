@@ -271,7 +271,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillsRow final : public ::google::
   void _internal_set_id(::uint32_t value);
 
   public:
-  // uint32 class = 3;
+  // optional uint32 class = 3;
+  [[nodiscard]] bool has_class_() const;
   void clear_class_() ;
   [[nodiscard]] ::uint32_t class_() const;
   void set_class_(::uint32_t value);
@@ -785,7 +786,11 @@ inline void SkillsRow::set_allocated_name_key(::std::string* PROTOBUF_NULLABLE v
   // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.data.SkillsRow.name_key)
 }
 
-// uint32 class = 3;
+// optional uint32 class = 3;
+inline bool SkillsRow::has_class_() const {
+  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00000004U);
+  return value;
+}
 inline void SkillsRow::clear_class_() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.class__ = 0u;

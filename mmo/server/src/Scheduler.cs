@@ -64,6 +64,11 @@ namespace PortfolioMmo.Server
         /// 초대받은 플레이어(주인)가 받은 파티 초대의 만료(42). 세대 번호는 그 초대의 것이다(답했거나 지운 초대의 예약은 버림).
         /// </summary>
         PartyInviteExpire = 11,
+
+        /// <summary>
+        /// 보스(주인)의 범위 공격이 피해를 주는 틱(43). A, B는 고정한 중심의 x, z(int를 그대로 담음)이고, 세대 번호는 보스의 AreaGeneration이며 전투 차례로 넘긴다.
+        /// </summary>
+        AreaHit = 12,
     }
 
     /// <summary>

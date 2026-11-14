@@ -47,7 +47,8 @@ namespace PortfolioMmo.Balance
         public static List<GrowthRow> Table(GameData data, int runs, int seed)
         {
             var rows = new List<GrowthRow>();
-            MonstersRow[] monsters = data.Spawns.Rows.Select(spawn => spawn.MonsterId).Distinct().Select(data.Monster).ToArray();
+            // 보스(43)는 사냥의 성장 표에 넣지 않는다(파티로 잡는 몬스터).
+            MonstersRow[] monsters = data.Spawns.Rows.Select(spawn => spawn.MonsterId).Distinct().Select(data.Monster).Where(monster => monster.Kind == MonsterKind.Normal).ToArray();
             foreach (CharacterClass characterClass in data.Classes.Rows.Select(row => (CharacterClass)row.Id))
             {
                 uint maxLevel = 1;

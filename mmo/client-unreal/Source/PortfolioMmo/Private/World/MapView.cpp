@@ -31,7 +31,7 @@ namespace MmoWorld
 	}
 
 	std::vector<FMapPoint> FMapView::Points(const FFieldMap& Field, const MmoData::FGameData& Data, int32_t SelfX, int32_t SelfZ, uint32_t SelfYaw,
-		const std::vector<std::pair<int32_t, int32_t>>& Members)
+		const std::vector<std::pair<int32_t, int32_t>>& Members, const std::vector<std::pair<int32_t, int32_t>>& Bosses)
 	{
 		std::vector<FMapPoint> Result;
 		const auto [U, V] = ToMap(Field, SelfX, SelfZ);
@@ -46,6 +46,11 @@ namespace MmoWorld
 		{
 			const auto [MemberU, MemberV] = ToMap(Field, X, Z);
 			Result.push_back({ FMapPoint::EKind::Member, MemberU, MemberV, 0, 0 });
+		}
+		for (const auto& [X, Z] : Bosses)
+		{
+			const auto [BossU, BossV] = ToMap(Field, X, Z);
+			Result.push_back({ FMapPoint::EKind::Boss, BossU, BossV, 0, 0 });
 		}
 		return Result;
 	}

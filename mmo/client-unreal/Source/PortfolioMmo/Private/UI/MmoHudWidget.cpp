@@ -271,6 +271,26 @@ void UMmoHudWidget::ShowParty()
 	}
 }
 
+void UMmoHudWidget::ShowBoss()
+{
+	// 시야 안의 보스의 이름과 체력(Damaged와 EntityVitals가 월드의 체력을 맞춤. 43).
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const uint32 Boss = MmoWorld::FBossWatch::BossInView(Session->World(), Session->Data());
+	if (Boss != ShownBoss)
+	{
+		ShownBoss = Boss;
+		ShownBossHp = MAX_uint64;
+		BossPanel->SetVisibility(Boss != 0 ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+		const portfolio::mmo::data::MonstersRow* Row = Boss != 0 ? Session->Data().Monster(Session->World().Entities().at(Boss).Info.template_id()) : nullptr;
+		BossNameText->SetText(Row ? MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())) : FText::GetEmpty());
+	}
+	if (Boss != 0)
+	{
+		const portfolio::mmo::EntityEnter& Info = Session->World().Entities().at(Boss).Info;
+		ShowBar(*BossHpBar, *BossHpText, Info.hp(), Info.max_hp(), ShownBossHp);
+	}
+}
+
 void UMmoHudWidget::TargetPartyMember(int32 Index)
 {
 	// 시야 안의 파티원만 대상으로 삼는다(회복과 강화를 쓰기 쉽게. 42).
@@ -489,6 +509,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	ShowMinimap(Now);
 	ShowInteract();
 	ShowParty();
+	ShowBoss();
 	GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->UpdateInvite();
 	ShowStats(InDeltaTime);
 	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀). 요청 번호가 있는 요청의 실패와 얻은 것(32)도 같다.
@@ -504,6 +525,16 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	if (Session->World().TakeRevivedOnEnter())
 	{
 		Ui->ShowNotice(MmoText::Get(this, TEXT("notice.revivedOnEnter")));
+	}
+	// 필드 보스의 등장(43): 알림 층의 글과 소리. 죽음은 채팅의 시스템 줄로만 알린다.
+	for (const uint32_t Boss : Session->Bosses().TakeAppeared())
+	{
+		const portfolio::mmo::data::MonstersRow* Row = Session->Data().Monster(Boss);
+		Ui->ShowNotice(MmoText::Format(this, TEXT("notice.bossAppeared"), { Row ? MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString() : FString() }));
+		if (UMmoCueSubsystem* Cues = GetWorld()->GetSubsystem<UMmoCueSubsystem>())
+		{
+			Cues->PlayUi(EMmoCue::UiBossAppeared);
+		}
 	}
 	for (const uint32_t Skill : Session->Skills().TakeLearned())
 	{
@@ -601,7 +632,7 @@ void UMmoHudWidget::ShowMinimap(double Now)
 	}
 	const FVector Location = Self->GetActorLocation();
 	const std::vector<MmoWorld::FMapPoint> Points = MmoWorld::FMapView::Points(*Field, Session->Data(), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location),
-		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()));
+		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()), Session->Bosses().Positions());
 	const double Span = MinimapMeters / Field->GridSize();
 	const double MinU = Points[0].U - Span / 2;
 	const double MinV = Points[0].V - Span / 2;

@@ -247,6 +247,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED MonstersRow final : public ::google
     kAggressiveFieldNumber = 16,
     kExpFieldNumber = 17,
     kDropGroupFieldNumber = 18,
+    kSkillFieldNumber = 19,
   };
   // string name_key = 2;
   void clear_name_key() ;
@@ -435,11 +436,22 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED MonstersRow final : public ::google
   void _internal_set_drop_group(::uint32_t value);
 
   public:
+  // optional uint32 skill = 19;
+  [[nodiscard]] bool has_skill() const;
+  void clear_skill() ;
+  [[nodiscard]] ::uint32_t skill() const;
+  void set_skill(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_skill() const;
+  void _internal_set_skill(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.MonstersRow)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 18,
+      ::google::protobuf::internal::TcParseTable<5, 19,
                           0, 63,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -486,6 +498,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED MonstersRow final : public ::google
     bool aggressive_;
     ::uint32_t exp_;
     ::uint32_t drop_group_;
+    ::uint32_t skill_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1197,6 +1210,34 @@ inline ::uint32_t MonstersRow::_internal_drop_group() const {
 inline void MonstersRow::_internal_set_drop_group(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.drop_group_ = value;
+}
+
+// optional uint32 skill = 19;
+inline bool MonstersRow::has_skill() const {
+  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00040000U);
+  return value;
+}
+inline void MonstersRow::clear_skill() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.skill_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00040000U);
+}
+inline ::uint32_t MonstersRow::skill() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.MonstersRow.skill)
+  return _internal_skill();
+}
+inline void MonstersRow::set_skill(::uint32_t value) {
+  _internal_set_skill(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00040000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.MonstersRow.skill)
+}
+inline ::uint32_t MonstersRow::_internal_skill() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.skill_;
+}
+inline void MonstersRow::_internal_set_skill(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.skill_ = value;
 }
 
 // -------------------------------------------------------------------

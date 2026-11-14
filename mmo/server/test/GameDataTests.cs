@@ -74,7 +74,8 @@ namespace PortfolioMmo.Server.Tests
             GameData data = GameData.Load(GameData.DefaultFolder);
             ItemsRow[] books = Enumerable.Range(2000, 1000).Select(id => data.Item((uint)id)).OfType<ItemsRow>().Where(item => item.Use == ItemUse.LearnSkill).ToArray();
             uint[] firstSkills = data.Classes.Rows.Select(row => row.FirstSkill).ToArray();
-            Assert.Equal(data.Skills.Rows.Select(skill => skill.Id).Except(firstSkills).Order(), books.Select(book => book.UseValue).Order());
+            // 몬스터의 스킬(직업 없음. 보스 43)은 배우지 않아 책이 없다.
+            Assert.Equal(data.Skills.Rows.Where(skill => skill.HasClass).Select(skill => skill.Id).Except(firstSkills).Order(), books.Select(book => book.UseValue).Order());
             Assert.All(books, book => Assert.False(book.HasClass || book.HasLevel));
             for (uint group = 1; group <= 9; group++)
             {
@@ -135,12 +136,33 @@ namespace PortfolioMmo.Server.Tests
         /// 무리는 사냥터마다 12무리 60마리(종마다 4무리)이고 채집지에 사냥터 1의 비선공 한 종이 4무리다.
         /// </summary>
         [Fact]
+        public void TheBossStandsAloneInItsLair()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
+            MonstersRow boss = Assert.Single(data.Spawns.Rows.Select(row => data.Monster(row.MonsterId)).Distinct(), monster => monster.Kind == MonsterKind.Boss);
+            SpawnsRow spawn = Assert.Single(data.Spawns.Rows, row => row.MonsterId == boss.Id);
+            Assert.Equal(1u, spawn.Count);
+            Assert.Equal(ZoneKind.BossArea, data.Zones.Rows.Single(zone => zone.Id == field.ZoneAt(spawn.X * Units.PerMeter, spawn.Z * Units.PerMeter)).Kind);
+            Assert.True(field.CanWalk((spawn.X * Units.PerMeter) + (Units.PerMeter / 2), (spawn.Z * Units.PerMeter) + (Units.PerMeter / 2), Walker.Monster));
+            SkillsRow slam = data.Skill(boss.Skill)!;
+            Assert.Equal((SkillKind.AreaDamage, SkillCenter.Target, false, 1500u), (slam.Kind, slam.Center, slam.HasClass, slam.WarnMs));
+            uint[] books = data.DropGroup(boss.DropGroup)!.Items.Where(id => data.Item(id)!.Use == ItemUse.LearnSkill).Select(id => data.Item(id)!.UseValue).Order().ToArray();
+            Assert.Equal(new uint[] { 104, 105, 106, 204, 205 }, books);
+        }
+
+        /// <summary>
+        /// 놓인 일반 몬스터의 양(72): 사냥터마다 12무리 60마리, 채집지는 한 종류.
+        /// </summary>
+        [Fact]
         public void MonstersAndSpawnsFollowTheContentPlan()
         {
             GameData data = GameData.Load(GameData.DefaultFolder);
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
-            Assert.Equal(40, data.Spawns.Rows.Count);
-            var byZone = data.Spawns.Rows.GroupBy(spawn => field.ZoneAt(spawn.X * Units.PerMeter, spawn.Z * Units.PerMeter)).ToDictionary(group => group.Key, group => group.ToList());
+            // 보스(43)의 줄은 TheBossStandsAloneInItsLair가 본다.
+            SpawnsRow[] spawns = data.Spawns.Rows.Where(spawn => data.Monster(spawn.MonsterId).Kind == MonsterKind.Normal).ToArray();
+            Assert.Equal(40, spawns.Length);
+            var byZone = spawns.GroupBy(spawn => field.ZoneAt(spawn.X * Units.PerMeter, spawn.Z * Units.PerMeter)).ToDictionary(group => group.Key, group => group.ToList());
             Assert.Equal(new uint[] { 2, 3, 4, 5 }, byZone.Keys.OrderBy(zone => zone));
             foreach (uint hunting in new uint[] { 2, 3, 4 })
             {
@@ -175,7 +197,7 @@ namespace PortfolioMmo.Server.Tests
             GameData data = GameData.Load(GameData.DefaultFolder);
             List<SkillsRow> knight = data.Skills.Rows.Where(skill => skill.Class == 1).OrderBy(skill => skill.Id).ToList();
             List<SkillsRow> mage = data.Skills.Rows.Where(skill => skill.Class == 2).OrderBy(skill => skill.Id).ToList();
-            Assert.Equal(11, data.Skills.Rows.Count);
+            Assert.Equal(11, data.Skills.Rows.Count(skill => skill.HasClass));
             EffectKind? Effect(SkillsRow skill) => skill.HasEffect ? data.Effect(skill.Effect).Kind : null;
             Assert.Equal(
                 new (SkillKind, SkillCenter, EffectKind?)[]

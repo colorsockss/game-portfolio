@@ -23,6 +23,8 @@ namespace
 	/** NPC 역할의 점 색. */
 	/** 파티원의 점 색(42). */
 	const FLinearColor MemberColor(0.3f, 0.95f, 0.45f);
+	/** 나와 있는 보스의 점 색(43). */
+	const FLinearColor BossColor(1.0f, 0.2f, 0.6f);
 
 	FLinearColor DotColor(int32 Role)
 	{
@@ -70,7 +72,7 @@ void MmoMapDrawing::PlaceDots(UCanvasPanel& Canvas, TArray<TObjectPtr<UBorder>>&
 			Pool.Add(Dot);
 		}
 		UBorder* Dot = Pool[Used++];
-		Dot->SetBrushColor(Point.Kind == MmoWorld::FMapPoint::EKind::Member ? MemberColor : DotColor(Point.Role));
+		Dot->SetBrushColor(Point.Kind == MmoWorld::FMapPoint::EKind::Member ? MemberColor : Point.Kind == MmoWorld::FMapPoint::EKind::Boss ? BossColor : DotColor(Point.Role));
 		Dot->SetVisibility(ESlateVisibility::HitTestInvisible);
 		Cast<UCanvasPanelSlot>(Dot->Slot)->SetPosition(FVector2D(X * Size, Y * Size));
 	}

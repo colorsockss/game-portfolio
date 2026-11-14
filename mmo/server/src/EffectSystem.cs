@@ -28,10 +28,16 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 살아 있는 개체에 효과를 붙인다. 상태 이상은 피해가 없어도 맞은 쪽을 전투 상태로 두고, 기절은 진행 중인 일을 취소하고 건 타격을 버린다.
+        /// 살아 있는 개체에 효과를 붙인다(보스에게는 기절과 감속을 붙이지 않음). 상태 이상은 피해가 없어도 맞은 쪽을 전투 상태로 두고, 기절은 진행 중인 일을 취소하고 건 타격을 버린다.
         /// </summary>
         public void Apply(Creature target, EffectsRow row, uint tick)
         {
+            // 보스는 기절과 감속을 받지 않는다(그 스킬의 피해는 받음. 43).
+            if ((row.Kind is EffectKind.Stun or EffectKind.Slow) && (target is Monster boss) && BossSystem.IsBoss(boss))
+            {
+                return;
+            }
+
             uint endTick = tick + Units.TicksFromMilliseconds(row.DurationMs);
             var applied = new AppliedEffect(row, endTick, _scheduler.NewGeneration());
             int index = IndexOf(target, row.Id);

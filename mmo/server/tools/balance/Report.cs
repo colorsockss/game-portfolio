@@ -153,9 +153,12 @@ namespace PortfolioMmo.Balance
             return data.Classes.Rows.Select(row => (CharacterClass)row.Id);
         }
 
+        /// <summary>
+        /// 놓인 일반 몬스터(레벨 차례). 보스(43)는 파티로 잡는 몬스터라 혼자 잡는 표에 넣지 않는다.
+        /// </summary>
         private static IEnumerable<MonstersRow> Monsters(GameData data)
         {
-            return data.Spawns.Rows.Select(spawn => spawn.MonsterId).Distinct().Select(data.Monster).OrderBy(monster => monster.Level);
+            return data.Spawns.Rows.Select(spawn => spawn.MonsterId).Distinct().Select(data.Monster).Where(monster => monster.Kind == MonsterKind.Normal).OrderBy(monster => monster.Level);
         }
 
         private static double Median(IEnumerable<double> values)

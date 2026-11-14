@@ -44,6 +44,8 @@ message MonstersRow {
   uint32 exp = 17;
   // 드롭 묶음(DropGroups의 줄). 비우면 떨어뜨리지 않는다
   optional uint32 drop_group = 18;
+  // 쓰는 스킬(Skills의 줄). 보스의 범위 공격(43)
+  optional uint32 skill = 19;
 }
 
 message Monsters {

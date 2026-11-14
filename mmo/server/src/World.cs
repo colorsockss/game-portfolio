@@ -34,6 +34,7 @@ namespace PortfolioMmo.Server
         private readonly StorageSystem _storage;
         private readonly ChatSystem _chat;
         private readonly PartySystem _party;
+        private readonly BossSystem _bosses;
         private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
@@ -64,14 +65,22 @@ namespace PortfolioMmo.Server
             _skills = new SkillSystem(_entities, _grid, field, _scheduler, data, _events, _combat, _effects, _progress, _projectiles);
             _combat.Skills = _skills;
             _combat.Projectiles = _projectiles;
+            _bosses = new BossSystem(data, _entities, _grid, field, _scheduler, _events, _combat);
+            _combat.Bosses = _bosses;
+            _ai.Bosses = _bosses;
             // 놓인 점의 번호는 플레이어보다 먼저 받는다.
             _spawn = new SpawnSystem(data, field, _entities, _grid, _ai, _scheduler, random);
+            _spawn.Spawned = _bosses.Spawned;
             _spawn.PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
             _growth = new GrowthSystem(_entities, stats, data, _party);
             _quickslots = new QuickslotSystem(data);
             _inventory = new InventorySystem(data, _progress, _movement, stats, _quickslots, random);
-            _login.Entered = _inventory.Enter;
+            _login.Entered = (player, state, revived) =>
+            {
+                _inventory.Enter(player, state, revived);
+                _bosses.Entered(player);
+            };
             _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, _save, random);
             // NPC도 놓인 점의 번호를 플레이어보다 먼저 받는다(37). 움직이지 않고 칸을 막지 않는다.
             Npc? shop = null;
@@ -90,6 +99,7 @@ namespace PortfolioMmo.Server
             _chat = new ChatSystem(data, _entities, _grid, _party);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
             _combat.Deaths = _deaths;
+            _deaths.Bosses = _bosses;
             _view = new ViewSystem(_entities, _grid);
             _rateLimits = RateLimiter.Limits.From(data.Constants);
             _dev = dev ? new DevSystem(data, field, _entities, _movement, _progress, _spawn, _growth, _inventory) : null;
@@ -522,6 +532,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.Despawn => _deaths.IsDespawnCurrent(job),
                 ScheduledKind.GroundItemExpire => _loot.IsExpireCurrent(job),
                 ScheduledKind.PartyInviteExpire => _party.IsInviteCurrent(job),
+                ScheduledKind.AreaHit => _bosses.IsAreaCurrent(job),
                 ScheduledKind.Respawn => _spawn.PlacedAt(job.Owner) != null,
                 _ => throw UnknownKind(job.Kind),
             };
@@ -532,7 +543,7 @@ namespace PortfolioMmo.Server
             return kind switch
             {
                 ScheduledKind.UnreachableEnd => false,
-                ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit or ScheduledKind.CastEnd => true,
+                ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit or ScheduledKind.CastEnd or ScheduledKind.AreaHit => true,
                 ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd or ScheduledKind.GroundItemExpire
                     or ScheduledKind.PartyInviteExpire => false,
                 _ => throw UnknownKind(kind),

@@ -24,6 +24,11 @@ namespace PortfolioMmo.Server
         private readonly uint _reviveHpPercent;
         private readonly (int X, int Z) _respawn;
 
+        /// <summary>
+        /// 보스의 죽음 알림(43).
+        /// </summary>
+        public BossSystem? Bosses { get; set; }
+
         public DeathSystem(EntityTable entities, Scheduler scheduler, MovementSystem movement, TickEvents events, EffectSystem effects, ProgressSystem progress, GrowthSystem growth, LootSystem loot, GameData data)
         {
             _entities = entities;
@@ -63,6 +68,7 @@ namespace PortfolioMmo.Server
                 case Monster monster:
                     _growth.Killed(monster);
                     _loot.Killed(monster, tick);
+                    Bosses?.Died(monster);
                     // 쓰러진 채 남았다가 사라지고, 다시 나오는 시간은 죽은 틱부터 센다.
                     _scheduler.Add(tick + _deadMonsterTicks, ScheduledKind.Despawn, monster.Id, 0, 0, monster.LifeGeneration);
                     // 개발 명령으로 부른 몬스터는 다시 나오지 않는다(68).

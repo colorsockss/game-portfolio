@@ -101,6 +101,14 @@ namespace PortfolioMmo.Server
             Self(creature, new Packet { ProgressCancelled = new ProgressCancelled { Id = creature.Id, Reason = reason } });
         }
 
+        /// <summary>
+        /// 보스의 범위 예고(43). 쏜 개체를 받은 연결에 간다.
+        /// </summary>
+        public void AreaWarning(Creature caster, AreaWarning warning)
+        {
+            Self(caster, new Packet { AreaWarning = warning });
+        }
+
         public void EffectApplied(Creature creature, uint effectId, uint endTick)
         {
             Self(creature, new Packet { EffectApplied = new EffectApplied { Id = creature.Id, Effect = new EffectState { EffectId = effectId, EndTick = endTick } } });

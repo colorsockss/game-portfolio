@@ -218,6 +218,13 @@ int32 UMmoCreateEffectAssetsCommandlet::Main(const FString& Params)
 		const int32 Index = FMath::Min(2, static_cast<int32>(T / 0.1));
 		return FMath::Sin(UE_DOUBLE_TWO_PI * Notes[Index] * T) * Envelope(T - Index * 0.1, 0.005, Index == 2 ? 6.0 : 20.0) * 0.4;
 	}), Effects, nullptr, false);
+	USoundWave* BossAppeared = CreateSound(TEXT("S_UiBossAppeared"), Synth(1.4, [](double T)
+	{
+		// 낮게 울리며 떨리는 두 음(뿔피리를 흉내 냄. 43).
+		const double Note = T < 0.6 ? 146.83 : 110.0;
+		const double Tremolo = 0.75 + 0.25 * FMath::Sin(UE_DOUBLE_TWO_PI * 6.0 * T);
+		return (FMath::Sin(UE_DOUBLE_TWO_PI * Note * T) + 0.4 * FMath::Sin(UE_DOUBLE_TWO_PI * Note * 2.0 * T)) * Tremolo * Envelope(FMath::Fmod(T, 0.6), 0.04, 2.0) * 0.35;
+	}), Effects, nullptr, false);
 	USoundWave* EnchantFailure = CreateSound(TEXT("S_UiEnchantFailure"), Synth(0.6, [](double T)
 	{
 		// 내려가는 낮은 미끄럼.
@@ -306,5 +313,6 @@ int32 UMmoCreateEffectAssetsCommandlet::Main(const FString& Params)
 	Add(EMmoCue::UiPickUp, 0, 0, nullptr, PickUp);
 	Add(EMmoCue::UiEnchantSuccess, 0, 0, nullptr, EnchantSuccess);
 	Add(EMmoCue::UiEnchantFailure, 0, 0, nullptr, EnchantFailure);
+	Add(EMmoCue::UiBossAppeared, 0, 0, nullptr, BossAppeared);
 	return SaveSimple(Cues) ? 0 : 1;
 }

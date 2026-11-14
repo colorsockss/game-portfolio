@@ -40,6 +40,11 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 번호의 놓인 점. 없으면 null.
         /// </summary>
+        /// <summary>
+        /// 몬스터를 놓은 뒤(서버가 뜰 때와 리스폰). 보스(43)가 등장을 알린다.
+        /// </summary>
+        public System.Action<Monster>? Spawned { get; set; }
+
         public PlacedPoint? PlacedAt(uint id)
         {
             return _placed.GetValueOrDefault(id);
@@ -86,6 +91,7 @@ namespace PortfolioMmo.Server
             _entities.Add(monster);
             _grid.Add(monster);
             _ai.Add(monster);
+            Spawned?.Invoke(monster);
             return monster;
         }
 

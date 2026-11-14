@@ -115,8 +115,22 @@ namespace PortfolioMmo.Server.Tests
                 Skill(203, 2, SkillKind.Heal, 12, SkillCenter.Self, coefficient: 2, castMs: 1000),
                 Skill(204, 2, SkillKind.AreaDamage, 0, SkillCenter.Self, radius: 5, effect: 2),
                 Skill(205, 2, SkillKind.SingleDamage, 12, SkillCenter.Target, castMs: 2000),
+                BossSlam(),
             },
         };
+
+        /// <summary>
+        /// 보스의 범위 공격(43): 직업이 없고, 대상 중심 반지름 3 m, 사거리 12 m, 쿨다운 3초, 예고 1.5초(30틱).
+        /// </summary>
+        public static SkillsRow BossSlam()
+        {
+            SkillsRow row = Skill(901, 0, SkillKind.AreaDamage, 12, SkillCenter.Target, radius: 3, hitDelayMs: 0);
+            row.ClearClass();
+            row.CooldownMs = 3000;
+            row.WarnMs = 1500;
+            row.Mp = 0;
+            return row;
+        }
 
         public static SkillsRow Skill(
             uint id, uint characterClass, SkillKind kind, double range, SkillCenter center, double coefficient = 1, double radius = 0, uint castMs = 0, uint effect = 0, uint hitDelayMs = 300,

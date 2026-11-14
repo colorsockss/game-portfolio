@@ -35,6 +35,11 @@ namespace PortfolioMmo.Server
         private readonly uint _pauseMinTicks;
         private readonly uint _pauseMaxTicks;
 
+        /// <summary>
+        /// 보스의 범위 공격(43). 추적·공격 상태에서 건다.
+        /// </summary>
+        public BossSystem? Bosses { get; set; }
+
         public AiSystem(EntityTable entities, Grid grid, FieldMap field, Scheduler scheduler, GameData data, Random random, PartySystem party)
         {
             _entities = entities;
@@ -141,11 +146,13 @@ namespace PortfolioMmo.Server
                 monster.AttackTarget = target.Id;
                 monster.Path.Clear();
                 Face(monster, target.X - monster.X, target.Z - monster.Z);
+                Bosses?.TryArea(monster, target, tick);
                 return;
             }
 
             monster.State = MonsterState.Chase;
             Chase(monster, target, tick, step, range);
+            Bosses?.TryArea(monster, target, tick);
         }
 
         /// <summary>
@@ -212,11 +219,13 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 복귀를 시작한다: 피해 표와 길을 비운다.
+        /// 복귀를 시작한다: 피해 표와 길을 비우고 걸린 범위 공격을 버린다.
         /// </summary>
         private static void StartReturn(Monster monster)
         {
             monster.State = MonsterState.Return;
+            // 걸린 범위 공격(43)의 예약을 버린다. 이미 시작한 기본 공격의 타격은 그대로다.
+            monster.AreaGeneration = 0;
             monster.Damage.Clear();
             monster.Path.Clear();
             monster.Wandering = false;

@@ -912,3 +912,11 @@ party.kick내보내기Kick
 party.leader{0} (파티장){0} (Leader)
 ?
 party.empty파티가 없습니다.You are not in a party.
+0
+monster.stoneGiant바위 거인Stone Giant
+-
+skill.boss.slam대지 강타Ground Slam
+I
+notice.bossAppeared{0}이(가) 나타났습니다.{0} has appeared.
+C
+notice.bossDied{0}이(가) 쓰러졌습니다.{0} has fallen.
