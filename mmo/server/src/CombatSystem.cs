@@ -69,30 +69,29 @@ namespace PortfolioMmo.Server
 
         /// <summary>
         /// AttackStart(입력 차례): 대상이 있고 살아 있고 그 연결이 받은 개체인지, CanAttack, 복귀 중인 몬스터가 아닌지를 보고 공격 상태를 켠다.
-        /// 이미 공격 중이면 대상만 바꾼다. 어긋나면 ActionFailed로 답한다(방금 죽었거나 나간 대상은 정상 클라이언트도 보낼 수 있어 끊지 않음).
+        /// 이미 공격 중이면 대상만 바꾼다. 어긋나면 실패다(방금 죽었거나 나간 대상은 정상 클라이언트도 보낼 수 있어 끊지 않음).
+        /// 죽은 동안과 기절한 동안은 World.Receive가 먼저 막는다.
         /// </summary>
-        public void Start(Player player, AttackStart request)
+        public Outcome Start(Player player, AttackStart request)
         {
-            if (player.Stunned || (player.Progress != null))
+            if (player.Progress != null)
             {
-                player.Fail(player.Stunned ? FailReason.Stunned : FailReason.Busy, RequestKind.Attack);
-                return;
+                return Outcome.Fail(FailReason.Busy);
             }
 
             Entity? found = _entities.Find(request.TargetId);
             if ((found == null) || !player.Visible.Contains(found) || (found is Creature { Dead: true }))
             {
-                player.Fail(FailReason.NoTarget, RequestKind.Attack);
-                return;
+                return Outcome.Fail(FailReason.NoTarget);
             }
 
             if ((found is not Creature target) || !CanAttack(player, target) || IsReturning(target))
             {
-                player.Fail(FailReason.InvalidTarget, RequestKind.Attack);
-                return;
+                return Outcome.Fail(FailReason.InvalidTarget);
             }
 
             player.AttackTarget = target.Id;
+            return Outcome.Done;
         }
 
         public void Stop(Player player)

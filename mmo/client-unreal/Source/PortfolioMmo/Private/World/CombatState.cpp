@@ -140,6 +140,7 @@ namespace MmoWorld
 			std::erase_if(Lines, [Id = Packet.projectile_ended().id()](const FLineProjectile& Line) { return Line.Id == Id; });
 			break;
 		case portfolio::mmo::Packet::kActionFailed:
+			Notices.push_back(Packet.action_failed().reason());
 			// 다른 요청의 실패는 공격도 스킬도 건드리지 않는다.
 			if (Packet.action_failed().request() == portfolio::mmo::REQUEST_KIND_ATTACK)
 			{
@@ -181,6 +182,11 @@ namespace MmoWorld
 			break;
 		}
 		case portfolio::mmo::Packet::kProgressCancelled:
+			// 중간에 취소된 것은 내가 움직였거나 맞은 것이라 알리지 않고, 끝나는 틱의 확인에서 걸린 것만 알린다.
+			if (Packet.progress_cancelled().id() == Me && Packet.progress_cancelled().reason() != portfolio::mmo::FAIL_REASON_CANCELLED)
+			{
+				Notices.push_back(Packet.progress_cancelled().reason());
+			}
 			Events.push_back({ ECombatEventKind::Interrupt, 0, Packet.progress_cancelled().id(), 0, false, Packet.progress_cancelled().id() == Me });
 			break;
 		case portfolio::mmo::Packet::kCooldowns:
@@ -201,6 +207,11 @@ namespace MmoWorld
 	std::vector<FCombatEvent> FCombatState::TakeEvents()
 	{
 		return std::exchange(Events, {});
+	}
+
+	std::vector<portfolio::mmo::FailReason> FCombatState::TakeNotices()
+	{
+		return std::exchange(Notices, {});
 	}
 
 	void FCombatState::UpdateProjectiles(const FWorldState& World, double NowSeconds)
@@ -259,6 +270,7 @@ namespace MmoWorld
 		bHoldMove = false;
 		SkillCooldowns.Reset();
 		Events.clear();
+		Notices.clear();
 		Flying.clear();
 		Lines.clear();
 	}
@@ -300,6 +312,18 @@ namespace MmoWorld
 
 	portfolio::mmo::FailReason FCombatState::PressSkill(uint32_t SkillId, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds)
 	{
+		const portfolio::mmo::FailReason Reason = CheckSkill(SkillId, World, Data, NowSeconds);
+		if (Reason != portfolio::mmo::FAIL_REASON_NONE)
+		{
+			Notices.push_back(Reason);
+			return Reason;
+		}
+		Pending = SkillId;
+		return Reason;
+	}
+
+	portfolio::mmo::FailReason FCombatState::CheckSkill(uint32_t SkillId, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds) const
+	{
 		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(SkillId);
 		const FEntity* Me = World.SelfEntity();
 		if (!Skill || !Me || World.SelfState().bDead)
@@ -330,8 +354,6 @@ namespace MmoWorld
 				return portfolio::mmo::FAIL_REASON_NO_TARGET;
 			}
 		}
-
-		Pending = SkillId;
 		return portfolio::mmo::FAIL_REASON_NONE;
 	}
 

@@ -195,7 +195,8 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 			this->WalkTo(MmoCoordinates::ToWorld(FCString::Atod(*X) * MmoWorld::Units::PerMeter, FCString::Atod(*Z) * MmoWorld::Units::PerMeter));
 		}
 	}
-	if (!Self || !Connection->IsConnected())
+	// LeaveWorld를 보낸 뒤(월드 밖)에는 월드의 요청을 만들지 않는다(서버는 월드 밖의 Move를 잘못된 패킷으로 끊음).
+	if (!Self || !Connection->IsConnected() || !Session().World().InWorld())
 	{
 		return;
 	}
@@ -320,7 +321,7 @@ void AMmoPlayerController::UseQuickslot(int32 Index)
 	{
 		return;
 	}
-	// 실패의 글(쿨다운, 마나 부족 등)을 알림으로 띄우는 것은 28이다.
+	// 실패의 이유는 전투 모델이 알림으로 쌓고 HUD가 띄운다.
 	const portfolio::mmo::FailReason Reason = Session().Combat().PressSkill(Skills[Index], Session().World(), Session().Data(), FPlatformTime::Seconds());
 	if (Reason != portfolio::mmo::FAIL_REASON_NONE)
 	{

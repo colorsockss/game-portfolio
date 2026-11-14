@@ -33,17 +33,17 @@ namespace PortfolioMmo.Server
         /// Move를 검증하고 받아들인다. 필드 밖(격자 밖)이거나, 쌓인 이동 거리보다 멀거나, 지난 위치에서 곧게 걸을 수 없으면(벽) 되돌린다.
         /// 서버는 캐릭터를 점으로 본다. 패킷이 잘못되었으면(yaw) false다.
         /// </summary>
-        public bool Move(Player player, Move move)
+        public Outcome Move(Player player, Move move)
         {
             if (move.Yaw >= Units.YawSteps)
             {
-                return false;
+                return Outcome.Malformed;
             }
 
             // 되돌림을 받기 전에 보낸 Move다.
             if (move.Ack != player.Ack)
             {
-                return true;
+                return Outcome.Done;
             }
 
             long deltaX = (long)move.X - player.X;
@@ -54,8 +54,7 @@ namespace PortfolioMmo.Server
             if (player.Dead || player.Stunned || !_field.Contains(move.X, move.Z) || (distance > player.MoveBudget)
                 || !_field.CanWalkLine(player.X, player.Z, move.X, move.Z, Walker.Player))
             {
-                Reset(player);
-                return true;
+                return Outcome.Reset;
             }
 
             player.MoveBudget -= distance;
@@ -65,7 +64,7 @@ namespace PortfolioMmo.Server
             player.Moved = true;
             player.Dirty = true;
             _grid.Moved(player);
-            return true;
+            return Outcome.Done;
         }
 
         /// <summary>

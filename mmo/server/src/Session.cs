@@ -39,6 +39,11 @@ namespace PortfolioMmo.Server
         public uint LastReceivedTick { get; set; }
 
         /// <summary>
+        /// 요청의 빈도 제한(28). World.Receive가 받은 패킷마다 쓴다.
+        /// </summary>
+        public RateLimiter Limiter { get; } = new RateLimiter();
+
+        /// <summary>
         /// 이번 틱에 보낼 패킷에 더한다.
         /// </summary>
         public void Send(Packet packet)

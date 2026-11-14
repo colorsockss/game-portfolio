@@ -80,21 +80,20 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// UseSkill(입력 차례). 없는 스킬 번호면 false(끊음). 확인에 어긋나면 ActionFailed로 답한다. 시전 시간이 없으면 비용을 빼고 그 틱의 전투 차례에
-        /// 시작을 넘기고, 있으면 시전을 시작한다(비용은 발동할 때).
+        /// UseSkill(입력 차례). 없는 스킬 번호면 잘못된 패킷(끊음), 확인에 어긋나면 실패다. 시전 시간이 없으면 비용을 빼고 그 틱의 전투 차례에
+        /// 시작을 넘기고, 있으면 시전을 시작한다(비용은 발동할 때). 죽은 동안과 기절한 동안은 World.Receive가 먼저 막는다.
         /// </summary>
-        public bool Use(Player player, UseSkill request, uint tick)
+        public Outcome Use(Player player, UseSkill request, uint tick)
         {
             if (_data.Skill(request.SkillId) is not SkillsRow skill)
             {
-                return false;
+                return Outcome.Malformed;
             }
 
             FailReason reason = Check(player, skill, request.TargetId, tick, out uint targetId);
             if (reason != FailReason.None)
             {
-                player.Fail(reason, RequestKind.Skill);
-                return true;
+                return Outcome.Fail(reason);
             }
 
             if (skill.CastMs == 0)
@@ -102,7 +101,7 @@ namespace PortfolioMmo.Server
                 Pay(player, skill, tick);
                 // 입력은 예약한 일 앞의 차례라 같은 틱의 예약으로 나온다.
                 _scheduler.Add(tick, ScheduledKind.SkillStart, player.Id, skill.Id, targetId, player.StrikeGeneration);
-                return true;
+                return Outcome.Done;
             }
 
             _progress.Start(player, ProgressKind.Cast, skill.Id, targetId, tick + Units.TicksFromMilliseconds(skill.CastMs));
@@ -111,20 +110,15 @@ namespace PortfolioMmo.Server
                 player.CombatEndTick = tick + _combatTicks;
             }
 
-            return true;
+            return Outcome.Done;
         }
 
         /// <summary>
-        /// 요청의 확인을 차례대로 본다: 상태(기절, 진행 중), 배웠는지, 쿨다운, 마나, 대상과 사거리와 선. targetId는 스킬을 쓸 개체다.
+        /// 요청의 확인을 차례대로 본다: 진행 중, 배웠는지, 쿨다운, 마나, 대상과 사거리와 선. targetId는 스킬을 쓸 개체다.
         /// </summary>
         private FailReason Check(Player player, SkillsRow skill, uint requested, uint tick, out uint targetId)
         {
             targetId = player.Id;
-            if (player.Stunned)
-            {
-                return FailReason.Stunned;
-            }
-
             if (player.Progress != null)
             {
                 return FailReason.Busy;

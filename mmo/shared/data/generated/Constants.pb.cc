@@ -49,11 +49,11 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
     {
       PROTOBUF_FIELD_OFFSET(Constants, _impl_._has_bits_),
       0, // no _extensions_
-      17, 248,  // max_field_number, fast_idx_mask
+      21, 248,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294836224,  // skipmap
+      4292870144,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      17,  // num_field_entries
+      21,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -132,10 +132,22 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       {::_pbi::TcParser::FastF64S2,
        {393, 16, 0,
         PROTOBUF_FIELD_OFFSET(Constants, _impl_.interact_pick_range_)}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
+      // uint32 rate_limit_tokens = 18;
+      {::_pbi::TcParser::FastV32S2,
+       {400, 17, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.rate_limit_tokens_)}},
+      // uint32 rate_limit_refill_per_second = 19;
+      {::_pbi::TcParser::FastV32S2,
+       {408, 18, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.rate_limit_refill_per_second_)}},
+      // uint32 rate_limit_kick_ms = 20;
+      {::_pbi::TcParser::FastV32S2,
+       {416, 19, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.rate_limit_kick_ms_)}},
+      // uint32 rate_limit_reset_ms = 21;
+      {::_pbi::TcParser::FastV32S2,
+       {424, 20, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.rate_limit_reset_ms_)}},
       {::_pbi::TcParser::MiniParse, {}},
       {::_pbi::TcParser::MiniParse, {}},
       {::_pbi::TcParser::MiniParse, {}},
@@ -183,6 +195,14 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.interact_range_), _Internal::kHasBitsOffset + 15, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
       // double interact_pick_range = 17;
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.interact_pick_range_), _Internal::kHasBitsOffset + 16, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      // uint32 rate_limit_tokens = 18;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.rate_limit_tokens_), _Internal::kHasBitsOffset + 17, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 rate_limit_refill_per_second = 19;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.rate_limit_refill_per_second_), _Internal::kHasBitsOffset + 18, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 rate_limit_kick_ms = 20;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.rate_limit_kick_ms_), _Internal::kHasBitsOffset + 19, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 rate_limit_reset_ms = 21;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.rate_limit_reset_ms_), _Internal::kHasBitsOffset + 20, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -210,7 +230,11 @@ inline constexpr Constants::Impl_::Impl_(
         revive_hp_percent_{0u},
         dead_monster_ms_{0u},
         interact_range_{0},
-        interact_pick_range_{0} {}
+        interact_pick_range_{0},
+        rate_limit_tokens_{0u},
+        rate_limit_refill_per_second_{0u},
+        rate_limit_kick_ms_{0u},
+        rate_limit_reset_ms_{0u} {}
 
 template <typename>
 constexpr Constants::Constants(::_pbi::ConstantInitialized,
@@ -316,7 +340,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_._has_bits_),
-        20, // hasbit index offset
+        24, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.field_size_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.combat_duration_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.regen_percent_),
@@ -334,6 +358,10 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.dead_monster_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.interact_range_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.interact_pick_range_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.rate_limit_tokens_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.rate_limit_refill_per_second_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.rate_limit_kick_ms_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.rate_limit_reset_ms_),
         0,
         1,
         2,
@@ -351,6 +379,10 @@ const ::uint32_t
         14,
         15,
         16,
+        17,
+        18,
+        19,
+        20,
 };
 
 static const ::_pbi::MigrationSchema
@@ -363,7 +395,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\017Constants.proto\022\022portfolio.mmo.data\"\304\003"
+    "\n\017Constants.proto\022\022portfolio.mmo.data\"\276\004"
     "\n\tConstants\022\022\n\nfield_size\030\001 \001(\r\022\032\n\022comba"
     "t_duration_ms\030\002 \001(\r\022\025\n\rregen_percent\030\003 \001"
     "(\r\022\034\n\024combat_regen_percent\030\004 \001(\r\022\023\n\013crit"
@@ -375,14 +407,17 @@ const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_
     "\n\023wander_pause_max_ms\030\r \001(\r\022\031\n\021revive_hp"
     "_percent\030\016 \001(\r\022\027\n\017dead_monster_ms\030\017 \001(\r\022"
     "\026\n\016interact_range\030\020 \001(\001\022\033\n\023interact_pick"
-    "_range\030\021 \001(\001B\024\252\002\021PortfolioMmo.Datab\006prot"
-    "o3"
+    "_range\030\021 \001(\001\022\031\n\021rate_limit_tokens\030\022 \001(\r\022"
+    "$\n\034rate_limit_refill_per_second\030\023 \001(\r\022\032\n"
+    "\022rate_limit_kick_ms\030\024 \001(\r\022\033\n\023rate_limit_"
+    "reset_ms\030\025 \001(\rB\024\252\002\021PortfolioMmo.Datab\006pr"
+    "oto3"
 };
 static ::absl::once_flag descriptor_table_Constants_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Constants_2eproto = {
     false,
     false,
-    522,
+    644,
     descriptor_table_protodef_Constants_2eproto,
     "Constants.proto",
     &descriptor_table_Constants_2eproto_once,
@@ -430,9 +465,9 @@ inline void Constants::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, field_size_),
            0,
-           offsetof(Impl_, interact_pick_range_) -
+           offsetof(Impl_, rate_limit_reset_ms_) -
                offsetof(Impl_, field_size_) +
-               sizeof(Impl_::interact_pick_range_));
+               sizeof(Impl_::rate_limit_reset_ms_));
 }
 Constants::~Constants() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.Constants)
@@ -495,7 +530,13 @@ PROTOBUF_NOINLINE void Constants::Clear() {
                  reinterpret_cast<char*>(&this_._impl_.unreachable_ms_)) +
                  sizeof(_impl_.interact_range_));
   }
-  this_._impl_.interact_pick_range_ = 0;
+  if (BatchCheckHasBit(cached_has_bits, 0x001f0000U)) {
+    ::memset(&this_._impl_.interact_pick_range_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.rate_limit_reset_ms_) -
+                 reinterpret_cast<char*>(&this_._impl_.interact_pick_range_)) +
+                 sizeof(_impl_.rate_limit_reset_ms_));
+  }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -672,6 +713,42 @@ PROTOBUF_NOINLINE void Constants::Clear() {
     }
   }
 
+  // uint32 rate_limit_tokens = 18;
+  if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+    if (this_._internal_rate_limit_tokens() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          18, this_._internal_rate_limit_tokens(), target);
+    }
+  }
+
+  // uint32 rate_limit_refill_per_second = 19;
+  if (CheckHasBit(cached_has_bits, 0x00040000U)) {
+    if (this_._internal_rate_limit_refill_per_second() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          19, this_._internal_rate_limit_refill_per_second(), target);
+    }
+  }
+
+  // uint32 rate_limit_kick_ms = 20;
+  if (CheckHasBit(cached_has_bits, 0x00080000U)) {
+    if (this_._internal_rate_limit_kick_ms() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          20, this_._internal_rate_limit_kick_ms(), target);
+    }
+  }
+
+  // uint32 rate_limit_reset_ms = 21;
+  if (CheckHasBit(cached_has_bits, 0x00100000U)) {
+    if (this_._internal_rate_limit_reset_ms() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          21, this_._internal_rate_limit_reset_ms(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -805,11 +882,39 @@ PROTOBUF_NOINLINE void Constants::Clear() {
       }
     }
   }
-   {
+  if (BatchCheckHasBit(cached_has_bits, 0x001f0000U)) {
     // double interact_pick_range = 17;
     if (CheckHasBit(cached_has_bits, 0x00010000U)) {
       if (::absl::bit_cast<::uint64_t>(this_._internal_interact_pick_range()) != 0) {
         total_size += 10;
+      }
+    }
+    // uint32 rate_limit_tokens = 18;
+    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+      if (this_._internal_rate_limit_tokens() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_rate_limit_tokens());
+      }
+    }
+    // uint32 rate_limit_refill_per_second = 19;
+    if (CheckHasBit(cached_has_bits, 0x00040000U)) {
+      if (this_._internal_rate_limit_refill_per_second() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_rate_limit_refill_per_second());
+      }
+    }
+    // uint32 rate_limit_kick_ms = 20;
+    if (CheckHasBit(cached_has_bits, 0x00080000U)) {
+      if (this_._internal_rate_limit_kick_ms() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_rate_limit_kick_ms());
+      }
+    }
+    // uint32 rate_limit_reset_ms = 21;
+    if (CheckHasBit(cached_has_bits, 0x00100000U)) {
+      if (this_._internal_rate_limit_reset_ms() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_rate_limit_reset_ms());
       }
     }
   }
@@ -914,9 +1019,31 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
   }
-  if (CheckHasBit(cached_has_bits, 0x00010000U)) {
-    if (::absl::bit_cast<::uint64_t>(from._internal_interact_pick_range()) != 0) {
-      _this->_impl_.interact_pick_range_ = from._impl_.interact_pick_range_;
+  if (BatchCheckHasBit(cached_has_bits, 0x001f0000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00010000U)) {
+      if (::absl::bit_cast<::uint64_t>(from._internal_interact_pick_range()) != 0) {
+        _this->_impl_.interact_pick_range_ = from._impl_.interact_pick_range_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+      if (from._internal_rate_limit_tokens() != 0) {
+        _this->_impl_.rate_limit_tokens_ = from._impl_.rate_limit_tokens_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00040000U)) {
+      if (from._internal_rate_limit_refill_per_second() != 0) {
+        _this->_impl_.rate_limit_refill_per_second_ = from._impl_.rate_limit_refill_per_second_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00080000U)) {
+      if (from._internal_rate_limit_kick_ms() != 0) {
+        _this->_impl_.rate_limit_kick_ms_ = from._impl_.rate_limit_kick_ms_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00100000U)) {
+      if (from._internal_rate_limit_reset_ms() != 0) {
+        _this->_impl_.rate_limit_reset_ms_ = from._impl_.rate_limit_reset_ms_;
+      }
     }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -937,8 +1064,8 @@ void Constants::InternalSwap(Constants* PROTOBUF_RESTRICT PROTOBUF_NONNULL other
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Constants, _impl_.interact_pick_range_)
-      + sizeof(Constants::_impl_.interact_pick_range_)
+      PROTOBUF_FIELD_OFFSET(Constants, _impl_.rate_limit_reset_ms_)
+      + sizeof(Constants::_impl_.rate_limit_reset_ms_)
       - PROTOBUF_FIELD_OFFSET(Constants, _impl_.field_size_)>(
           reinterpret_cast<char*>(&_impl_.field_size_),
           reinterpret_cast<char*>(&other->_impl_.field_size_));

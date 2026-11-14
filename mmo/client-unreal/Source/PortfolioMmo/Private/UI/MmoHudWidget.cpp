@@ -14,6 +14,7 @@
 #include "UI/MmoJoystickWidget.h"
 #include "UI/MmoUiManager.h"
 #include "World/CombatState.h"
+#include "World/FailMessages.h"
 #include "World/Units.h"
 
 namespace
@@ -275,6 +276,11 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	ShowProgress(Now);
 	ShowEffects(ServerTick);
 	ShowInteract();
+	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀).
+	for (const portfolio::mmo::FailReason Reason : Session->Combat().TakeNotices())
+	{
+		GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowNotice(FText::FromString(UTF8_TO_TCHAR(MmoWorld::FailMessage(Reason))));
+	}
 
 	const MmoWorld::FFieldMap* Field = Session->Field();
 	const APawn* Self = GetOwningPlayerPawn();

@@ -129,6 +129,12 @@ namespace MmoWorld
 		std::vector<FCombatEvent> TakeEvents();
 
 		/**
+		 * 지난번에 꺼낸 뒤로 쌓인 알림(실패한 요청의 이유, 받은 순서). 화면이 MmoWorld::FailMessage의 글로 알림 층에 띄운다.
+		 * 쌓는 것: 모든 ActionFailed, 내 ProgressCancelled 가운데 "취소됨"이 아닌 것(끝나는 틱의 확인에서 걸림), 보내기 전에 걸린 스킬 누르기.
+		 */
+		std::vector<portfolio::mmo::FailReason> TakeNotices();
+
+		/**
 		 * 발사체를 NowSeconds까지 옮긴다: 나갈 때가 된 것은 화면이 공격자를 그리는 자리(FWorldState::DrawnPose)에서 나가고, 나간 것은 대상을 그리는
 		 * 자리 쪽으로 간다. 닿거나 대상이 없으면 지운다.
 		 */
@@ -150,7 +156,7 @@ namespace MmoWorld
 
 		/**
 		 * 퀵슬롯의 스킬을 누른다: 죽음, 기절, 진행 중, 쿨다운, 마나, 대상(직선 발사체가 아닌 대상 스킬)을 먼저 보고, 통과하면 그 스킬을 기다리게 둔다
-		 * (UpdateSkill이 이어 감). 어긋나면 그 이유이고 아무것도 보내지 않는다.
+		 * (UpdateSkill이 이어 감). 어긋나면 그 이유이고 아무것도 보내지 않으며, 이유를 알림으로 쌓는다.
 		 */
 		portfolio::mmo::FailReason PressSkill(uint32_t SkillId, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds);
 
@@ -200,6 +206,9 @@ namespace MmoWorld
 	private:
 		void Release(std::optional<portfolio::mmo::Packet>& Stop);
 
+		/** PressSkill의 확인(보내기 전에 걸리는 이유). */
+		portfolio::mmo::FailReason CheckSkill(uint32_t SkillId, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds) const;
+
 		uint32_t TargetId = 0;
 		bool bAttacking = false;
 		bool bPredicted = false;
@@ -215,6 +224,7 @@ namespace MmoWorld
 		bool bHoldMove = false;
 		FCooldowns SkillCooldowns;
 		std::vector<FCombatEvent> Events;
+		std::vector<portfolio::mmo::FailReason> Notices;
 		std::vector<FProjectile> Flying;
 		std::vector<FLineProjectile> Lines;
 	};

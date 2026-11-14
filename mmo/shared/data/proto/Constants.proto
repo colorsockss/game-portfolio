@@ -40,4 +40,12 @@ message Constants {
   double interact_range = 16;
   // 상호작용 버튼이 고르는 거리(m). 이 안의 가장 가까운 상호작용할 수 있는 것을 고른다
   double interact_pick_range = 17;
+  // 연결마다 요청의 빈도를 재는 버킷의 토큰 수. 받은 패킷(Move 포함)마다 하나를 쓰고, 없으면 그 요청을 버린다
+  uint32 rate_limit_tokens = 18;
+  // 버킷에 초당 채우는 토큰 수(지난 틱 수만큼 채움)
+  uint32 rate_limit_refill_per_second = 19;
+  // 요청을 버리기 시작한 때부터 버리는 일이 이만큼 이어지면 끊는 시간(ms)
+  uint32 rate_limit_kick_ms = 20;
+  // 버린 것이 이만큼 없으면 버린 시간을 처음부터 다시 세는 시간(ms)
+  uint32 rate_limit_reset_ms = 21;
 }

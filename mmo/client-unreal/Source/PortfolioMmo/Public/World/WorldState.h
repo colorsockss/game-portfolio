@@ -133,6 +133,9 @@ namespace MmoWorld
 		/** 내 개체 번호. 월드에 들어가기 전이면 0. */
 		uint32_t SelfId() const { return Self; }
 
+		/** 월드에 들어가 있다(EnterWorldResult부터 끊기거나 LeaveWorld까지). 아니면 월드의 요청(Move, 공격, 스킬)을 만들지 않는다. */
+		bool InWorld() const { return Self != 0; }
+
 		/** 내 개체. 월드에 들어가기 전이거나 아직 EntitiesEnter를 받지 못했으면 nullptr. */
 		const FEntity* SelfEntity() const;
 

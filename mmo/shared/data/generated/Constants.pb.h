@@ -237,6 +237,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kDeadMonsterMsFieldNumber = 15,
     kInteractRangeFieldNumber = 16,
     kInteractPickRangeFieldNumber = 17,
+    kRateLimitTokensFieldNumber = 18,
+    kRateLimitRefillPerSecondFieldNumber = 19,
+    kRateLimitKickMsFieldNumber = 20,
+    kRateLimitResetMsFieldNumber = 21,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -408,11 +412,51 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_interact_pick_range(double value);
 
   public:
+  // uint32 rate_limit_tokens = 18;
+  void clear_rate_limit_tokens() ;
+  [[nodiscard]] ::uint32_t rate_limit_tokens() const;
+  void set_rate_limit_tokens(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_rate_limit_tokens() const;
+  void _internal_set_rate_limit_tokens(::uint32_t value);
+
+  public:
+  // uint32 rate_limit_refill_per_second = 19;
+  void clear_rate_limit_refill_per_second() ;
+  [[nodiscard]] ::uint32_t rate_limit_refill_per_second() const;
+  void set_rate_limit_refill_per_second(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_rate_limit_refill_per_second() const;
+  void _internal_set_rate_limit_refill_per_second(::uint32_t value);
+
+  public:
+  // uint32 rate_limit_kick_ms = 20;
+  void clear_rate_limit_kick_ms() ;
+  [[nodiscard]] ::uint32_t rate_limit_kick_ms() const;
+  void set_rate_limit_kick_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_rate_limit_kick_ms() const;
+  void _internal_set_rate_limit_kick_ms(::uint32_t value);
+
+  public:
+  // uint32 rate_limit_reset_ms = 21;
+  void clear_rate_limit_reset_ms() ;
+  [[nodiscard]] ::uint32_t rate_limit_reset_ms() const;
+  void set_rate_limit_reset_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_rate_limit_reset_ms() const;
+  void _internal_set_rate_limit_reset_ms(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 17,
+      ::google::protobuf::internal::TcParseTable<5, 21,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -458,6 +502,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t dead_monster_ms_;
     double interact_range_;
     double interact_pick_range_;
+    ::uint32_t rate_limit_tokens_;
+    ::uint32_t rate_limit_refill_per_second_;
+    ::uint32_t rate_limit_kick_ms_;
+    ::uint32_t rate_limit_reset_ms_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -886,6 +934,102 @@ inline double Constants::_internal_interact_pick_range() const {
 inline void Constants::_internal_set_interact_pick_range(double value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.interact_pick_range_ = value;
+}
+
+// uint32 rate_limit_tokens = 18;
+inline void Constants::clear_rate_limit_tokens() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.rate_limit_tokens_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00020000U);
+}
+inline ::uint32_t Constants::rate_limit_tokens() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.rate_limit_tokens)
+  return _internal_rate_limit_tokens();
+}
+inline void Constants::set_rate_limit_tokens(::uint32_t value) {
+  _internal_set_rate_limit_tokens(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00020000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.rate_limit_tokens)
+}
+inline ::uint32_t Constants::_internal_rate_limit_tokens() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.rate_limit_tokens_;
+}
+inline void Constants::_internal_set_rate_limit_tokens(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.rate_limit_tokens_ = value;
+}
+
+// uint32 rate_limit_refill_per_second = 19;
+inline void Constants::clear_rate_limit_refill_per_second() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.rate_limit_refill_per_second_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00040000U);
+}
+inline ::uint32_t Constants::rate_limit_refill_per_second() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.rate_limit_refill_per_second)
+  return _internal_rate_limit_refill_per_second();
+}
+inline void Constants::set_rate_limit_refill_per_second(::uint32_t value) {
+  _internal_set_rate_limit_refill_per_second(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00040000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.rate_limit_refill_per_second)
+}
+inline ::uint32_t Constants::_internal_rate_limit_refill_per_second() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.rate_limit_refill_per_second_;
+}
+inline void Constants::_internal_set_rate_limit_refill_per_second(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.rate_limit_refill_per_second_ = value;
+}
+
+// uint32 rate_limit_kick_ms = 20;
+inline void Constants::clear_rate_limit_kick_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.rate_limit_kick_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00080000U);
+}
+inline ::uint32_t Constants::rate_limit_kick_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.rate_limit_kick_ms)
+  return _internal_rate_limit_kick_ms();
+}
+inline void Constants::set_rate_limit_kick_ms(::uint32_t value) {
+  _internal_set_rate_limit_kick_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00080000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.rate_limit_kick_ms)
+}
+inline ::uint32_t Constants::_internal_rate_limit_kick_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.rate_limit_kick_ms_;
+}
+inline void Constants::_internal_set_rate_limit_kick_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.rate_limit_kick_ms_ = value;
+}
+
+// uint32 rate_limit_reset_ms = 21;
+inline void Constants::clear_rate_limit_reset_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.rate_limit_reset_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00100000U);
+}
+inline ::uint32_t Constants::rate_limit_reset_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.rate_limit_reset_ms)
+  return _internal_rate_limit_reset_ms();
+}
+inline void Constants::set_rate_limit_reset_ms(::uint32_t value) {
+  _internal_set_rate_limit_reset_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00100000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.rate_limit_reset_ms)
+}
+inline ::uint32_t Constants::_internal_rate_limit_reset_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.rate_limit_reset_ms_;
+}
+inline void Constants::_internal_set_rate_limit_reset_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.rate_limit_reset_ms_ = value;
 }
 
 #ifdef __GNUC__

@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLEAwoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSK+BAoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -34,12 +34,15 @@ namespace PortfolioMmo.Data {
             "X3BlcmNlbnQYCyABKA0SGwoTd2FuZGVyX3BhdXNlX21pbl9tcxgMIAEoDRIb",
             "ChN3YW5kZXJfcGF1c2VfbWF4X21zGA0gASgNEhkKEXJldml2ZV9ocF9wZXJj",
             "ZW50GA4gASgNEhcKD2RlYWRfbW9uc3Rlcl9tcxgPIAEoDRIWCg5pbnRlcmFj",
-            "dF9yYW5nZRgQIAEoARIbChNpbnRlcmFjdF9waWNrX3JhbmdlGBEgASgBQhSq",
-            "AhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
+            "dF9yYW5nZRgQIAEoARIbChNpbnRlcmFjdF9waWNrX3JhbmdlGBEgASgBEhkK",
+            "EXJhdGVfbGltaXRfdG9rZW5zGBIgASgNEiQKHHJhdGVfbGltaXRfcmVmaWxs",
+            "X3Blcl9zZWNvbmQYEyABKA0SGgoScmF0ZV9saW1pdF9raWNrX21zGBQgASgN",
+            "EhsKE3JhdGVfbGltaXRfcmVzZXRfbXMYFSABKA1CFKoCEVBvcnRmb2xpb01t",
+            "by5EYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs" }, null, null, null, null)
           }));
     }
     #endregion
@@ -98,6 +101,10 @@ namespace PortfolioMmo.Data {
       deadMonsterMs_ = other.deadMonsterMs_;
       interactRange_ = other.interactRange_;
       interactPickRange_ = other.interactPickRange_;
+      rateLimitTokens_ = other.rateLimitTokens_;
+      rateLimitRefillPerSecond_ = other.rateLimitRefillPerSecond_;
+      rateLimitKickMs_ = other.rateLimitKickMs_;
+      rateLimitResetMs_ = other.rateLimitResetMs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -362,6 +369,66 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "rate_limit_tokens" field.</summary>
+    public const int RateLimitTokensFieldNumber = 18;
+    private uint rateLimitTokens_;
+    /// <summary>
+    /// 연결마다 요청의 빈도를 재는 버킷의 토큰 수. 받은 패킷(Move 포함)마다 하나를 쓰고, 없으면 그 요청을 버린다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RateLimitTokens {
+      get { return rateLimitTokens_; }
+      set {
+        rateLimitTokens_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rate_limit_refill_per_second" field.</summary>
+    public const int RateLimitRefillPerSecondFieldNumber = 19;
+    private uint rateLimitRefillPerSecond_;
+    /// <summary>
+    /// 버킷에 초당 채우는 토큰 수(지난 틱 수만큼 채움)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RateLimitRefillPerSecond {
+      get { return rateLimitRefillPerSecond_; }
+      set {
+        rateLimitRefillPerSecond_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rate_limit_kick_ms" field.</summary>
+    public const int RateLimitKickMsFieldNumber = 20;
+    private uint rateLimitKickMs_;
+    /// <summary>
+    /// 요청을 버리기 시작한 때부터 버리는 일이 이만큼 이어지면 끊는 시간(ms)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RateLimitKickMs {
+      get { return rateLimitKickMs_; }
+      set {
+        rateLimitKickMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rate_limit_reset_ms" field.</summary>
+    public const int RateLimitResetMsFieldNumber = 21;
+    private uint rateLimitResetMs_;
+    /// <summary>
+    /// 버린 것이 이만큼 없으면 버린 시간을 처음부터 다시 세는 시간(ms)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint RateLimitResetMs {
+      get { return rateLimitResetMs_; }
+      set {
+        rateLimitResetMs_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -394,6 +461,10 @@ namespace PortfolioMmo.Data {
       if (DeadMonsterMs != other.DeadMonsterMs) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(InteractRange, other.InteractRange)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(InteractPickRange, other.InteractPickRange)) return false;
+      if (RateLimitTokens != other.RateLimitTokens) return false;
+      if (RateLimitRefillPerSecond != other.RateLimitRefillPerSecond) return false;
+      if (RateLimitKickMs != other.RateLimitKickMs) return false;
+      if (RateLimitResetMs != other.RateLimitResetMs) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -418,6 +489,10 @@ namespace PortfolioMmo.Data {
       if (DeadMonsterMs != 0) hash ^= DeadMonsterMs.GetHashCode();
       if (InteractRange != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(InteractRange);
       if (InteractPickRange != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(InteractPickRange);
+      if (RateLimitTokens != 0) hash ^= RateLimitTokens.GetHashCode();
+      if (RateLimitRefillPerSecond != 0) hash ^= RateLimitRefillPerSecond.GetHashCode();
+      if (RateLimitKickMs != 0) hash ^= RateLimitKickMs.GetHashCode();
+      if (RateLimitResetMs != 0) hash ^= RateLimitResetMs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -504,6 +579,22 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(137, 1);
         output.WriteDouble(InteractPickRange);
       }
+      if (RateLimitTokens != 0) {
+        output.WriteRawTag(144, 1);
+        output.WriteUInt32(RateLimitTokens);
+      }
+      if (RateLimitRefillPerSecond != 0) {
+        output.WriteRawTag(152, 1);
+        output.WriteUInt32(RateLimitRefillPerSecond);
+      }
+      if (RateLimitKickMs != 0) {
+        output.WriteRawTag(160, 1);
+        output.WriteUInt32(RateLimitKickMs);
+      }
+      if (RateLimitResetMs != 0) {
+        output.WriteRawTag(168, 1);
+        output.WriteUInt32(RateLimitResetMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -582,6 +673,22 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(137, 1);
         output.WriteDouble(InteractPickRange);
       }
+      if (RateLimitTokens != 0) {
+        output.WriteRawTag(144, 1);
+        output.WriteUInt32(RateLimitTokens);
+      }
+      if (RateLimitRefillPerSecond != 0) {
+        output.WriteRawTag(152, 1);
+        output.WriteUInt32(RateLimitRefillPerSecond);
+      }
+      if (RateLimitKickMs != 0) {
+        output.WriteRawTag(160, 1);
+        output.WriteUInt32(RateLimitKickMs);
+      }
+      if (RateLimitResetMs != 0) {
+        output.WriteRawTag(168, 1);
+        output.WriteUInt32(RateLimitResetMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -642,6 +749,18 @@ namespace PortfolioMmo.Data {
       }
       if (InteractPickRange != 0D) {
         size += 2 + 8;
+      }
+      if (RateLimitTokens != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(RateLimitTokens);
+      }
+      if (RateLimitRefillPerSecond != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(RateLimitRefillPerSecond);
+      }
+      if (RateLimitKickMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(RateLimitKickMs);
+      }
+      if (RateLimitResetMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(RateLimitResetMs);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -705,6 +824,18 @@ namespace PortfolioMmo.Data {
       }
       if (other.InteractPickRange != 0D) {
         InteractPickRange = other.InteractPickRange;
+      }
+      if (other.RateLimitTokens != 0) {
+        RateLimitTokens = other.RateLimitTokens;
+      }
+      if (other.RateLimitRefillPerSecond != 0) {
+        RateLimitRefillPerSecond = other.RateLimitRefillPerSecond;
+      }
+      if (other.RateLimitKickMs != 0) {
+        RateLimitKickMs = other.RateLimitKickMs;
+      }
+      if (other.RateLimitResetMs != 0) {
+        RateLimitResetMs = other.RateLimitResetMs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -793,6 +924,22 @@ namespace PortfolioMmo.Data {
             InteractPickRange = input.ReadDouble();
             break;
           }
+          case 144: {
+            RateLimitTokens = input.ReadUInt32();
+            break;
+          }
+          case 152: {
+            RateLimitRefillPerSecond = input.ReadUInt32();
+            break;
+          }
+          case 160: {
+            RateLimitKickMs = input.ReadUInt32();
+            break;
+          }
+          case 168: {
+            RateLimitResetMs = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -878,6 +1025,22 @@ namespace PortfolioMmo.Data {
           }
           case 137: {
             InteractPickRange = input.ReadDouble();
+            break;
+          }
+          case 144: {
+            RateLimitTokens = input.ReadUInt32();
+            break;
+          }
+          case 152: {
+            RateLimitRefillPerSecond = input.ReadUInt32();
+            break;
+          }
+          case 160: {
+            RateLimitKickMs = input.ReadUInt32();
+            break;
+          }
+          case 168: {
+            RateLimitResetMs = input.ReadUInt32();
             break;
           }
         }

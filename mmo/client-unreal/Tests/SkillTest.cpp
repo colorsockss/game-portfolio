@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "World/CombatState.h"
+#include "World/FailMessages.h"
 
 namespace
 {
@@ -465,6 +466,66 @@ namespace
 	}
 }
 
+namespace
+{
+	/** ActionFailed, 내 ProgressCancelled 가운데 "취소됨"이 아닌 것, 보내기 전에 걸린 스킬 누르기가 알림이 된다. "취소됨"과 남의 것은 되지 않는다. */
+	void FailuresBecomeNotices()
+	{
+		FScene Scene;
+		Packet Failed;
+		Failed.mutable_action_failed()->set_reason(portfolio::mmo::FAIL_REASON_OUT_OF_RANGE);
+		Failed.mutable_action_failed()->set_request(portfolio::mmo::REQUEST_KIND_ATTACK);
+		Scene.Apply(Failed);
+		auto Cancel = [](uint32_t Id, portfolio::mmo::FailReason Reason)
+		{
+			Packet Result;
+			Result.mutable_progress_cancelled()->set_id(Id);
+			Result.mutable_progress_cancelled()->set_reason(Reason);
+			return Result;
+		};
+		Scene.Apply(Cancel(Me, portfolio::mmo::FAIL_REASON_BLOCKED));
+		Scene.Apply(Cancel(Me, portfolio::mmo::FAIL_REASON_CANCELLED));
+		Scene.Apply(Cancel(Monster, portfolio::mmo::FAIL_REASON_BLOCKED));
+		Packet Drained;
+		Drained.mutable_self_vitals()->set_hp(100);
+		Drained.mutable_self_vitals()->set_mp(0);
+		Scene.Apply(Drained);
+		Scene.Combat.PressSkill(101, Scene.World, Scene.GameData, 0);
+		const std::vector<portfolio::mmo::FailReason> Notices = Scene.Combat.TakeNotices();
+		Expect(Notices == std::vector<portfolio::mmo::FailReason>{ portfolio::mmo::FAIL_REASON_OUT_OF_RANGE, portfolio::mmo::FAIL_REASON_BLOCKED,
+			portfolio::mmo::FAIL_REASON_NOT_ENOUGH_MP }, "failed requests, my cast that failed its end check and a refused press are notices");
+		Expect(Scene.Combat.TakeNotices().empty(), "notices are taken once");
+	}
+
+	/** LeaveWorld를 보내면(월드를 비움) 월드 밖이라 월드의 요청을 만들지 않는다. */
+	void LeavingTheWorldStopsRequests()
+	{
+		FScene Scene;
+		Expect(Scene.World.InWorld(), "inside the world after EnterWorldResult");
+		Scene.World.Reset();
+		Expect(!Scene.World.InWorld(), "outside the world after leaving");
+	}
+
+	/** FailReason의 모든 값에 그 값만의 글이 있다(빠진 값은 일반적인 글로 떨어짐). */
+	void EveryFailReasonHasAMessage()
+	{
+		const std::string Generic = MmoWorld::FailMessage(static_cast<portfolio::mmo::FailReason>(portfolio::mmo::FailReason_MAX + 1));
+		for (int Value = portfolio::mmo::FailReason_MIN; Value <= portfolio::mmo::FailReason_MAX; ++Value)
+		{
+			if (!portfolio::mmo::FailReason_IsValid(Value) || Value == portfolio::mmo::FAIL_REASON_NONE)
+			{
+				continue;
+			}
+			const std::string Message = MmoWorld::FailMessage(static_cast<portfolio::mmo::FailReason>(Value));
+			if (Message.empty() || Message == Generic)
+			{
+				std::printf("FAIL: FailReason %d has no message\n", Value);
+				++Failures;
+			}
+		}
+	}
+}
+
 int main(int ArgumentCount, char** Arguments)
 {
 	if (ArgumentCount < 3)
@@ -482,6 +543,9 @@ int main(int ArgumentCount, char** Arguments)
 	CastsStopAndIgnoreTheHeldMove();
 	LineProjectilesFollowTheirLaunch();
 	LineSkillsFireWithOrWithoutATarget();
+	FailuresBecomeNotices();
+	LeavingTheWorldStopsRequests();
+	EveryFailReasonHasAMessage();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

@@ -78,12 +78,11 @@ namespace PortfolioMmo.Server
         /// Revive: 죽었으면 마을의 부활 지점으로 옮기고 체력을 최대 체력의 일부로 채운다(마나는 그대로). 보는 쪽에는 순간 이동 표시가 있는 움직임과
         /// Revived가, 본인에게는 PositionReset과 Revived, SelfVitals가 간다. 살아 있으면 ActionFailed(NOT_DEAD).
         /// </summary>
-        public void Revive(Player player)
+        public Outcome Revive(Player player)
         {
             if (!player.Dead)
             {
-                player.Fail(FailReason.NotDead, RequestKind.Revive);
-                return;
+                return Outcome.Fail(FailReason.NotDead);
             }
 
             player.Dead = false;
@@ -97,6 +96,7 @@ namespace PortfolioMmo.Server
             _grid.Moved(player);
             _movement.Reset(player);
             _events.Revived(player);
+            return Outcome.Done;
         }
     }
 }

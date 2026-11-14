@@ -117,6 +117,9 @@ void UMmoLoginWidget::HandlePacket(const portfolio::mmo::Packet& Packet)
 		case portfolio::mmo::KICK_REASON_MALFORMED_PACKET:
 			SetStatus(LOCTEXT("MalformedPacket", "서버가 읽을 수 없는 패킷을 보내 연결이 끊겼습니다."));
 			break;
+		case portfolio::mmo::KICK_REASON_RATE_LIMITED:
+			SetStatus(LOCTEXT("RateLimited", "요청을 너무 자주 보내 연결이 끊겼습니다."));
+			break;
 		default:
 			SetStatus(LOCTEXT("Kicked", "서버가 연결을 끊었습니다."));
 			break;

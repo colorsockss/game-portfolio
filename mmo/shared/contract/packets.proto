@@ -141,6 +141,8 @@ enum KickReason {
   KICK_REASON_MALFORMED_PACKET = 3;
   // CONSTANT_IDLE_TIMEOUT_SECONDS 동안 아무것도 보내지 않았다.
   KICK_REASON_IDLE_TIMEOUT = 4;
+  // 요청을 너무 자주 보냈다(Constants의 빈도 제한. 버리는 일이 이어진 시간이 끊는 시간을 넘음).
+  KICK_REASON_RATE_LIMITED = 5;
 }
 
 // 클라이언트 → 서버. 연결이 살아 있음을 알린다. 로그인 전에도 보낼 수 있고, CONSTANT_PING_INTERVAL_SECONDS마다 보낸다.
