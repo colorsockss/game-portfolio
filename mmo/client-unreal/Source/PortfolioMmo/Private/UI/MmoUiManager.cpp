@@ -63,6 +63,8 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::ItemDetail);
 		case EScreen::Enchant:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Enchant);
+		case EScreen::Skills:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Skills);
 		}
 		checkNoEntry();
 		return {};
@@ -293,6 +295,7 @@ void UMmoUiManager::ReturnToCharacterSelect()
 	Close(EScreen::Inventory);
 	Close(EScreen::ItemDetail);
 	Close(EScreen::Enchant);
+	Close(EScreen::Skills);
 	Close(EScreen::Hud);
 	Open(EScreen::CharacterSelect);
 }
@@ -356,12 +359,18 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		OpenFromCommandLine();
 #if !UE_BUILD_SHIPPING
 		// 개발용: -MmoDevCommand="level 5"면 처음 월드에 들어간 뒤 한 번 그 개발 명령을 보낸다(콘솔을 열지 않고 확인과 시연을 맞춤. --dev 서버만 실행).
+		// ;로 나눈 여러 명령은 차례로 보낸다("level 10;item 2202").
 		static bool bSentDevCommand = false;
 		FString DevLine;
 		if (!bSentDevCommand && FParse::Value(FCommandLine::Get(), TEXT("MmoDevCommand="), DevLine, false))
 		{
 			bSentDevCommand = true;
-			Session().Send(MmoWorld::DevCommandPacket(TCHAR_TO_UTF8(*DevLine)));
+			TArray<FString> Lines;
+			DevLine.ParseIntoArray(Lines, TEXT(";"));
+			for (const FString& Line : Lines)
+			{
+				Session().Send(MmoWorld::DevCommandPacket(TCHAR_TO_UTF8(*Line)));
+			}
 		}
 #endif
 	}
@@ -373,6 +382,7 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		Close(EScreen::Inventory);
 		Close(EScreen::ItemDetail);
 		Close(EScreen::Enchant);
+		Close(EScreen::Skills);
 		Close(EScreen::Confirm);
 		Close(EScreen::Quantity);
 		Open(EScreen::Death);
@@ -392,6 +402,18 @@ void UMmoUiManager::ToggleCharacter()
 	else if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
 	{
 		Open(EScreen::Character);
+	}
+}
+
+void UMmoUiManager::ToggleSkills()
+{
+	if (Stack.IsOpen(EScreen::Skills))
+	{
+		Close(EScreen::Skills);
+	}
+	else if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
+	{
+		Open(EScreen::Skills);
 	}
 }
 
@@ -427,7 +449,7 @@ void UMmoUiManager::ShowEnchant(uint32 ScrollItemId)
 
 void UMmoUiManager::OpenFromCommandLine()
 {
-	// 개발용: -MmoOpen=Settings|Character|Inventory|Confirm|Quantity|Notice면 처음 월드에 들어간 뒤 한 번 그 화면을 연다(화면 크기마다의 배치를 클릭 없이 봄).
+	// 개발용: -MmoOpen=Settings|Character|Skills|Inventory|Confirm|Quantity|Notice면 처음 월드에 들어간 뒤 한 번 그 화면을 연다(화면 크기마다의 배치를 클릭 없이 봄).
 	static bool bOpened = false;
 	FString Screen;
 	if (bOpened || !FParse::Value(FCommandLine::Get(), TEXT("MmoOpen="), Screen))
@@ -442,6 +464,10 @@ void UMmoUiManager::OpenFromCommandLine()
 	else if (Screen == TEXT("Character"))
 	{
 		Open(EScreen::Character);
+	}
+	else if (Screen == TEXT("Skills"))
+	{
+		Open(EScreen::Skills);
 	}
 	else if (Screen == TEXT("Inventory"))
 	{
@@ -475,6 +501,7 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Close(EScreen::Inventory);
 	Close(EScreen::ItemDetail);
 	Close(EScreen::Enchant);
+	Close(EScreen::Skills);
 	Close(EScreen::Hud);
 	Close(EScreen::CharacterCreate);
 	Close(EScreen::CharacterSelect);

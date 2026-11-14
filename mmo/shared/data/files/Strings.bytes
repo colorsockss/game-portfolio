@@ -337,8 +337,6 @@ L
 fail.tooFast(요청을 너무 자주 보냈습니다.Too many requests.
 
 detail.count{0}개×{0}
-D
-quickslot.full빈 퀵슬롯이 없습니다.No free quickslot.
 
 	item.gold골드Gold
 t
@@ -642,8 +640,8 @@ E
 inventory.equipment장비	Equipment
 F
 fail.levelTooLow레벨이 모자랍니다.Your level is too low.
-P
-fail.wrongClass!다른 직업의 장비입니다.That is for another class.
+M
+fail.wrongClass다른 직업의 것입니다.That is for another class.
 0
 item.enchant강화 주문서Enchant Scroll
 �
@@ -673,3 +671,83 @@ s
 enchant.failure1강화에 실패해 장비가 사라졌습니다.-The enchant failed and the equipment is gone.
 S
 fail.maxEnchant더 강화할 수 없습니다.It cannot be enchanted further.
+4
+item.book.102스킬북: 강타Skill Book: Bash
+=
+item.desc.2102강타을(를) 배웁니다.Teaches Bash.
+5
+item.book.103스킬북: 수호Skill Book: Guard
+>
+item.desc.2103수호을(를) 배웁니다.Teaches Guard.
+8
+item.book.104스킬북: 회오리Skill Book: Whirl
+A
+item.desc.2104회오리을(를) 배웁니다.Teaches Whirl.
+6
+item.book.105스킬북: 절단Skill Book: Hobble
+?
+item.desc.2105절단을(를) 배웁니다.Teaches Hobble.
+4
+item.book.106스킬북: 분노Skill Book: Fury
+=
+item.desc.2106분노을(를) 배웁니다.Teaches Fury.
+6
+item.book.202스킬북: 운석Skill Book: Meteor
+?
+item.desc.2202운석을(를) 배웁니다.Teaches Meteor.
+4
+item.book.203스킬북: 치유Skill Book: Heal
+=
+item.desc.2203치유을(를) 배웁니다.Teaches Heal.
+5
+item.book.204스킬북: 냉기Skill Book: Frost
+>
+item.desc.2204냉기을(를) 배웁니다.Teaches Frost.
+7
+item.book.205스킬북: 화염구Skill Book: Pyro
+@
+item.desc.2205화염구을(를) 배웁니다.Teaches Pyro.
+G
+skill.desc.101대상을 힘껏 벱니다.Strikes the target hard.
+j
+skill.desc.102.대상을 내리쳐 잠시 기절시킵니다.(Smashes the target and stuns it briefly.
+U
+skill.desc.103!잠시 방어력을 올립니다. Raises your defense for a while.
+h
+skill.desc.1040몸을 돌려 둘레의 적을 모두 벱니다.$Spins to hit every enemy around you.
+Y
+skill.desc.105(대상을 베어 느리게 만듭니다.Cuts the target and slows it.
+T
+skill.desc.106!잠시 공격력을 올립니다.Raises your attack for a while.
+�
+skill.desc.201G곧게 나는 마력탄을 쏘아 맞은 적을 느리게 만듭니다.8Fires a bolt that flies straight and slows what it hits.
+
+skill.desc.202B주문을 외워 대상의 자리에 운석을 떨어뜨립니다.)Calls a meteor down on the target's spot.
+c
+skill.desc.2032주문을 외워 대상의 체력을 채웁니다.Restores the target's health.
+{
+skill.desc.204<둘레에 냉기를 퍼뜨려 적을 느리게 만듭니다.+Spreads frost around you and slows enemies.
+j
+skill.desc.205,오래 외워 큰 불덩이를 던집니다.*Throws a large fireball after a long cast.
+
+skills.title스킬Skills
+5
+skills.level필요 레벨 {0}Requires level {0}
+B
+skills.cost마나 {0}  쿨다운 {1}초{0} MP  {1}s cooldown
+!
+skills.learned배움Learned
+2
+skills.notLearned배우지 않음Not learned
+C
+skills.pick!올릴 퀵슬롯을 고르세요.Pick a quickslot.
+:
+skills.toQuickslot퀵슬롯에 올리기To Quickslot
+ 
+skills.clear	비우기Clear
+?
+notice.skillLearned{0}을(를) 배웠습니다Learned {0}
+S
+fail.alreadyLearned이미 배운 스킬입니다.You already know that skill.
+Q
+skills.pickClear!비울 퀵슬롯을 고르세요.Pick a quickslot to clear.

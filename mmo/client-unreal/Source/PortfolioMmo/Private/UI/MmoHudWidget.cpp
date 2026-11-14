@@ -52,6 +52,7 @@ void UMmoHudWidget::NativeOnInitialized()
 	SettingsButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleSettingsClicked);
 	CharacterButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter(); });
 	BagButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleInventory(); });
+	SkillsButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleSkills(); });
 	// 메뉴의 키 표시는 키 표의 키다(설정 창은 뒤로 가기의 키가 연다). 창이 아직 없는 버튼은 그 항목이 잇기 전까지 누를 수 없다.
 	const TPair<UMmoButtonWidget*, EMmoAction> Menus[] = {
 		{ BagButton, EMmoAction::Bag }, { CharacterButton, EMmoAction::Character }, { SkillsButton, EMmoAction::Skills },
@@ -60,7 +61,7 @@ void UMmoHudWidget::NativeOnInitialized()
 	for (const TPair<UMmoButtonWidget*, EMmoAction>& Menu : Menus)
 	{
 		Menu.Key->SetKeyHint(MmoKeys::Hint(Menu.Value));
-		Menu.Key->SetIsEnabled(Menu.Key == SettingsButton || Menu.Key == CharacterButton || Menu.Key == BagButton);
+		Menu.Key->SetIsEnabled(Menu.Key != QuestButton);
 	}
 	for (int32 Index = 0; Index < QuickslotCount(); ++Index)
 	{
@@ -87,54 +88,40 @@ void UMmoHudWidget::UseSlot(int32 Index)
 void UMmoHudWidget::ShowSlots(double ServerTick)
 {
 	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
-	const MmoWorld::FEntity* Me = Session->World().SelfEntity();
-	const uint32 Class = Me ? static_cast<uint32>(Me->Info.character_class()) : 0;
-	if (Class != SlotClass)
+	if (!Icons)
 	{
-		SlotClass = Class;
-		ShownPotions.Reset();
-		if (!Icons)
-		{
-			Icons = LoadObject<UMmoIcons>(nullptr, UMmoIcons::Path);
-		}
-		const std::vector<uint32_t> Skills = MmoWorld::FCombatState::Quickslots(Session->Data(), Class);
-		SlotSkills.Init(0, Slots.Num());
-		for (int32 Index = 0; Index < Slots.Num(); ++Index)
-		{
-			const portfolio::mmo::data::SkillsRow* Skill = Index < static_cast<int32>(Skills.size()) ? Session->Data().Skill(Skills[Index]) : nullptr;
-			SlotSkills[Index] = Skill ? Skill->id() : 0;
-			Slots[Index]->SetIcon(Skill && Icons ? Icons->Load(EMmoIconKind::Skill, Skill->id()) : nullptr,
-				Skill ? MmoText::Get(this, UTF8_TO_TCHAR(Skill->name_key().c_str())) : FText::GetEmpty());
-			// 키 표시는 PC만(크기와 규칙은 93).
-			Slots[Index]->SetKeyHint(MmoKeys::Hint(MmoKeys::Slot(Index)));
-		}
+		Icons = LoadObject<UMmoIcons>(nullptr, UMmoIcons::Path);
+	}
+	if (ShownSlots.Num() != Slots.Num())
+	{
+		ShownSlots.Init(MAX_uint64, Slots.Num());
 	}
 
-	ShownPotions.SetNum(Slots.Num());
+	// 서버의 퀵슬롯 배치(36). 스킬은 아이콘과 쿨다운, 물약(32)은 글자 아이콘과 가진 수의 합, 쓰는 종류의 쿨다운.
+	const std::vector<portfolio::mmo::Quickslot>& Bar = Session->Skills().Slots();
 	for (int32 Index = 0; Index < Slots.Num(); ++Index)
 	{
-		const portfolio::mmo::data::SkillsRow* Skill = SlotSkills[Index] != 0 ? Session->Data().Skill(SlotSkills[Index]) : nullptr;
-		if (Skill)
-		{
-			SlotShades[Index]->SetPercent(static_cast<float>(Session->Combat().Cooldowns().Remaining(Skill->id(), Skill->cooldown_ms(), ServerTick)));
-			continue;
-		}
-		// 물약(32): 글자 아이콘과 가진 수의 합, 쓰는 종류의 쿨다운.
-		const portfolio::mmo::data::ItemsRow* Potion = Session->Data().Item(Session->QuickslotPotion(Index));
+		const portfolio::mmo::Quickslot Slot = Index < static_cast<int32>(Bar.size()) ? Bar[Index] : portfolio::mmo::Quickslot();
+		const portfolio::mmo::data::SkillsRow* Skill = Slot.kind() == portfolio::mmo::QUICKSLOT_KIND_SKILL ? Session->Data().Skill(Slot.id()) : nullptr;
+		const portfolio::mmo::data::ItemsRow* Potion = Slot.kind() == portfolio::mmo::QUICKSLOT_KIND_ITEM ? Session->Data().Item(Slot.id()) : nullptr;
 		const uint32 Count = Potion ? Session->Inventory().CountOf(Potion->id()) : 0;
-		const uint64 Shown = Potion ? (static_cast<uint64>(Potion->id()) << 32 | Count) : 0;
-		if (Shown != ShownPotions[Index])
+		const uint64 Shown = static_cast<uint64>(Slot.kind()) << 56 | static_cast<uint64>(Slot.id()) << 24 | Count;
+		if (Shown != ShownSlots[Index])
 		{
-			ShownPotions[Index] = Shown;
-			const FText Name = Potion ? MmoText::Get(this, UTF8_TO_TCHAR(Potion->name_key().c_str())) : FText::GetEmpty();
-			Slots[Index]->SetIcon(Potion && Icons ? Icons->Load(EMmoIconKind::Item, Potion->id()) : nullptr, Name);
+			ShownSlots[Index] = Shown;
+			const std::string* NameKey = Skill ? &Skill->name_key() : Potion ? &Potion->name_key() : nullptr;
+			const FText Name = NameKey ? MmoText::Get(this, UTF8_TO_TCHAR(NameKey->c_str())) : FText::GetEmpty();
+			UTexture2D* Icon = !Icons ? nullptr : Skill ? Icons->Load(EMmoIconKind::Skill, Skill->id()) : Potion ? Icons->Load(EMmoIconKind::Item, Potion->id()) : nullptr;
+			Slots[Index]->SetIcon(Icon, Name);
 			if (Potion)
 			{
 				Slots[Index]->SetLabel(FText::FromString(FString::Printf(TEXT("%s %u"), *Name.ToString().Left(1), Count)));
 			}
+			// 키 표시는 PC만(크기와 규칙은 93).
+			Slots[Index]->SetKeyHint(MmoKeys::Hint(MmoKeys::Slot(Index)));
 		}
-		SlotShades[Index]->SetPercent(Potion
-			? static_cast<float>(Session->Combat().Cooldowns().Remaining(MmoWorld::FCooldowns::PotionKey(Potion->use()), Potion->cooldown_ms(), ServerTick))
+		SlotShades[Index]->SetPercent(Skill ? static_cast<float>(Session->Combat().Cooldowns().Remaining(Skill->id(), Skill->cooldown_ms(), ServerTick))
+			: Potion ? static_cast<float>(Session->Combat().Cooldowns().Remaining(MmoWorld::FCooldowns::PotionKey(Potion->use()), Potion->cooldown_ms(), ServerTick))
 			: 0.0f);
 	}
 }
@@ -306,7 +293,7 @@ void UMmoHudWidget::NativeConstruct()
 	ShownHp = MAX_uint64;
 	ShownMp = MAX_uint64;
 	ShownTarget = MAX_uint32;
-	SlotClass = MAX_uint32;
+	ShownSlots.Reset();
 	ShownEffects = TEXT("-");
 	ShownProgress = MAX_uint32;
 	ShownInteract = MAX_uint8;
@@ -365,7 +352,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		ShownLanguage = Session->Strings().Version();
 		ShownZone = MAX_uint32;
 		ShownTarget = MAX_uint32;
-		SlotClass = MAX_uint32;
+		ShownSlots.Reset();
 		ShownEffects = TEXT("-");
 		ShownProgress = MAX_uint32;
 		ShownInteract = MAX_uint8;
@@ -392,6 +379,11 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	for (const MmoWorld::FRequestFailure& Failure : Session->Inventory().TakeFailures())
 	{
 		Ui->ShowNotice(MmoText::Get(this, UTF8_TO_TCHAR(MmoWorld::FailKey(Failure.Reason))));
+	}
+	for (const uint32_t Skill : Session->Skills().TakeLearned())
+	{
+		const portfolio::mmo::data::SkillsRow* Row = Session->Data().Skill(Skill);
+		Ui->ShowNotice(MmoText::Format(this, TEXT("notice.skillLearned"), { Row ? MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString() : FString() }));
 	}
 	for (const MmoWorld::FItemGain& Gain : Session->Inventory().TakeGains())
 	{

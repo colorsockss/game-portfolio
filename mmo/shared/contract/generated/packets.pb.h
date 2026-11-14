@@ -74,6 +74,8 @@ enum ProgressKind : int;
 extern const uint32_t ProgressKind_internal_data_[];
 enum ProtocolVersion : int;
 extern const uint32_t ProtocolVersion_internal_data_[];
+enum QuickslotKind : int;
+extern const uint32_t QuickslotKind_internal_data_[];
 enum RequestKind : int;
 extern const uint32_t RequestKind_internal_data_[];
 class ActionFailed;
@@ -364,6 +366,14 @@ extern const ::google::protobuf::internal::ClassDataFull Kicked_class_data_;
 #else
 extern const KickedGlobalsTypeInternal Kicked_globals_;
 #endif  // PROTOBUF_MESSAGE_GLOBALS
+class LearnedSkills;
+struct LearnedSkillsGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern LearnedSkillsGlobalsTypeInternal LearnedSkills_globals_;
+extern const ::google::protobuf::internal::ClassDataFull LearnedSkills_class_data_;
+#else
+extern const LearnedSkillsGlobalsTypeInternal LearnedSkills_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
 class LeaveWorld;
 struct LeaveWorldGlobalsTypeInternal;
 #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -476,6 +486,22 @@ extern const ::google::protobuf::internal::ClassDataFull ProjectileLaunched_clas
 #else
 extern const ProjectileLaunchedGlobalsTypeInternal ProjectileLaunched_globals_;
 #endif  // PROTOBUF_MESSAGE_GLOBALS
+class Quickslot;
+struct QuickslotGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern QuickslotGlobalsTypeInternal Quickslot_globals_;
+extern const ::google::protobuf::internal::ClassDataFull Quickslot_class_data_;
+#else
+extern const QuickslotGlobalsTypeInternal Quickslot_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class Quickslots;
+struct QuickslotsGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern QuickslotsGlobalsTypeInternal Quickslots_globals_;
+extern const ::google::protobuf::internal::ClassDataFull Quickslots_class_data_;
+#else
+extern const QuickslotsGlobalsTypeInternal Quickslots_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
 class RequestResult;
 struct RequestResultGlobalsTypeInternal;
 #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -515,6 +541,22 @@ extern SelfVitalsGlobalsTypeInternal SelfVitals_globals_;
 extern const ::google::protobuf::internal::ClassDataFull SelfVitals_class_data_;
 #else
 extern const SelfVitalsGlobalsTypeInternal SelfVitals_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class SetQuickslot;
+struct SetQuickslotGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern SetQuickslotGlobalsTypeInternal SetQuickslot_globals_;
+extern const ::google::protobuf::internal::ClassDataFull SetQuickslot_class_data_;
+#else
+extern const SetQuickslotGlobalsTypeInternal SetQuickslot_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class SkillLearned;
+struct SkillLearnedGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern SkillLearnedGlobalsTypeInternal SkillLearned_globals_;
+extern const ::google::protobuf::internal::ClassDataFull SkillLearned_class_data_;
+#else
+extern const SkillLearnedGlobalsTypeInternal SkillLearned_globals_;
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 class SkillUsed;
 struct SkillUsedGlobalsTypeInternal;
@@ -591,6 +633,9 @@ internal::EnumTraitsT<::portfolio::mmo::ProgressKind_internal_data_>
 template <>
 internal::EnumTraitsT<::portfolio::mmo::ProtocolVersion_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::ProtocolVersion>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::QuickslotKind_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::QuickslotKind>;
 template <>
 internal::EnumTraitsT<::portfolio::mmo::RequestKind_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::RequestKind>;
@@ -1102,6 +1147,47 @@ template <>
   return ::google::protobuf::internal::ParseNamedEnum<GainReason>(GainReason_descriptor(), name,
                                            value);
 }
+enum QuickslotKind : int {
+  QUICKSLOT_KIND_EMPTY = 0,
+  QUICKSLOT_KIND_SKILL = 1,
+  QUICKSLOT_KIND_ITEM = 2,
+  QuickslotKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  QuickslotKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t QuickslotKind_internal_data_[];
+inline constexpr QuickslotKind QuickslotKind_MIN =
+    static_cast<QuickslotKind>(0);
+inline constexpr QuickslotKind QuickslotKind_MAX =
+    static_cast<QuickslotKind>(2);
+[[nodiscard]] inline bool QuickslotKind_IsValid(int value) {
+  return 0 <= value && value <= 2;
+}
+inline constexpr int QuickslotKind_ARRAYSIZE = 2 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+QuickslotKind_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(QuickslotKind) {
+  return QuickslotKind_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& QuickslotKind_Name(T value) {
+  static_assert(::std::is_same<T, QuickslotKind>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to QuickslotKind_Name().");
+  return QuickslotKind_Name(static_cast<QuickslotKind>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& QuickslotKind_Name(QuickslotKind value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<QuickslotKind_descriptor, 0, 2>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool QuickslotKind_Parse(
+    ::absl::string_view name, QuickslotKind* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<QuickslotKind>(QuickslotKind_descriptor(), name,
+                                           value);
+}
 enum FailReason : int {
   FAIL_REASON_NONE = 0,
   FAIL_REASON_NO_TARGET = 1,
@@ -1127,6 +1213,7 @@ enum FailReason : int {
   FAIL_REASON_LEVEL_TOO_LOW = 21,
   FAIL_REASON_WRONG_CLASS = 22,
   FAIL_REASON_MAX_ENCHANT = 23,
+  FAIL_REASON_ALREADY_LEARNED = 24,
   FailReason_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   FailReason_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -1137,11 +1224,11 @@ extern const uint32_t FailReason_internal_data_[];
 inline constexpr FailReason FailReason_MIN =
     static_cast<FailReason>(0);
 inline constexpr FailReason FailReason_MAX =
-    static_cast<FailReason>(23);
+    static_cast<FailReason>(24);
 [[nodiscard]] inline bool FailReason_IsValid(int value) {
-  return 0 <= value && value <= 23;
+  return 0 <= value && value <= 24;
 }
-inline constexpr int FailReason_ARRAYSIZE = 23 + 1;
+inline constexpr int FailReason_ARRAYSIZE = 24 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 FailReason_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(FailReason) {
@@ -1156,7 +1243,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& FailReason_Name(FailReason value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<FailReason_descriptor, 0, 23>(
+  return ::google::protobuf::internal::NameOfDenseEnum<FailReason_descriptor, 0, 24>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool FailReason_Parse(
@@ -1170,6 +1257,7 @@ enum RequestKind : int {
   REQUEST_KIND_REVIVE = 2,
   REQUEST_KIND_SKILL = 3,
   REQUEST_KIND_CHAT = 4,
+  REQUEST_KIND_QUICKSLOT = 5,
   RequestKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   RequestKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -1180,11 +1268,11 @@ extern const uint32_t RequestKind_internal_data_[];
 inline constexpr RequestKind RequestKind_MIN =
     static_cast<RequestKind>(0);
 inline constexpr RequestKind RequestKind_MAX =
-    static_cast<RequestKind>(4);
+    static_cast<RequestKind>(5);
 [[nodiscard]] inline bool RequestKind_IsValid(int value) {
-  return 0 <= value && value <= 4;
+  return 0 <= value && value <= 5;
 }
-inline constexpr int RequestKind_ARRAYSIZE = 4 + 1;
+inline constexpr int RequestKind_ARRAYSIZE = 5 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 RequestKind_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(RequestKind) {
@@ -1199,7 +1287,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& RequestKind_Name(RequestKind value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<RequestKind_descriptor, 0, 4>(
+  return ::google::protobuf::internal::NameOfDenseEnum<RequestKind_descriptor, 0, 5>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool RequestKind_Parse(
@@ -1273,7 +1361,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED UseSkill final : public ::google::p
   [[nodiscard]] static const UseSkill& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<UseSkill>(&UseSkill_globals_);
   }
-  static constexpr int kIndexInFileMessages = 50;
+  static constexpr int kIndexInFileMessages = 55;
   friend void swap(UseSkill& a, UseSkill& b) { a.Swap(&b); }
   inline void Swap(UseSkill* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -1924,7 +2012,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillUsed final : public ::google::
   [[nodiscard]] static const SkillUsed& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<SkillUsed>(&SkillUsed_globals_);
   }
-  static constexpr int kIndexInFileMessages = 51;
+  static constexpr int kIndexInFileMessages = 56;
   friend void swap(SkillUsed& a, SkillUsed& b) { a.Swap(&b); }
   inline void Swap(SkillUsed* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -2084,6 +2172,207 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillUsed final : public ::google::
     ::uint32_t caster_id_;
     ::uint32_t skill_id_;
     ::uint32_t target_id_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillLearned final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.SkillLearned) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline SkillLearned() : SkillLearned(nullptr) {}
+  ~SkillLearned() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(SkillLearned* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(SkillLearned));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr SkillLearned(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline SkillLearned(const SkillLearned& from) : SkillLearned(nullptr, from) {}
+  inline SkillLearned(SkillLearned&& from) noexcept : SkillLearned(nullptr, ::std::move(from)) {}
+  inline SkillLearned& operator=(const SkillLearned& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SkillLearned& operator=(SkillLearned&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const SkillLearned& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<SkillLearned>(&SkillLearned_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 42;
+  friend void swap(SkillLearned& a, SkillLearned& b) { a.Swap(&b); }
+  inline void Swap(SkillLearned* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SkillLearned* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] SkillLearned* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<SkillLearned>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const SkillLearned& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const SkillLearned& from) { SkillLearned::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(SkillLearned* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.SkillLearned"; }
+
+  explicit SkillLearned(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  SkillLearned(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const SkillLearned& from);
+  SkillLearned(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, SkillLearned&& from) noexcept
+      : SkillLearned(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kSkillFieldNumber = 1,
+  };
+  // uint32 skill = 1;
+  void clear_skill() ;
+  [[nodiscard]] ::uint32_t skill() const;
+  void set_skill(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_skill() const;
+  void _internal_set_skill(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.SkillLearned)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<0, 1,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const SkillLearned& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::uint32_t skill_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -2623,7 +2912,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Revived final : public ::google::pr
   [[nodiscard]] static const Revived& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Revived>(&Revived_globals_);
   }
-  static constexpr int kIndexInFileMessages = 49;
+  static constexpr int kIndexInFileMessages = 54;
   friend void swap(Revived& a, Revived& b) { a.Swap(&b); }
   inline void Swap(Revived* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -2847,7 +3136,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Revive final : public ::google::pro
   [[nodiscard]] static const Revive& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Revive>(&Revive_globals_);
   }
-  static constexpr int kIndexInFileMessages = 48;
+  static constexpr int kIndexInFileMessages = 53;
   friend void swap(Revive& a, Revive& b) { a.Swap(&b); }
   inline void Swap(Revive* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -2986,7 +3275,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED RequestResult final : public ::goog
   [[nodiscard]] static const RequestResult& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<RequestResult>(&RequestResult_globals_);
   }
-  static constexpr int kIndexInFileMessages = 41;
+  static constexpr int kIndexInFileMessages = 46;
   friend void swap(RequestResult& a, RequestResult& b) { a.Swap(&b); }
   inline void Swap(RequestResult* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -3141,6 +3430,219 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED RequestResult final : public ::goog
 };
 // -------------------------------------------------------------------
 
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Quickslot final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.Quickslot) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline Quickslot() : Quickslot(nullptr) {}
+  ~Quickslot() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(Quickslot* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(Quickslot));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr Quickslot(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline Quickslot(const Quickslot& from) : Quickslot(nullptr, from) {}
+  inline Quickslot(Quickslot&& from) noexcept : Quickslot(nullptr, ::std::move(from)) {}
+  inline Quickslot& operator=(const Quickslot& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Quickslot& operator=(Quickslot&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const Quickslot& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Quickslot>(&Quickslot_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 43;
+  friend void swap(Quickslot& a, Quickslot& b) { a.Swap(&b); }
+  inline void Swap(Quickslot* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Quickslot* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] Quickslot* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<Quickslot>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const Quickslot& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const Quickslot& from) { Quickslot::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(Quickslot* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.Quickslot"; }
+
+  explicit Quickslot(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  Quickslot(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Quickslot& from);
+  Quickslot(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, Quickslot&& from) noexcept
+      : Quickslot(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kKindFieldNumber = 1,
+    kIdFieldNumber = 2,
+  };
+  // .portfolio.mmo.QuickslotKind kind = 1;
+  void clear_kind() ;
+  [[nodiscard]] ::portfolio::mmo::QuickslotKind kind() const;
+  void set_kind(::portfolio::mmo::QuickslotKind value);
+
+  private:
+  ::portfolio::mmo::QuickslotKind _internal_kind() const;
+  void _internal_set_kind(::portfolio::mmo::QuickslotKind value);
+
+  public:
+  // uint32 id = 2;
+  void clear_id() ;
+  [[nodiscard]] ::uint32_t id() const;
+  void set_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_id() const;
+  void _internal_set_id(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.Quickslot)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const Quickslot& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    int kind_;
+    ::uint32_t id_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
 class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProjectileLaunched final : public ::google::protobuf::Message
 /* @@protoc_insertion_point(class_definition:portfolio.mmo.ProjectileLaunched) */ {
   using Super_ = ::google::protobuf::Message;
@@ -3199,7 +3701,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProjectileLaunched final : public :
   [[nodiscard]] static const ProjectileLaunched& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ProjectileLaunched>(&ProjectileLaunched_globals_);
   }
-  static constexpr int kIndexInFileMessages = 57;
+  static constexpr int kIndexInFileMessages = 62;
   friend void swap(ProjectileLaunched& a, ProjectileLaunched& b) { a.Swap(&b); }
   inline void Swap(ProjectileLaunched* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -3472,7 +3974,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProjectileEnded final : public ::go
   [[nodiscard]] static const ProjectileEnded& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ProjectileEnded>(&ProjectileEnded_globals_);
   }
-  static constexpr int kIndexInFileMessages = 58;
+  static constexpr int kIndexInFileMessages = 63;
   friend void swap(ProjectileEnded& a, ProjectileEnded& b) { a.Swap(&b); }
   inline void Swap(ProjectileEnded* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -3898,7 +4400,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProgressCancelled final : public ::
   [[nodiscard]] static const ProgressCancelled& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ProgressCancelled>(&ProgressCancelled_globals_);
   }
-  static constexpr int kIndexInFileMessages = 53;
+  static constexpr int kIndexInFileMessages = 58;
   friend void swap(ProgressCancelled& a, ProgressCancelled& b) { a.Swap(&b); }
   inline void Swap(ProgressCancelled* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -5632,6 +6134,217 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED LeaveWorld final : public ::google:
   friend class ::google::protobuf::Arena::InternalHelper;
   using InternalArenaConstructable_ = void;
   using DestructorSkippable_ = void;
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED LearnedSkills final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.LearnedSkills) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline LearnedSkills() : LearnedSkills(nullptr) {}
+  ~LearnedSkills() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(LearnedSkills* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(LearnedSkills));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr LearnedSkills(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline LearnedSkills(const LearnedSkills& from) : LearnedSkills(nullptr, from) {}
+  inline LearnedSkills(LearnedSkills&& from) noexcept : LearnedSkills(nullptr, ::std::move(from)) {}
+  inline LearnedSkills& operator=(const LearnedSkills& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline LearnedSkills& operator=(LearnedSkills&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const LearnedSkills& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<LearnedSkills>(&LearnedSkills_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 41;
+  friend void swap(LearnedSkills& a, LearnedSkills& b) { a.Swap(&b); }
+  inline void Swap(LearnedSkills* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(LearnedSkills* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] LearnedSkills* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<LearnedSkills>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const LearnedSkills& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const LearnedSkills& from) { LearnedSkills::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(LearnedSkills* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.LearnedSkills"; }
+
+  explicit LearnedSkills(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  LearnedSkills(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const LearnedSkills& from);
+  LearnedSkills(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, LearnedSkills&& from) noexcept
+      : LearnedSkills(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kSkillsFieldNumber = 1,
+  };
+  // repeated uint32 skills = 1;
+  [[nodiscard]] int skills_size() const;
+  private:
+  int _internal_skills_size() const;
+
+  public:
+  void clear_skills() ;
+  [[nodiscard]] ::uint32_t skills(int index) const;
+  void set_skills(int index, ::uint32_t value);
+  void add_skills(::uint32_t value);
+  [[nodiscard]] const ::google::protobuf::RepeatedField<::uint32_t>& skills()
+      const;
+  ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL mutable_skills();
+
+  private:
+  const ::google::protobuf::RepeatedField<::uint32_t>& _internal_skills() const;
+  ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL _internal_mutable_skills();
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.LearnedSkills)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<0, 1,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const LearnedSkills& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::google::protobuf::RepeatedField<::uint32_t> skills_;
+    ::google::protobuf::internal::CachedSize _skills_cached_byte_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
   friend struct ::TableStruct_packets_2eproto;
 };
 // -------------------------------------------------------------------
@@ -9019,7 +9732,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Died final : public ::google::proto
   [[nodiscard]] static const Died& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Died>(&Died_globals_);
   }
-  static constexpr int kIndexInFileMessages = 47;
+  static constexpr int kIndexInFileMessages = 52;
   friend void swap(Died& a, Died& b) { a.Swap(&b); }
   inline void Swap(Died* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -9438,7 +10151,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Damaged final : public ::google::pr
   [[nodiscard]] static const Damaged& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Damaged>(&Damaged_globals_);
   }
-  static constexpr int kIndexInFileMessages = 46;
+  static constexpr int kIndexInFileMessages = 51;
   friend void swap(Damaged& a, Damaged& b) { a.Swap(&b); }
   inline void Swap(Damaged* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -10106,7 +10819,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldown final : public ::google::p
   [[nodiscard]] static const Cooldown& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Cooldown>(&Cooldown_globals_);
   }
-  static constexpr int kIndexInFileMessages = 56;
+  static constexpr int kIndexInFileMessages = 61;
   friend void swap(Cooldown& a, Cooldown& b) { a.Swap(&b); }
   inline void Swap(Cooldown* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -10561,7 +11274,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackSwing final : public ::google
   [[nodiscard]] static const AttackSwing& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackSwing>(&AttackSwing_globals_);
   }
-  static constexpr int kIndexInFileMessages = 45;
+  static constexpr int kIndexInFileMessages = 50;
   friend void swap(AttackSwing& a, AttackSwing& b) { a.Swap(&b); }
   inline void Swap(AttackSwing* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -10773,7 +11486,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackStop final : public ::google:
   [[nodiscard]] static const AttackStop& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackStop>(&AttackStop_globals_);
   }
-  static constexpr int kIndexInFileMessages = 44;
+  static constexpr int kIndexInFileMessages = 49;
   friend void swap(AttackStop& a, AttackStop& b) { a.Swap(&b); }
   inline void Swap(AttackStop* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -10912,7 +11625,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackStart final : public ::google
   [[nodiscard]] static const AttackStart& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackStart>(&AttackStart_globals_);
   }
-  static constexpr int kIndexInFileMessages = 43;
+  static constexpr int kIndexInFileMessages = 48;
   friend void swap(AttackStart& a, AttackStart& b) { a.Swap(&b); }
   inline void Swap(AttackStart* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -11113,7 +11826,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ActionFailed final : public ::googl
   [[nodiscard]] static const ActionFailed& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ActionFailed>(&ActionFailed_globals_);
   }
-  static constexpr int kIndexInFileMessages = 42;
+  static constexpr int kIndexInFileMessages = 47;
   friend void swap(ActionFailed& a, ActionFailed& b) { a.Swap(&b); }
   inline void Swap(ActionFailed* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -11268,6 +11981,435 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ActionFailed final : public ::googl
 };
 // -------------------------------------------------------------------
 
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SetQuickslot final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.SetQuickslot) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline SetQuickslot() : SetQuickslot(nullptr) {}
+  ~SetQuickslot() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(SetQuickslot* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(SetQuickslot));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr SetQuickslot(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline SetQuickslot(const SetQuickslot& from) : SetQuickslot(nullptr, from) {}
+  inline SetQuickslot(SetQuickslot&& from) noexcept : SetQuickslot(nullptr, ::std::move(from)) {}
+  inline SetQuickslot& operator=(const SetQuickslot& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SetQuickslot& operator=(SetQuickslot&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const SetQuickslot& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<SetQuickslot>(&SetQuickslot_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 44;
+  friend void swap(SetQuickslot& a, SetQuickslot& b) { a.Swap(&b); }
+  inline void Swap(SetQuickslot* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SetQuickslot* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] SetQuickslot* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<SetQuickslot>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const SetQuickslot& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const SetQuickslot& from) { SetQuickslot::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(SetQuickslot* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.SetQuickslot"; }
+
+  explicit SetQuickslot(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  SetQuickslot(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const SetQuickslot& from);
+  SetQuickslot(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, SetQuickslot&& from) noexcept
+      : SetQuickslot(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kSlotFieldNumber = 2,
+    kIndexFieldNumber = 1,
+  };
+  // .portfolio.mmo.Quickslot slot = 2;
+  [[nodiscard]] bool has_slot() const;
+  void clear_slot() ;
+  [[nodiscard]] const ::portfolio::mmo::Quickslot& slot() const;
+  [[nodiscard]] ::portfolio::mmo::Quickslot* PROTOBUF_NULLABLE release_slot();
+  ::portfolio::mmo::Quickslot* PROTOBUF_NONNULL mutable_slot();
+  void set_allocated_slot(::portfolio::mmo::Quickslot* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_slot(::portfolio::mmo::Quickslot* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::Quickslot* PROTOBUF_NULLABLE unsafe_arena_release_slot();
+
+  private:
+  const ::portfolio::mmo::Quickslot& _internal_slot() const;
+  ::portfolio::mmo::Quickslot* PROTOBUF_NONNULL _internal_mutable_slot();
+
+  public:
+  // uint32 index = 1;
+  void clear_index() ;
+  [[nodiscard]] ::uint32_t index() const;
+  void set_index(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_index() const;
+  void _internal_set_index(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.SetQuickslot)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          1, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const SetQuickslot& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::portfolio::mmo::Quickslot* PROTOBUF_NULLABLE slot_;
+    ::uint32_t index_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Quickslots final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.Quickslots) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline Quickslots() : Quickslots(nullptr) {}
+  ~Quickslots() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(Quickslots* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(Quickslots));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr Quickslots(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline Quickslots(const Quickslots& from) : Quickslots(nullptr, from) {}
+  inline Quickslots(Quickslots&& from) noexcept : Quickslots(nullptr, ::std::move(from)) {}
+  inline Quickslots& operator=(const Quickslots& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Quickslots& operator=(Quickslots&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const Quickslots& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Quickslots>(&Quickslots_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 45;
+  friend void swap(Quickslots& a, Quickslots& b) { a.Swap(&b); }
+  inline void Swap(Quickslots* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Quickslots* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] Quickslots* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<Quickslots>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const Quickslots& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const Quickslots& from) { Quickslots::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(Quickslots* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.Quickslots"; }
+
+  explicit Quickslots(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  Quickslots(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Quickslots& from);
+  Quickslots(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, Quickslots&& from) noexcept
+      : Quickslots(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kSlotsFieldNumber = 1,
+  };
+  // repeated .portfolio.mmo.Quickslot slots = 1;
+  [[nodiscard]] int slots_size() const;
+  private:
+  int _internal_slots_size() const;
+
+  public:
+  void clear_slots() ;
+  [[nodiscard]] const ::portfolio::mmo::Quickslot& slots(int index) const;
+  [[nodiscard]] ::portfolio::mmo::Quickslot* PROTOBUF_NONNULL mutable_slots(int index);
+  ::portfolio::mmo::Quickslot* PROTOBUF_NONNULL add_slots();
+  [[nodiscard]] const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Quickslot>&
+  slots() const;
+  [[nodiscard]] ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Quickslot>* PROTOBUF_NONNULL
+  mutable_slots();
+
+  private:
+  const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Quickslot>& _internal_slots() const;
+  ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Quickslot>* PROTOBUF_NONNULL _internal_mutable_slots();
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.Quickslots)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<0, 1,
+                          1, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const Quickslots& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::google::protobuf::RepeatedPtrField< ::portfolio::mmo::Quickslot > slots_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
 class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Progress final : public ::google::protobuf::Message
 /* @@protoc_insertion_point(class_definition:portfolio.mmo.Progress) */ {
   using Super_ = ::google::protobuf::Message;
@@ -11326,7 +12468,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Progress final : public ::google::p
   [[nodiscard]] static const Progress& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Progress>(&Progress_globals_);
   }
-  static constexpr int kIndexInFileMessages = 52;
+  static constexpr int kIndexInFileMessages = 57;
   friend void swap(Progress& a, Progress& b) { a.Swap(&b); }
   inline void Swap(Progress* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -13003,7 +14145,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EffectApplied final : public ::goog
   [[nodiscard]] static const EffectApplied& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<EffectApplied>(&EffectApplied_globals_);
   }
-  static constexpr int kIndexInFileMessages = 54;
+  static constexpr int kIndexInFileMessages = 59;
   friend void swap(EffectApplied& a, EffectApplied& b) { a.Swap(&b); }
   inline void Swap(EffectApplied* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -13221,7 +14363,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldowns final : public ::google::
   [[nodiscard]] static const Cooldowns& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Cooldowns>(&Cooldowns_globals_);
   }
-  static constexpr int kIndexInFileMessages = 55;
+  static constexpr int kIndexInFileMessages = 60;
   friend void swap(Cooldowns& a, Cooldowns& b) { a.Swap(&b); }
   inline void Swap(Cooldowns* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -14148,6 +15290,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kUnequip = 309,
     kEnchant = 310,
     kEnchantResult = 311,
+    kLearnedSkills = 312,
+    kSkillLearned = 313,
+    kSetQuickslot = 314,
+    kQuickslots = 315,
     BODY_NOT_SET = 0,
   };
   static constexpr int kIndexInFileMessages = 0;
@@ -14288,6 +15434,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kUnequipFieldNumber = 309,
     kEnchantFieldNumber = 310,
     kEnchantResultFieldNumber = 311,
+    kLearnedSkillsFieldNumber = 312,
+    kSkillLearnedFieldNumber = 313,
+    kSetQuickslotFieldNumber = 314,
+    kQuickslotsFieldNumber = 315,
   };
   // .portfolio.mmo.Login login = 1;
   [[nodiscard]] bool has_login() const;
@@ -15201,6 +16351,82 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   ::portfolio::mmo::EnchantResult* PROTOBUF_NONNULL _internal_mutable_enchant_result();
 
   public:
+  // .portfolio.mmo.LearnedSkills learned_skills = 312;
+  [[nodiscard]] bool has_learned_skills() const;
+  private:
+  bool _internal_has_learned_skills() const;
+
+  public:
+  void clear_learned_skills() ;
+  [[nodiscard]] const ::portfolio::mmo::LearnedSkills& learned_skills() const;
+  [[nodiscard]] ::portfolio::mmo::LearnedSkills* PROTOBUF_NULLABLE release_learned_skills();
+  ::portfolio::mmo::LearnedSkills* PROTOBUF_NONNULL mutable_learned_skills();
+  void set_allocated_learned_skills(::portfolio::mmo::LearnedSkills* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_learned_skills(::portfolio::mmo::LearnedSkills* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::LearnedSkills* PROTOBUF_NULLABLE unsafe_arena_release_learned_skills();
+
+  private:
+  const ::portfolio::mmo::LearnedSkills& _internal_learned_skills() const;
+  ::portfolio::mmo::LearnedSkills* PROTOBUF_NONNULL _internal_mutable_learned_skills();
+
+  public:
+  // .portfolio.mmo.SkillLearned skill_learned = 313;
+  [[nodiscard]] bool has_skill_learned() const;
+  private:
+  bool _internal_has_skill_learned() const;
+
+  public:
+  void clear_skill_learned() ;
+  [[nodiscard]] const ::portfolio::mmo::SkillLearned& skill_learned() const;
+  [[nodiscard]] ::portfolio::mmo::SkillLearned* PROTOBUF_NULLABLE release_skill_learned();
+  ::portfolio::mmo::SkillLearned* PROTOBUF_NONNULL mutable_skill_learned();
+  void set_allocated_skill_learned(::portfolio::mmo::SkillLearned* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_skill_learned(::portfolio::mmo::SkillLearned* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::SkillLearned* PROTOBUF_NULLABLE unsafe_arena_release_skill_learned();
+
+  private:
+  const ::portfolio::mmo::SkillLearned& _internal_skill_learned() const;
+  ::portfolio::mmo::SkillLearned* PROTOBUF_NONNULL _internal_mutable_skill_learned();
+
+  public:
+  // .portfolio.mmo.SetQuickslot set_quickslot = 314;
+  [[nodiscard]] bool has_set_quickslot() const;
+  private:
+  bool _internal_has_set_quickslot() const;
+
+  public:
+  void clear_set_quickslot() ;
+  [[nodiscard]] const ::portfolio::mmo::SetQuickslot& set_quickslot() const;
+  [[nodiscard]] ::portfolio::mmo::SetQuickslot* PROTOBUF_NULLABLE release_set_quickslot();
+  ::portfolio::mmo::SetQuickslot* PROTOBUF_NONNULL mutable_set_quickslot();
+  void set_allocated_set_quickslot(::portfolio::mmo::SetQuickslot* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_set_quickslot(::portfolio::mmo::SetQuickslot* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::SetQuickslot* PROTOBUF_NULLABLE unsafe_arena_release_set_quickslot();
+
+  private:
+  const ::portfolio::mmo::SetQuickslot& _internal_set_quickslot() const;
+  ::portfolio::mmo::SetQuickslot* PROTOBUF_NONNULL _internal_mutable_set_quickslot();
+
+  public:
+  // .portfolio.mmo.Quickslots quickslots = 315;
+  [[nodiscard]] bool has_quickslots() const;
+  private:
+  bool _internal_has_quickslots() const;
+
+  public:
+  void clear_quickslots() ;
+  [[nodiscard]] const ::portfolio::mmo::Quickslots& quickslots() const;
+  [[nodiscard]] ::portfolio::mmo::Quickslots* PROTOBUF_NULLABLE release_quickslots();
+  ::portfolio::mmo::Quickslots* PROTOBUF_NONNULL mutable_quickslots();
+  void set_allocated_quickslots(::portfolio::mmo::Quickslots* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_quickslots(::portfolio::mmo::Quickslots* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::Quickslots* PROTOBUF_NULLABLE unsafe_arena_release_quickslots();
+
+  private:
+  const ::portfolio::mmo::Quickslots& _internal_quickslots() const;
+  ::portfolio::mmo::Quickslots* PROTOBUF_NONNULL _internal_mutable_quickslots();
+
+  public:
   void clear_body();
   BodyCase body_case() const;
   // @@protoc_insertion_point(class_scope:portfolio.mmo.Packet)
@@ -15254,12 +16480,16 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   void set_has_unequip();
   void set_has_enchant();
   void set_has_enchant_result();
+  void set_has_learned_skills();
+  void set_has_skill_learned();
+  void set_has_set_quickslot();
+  void set_has_quickslots();
   [[nodiscard]] inline bool has_body() const;
   inline void clear_has_body();
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<0, 48,
-                          48, 0,
-                          24>;
+      ::google::protobuf::internal::TcParseTable<0, 52,
+                          52, 0,
+                          26>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
       const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
   friend class ::google::protobuf::internal::TcParser;
@@ -15335,6 +16565,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
       ::google::protobuf::Message* PROTOBUF_NULLABLE unequip_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE enchant_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE enchant_result_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE learned_skills_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE skill_learned_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE set_quickslot_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE quickslots_;
     } body_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::uint32_t _oneof_case_[1];
@@ -19248,6 +20482,330 @@ inline ::portfolio::mmo::EnchantResult* PROTOBUF_NONNULL Packet::mutable_enchant
   return _msg;
 }
 
+// .portfolio.mmo.LearnedSkills learned_skills = 312;
+inline bool Packet::has_learned_skills() const {
+  return body_case() == kLearnedSkills;
+}
+inline bool Packet::_internal_has_learned_skills() const {
+  return body_case() == kLearnedSkills;
+}
+inline void Packet::set_has_learned_skills() {
+  _impl_._oneof_case_[0] = kLearnedSkills;
+}
+inline void Packet::clear_learned_skills() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kLearnedSkills) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.learned_skills_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.learned_skills_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::LearnedSkills* PROTOBUF_NULLABLE Packet::release_learned_skills() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.learned_skills)
+  if (body_case() == kLearnedSkills) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::LearnedSkills*>(_impl_.body_.learned_skills_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.learned_skills_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::LearnedSkills& Packet::_internal_learned_skills() const {
+  return body_case() == kLearnedSkills ? static_cast<const ::portfolio::mmo::LearnedSkills&>(*reinterpret_cast<::portfolio::mmo::LearnedSkills*>(_impl_.body_.learned_skills_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::LearnedSkills>(&::portfolio::mmo::LearnedSkills_globals_);
+}
+inline const ::portfolio::mmo::LearnedSkills& Packet::learned_skills() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.learned_skills)
+  return _internal_learned_skills();
+}
+inline ::portfolio::mmo::LearnedSkills* PROTOBUF_NULLABLE Packet::unsafe_arena_release_learned_skills() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.learned_skills)
+  if (body_case() == kLearnedSkills) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::LearnedSkills*>(_impl_.body_.learned_skills_);
+    _impl_.body_.learned_skills_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_learned_skills(
+    ::portfolio::mmo::LearnedSkills* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_learned_skills();
+    _impl_.body_.learned_skills_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.learned_skills)
+}
+inline ::portfolio::mmo::LearnedSkills* PROTOBUF_NONNULL Packet::_internal_mutable_learned_skills() {
+  if (body_case() != kLearnedSkills) {
+    clear_body();
+    set_has_learned_skills();
+    _impl_.body_.learned_skills_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::LearnedSkills>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::LearnedSkills*>(_impl_.body_.learned_skills_);
+}
+inline ::portfolio::mmo::LearnedSkills* PROTOBUF_NONNULL Packet::mutable_learned_skills()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::LearnedSkills* _msg = _internal_mutable_learned_skills();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.learned_skills)
+  return _msg;
+}
+
+// .portfolio.mmo.SkillLearned skill_learned = 313;
+inline bool Packet::has_skill_learned() const {
+  return body_case() == kSkillLearned;
+}
+inline bool Packet::_internal_has_skill_learned() const {
+  return body_case() == kSkillLearned;
+}
+inline void Packet::set_has_skill_learned() {
+  _impl_._oneof_case_[0] = kSkillLearned;
+}
+inline void Packet::clear_skill_learned() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kSkillLearned) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.skill_learned_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.skill_learned_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::SkillLearned* PROTOBUF_NULLABLE Packet::release_skill_learned() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.skill_learned)
+  if (body_case() == kSkillLearned) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::SkillLearned*>(_impl_.body_.skill_learned_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.skill_learned_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::SkillLearned& Packet::_internal_skill_learned() const {
+  return body_case() == kSkillLearned ? static_cast<const ::portfolio::mmo::SkillLearned&>(*reinterpret_cast<::portfolio::mmo::SkillLearned*>(_impl_.body_.skill_learned_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::SkillLearned>(&::portfolio::mmo::SkillLearned_globals_);
+}
+inline const ::portfolio::mmo::SkillLearned& Packet::skill_learned() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.skill_learned)
+  return _internal_skill_learned();
+}
+inline ::portfolio::mmo::SkillLearned* PROTOBUF_NULLABLE Packet::unsafe_arena_release_skill_learned() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.skill_learned)
+  if (body_case() == kSkillLearned) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::SkillLearned*>(_impl_.body_.skill_learned_);
+    _impl_.body_.skill_learned_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_skill_learned(
+    ::portfolio::mmo::SkillLearned* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_skill_learned();
+    _impl_.body_.skill_learned_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.skill_learned)
+}
+inline ::portfolio::mmo::SkillLearned* PROTOBUF_NONNULL Packet::_internal_mutable_skill_learned() {
+  if (body_case() != kSkillLearned) {
+    clear_body();
+    set_has_skill_learned();
+    _impl_.body_.skill_learned_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::SkillLearned>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::SkillLearned*>(_impl_.body_.skill_learned_);
+}
+inline ::portfolio::mmo::SkillLearned* PROTOBUF_NONNULL Packet::mutable_skill_learned()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::SkillLearned* _msg = _internal_mutable_skill_learned();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.skill_learned)
+  return _msg;
+}
+
+// .portfolio.mmo.SetQuickslot set_quickslot = 314;
+inline bool Packet::has_set_quickslot() const {
+  return body_case() == kSetQuickslot;
+}
+inline bool Packet::_internal_has_set_quickslot() const {
+  return body_case() == kSetQuickslot;
+}
+inline void Packet::set_has_set_quickslot() {
+  _impl_._oneof_case_[0] = kSetQuickslot;
+}
+inline void Packet::clear_set_quickslot() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kSetQuickslot) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.set_quickslot_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.set_quickslot_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::SetQuickslot* PROTOBUF_NULLABLE Packet::release_set_quickslot() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.set_quickslot)
+  if (body_case() == kSetQuickslot) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::SetQuickslot*>(_impl_.body_.set_quickslot_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.set_quickslot_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::SetQuickslot& Packet::_internal_set_quickslot() const {
+  return body_case() == kSetQuickslot ? static_cast<const ::portfolio::mmo::SetQuickslot&>(*reinterpret_cast<::portfolio::mmo::SetQuickslot*>(_impl_.body_.set_quickslot_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::SetQuickslot>(&::portfolio::mmo::SetQuickslot_globals_);
+}
+inline const ::portfolio::mmo::SetQuickslot& Packet::set_quickslot() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.set_quickslot)
+  return _internal_set_quickslot();
+}
+inline ::portfolio::mmo::SetQuickslot* PROTOBUF_NULLABLE Packet::unsafe_arena_release_set_quickslot() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.set_quickslot)
+  if (body_case() == kSetQuickslot) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::SetQuickslot*>(_impl_.body_.set_quickslot_);
+    _impl_.body_.set_quickslot_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_set_quickslot(
+    ::portfolio::mmo::SetQuickslot* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_set_quickslot();
+    _impl_.body_.set_quickslot_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.set_quickslot)
+}
+inline ::portfolio::mmo::SetQuickslot* PROTOBUF_NONNULL Packet::_internal_mutable_set_quickslot() {
+  if (body_case() != kSetQuickslot) {
+    clear_body();
+    set_has_set_quickslot();
+    _impl_.body_.set_quickslot_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::SetQuickslot>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::SetQuickslot*>(_impl_.body_.set_quickslot_);
+}
+inline ::portfolio::mmo::SetQuickslot* PROTOBUF_NONNULL Packet::mutable_set_quickslot()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::SetQuickslot* _msg = _internal_mutable_set_quickslot();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.set_quickslot)
+  return _msg;
+}
+
+// .portfolio.mmo.Quickslots quickslots = 315;
+inline bool Packet::has_quickslots() const {
+  return body_case() == kQuickslots;
+}
+inline bool Packet::_internal_has_quickslots() const {
+  return body_case() == kQuickslots;
+}
+inline void Packet::set_has_quickslots() {
+  _impl_._oneof_case_[0] = kQuickslots;
+}
+inline void Packet::clear_quickslots() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kQuickslots) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.quickslots_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.quickslots_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::Quickslots* PROTOBUF_NULLABLE Packet::release_quickslots() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.quickslots)
+  if (body_case() == kQuickslots) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::Quickslots*>(_impl_.body_.quickslots_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.quickslots_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::Quickslots& Packet::_internal_quickslots() const {
+  return body_case() == kQuickslots ? static_cast<const ::portfolio::mmo::Quickslots&>(*reinterpret_cast<::portfolio::mmo::Quickslots*>(_impl_.body_.quickslots_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::Quickslots>(&::portfolio::mmo::Quickslots_globals_);
+}
+inline const ::portfolio::mmo::Quickslots& Packet::quickslots() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.quickslots)
+  return _internal_quickslots();
+}
+inline ::portfolio::mmo::Quickslots* PROTOBUF_NULLABLE Packet::unsafe_arena_release_quickslots() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.quickslots)
+  if (body_case() == kQuickslots) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::Quickslots*>(_impl_.body_.quickslots_);
+    _impl_.body_.quickslots_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_quickslots(
+    ::portfolio::mmo::Quickslots* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_quickslots();
+    _impl_.body_.quickslots_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.quickslots)
+}
+inline ::portfolio::mmo::Quickslots* PROTOBUF_NONNULL Packet::_internal_mutable_quickslots() {
+  if (body_case() != kQuickslots) {
+    clear_body();
+    set_has_quickslots();
+    _impl_.body_.quickslots_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::Quickslots>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::Quickslots*>(_impl_.body_.quickslots_);
+}
+inline ::portfolio::mmo::Quickslots* PROTOBUF_NONNULL Packet::mutable_quickslots()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::Quickslots* _msg = _internal_mutable_quickslots();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.quickslots)
+  return _msg;
+}
+
 inline bool Packet::has_body() const {
   return body_case() != BODY_NOT_SET;
 }
@@ -22854,6 +24412,326 @@ inline void EnchantResult::_internal_set_enchant(::uint32_t value) {
 
 // -------------------------------------------------------------------
 
+// LearnedSkills
+
+// repeated uint32 skills = 1;
+inline int LearnedSkills::_internal_skills_size() const {
+  return _internal_skills().size();
+}
+inline int LearnedSkills::skills_size() const {
+  return _internal_skills_size();
+}
+inline void LearnedSkills::clear_skills() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.skills_.Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::uint32_t LearnedSkills::skills(int index) const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.LearnedSkills.skills)
+  return _internal_skills().Get(index);
+}
+inline void LearnedSkills::set_skills(int index, ::uint32_t value) {
+  _internal_mutable_skills()->Set(index, value);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.LearnedSkills.skills)
+}
+inline void LearnedSkills::add_skills(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _internal_mutable_skills()
+      ->InternalAddWithArena<const ::google::protobuf::MessageLite*>(
+          internal_visibility(), this, value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_add:portfolio.mmo.LearnedSkills.skills)
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>& LearnedSkills::skills() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:portfolio.mmo.LearnedSkills.skills)
+  return _internal_skills();
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL LearnedSkills::mutable_skills()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_mutable_list:portfolio.mmo.LearnedSkills.skills)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_skills();
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>&
+LearnedSkills::_internal_skills() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.skills_;
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL
+LearnedSkills::_internal_mutable_skills() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.skills_;
+}
+
+// -------------------------------------------------------------------
+
+// SkillLearned
+
+// uint32 skill = 1;
+inline void SkillLearned::clear_skill() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.skill_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::uint32_t SkillLearned::skill() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.SkillLearned.skill)
+  return _internal_skill();
+}
+inline void SkillLearned::set_skill(::uint32_t value) {
+  _internal_set_skill(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.SkillLearned.skill)
+}
+inline ::uint32_t SkillLearned::_internal_skill() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.skill_;
+}
+inline void SkillLearned::_internal_set_skill(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.skill_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// Quickslot
+
+// .portfolio.mmo.QuickslotKind kind = 1;
+inline void Quickslot::clear_kind() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.kind_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::portfolio::mmo::QuickslotKind Quickslot::kind() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Quickslot.kind)
+  return _internal_kind();
+}
+inline void Quickslot::set_kind(::portfolio::mmo::QuickslotKind value) {
+  _internal_set_kind(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Quickslot.kind)
+}
+inline ::portfolio::mmo::QuickslotKind Quickslot::_internal_kind() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::portfolio::mmo::QuickslotKind>(_impl_.kind_);
+}
+inline void Quickslot::_internal_set_kind(::portfolio::mmo::QuickslotKind value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.kind_ = value;
+}
+
+// uint32 id = 2;
+inline void Quickslot::clear_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t Quickslot::id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Quickslot.id)
+  return _internal_id();
+}
+inline void Quickslot::set_id(::uint32_t value) {
+  _internal_set_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Quickslot.id)
+}
+inline ::uint32_t Quickslot::_internal_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.id_;
+}
+inline void Quickslot::_internal_set_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.id_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// SetQuickslot
+
+// uint32 index = 1;
+inline void SetQuickslot::clear_index() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.index_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t SetQuickslot::index() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.SetQuickslot.index)
+  return _internal_index();
+}
+inline void SetQuickslot::set_index(::uint32_t value) {
+  _internal_set_index(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.SetQuickslot.index)
+}
+inline ::uint32_t SetQuickslot::_internal_index() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.index_;
+}
+inline void SetQuickslot::_internal_set_index(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.index_ = value;
+}
+
+// .portfolio.mmo.Quickslot slot = 2;
+inline bool SetQuickslot::has_slot() const {
+  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00000001U);
+  PROTOBUF_ASSUME(!value || _impl_.slot_ != nullptr);
+  return value;
+}
+inline void SetQuickslot::clear_slot() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (_impl_.slot_ != nullptr) _impl_.slot_->Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline const ::portfolio::mmo::Quickslot& SetQuickslot::_internal_slot() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  const ::portfolio::mmo::Quickslot* p = _impl_.slot_;
+  return p != nullptr ? *p : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::Quickslot>(&::portfolio::mmo::Quickslot_globals_);
+}
+inline const ::portfolio::mmo::Quickslot& SetQuickslot::slot() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.SetQuickslot.slot)
+  return _internal_slot();
+}
+inline void SetQuickslot::unsafe_arena_set_allocated_slot(
+    ::portfolio::mmo::Quickslot* PROTOBUF_NULLABLE value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (GetArena() == nullptr) {
+    delete reinterpret_cast<::google::protobuf::MessageLite*>(_impl_.slot_);
+  }
+  _impl_.slot_ = reinterpret_cast<::portfolio::mmo::Quickslot*>(value);
+  if (value != nullptr) {
+    SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  } else {
+    ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.SetQuickslot.slot)
+}
+inline ::portfolio::mmo::Quickslot* PROTOBUF_NULLABLE SetQuickslot::release_slot() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  ::portfolio::mmo::Quickslot* released = _impl_.slot_;
+  _impl_.slot_ = nullptr;
+  if (::google::protobuf::internal::DebugHardenForceCopyInRelease()) {
+    auto* old = reinterpret_cast<::google::protobuf::MessageLite*>(released);
+    released = ::google::protobuf::internal::DuplicateIfNonNull(released);
+    if (GetArena() == nullptr) {
+      delete old;
+    }
+  } else {
+    if (GetArena() != nullptr) {
+      released = ::google::protobuf::internal::DuplicateIfNonNull(released);
+    }
+  }
+  return released;
+}
+inline ::portfolio::mmo::Quickslot* PROTOBUF_NULLABLE SetQuickslot::unsafe_arena_release_slot() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:portfolio.mmo.SetQuickslot.slot)
+
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  ::portfolio::mmo::Quickslot* temp = _impl_.slot_;
+  _impl_.slot_ = nullptr;
+  return temp;
+}
+inline ::portfolio::mmo::Quickslot* PROTOBUF_NONNULL SetQuickslot::_internal_mutable_slot() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (_impl_.slot_ == nullptr) {
+    auto* p = Super_::DefaultConstruct<::portfolio::mmo::Quickslot>(GetArena());
+    _impl_.slot_ = reinterpret_cast<::portfolio::mmo::Quickslot*>(p);
+  }
+  return _impl_.slot_;
+}
+inline ::portfolio::mmo::Quickslot* PROTOBUF_NONNULL SetQuickslot::mutable_slot()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  ::portfolio::mmo::Quickslot* _msg = _internal_mutable_slot();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.SetQuickslot.slot)
+  return _msg;
+}
+inline void SetQuickslot::set_allocated_slot(::portfolio::mmo::Quickslot* PROTOBUF_NULLABLE value) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (message_arena == nullptr) {
+    delete reinterpret_cast<::google::protobuf::MessageLite*>(_impl_.slot_);
+  }
+
+  if (value != nullptr) {
+    ::google::protobuf::Arena* submessage_arena = value->GetArena();
+    if (message_arena != submessage_arena) {
+      value = ::google::protobuf::internal::GetOwnedMessage(message_arena, value, submessage_arena);
+    }
+    SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  } else {
+    ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  }
+
+  _impl_.slot_ = reinterpret_cast<::portfolio::mmo::Quickslot*>(value);
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.SetQuickslot.slot)
+}
+
+// -------------------------------------------------------------------
+
+// Quickslots
+
+// repeated .portfolio.mmo.Quickslot slots = 1;
+inline int Quickslots::_internal_slots_size() const {
+  return _internal_slots().size();
+}
+inline int Quickslots::slots_size() const {
+  return _internal_slots_size();
+}
+inline void Quickslots::clear_slots() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.slots_.Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline const ::portfolio::mmo::Quickslot& Quickslots::slots(int index) const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Quickslots.slots)
+  return _internal_slots().Get(index);
+}
+inline ::portfolio::mmo::Quickslot* PROTOBUF_NONNULL Quickslots::mutable_slots(int index)
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Quickslots.slots)
+  return _internal_mutable_slots()->Mutable(index);
+}
+inline ::portfolio::mmo::Quickslot* PROTOBUF_NONNULL Quickslots::add_slots()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::portfolio::mmo::Quickslot* _add =
+      _internal_mutable_slots()->InternalAddWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), GetArena());
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_add:portfolio.mmo.Quickslots.slots)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Quickslot>& Quickslots::slots() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:portfolio.mmo.Quickslots.slots)
+  return _internal_slots();
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Quickslot>* PROTOBUF_NONNULL
+Quickslots::mutable_slots() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_mutable_list:portfolio.mmo.Quickslots.slots)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_slots();
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Quickslot>&
+Quickslots::_internal_slots() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.slots_;
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Quickslot>* PROTOBUF_NONNULL
+Quickslots::_internal_mutable_slots() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.slots_;
+}
+
+// -------------------------------------------------------------------
+
 // RequestResult
 
 // uint32 request_id = 1;
@@ -24170,6 +26048,12 @@ struct is_proto_enum<::portfolio::mmo::GainReason> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::GainReason>() {
   return ::portfolio::mmo::GainReason_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::QuickslotKind> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::QuickslotKind>() {
+  return ::portfolio::mmo::QuickslotKind_descriptor();
 }
 template <>
 struct is_proto_enum<::portfolio::mmo::FailReason> : std::true_type {};

@@ -21,6 +21,8 @@
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "Components/TileView.h"
+#include "Components/UniformGridPanel.h"
+#include "Components/UniformGridSlot.h"
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
 #include "Engine/Texture2D.h"
@@ -44,6 +46,8 @@
 #include "UI/MmoNameTagWidget.h"
 #include "UI/MmoNoticeWidget.h"
 #include "UI/MmoQuantityWidget.h"
+#include "UI/MmoQuickslotBarWidget.h"
+#include "UI/MmoSkillsWidget.h"
 #include "UI/MmoSettingsWidget.h"
 #include "UI/MmoTextBlock.h"
 #include "UI/MmoUiPaths.h"
@@ -642,6 +646,45 @@ namespace
 		return Builder.Save() ? Builder.GeneratedClass() : nullptr;
 	}
 
+	/** 버튼들을 Columns 열의 고른 칸에 차례로 둔다(이름은 Prefix와 번호, 라벨은 코드가 채움). */
+	UUniformGridPanel* ButtonGrid(FWidgetBlueprintBuilder& Builder, const TCHAR* Name, const TCHAR* Prefix, int32 Count, int32 Columns)
+	{
+		UUniformGridPanel* Grid = Builder.Add<UUniformGridPanel>(Name);
+		Grid->SetSlotPadding(FMargin(Style.Gap * 0.5f));
+		for (int32 Index = 0; Index < Count; ++Index)
+		{
+			UUniformGridSlot* Slot = Grid->AddChildToUniformGrid(Builder.Button(*FString::Printf(TEXT("%s%d"), Prefix, Index), FText::GetEmpty()), Index / Columns, Index % Columns);
+			Slot->SetHorizontalAlignment(HAlign_Fill);
+			Slot->SetVerticalAlignment(VAlign_Fill);
+		}
+		return Grid;
+	}
+
+	/** 퀵슬롯의 자리를 고르는 줄(36): 자리 8개를 4칸씩 두 줄로(좁은 창에도 들어가게). 스킬 창과 아이템 상세 창이 넣어 쓴다. */
+	UClass* CreateQuickslotBar()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::QuickslotBar, UMmoQuickslotBarWidget::StaticClass());
+		Builder.SetRoot(ButtonGrid(Builder, TEXT("Grid"), TEXT("Slot"), UMmoHudWidget::QuickslotCount(), 4));
+		return Builder.Save() ? Builder.GeneratedClass() : nullptr;
+	}
+
+	/** 스킬 창(36): 제목, 직업의 스킬 버튼(3열), 고른 스킬의 설명, 안내 글, 퀵슬롯의 줄, 비우기·닫기. */
+	bool CreateSkills(UClass* QuickslotBarClass)
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Skills, UMmoSkillsWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.WindowWide, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("skills.title"), Style.TitleSize), Style.Section);
+		AddWithGap(*Column, ButtonGrid(Builder, TEXT("SkillGrid"), TEXT("Skill"), UMmoSkillsWidget::MaxSkills, 3), Style.Section);
+		UTextBlock* Detail = Builder.Text(TEXT("DetailText"), FText::GetEmpty(), Style.BodySize, true);
+		Detail->SetAutoWrapText(true);
+		AddWithGap(*Column, Detail, Style.Section);
+		AddWithGap(*Column, Builder.Text(TEXT("HintText"), FText::GetEmpty(), Style.SmallSize + 2, true));
+		AddWithGap(*Column, Builder.Add<UMmoQuickslotBarWidget>(QuickslotBarClass, TEXT("SlotBar"), true), Style.Section);
+		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
+			Builder.Button(TEXT("ClearButton"), TEXT("skills.clear")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+		return Builder.Save();
+	}
+
 	/** 강화 창(35): 제목, 대상 장비의 목록 위젯, 글(주문서 수, 다음 단계와 확률, 위험), 결과, 강화하기·닫기. */
 	bool CreateEnchant(UClass* ItemSlotClass)
 	{
@@ -694,8 +737,8 @@ namespace
 		return Builder.Save();
 	}
 
-	/** 아이템 상세 창(32): 이름(등급의 색), 등급·필요 레벨·직업·파는 값, 설명, 쓰기·퀵슬롯·떨어뜨리기(33)·닫기. 맞지 않는 버튼은 기반 클래스가 감춘다. */
-	bool CreateItemDetail()
+	/** 아이템 상세 창(32): 이름(등급의 색), 등급·필요 레벨·직업·파는 값, 설명, 쓰기·퀵슬롯의 줄(36)·떨어뜨리기(33)·닫기. 맞지 않는 것은 기반 클래스가 감춘다. */
+	bool CreateItemDetail(UClass* QuickslotBarClass)
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::ItemDetail, UMmoItemDetailWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
@@ -709,7 +752,8 @@ namespace
 		AddWithGap(*Column, Builder.Button(TEXT("EquipButton"), TEXT("detail.equip")));
 		AddWithGap(*Column, Builder.Button(TEXT("EnchantButton"), TEXT("detail.enchant")));
 		AddWithGap(*Column, Builder.Button(TEXT("UseButton"), TEXT("detail.use")));
-		AddWithGap(*Column, Builder.Button(TEXT("QuickslotButton"), TEXT("detail.quickslot")));
+		AddWithGap(*Column, Builder.KeyText(TEXT("QuickslotTitle"), TEXT("detail.quickslot"), Style.SmallSize + 2, true));
+		AddWithGap(*Column, Builder.Add<UMmoQuickslotBarWidget>(QuickslotBarClass, TEXT("SlotBar"), true));
 		AddWithGap(*Column, Builder.Button(TEXT("DropButton"), TEXT("detail.drop")));
 		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
@@ -839,8 +883,9 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	FWidgetBlueprintBuilder::ButtonClass = CreateButton();
 	UClass* Joystick = CreateJoystick();
 	UClass* ItemSlot = CreateItemSlot();
-	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateItemDetail() && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+	UClass* QuickslotBar = CreateQuickslotBar();
+	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && QuickslotBar && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
+		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 

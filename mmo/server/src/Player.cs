@@ -56,6 +56,21 @@ namespace PortfolioMmo.Server
         /// </summary>
         internal Bag Bag { get; set; } = new Bag(0);
 
+        /// <summary>
+        /// 배운 스킬(36). 저장(38) 전에는 들어올 때마다 첫 스킬만 배운 채다.
+        /// </summary>
+        internal HashSet<uint> Skills { get; } = new HashSet<uint>();
+
+        /// <summary>
+        /// 퀵슬롯(36. 자리마다 종류와 번호, 빈 자리는 (Empty, 0)). 서버는 값을 기억만 한다.
+        /// </summary>
+        internal (QuickslotKind Kind, uint Id)[] Quickslots { get; } = new (QuickslotKind, uint)[(int)Constant.QuickslotCount];
+
+        /// <summary>
+        /// 이 틱에 퀵슬롯이 바뀌었다. 시야 차례에 Quickslots를 보낸 뒤 내린다.
+        /// </summary>
+        internal bool QuickslotsChanged { get; set; }
+
         public NameColor NameColor { get; private set; }
 
         public uint WeaponItemId { get; private set; }

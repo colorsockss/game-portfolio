@@ -1,0 +1,155 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using PortfolioMmo.Contract;
+using PortfolioMmo.Data;
+
+namespace PortfolioMmo.Server
+{
+    /// <summary>
+    /// 배운 스킬과 퀵슬롯(36). 서버는 퀵슬롯의 값을 기억만 하고, 배운 스킬과 새로 얻은 물약은 퀵슬롯에 없고 빈 자리가 있으면 가장 앞의 빈 자리에 올린다.
+    /// 바뀐 퀵슬롯은 시야 차례(Flush)에 Quickslots 하나로 보낸다. 저장(38) 전에는 들어올 때마다 첫 스킬만 배운 채이고 퀵슬롯은 처음 상태가 올라간 배치다.
+    /// </summary>
+    internal sealed class QuickslotSystem
+    {
+        private readonly GameData _data;
+
+        public QuickslotSystem(GameData data)
+        {
+            _data = data;
+        }
+
+        /// <summary>
+        /// 월드에 들어온 플레이어(Inventory 뒤): 첫 스킬을 배운 채로 두고, 첫 스킬과 처음 상태의 물약을 차례로 올린 뒤 LearnedSkills와 Quickslots를 보낸다.
+        /// </summary>
+        public void Enter(Player player)
+        {
+            ClassesRow row = _data.Class(player.Class);
+            player.Skills.Clear();
+            Array.Clear(player.Quickslots);
+            if (row.FirstSkill != 0)
+            {
+                player.Skills.Add(row.FirstSkill);
+                Place(player, QuickslotKind.Skill, row.FirstSkill);
+            }
+
+            foreach (uint itemId in row.StartItems.Where(IsPotion))
+            {
+                Place(player, QuickslotKind.Item, itemId);
+            }
+
+            player.QuickslotsChanged = false;
+            var learned = new LearnedSkills();
+            learned.Skills.Add(player.Skills);
+            player.Session.Send(new Packet { LearnedSkills = learned });
+            player.Session.Send(new Packet { Quickslots = Whole(player) });
+        }
+
+        /// <summary>
+        /// 스킬북으로 배울 수 있는지: 직업, 필요 레벨, 이미 배웠는지.
+        /// </summary>
+        public FailReason CanLearn(Player player, uint skillId)
+        {
+            SkillsRow skill = _data.Skill(skillId) ?? throw new ArgumentException($"Skills has no row {skillId}.", nameof(skillId));
+            if (skill.Class != (uint)player.Class)
+            {
+                return FailReason.WrongClass;
+            }
+
+            if (player.Level < skill.Level)
+            {
+                return FailReason.LevelTooLow;
+            }
+
+            return player.Skills.Contains(skillId) ? FailReason.AlreadyLearned : FailReason.None;
+        }
+
+        /// <summary>
+        /// 배운다(CanLearn을 통과한 뒤): 배운 스킬에 더하고 본인에게 SkillLearned를 보내며 빈 퀵슬롯에 올린다.
+        /// </summary>
+        public void Learn(Player player, uint skillId)
+        {
+            player.Skills.Add(skillId);
+            player.Session.Send(new Packet { SkillLearned = new SkillLearned { Skill = skillId } });
+            Place(player, QuickslotKind.Skill, skillId);
+        }
+
+        /// <summary>
+        /// 새로 얻은 아이템(InventorySystem.Add의 까닭이 있는 것): 물약이면 빈 퀵슬롯에 올린다.
+        /// </summary>
+        public void Gained(Player player, uint itemId)
+        {
+            if (IsPotion(itemId))
+            {
+                Place(player, QuickslotKind.Item, itemId);
+            }
+        }
+
+        /// <summary>
+        /// SetQuickslot(입력 차례). 자리가 범위 밖이거나 모르는 종류면 잘못된 패킷이고, 배우지 않은 스킬이나 물약이 아닌 아이템은 실패다.
+        /// 같은 것이 다른 자리에 있으면 그 자리를 비운다(한 스킬이 두 자리를 차지하지 않게).
+        /// </summary>
+        public Outcome Set(Player player, SetQuickslot request)
+        {
+            Quickslot slot = request.Slot ?? new Quickslot();
+            if ((request.Index >= player.Quickslots.Length) || !Enum.IsDefined(slot.Kind))
+            {
+                return Outcome.Malformed;
+            }
+
+            if (((slot.Kind == QuickslotKind.Skill) && !player.Skills.Contains(slot.Id)) || ((slot.Kind == QuickslotKind.Item) && !IsPotion(slot.Id)))
+            {
+                return Outcome.Fail(slot.Kind == QuickslotKind.Skill ? FailReason.NotLearned : FailReason.UnusableItem);
+            }
+
+            int other = Array.FindIndex(player.Quickslots, entry => (entry.Kind == slot.Kind) && (entry.Id == slot.Id));
+            if ((slot.Kind != QuickslotKind.Empty) && (other >= 0))
+            {
+                player.Quickslots[other] = default;
+            }
+
+            player.Quickslots[request.Index] = slot.Kind == QuickslotKind.Empty ? default : (slot.Kind, slot.Id);
+            player.QuickslotsChanged = true;
+            return Outcome.Done;
+        }
+
+        /// <summary>
+        /// 시야 차례: 이 틱에 퀵슬롯이 바뀐 플레이어에게 Quickslots를 보낸다.
+        /// </summary>
+        public void Flush(IEnumerable<Player> players)
+        {
+            foreach (Player player in players.Where(player => player.QuickslotsChanged))
+            {
+                player.QuickslotsChanged = false;
+                player.Session.Send(new Packet { Quickslots = Whole(player) });
+            }
+        }
+
+        /// <summary>
+        /// 퀵슬롯에 없고 빈 자리가 있으면 가장 앞의 빈 자리에 올린다.
+        /// </summary>
+        private static void Place(Player player, QuickslotKind kind, uint id)
+        {
+            int empty = Array.FindIndex(player.Quickslots, entry => entry.Kind == QuickslotKind.Empty);
+            if ((empty < 0) || player.Quickslots.Contains((kind, id)))
+            {
+                return;
+            }
+
+            player.Quickslots[empty] = (kind, id);
+            player.QuickslotsChanged = true;
+        }
+
+        private static Quickslots Whole(Player player)
+        {
+            var whole = new Quickslots();
+            whole.Slots.Add(player.Quickslots.Select(entry => new Quickslot { Kind = entry.Kind, Id = entry.Id }));
+            return whole;
+        }
+
+        private bool IsPotion(uint itemId)
+        {
+            return _data.Item(itemId) is { Use: ItemUse.HealHp or ItemUse.HealMp };
+        }
+    }
+}

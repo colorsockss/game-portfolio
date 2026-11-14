@@ -64,6 +64,10 @@ message Packet {
     Unequip unequip = 309;
     Enchant enchant = 310;
     EnchantResult enchant_result = 311;
+    LearnedSkills learned_skills = 312;
+    SkillLearned skill_learned = 313;
+    SetQuickslot set_quickslot = 314;
+    Quickslots quickslots = 315;
   }
 }
 
@@ -527,6 +531,42 @@ message EnchantResult {
   uint32 enchant = 2;
 }
 
+// 서버 → 본인. 월드에 들어올 때(Inventory 뒤) 배운 스킬 전체(36).
+message LearnedSkills {
+  repeated uint32 skills = 1;
+}
+
+// 서버 → 본인. 스킬북으로 스킬 하나를 배웠다(36).
+message SkillLearned {
+  uint32 skill = 1;
+}
+
+// 퀵슬롯 한 자리에 오른 것의 종류(36).
+enum QuickslotKind {
+  QUICKSLOT_KIND_EMPTY = 0;
+  // 배운 스킬(번호는 Skills의 줄).
+  QUICKSLOT_KIND_SKILL = 1;
+  // 물약(번호는 Items의 줄. 그 물약이 든 첫 인벤토리 칸을 쓴다).
+  QUICKSLOT_KIND_ITEM = 2;
+}
+
+// 퀵슬롯 한 자리.
+message Quickslot {
+  QuickslotKind kind = 1;
+  uint32 id = 2;
+}
+
+// 클라이언트 → 서버. 퀵슬롯 한 자리를 바꾼다(요청 번호 없음. 실패는 ActionFailed). 자리가 범위 밖이면 끊는다. 같은 것이 다른 자리에 있으면 그 자리는 빈다.
+message SetQuickslot {
+  uint32 index = 1;
+  Quickslot slot = 2;
+}
+
+// 서버 → 본인. 퀵슬롯 전체(CONSTANT_QUICKSLOT_COUNT 자리). 들어올 때와 바뀐 틱에 간다.
+message Quickslots {
+  repeated Quickslot slots = 1;
+}
+
 // 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
 message RequestResult {
   uint32 request_id = 1;
@@ -588,6 +628,8 @@ enum FailReason {
   FAIL_REASON_WRONG_CLASS = 22;
   // 이미 가장 높은 강화 수치(+9)다(35).
   FAIL_REASON_MAX_ENCHANT = 23;
+  // 이미 배운 스킬의 스킬북이다(36).
+  FAIL_REASON_ALREADY_LEARNED = 24;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
@@ -598,6 +640,8 @@ enum RequestKind {
   REQUEST_KIND_SKILL = 3;
   // 채팅창에서 보낸 것(개발 명령 68. 채팅 41도 이 값을 쓴다).
   REQUEST_KIND_CHAT = 4;
+  // 퀵슬롯 바꾸기(36).
+  REQUEST_KIND_QUICKSLOT = 5;
 }
 
 // 클라이언트 → 서버. 대상을 기본 공격한다. 이미 공격 중이면 대상만 바꾼다. 다가가는 것은 클라이언트의 이동이다.

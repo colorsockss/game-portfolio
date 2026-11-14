@@ -6,6 +6,7 @@
 #include "Net/MmoSession.h"
 #include "UI/MmoButtonWidget.h"
 #include "UI/MmoItemSlotWidget.h"
+#include "UI/MmoQuickslotBarWidget.h"
 #include "UI/MmoText.h"
 #include "UI/MmoUiManager.h"
 #include "World/FailMessages.h"
@@ -33,7 +34,12 @@ void UMmoItemDetailWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	UseButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleUseClicked);
-	QuickslotButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleQuickslotClicked);
+	// 고른 자리에 물약을 올린다. 퀵슬롯은 서버의 Quickslots가 오면 바뀐다(36).
+	SlotBar->OnPicked.AddWeakLambda(this, [this](int32 Index)
+	{
+		UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+		Session->Send(MmoWorld::FSkillBook::SetQuickslot(Index, portfolio::mmo::QUICKSLOT_KIND_ITEM, ItemId));
+	});
 	DropButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleDropClicked);
 	EquipButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleEquipClicked);
 	EnchantButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleEnchantClicked);
@@ -61,23 +67,29 @@ void UMmoItemDetailWidget::SetUp(uint32 InSlotIndex, bool bInEquipment)
 	NameText->SetText(MmoText::Get(this, UTF8_TO_TCHAR(Item->name_key().c_str())));
 	NameText->SetColorAndOpacity(FSlateColor(UMmoItemSlotWidget::GradeColor(Item->grade())));
 	FString Info = MmoText::Get(this, GradeKey(Item->grade())).ToString();
-	if (Item->has_level())
+	// 스킬북(36)의 필요 레벨과 직업은 Items의 열이 아니라 가르치는 Skills의 줄에서 읽는다.
+	const portfolio::mmo::data::SkillsRow* Taught = Item->use() == portfolio::mmo::data::ITEM_USE_LEARN_SKILL ? Session->Data().Skill(Item->use_value()) : nullptr;
+	const std::optional<uint32> Level = Taught ? std::optional<uint32>(Taught->level()) : Item->has_level() ? std::optional<uint32>(Item->level()) : std::nullopt;
+	const std::optional<uint32> Class = Taught ? std::optional<uint32>(Taught->class_()) : Item->has_class_() ? std::optional<uint32>(Item->class_()) : std::nullopt;
+	if (Level)
 	{
-		Info += TEXT("\n") + MmoText::Format(this, TEXT("detail.level"), { FString::FromInt(Item->level()) }).ToString();
+		Info += TEXT("\n") + MmoText::Format(this, TEXT("detail.level"), { FString::FromInt(*Level) }).ToString();
 	}
-	if (Item->has_class_())
+	if (Class)
 	{
 		Info += TEXT("\n") + MmoText::Format(this, TEXT("detail.class"),
-			{ MmoText::Get(this, Item->class_() == portfolio::mmo::CHARACTER_CLASS_MAGE ? TEXT("class.mage") : TEXT("class.knight")).ToString() }).ToString();
+			{ MmoText::Get(this, *Class == portfolio::mmo::CHARACTER_CLASS_MAGE ? TEXT("class.mage") : TEXT("class.knight")).ToString() }).ToString();
 	}
 	Info += TEXT("\n") + MmoText::Format(this, TEXT("detail.sell"), { FString::FromInt(Item->sell_price()) }).ToString();
 	InfoText->SetText(FText::FromString(Info));
 	DescText->SetText(MmoText::Get(this, *FString::Printf(TEXT("item.desc.%u"), Item->id())));
 
-	// 쓰기는 지금 쓸 수 있는 종류(물약, 귀환)만, 퀵슬롯은 물약만, 떨어뜨리기는 입지 않은 것만 보인다.
-	const bool bUsable = !bEquipment && (IsPotion(*Item) || Item->use() == portfolio::mmo::data::ITEM_USE_RECALL);
+	// 쓰기는 지금 쓸 수 있는 종류(물약, 귀환, 스킬북)만, 퀵슬롯은 물약만, 떨어뜨리기는 입지 않은 것만 보인다.
+	const bool bUsable = !bEquipment && (IsPotion(*Item) || Item->use() == portfolio::mmo::data::ITEM_USE_RECALL || Item->use() == portfolio::mmo::data::ITEM_USE_LEARN_SKILL);
 	UseButton->SetVisibility(bUsable ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-	QuickslotButton->SetVisibility(!bEquipment && IsPotion(*Item) ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	const ESlateVisibility Quickslot = !bEquipment && IsPotion(*Item) ? ESlateVisibility::Visible : ESlateVisibility::Collapsed;
+	QuickslotTitle->SetVisibility(Quickslot);
+	SlotBar->SetVisibility(Quickslot);
 	DropButton->SetVisibility(bEquipment ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
 	EnchantButton->SetVisibility(Item->use() == portfolio::mmo::data::ITEM_USE_ENCHANT ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 
@@ -143,15 +155,6 @@ void UMmoItemDetailWidget::HandleUseClicked()
 	Session->Send(Session->Inventory().UseItem(SlotIndex));
 	PendingRequest = Session->Inventory().RequestId();
 	UseButton->SetWaiting(true);
-}
-
-void UMmoItemDetailWidget::HandleQuickslotClicked()
-{
-	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
-	if (!Session->PlacePotion(ItemId))
-	{
-		GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowNotice(MmoText::Get(this, TEXT("quickslot.full")));
-	}
 }
 
 void UMmoItemDetailWidget::HandleDropClicked()

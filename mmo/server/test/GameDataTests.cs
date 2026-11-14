@@ -65,6 +65,26 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 스킬북(36)은 직업마다 첫 스킬을 뺀 스킬의 책이고(9줄) 직업과 필요 레벨의 열을 비운다. 넷째와 다섯째 스킬의 책은 사냥터 2와 3의 몬스터의 묶음(4–9)마다,
+        /// 기사의 여섯째 스킬의 책은 사냥터 3의 묶음(7–9)마다 있고 그 밖의 묶음에는 없다. 둘째와 셋째 스킬의 책은 어느 묶음에도 없다(상점 37).
+        /// </summary>
+        [Fact]
+        public void SkillBooksTeachTheLaterSkillsAndDropByZone()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            ItemsRow[] books = Enumerable.Range(2000, 1000).Select(id => data.Item((uint)id)).OfType<ItemsRow>().Where(item => item.Use == ItemUse.LearnSkill).ToArray();
+            uint[] firstSkills = data.Classes.Rows.Select(row => row.FirstSkill).ToArray();
+            Assert.Equal(data.Skills.Rows.Select(skill => skill.Id).Except(firstSkills).Order(), books.Select(book => book.UseValue).Order());
+            Assert.All(books, book => Assert.False(book.HasClass || book.HasLevel));
+            for (uint group = 1; group <= 9; group++)
+            {
+                uint[] dropped = data.DropGroup(group)!.Items.Where(id => data.Item(id)!.Use == ItemUse.LearnSkill).Select(id => data.Item(id)!.UseValue).Order().ToArray();
+                uint[] expected = group < 4 ? new uint[0] : group < 7 ? new uint[] { 104, 105, 204, 205 } : new uint[] { 104, 105, 106, 204, 205 };
+                Assert.Equal(expected, dropped);
+            }
+        }
+
+        /// <summary>
         /// 직업은 2줄, 레벨은 직업 2 × 레벨 1–30의 60줄이고, 같은 레벨에서 기사는 최대 체력과 방어력이, 마법사는 최대 마나와 공격력이 높다.
         /// 마법사만 기본 공격의 발사체가 있다.
         /// </summary>

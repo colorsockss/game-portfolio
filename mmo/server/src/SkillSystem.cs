@@ -124,7 +124,7 @@ namespace PortfolioMmo.Server
                 return FailReason.Busy;
             }
 
-            if (skill.Class != (uint)player.Class)
+            if (!player.Skills.Contains(skill.Id))
             {
                 return FailReason.NotLearned;
             }

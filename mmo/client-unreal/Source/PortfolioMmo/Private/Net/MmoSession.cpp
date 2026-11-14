@@ -178,31 +178,7 @@ void UMmoSession::LeaveWorld()
 	WorldState.Reset();
 	CombatState.Reset();
 	InventoryState.Reset();
-	QuickslotPotions.Reset();
-}
-
-bool UMmoSession::PlacePotion(uint32 ItemId)
-{
-	const MmoWorld::FEntity* Me = WorldState.SelfEntity();
-	if (!Me)
-	{
-		return false;
-	}
-	QuickslotPotions.SetNumZeroed(portfolio::mmo::CONSTANT_QUICKSLOT_COUNT);
-	if (QuickslotPotions.Contains(ItemId))
-	{
-		return true;
-	}
-	const int32 Skills = static_cast<int32>(MmoWorld::FCombatState::Quickslots(GameData, Me->Info.character_class()).size());
-	for (int32 Index = Skills; Index < QuickslotPotions.Num(); ++Index)
-	{
-		if (QuickslotPotions[Index] == 0)
-		{
-			QuickslotPotions[Index] = ItemId;
-			return true;
-		}
-	}
-	return false;
+	SkillBook.Reset();
 }
 
 void UMmoSession::Send(const portfolio::mmo::Packet& Packet)
@@ -234,6 +210,7 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 	const double Now = FPlatformTime::Seconds();
 	WorldState.Apply(Packet, Now);
 	InventoryState.Apply(Packet);
+	SkillBook.Apply(Packet);
 	if (const std::optional<portfolio::mmo::Packet> Stop = CombatState.Apply(Packet, WorldState, GameData, Now))
 	{
 		Send(*Stop);
@@ -247,7 +224,7 @@ void UMmoSession::HandleClosed(const FString& Reason)
 	WorldState.Reset();
 	CombatState.Reset();
 	InventoryState.Reset();
-	QuickslotPotions.Reset();
+	SkillBook.Reset();
 	OnClosed.Broadcast(Reason);
 }
 

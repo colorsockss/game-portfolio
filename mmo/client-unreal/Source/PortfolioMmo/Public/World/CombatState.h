@@ -145,9 +145,6 @@ namespace MmoWorld
 		/** 날고 있는 직선 발사체(ProjectileLaunched부터 ProjectileEnded나 쏜 쪽의 나감까지). */
 		const std::vector<FLineProjectile>& LineProjectiles() const { return Lines; }
 
-		/** 퀵슬롯의 스킬(앞 칸부터, 최대 CONSTANT_QUICKSLOT_COUNT). 임시: 스킬 배우기(36) 전에는 그 직업의 스킬을 모두 번호 차례로 둔다. */
-		static std::vector<uint32_t> Quickslots(const MmoData::FGameData& Data, uint32_t CharacterClass);
-
 		/** 대상에게 쓰는 스킬인가(단일 피해, 상태 이상, 대상 중심의 범위 피해). 아니면 그 자리에서 쓴다(대상이 있어도 다가가지 않음). */
 		static bool TargetsOther(const portfolio::mmo::data::SkillsRow& Skill);
 

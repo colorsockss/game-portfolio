@@ -8,6 +8,7 @@
 #include "World/FieldMap.h"
 #include "World/CombatState.h"
 #include "World/Inventory.h"
+#include "World/SkillBook.h"
 #include "World/WorldState.h"
 
 #include "MmoSession.generated.h"
@@ -64,14 +65,9 @@ public:
 	/** 내 인벤토리(32). 요청 번호가 있는 요청(UseItem)은 여기서 패킷을 만들어 Send로 보낸다. */
 	MmoWorld::FInventory& Inventory() { return InventoryState; }
 
-	/**
-	 * 퀵슬롯 칸의 물약(Items 번호, 없으면 0. 32). 스킬이 앞 칸들을 차지하고 물약은 남은 칸에 오른다.
-	 * shortcut: 클라이언트의 메모리에만 있어 다시 들어오면 사라진다. 36이 서버의 퀵슬롯으로 바꾼다.
-	 */
-	uint32 QuickslotPotion(int32 Index) const { return QuickslotPotions.IsValidIndex(Index) ? QuickslotPotions[Index] : 0; }
-
-	/** 물약을 가장 앞의 빈 퀵슬롯(스킬도 물약도 없는 칸)에 올린다. 이미 올라 있으면 그대로이고, 빈 칸이 없으면 false다. */
-	bool PlacePotion(uint32 ItemId);
+	/** 배운 스킬과 퀵슬롯(36). 퀵슬롯을 바꾸는 SetQuickslot은 여기서 만들어 Send로 보내고, 서버의 Quickslots가 오면 바뀐다. */
+	const MmoWorld::FSkillBook& Skills() const { return SkillBook; }
+	MmoWorld::FSkillBook& Skills() { return SkillBook; }
 
 	/** 월드 안의 요청(AttackStart 등)을 보낸다. 연결이 없으면 버린다. */
 	void Send(const portfolio::mmo::Packet& Packet);
@@ -112,7 +108,7 @@ private:
 	MmoWorld::FWorldState WorldState;
 	MmoWorld::FCombatState CombatState;
 	MmoWorld::FInventory InventoryState;
-	TArray<uint32> QuickslotPotions;
+	MmoWorld::FSkillBook SkillBook;
 	portfolio::mmo::CharacterList CharacterList;
 	/** 시작할 때 한 번 읽은 기획 데이터. 읽지 못하면 해시가 0이라 서버가 DATA_MISMATCH로 거절한다. */
 	MmoData::FGameData GameData;

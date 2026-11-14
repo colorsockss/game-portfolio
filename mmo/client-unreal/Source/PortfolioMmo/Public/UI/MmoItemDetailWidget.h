@@ -6,6 +6,7 @@
 #include "MmoItemDetailWidget.generated.h"
 
 class UMmoButtonWidget;
+class UMmoQuickslotBarWidget;
 class UTextBlock;
 
 /**
@@ -32,8 +33,6 @@ private:
 	UFUNCTION()
 	void HandleUseClicked();
 
-	UFUNCTION()
-	void HandleQuickslotClicked();
 
 	UFUNCTION()
 	void HandleDropClicked();
@@ -64,8 +63,12 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> UseButton;
 
+	/** 물약을 올릴 퀵슬롯의 자리를 고르는 줄과 그 제목(36). 물약만 보인다. */
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMmoButtonWidget> QuickslotButton;
+	TObjectPtr<UWidget> QuickslotTitle;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoQuickslotBarWidget> SlotBar;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> DropButton;

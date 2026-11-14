@@ -71,12 +71,14 @@ namespace PortfolioMmo.Server
         private readonly ProgressSystem _progress;
         private readonly MovementSystem _movement;
         private readonly StatSystem _stats;
+        private readonly QuickslotSystem _quickslots;
         private readonly Random _random;
         private readonly (int X, int Z) _respawn;
 
-        public InventorySystem(GameData data, ProgressSystem progress, MovementSystem movement, StatSystem stats, Random random)
+        public InventorySystem(GameData data, ProgressSystem progress, MovementSystem movement, StatSystem stats, QuickslotSystem quickslots, Random random)
         {
             _data = data;
+            _quickslots = quickslots;
             _stats = stats;
             _random = random;
             _progress = progress;
@@ -119,10 +121,11 @@ namespace PortfolioMmo.Server
             whole.Slots.Add(bag.Slots.Concat(bag.Equipment).Where(slot => slot.ItemId != 0).Select(slot => slot.Clone()));
             whole.Gold = bag.Gold;
             player.Session.Send(new Packet { Inventory = whole });
+            _quickslots.Enter(player);
         }
 
         /// <summary>
-        /// 아이템을 넣는다. 다 들어가지 않으면 아무것도 넣지 않고 "인벤토리 가득"이다. reason이 Unspecified가 아니면 새로 얻은 것에 든다.
+        /// 아이템을 넣는다. 다 들어가지 않으면 아무것도 넣지 않고 "인벤토리 가득"이다. reason이 Unspecified가 아니면 새로 얻은 것에 들고, 물약이면 빈 퀵슬롯에 오른다(36).
         /// enchant는 겹치지 않는 아이템(장비)의 강화 수치다(주운 장비가 수치를 그대로 가짐. 33, 35).
         /// </summary>
         public FailReason Add(Player player, uint itemId, uint count, GainReason reason, uint enchant = 0)
@@ -166,6 +169,7 @@ namespace PortfolioMmo.Server
             if (reason != GainReason.Unspecified)
             {
                 bag.Gains.Add(new Gain { Reason = reason, Item = new ItemAmount { ItemId = itemId, Count = count } });
+                _quickslots.Gained(player, itemId);
             }
 
             return FailReason.None;
@@ -244,8 +248,17 @@ namespace PortfolioMmo.Server
 
                     _progress.Start(player, ProgressKind.Recall, item.Id, 0, tick + Units.TicksFromMilliseconds(item.UseMs));
                     return FailReason.None;
+                case ItemUse.LearnSkill:
+                    FailReason learn = _quickslots.CanLearn(player, item.UseValue);
+                    if (learn == FailReason.None)
+                    {
+                        Remove(player, index, 1);
+                        _quickslots.Learn(player, item.UseValue);
+                    }
+
+                    return learn;
                 default:
-                    // 스킬 배우기(36), 강화(35는 따로 요청), 펫 얻기(96)는 그 항목이 잇는다.
+                    // 강화(35는 따로 요청), 펫 얻기(96)는 그 항목이 잇는다.
                     return FailReason.UnusableItem;
             }
         }

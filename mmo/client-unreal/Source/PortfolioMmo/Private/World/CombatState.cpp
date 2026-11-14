@@ -284,21 +284,6 @@ namespace MmoWorld
 		return { X + DX * Distance, Z + DZ * Distance, static_cast<double>(Yaw) };
 	}
 
-	std::vector<uint32_t> FCombatState::Quickslots(const MmoData::FGameData& Data, uint32_t CharacterClass)
-	{
-		std::vector<uint32_t> Result;
-		for (const portfolio::mmo::data::SkillsRow& Row : Data.Skills.rows())
-		{
-			if (Row.class_() == CharacterClass)
-			{
-				Result.push_back(Row.id());
-			}
-		}
-		std::sort(Result.begin(), Result.end());
-		Result.resize(std::min<size_t>(Result.size(), portfolio::mmo::CONSTANT_QUICKSLOT_COUNT));
-		return Result;
-	}
-
 	bool FCombatState::TargetsOther(const portfolio::mmo::data::SkillsRow& Skill)
 	{
 		return Skill.kind() == portfolio::mmo::data::SKILL_KIND_SINGLE_DAMAGE || Skill.kind() == portfolio::mmo::data::SKILL_KIND_DEBUFF

@@ -32,6 +32,7 @@ namespace PortfolioMmo.Server
         private readonly DeathSystem _deaths;
         private readonly GrowthSystem _growth;
         private readonly InventorySystem _inventory;
+        private readonly QuickslotSystem _quickslots;
         private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
@@ -64,7 +65,8 @@ namespace PortfolioMmo.Server
             _spawn.PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
             _growth = new GrowthSystem(_entities, stats, data);
-            _inventory = new InventorySystem(data, _progress, _movement, stats, random);
+            _quickslots = new QuickslotSystem(data);
+            _inventory = new InventorySystem(data, _progress, _movement, stats, _quickslots, random);
             _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, random);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
             _combat.Deaths = _deaths;
@@ -93,6 +95,8 @@ namespace PortfolioMmo.Server
         internal GrowthSystem Growth => _growth;
 
         internal InventorySystem Inventory => _inventory;
+
+        internal QuickslotSystem Quickslots => _quickslots;
 
         internal System.Collections.Generic.IEnumerable<GroundItem> GroundItems => System.Linq.Enumerable.OfType<GroundItem>(_entities.All);
 
@@ -208,6 +212,10 @@ namespace PortfolioMmo.Server
                     break;
                 case Packet.BodyOneofCase.Enchant when player != null:
                     Respond(player, packet.Enchant.RequestId, _inventory.Enchant(player, packet.Enchant));
+                    break;
+                // 퀵슬롯은 화면의 배치라 죽은 동안과 기절한 동안에도 바꾼다(Blocked가 막지 않음).
+                case Packet.BodyOneofCase.SetQuickslot when player != null:
+                    Answer(player, _quickslots.Set(player, packet.SetQuickslot), RequestKind.Quickslot);
                     break;
                 case Packet.BodyOneofCase.AttackStart when player != null:
                     Answer(player, _combat.Start(player, packet.AttackStart), RequestKind.Attack);
@@ -336,6 +344,7 @@ namespace PortfolioMmo.Server
             long vitals = Stopwatch.GetTimestamp();
             _view.Step(Tick);
             _inventory.Flush(_entities.Players);
+            _quickslots.Flush(_entities.Players);
             // 사건은 같은 틱의 들어옴·나감·움직임 뒤에 간다.
             _events.Deliver();
             long viewed = Stopwatch.GetTimestamp();

@@ -170,6 +170,10 @@ private:
 	/** 인벤토리 창(32). */
 	UPROPERTY()
 	TObjectPtr<UInputAction> BagAction;
+
+	/** 스킬 창(36). */
+	UPROPERTY()
+	TObjectPtr<UInputAction> SkillsAction;
 	UPROPERTY()
 	TObjectPtr<UInputAction> FreeCameraAction;
 	UPROPERTY()

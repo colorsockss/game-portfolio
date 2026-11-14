@@ -28,6 +28,8 @@ namespace MmoScreen
 		ItemDetail,
 		/** 강화 창(35). */
 		Enchant,
+		/** 스킬 창(36). */
+		Skills,
 	};
 
 	/** 화면이 올라가는 층. 아래에서 위로 그린다. */

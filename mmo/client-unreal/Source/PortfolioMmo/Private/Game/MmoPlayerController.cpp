@@ -101,6 +101,9 @@ void AMmoPlayerController::SetupInputComponent()
 	CharacterAction = NewObject<UInputAction>(this, TEXT("Character"));
 	CharacterAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(CharacterAction, MmoKeys::KeyOf(EMmoAction::Character));
+	SkillsAction = NewObject<UInputAction>(this, TEXT("Skills"));
+	SkillsAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(SkillsAction, MmoKeys::KeyOf(EMmoAction::Skills));
 #if !UE_BUILD_SHIPPING
 	// 시연 영상의 UI 숨기기와 자유 카메라는 개발 빌드만 듣는다.
 	HideUiAction = NewObject<UInputAction>(this, TEXT("HideUi"));
@@ -146,6 +149,10 @@ void AMmoPlayerController::SetupInputComponent()
 	Enhanced->BindActionValueLambda(CharacterAction, ETriggerEvent::Started, [this](const FInputActionValue&)
 	{
 		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter();
+	});
+	Enhanced->BindActionValueLambda(SkillsAction, ETriggerEvent::Started, [this](const FInputActionValue&)
+	{
+		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleSkills();
 	});
 #if !UE_BUILD_SHIPPING
 	Enhanced->BindAction(HideUiAction, ETriggerEvent::Started, this, &AMmoPlayerController::ToggleHideUi);
@@ -355,7 +362,7 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 		AttackOrTargetNearest();
 	}
 
-	// 개발용: 대상이 있으면 2초마다 퀵슬롯을 차례대로 누른다(키 입력 없이 스킬을 확인). -MmoSkills=N이면 N번 칸만 누른다.
+	// 개발용: 대상이 있으면 2초마다 스킬이 오른 퀵슬롯을 차례대로 누른다(키 입력 없이 스킬을 확인). -MmoSkills=N이면 N번 칸만 누른다.
 	static double NextSkillSeconds = 0;
 	static int32 NextSlot = 0;
 	int32 OnlySlot = 0;
@@ -363,8 +370,13 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 	if (Session().Combat().Target() != 0 && (bOnly || FParse::Param(FCommandLine::Get(), TEXT("MmoSkills"))) && FPlatformTime::Seconds() >= NextSkillSeconds)
 	{
 		NextSkillSeconds = FPlatformTime::Seconds() + 2.0;
+		const std::vector<portfolio::mmo::Quickslot>& Slots = Session().Skills().Slots();
+		for (int32 Tried = 0; !bOnly && Tried < static_cast<int32>(Slots.size()) && Slots[NextSlot].kind() != portfolio::mmo::QUICKSLOT_KIND_SKILL; ++Tried)
+		{
+			NextSlot = (NextSlot + 1) % Slots.size();
+		}
 		UseQuickslot(bOnly ? OnlySlot - 1 : NextSlot);
-		NextSlot = (NextSlot + 1) % MmoWorld::FCombatState::Quickslots(Session().Data(), Session().World().SelfEntity()->Info.character_class()).size();
+		NextSlot = (NextSlot + 1) % Slots.size();
 	}
 
 	const FVector Location = Self->GetActorLocation();
@@ -443,30 +455,30 @@ bool AMmoPlayerController::IsStunned() const
 
 void AMmoPlayerController::UseQuickslot(int32 Index)
 {
-	const MmoWorld::FEntity* Me = Session().World().SelfEntity();
-	if (bManualMoveBlocked || !Me)
+	const std::vector<portfolio::mmo::Quickslot>& Slots = Session().Skills().Slots();
+	if (bManualMoveBlocked || !Session().World().SelfEntity() || Index < 0 || Index >= static_cast<int32>(Slots.size()))
 	{
 		return;
 	}
-	// 물약이 오른 칸은 그 물약이 든 첫 인벤토리 칸으로 UseItem을 보낸다(32). 실패의 이유는 인벤토리 모델이 사건으로 쌓고 HUD가 띄운다.
-	if (const uint32 Potion = Session().QuickslotPotion(Index))
+	// 서버의 퀵슬롯 배치(36)를 따른다. 물약이 오른 자리는 그 물약이 든 첫 인벤토리 칸으로 UseItem을 보낸다(32). 실패의 이유는 인벤토리 모델이 사건으로 쌓고 HUD가 띄운다.
+	const portfolio::mmo::Quickslot& Slot = Slots[Index];
+	if (Slot.kind() == portfolio::mmo::QUICKSLOT_KIND_ITEM)
 	{
-		if (const std::optional<uint32_t> Slot = Session().Inventory().FirstSlotOf(Potion))
+		if (const std::optional<uint32_t> ItemSlot = Session().Inventory().FirstSlotOf(Slot.id()))
 		{
-			Session().Send(Session().Inventory().UseItem(*Slot));
+			Session().Send(Session().Inventory().UseItem(*ItemSlot));
 		}
 		return;
 	}
-	const std::vector<uint32_t> Skills = MmoWorld::FCombatState::Quickslots(Session().Data(), Me->Info.character_class());
-	if (Index < 0 || Index >= static_cast<int32>(Skills.size()))
+	if (Slot.kind() != portfolio::mmo::QUICKSLOT_KIND_SKILL)
 	{
 		return;
 	}
 	// 실패의 이유는 전투 모델이 알림으로 쌓고 HUD가 띄운다.
-	const portfolio::mmo::FailReason Reason = Session().Combat().PressSkill(Skills[Index], Session().World(), Session().Data(), FPlatformTime::Seconds());
+	const portfolio::mmo::FailReason Reason = Session().Combat().PressSkill(Slot.id(), Session().World(), Session().Data(), FPlatformTime::Seconds());
 	if (Reason != portfolio::mmo::FAIL_REASON_NONE)
 	{
-		UE_LOG(LogMmoNet, Display, TEXT("Skill %u is not ready: %s"), Skills[Index], UTF8_TO_TCHAR(portfolio::mmo::FailReason_Name(Reason).c_str()));
+		UE_LOG(LogMmoNet, Display, TEXT("Skill %u is not ready: %s"), Slot.id(), UTF8_TO_TCHAR(portfolio::mmo::FailReason_Name(Reason).c_str()));
 		return;
 	}
 	EngagedGoal = { MIN_int32, MIN_int32 };

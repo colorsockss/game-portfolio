@@ -446,9 +446,17 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// 칸 (x, z) m의 가운데에 선 플레이어. 둘레를 받은 뒤(시야 차례가 한 번 돈 뒤)이고 쌓인 패킷은 비운다.
         /// </summary>
-        private static Session Fighter(World world, string loginId, int x, int z, CharacterClass characterClass = CharacterClass.Knight)
+        /// <summary>
+        /// 월드에 들어와 칸 (x, z)에 선 캐릭터. learnAll이면 직업의 스킬을 모두 배운 채다(스킬의 테스트가 스킬북 없이 씀. 36).
+        /// </summary>
+        private static Session Fighter(World world, string loginId, int x, int z, CharacterClass characterClass = CharacterClass.Knight, bool learnAll = true)
         {
             Session session = Join(world, loginId, characterClass);
+            if (learnAll)
+            {
+                session.Player!.Skills.UnionWith(TestData.Skills.Rows.Where(skill => skill.Class == (uint)characterClass).Select(skill => skill.Id));
+            }
+
             world.Step();
             world.Place(session.Player!, Center(x), Center(z));
             world.Step();

@@ -34,7 +34,7 @@ namespace PortfolioMmo.Server.Tests
 
         /// <summary>
         /// 시험용 아이템(32): 2001 체력 물약(50, 쿨다운 10초), 2002 상급 체력 물약(100, 같은 쿨다운), 2003 마나 물약(40), 2005 귀환 주문서(3초),
-        /// 3001 겹치는 재료, 4001 골드, 장비 1001 기사의 검(공격력 5), 1002 마법사의 지팡이(6), 1003 공용 투구(방어력 3), 1004 레벨 2의 갑옷(방어력 6, 최대 체력 20). 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
+        /// 3001 겹치는 재료, 4001 골드, 장비 1001 기사의 검(공격력 5), 1002 마법사의 지팡이(6), 1003 공용 투구(방어력 3), 1004 레벨 2의 갑옷(방어력 6, 최대 체력 20), 2006 강화 주문서, 스킬북 2102(기사 102), 2106(기사 106, 레벨 3), 2202(마법사 202). 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
         /// </summary>
         public static Items Items => new Items
         {
@@ -51,6 +51,9 @@ namespace PortfolioMmo.Server.Tests
                 new ItemsRow { Id = 1004, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 4, Slot = EquipSlot.Armor, Level = 2, Defense = 6, MaxHp = 20 },
                 new ItemsRow { Id = 4001, NameKey = "item.test", Kind = ItemKind.Gold, Grade = ItemGrade.Common, Stackable = true },
                 new ItemsRow { Id = 2006, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Uncommon, Stackable = true, Use = ItemUse.Enchant },
+                new ItemsRow { Id = 2102, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.LearnSkill, UseValue = 102 },
+                new ItemsRow { Id = 2106, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.LearnSkill, UseValue = 106 },
+                new ItemsRow { Id = 2202, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.LearnSkill, UseValue = 202 },
             },
         };
 
@@ -86,13 +89,13 @@ namespace PortfolioMmo.Server.Tests
         {
             Rows =
             {
-                new ClassesRow { Id = 1, AttackRange = 2, AttackIntervalMs = 1000, HitDelayMs = 300, StartItems = { 2001, 2003 }, StartCounts = { 3, 2 } },
-                new ClassesRow { Id = 2, AttackRange = 12, AttackIntervalMs = 1200, HitDelayMs = 300, ProjectileSpeed = 20, StartItems = { 2001, 2003 }, StartCounts = { 3, 2 } },
+                new ClassesRow { Id = 1, AttackRange = 2, AttackIntervalMs = 1000, HitDelayMs = 300, FirstSkill = 101, StartItems = { 2001, 2003 }, StartCounts = { 3, 2 } },
+                new ClassesRow { Id = 2, AttackRange = 12, AttackIntervalMs = 1200, HitDelayMs = 300, ProjectileSpeed = 20, FirstSkill = 201, StartItems = { 2001, 2003 }, StartCounts = { 3, 2 } },
             },
         };
 
         /// <summary>
-        /// 시험용 스킬(실제 데이터의 차례와 종류. 계수는 1이나 2이고 쿨다운은 1초, 마나는 10, 타격까지의 시간은 300 ms다). 201은 20 m/s(틱마다 1 m)의 직선 발사체다.
+        /// 시험용 스킬(실제 데이터의 차례와 종류. 계수는 1이나 2이고 쿨다운은 1초, 마나는 10, 타격까지의 시간은 300 ms, 필요 레벨은 1(106만 3)이다). 201은 20 m/s(틱마다 1 m)의 직선 발사체다.
         /// 기사: 101 단일, 102 기절, 103 방어력 올림, 104 자기 중심 범위(4 m), 105 감속을 거는 단일, 106 공격력 올림.
         /// 마법사: 201 감속을 거는 단일(12 m), 202 대상 중심 범위(4 m, 시전 1.5초), 203 회복(계수 2, 시전 1초), 204 감속을 거는 자기 중심 범위(5 m),
         /// 205 시전하는 단일(시전 2초).
@@ -106,7 +109,7 @@ namespace PortfolioMmo.Server.Tests
                 Skill(103, 1, SkillKind.Buff, 0, SkillCenter.Self, coefficient: 0, effect: 3, hitDelayMs: 0),
                 Skill(104, 1, SkillKind.AreaDamage, 0, SkillCenter.Self, radius: 4),
                 Skill(105, 1, SkillKind.SingleDamage, 2, SkillCenter.Target, effect: 2),
-                Skill(106, 1, SkillKind.Buff, 0, SkillCenter.Self, coefficient: 0, effect: 4, hitDelayMs: 0),
+                Skill(106, 1, SkillKind.Buff, 0, SkillCenter.Self, coefficient: 0, effect: 4, hitDelayMs: 0, level: 3),
                 Skill(201, 2, SkillKind.SingleDamage, 12, SkillCenter.Target, effect: 2, projectileSpeed: 20),
                 Skill(202, 2, SkillKind.AreaDamage, 12, SkillCenter.Target, radius: 4, castMs: 1500),
                 Skill(203, 2, SkillKind.Heal, 0, SkillCenter.Self, coefficient: 2, castMs: 1000),
@@ -117,12 +120,12 @@ namespace PortfolioMmo.Server.Tests
 
         public static SkillsRow Skill(
             uint id, uint characterClass, SkillKind kind, double range, SkillCenter center, double coefficient = 1, double radius = 0, uint castMs = 0, uint effect = 0, uint hitDelayMs = 300,
-            double projectileSpeed = 0)
+            double projectileSpeed = 0, uint level = 1)
         {
             var row = new SkillsRow
             {
                 Id = id, NameKey = $"skill.{id}", Class = characterClass, Kind = kind, Coefficient = coefficient, Range = range, Center = center, CooldownMs = 1000,
-                CastMs = castMs, HitDelayMs = castMs > 0 ? 0 : hitDelayMs, Mp = 10, Level = 1,
+                CastMs = castMs, HitDelayMs = castMs > 0 ? 0 : hitDelayMs, Mp = 10, Level = level,
             };
             if (radius > 0)
             {

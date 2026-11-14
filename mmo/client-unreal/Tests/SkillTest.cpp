@@ -1,6 +1,7 @@
 // 스킬 쓰기, 쿨다운, 효과, 진행 중인 일(World/의 CombatState, Cooldowns, WorldState)을 UE 없이 본다. 쿨다운의 규칙은 서버의
 // WorldSkillTests가 낸 비교 벡터(mmo/shared/vectors/cooldowns.tsv)로 맞춘다. run.mjs가 빌드하고 실행한다.
 #include <cmath>
+#include <tuple>
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
@@ -11,6 +12,7 @@
 #include "World/CombatState.h"
 #include "World/DevCommand.h"
 #include "World/Latency.h"
+#include "World/SkillBook.h"
 
 namespace
 {
@@ -540,6 +542,49 @@ namespace
 		Expect(MmoWorld::DevCommandPacket("   ").dev_command().line().empty(), "a blank line is sent empty");
 	}
 
+	/** 배운 스킬과 퀵슬롯(36): 전체와 하나의 반영, 배운 것만 사건, 퀵슬롯은 Quickslots가 와야 바뀜, 직업의 스킬은 테이블에서 번호 차례, 비우기 요청. */
+	void SkillBookFollowsTheServer()
+	{
+		MmoData::FGameData Data;
+		for (const auto& [Id, Class, Level] : { std::tuple<uint32_t, uint32_t, uint32_t>{ 102, 1, 5 }, { 201, 2, 1 }, { 101, 1, 1 } })
+		{
+			portfolio::mmo::data::SkillsRow* Row = Data.Skills.add_rows();
+			Row->set_id(Id);
+			Row->set_class_(Class);
+			Row->set_level(Level);
+		}
+		const std::vector<const portfolio::mmo::data::SkillsRow*> Knight = MmoWorld::FSkillBook::ClassSkills(Data, 1);
+		Expect(Knight.size() == 2 && Knight[0]->id() == 101 && Knight[1]->id() == 102 && Knight[1]->level() == 5, "class skills come from the table in id order");
+
+		MmoWorld::FSkillBook Book;
+		Expect(Book.Slots().size() == portfolio::mmo::CONSTANT_QUICKSLOT_COUNT && !Book.IsLearned(101), "an empty book has empty quickslots");
+		Packet Whole;
+		Whole.mutable_learned_skills()->add_skills(101);
+		Book.Apply(Whole);
+		Expect(Book.IsLearned(101) && !Book.IsLearned(102) && Book.TakeLearned().empty(), "LearnedSkills fills the set without an event");
+
+		const uint32_t Version = Book.Version();
+		Packet Learned;
+		Learned.mutable_skill_learned()->set_skill(102);
+		Book.Apply(Learned);
+		const std::vector<uint32_t> Events = Book.TakeLearned();
+		Expect(Book.IsLearned(102) && Events.size() == 1 && Events[0] == 102 && Book.Version() != Version, "SkillLearned adds the skill and an event");
+
+		const Packet Request = MmoWorld::FSkillBook::SetQuickslot(3, portfolio::mmo::QUICKSLOT_KIND_SKILL, 102);
+		Expect(Request.set_quickslot().index() == 3 && Request.set_quickslot().slot().id() == 102, "SetQuickslot carries the slot");
+		Expect(Book.Slots()[3].kind() == portfolio::mmo::QUICKSLOT_KIND_EMPTY, "the quickslots wait for the server");
+		Expect(MmoWorld::FSkillBook::SetQuickslot(3, portfolio::mmo::QUICKSLOT_KIND_EMPTY, 102).set_quickslot().slot().id() == 0, "clearing sends no id");
+
+		Packet Slots;
+		portfolio::mmo::Quickslot* Slot = Slots.mutable_quickslots()->add_slots();
+		Slot->set_kind(portfolio::mmo::QUICKSLOT_KIND_ITEM);
+		Slot->set_id(2001);
+		Book.Apply(Slots);
+		Expect(Book.Slots().size() == portfolio::mmo::CONSTANT_QUICKSLOT_COUNT && Book.Slots()[0].id() == 2001 && Book.Slots()[1].kind() == portfolio::mmo::QUICKSLOT_KIND_EMPTY,
+			"Quickslots replaces the bar and pads it");
+		Book.Reset();
+		Expect(!Book.IsLearned(101) && Book.Slots()[0].id() == 0, "leaving the world clears the book");
+	}
 }
 
 int main(int ArgumentCount, char** Arguments)
@@ -563,6 +608,7 @@ int main(int ArgumentCount, char** Arguments)
 	LeavingTheWorldStopsRequests();
 	DevCommandsCarryTheLine();
 	LatencyIsPingToPong();
+	SkillBookFollowsTheServer();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;
