@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using PortfolioMmo.Contract;
+using PortfolioMmo.Data;
 
 namespace PortfolioMmo.Server
 {
@@ -50,6 +51,11 @@ namespace PortfolioMmo.Server
         /// </summary>
         public uint Exp { get; set; }
 
+        /// <summary>
+        /// 인벤토리(32). 월드에 들어올 때 InventorySystem.Enter가 칸 수만큼 만든다.
+        /// </summary>
+        internal Bag Bag { get; set; } = new Bag(0);
+
         public NameColor NameColor { get; private set; }
 
         public uint WeaponItemId { get; private set; }
@@ -88,6 +94,11 @@ namespace PortfolioMmo.Server
         /// 스킬마다 쿨다운이 끝나는 틱(쓸 때 지금 틱과 견줌). 죽어도 남고 저장하지 않는다.
         /// </summary>
         private readonly Dictionary<uint, uint> _cooldowns = new Dictionary<uint, uint>();
+
+        /// <summary>
+        /// 물약의 쓰는 종류(체력 회복, 마나 회복)마다 쿨다운이 끝나는 틱(32).
+        /// </summary>
+        private readonly Dictionary<ItemUse, uint> _potionCooldowns = new Dictionary<ItemUse, uint>();
 
         /// <summary>
         /// 지난 틱까지 이 플레이어에게 보였던 개체.
@@ -131,6 +142,22 @@ namespace PortfolioMmo.Server
             _cooldowns[skillId] = endTick;
             var cooldowns = new Cooldowns();
             cooldowns.Entries.Add(new Cooldown { SkillId = skillId, EndTick = endTick });
+            Session.Send(new Packet { Cooldowns = cooldowns });
+        }
+
+        public uint PotionCooldownEnd(ItemUse use)
+        {
+            return _potionCooldowns.GetValueOrDefault(use);
+        }
+
+        /// <summary>
+        /// 물약의 쿨다운이 끝나는 틱을 두고 본인에게 Cooldowns(물약의 쓰는 종류)로 보낸다.
+        /// </summary>
+        internal void SetPotionCooldown(ItemUse use, uint endTick)
+        {
+            _potionCooldowns[use] = endTick;
+            var cooldowns = new Cooldowns();
+            cooldowns.Entries.Add(new Cooldown { Potion = (uint)use, EndTick = endTick });
             Session.Send(new Packet { Cooldowns = cooldowns });
         }
 

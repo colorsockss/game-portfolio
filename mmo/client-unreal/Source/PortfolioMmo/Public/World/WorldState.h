@@ -180,7 +180,7 @@ namespace MmoWorld
 		/** 내게 걸린 그 종류의 효과의 값(여럿이면 큰 값). 없거나 끝나는 틱이 지났으면 nullopt. 기절은 값이 0이라 있는지만 본다. */
 		std::optional<uint32_t> SelfEffect(const MmoData::FGameData& Data, portfolio::mmo::data::EffectKind Kind, double NowSeconds) const;
 
-		/** 개체의 진행 중인 일이 지난 비율(0–1). 진행 중인 일이 없거나 길이를 모르는 종류면 nullopt. 시전의 길이는 Skills의 시전 시간이다. */
+		/** 개체의 진행 중인 일이 지난 비율(0–1). 진행 중인 일이 없거나 길이를 모르는 종류면 nullopt. 시전의 길이는 Skills의 시전 시간, 귀환은 Items의 쓰는 시간이다. */
 		std::optional<double> ProgressRatio(const FEntity& Entity, const MmoData::FGameData& Data, double NowSeconds) const;
 
 		/**

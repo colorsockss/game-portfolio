@@ -30,7 +30,24 @@ namespace PortfolioMmo.Server.Tests
         /// 벽이 없는 600 m 필드와 원점에 부활 지점을 둔 마을 하나의 데이터. 새 캐릭터가 원점에서 시작한다.
         /// 구역과 벽의 규칙은 FieldMapTests가 FieldMap으로 직접 보고, 벽에 막히는 월드는 WithMap으로 만든다.
         /// </summary>
-        public static readonly GameData Data = new GameData(Hash, Constants(FieldSize), new Zones { Rows = { Town(0, 0) } }, EmptyGrid(FieldSize), Classes, Levels, new Monsters(), new Spawns(), Skills, Effects);
+        public static readonly GameData Data = new GameData(Hash, Constants(FieldSize), new Zones { Rows = { Town(0, 0) } }, EmptyGrid(FieldSize), Classes, Levels, new Monsters(), new Spawns(), Skills, Effects, Items);
+
+        /// <summary>
+        /// 시험용 아이템(32): 2001 체력 물약(50, 쿨다운 10초), 2002 상급 체력 물약(100, 같은 쿨다운), 2003 마나 물약(40), 2005 귀환 주문서(3초),
+        /// 3001 겹치는 재료, 1001 겹치지 않는 장비. 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
+        /// </summary>
+        public static Items Items => new Items
+        {
+            Rows =
+            {
+                new ItemsRow { Id = 2001, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.HealHp, UseValue = 50, CooldownMs = 10000 },
+                new ItemsRow { Id = 2002, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Uncommon, Stackable = true, Use = ItemUse.HealHp, UseValue = 100, CooldownMs = 10000 },
+                new ItemsRow { Id = 2003, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.HealMp, UseValue = 40, CooldownMs = 10000 },
+                new ItemsRow { Id = 2005, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.Recall, UseMs = 3000 },
+                new ItemsRow { Id = 3001, NameKey = "item.test", Kind = ItemKind.Material, Grade = ItemGrade.Common, Stackable = true },
+                new ItemsRow { Id = 1001, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 1, Slot = EquipSlot.Weapon },
+            },
+        };
 
         /// <summary>
         /// 시험용 직업 둘(기사 근접, 마법사 발사체).
@@ -39,8 +56,8 @@ namespace PortfolioMmo.Server.Tests
         {
             Rows =
             {
-                new ClassesRow { Id = 1, AttackRange = 2, AttackIntervalMs = 1000, HitDelayMs = 300 },
-                new ClassesRow { Id = 2, AttackRange = 12, AttackIntervalMs = 1200, HitDelayMs = 300, ProjectileSpeed = 20 },
+                new ClassesRow { Id = 1, AttackRange = 2, AttackIntervalMs = 1000, HitDelayMs = 300, StartItems = { 2001, 2003 }, StartCounts = { 3, 2 } },
+                new ClassesRow { Id = 2, AttackRange = 12, AttackIntervalMs = 1200, HitDelayMs = 300, ProjectileSpeed = 20, StartItems = { 2001, 2003 }, StartCounts = { 3, 2 } },
             },
         };
 
@@ -132,7 +149,7 @@ namespace PortfolioMmo.Server.Tests
             {
                 FieldSize = fieldSize, CombatDurationMs = 5000, RegenPercent = 5, CombatRegenPercent = 1, CritChance = 0.05, CritMultiplier = 1.5, PlayerRadius = 0.34,
                 UnreachableMs = 5000, RepathDistance = 3, ReturnRangeMargin = 4, ReturnRegenPercent = 20, WanderPauseMinMs = 3000, WanderPauseMaxMs = 6000,
-                ReviveHpPercent = 30, DeadMonsterMs = 3000, RateLimitTokens = 40, RateLimitRefillPerSecond = 30, RateLimitKickMs = 3000, RateLimitResetMs = 1000,
+                ReviveHpPercent = 30, DeadMonsterMs = 3000, InventorySlots = 60, RateLimitTokens = 40, RateLimitRefillPerSecond = 30, RateLimitKickMs = 3000, RateLimitResetMs = 1000,
             };
         }
 
@@ -216,7 +233,7 @@ namespace PortfolioMmo.Server.Tests
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             var table = new Zones { Rows = { Town(respawnX, respawnZ) } };
             table.Rows.Add(zones);
-            return new GameData(Hash, Constants(size), table, grid, Classes, Levels, new Monsters(), new Spawns(), Skills, Effects);
+            return new GameData(Hash, Constants(size), table, grid, Classes, Levels, new Monsters(), new Spawns(), Skills, Effects, Items);
         }
 
         /// <summary>
@@ -248,7 +265,7 @@ namespace PortfolioMmo.Server.Tests
             table.Rows.Add(zones);
             return new GameData(
                 Hash, constants ?? Constants(size), table, grid, classes ?? Classes, levels ?? Levels,
-                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects);
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items);
         }
 
         /// <summary>

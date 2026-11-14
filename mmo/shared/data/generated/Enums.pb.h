@@ -47,6 +47,14 @@ namespace mmo {
 namespace data {
 enum EffectKind : int;
 extern const uint32_t EffectKind_internal_data_[];
+enum EquipSlot : int;
+extern const uint32_t EquipSlot_internal_data_[];
+enum ItemGrade : int;
+extern const uint32_t ItemGrade_internal_data_[];
+enum ItemKind : int;
+extern const uint32_t ItemKind_internal_data_[];
+enum ItemUse : int;
+extern const uint32_t ItemUse_internal_data_[];
 enum MonsterKind : int;
 extern const uint32_t MonsterKind_internal_data_[];
 enum SkillCenter : int;
@@ -63,6 +71,18 @@ namespace protobuf {
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::EffectKind_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::EffectKind>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::EquipSlot_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::EquipSlot>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::ItemGrade_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::ItemGrade>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::ItemKind_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::ItemKind>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::ItemUse_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::ItemUse>;
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::MonsterKind_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::MonsterKind>;
@@ -293,6 +313,182 @@ template <>
   return ::google::protobuf::internal::ParseNamedEnum<EffectKind>(EffectKind_descriptor(), name,
                                            value);
 }
+enum ItemKind : int {
+  ITEM_KIND_UNSPECIFIED = 0,
+  ITEM_KIND_EQUIPMENT = 1,
+  ITEM_KIND_CONSUMABLE = 2,
+  ITEM_KIND_MATERIAL = 3,
+  ITEM_KIND_GOLD = 4,
+  ItemKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  ItemKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t ItemKind_internal_data_[];
+inline constexpr ItemKind ItemKind_MIN =
+    static_cast<ItemKind>(0);
+inline constexpr ItemKind ItemKind_MAX =
+    static_cast<ItemKind>(4);
+[[nodiscard]] inline bool ItemKind_IsValid(int value) {
+  return 0 <= value && value <= 4;
+}
+inline constexpr int ItemKind_ARRAYSIZE = 4 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+ItemKind_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(ItemKind) {
+  return ItemKind_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& ItemKind_Name(T value) {
+  static_assert(::std::is_same<T, ItemKind>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to ItemKind_Name().");
+  return ItemKind_Name(static_cast<ItemKind>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& ItemKind_Name(ItemKind value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<ItemKind_descriptor, 0, 4>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool ItemKind_Parse(
+    ::absl::string_view name, ItemKind* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ItemKind>(ItemKind_descriptor(), name,
+                                           value);
+}
+enum ItemGrade : int {
+  ITEM_GRADE_UNSPECIFIED = 0,
+  ITEM_GRADE_COMMON = 1,
+  ITEM_GRADE_UNCOMMON = 2,
+  ITEM_GRADE_RARE = 3,
+  ITEM_GRADE_EPIC = 4,
+  ItemGrade_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  ItemGrade_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t ItemGrade_internal_data_[];
+inline constexpr ItemGrade ItemGrade_MIN =
+    static_cast<ItemGrade>(0);
+inline constexpr ItemGrade ItemGrade_MAX =
+    static_cast<ItemGrade>(4);
+[[nodiscard]] inline bool ItemGrade_IsValid(int value) {
+  return 0 <= value && value <= 4;
+}
+inline constexpr int ItemGrade_ARRAYSIZE = 4 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+ItemGrade_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(ItemGrade) {
+  return ItemGrade_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& ItemGrade_Name(T value) {
+  static_assert(::std::is_same<T, ItemGrade>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to ItemGrade_Name().");
+  return ItemGrade_Name(static_cast<ItemGrade>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& ItemGrade_Name(ItemGrade value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<ItemGrade_descriptor, 0, 4>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool ItemGrade_Parse(
+    ::absl::string_view name, ItemGrade* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ItemGrade>(ItemGrade_descriptor(), name,
+                                           value);
+}
+enum EquipSlot : int {
+  EQUIP_SLOT_UNSPECIFIED = 0,
+  EQUIP_SLOT_WEAPON = 1,
+  EQUIP_SLOT_HELMET = 2,
+  EQUIP_SLOT_ARMOR = 3,
+  EQUIP_SLOT_GLOVES = 4,
+  EQUIP_SLOT_BOOTS = 5,
+  EQUIP_SLOT_ACCESSORY = 6,
+  EquipSlot_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  EquipSlot_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t EquipSlot_internal_data_[];
+inline constexpr EquipSlot EquipSlot_MIN =
+    static_cast<EquipSlot>(0);
+inline constexpr EquipSlot EquipSlot_MAX =
+    static_cast<EquipSlot>(6);
+[[nodiscard]] inline bool EquipSlot_IsValid(int value) {
+  return 0 <= value && value <= 6;
+}
+inline constexpr int EquipSlot_ARRAYSIZE = 6 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+EquipSlot_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(EquipSlot) {
+  return EquipSlot_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& EquipSlot_Name(T value) {
+  static_assert(::std::is_same<T, EquipSlot>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to EquipSlot_Name().");
+  return EquipSlot_Name(static_cast<EquipSlot>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& EquipSlot_Name(EquipSlot value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<EquipSlot_descriptor, 0, 6>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool EquipSlot_Parse(
+    ::absl::string_view name, EquipSlot* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<EquipSlot>(EquipSlot_descriptor(), name,
+                                           value);
+}
+enum ItemUse : int {
+  ITEM_USE_NONE = 0,
+  ITEM_USE_HEAL_HP = 1,
+  ITEM_USE_HEAL_MP = 2,
+  ITEM_USE_RECALL = 3,
+  ITEM_USE_LEARN_SKILL = 4,
+  ITEM_USE_ENCHANT = 5,
+  ITEM_USE_GET_PET = 6,
+  ItemUse_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  ItemUse_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t ItemUse_internal_data_[];
+inline constexpr ItemUse ItemUse_MIN =
+    static_cast<ItemUse>(0);
+inline constexpr ItemUse ItemUse_MAX =
+    static_cast<ItemUse>(6);
+[[nodiscard]] inline bool ItemUse_IsValid(int value) {
+  return 0 <= value && value <= 6;
+}
+inline constexpr int ItemUse_ARRAYSIZE = 6 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+ItemUse_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(ItemUse) {
+  return ItemUse_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& ItemUse_Name(T value) {
+  static_assert(::std::is_same<T, ItemUse>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to ItemUse_Name().");
+  return ItemUse_Name(static_cast<ItemUse>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& ItemUse_Name(ItemUse value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<ItemUse_descriptor, 0, 6>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool ItemUse_Parse(
+    ::absl::string_view name, ItemUse* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ItemUse>(ItemUse_descriptor(), name,
+                                           value);
+}
 using ::google::protobuf::internal::generated_enum::AbslParseFlag;
 using ::google::protobuf::internal::generated_enum::AbslUnparseFlag;
 
@@ -354,6 +550,30 @@ struct is_proto_enum<::portfolio::mmo::data::EffectKind> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::EffectKind>() {
   return ::portfolio::mmo::data::EffectKind_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::ItemKind> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::ItemKind>() {
+  return ::portfolio::mmo::data::ItemKind_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::ItemGrade> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::ItemGrade>() {
+  return ::portfolio::mmo::data::ItemGrade_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::EquipSlot> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::EquipSlot>() {
+  return ::portfolio::mmo::data::EquipSlot_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::ItemUse> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::ItemUse>() {
+  return ::portfolio::mmo::data::ItemUse_descriptor();
 }
 
 }  // namespace protobuf

@@ -22,6 +22,10 @@ namespace MmoScreen
 		Death,
 		/** 캐릭터 창(31). */
 		Character,
+		/** 인벤토리 창(32). */
+		Inventory,
+		/** 아이템 상세 창(32). */
+		ItemDetail,
 	};
 
 	/** 화면이 올라가는 층. 아래에서 위로 그린다. */

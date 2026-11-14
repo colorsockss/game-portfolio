@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSK+BAoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLXBAoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -37,12 +37,12 @@ namespace PortfolioMmo.Data {
             "dF9yYW5nZRgQIAEoARIbChNpbnRlcmFjdF9waWNrX3JhbmdlGBEgASgBEhkK",
             "EXJhdGVfbGltaXRfdG9rZW5zGBIgASgNEiQKHHJhdGVfbGltaXRfcmVmaWxs",
             "X3Blcl9zZWNvbmQYEyABKA0SGgoScmF0ZV9saW1pdF9raWNrX21zGBQgASgN",
-            "EhsKE3JhdGVfbGltaXRfcmVzZXRfbXMYFSABKA1CFKoCEVBvcnRmb2xpb01t",
-            "by5EYXRhYgZwcm90bzM="));
+            "EhsKE3JhdGVfbGltaXRfcmVzZXRfbXMYFSABKA0SFwoPaW52ZW50b3J5X3Ns",
+            "b3RzGBYgASgNQhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots" }, null, null, null, null)
           }));
     }
     #endregion
@@ -105,6 +105,7 @@ namespace PortfolioMmo.Data {
       rateLimitRefillPerSecond_ = other.rateLimitRefillPerSecond_;
       rateLimitKickMs_ = other.rateLimitKickMs_;
       rateLimitResetMs_ = other.rateLimitResetMs_;
+      inventorySlots_ = other.inventorySlots_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -429,6 +430,21 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "inventory_slots" field.</summary>
+    public const int InventorySlotsFieldNumber = 22;
+    private uint inventorySlots_;
+    /// <summary>
+    /// 인벤토리 칸 수
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint InventorySlots {
+      get { return inventorySlots_; }
+      set {
+        inventorySlots_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -465,6 +481,7 @@ namespace PortfolioMmo.Data {
       if (RateLimitRefillPerSecond != other.RateLimitRefillPerSecond) return false;
       if (RateLimitKickMs != other.RateLimitKickMs) return false;
       if (RateLimitResetMs != other.RateLimitResetMs) return false;
+      if (InventorySlots != other.InventorySlots) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -493,6 +510,7 @@ namespace PortfolioMmo.Data {
       if (RateLimitRefillPerSecond != 0) hash ^= RateLimitRefillPerSecond.GetHashCode();
       if (RateLimitKickMs != 0) hash ^= RateLimitKickMs.GetHashCode();
       if (RateLimitResetMs != 0) hash ^= RateLimitResetMs.GetHashCode();
+      if (InventorySlots != 0) hash ^= InventorySlots.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -595,6 +613,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(168, 1);
         output.WriteUInt32(RateLimitResetMs);
       }
+      if (InventorySlots != 0) {
+        output.WriteRawTag(176, 1);
+        output.WriteUInt32(InventorySlots);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -689,6 +711,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(168, 1);
         output.WriteUInt32(RateLimitResetMs);
       }
+      if (InventorySlots != 0) {
+        output.WriteRawTag(176, 1);
+        output.WriteUInt32(InventorySlots);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -761,6 +787,9 @@ namespace PortfolioMmo.Data {
       }
       if (RateLimitResetMs != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(RateLimitResetMs);
+      }
+      if (InventorySlots != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(InventorySlots);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -836,6 +865,9 @@ namespace PortfolioMmo.Data {
       }
       if (other.RateLimitResetMs != 0) {
         RateLimitResetMs = other.RateLimitResetMs;
+      }
+      if (other.InventorySlots != 0) {
+        InventorySlots = other.InventorySlots;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -940,6 +972,10 @@ namespace PortfolioMmo.Data {
             RateLimitResetMs = input.ReadUInt32();
             break;
           }
+          case 176: {
+            InventorySlots = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -1041,6 +1077,10 @@ namespace PortfolioMmo.Data {
           }
           case 168: {
             RateLimitResetMs = input.ReadUInt32();
+            break;
+          }
+          case 176: {
+            InventorySlots = input.ReadUInt32();
             break;
           }
         }

@@ -31,6 +31,7 @@ namespace PortfolioMmo.Server
         private readonly SpawnSystem _spawn;
         private readonly DeathSystem _deaths;
         private readonly GrowthSystem _growth;
+        private readonly InventorySystem _inventory;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
         private readonly SkillSystem _skills;
@@ -62,11 +63,12 @@ namespace PortfolioMmo.Server
             _spawn.PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
             _growth = new GrowthSystem(_entities, stats, data);
-            _deaths = new DeathSystem(_entities, _grid, _scheduler, _movement, _events, _effects, _progress, _growth, data);
+            _inventory = new InventorySystem(data, _progress, _movement);
+            _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, data);
             _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
             _rateLimits = RateLimiter.Limits.From(data.Constants);
-            _dev = dev ? new DevSystem(data, field, _entities, _grid, _movement, _progress, _spawn, _growth) : null;
+            _dev = dev ? new DevSystem(data, field, _entities, _movement, _progress, _spawn, _growth, _inventory) : null;
         }
 
         /// <summary>
@@ -87,6 +89,8 @@ namespace PortfolioMmo.Server
         internal EffectSystem Effects => _effects;
 
         internal GrowthSystem Growth => _growth;
+
+        internal InventorySystem Inventory => _inventory;
 
         /// <summary>
         /// 날고 있는 직선 발사체(테스트가 수를 봄).
@@ -128,6 +132,12 @@ namespace PortfolioMmo.Server
             switch (session.Limiter.Take(Tick, _rateLimits))
             {
                 case RateLimiter.Verdict.Drop:
+                    // 요청 번호가 있는 요청은 버려도 답한다(클라이언트가 그 칸을 계속 기다리지 않게).
+                    if ((session.Player is Player dropped) && (RequestIdOf(packet) is uint droppedId))
+                    {
+                        Respond(dropped, droppedId, FailReason.TooFast);
+                    }
+
                     return;
                 case RateLimiter.Verdict.Kick:
                     Kick(session, KickReason.RateLimited);
@@ -142,6 +152,12 @@ namespace PortfolioMmo.Server
                 return;
             }
 
+            if ((player != null) && (RequestIdOf(packet) is uint requestId) && (Blocked(player, packet.BodyCase) is var refused) && (refused != FailReason.None))
+            {
+                Respond(player, requestId, refused);
+                return;
+            }
+
             switch (packet.BodyCase)
             {
                 case Packet.BodyOneofCase.Login when session.LoginId == null:
@@ -152,6 +168,11 @@ namespace PortfolioMmo.Server
                     break;
                 case Packet.BodyOneofCase.EnterWorld when selecting:
                     _login.EnterWorld(session, packet.EnterWorld, Tick);
+                    if (session.Player is Player entered)
+                    {
+                        _inventory.Enter(entered);
+                    }
+
                     break;
                 case Packet.BodyOneofCase.LeaveWorld when player != null:
                     _login.LeaveWorld(session);
@@ -165,6 +186,9 @@ namespace PortfolioMmo.Server
                     break;
                 case Packet.BodyOneofCase.Revive when player != null:
                     Answer(player, _deaths.Revive(player), RequestKind.Revive);
+                    break;
+                case Packet.BodyOneofCase.UseItem when player != null:
+                    Respond(player, packet.UseItem.RequestId, _inventory.Use(player, packet.UseItem, Tick));
                     break;
                 case Packet.BodyOneofCase.AttackStart when player != null:
                     Answer(player, _combat.Start(player, packet.AttackStart), RequestKind.Attack);
@@ -197,6 +221,26 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.Revive => RequestKind.Revive,
                 _ => null,
             };
+        }
+
+        /// <summary>
+        /// 요청 번호가 있는 요청(RequestResult로 답함)의 번호. 그 밖의 패킷은 null이다. 인벤토리를 바꾸는 요청은 그 항목이 더한다.
+        /// </summary>
+        private static uint? RequestIdOf(Packet packet)
+        {
+            return packet.BodyCase switch
+            {
+                Packet.BodyOneofCase.UseItem => packet.UseItem.RequestId,
+                _ => null,
+            };
+        }
+
+        /// <summary>
+        /// 요청 번호가 있는 요청의 답: 받은 번호를 그대로 싣고, 성공이면 NONE이다. 번호의 순서는 보지 않는다.
+        /// </summary>
+        private static void Respond(Player player, uint requestId, FailReason result)
+        {
+            player.Session.Send(new Packet { RequestResult = new RequestResult { RequestId = requestId, Result = result } });
         }
 
         /// <summary>
@@ -267,6 +311,7 @@ namespace PortfolioMmo.Server
             _vitals.Step(Tick);
             long vitals = Stopwatch.GetTimestamp();
             _view.Step(Tick);
+            _inventory.Flush(_entities.Players);
             // 사건은 같은 틱의 들어옴·나감·움직임 뒤에 간다.
             _events.Deliver();
             long viewed = Stopwatch.GetTimestamp();
@@ -374,6 +419,9 @@ namespace PortfolioMmo.Server
                     break;
                 case ScheduledKind.Respawn:
                     _spawn.Respawn(_spawn.PlacedAt(job.Owner)!);
+                    break;
+                case ScheduledKind.ProgressEnd when _entities.Find(job.Owner) is Player { Progress.Kind: ProgressKind.Recall } recalling:
+                    _inventory.FinishRecall(recalling, Tick);
                     break;
                 case ScheduledKind.ProgressEnd:
                     _progress.End(job);

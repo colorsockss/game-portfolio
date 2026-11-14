@@ -44,6 +44,12 @@ public:
 	/** 뒤로 가기(Esc, Android 뒤로 버튼). 닫을 창이 없고 게임 중이면 설정을 연다. */
 	void Back();
 
+	/** 인벤토리 창을 열고 닫는다(HUD의 가방 버튼과 I 키. 32). 닫을 때 상세 창도 닫는다. */
+	void ToggleInventory();
+
+	/** 인벤토리 칸의 아이템 상세 창을 연다(32). */
+	void ShowItemDetail(uint32 Slot);
+
 	/** 캐릭터 창을 열고 닫는다(HUD의 캐릭터 버튼과 C 키. 31). 게임 중이고 죽어 있지 않을 때만 연다. */
 	void ToggleCharacter();
 

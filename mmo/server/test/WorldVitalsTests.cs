@@ -24,8 +24,13 @@ namespace PortfolioMmo.Server.Tests
             world.Step();
 
             var exp = new Packet { ExpGained = new ExpGained() };
-            Assert.Equal(new[] { Entered(1), exp, Cooldowns(101, 102, 103, 104, 105, 106), SelfStats(TestData.KnightLevel1), SelfVitals(150, 50) }, knight.Outbox.Take(5));
-            Assert.Equal(new[] { exp, Cooldowns(201, 202, 203, 204, 205), SelfStats(TestData.MageLevel1), SelfVitals(100, 120) }, TakeVitals(mage));
+            List<Packet> knightPackets = knight.Outbox.Take(6).ToList();
+            Assert.Equal(Packet.BodyOneofCase.Inventory, knightPackets[3].BodyCase);
+            knightPackets.RemoveAt(3);
+            Assert.Equal(new[] { Entered(1), exp, Cooldowns(101, 102, 103, 104, 105, 106), SelfStats(TestData.KnightLevel1), SelfVitals(150, 50) }, knightPackets);
+            Assert.Equal(
+                new[] { exp, Cooldowns(201, 202, 203, 204, 205), SelfStats(TestData.MageLevel1), SelfVitals(100, 120) },
+                TakeVitals(mage).Where(packet => packet.BodyCase != Packet.BodyOneofCase.Inventory));
             Assert.Equal(TestData.MageLevel1, mage.Player!.Stats);
         }
 

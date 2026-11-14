@@ -95,6 +95,9 @@ void AMmoPlayerController::SetupInputComponent()
 	Mapping->MapKey(AttackAction, MmoKeys::KeyOf(EMmoAction::Attack));
 	Mapping->MapKey(TargetAction, MmoKeys::KeyOf(EMmoAction::TargetNearest));
 	Mapping->MapKey(InteractAction, MmoKeys::KeyOf(EMmoAction::Interact));
+	BagAction = NewObject<UInputAction>(this, TEXT("Bag"));
+	BagAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(BagAction, MmoKeys::KeyOf(EMmoAction::Bag));
 	CharacterAction = NewObject<UInputAction>(this, TEXT("Character"));
 	CharacterAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(CharacterAction, MmoKeys::KeyOf(EMmoAction::Character));
@@ -136,6 +139,10 @@ void AMmoPlayerController::SetupInputComponent()
 	}
 	Enhanced->BindAction(TargetAction, ETriggerEvent::Started, this, &AMmoPlayerController::TargetNearest);
 	Enhanced->BindAction(InteractAction, ETriggerEvent::Started, this, &AMmoPlayerController::Interact);
+	Enhanced->BindActionValueLambda(BagAction, ETriggerEvent::Started, [this](const FInputActionValue&)
+	{
+		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleInventory();
+	});
 	Enhanced->BindActionValueLambda(CharacterAction, ETriggerEvent::Started, [this](const FInputActionValue&)
 	{
 		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter();
@@ -439,6 +446,15 @@ void AMmoPlayerController::UseQuickslot(int32 Index)
 	const MmoWorld::FEntity* Me = Session().World().SelfEntity();
 	if (bManualMoveBlocked || !Me)
 	{
+		return;
+	}
+	// 물약이 오른 칸은 그 물약이 든 첫 인벤토리 칸으로 UseItem을 보낸다(32). 실패의 이유는 인벤토리 모델이 사건으로 쌓고 HUD가 띄운다.
+	if (const uint32 Potion = Session().QuickslotPotion(Index))
+	{
+		if (const std::optional<uint32_t> Slot = Session().Inventory().FirstSlotOf(Potion))
+		{
+			Session().Send(Session().Inventory().UseItem(*Slot));
+		}
 		return;
 	}
 	const std::vector<uint32_t> Skills = MmoWorld::FCombatState::Quickslots(Session().Data(), Me->Info.character_class());

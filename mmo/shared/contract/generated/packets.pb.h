@@ -60,6 +60,10 @@ enum EntityKind : int;
 extern const uint32_t EntityKind_internal_data_[];
 enum FailReason : int;
 extern const uint32_t FailReason_internal_data_[];
+enum GainReason : int;
+extern const uint32_t GainReason_internal_data_[];
+enum ItemPlace : int;
+extern const uint32_t ItemPlace_internal_data_[];
 enum KickReason : int;
 extern const uint32_t KickReason_internal_data_[];
 enum LoginResultCode : int;
@@ -280,6 +284,46 @@ extern const ::google::protobuf::internal::ClassDataFull ExpGained_class_data_;
 #else
 extern const ExpGainedGlobalsTypeInternal ExpGained_globals_;
 #endif  // PROTOBUF_MESSAGE_GLOBALS
+class Gain;
+struct GainGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern GainGlobalsTypeInternal Gain_globals_;
+extern const ::google::protobuf::internal::ClassDataFull Gain_class_data_;
+#else
+extern const GainGlobalsTypeInternal Gain_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class Inventory;
+struct InventoryGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern InventoryGlobalsTypeInternal Inventory_globals_;
+extern const ::google::protobuf::internal::ClassDataFull Inventory_class_data_;
+#else
+extern const InventoryGlobalsTypeInternal Inventory_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class InventoryChanged;
+struct InventoryChangedGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern InventoryChangedGlobalsTypeInternal InventoryChanged_globals_;
+extern const ::google::protobuf::internal::ClassDataFull InventoryChanged_class_data_;
+#else
+extern const InventoryChangedGlobalsTypeInternal InventoryChanged_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class ItemAmount;
+struct ItemAmountGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern ItemAmountGlobalsTypeInternal ItemAmount_globals_;
+extern const ::google::protobuf::internal::ClassDataFull ItemAmount_class_data_;
+#else
+extern const ItemAmountGlobalsTypeInternal ItemAmount_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+class ItemSlot;
+struct ItemSlotGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern ItemSlotGlobalsTypeInternal ItemSlot_globals_;
+extern const ::google::protobuf::internal::ClassDataFull ItemSlot_class_data_;
+#else
+extern const ItemSlotGlobalsTypeInternal ItemSlot_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
 class Kicked;
 struct KickedGlobalsTypeInternal;
 #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -392,6 +436,14 @@ extern const ::google::protobuf::internal::ClassDataFull ProjectileLaunched_clas
 #else
 extern const ProjectileLaunchedGlobalsTypeInternal ProjectileLaunched_globals_;
 #endif  // PROTOBUF_MESSAGE_GLOBALS
+class RequestResult;
+struct RequestResultGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern RequestResultGlobalsTypeInternal RequestResult_globals_;
+extern const ::google::protobuf::internal::ClassDataFull RequestResult_class_data_;
+#else
+extern const RequestResultGlobalsTypeInternal RequestResult_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
 class Revive;
 struct ReviveGlobalsTypeInternal;
 #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -432,6 +484,14 @@ extern const ::google::protobuf::internal::ClassDataFull SkillUsed_class_data_;
 #else
 extern const SkillUsedGlobalsTypeInternal SkillUsed_globals_;
 #endif  // PROTOBUF_MESSAGE_GLOBALS
+class UseItem;
+struct UseItemGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern UseItemGlobalsTypeInternal UseItem_globals_;
+extern const ::google::protobuf::internal::ClassDataFull UseItem_class_data_;
+#else
+extern const UseItemGlobalsTypeInternal UseItem_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
 class UseSkill;
 struct UseSkillGlobalsTypeInternal;
 #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -462,6 +522,12 @@ internal::EnumTraitsT<::portfolio::mmo::EntityKind_internal_data_>
 template <>
 internal::EnumTraitsT<::portfolio::mmo::FailReason_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::FailReason>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::GainReason_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::GainReason>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::ItemPlace_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::ItemPlace>;
 template <>
 internal::EnumTraitsT<::portfolio::mmo::KickReason_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::KickReason>;
@@ -907,6 +973,85 @@ template <>
   return ::google::protobuf::internal::ParseNamedEnum<ProgressKind>(ProgressKind_descriptor(), name,
                                            value);
 }
+enum ItemPlace : int {
+  ITEM_PLACE_INVENTORY = 0,
+  ItemPlace_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  ItemPlace_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t ItemPlace_internal_data_[];
+inline constexpr ItemPlace ItemPlace_MIN =
+    static_cast<ItemPlace>(0);
+inline constexpr ItemPlace ItemPlace_MAX =
+    static_cast<ItemPlace>(0);
+[[nodiscard]] inline bool ItemPlace_IsValid(int value) {
+  return 0 <= value && value <= 0;
+}
+inline constexpr int ItemPlace_ARRAYSIZE = 0 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+ItemPlace_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(ItemPlace) {
+  return ItemPlace_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& ItemPlace_Name(T value) {
+  static_assert(::std::is_same<T, ItemPlace>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to ItemPlace_Name().");
+  return ItemPlace_Name(static_cast<ItemPlace>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& ItemPlace_Name(ItemPlace value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<ItemPlace_descriptor, 0, 0>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool ItemPlace_Parse(
+    ::absl::string_view name, ItemPlace* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ItemPlace>(ItemPlace_descriptor(), name,
+                                           value);
+}
+enum GainReason : int {
+  GAIN_REASON_UNSPECIFIED = 0,
+  GAIN_REASON_DEV_COMMAND = 1,
+  GainReason_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  GainReason_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t GainReason_internal_data_[];
+inline constexpr GainReason GainReason_MIN =
+    static_cast<GainReason>(0);
+inline constexpr GainReason GainReason_MAX =
+    static_cast<GainReason>(1);
+[[nodiscard]] inline bool GainReason_IsValid(int value) {
+  return 0 <= value && value <= 1;
+}
+inline constexpr int GainReason_ARRAYSIZE = 1 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+GainReason_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(GainReason) {
+  return GainReason_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& GainReason_Name(T value) {
+  static_assert(::std::is_same<T, GainReason>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to GainReason_Name().");
+  return GainReason_Name(static_cast<GainReason>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& GainReason_Name(GainReason value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<GainReason_descriptor, 0, 1>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool GainReason_Parse(
+    ::absl::string_view name, GainReason* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<GainReason>(GainReason_descriptor(), name,
+                                           value);
+}
 enum FailReason : int {
   FAIL_REASON_NONE = 0,
   FAIL_REASON_NO_TARGET = 1,
@@ -922,6 +1067,11 @@ enum FailReason : int {
   FAIL_REASON_STUNNED = 11,
   FAIL_REASON_CANCELLED = 12,
   FAIL_REASON_INVALID_COMMAND = 13,
+  FAIL_REASON_INVENTORY_FULL = 14,
+  FAIL_REASON_NO_ITEM = 15,
+  FAIL_REASON_UNUSABLE_ITEM = 16,
+  FAIL_REASON_IN_COMBAT = 17,
+  FAIL_REASON_TOO_FAST = 18,
   FailReason_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   FailReason_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -932,11 +1082,11 @@ extern const uint32_t FailReason_internal_data_[];
 inline constexpr FailReason FailReason_MIN =
     static_cast<FailReason>(0);
 inline constexpr FailReason FailReason_MAX =
-    static_cast<FailReason>(13);
+    static_cast<FailReason>(18);
 [[nodiscard]] inline bool FailReason_IsValid(int value) {
-  return 0 <= value && value <= 13;
+  return 0 <= value && value <= 18;
 }
-inline constexpr int FailReason_ARRAYSIZE = 13 + 1;
+inline constexpr int FailReason_ARRAYSIZE = 18 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 FailReason_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(FailReason) {
@@ -951,7 +1101,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& FailReason_Name(FailReason value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<FailReason_descriptor, 0, 13>(
+  return ::google::protobuf::internal::NameOfDenseEnum<FailReason_descriptor, 0, 18>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool FailReason_Parse(
@@ -1068,7 +1218,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED UseSkill final : public ::google::p
   [[nodiscard]] static const UseSkill& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<UseSkill>(&UseSkill_globals_);
   }
-  static constexpr int kIndexInFileMessages = 37;
+  static constexpr int kIndexInFileMessages = 44;
   friend void swap(UseSkill& a, UseSkill& b) { a.Swap(&b); }
   inline void Swap(UseSkill* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -1235,6 +1385,219 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED UseSkill final : public ::google::p
 };
 // -------------------------------------------------------------------
 
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED UseItem final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.UseItem) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline UseItem() : UseItem(nullptr) {}
+  ~UseItem() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(UseItem* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(UseItem));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr UseItem(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline UseItem(const UseItem& from) : UseItem(nullptr, from) {}
+  inline UseItem(UseItem&& from) noexcept : UseItem(nullptr, ::std::move(from)) {}
+  inline UseItem& operator=(const UseItem& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline UseItem& operator=(UseItem&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const UseItem& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<UseItem>(&UseItem_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 34;
+  friend void swap(UseItem& a, UseItem& b) { a.Swap(&b); }
+  inline void Swap(UseItem* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(UseItem* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] UseItem* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<UseItem>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const UseItem& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const UseItem& from) { UseItem::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(UseItem* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.UseItem"; }
+
+  explicit UseItem(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  UseItem(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const UseItem& from);
+  UseItem(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, UseItem&& from) noexcept
+      : UseItem(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kSlotFieldNumber = 1,
+    kRequestIdFieldNumber = 2,
+  };
+  // uint32 slot = 1;
+  void clear_slot() ;
+  [[nodiscard]] ::uint32_t slot() const;
+  void set_slot(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_slot() const;
+  void _internal_set_slot(::uint32_t value);
+
+  public:
+  // uint32 request_id = 2;
+  void clear_request_id() ;
+  [[nodiscard]] ::uint32_t request_id() const;
+  void set_request_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_request_id() const;
+  void _internal_set_request_id(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.UseItem)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const UseItem& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::uint32_t slot_;
+    ::uint32_t request_id_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
 class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillUsed final : public ::google::protobuf::Message
 /* @@protoc_insertion_point(class_definition:portfolio.mmo.SkillUsed) */ {
   using Super_ = ::google::protobuf::Message;
@@ -1293,7 +1656,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillUsed final : public ::google::
   [[nodiscard]] static const SkillUsed& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<SkillUsed>(&SkillUsed_globals_);
   }
-  static constexpr int kIndexInFileMessages = 38;
+  static constexpr int kIndexInFileMessages = 45;
   friend void swap(SkillUsed& a, SkillUsed& b) { a.Swap(&b); }
   inline void Swap(SkillUsed* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -1992,7 +2355,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Revived final : public ::google::pr
   [[nodiscard]] static const Revived& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Revived>(&Revived_globals_);
   }
-  static constexpr int kIndexInFileMessages = 36;
+  static constexpr int kIndexInFileMessages = 43;
   friend void swap(Revived& a, Revived& b) { a.Swap(&b); }
   inline void Swap(Revived* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -2216,7 +2579,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Revive final : public ::google::pro
   [[nodiscard]] static const Revive& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Revive>(&Revive_globals_);
   }
-  static constexpr int kIndexInFileMessages = 35;
+  static constexpr int kIndexInFileMessages = 42;
   friend void swap(Revive& a, Revive& b) { a.Swap(&b); }
   inline void Swap(Revive* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -2297,6 +2660,219 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Revive final : public ::google::pro
 };
 // -------------------------------------------------------------------
 
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED RequestResult final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.RequestResult) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline RequestResult() : RequestResult(nullptr) {}
+  ~RequestResult() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(RequestResult* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(RequestResult));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr RequestResult(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline RequestResult(const RequestResult& from) : RequestResult(nullptr, from) {}
+  inline RequestResult(RequestResult&& from) noexcept : RequestResult(nullptr, ::std::move(from)) {}
+  inline RequestResult& operator=(const RequestResult& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline RequestResult& operator=(RequestResult&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const RequestResult& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<RequestResult>(&RequestResult_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 35;
+  friend void swap(RequestResult& a, RequestResult& b) { a.Swap(&b); }
+  inline void Swap(RequestResult* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(RequestResult* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] RequestResult* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<RequestResult>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const RequestResult& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const RequestResult& from) { RequestResult::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(RequestResult* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.RequestResult"; }
+
+  explicit RequestResult(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  RequestResult(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const RequestResult& from);
+  RequestResult(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, RequestResult&& from) noexcept
+      : RequestResult(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kRequestIdFieldNumber = 1,
+    kResultFieldNumber = 2,
+  };
+  // uint32 request_id = 1;
+  void clear_request_id() ;
+  [[nodiscard]] ::uint32_t request_id() const;
+  void set_request_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_request_id() const;
+  void _internal_set_request_id(::uint32_t value);
+
+  public:
+  // .portfolio.mmo.FailReason result = 2;
+  void clear_result() ;
+  [[nodiscard]] ::portfolio::mmo::FailReason result() const;
+  void set_result(::portfolio::mmo::FailReason value);
+
+  private:
+  ::portfolio::mmo::FailReason _internal_result() const;
+  void _internal_set_result(::portfolio::mmo::FailReason value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.RequestResult)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const RequestResult& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::uint32_t request_id_;
+    int result_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
 class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProjectileLaunched final : public ::google::protobuf::Message
 /* @@protoc_insertion_point(class_definition:portfolio.mmo.ProjectileLaunched) */ {
   using Super_ = ::google::protobuf::Message;
@@ -2355,7 +2931,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProjectileLaunched final : public :
   [[nodiscard]] static const ProjectileLaunched& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ProjectileLaunched>(&ProjectileLaunched_globals_);
   }
-  static constexpr int kIndexInFileMessages = 44;
+  static constexpr int kIndexInFileMessages = 51;
   friend void swap(ProjectileLaunched& a, ProjectileLaunched& b) { a.Swap(&b); }
   inline void Swap(ProjectileLaunched* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -2628,7 +3204,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProjectileEnded final : public ::go
   [[nodiscard]] static const ProjectileEnded& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ProjectileEnded>(&ProjectileEnded_globals_);
   }
-  static constexpr int kIndexInFileMessages = 45;
+  static constexpr int kIndexInFileMessages = 52;
   friend void swap(ProjectileEnded& a, ProjectileEnded& b) { a.Swap(&b); }
   inline void Swap(ProjectileEnded* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -3054,7 +3630,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProgressCancelled final : public ::
   [[nodiscard]] static const ProgressCancelled& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ProgressCancelled>(&ProgressCancelled_globals_);
   }
-  static constexpr int kIndexInFileMessages = 40;
+  static constexpr int kIndexInFileMessages = 47;
   friend void swap(ProgressCancelled& a, ProgressCancelled& b) { a.Swap(&b); }
   inline void Swap(ProgressCancelled* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -4773,6 +5349,468 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Kicked final : public ::google::pro
     ::google::protobuf::internal::HasBits<1> _has_bits_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     int reason_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ItemSlot final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.ItemSlot) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline ItemSlot() : ItemSlot(nullptr) {}
+  ~ItemSlot() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(ItemSlot* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(ItemSlot));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr ItemSlot(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline ItemSlot(const ItemSlot& from) : ItemSlot(nullptr, from) {}
+  inline ItemSlot(ItemSlot&& from) noexcept : ItemSlot(nullptr, ::std::move(from)) {}
+  inline ItemSlot& operator=(const ItemSlot& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ItemSlot& operator=(ItemSlot&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const ItemSlot& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ItemSlot>(&ItemSlot_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 29;
+  friend void swap(ItemSlot& a, ItemSlot& b) { a.Swap(&b); }
+  inline void Swap(ItemSlot* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ItemSlot* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] ItemSlot* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<ItemSlot>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const ItemSlot& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const ItemSlot& from) { ItemSlot::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(ItemSlot* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.ItemSlot"; }
+
+  explicit ItemSlot(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  ItemSlot(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const ItemSlot& from);
+  ItemSlot(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, ItemSlot&& from) noexcept
+      : ItemSlot(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kPlaceFieldNumber = 1,
+    kIndexFieldNumber = 2,
+    kItemIdFieldNumber = 3,
+    kCountFieldNumber = 4,
+    kEnchantFieldNumber = 5,
+  };
+  // .portfolio.mmo.ItemPlace place = 1;
+  void clear_place() ;
+  [[nodiscard]] ::portfolio::mmo::ItemPlace place() const;
+  void set_place(::portfolio::mmo::ItemPlace value);
+
+  private:
+  ::portfolio::mmo::ItemPlace _internal_place() const;
+  void _internal_set_place(::portfolio::mmo::ItemPlace value);
+
+  public:
+  // uint32 index = 2;
+  void clear_index() ;
+  [[nodiscard]] ::uint32_t index() const;
+  void set_index(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_index() const;
+  void _internal_set_index(::uint32_t value);
+
+  public:
+  // uint32 item_id = 3;
+  void clear_item_id() ;
+  [[nodiscard]] ::uint32_t item_id() const;
+  void set_item_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_item_id() const;
+  void _internal_set_item_id(::uint32_t value);
+
+  public:
+  // uint32 count = 4;
+  void clear_count() ;
+  [[nodiscard]] ::uint32_t count() const;
+  void set_count(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_count() const;
+  void _internal_set_count(::uint32_t value);
+
+  public:
+  // uint32 enchant = 5;
+  void clear_enchant() ;
+  [[nodiscard]] ::uint32_t enchant() const;
+  void set_enchant(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_enchant() const;
+  void _internal_set_enchant(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.ItemSlot)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<3, 5,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const ItemSlot& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    int place_;
+    ::uint32_t index_;
+    ::uint32_t item_id_;
+    ::uint32_t count_;
+    ::uint32_t enchant_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ItemAmount final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.ItemAmount) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline ItemAmount() : ItemAmount(nullptr) {}
+  ~ItemAmount() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(ItemAmount* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(ItemAmount));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr ItemAmount(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline ItemAmount(const ItemAmount& from) : ItemAmount(nullptr, from) {}
+  inline ItemAmount(ItemAmount&& from) noexcept : ItemAmount(nullptr, ::std::move(from)) {}
+  inline ItemAmount& operator=(const ItemAmount& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ItemAmount& operator=(ItemAmount&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const ItemAmount& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ItemAmount>(&ItemAmount_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 31;
+  friend void swap(ItemAmount& a, ItemAmount& b) { a.Swap(&b); }
+  inline void Swap(ItemAmount* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ItemAmount* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] ItemAmount* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<ItemAmount>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const ItemAmount& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const ItemAmount& from) { ItemAmount::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(ItemAmount* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.ItemAmount"; }
+
+  explicit ItemAmount(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  ItemAmount(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const ItemAmount& from);
+  ItemAmount(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, ItemAmount&& from) noexcept
+      : ItemAmount(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kItemIdFieldNumber = 1,
+    kCountFieldNumber = 2,
+  };
+  // uint32 item_id = 1;
+  void clear_item_id() ;
+  [[nodiscard]] ::uint32_t item_id() const;
+  void set_item_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_item_id() const;
+  void _internal_set_item_id(::uint32_t value);
+
+  public:
+  // uint32 count = 2;
+  void clear_count() ;
+  [[nodiscard]] ::uint32_t count() const;
+  void set_count(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_count() const;
+  void _internal_set_count(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.ItemAmount)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          0, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const ItemAmount& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::uint32_t item_id_;
+    ::uint32_t count_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -6612,7 +7650,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Died final : public ::google::proto
   [[nodiscard]] static const Died& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Died>(&Died_globals_);
   }
-  static constexpr int kIndexInFileMessages = 34;
+  static constexpr int kIndexInFileMessages = 41;
   friend void swap(Died& a, Died& b) { a.Swap(&b); }
   inline void Swap(Died* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -7031,7 +8069,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Damaged final : public ::google::pr
   [[nodiscard]] static const Damaged& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Damaged>(&Damaged_globals_);
   }
-  static constexpr int kIndexInFileMessages = 33;
+  static constexpr int kIndexInFileMessages = 40;
   friend void swap(Damaged& a, Damaged& b) { a.Swap(&b); }
   inline void Swap(Damaged* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -7699,7 +8737,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldown final : public ::google::p
   [[nodiscard]] static const Cooldown& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Cooldown>(&Cooldown_globals_);
   }
-  static constexpr int kIndexInFileMessages = 43;
+  static constexpr int kIndexInFileMessages = 50;
   friend void swap(Cooldown& a, Cooldown& b) { a.Swap(&b); }
   inline void Swap(Cooldown* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -7791,6 +8829,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldown final : public ::google::p
   enum : int {
     kSkillIdFieldNumber = 1,
     kEndTickFieldNumber = 2,
+    kPotionFieldNumber = 3,
   };
   // uint32 skill_id = 1;
   void clear_skill_id() ;
@@ -7812,11 +8851,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldown final : public ::google::p
   void _internal_set_end_tick(::uint32_t value);
 
   public:
+  // uint32 potion = 3;
+  void clear_potion() ;
+  [[nodiscard]] ::uint32_t potion() const;
+  void set_potion(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_potion() const;
+  void _internal_set_potion(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.Cooldown)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<1, 2,
+      ::google::protobuf::internal::TcParseTable<2, 3,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -7847,6 +8896,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldown final : public ::google::p
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::uint32_t skill_id_;
     ::uint32_t end_tick_;
+    ::uint32_t potion_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -8142,7 +9192,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackSwing final : public ::google
   [[nodiscard]] static const AttackSwing& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackSwing>(&AttackSwing_globals_);
   }
-  static constexpr int kIndexInFileMessages = 32;
+  static constexpr int kIndexInFileMessages = 39;
   friend void swap(AttackSwing& a, AttackSwing& b) { a.Swap(&b); }
   inline void Swap(AttackSwing* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -8354,7 +9404,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackStop final : public ::google:
   [[nodiscard]] static const AttackStop& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackStop>(&AttackStop_globals_);
   }
-  static constexpr int kIndexInFileMessages = 31;
+  static constexpr int kIndexInFileMessages = 38;
   friend void swap(AttackStop& a, AttackStop& b) { a.Swap(&b); }
   inline void Swap(AttackStop* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -8493,7 +9543,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackStart final : public ::google
   [[nodiscard]] static const AttackStart& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackStart>(&AttackStart_globals_);
   }
-  static constexpr int kIndexInFileMessages = 30;
+  static constexpr int kIndexInFileMessages = 37;
   friend void swap(AttackStart& a, AttackStart& b) { a.Swap(&b); }
   inline void Swap(AttackStart* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -8694,7 +9744,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ActionFailed final : public ::googl
   [[nodiscard]] static const ActionFailed& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ActionFailed>(&ActionFailed_globals_);
   }
-  static constexpr int kIndexInFileMessages = 29;
+  static constexpr int kIndexInFileMessages = 36;
   friend void swap(ActionFailed& a, ActionFailed& b) { a.Swap(&b); }
   inline void Swap(ActionFailed* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -8907,7 +9957,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Progress final : public ::google::p
   [[nodiscard]] static const Progress& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Progress>(&Progress_globals_);
   }
-  static constexpr int kIndexInFileMessages = 39;
+  static constexpr int kIndexInFileMessages = 46;
   friend void swap(Progress& a, Progress& b) { a.Swap(&b); }
   inline void Swap(Progress* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -9060,6 +10110,480 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Progress final : public ::google::p
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::portfolio::mmo::ProgressState* PROTOBUF_NULLABLE state_;
     ::uint32_t id_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Inventory final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.Inventory) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline Inventory() : Inventory(nullptr) {}
+  ~Inventory() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(Inventory* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(Inventory));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr Inventory(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline Inventory(const Inventory& from) : Inventory(nullptr, from) {}
+  inline Inventory(Inventory&& from) noexcept : Inventory(nullptr, ::std::move(from)) {}
+  inline Inventory& operator=(const Inventory& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Inventory& operator=(Inventory&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const Inventory& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Inventory>(&Inventory_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 30;
+  friend void swap(Inventory& a, Inventory& b) { a.Swap(&b); }
+  inline void Swap(Inventory* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Inventory* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] Inventory* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<Inventory>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const Inventory& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const Inventory& from) { Inventory::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(Inventory* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.Inventory"; }
+
+  explicit Inventory(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  Inventory(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Inventory& from);
+  Inventory(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, Inventory&& from) noexcept
+      : Inventory(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kSlotsFieldNumber = 1,
+    kGoldFieldNumber = 2,
+  };
+  // repeated .portfolio.mmo.ItemSlot slots = 1;
+  [[nodiscard]] int slots_size() const;
+  private:
+  int _internal_slots_size() const;
+
+  public:
+  void clear_slots() ;
+  [[nodiscard]] const ::portfolio::mmo::ItemSlot& slots(int index) const;
+  [[nodiscard]] ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL mutable_slots(int index);
+  ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL add_slots();
+  [[nodiscard]] const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>&
+  slots() const;
+  [[nodiscard]] ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL
+  mutable_slots();
+
+  private:
+  const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>& _internal_slots() const;
+  ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL _internal_mutable_slots();
+
+  public:
+  // uint64 gold = 2;
+  void clear_gold() ;
+  [[nodiscard]] ::uint64_t gold() const;
+  void set_gold(::uint64_t value);
+
+  private:
+  ::uint64_t _internal_gold() const;
+  void _internal_set_gold(::uint64_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.Inventory)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          1, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const Inventory& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::google::protobuf::RepeatedPtrField< ::portfolio::mmo::ItemSlot > slots_;
+    ::uint64_t gold_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Gain final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.Gain) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline Gain() : Gain(nullptr) {}
+  ~Gain() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(Gain* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(Gain));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr Gain(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline Gain(const Gain& from) : Gain(nullptr, from) {}
+  inline Gain(Gain&& from) noexcept : Gain(nullptr, ::std::move(from)) {}
+  inline Gain& operator=(const Gain& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Gain& operator=(Gain&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const Gain& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Gain>(&Gain_globals_);
+  }
+  enum WhatCase {
+    kItem = 2,
+    kGold = 3,
+    WHAT_NOT_SET = 0,
+  };
+  static constexpr int kIndexInFileMessages = 32;
+  friend void swap(Gain& a, Gain& b) { a.Swap(&b); }
+  inline void Swap(Gain* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Gain* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] Gain* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<Gain>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const Gain& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const Gain& from) { Gain::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(Gain* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.Gain"; }
+
+  explicit Gain(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  Gain(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Gain& from);
+  Gain(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, Gain&& from) noexcept
+      : Gain(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kReasonFieldNumber = 1,
+    kItemFieldNumber = 2,
+    kGoldFieldNumber = 3,
+  };
+  // .portfolio.mmo.GainReason reason = 1;
+  void clear_reason() ;
+  [[nodiscard]] ::portfolio::mmo::GainReason reason() const;
+  void set_reason(::portfolio::mmo::GainReason value);
+
+  private:
+  ::portfolio::mmo::GainReason _internal_reason() const;
+  void _internal_set_reason(::portfolio::mmo::GainReason value);
+
+  public:
+  // .portfolio.mmo.ItemAmount item = 2;
+  [[nodiscard]] bool has_item() const;
+  private:
+  bool _internal_has_item() const;
+
+  public:
+  void clear_item() ;
+  [[nodiscard]] const ::portfolio::mmo::ItemAmount& item() const;
+  [[nodiscard]] ::portfolio::mmo::ItemAmount* PROTOBUF_NULLABLE release_item();
+  ::portfolio::mmo::ItemAmount* PROTOBUF_NONNULL mutable_item();
+  void set_allocated_item(::portfolio::mmo::ItemAmount* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_item(::portfolio::mmo::ItemAmount* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::ItemAmount* PROTOBUF_NULLABLE unsafe_arena_release_item();
+
+  private:
+  const ::portfolio::mmo::ItemAmount& _internal_item() const;
+  ::portfolio::mmo::ItemAmount* PROTOBUF_NONNULL _internal_mutable_item();
+
+  public:
+  // uint64 gold = 3;
+  [[nodiscard]] bool has_gold() const;
+  void clear_gold() ;
+  [[nodiscard]] ::uint64_t gold() const;
+  void set_gold(::uint64_t value);
+
+  private:
+  ::uint64_t _internal_gold() const;
+  void _internal_set_gold(::uint64_t value);
+
+  public:
+  void clear_what();
+  WhatCase what_case() const;
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.Gain)
+ private:
+  class _Internal;
+  void set_has_item();
+  void set_has_gold();
+  [[nodiscard]] inline bool has_what() const;
+  inline void clear_has_what();
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<0, 3,
+                          1, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const Gain& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    int reason_;
+    union WhatUnion {
+      constexpr WhatUnion() : _constinit_{} {}
+      ::google::protobuf::internal::ConstantInitialized _constinit_;
+      ::portfolio::mmo::ItemAmount* PROTOBUF_NULLABLE item_;
+      ::uint64_t gold_;
+    } what_;
+    ::uint32_t _oneof_case_[1];
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -10110,7 +11634,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EffectApplied final : public ::goog
   [[nodiscard]] static const EffectApplied& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<EffectApplied>(&EffectApplied_globals_);
   }
-  static constexpr int kIndexInFileMessages = 41;
+  static constexpr int kIndexInFileMessages = 48;
   friend void swap(EffectApplied& a, EffectApplied& b) { a.Swap(&b); }
   inline void Swap(EffectApplied* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -10328,7 +11852,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldowns final : public ::google::
   [[nodiscard]] static const Cooldowns& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Cooldowns>(&Cooldowns_globals_);
   }
-  static constexpr int kIndexInFileMessages = 42;
+  static constexpr int kIndexInFileMessages = 49;
   friend void swap(Cooldowns& a, Cooldowns& b) { a.Swap(&b); }
   inline void Swap(Cooldowns* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -10692,6 +12216,251 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED CharacterList final : public ::goog
 };
 // -------------------------------------------------------------------
 
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED InventoryChanged final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.InventoryChanged) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline InventoryChanged() : InventoryChanged(nullptr) {}
+  ~InventoryChanged() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(InventoryChanged* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(InventoryChanged));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr InventoryChanged(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline InventoryChanged(const InventoryChanged& from) : InventoryChanged(nullptr, from) {}
+  inline InventoryChanged(InventoryChanged&& from) noexcept : InventoryChanged(nullptr, ::std::move(from)) {}
+  inline InventoryChanged& operator=(const InventoryChanged& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline InventoryChanged& operator=(InventoryChanged&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const InventoryChanged& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<InventoryChanged>(&InventoryChanged_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 33;
+  friend void swap(InventoryChanged& a, InventoryChanged& b) { a.Swap(&b); }
+  inline void Swap(InventoryChanged* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(InventoryChanged* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] InventoryChanged* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<InventoryChanged>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const InventoryChanged& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const InventoryChanged& from) { InventoryChanged::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(InventoryChanged* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.InventoryChanged"; }
+
+  explicit InventoryChanged(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  InventoryChanged(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const InventoryChanged& from);
+  InventoryChanged(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, InventoryChanged&& from) noexcept
+      : InventoryChanged(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kSlotsFieldNumber = 1,
+    kGainsFieldNumber = 3,
+    kGoldFieldNumber = 2,
+  };
+  // repeated .portfolio.mmo.ItemSlot slots = 1;
+  [[nodiscard]] int slots_size() const;
+  private:
+  int _internal_slots_size() const;
+
+  public:
+  void clear_slots() ;
+  [[nodiscard]] const ::portfolio::mmo::ItemSlot& slots(int index) const;
+  [[nodiscard]] ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL mutable_slots(int index);
+  ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL add_slots();
+  [[nodiscard]] const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>&
+  slots() const;
+  [[nodiscard]] ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL
+  mutable_slots();
+
+  private:
+  const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>& _internal_slots() const;
+  ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL _internal_mutable_slots();
+
+  public:
+  // repeated .portfolio.mmo.Gain gains = 3;
+  [[nodiscard]] int gains_size() const;
+  private:
+  int _internal_gains_size() const;
+
+  public:
+  void clear_gains() ;
+  [[nodiscard]] const ::portfolio::mmo::Gain& gains(int index) const;
+  [[nodiscard]] ::portfolio::mmo::Gain* PROTOBUF_NONNULL mutable_gains(int index);
+  ::portfolio::mmo::Gain* PROTOBUF_NONNULL add_gains();
+  [[nodiscard]] const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Gain>&
+  gains() const;
+  [[nodiscard]] ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Gain>* PROTOBUF_NONNULL
+  mutable_gains();
+
+  private:
+  const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Gain>& _internal_gains() const;
+  ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Gain>* PROTOBUF_NONNULL _internal_mutable_gains();
+
+  public:
+  // uint64 gold = 2;
+  void clear_gold() ;
+  [[nodiscard]] ::uint64_t gold() const;
+  void set_gold(::uint64_t value);
+
+  private:
+  ::uint64_t _internal_gold() const;
+  void _internal_set_gold(::uint64_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.InventoryChanged)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<2, 3,
+                          2, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const InventoryChanged& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::google::protobuf::RepeatedPtrField< ::portfolio::mmo::ItemSlot > slots_;
+    ::google::protobuf::RepeatedPtrField< ::portfolio::mmo::Gain > gains_;
+    ::uint64_t gold_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
 class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntitiesEnter final : public ::google::protobuf::Message
 /* @@protoc_insertion_point(class_definition:portfolio.mmo.EntitiesEnter) */ {
   using Super_ = ::google::protobuf::Message;
@@ -11000,6 +12769,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kProjectileEnded = 216,
     kSelfStats = 300,
     kExpGained = 301,
+    kInventory = 302,
+    kInventoryChanged = 303,
+    kUseItem = 304,
+    kRequestResult = 305,
     BODY_NOT_SET = 0,
   };
   static constexpr int kIndexInFileMessages = 0;
@@ -11130,6 +12903,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kProjectileEndedFieldNumber = 216,
     kSelfStatsFieldNumber = 300,
     kExpGainedFieldNumber = 301,
+    kInventoryFieldNumber = 302,
+    kInventoryChangedFieldNumber = 303,
+    kUseItemFieldNumber = 304,
+    kRequestResultFieldNumber = 305,
   };
   // .portfolio.mmo.Login login = 1;
   [[nodiscard]] bool has_login() const;
@@ -11853,6 +13630,82 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   ::portfolio::mmo::ExpGained* PROTOBUF_NONNULL _internal_mutable_exp_gained();
 
   public:
+  // .portfolio.mmo.Inventory inventory = 302;
+  [[nodiscard]] bool has_inventory() const;
+  private:
+  bool _internal_has_inventory() const;
+
+  public:
+  void clear_inventory() ;
+  [[nodiscard]] const ::portfolio::mmo::Inventory& inventory() const;
+  [[nodiscard]] ::portfolio::mmo::Inventory* PROTOBUF_NULLABLE release_inventory();
+  ::portfolio::mmo::Inventory* PROTOBUF_NONNULL mutable_inventory();
+  void set_allocated_inventory(::portfolio::mmo::Inventory* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_inventory(::portfolio::mmo::Inventory* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::Inventory* PROTOBUF_NULLABLE unsafe_arena_release_inventory();
+
+  private:
+  const ::portfolio::mmo::Inventory& _internal_inventory() const;
+  ::portfolio::mmo::Inventory* PROTOBUF_NONNULL _internal_mutable_inventory();
+
+  public:
+  // .portfolio.mmo.InventoryChanged inventory_changed = 303;
+  [[nodiscard]] bool has_inventory_changed() const;
+  private:
+  bool _internal_has_inventory_changed() const;
+
+  public:
+  void clear_inventory_changed() ;
+  [[nodiscard]] const ::portfolio::mmo::InventoryChanged& inventory_changed() const;
+  [[nodiscard]] ::portfolio::mmo::InventoryChanged* PROTOBUF_NULLABLE release_inventory_changed();
+  ::portfolio::mmo::InventoryChanged* PROTOBUF_NONNULL mutable_inventory_changed();
+  void set_allocated_inventory_changed(::portfolio::mmo::InventoryChanged* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_inventory_changed(::portfolio::mmo::InventoryChanged* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::InventoryChanged* PROTOBUF_NULLABLE unsafe_arena_release_inventory_changed();
+
+  private:
+  const ::portfolio::mmo::InventoryChanged& _internal_inventory_changed() const;
+  ::portfolio::mmo::InventoryChanged* PROTOBUF_NONNULL _internal_mutable_inventory_changed();
+
+  public:
+  // .portfolio.mmo.UseItem use_item = 304;
+  [[nodiscard]] bool has_use_item() const;
+  private:
+  bool _internal_has_use_item() const;
+
+  public:
+  void clear_use_item() ;
+  [[nodiscard]] const ::portfolio::mmo::UseItem& use_item() const;
+  [[nodiscard]] ::portfolio::mmo::UseItem* PROTOBUF_NULLABLE release_use_item();
+  ::portfolio::mmo::UseItem* PROTOBUF_NONNULL mutable_use_item();
+  void set_allocated_use_item(::portfolio::mmo::UseItem* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_use_item(::portfolio::mmo::UseItem* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::UseItem* PROTOBUF_NULLABLE unsafe_arena_release_use_item();
+
+  private:
+  const ::portfolio::mmo::UseItem& _internal_use_item() const;
+  ::portfolio::mmo::UseItem* PROTOBUF_NONNULL _internal_mutable_use_item();
+
+  public:
+  // .portfolio.mmo.RequestResult request_result = 305;
+  [[nodiscard]] bool has_request_result() const;
+  private:
+  bool _internal_has_request_result() const;
+
+  public:
+  void clear_request_result() ;
+  [[nodiscard]] const ::portfolio::mmo::RequestResult& request_result() const;
+  [[nodiscard]] ::portfolio::mmo::RequestResult* PROTOBUF_NULLABLE release_request_result();
+  ::portfolio::mmo::RequestResult* PROTOBUF_NONNULL mutable_request_result();
+  void set_allocated_request_result(::portfolio::mmo::RequestResult* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_request_result(::portfolio::mmo::RequestResult* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::RequestResult* PROTOBUF_NULLABLE unsafe_arena_release_request_result();
+
+  private:
+  const ::portfolio::mmo::RequestResult& _internal_request_result() const;
+  ::portfolio::mmo::RequestResult* PROTOBUF_NONNULL _internal_mutable_request_result();
+
+  public:
   void clear_body();
   BodyCase body_case() const;
   // @@protoc_insertion_point(class_scope:portfolio.mmo.Packet)
@@ -11896,11 +13749,15 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   void set_has_projectile_ended();
   void set_has_self_stats();
   void set_has_exp_gained();
+  void set_has_inventory();
+  void set_has_inventory_changed();
+  void set_has_use_item();
+  void set_has_request_result();
   [[nodiscard]] inline bool has_body() const;
   inline void clear_has_body();
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<0, 38,
-                          38, 0,
+      ::google::protobuf::internal::TcParseTable<0, 42,
+                          42, 0,
                           24>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
       const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
@@ -11967,6 +13824,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
       ::google::protobuf::Message* PROTOBUF_NULLABLE projectile_ended_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE self_stats_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE exp_gained_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE inventory_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE inventory_changed_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE use_item_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE request_result_;
     } body_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::uint32_t _oneof_case_[1];
@@ -15070,6 +16931,330 @@ inline ::portfolio::mmo::ExpGained* PROTOBUF_NONNULL Packet::mutable_exp_gained(
   return _msg;
 }
 
+// .portfolio.mmo.Inventory inventory = 302;
+inline bool Packet::has_inventory() const {
+  return body_case() == kInventory;
+}
+inline bool Packet::_internal_has_inventory() const {
+  return body_case() == kInventory;
+}
+inline void Packet::set_has_inventory() {
+  _impl_._oneof_case_[0] = kInventory;
+}
+inline void Packet::clear_inventory() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kInventory) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.inventory_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.inventory_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::Inventory* PROTOBUF_NULLABLE Packet::release_inventory() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.inventory)
+  if (body_case() == kInventory) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::Inventory*>(_impl_.body_.inventory_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.inventory_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::Inventory& Packet::_internal_inventory() const {
+  return body_case() == kInventory ? static_cast<const ::portfolio::mmo::Inventory&>(*reinterpret_cast<::portfolio::mmo::Inventory*>(_impl_.body_.inventory_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::Inventory>(&::portfolio::mmo::Inventory_globals_);
+}
+inline const ::portfolio::mmo::Inventory& Packet::inventory() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.inventory)
+  return _internal_inventory();
+}
+inline ::portfolio::mmo::Inventory* PROTOBUF_NULLABLE Packet::unsafe_arena_release_inventory() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.inventory)
+  if (body_case() == kInventory) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::Inventory*>(_impl_.body_.inventory_);
+    _impl_.body_.inventory_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_inventory(
+    ::portfolio::mmo::Inventory* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_inventory();
+    _impl_.body_.inventory_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.inventory)
+}
+inline ::portfolio::mmo::Inventory* PROTOBUF_NONNULL Packet::_internal_mutable_inventory() {
+  if (body_case() != kInventory) {
+    clear_body();
+    set_has_inventory();
+    _impl_.body_.inventory_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::Inventory>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::Inventory*>(_impl_.body_.inventory_);
+}
+inline ::portfolio::mmo::Inventory* PROTOBUF_NONNULL Packet::mutable_inventory()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::Inventory* _msg = _internal_mutable_inventory();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.inventory)
+  return _msg;
+}
+
+// .portfolio.mmo.InventoryChanged inventory_changed = 303;
+inline bool Packet::has_inventory_changed() const {
+  return body_case() == kInventoryChanged;
+}
+inline bool Packet::_internal_has_inventory_changed() const {
+  return body_case() == kInventoryChanged;
+}
+inline void Packet::set_has_inventory_changed() {
+  _impl_._oneof_case_[0] = kInventoryChanged;
+}
+inline void Packet::clear_inventory_changed() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kInventoryChanged) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.inventory_changed_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.inventory_changed_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::InventoryChanged* PROTOBUF_NULLABLE Packet::release_inventory_changed() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.inventory_changed)
+  if (body_case() == kInventoryChanged) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::InventoryChanged*>(_impl_.body_.inventory_changed_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.inventory_changed_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::InventoryChanged& Packet::_internal_inventory_changed() const {
+  return body_case() == kInventoryChanged ? static_cast<const ::portfolio::mmo::InventoryChanged&>(*reinterpret_cast<::portfolio::mmo::InventoryChanged*>(_impl_.body_.inventory_changed_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::InventoryChanged>(&::portfolio::mmo::InventoryChanged_globals_);
+}
+inline const ::portfolio::mmo::InventoryChanged& Packet::inventory_changed() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.inventory_changed)
+  return _internal_inventory_changed();
+}
+inline ::portfolio::mmo::InventoryChanged* PROTOBUF_NULLABLE Packet::unsafe_arena_release_inventory_changed() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.inventory_changed)
+  if (body_case() == kInventoryChanged) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::InventoryChanged*>(_impl_.body_.inventory_changed_);
+    _impl_.body_.inventory_changed_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_inventory_changed(
+    ::portfolio::mmo::InventoryChanged* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_inventory_changed();
+    _impl_.body_.inventory_changed_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.inventory_changed)
+}
+inline ::portfolio::mmo::InventoryChanged* PROTOBUF_NONNULL Packet::_internal_mutable_inventory_changed() {
+  if (body_case() != kInventoryChanged) {
+    clear_body();
+    set_has_inventory_changed();
+    _impl_.body_.inventory_changed_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::InventoryChanged>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::InventoryChanged*>(_impl_.body_.inventory_changed_);
+}
+inline ::portfolio::mmo::InventoryChanged* PROTOBUF_NONNULL Packet::mutable_inventory_changed()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::InventoryChanged* _msg = _internal_mutable_inventory_changed();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.inventory_changed)
+  return _msg;
+}
+
+// .portfolio.mmo.UseItem use_item = 304;
+inline bool Packet::has_use_item() const {
+  return body_case() == kUseItem;
+}
+inline bool Packet::_internal_has_use_item() const {
+  return body_case() == kUseItem;
+}
+inline void Packet::set_has_use_item() {
+  _impl_._oneof_case_[0] = kUseItem;
+}
+inline void Packet::clear_use_item() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kUseItem) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.use_item_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.use_item_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::UseItem* PROTOBUF_NULLABLE Packet::release_use_item() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.use_item)
+  if (body_case() == kUseItem) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::UseItem*>(_impl_.body_.use_item_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.use_item_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::UseItem& Packet::_internal_use_item() const {
+  return body_case() == kUseItem ? static_cast<const ::portfolio::mmo::UseItem&>(*reinterpret_cast<::portfolio::mmo::UseItem*>(_impl_.body_.use_item_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::UseItem>(&::portfolio::mmo::UseItem_globals_);
+}
+inline const ::portfolio::mmo::UseItem& Packet::use_item() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.use_item)
+  return _internal_use_item();
+}
+inline ::portfolio::mmo::UseItem* PROTOBUF_NULLABLE Packet::unsafe_arena_release_use_item() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.use_item)
+  if (body_case() == kUseItem) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::UseItem*>(_impl_.body_.use_item_);
+    _impl_.body_.use_item_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_use_item(
+    ::portfolio::mmo::UseItem* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_use_item();
+    _impl_.body_.use_item_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.use_item)
+}
+inline ::portfolio::mmo::UseItem* PROTOBUF_NONNULL Packet::_internal_mutable_use_item() {
+  if (body_case() != kUseItem) {
+    clear_body();
+    set_has_use_item();
+    _impl_.body_.use_item_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::UseItem>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::UseItem*>(_impl_.body_.use_item_);
+}
+inline ::portfolio::mmo::UseItem* PROTOBUF_NONNULL Packet::mutable_use_item()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::UseItem* _msg = _internal_mutable_use_item();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.use_item)
+  return _msg;
+}
+
+// .portfolio.mmo.RequestResult request_result = 305;
+inline bool Packet::has_request_result() const {
+  return body_case() == kRequestResult;
+}
+inline bool Packet::_internal_has_request_result() const {
+  return body_case() == kRequestResult;
+}
+inline void Packet::set_has_request_result() {
+  _impl_._oneof_case_[0] = kRequestResult;
+}
+inline void Packet::clear_request_result() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kRequestResult) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.request_result_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.request_result_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::RequestResult* PROTOBUF_NULLABLE Packet::release_request_result() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.request_result)
+  if (body_case() == kRequestResult) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::RequestResult*>(_impl_.body_.request_result_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.request_result_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::RequestResult& Packet::_internal_request_result() const {
+  return body_case() == kRequestResult ? static_cast<const ::portfolio::mmo::RequestResult&>(*reinterpret_cast<::portfolio::mmo::RequestResult*>(_impl_.body_.request_result_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::RequestResult>(&::portfolio::mmo::RequestResult_globals_);
+}
+inline const ::portfolio::mmo::RequestResult& Packet::request_result() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.request_result)
+  return _internal_request_result();
+}
+inline ::portfolio::mmo::RequestResult* PROTOBUF_NULLABLE Packet::unsafe_arena_release_request_result() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.request_result)
+  if (body_case() == kRequestResult) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::RequestResult*>(_impl_.body_.request_result_);
+    _impl_.body_.request_result_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_request_result(
+    ::portfolio::mmo::RequestResult* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_request_result();
+    _impl_.body_.request_result_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.request_result)
+}
+inline ::portfolio::mmo::RequestResult* PROTOBUF_NONNULL Packet::_internal_mutable_request_result() {
+  if (body_case() != kRequestResult) {
+    clear_body();
+    set_has_request_result();
+    _impl_.body_.request_result_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::RequestResult>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::RequestResult*>(_impl_.body_.request_result_);
+}
+inline ::portfolio::mmo::RequestResult* PROTOBUF_NONNULL Packet::mutable_request_result()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::RequestResult* _msg = _internal_mutable_request_result();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.request_result)
+  return _msg;
+}
+
 inline bool Packet::has_body() const {
   return body_case() != BODY_NOT_SET;
 }
@@ -17692,6 +19877,658 @@ inline void ExpGained::_internal_set_exp(::uint32_t value) {
 
 // -------------------------------------------------------------------
 
+// ItemSlot
+
+// .portfolio.mmo.ItemPlace place = 1;
+inline void ItemSlot::clear_place() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.place_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::portfolio::mmo::ItemPlace ItemSlot::place() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.ItemSlot.place)
+  return _internal_place();
+}
+inline void ItemSlot::set_place(::portfolio::mmo::ItemPlace value) {
+  _internal_set_place(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.ItemSlot.place)
+}
+inline ::portfolio::mmo::ItemPlace ItemSlot::_internal_place() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::portfolio::mmo::ItemPlace>(_impl_.place_);
+}
+inline void ItemSlot::_internal_set_place(::portfolio::mmo::ItemPlace value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.place_ = value;
+}
+
+// uint32 index = 2;
+inline void ItemSlot::clear_index() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.index_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t ItemSlot::index() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.ItemSlot.index)
+  return _internal_index();
+}
+inline void ItemSlot::set_index(::uint32_t value) {
+  _internal_set_index(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.ItemSlot.index)
+}
+inline ::uint32_t ItemSlot::_internal_index() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.index_;
+}
+inline void ItemSlot::_internal_set_index(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.index_ = value;
+}
+
+// uint32 item_id = 3;
+inline void ItemSlot::clear_item_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.item_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000004U);
+}
+inline ::uint32_t ItemSlot::item_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.ItemSlot.item_id)
+  return _internal_item_id();
+}
+inline void ItemSlot::set_item_id(::uint32_t value) {
+  _internal_set_item_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.ItemSlot.item_id)
+}
+inline ::uint32_t ItemSlot::_internal_item_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.item_id_;
+}
+inline void ItemSlot::_internal_set_item_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.item_id_ = value;
+}
+
+// uint32 count = 4;
+inline void ItemSlot::clear_count() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.count_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000008U);
+}
+inline ::uint32_t ItemSlot::count() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.ItemSlot.count)
+  return _internal_count();
+}
+inline void ItemSlot::set_count(::uint32_t value) {
+  _internal_set_count(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000008U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.ItemSlot.count)
+}
+inline ::uint32_t ItemSlot::_internal_count() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.count_;
+}
+inline void ItemSlot::_internal_set_count(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.count_ = value;
+}
+
+// uint32 enchant = 5;
+inline void ItemSlot::clear_enchant() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.enchant_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000010U);
+}
+inline ::uint32_t ItemSlot::enchant() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.ItemSlot.enchant)
+  return _internal_enchant();
+}
+inline void ItemSlot::set_enchant(::uint32_t value) {
+  _internal_set_enchant(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000010U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.ItemSlot.enchant)
+}
+inline ::uint32_t ItemSlot::_internal_enchant() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.enchant_;
+}
+inline void ItemSlot::_internal_set_enchant(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.enchant_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// Inventory
+
+// repeated .portfolio.mmo.ItemSlot slots = 1;
+inline int Inventory::_internal_slots_size() const {
+  return _internal_slots().size();
+}
+inline int Inventory::slots_size() const {
+  return _internal_slots_size();
+}
+inline void Inventory::clear_slots() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.slots_.Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline const ::portfolio::mmo::ItemSlot& Inventory::slots(int index) const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Inventory.slots)
+  return _internal_slots().Get(index);
+}
+inline ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL Inventory::mutable_slots(int index)
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Inventory.slots)
+  return _internal_mutable_slots()->Mutable(index);
+}
+inline ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL Inventory::add_slots()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::portfolio::mmo::ItemSlot* _add =
+      _internal_mutable_slots()->InternalAddWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), GetArena());
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_add:portfolio.mmo.Inventory.slots)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>& Inventory::slots() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:portfolio.mmo.Inventory.slots)
+  return _internal_slots();
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL
+Inventory::mutable_slots() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_mutable_list:portfolio.mmo.Inventory.slots)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_slots();
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>&
+Inventory::_internal_slots() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.slots_;
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL
+Inventory::_internal_mutable_slots() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.slots_;
+}
+
+// uint64 gold = 2;
+inline void Inventory::clear_gold() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.gold_ = ::uint64_t{0u};
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint64_t Inventory::gold() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Inventory.gold)
+  return _internal_gold();
+}
+inline void Inventory::set_gold(::uint64_t value) {
+  _internal_set_gold(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Inventory.gold)
+}
+inline ::uint64_t Inventory::_internal_gold() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.gold_;
+}
+inline void Inventory::_internal_set_gold(::uint64_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.gold_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// ItemAmount
+
+// uint32 item_id = 1;
+inline void ItemAmount::clear_item_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.item_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::uint32_t ItemAmount::item_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.ItemAmount.item_id)
+  return _internal_item_id();
+}
+inline void ItemAmount::set_item_id(::uint32_t value) {
+  _internal_set_item_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.ItemAmount.item_id)
+}
+inline ::uint32_t ItemAmount::_internal_item_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.item_id_;
+}
+inline void ItemAmount::_internal_set_item_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.item_id_ = value;
+}
+
+// uint32 count = 2;
+inline void ItemAmount::clear_count() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.count_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t ItemAmount::count() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.ItemAmount.count)
+  return _internal_count();
+}
+inline void ItemAmount::set_count(::uint32_t value) {
+  _internal_set_count(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.ItemAmount.count)
+}
+inline ::uint32_t ItemAmount::_internal_count() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.count_;
+}
+inline void ItemAmount::_internal_set_count(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.count_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// Gain
+
+// .portfolio.mmo.GainReason reason = 1;
+inline void Gain::clear_reason() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.reason_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::portfolio::mmo::GainReason Gain::reason() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Gain.reason)
+  return _internal_reason();
+}
+inline void Gain::set_reason(::portfolio::mmo::GainReason value) {
+  _internal_set_reason(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Gain.reason)
+}
+inline ::portfolio::mmo::GainReason Gain::_internal_reason() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::portfolio::mmo::GainReason>(_impl_.reason_);
+}
+inline void Gain::_internal_set_reason(::portfolio::mmo::GainReason value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.reason_ = value;
+}
+
+// .portfolio.mmo.ItemAmount item = 2;
+inline bool Gain::has_item() const {
+  return what_case() == kItem;
+}
+inline bool Gain::_internal_has_item() const {
+  return what_case() == kItem;
+}
+inline void Gain::set_has_item() {
+  _impl_._oneof_case_[0] = kItem;
+}
+inline void Gain::clear_item() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (what_case() == kItem) {
+    if (GetArena() == nullptr) {
+      delete _impl_.what_.item_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.what_.item_);
+    }
+    clear_has_what();
+  }
+}
+inline ::portfolio::mmo::ItemAmount* PROTOBUF_NULLABLE Gain::release_item() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Gain.item)
+  if (what_case() == kItem) {
+    clear_has_what();
+    auto* temp = _impl_.what_.item_;
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.what_.item_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::ItemAmount& Gain::_internal_item() const {
+  return what_case() == kItem ? static_cast<const ::portfolio::mmo::ItemAmount&>(*_impl_.what_.item_)
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::ItemAmount>(&::portfolio::mmo::ItemAmount_globals_);
+}
+inline const ::portfolio::mmo::ItemAmount& Gain::item() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Gain.item)
+  return _internal_item();
+}
+inline ::portfolio::mmo::ItemAmount* PROTOBUF_NULLABLE Gain::unsafe_arena_release_item() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Gain.item)
+  if (what_case() == kItem) {
+    clear_has_what();
+    auto* temp = _impl_.what_.item_;
+    _impl_.what_.item_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Gain::unsafe_arena_set_allocated_item(
+    ::portfolio::mmo::ItemAmount* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_what();
+  if (value) {
+    set_has_item();
+    _impl_.what_.item_ = value;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Gain.item)
+}
+inline ::portfolio::mmo::ItemAmount* PROTOBUF_NONNULL Gain::_internal_mutable_item() {
+  if (what_case() != kItem) {
+    clear_what();
+    set_has_item();
+    _impl_.what_.item_ = Super_::DefaultConstruct<::portfolio::mmo::ItemAmount>(GetArena());
+  }
+  return _impl_.what_.item_;
+}
+inline ::portfolio::mmo::ItemAmount* PROTOBUF_NONNULL Gain::mutable_item()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::ItemAmount* _msg = _internal_mutable_item();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Gain.item)
+  return _msg;
+}
+
+// uint64 gold = 3;
+inline bool Gain::has_gold() const {
+  return what_case() == kGold;
+}
+inline void Gain::set_has_gold() {
+  _impl_._oneof_case_[0] = kGold;
+}
+inline void Gain::clear_gold() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (what_case() == kGold) {
+    _impl_.what_.gold_ = ::uint64_t{0u};
+    clear_has_what();
+  }
+}
+inline ::uint64_t Gain::gold() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Gain.gold)
+  return _internal_gold();
+}
+inline void Gain::set_gold(::uint64_t value) {
+  if (what_case() != kGold) {
+    clear_what();
+    set_has_gold();
+  }
+  _impl_.what_.gold_ = value;
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Gain.gold)
+}
+inline ::uint64_t Gain::_internal_gold() const {
+  if (what_case() == kGold) {
+    return _impl_.what_.gold_;
+  }
+  return ::uint64_t{0u};
+}
+
+inline bool Gain::has_what() const {
+  return what_case() != WHAT_NOT_SET;
+}
+inline void Gain::clear_has_what() {
+  _impl_._oneof_case_[0] = WHAT_NOT_SET;
+}
+inline Gain::WhatCase Gain::what_case() const {
+  return Gain::WhatCase(_impl_._oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
+// InventoryChanged
+
+// repeated .portfolio.mmo.ItemSlot slots = 1;
+inline int InventoryChanged::_internal_slots_size() const {
+  return _internal_slots().size();
+}
+inline int InventoryChanged::slots_size() const {
+  return _internal_slots_size();
+}
+inline void InventoryChanged::clear_slots() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.slots_.Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline const ::portfolio::mmo::ItemSlot& InventoryChanged::slots(int index) const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.InventoryChanged.slots)
+  return _internal_slots().Get(index);
+}
+inline ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL InventoryChanged::mutable_slots(int index)
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.InventoryChanged.slots)
+  return _internal_mutable_slots()->Mutable(index);
+}
+inline ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL InventoryChanged::add_slots()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::portfolio::mmo::ItemSlot* _add =
+      _internal_mutable_slots()->InternalAddWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), GetArena());
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_add:portfolio.mmo.InventoryChanged.slots)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>& InventoryChanged::slots() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:portfolio.mmo.InventoryChanged.slots)
+  return _internal_slots();
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL
+InventoryChanged::mutable_slots() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_mutable_list:portfolio.mmo.InventoryChanged.slots)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_slots();
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>&
+InventoryChanged::_internal_slots() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.slots_;
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL
+InventoryChanged::_internal_mutable_slots() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.slots_;
+}
+
+// uint64 gold = 2;
+inline void InventoryChanged::clear_gold() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.gold_ = ::uint64_t{0u};
+  ClearHasBit(_impl_._has_bits_[0], 0x00000004U);
+}
+inline ::uint64_t InventoryChanged::gold() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.InventoryChanged.gold)
+  return _internal_gold();
+}
+inline void InventoryChanged::set_gold(::uint64_t value) {
+  _internal_set_gold(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.InventoryChanged.gold)
+}
+inline ::uint64_t InventoryChanged::_internal_gold() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.gold_;
+}
+inline void InventoryChanged::_internal_set_gold(::uint64_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.gold_ = value;
+}
+
+// repeated .portfolio.mmo.Gain gains = 3;
+inline int InventoryChanged::_internal_gains_size() const {
+  return _internal_gains().size();
+}
+inline int InventoryChanged::gains_size() const {
+  return _internal_gains_size();
+}
+inline void InventoryChanged::clear_gains() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.gains_.Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline const ::portfolio::mmo::Gain& InventoryChanged::gains(int index) const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.InventoryChanged.gains)
+  return _internal_gains().Get(index);
+}
+inline ::portfolio::mmo::Gain* PROTOBUF_NONNULL InventoryChanged::mutable_gains(int index)
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.InventoryChanged.gains)
+  return _internal_mutable_gains()->Mutable(index);
+}
+inline ::portfolio::mmo::Gain* PROTOBUF_NONNULL InventoryChanged::add_gains()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::portfolio::mmo::Gain* _add =
+      _internal_mutable_gains()->InternalAddWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), GetArena());
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_add:portfolio.mmo.InventoryChanged.gains)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Gain>& InventoryChanged::gains() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:portfolio.mmo.InventoryChanged.gains)
+  return _internal_gains();
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Gain>* PROTOBUF_NONNULL
+InventoryChanged::mutable_gains() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_mutable_list:portfolio.mmo.InventoryChanged.gains)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_gains();
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Gain>&
+InventoryChanged::_internal_gains() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.gains_;
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::Gain>* PROTOBUF_NONNULL
+InventoryChanged::_internal_mutable_gains() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.gains_;
+}
+
+// -------------------------------------------------------------------
+
+// UseItem
+
+// uint32 slot = 1;
+inline void UseItem::clear_slot() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.slot_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::uint32_t UseItem::slot() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.UseItem.slot)
+  return _internal_slot();
+}
+inline void UseItem::set_slot(::uint32_t value) {
+  _internal_set_slot(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.UseItem.slot)
+}
+inline ::uint32_t UseItem::_internal_slot() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.slot_;
+}
+inline void UseItem::_internal_set_slot(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.slot_ = value;
+}
+
+// uint32 request_id = 2;
+inline void UseItem::clear_request_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.request_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t UseItem::request_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.UseItem.request_id)
+  return _internal_request_id();
+}
+inline void UseItem::set_request_id(::uint32_t value) {
+  _internal_set_request_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.UseItem.request_id)
+}
+inline ::uint32_t UseItem::_internal_request_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.request_id_;
+}
+inline void UseItem::_internal_set_request_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.request_id_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// RequestResult
+
+// uint32 request_id = 1;
+inline void RequestResult::clear_request_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.request_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline ::uint32_t RequestResult::request_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.RequestResult.request_id)
+  return _internal_request_id();
+}
+inline void RequestResult::set_request_id(::uint32_t value) {
+  _internal_set_request_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.RequestResult.request_id)
+}
+inline ::uint32_t RequestResult::_internal_request_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.request_id_;
+}
+inline void RequestResult::_internal_set_request_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.request_id_ = value;
+}
+
+// .portfolio.mmo.FailReason result = 2;
+inline void RequestResult::clear_result() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.result_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::portfolio::mmo::FailReason RequestResult::result() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.RequestResult.result)
+  return _internal_result();
+}
+inline void RequestResult::set_result(::portfolio::mmo::FailReason value) {
+  _internal_set_result(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.RequestResult.result)
+}
+inline ::portfolio::mmo::FailReason RequestResult::_internal_result() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::portfolio::mmo::FailReason>(_impl_.result_);
+}
+inline void RequestResult::_internal_set_result(::portfolio::mmo::FailReason value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.result_ = value;
+}
+
+// -------------------------------------------------------------------
+
 // ActionFailed
 
 // .portfolio.mmo.FailReason reason = 1;
@@ -18649,6 +21486,30 @@ inline void Cooldown::_internal_set_end_tick(::uint32_t value) {
   _impl_.end_tick_ = value;
 }
 
+// uint32 potion = 3;
+inline void Cooldown::clear_potion() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.potion_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000004U);
+}
+inline ::uint32_t Cooldown::potion() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Cooldown.potion)
+  return _internal_potion();
+}
+inline void Cooldown::set_potion(::uint32_t value) {
+  _internal_set_potion(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Cooldown.potion)
+}
+inline ::uint32_t Cooldown::_internal_potion() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.potion_;
+}
+inline void Cooldown::_internal_set_potion(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.potion_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // ProjectileLaunched
@@ -18920,6 +21781,18 @@ struct is_proto_enum<::portfolio::mmo::ProgressKind> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::ProgressKind>() {
   return ::portfolio::mmo::ProgressKind_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::ItemPlace> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::ItemPlace>() {
+  return ::portfolio::mmo::ItemPlace_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::GainReason> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::GainReason>() {
+  return ::portfolio::mmo::GainReason_descriptor();
 }
 template <>
 struct is_proto_enum<::portfolio::mmo::FailReason> : std::true_type {};

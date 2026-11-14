@@ -68,6 +68,22 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 순간 이동(부활 25, 개발 명령 68, 귀환 32): 자리를 바꾸고, 보는 쪽에는 순간 이동 표시가 있는 움직임이, 본인에게는 PositionReset이 간다.
+        /// 걸을 수 있는 칸인지는 부르는 쪽이 본다.
+        /// </summary>
+        public void Teleport(Player player, int x, int z)
+        {
+            player.X = x;
+            player.Z = z;
+            player.Moved = true;
+            player.Teleported = true;
+            player.Dirty = true;
+            player.MoveBudget = 0;
+            _grid.Moved(player);
+            Reset(player);
+        }
+
+        /// <summary>
         /// 플레이어를 서버의 지금 자리로 되돌린다: ack를 올리고 PositionReset을 보낸다. 그 ack를 실은 Move만 다시 받는다.
         /// </summary>
         public void Reset(Player player)

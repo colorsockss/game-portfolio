@@ -592,7 +592,7 @@ namespace PortfolioMmo.Server.Tests
         /// 쌓인 패킷을 꺼내고 비운다.
         /// </summary>
         /// <summary>
-        /// 쌓인 패킷을 꺼낸다. 체력·마나·능력치·쿨다운·경험치의 알림은 빼고 돌려준다(그것은 TakeVitals로 보며 VitalsTests, SkillTests, GrowthTests가 확인함).
+        /// 쌓인 패킷을 꺼낸다. 체력·마나·능력치·쿨다운·경험치·인벤토리의 알림은 빼고 돌려준다(그것은 TakeVitals로 보며 VitalsTests, SkillTests, GrowthTests가 확인함).
         /// </summary>
         private static List<Packet> Take(Session session)
         {
@@ -602,7 +602,7 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 쌓인 패킷 가운데 체력·마나·능력치·쿨다운·경험치의 알림만 꺼낸다(나머지도 비움).
+        /// 쌓인 패킷 가운데 체력·마나·능력치·쿨다운·경험치·인벤토리의 알림만 꺼낸다(나머지도 비움).
         /// </summary>
         private static List<Packet> TakeVitals(Session session)
         {
@@ -614,7 +614,7 @@ namespace PortfolioMmo.Server.Tests
         private static bool IsVitals(Packet packet)
         {
             return packet.BodyCase is Packet.BodyOneofCase.SelfVitals or Packet.BodyOneofCase.SelfStats or Packet.BodyOneofCase.EntityVitals or Packet.BodyOneofCase.Cooldowns
-                or Packet.BodyOneofCase.ExpGained;
+                or Packet.BodyOneofCase.ExpGained or Packet.BodyOneofCase.Inventory or Packet.BodyOneofCase.InventoryChanged;
         }
 
         /// <summary>

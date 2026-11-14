@@ -18,6 +18,10 @@ message ClassesRow {
   optional double projectile_speed = 5;
   // 가지고 시작하는 첫 스킬(Skills의 줄)
   uint32 first_skill = 6;
+  // 처음 상태의 아이템(Items의 줄). 기본 무기는 34가 더한다
+  repeated uint32 start_items = 7;
+  // 처음 상태의 아이템마다의 수(startItems와 같은 차례)
+  repeated uint32 start_counts = 8;
 }
 
 message Classes {

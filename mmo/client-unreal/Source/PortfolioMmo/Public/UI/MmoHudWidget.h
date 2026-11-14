@@ -185,6 +185,9 @@ private:
 	/** 아이콘 표(73). 처음 퀵슬롯을 채울 때 읽는다. */
 	UPROPERTY()
 	TObjectPtr<UMmoIcons> Icons;
+
+	/** 퀵슬롯마다 보인 물약(아이템 번호 << 32 | 가진 수). */
+	TArray<uint64> ShownPotions;
 	FString ShownEffects = TEXT("-");
 	uint32 ShownProgress = MAX_uint32;
 	/** 마지막으로 보인 상호작용의 종류(MmoWorld::EInteractKind). 처음에는 어떤 종류와도 다르게 둔다. */

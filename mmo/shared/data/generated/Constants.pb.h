@@ -241,6 +241,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kRateLimitRefillPerSecondFieldNumber = 19,
     kRateLimitKickMsFieldNumber = 20,
     kRateLimitResetMsFieldNumber = 21,
+    kInventorySlotsFieldNumber = 22,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -452,11 +453,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_rate_limit_reset_ms(::uint32_t value);
 
   public:
+  // uint32 inventory_slots = 22;
+  void clear_inventory_slots() ;
+  [[nodiscard]] ::uint32_t inventory_slots() const;
+  void set_inventory_slots(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_inventory_slots() const;
+  void _internal_set_inventory_slots(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 21,
+      ::google::protobuf::internal::TcParseTable<5, 22,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -506,6 +517,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t rate_limit_refill_per_second_;
     ::uint32_t rate_limit_kick_ms_;
     ::uint32_t rate_limit_reset_ms_;
+    ::uint32_t inventory_slots_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1030,6 +1042,30 @@ inline ::uint32_t Constants::_internal_rate_limit_reset_ms() const {
 inline void Constants::_internal_set_rate_limit_reset_ms(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.rate_limit_reset_ms_ = value;
+}
+
+// uint32 inventory_slots = 22;
+inline void Constants::clear_inventory_slots() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.inventory_slots_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00200000U);
+}
+inline ::uint32_t Constants::inventory_slots() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.inventory_slots)
+  return _internal_inventory_slots();
+}
+inline void Constants::set_inventory_slots(::uint32_t value) {
+  _internal_set_inventory_slots(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00200000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.inventory_slots)
+}
+inline ::uint32_t Constants::_internal_inventory_slots() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.inventory_slots_;
+}
+inline void Constants::_internal_set_inventory_slots(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.inventory_slots_ = value;
 }
 
 #ifdef __GNUC__

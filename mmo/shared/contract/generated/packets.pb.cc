@@ -87,6 +87,20 @@ PROTOBUF_CONSTINIT ::google::protobuf::internal::ReflectionData
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::ExpGained
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::ItemSlot
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::Inventory
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::ItemAmount
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::Gain
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::InventoryChanged
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::UseItem
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::RequestResult
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::ActionFailed
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::AttackStart
@@ -230,7 +244,7 @@ constexpr auto UseSkill::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[37],
+      &file_reflection_data[44],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -277,6 +291,153 @@ const ::_pbi::ClassData* UseSkill_get_class_data() {
   return UseSkill_globals_.GetClassData();
 #else
   return UseSkill_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class UseItem::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<UseItem>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(UseItem, _impl_._has_bits_);
+};
+
+constexpr UseItem::ParseTableT_ UseItem::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(UseItem, _impl_._has_bits_),
+      0, // no _extensions_
+      2, 8,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967292,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      2,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::UseItem>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // uint32 request_id = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(UseItem, _impl_.request_id_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(UseItem, _impl_.request_id_)}},
+      // uint32 slot = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(UseItem, _impl_.slot_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(UseItem, _impl_.slot_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint32 slot = 1;
+      {PROTOBUF_FIELD_OFFSET(UseItem, _impl_.slot_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 request_id = 2;
+      {PROTOBUF_FIELD_OFFSET(UseItem, _impl_.request_id_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr UseItem::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : slot_{0u},
+        request_id_{0u} {}
+
+template <typename>
+constexpr UseItem::UseItem(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL UseItem::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) UseItem(arena);
+}
+constexpr auto UseItem::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(UseItem), alignof(UseItem));
+}
+constexpr auto UseItem::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &UseItem::MergeImpl,
+          Super_::GetNewImpl<UseItem>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &UseItem::SharedDtor,
+          Super_::GetClearImpl<UseItem>(), &UseItem::ByteSizeLong,
+              &UseItem::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(UseItem, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[34],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct UseItemGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr UseItemGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 UseItem_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(UseItem::InternalGenerateClassData_(
+            _default, &UseItem_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<UseItem>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~UseItemGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) UseItem _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<UseItem>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(UseItemGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST UseItemGlobalsTypeInternal UseItem_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* UseItem_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return UseItem_globals_.GetClassData();
+#else
+  return UseItem_class_data_.base();
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 }
 }  // namespace
@@ -385,7 +546,7 @@ constexpr auto SkillUsed::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[38],
+      &file_reflection_data[45],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -862,7 +1023,7 @@ constexpr auto Revived::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[36],
+      &file_reflection_data[43],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -986,7 +1147,7 @@ constexpr auto Revive::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[35],
+      &file_reflection_data[42],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1033,6 +1194,153 @@ const ::_pbi::ClassData* Revive_get_class_data() {
   return Revive_globals_.GetClassData();
 #else
   return Revive_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class RequestResult::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<RequestResult>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(RequestResult, _impl_._has_bits_);
+};
+
+constexpr RequestResult::ParseTableT_ RequestResult::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(RequestResult, _impl_._has_bits_),
+      0, // no _extensions_
+      2, 8,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967292,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      2,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::RequestResult>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // .portfolio.mmo.FailReason result = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(RequestResult, _impl_.result_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(RequestResult, _impl_.result_)}},
+      // uint32 request_id = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(RequestResult, _impl_.request_id_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(RequestResult, _impl_.request_id_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint32 request_id = 1;
+      {PROTOBUF_FIELD_OFFSET(RequestResult, _impl_.request_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // .portfolio.mmo.FailReason result = 2;
+      {PROTOBUF_FIELD_OFFSET(RequestResult, _impl_.result_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr RequestResult::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : request_id_{0u},
+        result_{static_cast< ::portfolio::mmo::FailReason >(0)} {}
+
+template <typename>
+constexpr RequestResult::RequestResult(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL RequestResult::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) RequestResult(arena);
+}
+constexpr auto RequestResult::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(RequestResult), alignof(RequestResult));
+}
+constexpr auto RequestResult::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &RequestResult::MergeImpl,
+          Super_::GetNewImpl<RequestResult>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &RequestResult::SharedDtor,
+          Super_::GetClearImpl<RequestResult>(), &RequestResult::ByteSizeLong,
+              &RequestResult::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(RequestResult, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[35],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct RequestResultGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr RequestResultGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 RequestResult_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(RequestResult::InternalGenerateClassData_(
+            _default, &RequestResult_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<RequestResult>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~RequestResultGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) RequestResult _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<RequestResult>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(RequestResultGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST RequestResultGlobalsTypeInternal RequestResult_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* RequestResult_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return RequestResult_globals_.GetClassData();
+#else
+  return RequestResult_class_data_.base();
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 }
 }  // namespace
@@ -1169,7 +1477,7 @@ constexpr auto ProjectileLaunched::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[44],
+      &file_reflection_data[51],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1309,7 +1617,7 @@ constexpr auto ProjectileEnded::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[45],
+      &file_reflection_data[52],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1611,7 +1919,7 @@ constexpr auto ProgressCancelled::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[40],
+      &file_reflection_data[47],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -2802,6 +3110,324 @@ const ::_pbi::ClassData* Kicked_get_class_data() {
   return Kicked_globals_.GetClassData();
 #else
   return Kicked_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class ItemSlot::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<ItemSlot>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_._has_bits_);
+};
+
+constexpr ItemSlot::ParseTableT_ ItemSlot::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_._has_bits_),
+      0, // no _extensions_
+      5, 56,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967264,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      5,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::ItemSlot>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      {::_pbi::TcParser::MiniParse, {}},
+      // .portfolio.mmo.ItemPlace place = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ItemSlot, _impl_.place_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.place_)}},
+      // uint32 index = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ItemSlot, _impl_.index_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.index_)}},
+      // uint32 item_id = 3;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ItemSlot, _impl_.item_id_), 2>(),
+       {24, 2, 0,
+        PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.item_id_)}},
+      // uint32 count = 4;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ItemSlot, _impl_.count_), 3>(),
+       {32, 3, 0,
+        PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.count_)}},
+      // uint32 enchant = 5;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ItemSlot, _impl_.enchant_), 4>(),
+       {40, 4, 0,
+        PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.enchant_)}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // .portfolio.mmo.ItemPlace place = 1;
+      {PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.place_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
+      // uint32 index = 2;
+      {PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.index_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 item_id = 3;
+      {PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.item_id_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 count = 4;
+      {PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.count_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 enchant = 5;
+      {PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.enchant_), _Internal::kHasBitsOffset + 4, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr ItemSlot::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : place_{static_cast< ::portfolio::mmo::ItemPlace >(0)},
+        index_{0u},
+        item_id_{0u},
+        count_{0u},
+        enchant_{0u} {}
+
+template <typename>
+constexpr ItemSlot::ItemSlot(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL ItemSlot::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) ItemSlot(arena);
+}
+constexpr auto ItemSlot::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(ItemSlot), alignof(ItemSlot));
+}
+constexpr auto ItemSlot::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &ItemSlot::MergeImpl,
+          Super_::GetNewImpl<ItemSlot>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &ItemSlot::SharedDtor,
+          Super_::GetClearImpl<ItemSlot>(), &ItemSlot::ByteSizeLong,
+              &ItemSlot::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[29],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct ItemSlotGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr ItemSlotGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 ItemSlot_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(ItemSlot::InternalGenerateClassData_(
+            _default, &ItemSlot_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<ItemSlot>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~ItemSlotGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) ItemSlot _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<ItemSlot>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(ItemSlotGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST ItemSlotGlobalsTypeInternal ItemSlot_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* ItemSlot_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return ItemSlot_globals_.GetClassData();
+#else
+  return ItemSlot_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class ItemAmount::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<ItemAmount>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(ItemAmount, _impl_._has_bits_);
+};
+
+constexpr ItemAmount::ParseTableT_ ItemAmount::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(ItemAmount, _impl_._has_bits_),
+      0, // no _extensions_
+      2, 8,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967292,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      2,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::ItemAmount>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // uint32 count = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ItemAmount, _impl_.count_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(ItemAmount, _impl_.count_)}},
+      // uint32 item_id = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ItemAmount, _impl_.item_id_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(ItemAmount, _impl_.item_id_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint32 item_id = 1;
+      {PROTOBUF_FIELD_OFFSET(ItemAmount, _impl_.item_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 count = 2;
+      {PROTOBUF_FIELD_OFFSET(ItemAmount, _impl_.count_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr ItemAmount::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : item_id_{0u},
+        count_{0u} {}
+
+template <typename>
+constexpr ItemAmount::ItemAmount(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL ItemAmount::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) ItemAmount(arena);
+}
+constexpr auto ItemAmount::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(ItemAmount), alignof(ItemAmount));
+}
+constexpr auto ItemAmount::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &ItemAmount::MergeImpl,
+          Super_::GetNewImpl<ItemAmount>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &ItemAmount::SharedDtor,
+          Super_::GetClearImpl<ItemAmount>(), &ItemAmount::ByteSizeLong,
+              &ItemAmount::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(ItemAmount, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[31],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct ItemAmountGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr ItemAmountGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 ItemAmount_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(ItemAmount::InternalGenerateClassData_(
+            _default, &ItemAmount_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<ItemAmount>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~ItemAmountGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) ItemAmount _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<ItemAmount>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(ItemAmountGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST ItemAmountGlobalsTypeInternal ItemAmount_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* ItemAmount_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return ItemAmount_globals_.GetClassData();
+#else
+  return ItemAmount_class_data_.base();
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 }
 }  // namespace
@@ -4122,7 +4748,7 @@ constexpr auto Died::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[34],
+      &file_reflection_data[41],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -4438,7 +5064,7 @@ constexpr auto Damaged::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[33],
+      &file_reflection_data[40],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -4793,11 +5419,11 @@ constexpr Cooldown::ParseTableT_ Cooldown::InternalGenerateParseTable_(const ::_
     {
       PROTOBUF_FIELD_OFFSET(Cooldown, _impl_._has_bits_),
       0, // no _extensions_
-      2, 8,  // max_field_number, fast_idx_mask
+      3, 24,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967292,  // skipmap
+      4294967288,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      2,  // num_field_entries
+      3,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -4807,14 +5433,19 @@ constexpr Cooldown::ParseTableT_ Cooldown::InternalGenerateParseTable_(const ::_
       ::_pbi::TcParser::GetTable<::portfolio::mmo::Cooldown>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      // uint32 end_tick = 2;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Cooldown, _impl_.end_tick_), 1>(),
-       {16, 1, 0,
-        PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.end_tick_)}},
+      {::_pbi::TcParser::MiniParse, {}},
       // uint32 skill_id = 1;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Cooldown, _impl_.skill_id_), 0>(),
        {8, 0, 0,
         PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.skill_id_)}},
+      // uint32 end_tick = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Cooldown, _impl_.end_tick_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.end_tick_)}},
+      // uint32 potion = 3;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Cooldown, _impl_.potion_), 2>(),
+       {24, 2, 0,
+        PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.potion_)}},
     }}, {{
       65535, 65535
     }}, {{
@@ -4822,6 +5453,8 @@ constexpr Cooldown::ParseTableT_ Cooldown::InternalGenerateParseTable_(const ::_
       {PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.skill_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 end_tick = 2;
       {PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.end_tick_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 potion = 3;
+      {PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.potion_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -4834,7 +5467,8 @@ inline constexpr Cooldown::Impl_::Impl_(
     [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
     ::_pbi::ConstantInitialized) noexcept
       : skill_id_{0u},
-        end_tick_{0u} {}
+        end_tick_{0u},
+        potion_{0u} {}
 
 template <typename>
 constexpr Cooldown::Cooldown(::_pbi::ConstantInitialized,
@@ -4877,7 +5511,7 @@ constexpr auto Cooldown::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[43],
+      &file_reflection_data[50],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5184,7 +5818,7 @@ constexpr auto AttackSwing::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[32],
+      &file_reflection_data[39],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5308,7 +5942,7 @@ constexpr auto AttackStop::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[31],
+      &file_reflection_data[38],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5448,7 +6082,7 @@ constexpr auto AttackStart::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[30],
+      &file_reflection_data[37],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5595,7 +6229,7 @@ constexpr auto ActionFailed::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[29],
+      &file_reflection_data[36],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5748,7 +6382,7 @@ constexpr auto Progress::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[39],
+      &file_reflection_data[46],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5795,6 +6429,317 @@ const ::_pbi::ClassData* Progress_get_class_data() {
   return Progress_globals_.GetClassData();
 #else
   return Progress_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class Inventory::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<Inventory>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(Inventory, _impl_._has_bits_);
+};
+
+constexpr Inventory::ParseTableT_ Inventory::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(Inventory, _impl_._has_bits_),
+      0, // no _extensions_
+      2, 8,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967292,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      2,  // num_field_entries
+      1,  // num_aux_entries
+      offsetof(ParseTableT_, aux_entries),
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::Inventory>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // uint64 gold = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Inventory, _impl_.gold_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(Inventory, _impl_.gold_)}},
+      // repeated .portfolio.mmo.ItemSlot slots = 1;
+      {::_pbi::TcParser::FastMtR1,
+       {10, 0, 0,
+        PROTOBUF_FIELD_OFFSET(Inventory, _impl_.slots_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // repeated .portfolio.mmo.ItemSlot slots = 1;
+      {PROTOBUF_FIELD_OFFSET(Inventory, _impl_.slots_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+      // uint64 gold = 2;
+      {PROTOBUF_FIELD_OFFSET(Inventory, _impl_.gold_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt64)},
+    }},
+    {{
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::ItemSlot>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::ItemSlot_globals_},
+        #endif
+    }},
+    {{
+    }},
+  };
+}
+
+
+inline constexpr Inventory::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : slots_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::Inventory,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Inventory, _impl_.slots_)>()
+         }
+        ,
+        gold_{::uint64_t{0u}} {}
+
+template <typename>
+constexpr Inventory::Inventory(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL Inventory::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) Inventory(arena);
+}
+constexpr auto Inventory::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::CopyInit(sizeof(Inventory), alignof(Inventory));
+}
+constexpr auto Inventory::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &Inventory::MergeImpl,
+          Super_::GetNewImpl<Inventory>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &Inventory::SharedDtor,
+          Super_::GetClearImpl<Inventory>(), &Inventory::ByteSizeLong,
+              &Inventory::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(Inventory, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[30],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct InventoryGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr InventoryGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 Inventory_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(Inventory::InternalGenerateClassData_(
+            _default, &Inventory_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<Inventory>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~InventoryGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) Inventory _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<Inventory>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(InventoryGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST InventoryGlobalsTypeInternal Inventory_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* Inventory_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return Inventory_globals_.GetClassData();
+#else
+  return Inventory_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class Gain::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<Gain>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(Gain, _impl_._has_bits_);
+  static constexpr ::int32_t kOneofCaseOffset =
+      PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Gain, _impl_._oneof_case_);
+};
+
+constexpr Gain::ParseTableT_ Gain::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(Gain, _impl_._has_bits_),
+      0, // no _extensions_
+      3, 0,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967288,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      3,  // num_field_entries
+      1,  // num_aux_entries
+      offsetof(ParseTableT_, aux_entries),
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::Gain>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // .portfolio.mmo.GainReason reason = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Gain, _impl_.reason_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(Gain, _impl_.reason_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // .portfolio.mmo.GainReason reason = 1;
+      {PROTOBUF_FIELD_OFFSET(Gain, _impl_.reason_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
+      // .portfolio.mmo.ItemAmount item = 2;
+      {PROTOBUF_FIELD_OFFSET(Gain, _impl_.what_.item_), _Internal::kOneofCaseOffset + 0, 0, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // uint64 gold = 3;
+      {PROTOBUF_FIELD_OFFSET(Gain, _impl_.what_.gold_), _Internal::kOneofCaseOffset + 0, 0, (0 | ::_fl::kFcOneof | ::_fl::kUInt64)},
+    }},
+    {{
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::ItemAmount>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::ItemAmount_globals_},
+        #endif
+    }},
+    {{
+    }},
+  };
+}
+
+
+inline constexpr Gain::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : reason_{static_cast< ::portfolio::mmo::GainReason >(0)},
+        what_{},
+        _oneof_case_{} {}
+
+template <typename>
+constexpr Gain::Gain(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL Gain::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) Gain(arena);
+}
+constexpr auto Gain::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(Gain), alignof(Gain));
+}
+constexpr auto Gain::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &Gain::MergeImpl,
+          Super_::GetNewImpl<Gain>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &Gain::SharedDtor,
+          Super_::GetClearImpl<Gain>(), &Gain::ByteSizeLong,
+              &Gain::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(Gain, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[32],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct GainGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr GainGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 Gain_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(Gain::InternalGenerateClassData_(
+            _default, &Gain_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<Gain>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~GainGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) Gain _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<Gain>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(GainGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST GainGlobalsTypeInternal Gain_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* Gain_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return Gain_globals_.GetClassData();
+#else
+  return Gain_class_data_.base();
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 }
 }  // namespace
@@ -6561,7 +7506,7 @@ constexpr auto EffectApplied::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[41],
+      &file_reflection_data[48],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -6711,7 +7656,7 @@ constexpr auto Cooldowns::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[42],
+      &file_reflection_data[49],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -6912,6 +7857,180 @@ const ::_pbi::ClassData* CharacterList_get_class_data() {
 }
 }  // namespace
 #endif  // PROTOBUF_CUSTOM_VTABLE
+class InventoryChanged::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<InventoryChanged>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(InventoryChanged, _impl_._has_bits_);
+};
+
+constexpr InventoryChanged::ParseTableT_ InventoryChanged::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(InventoryChanged, _impl_._has_bits_),
+      0, // no _extensions_
+      3, 24,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967288,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      3,  // num_field_entries
+      2,  // num_aux_entries
+      offsetof(ParseTableT_, aux_entries),
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::InventoryChanged>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      {::_pbi::TcParser::MiniParse, {}},
+      // repeated .portfolio.mmo.ItemSlot slots = 1;
+      {::_pbi::TcParser::FastMtR1,
+       {10, 0, 0,
+        PROTOBUF_FIELD_OFFSET(InventoryChanged, _impl_.slots_)}},
+      // uint64 gold = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(InventoryChanged, _impl_.gold_), 2>(),
+       {16, 2, 0,
+        PROTOBUF_FIELD_OFFSET(InventoryChanged, _impl_.gold_)}},
+      // repeated .portfolio.mmo.Gain gains = 3;
+      {::_pbi::TcParser::FastMtR1,
+       {26, 1, 1,
+        PROTOBUF_FIELD_OFFSET(InventoryChanged, _impl_.gains_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // repeated .portfolio.mmo.ItemSlot slots = 1;
+      {PROTOBUF_FIELD_OFFSET(InventoryChanged, _impl_.slots_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+      // uint64 gold = 2;
+      {PROTOBUF_FIELD_OFFSET(InventoryChanged, _impl_.gold_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt64)},
+      // repeated .portfolio.mmo.Gain gains = 3;
+      {PROTOBUF_FIELD_OFFSET(InventoryChanged, _impl_.gains_), _Internal::kHasBitsOffset + 1, 1, (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+    }},
+    {{
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::ItemSlot>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::ItemSlot_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::Gain>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::Gain_globals_},
+        #endif
+    }},
+    {{
+    }},
+  };
+}
+
+
+inline constexpr InventoryChanged::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : slots_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::InventoryChanged,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_.slots_)>()
+         }
+        ,
+        gains_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::InventoryChanged,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_.gains_)>()
+         }
+        ,
+        gold_{::uint64_t{0u}} {}
+
+template <typename>
+constexpr InventoryChanged::InventoryChanged(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL InventoryChanged::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) InventoryChanged(arena);
+}
+constexpr auto InventoryChanged::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::CopyInit(sizeof(InventoryChanged), alignof(InventoryChanged));
+}
+constexpr auto InventoryChanged::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &InventoryChanged::MergeImpl,
+          Super_::GetNewImpl<InventoryChanged>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &InventoryChanged::SharedDtor,
+          Super_::GetClearImpl<InventoryChanged>(), &InventoryChanged::ByteSizeLong,
+              &InventoryChanged::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(InventoryChanged, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[33],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct InventoryChangedGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr InventoryChangedGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 InventoryChanged_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(InventoryChanged::InternalGenerateClassData_(
+            _default, &InventoryChanged_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<InventoryChanged>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~InventoryChangedGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) InventoryChanged _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<InventoryChanged>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(InventoryChangedGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST InventoryChangedGlobalsTypeInternal InventoryChanged_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* InventoryChanged_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return InventoryChanged_globals_.GetClassData();
+#else
+  return InventoryChanged_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
 class EntitiesEnter::_Internal {
  public:
   using HasBits = decltype(::std::declval<EntitiesEnter>()._impl_._has_bits_);
@@ -7074,12 +8193,12 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       PROTOBUF_FIELD_OFFSET(Packet,
                             _impl_._cached_size_),  // no hasbits
       0, // no _extensions_
-      301, 0,  // max_field_number, fast_idx_mask
+      305, 0,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
       4294959104,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      38,  // num_field_entries
-      38,  // num_aux_entries
+      42,  // num_field_entries
+      42,  // num_aux_entries
       offsetof(ParseTableT_, aux_entries),
       class_data,
       nullptr,  // post_loop_handler
@@ -7104,7 +8223,7 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       65535, 36,
       65535, 36,
       65535, 36,
-      65487, 36,
+      64527, 36,
       65535, 65535
     }}, {{
       // .portfolio.mmo.Login login = 1;
@@ -7183,6 +8302,14 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.self_stats_), _Internal::kOneofCaseOffset + 0, 36, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.ExpGained exp_gained = 301;
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.exp_gained_), _Internal::kOneofCaseOffset + 0, 37, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.Inventory inventory = 302;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.inventory_), _Internal::kOneofCaseOffset + 0, 38, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.InventoryChanged inventory_changed = 303;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.inventory_changed_), _Internal::kOneofCaseOffset + 0, 39, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.UseItem use_item = 304;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.use_item_), _Internal::kOneofCaseOffset + 0, 40, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.RequestResult request_result = 305;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.request_result_), _Internal::kOneofCaseOffset + 0, 41, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
     }},
     {{
         #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -7375,6 +8502,26 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
         #else
         {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::ExpGained_globals_},
         #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::Inventory>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::Inventory_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::InventoryChanged>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::InventoryChanged_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::UseItem>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::UseItem_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::RequestResult>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::RequestResult_globals_},
+        #endif
     }},
     {{
     }},
@@ -7483,7 +8630,7 @@ const ::_pbi::ClassData* Packet_get_class_data() {
 }  // namespace mmo
 }  // namespace portfolio
 static const ::_pb::EnumDescriptor* PROTOBUF_NONNULL
-    file_level_enum_descriptors_packets_2eproto[12];
+    file_level_enum_descriptors_packets_2eproto[14];
 static constexpr const ::_pb::ServiceDescriptor* PROTOBUF_NONNULL* PROTOBUF_NULLABLE
     file_level_service_descriptors_packets_2eproto = nullptr;
 const ::uint32_t
@@ -7491,6 +8638,10 @@ const ::uint32_t
         protodesc_cold) = {
         0x004, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_._oneof_case_[0]),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
@@ -7781,6 +8932,67 @@ const ::uint32_t
         0,
         1,
         0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ItemSlot, _impl_._has_bits_),
+        8, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ItemSlot, _impl_.place_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ItemSlot, _impl_.index_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ItemSlot, _impl_.item_id_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ItemSlot, _impl_.count_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ItemSlot, _impl_.enchant_),
+        0,
+        1,
+        2,
+        3,
+        4,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Inventory, _impl_._has_bits_),
+        5, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Inventory, _impl_.slots_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Inventory, _impl_.gold_),
+        0,
+        1,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ItemAmount, _impl_._has_bits_),
+        5, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ItemAmount, _impl_.item_id_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ItemAmount, _impl_.count_),
+        0,
+        1,
+        0x085, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Gain, _impl_._has_bits_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Gain, _impl_._oneof_case_[0]),
+        8, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Gain, _impl_.reason_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Gain, _impl_.what_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Gain, _impl_.what_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Gain, _impl_.what_),
+        0,
+        ~0u,
+        ~0u,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_._has_bits_),
+        6, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_.slots_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_.gold_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_.gains_),
+        0,
+        2,
+        1,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::UseItem, _impl_._has_bits_),
+        5, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::UseItem, _impl_.slot_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::UseItem, _impl_.request_id_),
+        0,
+        1,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::RequestResult, _impl_._has_bits_),
+        5, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::RequestResult, _impl_.request_id_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::RequestResult, _impl_.result_),
+        0,
+        1,
+        0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ActionFailed, _impl_._has_bits_),
         5, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ActionFailed, _impl_.reason_),
@@ -7876,11 +9088,13 @@ const ::uint32_t
         0,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Cooldown, _impl_._has_bits_),
-        5, // hasbit index offset
+        6, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Cooldown, _impl_.skill_id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Cooldown, _impl_.end_tick_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Cooldown, _impl_.potion_),
         0,
         1,
+        2,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::ProjectileLaunched, _impl_._has_bits_),
         10, // hasbit index offset
@@ -7908,51 +9122,58 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::Packet)},
-        {41, sizeof(::portfolio::mmo::Login)},
-        {50, sizeof(::portfolio::mmo::LoginResult)},
-        {55, sizeof(::portfolio::mmo::Kicked)},
-        {60, sizeof(::portfolio::mmo::DevCommand)},
-        {65, sizeof(::portfolio::mmo::Ping)},
-        {66, sizeof(::portfolio::mmo::CharacterSummary)},
-        {75, sizeof(::portfolio::mmo::CharacterList)},
-        {80, sizeof(::portfolio::mmo::CreateCharacter)},
-        {87, sizeof(::portfolio::mmo::CreateCharacterResult)},
-        {92, sizeof(::portfolio::mmo::EnterWorld)},
-        {97, sizeof(::portfolio::mmo::EnterWorldResult)},
-        {106, sizeof(::portfolio::mmo::LeaveWorld)},
-        {107, sizeof(::portfolio::mmo::Pong)},
-        {112, sizeof(::portfolio::mmo::Move)},
-        {123, sizeof(::portfolio::mmo::PositionReset)},
-        {132, sizeof(::portfolio::mmo::EntitiesEnter)},
-        {137, sizeof(::portfolio::mmo::EntityEnter)},
-        {196, sizeof(::portfolio::mmo::EffectState)},
-        {203, sizeof(::portfolio::mmo::ProgressState)},
-        {212, sizeof(::portfolio::mmo::EntityState)},
-        {223, sizeof(::portfolio::mmo::EntitiesLeave)},
-        {228, sizeof(::portfolio::mmo::EntityMoves)},
-        {235, sizeof(::portfolio::mmo::EntityMove)},
-        {248, sizeof(::portfolio::mmo::SelfVitals)},
-        {259, sizeof(::portfolio::mmo::EntityVitals)},
-        {264, sizeof(::portfolio::mmo::EntityVital)},
-        {273, sizeof(::portfolio::mmo::SelfStats)},
-        {284, sizeof(::portfolio::mmo::ExpGained)},
-        {291, sizeof(::portfolio::mmo::ActionFailed)},
-        {298, sizeof(::portfolio::mmo::AttackStart)},
-        {303, sizeof(::portfolio::mmo::AttackStop)},
-        {304, sizeof(::portfolio::mmo::AttackSwing)},
-        {311, sizeof(::portfolio::mmo::Damaged)},
-        {324, sizeof(::portfolio::mmo::Died)},
-        {331, sizeof(::portfolio::mmo::Revive)},
-        {332, sizeof(::portfolio::mmo::Revived)},
-        {341, sizeof(::portfolio::mmo::UseSkill)},
-        {350, sizeof(::portfolio::mmo::SkillUsed)},
-        {359, sizeof(::portfolio::mmo::Progress)},
-        {366, sizeof(::portfolio::mmo::ProgressCancelled)},
-        {373, sizeof(::portfolio::mmo::EffectApplied)},
-        {380, sizeof(::portfolio::mmo::Cooldowns)},
-        {385, sizeof(::portfolio::mmo::Cooldown)},
-        {392, sizeof(::portfolio::mmo::ProjectileLaunched)},
-        {409, sizeof(::portfolio::mmo::ProjectileEnded)},
+        {45, sizeof(::portfolio::mmo::Login)},
+        {54, sizeof(::portfolio::mmo::LoginResult)},
+        {59, sizeof(::portfolio::mmo::Kicked)},
+        {64, sizeof(::portfolio::mmo::DevCommand)},
+        {69, sizeof(::portfolio::mmo::Ping)},
+        {70, sizeof(::portfolio::mmo::CharacterSummary)},
+        {79, sizeof(::portfolio::mmo::CharacterList)},
+        {84, sizeof(::portfolio::mmo::CreateCharacter)},
+        {91, sizeof(::portfolio::mmo::CreateCharacterResult)},
+        {96, sizeof(::portfolio::mmo::EnterWorld)},
+        {101, sizeof(::portfolio::mmo::EnterWorldResult)},
+        {110, sizeof(::portfolio::mmo::LeaveWorld)},
+        {111, sizeof(::portfolio::mmo::Pong)},
+        {116, sizeof(::portfolio::mmo::Move)},
+        {127, sizeof(::portfolio::mmo::PositionReset)},
+        {136, sizeof(::portfolio::mmo::EntitiesEnter)},
+        {141, sizeof(::portfolio::mmo::EntityEnter)},
+        {200, sizeof(::portfolio::mmo::EffectState)},
+        {207, sizeof(::portfolio::mmo::ProgressState)},
+        {216, sizeof(::portfolio::mmo::EntityState)},
+        {227, sizeof(::portfolio::mmo::EntitiesLeave)},
+        {232, sizeof(::portfolio::mmo::EntityMoves)},
+        {239, sizeof(::portfolio::mmo::EntityMove)},
+        {252, sizeof(::portfolio::mmo::SelfVitals)},
+        {263, sizeof(::portfolio::mmo::EntityVitals)},
+        {268, sizeof(::portfolio::mmo::EntityVital)},
+        {277, sizeof(::portfolio::mmo::SelfStats)},
+        {288, sizeof(::portfolio::mmo::ExpGained)},
+        {295, sizeof(::portfolio::mmo::ItemSlot)},
+        {308, sizeof(::portfolio::mmo::Inventory)},
+        {315, sizeof(::portfolio::mmo::ItemAmount)},
+        {322, sizeof(::portfolio::mmo::Gain)},
+        {333, sizeof(::portfolio::mmo::InventoryChanged)},
+        {342, sizeof(::portfolio::mmo::UseItem)},
+        {349, sizeof(::portfolio::mmo::RequestResult)},
+        {356, sizeof(::portfolio::mmo::ActionFailed)},
+        {363, sizeof(::portfolio::mmo::AttackStart)},
+        {368, sizeof(::portfolio::mmo::AttackStop)},
+        {369, sizeof(::portfolio::mmo::AttackSwing)},
+        {376, sizeof(::portfolio::mmo::Damaged)},
+        {389, sizeof(::portfolio::mmo::Died)},
+        {396, sizeof(::portfolio::mmo::Revive)},
+        {397, sizeof(::portfolio::mmo::Revived)},
+        {406, sizeof(::portfolio::mmo::UseSkill)},
+        {415, sizeof(::portfolio::mmo::SkillUsed)},
+        {424, sizeof(::portfolio::mmo::Progress)},
+        {431, sizeof(::portfolio::mmo::ProgressCancelled)},
+        {438, sizeof(::portfolio::mmo::EffectApplied)},
+        {445, sizeof(::portfolio::mmo::Cooldowns)},
+        {450, sizeof(::portfolio::mmo::Cooldown)},
+        {459, sizeof(::portfolio::mmo::ProjectileLaunched)},
+        {476, sizeof(::portfolio::mmo::ProjectileEnded)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -7985,6 +9206,13 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
         &::portfolio::mmo::EntityVital_globals_,
         &::portfolio::mmo::SelfStats_globals_,
         &::portfolio::mmo::ExpGained_globals_,
+        &::portfolio::mmo::ItemSlot_globals_,
+        &::portfolio::mmo::Inventory_globals_,
+        &::portfolio::mmo::ItemAmount_globals_,
+        &::portfolio::mmo::Gain_globals_,
+        &::portfolio::mmo::InventoryChanged_globals_,
+        &::portfolio::mmo::UseItem_globals_,
+        &::portfolio::mmo::RequestResult_globals_,
         &::portfolio::mmo::ActionFailed_globals_,
         &::portfolio::mmo::AttackStart_globals_,
         &::portfolio::mmo::AttackStop_globals_,
@@ -8005,7 +9233,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\rpackets.proto\022\rportfolio.mmo\"\244\017\n\006Packe"
+    "\n\rpackets.proto\022\rportfolio.mmo\"\371\020\n\006Packe"
     "t\022%\n\005login\030\001 \001(\0132\024.portfolio.mmo.LoginH\000"
     "\0222\n\014login_result\030\002 \001(\0132\032.portfolio.mmo.L"
     "oginResultH\000\022\'\n\006kicked\030\003 \001(\0132\025.portfolio"
@@ -8054,160 +9282,187 @@ const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "ed\030\330\001 \001(\0132\036.portfolio.mmo.ProjectileEnde"
     "dH\000\022/\n\nself_stats\030\254\002 \001(\0132\030.portfolio.mmo"
     ".SelfStatsH\000\022/\n\nexp_gained\030\255\002 \001(\0132\030.port"
-    "folio.mmo.ExpGainedH\000B\006\n\004body\"f\n\005Login\0228"
-    "\n\020protocol_version\030\001 \001(\0162\036.portfolio.mmo"
-    ".ProtocolVersion\022\020\n\010login_id\030\002 \001(\t\022\021\n\tda"
-    "ta_hash\030\003 \001(\006\"I\n\013LoginResult\022.\n\006result\030\001"
-    " \001(\0162\036.portfolio.mmo.LoginResultCodeJ\004\010\002"
-    "\020\003J\004\010\003\020\004\"3\n\006Kicked\022)\n\006reason\030\001 \001(\0162\031.por"
-    "tfolio.mmo.KickReason\"\032\n\nDevCommand\022\014\n\004l"
-    "ine\030\001 \001(\t\"\006\n\004Ping\"d\n\020CharacterSummary\022\n\n"
-    "\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\0226\n\017character_cla"
-    "ss\030\003 \001(\0162\035.portfolio.mmo.CharacterClass\""
-    "D\n\rCharacterList\0223\n\ncharacters\030\001 \003(\0132\037.p"
-    "ortfolio.mmo.CharacterSummary\"W\n\017CreateC"
-    "haracter\022\014\n\004name\030\001 \001(\t\0226\n\017character_clas"
-    "s\030\002 \001(\0162\035.portfolio.mmo.CharacterClass\"Q"
-    "\n\025CreateCharacterResult\0228\n\006result\030\001 \001(\0162"
-    "(.portfolio.mmo.CreateCharacterResultCod"
-    "e\"\"\n\nEnterWorld\022\024\n\014character_id\030\001 \001(\004\"f\n"
-    "\020EnterWorldResult\0223\n\006result\030\001 \001(\0162#.port"
-    "folio.mmo.EnterWorldResultCode\022\017\n\007self_i"
-    "d\030\002 \001(\r\022\014\n\004tick\030\003 \001(\r\"\014\n\nLeaveWorld\"\024\n\004P"
-    "ong\022\014\n\004tick\030\001 \001(\r\"6\n\004Move\022\t\n\001x\030\001 \001(\021\022\t\n\001"
-    "z\030\002 \001(\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack\030\004 \001(\r\"2\n\rPos"
-    "itionReset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030"
-    "\003 \001(\r\"=\n\rEntitiesEnter\022,\n\010entities\030\001 \003(\013"
-    "2\032.portfolio.mmo.EntityEnter\"\204\005\n\013EntityE"
-    "nter\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013"
-    "\n\003yaw\030\004 \001(\r\022\'\n\004kind\030\007 \001(\0162\031.portfolio.mm"
-    "o.EntityKind\022\014\n\004name\030\005 \001(\t\0226\n\017character_"
-    "class\030\006 \001(\0162\035.portfolio.mmo.CharacterCla"
-    "ss\022\r\n\005level\030\010 \001(\r\022,\n\nname_color\030\t \001(\0162\030."
+    "folio.mmo.ExpGainedH\000\022.\n\tinventory\030\256\002 \001("
+    "\0132\030.portfolio.mmo.InventoryH\000\022=\n\021invento"
+    "ry_changed\030\257\002 \001(\0132\037.portfolio.mmo.Invent"
+    "oryChangedH\000\022+\n\010use_item\030\260\002 \001(\0132\026.portfo"
+    "lio.mmo.UseItemH\000\0227\n\016request_result\030\261\002 \001"
+    "(\0132\034.portfolio.mmo.RequestResultH\000B\006\n\004bo"
+    "dy\"f\n\005Login\0228\n\020protocol_version\030\001 \001(\0162\036."
+    "portfolio.mmo.ProtocolVersion\022\020\n\010login_i"
+    "d\030\002 \001(\t\022\021\n\tdata_hash\030\003 \001(\006\"I\n\013LoginResul"
+    "t\022.\n\006result\030\001 \001(\0162\036.portfolio.mmo.LoginR"
+    "esultCodeJ\004\010\002\020\003J\004\010\003\020\004\"3\n\006Kicked\022)\n\006reaso"
+    "n\030\001 \001(\0162\031.portfolio.mmo.KickReason\"\032\n\nDe"
+    "vCommand\022\014\n\004line\030\001 \001(\t\"\006\n\004Ping\"d\n\020Charac"
+    "terSummary\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\0226\n\017"
+    "character_class\030\003 \001(\0162\035.portfolio.mmo.Ch"
+    "aracterClass\"D\n\rCharacterList\0223\n\ncharact"
+    "ers\030\001 \003(\0132\037.portfolio.mmo.CharacterSumma"
+    "ry\"W\n\017CreateCharacter\022\014\n\004name\030\001 \001(\t\0226\n\017c"
+    "haracter_class\030\002 \001(\0162\035.portfolio.mmo.Cha"
+    "racterClass\"Q\n\025CreateCharacterResult\0228\n\006"
+    "result\030\001 \001(\0162(.portfolio.mmo.CreateChara"
+    "cterResultCode\"\"\n\nEnterWorld\022\024\n\014characte"
+    "r_id\030\001 \001(\004\"f\n\020EnterWorldResult\0223\n\006result"
+    "\030\001 \001(\0162#.portfolio.mmo.EnterWorldResultC"
+    "ode\022\017\n\007self_id\030\002 \001(\r\022\014\n\004tick\030\003 \001(\r\"\014\n\nLe"
+    "aveWorld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r\"6\n\004Move\022\t"
+    "\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack"
+    "\030\004 \001(\r\"2\n\rPositionReset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030"
+    "\002 \001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEntitiesEnter\022,\n\010e"
+    "ntities\030\001 \003(\0132\032.portfolio.mmo.EntityEnte"
+    "r\"\204\005\n\013EntityEnter\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021"
+    "\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\'\n\004kind\030\007 \001(\0162\031"
+    ".portfolio.mmo.EntityKind\022\014\n\004name\030\005 \001(\t\022"
+    "6\n\017character_class\030\006 \001(\0162\035.portfolio.mmo"
+    ".CharacterClass\022\r\n\005level\030\010 \001(\r\022,\n\nname_c"
+    "olor\030\t \001(\0162\030.portfolio.mmo.NameColor\022\026\n\016"
+    "weapon_item_id\030\n \001(\r\022\023\n\013template_id\030\013 \001("
+    "\r\022\n\n\002hp\030\014 \001(\r\022\016\n\006max_hp\030\r \001(\r\022+\n\007effects"
+    "\030\016 \003(\0132\032.portfolio.mmo.EffectState\022.\n\010pr"
+    "ogress\030\017 \001(\0132\034.portfolio.mmo.ProgressSta"
+    "te\022\014\n\004dead\030\020 \001(\010\022\r\n\005speed\030\021 \001(\r\022\020\n\010move_"
+    "yaw\030\022 \001(\r\022\016\n\006next_x\030\023 \001(\021\022\016\n\006next_z\030\024 \001("
+    "\021\022\017\n\007item_id\030\025 \001(\r\022\r\n\005count\030\026 \001(\r\022\017\n\007enc"
+    "hant\030\027 \001(\r\022\031\n\017owner_player_id\030\030 \001(\rH\000\022\030\n"
+    "\016owner_party_id\030\031 \001(\rH\000\022\033\n\023owner_only_en"
+    "d_tick\030\032 \001(\r\022\031\n\021dropped_by_player\030\033 \001(\010B"
+    "\007\n\005owner\"2\n\013EffectState\022\021\n\teffect_id\030\001 \001"
+    "(\r\022\020\n\010end_tick\030\002 \001(\r\"X\n\rProgressState\022)\n"
+    "\004kind\030\001 \001(\0162\033.portfolio.mmo.ProgressKind"
+    "\022\n\n\002id\030\002 \001(\r\022\020\n\010end_tick\030\003 \001(\r\"n\n\013Entity"
+    "State\022\n\n\002id\030\001 \001(\r\022,\n\nname_color\030\002 \001(\0162\030."
     "portfolio.mmo.NameColor\022\026\n\016weapon_item_i"
-    "d\030\n \001(\r\022\023\n\013template_id\030\013 \001(\r\022\n\n\002hp\030\014 \001(\r"
-    "\022\016\n\006max_hp\030\r \001(\r\022+\n\007effects\030\016 \003(\0132\032.port"
-    "folio.mmo.EffectState\022.\n\010progress\030\017 \001(\0132"
-    "\034.portfolio.mmo.ProgressState\022\014\n\004dead\030\020 "
-    "\001(\010\022\r\n\005speed\030\021 \001(\r\022\020\n\010move_yaw\030\022 \001(\r\022\016\n\006"
-    "next_x\030\023 \001(\021\022\016\n\006next_z\030\024 \001(\021\022\017\n\007item_id\030"
-    "\025 \001(\r\022\r\n\005count\030\026 \001(\r\022\017\n\007enchant\030\027 \001(\r\022\031\n"
-    "\017owner_player_id\030\030 \001(\rH\000\022\030\n\016owner_party_"
-    "id\030\031 \001(\rH\000\022\033\n\023owner_only_end_tick\030\032 \001(\r\022"
-    "\031\n\021dropped_by_player\030\033 \001(\010B\007\n\005owner\"2\n\013E"
-    "ffectState\022\021\n\teffect_id\030\001 \001(\r\022\020\n\010end_tic"
-    "k\030\002 \001(\r\"X\n\rProgressState\022)\n\004kind\030\001 \001(\0162\033"
-    ".portfolio.mmo.ProgressKind\022\n\n\002id\030\002 \001(\r\022"
-    "\020\n\010end_tick\030\003 \001(\r\"n\n\013EntityState\022\n\n\002id\030\001"
-    " \001(\r\022,\n\nname_color\030\002 \001(\0162\030.portfolio.mmo"
-    ".NameColor\022\026\n\016weapon_item_id\030\003 \001(\r\022\r\n\005le"
-    "vel\030\004 \001(\r\"\034\n\rEntitiesLeave\022\013\n\003ids\030\001 \003(\r\""
-    "H\n\013EntityMoves\022\014\n\004tick\030\001 \001(\r\022+\n\010entities"
-    "\030\002 \003(\0132\031.portfolio.mmo.EntityMove\"M\n\nEnt"
-    "ityMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001("
-    "\021\022\013\n\003yaw\030\004 \001(\r\022\020\n\010teleport\030\005 \001(\010\"Y\n\nSelf"
-    "Vitals\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002 \001(\r\022\027\n\017combat"
-    "_end_tick\030\003 \001(\r\022\032\n\022aggressor_end_tick\030\004 "
-    "\001(\r\"<\n\014EntityVitals\022,\n\010entities\030\001 \003(\0132\032."
-    "portfolio.mmo.EntityVital\"5\n\013EntityVital"
+    "d\030\003 \001(\r\022\r\n\005level\030\004 \001(\r\"\034\n\rEntitiesLeave\022"
+    "\013\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n\004tick\030\001 \001("
+    "\r\022+\n\010entities\030\002 \003(\0132\031.portfolio.mmo.Enti"
+    "tyMove\"M\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 "
+    "\001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\020\n\010teleport\030"
+    "\005 \001(\010\"Y\n\nSelfVitals\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002 "
+    "\001(\r\022\027\n\017combat_end_tick\030\003 \001(\r\022\032\n\022aggresso"
+    "r_end_tick\030\004 \001(\r\"<\n\014EntityVitals\022,\n\010enti"
+    "ties\030\001 \003(\0132\032.portfolio.mmo.EntityVital\"5"
+    "\n\013EntityVital\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n"
+    "\006max_hp\030\003 \001(\r\"L\n\tSelfStats\022\016\n\006max_hp\030\001 \001"
+    "(\r\022\016\n\006max_mp\030\002 \001(\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007de"
+    "fense\030\004 \001(\r\"(\n\tExpGained\022\016\n\006amount\030\001 \001(\021"
+    "\022\013\n\003exp\030\002 \001(\r\"s\n\010ItemSlot\022\'\n\005place\030\001 \001(\016"
+    "2\030.portfolio.mmo.ItemPlace\022\r\n\005index\030\002 \001("
+    "\r\022\017\n\007item_id\030\003 \001(\r\022\r\n\005count\030\004 \001(\r\022\017\n\007enc"
+    "hant\030\005 \001(\r\"A\n\tInventory\022&\n\005slots\030\001 \003(\0132\027"
+    ".portfolio.mmo.ItemSlot\022\014\n\004gold\030\002 \001(\004\",\n"
+    "\nItemAmount\022\017\n\007item_id\030\001 \001(\r\022\r\n\005count\030\002 "
+    "\001(\r\"t\n\004Gain\022)\n\006reason\030\001 \001(\0162\031.portfolio."
+    "mmo.GainReason\022)\n\004item\030\002 \001(\0132\031.portfolio"
+    ".mmo.ItemAmountH\000\022\016\n\004gold\030\003 \001(\004H\000B\006\n\004wha"
+    "t\"l\n\020InventoryChanged\022&\n\005slots\030\001 \003(\0132\027.p"
+    "ortfolio.mmo.ItemSlot\022\014\n\004gold\030\002 \001(\004\022\"\n\005g"
+    "ains\030\003 \003(\0132\023.portfolio.mmo.Gain\"+\n\007UseIt"
+    "em\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"N\n\r"
+    "RequestResult\022\022\n\nrequest_id\030\001 \001(\r\022)\n\006res"
+    "ult\030\002 \001(\0162\031.portfolio.mmo.FailReason\"f\n\014"
+    "ActionFailed\022)\n\006reason\030\001 \001(\0162\031.portfolio"
+    ".mmo.FailReason\022+\n\007request\030\002 \001(\0162\032.portf"
+    "olio.mmo.RequestKind\" \n\013AttackStart\022\021\n\tt"
+    "arget_id\030\001 \001(\r\"\014\n\nAttackStop\"5\n\013AttackSw"
+    "ing\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\ttarget_id\030\002 "
+    "\001(\r\"_\n\007Damaged\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\tt"
+    "arget_id\030\002 \001(\r\022\016\n\006damage\030\003 \001(\r\022\n\n\002hp\030\004 \001"
+    "(\r\022\020\n\010critical\030\005 \001(\010\"%\n\004Died\022\n\n\002id\030\001 \001(\r"
+    "\022\021\n\tkiller_id\030\002 \001(\r\"\010\n\006Revive\"1\n\007Revived"
     "\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r"
-    "\"L\n\tSelfStats\022\016\n\006max_hp\030\001 \001(\r\022\016\n\006max_mp\030"
-    "\002 \001(\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007defense\030\004 \001(\r\"("
-    "\n\tExpGained\022\016\n\006amount\030\001 \001(\021\022\013\n\003exp\030\002 \001(\r"
-    "\"f\n\014ActionFailed\022)\n\006reason\030\001 \001(\0162\031.portf"
-    "olio.mmo.FailReason\022+\n\007request\030\002 \001(\0162\032.p"
-    "ortfolio.mmo.RequestKind\" \n\013AttackStart\022"
-    "\021\n\ttarget_id\030\001 \001(\r\"\014\n\nAttackStop\"5\n\013Atta"
-    "ckSwing\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\ttarget_i"
-    "d\030\002 \001(\r\"_\n\007Damaged\022\023\n\013attacker_id\030\001 \001(\r\022"
-    "\021\n\ttarget_id\030\002 \001(\r\022\016\n\006damage\030\003 \001(\r\022\n\n\002hp"
-    "\030\004 \001(\r\022\020\n\010critical\030\005 \001(\010\"%\n\004Died\022\n\n\002id\030\001"
-    " \001(\r\022\021\n\tkiller_id\030\002 \001(\r\"\010\n\006Revive\"1\n\007Rev"
-    "ived\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003"
-    " \001(\r\"E\n\010UseSkill\022\020\n\010skill_id\030\001 \001(\r\022\021\n\tta"
-    "rget_id\030\002 \001(\r\022\024\n\014force_attack\030\003 \001(\010\"C\n\tS"
-    "killUsed\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill_id\030"
-    "\002 \001(\r\022\021\n\ttarget_id\030\003 \001(\r\"C\n\010Progress\022\n\n\002"
-    "id\030\001 \001(\r\022+\n\005state\030\002 \001(\0132\034.portfolio.mmo."
-    "ProgressState\"J\n\021ProgressCancelled\022\n\n\002id"
-    "\030\001 \001(\r\022)\n\006reason\030\002 \001(\0162\031.portfolio.mmo.F"
-    "ailReason\"G\n\rEffectApplied\022\n\n\002id\030\001 \001(\r\022*"
-    "\n\006effect\030\002 \001(\0132\032.portfolio.mmo.EffectSta"
-    "te\"5\n\tCooldowns\022(\n\007entries\030\001 \003(\0132\027.portf"
-    "olio.mmo.Cooldown\".\n\010Cooldown\022\020\n\010skill_i"
-    "d\030\001 \001(\r\022\020\n\010end_tick\030\002 \001(\r\"s\n\022ProjectileL"
-    "aunched\022\n\n\002id\030\001 \001(\r\022\021\n\tcaster_id\030\002 \001(\r\022\t"
-    "\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\014\n\004tick\030\005 \001(\r\022\013\n\003ya"
-    "w\030\006 \001(\r\022\r\n\005speed\030\007 \001(\r\"\035\n\017ProjectileEnde"
-    "d\022\n\n\002id\030\001 \001(\r*Q\n\017ProtocolVersion\022 \n\034PROT"
-    "OCOL_VERSION_UNSPECIFIED\020\000\022\034\n\030PROTOCOL_V"
-    "ERSION_CURRENT\020\002*\314\002\n\010Constant\022\030\n\024CONSTAN"
-    "T_UNSPECIFIED\020\000\022\034\n\030CONSTANT_UNITS_PER_ME"
-    "TER\020 \022$\n\037CONSTANT_MAP_HALF_EXTENT_METERS"
-    "\020\200\010\022\027\n\022CONSTANT_YAW_STEPS\020\200\002\022\035\n\031CONSTANT"
-    "_TICKS_PER_SECOND\020\024\022(\n$CONSTANT_MAX_SPEE"
-    "D_METERS_PER_SECOND\020\006\022\"\n\036CONSTANT_PING_I"
-    "NTERVAL_SECONDS\020\005\022!\n\035CONSTANT_IDLE_TIMEO"
-    "UT_SECONDS\020\017\022\033\n\027CONSTANT_MAX_CHARACTERS\020"
-    "\004\022\034\n\030CONSTANT_QUICKSLOT_COUNT\020\010*\303\001\n\017Logi"
-    "nResultCode\022\030\n\024LOGIN_RESULT_CODE_OK\020\000\022&\n"
-    "\"LOGIN_RESULT_CODE_INVALID_LOGIN_ID\020\001\022&\n"
-    "\"LOGIN_RESULT_CODE_VERSION_MISMATCH\020\002\022!\n"
-    "\035LOGIN_RESULT_CODE_SERVER_FULL\020\003\022#\n\037LOGI"
-    "N_RESULT_CODE_DATA_MISMATCH\020\004*\311\001\n\nKickRe"
-    "ason\022\033\n\027KICK_REASON_UNSPECIFIED\020\000\022\037\n\033KIC"
-    "K_REASON_DUPLICATE_LOGIN\020\001\022\037\n\033KICK_REASO"
-    "N_SERVER_SHUTDOWN\020\002\022 \n\034KICK_REASON_MALFO"
-    "RMED_PACKET\020\003\022\034\n\030KICK_REASON_IDLE_TIMEOU"
-    "T\020\004\022\034\n\030KICK_REASON_RATE_LIMITED\020\005*g\n\016Cha"
-    "racterClass\022\037\n\033CHARACTER_CLASS_UNSPECIFI"
-    "ED\020\000\022\032\n\026CHARACTER_CLASS_KNIGHT\020\001\022\030\n\024CHAR"
-    "ACTER_CLASS_MAGE\020\002*\367\001\n\031CreateCharacterRe"
-    "sultCode\022#\n\037CREATE_CHARACTER_RESULT_CODE"
-    "_OK\020\000\022-\n)CREATE_CHARACTER_RESULT_CODE_IN"
-    "VALID_NAME\020\001\022+\n\'CREATE_CHARACTER_RESULT_"
-    "CODE_NAME_TAKEN\020\002\022)\n%CREATE_CHARACTER_RE"
-    "SULT_CODE_TOO_MANY\020\003\022.\n*CREATE_CHARACTER"
-    "_RESULT_CODE_INVALID_CLASS\020\004*e\n\024EnterWor"
-    "ldResultCode\022\036\n\032ENTER_WORLD_RESULT_CODE_"
-    "OK\020\000\022-\n)ENTER_WORLD_RESULT_CODE_NO_SUCH_"
-    "CHARACTER\020\001*\251\001\n\nEntityKind\022\033\n\027ENTITY_KIN"
-    "D_UNSPECIFIED\020\000\022\026\n\022ENTITY_KIND_PLAYER\020\001\022"
-    "\027\n\023ENTITY_KIND_MONSTER\020\002\022\023\n\017ENTITY_KIND_"
-    "NPC\020\003\022\033\n\027ENTITY_KIND_GATHER_NODE\020\004\022\033\n\027EN"
-    "TITY_KIND_GROUND_ITEM\020\005*S\n\tNameColor\022\025\n\021"
-    "NAME_COLOR_NORMAL\020\000\022\030\n\024NAME_COLOR_AGGRES"
-    "SOR\020\001\022\025\n\021NAME_COLOR_OUTLAW\020\002*\213\001\n\014Progres"
-    "sKind\022\026\n\022PROGRESS_KIND_NONE\020\000\022\026\n\022PROGRES"
-    "S_KIND_CAST\020\001\022\030\n\024PROGRESS_KIND_GATHER\020\002\022"
-    "\027\n\023PROGRESS_KIND_CRAFT\020\003\022\030\n\024PROGRESS_KIN"
-    "D_RECALL\020\004*\205\003\n\nFailReason\022\024\n\020FAIL_REASON"
-    "_NONE\020\000\022\031\n\025FAIL_REASON_NO_TARGET\020\001\022\036\n\032FA"
-    "IL_REASON_INVALID_TARGET\020\002\022\024\n\020FAIL_REASO"
-    "N_DEAD\020\003\022\030\n\024FAIL_REASON_NOT_DEAD\020\004\022\033\n\027FA"
-    "IL_REASON_NOT_LEARNED\020\005\022\030\n\024FAIL_REASON_C"
-    "OOLDOWN\020\006\022\035\n\031FAIL_REASON_NOT_ENOUGH_MP\020\007"
-    "\022\034\n\030FAIL_REASON_OUT_OF_RANGE\020\010\022\027\n\023FAIL_R"
-    "EASON_BLOCKED\020\t\022\024\n\020FAIL_REASON_BUSY\020\n\022\027\n"
-    "\023FAIL_REASON_STUNNED\020\013\022\031\n\025FAIL_REASON_CA"
-    "NCELLED\020\014\022\037\n\033FAIL_REASON_INVALID_COMMAND"
-    "\020\r*\214\001\n\013RequestKind\022\034\n\030REQUEST_KIND_UNSPE"
-    "CIFIED\020\000\022\027\n\023REQUEST_KIND_ATTACK\020\001\022\027\n\023REQ"
-    "UEST_KIND_REVIVE\020\002\022\026\n\022REQUEST_KIND_SKILL"
-    "\020\003\022\025\n\021REQUEST_KIND_CHAT\020\004B\030\252\002\025PortfolioM"
-    "mo.Contractb\006proto3"
+    "\"E\n\010UseSkill\022\020\n\010skill_id\030\001 \001(\r\022\021\n\ttarget"
+    "_id\030\002 \001(\r\022\024\n\014force_attack\030\003 \001(\010\"C\n\tSkill"
+    "Used\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill_id\030\002 \001("
+    "\r\022\021\n\ttarget_id\030\003 \001(\r\"C\n\010Progress\022\n\n\002id\030\001"
+    " \001(\r\022+\n\005state\030\002 \001(\0132\034.portfolio.mmo.Prog"
+    "ressState\"J\n\021ProgressCancelled\022\n\n\002id\030\001 \001"
+    "(\r\022)\n\006reason\030\002 \001(\0162\031.portfolio.mmo.FailR"
+    "eason\"G\n\rEffectApplied\022\n\n\002id\030\001 \001(\r\022*\n\006ef"
+    "fect\030\002 \001(\0132\032.portfolio.mmo.EffectState\"5"
+    "\n\tCooldowns\022(\n\007entries\030\001 \003(\0132\027.portfolio"
+    ".mmo.Cooldown\">\n\010Cooldown\022\020\n\010skill_id\030\001 "
+    "\001(\r\022\020\n\010end_tick\030\002 \001(\r\022\016\n\006potion\030\003 \001(\r\"s\n"
+    "\022ProjectileLaunched\022\n\n\002id\030\001 \001(\r\022\021\n\tcaste"
+    "r_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\014\n\004tick"
+    "\030\005 \001(\r\022\013\n\003yaw\030\006 \001(\r\022\r\n\005speed\030\007 \001(\r\"\035\n\017Pr"
+    "ojectileEnded\022\n\n\002id\030\001 \001(\r*Q\n\017ProtocolVer"
+    "sion\022 \n\034PROTOCOL_VERSION_UNSPECIFIED\020\000\022\034"
+    "\n\030PROTOCOL_VERSION_CURRENT\020\002*\314\002\n\010Constan"
+    "t\022\030\n\024CONSTANT_UNSPECIFIED\020\000\022\034\n\030CONSTANT_"
+    "UNITS_PER_METER\020 \022$\n\037CONSTANT_MAP_HALF_E"
+    "XTENT_METERS\020\200\010\022\027\n\022CONSTANT_YAW_STEPS\020\200\002"
+    "\022\035\n\031CONSTANT_TICKS_PER_SECOND\020\024\022(\n$CONST"
+    "ANT_MAX_SPEED_METERS_PER_SECOND\020\006\022\"\n\036CON"
+    "STANT_PING_INTERVAL_SECONDS\020\005\022!\n\035CONSTAN"
+    "T_IDLE_TIMEOUT_SECONDS\020\017\022\033\n\027CONSTANT_MAX"
+    "_CHARACTERS\020\004\022\034\n\030CONSTANT_QUICKSLOT_COUN"
+    "T\020\010*\303\001\n\017LoginResultCode\022\030\n\024LOGIN_RESULT_"
+    "CODE_OK\020\000\022&\n\"LOGIN_RESULT_CODE_INVALID_L"
+    "OGIN_ID\020\001\022&\n\"LOGIN_RESULT_CODE_VERSION_M"
+    "ISMATCH\020\002\022!\n\035LOGIN_RESULT_CODE_SERVER_FU"
+    "LL\020\003\022#\n\037LOGIN_RESULT_CODE_DATA_MISMATCH\020"
+    "\004*\311\001\n\nKickReason\022\033\n\027KICK_REASON_UNSPECIF"
+    "IED\020\000\022\037\n\033KICK_REASON_DUPLICATE_LOGIN\020\001\022\037"
+    "\n\033KICK_REASON_SERVER_SHUTDOWN\020\002\022 \n\034KICK_"
+    "REASON_MALFORMED_PACKET\020\003\022\034\n\030KICK_REASON"
+    "_IDLE_TIMEOUT\020\004\022\034\n\030KICK_REASON_RATE_LIMI"
+    "TED\020\005*g\n\016CharacterClass\022\037\n\033CHARACTER_CLA"
+    "SS_UNSPECIFIED\020\000\022\032\n\026CHARACTER_CLASS_KNIG"
+    "HT\020\001\022\030\n\024CHARACTER_CLASS_MAGE\020\002*\367\001\n\031Creat"
+    "eCharacterResultCode\022#\n\037CREATE_CHARACTER"
+    "_RESULT_CODE_OK\020\000\022-\n)CREATE_CHARACTER_RE"
+    "SULT_CODE_INVALID_NAME\020\001\022+\n\'CREATE_CHARA"
+    "CTER_RESULT_CODE_NAME_TAKEN\020\002\022)\n%CREATE_"
+    "CHARACTER_RESULT_CODE_TOO_MANY\020\003\022.\n*CREA"
+    "TE_CHARACTER_RESULT_CODE_INVALID_CLASS\020\004"
+    "*e\n\024EnterWorldResultCode\022\036\n\032ENTER_WORLD_"
+    "RESULT_CODE_OK\020\000\022-\n)ENTER_WORLD_RESULT_C"
+    "ODE_NO_SUCH_CHARACTER\020\001*\251\001\n\nEntityKind\022\033"
+    "\n\027ENTITY_KIND_UNSPECIFIED\020\000\022\026\n\022ENTITY_KI"
+    "ND_PLAYER\020\001\022\027\n\023ENTITY_KIND_MONSTER\020\002\022\023\n\017"
+    "ENTITY_KIND_NPC\020\003\022\033\n\027ENTITY_KIND_GATHER_"
+    "NODE\020\004\022\033\n\027ENTITY_KIND_GROUND_ITEM\020\005*S\n\tN"
+    "ameColor\022\025\n\021NAME_COLOR_NORMAL\020\000\022\030\n\024NAME_"
+    "COLOR_AGGRESSOR\020\001\022\025\n\021NAME_COLOR_OUTLAW\020\002"
+    "*\213\001\n\014ProgressKind\022\026\n\022PROGRESS_KIND_NONE\020"
+    "\000\022\026\n\022PROGRESS_KIND_CAST\020\001\022\030\n\024PROGRESS_KI"
+    "ND_GATHER\020\002\022\027\n\023PROGRESS_KIND_CRAFT\020\003\022\030\n\024"
+    "PROGRESS_KIND_RECALL\020\004*%\n\tItemPlace\022\030\n\024I"
+    "TEM_PLACE_INVENTORY\020\000*F\n\nGainReason\022\033\n\027G"
+    "AIN_REASON_UNSPECIFIED\020\000\022\033\n\027GAIN_REASON_"
+    "DEV_COMMAND\020\001*\222\004\n\nFailReason\022\024\n\020FAIL_REA"
+    "SON_NONE\020\000\022\031\n\025FAIL_REASON_NO_TARGET\020\001\022\036\n"
+    "\032FAIL_REASON_INVALID_TARGET\020\002\022\024\n\020FAIL_RE"
+    "ASON_DEAD\020\003\022\030\n\024FAIL_REASON_NOT_DEAD\020\004\022\033\n"
+    "\027FAIL_REASON_NOT_LEARNED\020\005\022\030\n\024FAIL_REASO"
+    "N_COOLDOWN\020\006\022\035\n\031FAIL_REASON_NOT_ENOUGH_M"
+    "P\020\007\022\034\n\030FAIL_REASON_OUT_OF_RANGE\020\010\022\027\n\023FAI"
+    "L_REASON_BLOCKED\020\t\022\024\n\020FAIL_REASON_BUSY\020\n"
+    "\022\027\n\023FAIL_REASON_STUNNED\020\013\022\031\n\025FAIL_REASON"
+    "_CANCELLED\020\014\022\037\n\033FAIL_REASON_INVALID_COMM"
+    "AND\020\r\022\036\n\032FAIL_REASON_INVENTORY_FULL\020\016\022\027\n"
+    "\023FAIL_REASON_NO_ITEM\020\017\022\035\n\031FAIL_REASON_UN"
+    "USABLE_ITEM\020\020\022\031\n\025FAIL_REASON_IN_COMBAT\020\021"
+    "\022\030\n\024FAIL_REASON_TOO_FAST\020\022*\214\001\n\013RequestKi"
+    "nd\022\034\n\030REQUEST_KIND_UNSPECIFIED\020\000\022\027\n\023REQU"
+    "EST_KIND_ATTACK\020\001\022\027\n\023REQUEST_KIND_REVIVE"
+    "\020\002\022\026\n\022REQUEST_KIND_SKILL\020\003\022\025\n\021REQUEST_KI"
+    "ND_CHAT\020\004B\030\252\002\025PortfolioMmo.Contractb\006pro"
+    "to3"
 };
 static ::absl::once_flag descriptor_table_packets_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_packets_2eproto = {
     false,
     false,
-    7619,
+    8683,
     descriptor_table_protodef_packets_2eproto,
     "packets.proto",
     &descriptor_table_packets_2eproto_once,
     nullptr,
     0,
-    46,
+    53,
     schemas,
     file_message_globals,
     TableStruct_packets_2eproto::offsets,
@@ -8287,16 +9542,30 @@ ProgressKind_descriptor() {
 PROTOBUF_CONSTINIT const uint32_t ProgressKind_internal_data_[] = {
     327680u, 0u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
-FailReason_descriptor() {
+ItemPlace_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
   return file_level_enum_descriptors_packets_2eproto[10];
 }
+PROTOBUF_CONSTINIT const uint32_t ItemPlace_internal_data_[] = {
+    65536u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+GainReason_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
+  return file_level_enum_descriptors_packets_2eproto[11];
+}
+PROTOBUF_CONSTINIT const uint32_t GainReason_internal_data_[] = {
+    131072u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+FailReason_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
+  return file_level_enum_descriptors_packets_2eproto[12];
+}
 PROTOBUF_CONSTINIT const uint32_t FailReason_internal_data_[] = {
-    917504u, 0u, };
+    1245184u, 0u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 RequestKind_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
-  return file_level_enum_descriptors_packets_2eproto[11];
+  return file_level_enum_descriptors_packets_2eproto[13];
 }
 PROTOBUF_CONSTINIT const uint32_t RequestKind_internal_data_[] = {
     327680u, 0u, };
@@ -8796,6 +10065,58 @@ void Packet::set_allocated_exp_gained(::portfolio::mmo::ExpGained* PROTOBUF_NULL
   }
   // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.exp_gained)
 }
+void Packet::set_allocated_inventory(::portfolio::mmo::Inventory* PROTOBUF_NULLABLE inventory) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (inventory) {
+    ::google::protobuf::Arena* submessage_arena = inventory->GetArena();
+    if (message_arena != submessage_arena) {
+      inventory = ::google::protobuf::internal::GetOwnedMessage(message_arena, inventory, submessage_arena);
+    }
+    set_has_inventory();
+    _impl_.body_.inventory_ = inventory;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.inventory)
+}
+void Packet::set_allocated_inventory_changed(::portfolio::mmo::InventoryChanged* PROTOBUF_NULLABLE inventory_changed) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (inventory_changed) {
+    ::google::protobuf::Arena* submessage_arena = inventory_changed->GetArena();
+    if (message_arena != submessage_arena) {
+      inventory_changed = ::google::protobuf::internal::GetOwnedMessage(message_arena, inventory_changed, submessage_arena);
+    }
+    set_has_inventory_changed();
+    _impl_.body_.inventory_changed_ = inventory_changed;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.inventory_changed)
+}
+void Packet::set_allocated_use_item(::portfolio::mmo::UseItem* PROTOBUF_NULLABLE use_item) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (use_item) {
+    ::google::protobuf::Arena* submessage_arena = use_item->GetArena();
+    if (message_arena != submessage_arena) {
+      use_item = ::google::protobuf::internal::GetOwnedMessage(message_arena, use_item, submessage_arena);
+    }
+    set_has_use_item();
+    _impl_.body_.use_item_ = use_item;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.use_item)
+}
+void Packet::set_allocated_request_result(::portfolio::mmo::RequestResult* PROTOBUF_NULLABLE request_result) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (request_result) {
+    ::google::protobuf::Arena* submessage_arena = request_result->GetArena();
+    if (message_arena != submessage_arena) {
+      request_result = ::google::protobuf::internal::GetOwnedMessage(message_arena, request_result, submessage_arena);
+    }
+    set_has_request_result();
+    _impl_.body_.request_result_ = request_result;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.request_result)
+}
 Packet::Packet(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
 #if defined(PROTOBUF_CUSTOM_VTABLE)
     : Super_(arena, Packet_get_class_data()) {
@@ -8942,6 +10263,18 @@ Packet::Packet(
         break;
       case kExpGained:
         _impl_.body_.exp_gained_ = Super_::CopyConstruct(arena, *from._impl_.body_.exp_gained_);
+        break;
+      case kInventory:
+        _impl_.body_.inventory_ = Super_::CopyConstruct(arena, *from._impl_.body_.inventory_);
+        break;
+      case kInventoryChanged:
+        _impl_.body_.inventory_changed_ = Super_::CopyConstruct(arena, *from._impl_.body_.inventory_changed_);
+        break;
+      case kUseItem:
+        _impl_.body_.use_item_ = Super_::CopyConstruct(arena, *from._impl_.body_.use_item_);
+        break;
+      case kRequestResult:
+        _impl_.body_.request_result_ = Super_::CopyConstruct(arena, *from._impl_.body_.request_result_);
         break;
   }
 
@@ -9281,6 +10614,38 @@ void Packet::clear_body() {
       }
       break;
     }
+    case kInventory: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.inventory_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.inventory_);
+      }
+      break;
+    }
+    case kInventoryChanged: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.inventory_changed_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.inventory_changed_);
+      }
+      break;
+    }
+    case kUseItem: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.use_item_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.use_item_);
+      }
+      break;
+    }
+    case kRequestResult: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.request_result_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.request_result_);
+      }
+      break;
+    }
     case BODY_NOT_SET: {
       break;
     }
@@ -9572,6 +10937,30 @@ PROTOBUF_NOINLINE void Packet::Clear() {
           stream);
       break;
     }
+    case kInventory: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          302, *this_._impl_.body_.inventory_, this_._impl_.body_.inventory_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kInventoryChanged: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          303, *this_._impl_.body_.inventory_changed_, this_._impl_.body_.inventory_changed_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kUseItem: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          304, *this_._impl_.body_.use_item_, this_._impl_.body_.use_item_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kRequestResult: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          305, *this_._impl_.body_.request_result_, this_._impl_.body_.request_result_->GetCachedSize(), target,
+          stream);
+      break;
+    }
     default:
       break;
   }
@@ -9823,6 +11212,30 @@ PROTOBUF_NOINLINE void Packet::Clear() {
     case kExpGained: {
       total_size += 2 +
                     ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.exp_gained_);
+      break;
+    }
+    // .portfolio.mmo.Inventory inventory = 302;
+    case kInventory: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.inventory_);
+      break;
+    }
+    // .portfolio.mmo.InventoryChanged inventory_changed = 303;
+    case kInventoryChanged: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.inventory_changed_);
+      break;
+    }
+    // .portfolio.mmo.UseItem use_item = 304;
+    case kUseItem: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.use_item_);
+      break;
+    }
+    // .portfolio.mmo.RequestResult request_result = 305;
+    case kRequestResult: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.request_result_);
       break;
     }
     case BODY_NOT_SET: {
@@ -10159,6 +11572,38 @@ void Packet::MergeImpl(::google::protobuf::MessageLite& to_msg,
           _this->_impl_.body_.exp_gained_ = Super_::CopyConstruct(arena, *from._impl_.body_.exp_gained_);
         } else {
           _this->_impl_.body_.exp_gained_->MergeFrom(*from._impl_.body_.exp_gained_);
+        }
+        break;
+      }
+      case kInventory: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.inventory_ = Super_::CopyConstruct(arena, *from._impl_.body_.inventory_);
+        } else {
+          _this->_impl_.body_.inventory_->MergeFrom(*from._impl_.body_.inventory_);
+        }
+        break;
+      }
+      case kInventoryChanged: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.inventory_changed_ = Super_::CopyConstruct(arena, *from._impl_.body_.inventory_changed_);
+        } else {
+          _this->_impl_.body_.inventory_changed_->MergeFrom(*from._impl_.body_.inventory_changed_);
+        }
+        break;
+      }
+      case kUseItem: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.use_item_ = Super_::CopyConstruct(arena, *from._impl_.body_.use_item_);
+        } else {
+          _this->_impl_.body_.use_item_->MergeFrom(*from._impl_.body_.use_item_);
+        }
+        break;
+      }
+      case kRequestResult: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.request_result_ = Super_::CopyConstruct(arena, *from._impl_.body_.request_result_);
+        } else {
+          _this->_impl_.body_.request_result_->MergeFrom(*from._impl_.body_.request_result_);
         }
         break;
       }
@@ -17057,6 +18502,1822 @@ void ExpGained::InternalSwap(ExpGained* PROTOBUF_RESTRICT PROTOBUF_NONNULL other
 }
 // ===================================================================
 
+ItemSlot::ItemSlot(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, ItemSlot_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.ItemSlot)
+}
+ItemSlot::ItemSlot(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const ItemSlot& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, ItemSlot_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE ItemSlot::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void ItemSlot::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, place_),
+           0,
+           offsetof(Impl_, enchant_) -
+               offsetof(Impl_, place_) +
+               sizeof(Impl_::enchant_));
+}
+ItemSlot::~ItemSlot() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.ItemSlot)
+  SharedDtor(*this);
+}
+inline void ItemSlot::SharedDtor(MessageLite& self) {
+  ItemSlot& this_ = static_cast<ItemSlot&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull ItemSlot_class_data_ =
+        ItemSlot::InternalGenerateClassData_(ItemSlot_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+ItemSlot::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&ItemSlot_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(ItemSlot_class_data_.tc_table);
+  return ItemSlot_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+ItemSlot::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&ItemSlot_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&ItemSlot_globals_));
+  return ItemSlot_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const ItemSlot::ParseTableT_
+    ItemSlot::_table_ =
+        ItemSlot::InternalGenerateParseTable_(ItemSlot_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void ItemSlot::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.ItemSlot)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+    ::memset(&this_._impl_.place_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.enchant_) -
+                 reinterpret_cast<char*>(&this_._impl_.place_)) +
+                 sizeof(_impl_.enchant_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL ItemSlot::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const ItemSlot& this_ = static_cast<const ItemSlot&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL ItemSlot::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const ItemSlot& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.ItemSlot)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // .portfolio.mmo.ItemPlace place = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_place() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteEnumToArray(
+          1, this_._internal_place(), target);
+    }
+  }
+
+  // uint32 index = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_index() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          2, this_._internal_index(), target);
+    }
+  }
+
+  // uint32 item_id = 3;
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (this_._internal_item_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          3, this_._internal_item_id(), target);
+    }
+  }
+
+  // uint32 count = 4;
+  if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+    if (this_._internal_count() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          4, this_._internal_count(), target);
+    }
+  }
+
+  // uint32 enchant = 5;
+  if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+    if (this_._internal_enchant() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          5, this_._internal_enchant(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.ItemSlot)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t ItemSlot::ByteSizeLong(const MessageLite& base) {
+  const ItemSlot& this_ = static_cast<const ItemSlot&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t ItemSlot::ByteSizeLong() const {
+  const ItemSlot& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.ItemSlot)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+    // .portfolio.mmo.ItemPlace place = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_place() != 0) {
+        total_size += 1 +
+                      ::_pbi::WireFormatLite::EnumSize(this_._internal_place());
+      }
+    }
+    // uint32 index = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_index() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_index());
+      }
+    }
+    // uint32 item_id = 3;
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (this_._internal_item_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_item_id());
+      }
+    }
+    // uint32 count = 4;
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      if (this_._internal_count() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_count());
+      }
+    }
+    // uint32 enchant = 5;
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      if (this_._internal_enchant() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_enchant());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void ItemSlot::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<ItemSlot*>(&to_msg);
+  auto& from = static_cast<const ItemSlot&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.ItemSlot)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (from._internal_place() != 0) {
+        _this->_impl_.place_ = from._impl_.place_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_index() != 0) {
+        _this->_impl_.index_ = from._impl_.index_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (from._internal_item_id() != 0) {
+        _this->_impl_.item_id_ = from._impl_.item_id_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      if (from._internal_count() != 0) {
+        _this->_impl_.count_ = from._impl_.count_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      if (from._internal_enchant() != 0) {
+        _this->_impl_.enchant_ = from._impl_.enchant_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void ItemSlot::CopyFrom(const ItemSlot& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.ItemSlot)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void ItemSlot::InternalSwap(ItemSlot* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.enchant_)
+      + sizeof(ItemSlot::_impl_.enchant_)
+      - PROTOBUF_FIELD_OFFSET(ItemSlot, _impl_.place_)>(
+          reinterpret_cast<char*>(&_impl_.place_),
+          reinterpret_cast<char*>(&other->_impl_.place_));
+}
+
+::google::protobuf::Metadata ItemSlot::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+Inventory::Inventory(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, Inventory_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.Inventory)
+}
+PROTOBUF_NDEBUG_INLINE Inventory::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+    [[maybe_unused]] const ::portfolio::mmo::Inventory& from_msg)
+      : _has_bits_{from._has_bits_},
+        slots_ {
+          visibility, ::_pbi::InternalMetadataOffset::Build<
+              ::portfolio::mmo::Inventory,
+              PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Inventory, _impl_.slots_)>()
+          , arena, from.slots_
+        }
+     {}
+
+Inventory::Inventory(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
+    const Inventory& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, Inventory_get_class_data()) {
+
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  Inventory* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  _impl_.gold_ = from._impl_.gold_;
+
+  // @@protoc_insertion_point(copy_constructor:portfolio.mmo.Inventory)
+}
+PROTOBUF_NDEBUG_INLINE Inventory::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+      : slots_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::Inventory,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Inventory, _impl_.slots_)>()
+         }
+     {}
+
+inline void Inventory::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.gold_ = {};
+}
+Inventory::~Inventory() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.Inventory)
+  SharedDtor(*this);
+}
+inline void Inventory::SharedDtor(MessageLite& self) {
+  Inventory& this_ = static_cast<Inventory&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull Inventory_class_data_ =
+        Inventory::InternalGenerateClassData_(Inventory_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+Inventory::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&Inventory_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(Inventory_class_data_.tc_table);
+  return Inventory_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+Inventory::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&Inventory_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&Inventory_globals_));
+  return Inventory_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const Inventory::ParseTableT_
+    Inventory::_table_ =
+        Inventory::InternalGenerateParseTable_(Inventory_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void Inventory::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.Inventory)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    _impl_.slots_.Clear();
+  }
+  this_._impl_.gold_ = ::uint64_t{0u};
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL Inventory::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const Inventory& this_ = static_cast<const Inventory&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL Inventory::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const Inventory& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.Inventory)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // repeated .portfolio.mmo.ItemSlot slots = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    for (unsigned i = 0, n = static_cast<unsigned>(
+                             this_._internal_slots_size());
+         i < n; i++) {
+      const auto& repfield = this_._internal_slots().Get(i);
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          1, repfield, repfield.GetCachedSize(), target,
+          stream);
+    }
+  }
+
+  // uint64 gold = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_gold() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt64ToArray(
+          2, this_._internal_gold(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.Inventory)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t Inventory::ByteSizeLong(const MessageLite& base) {
+  const Inventory& this_ = static_cast<const Inventory&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t Inventory::ByteSizeLong() const {
+  const Inventory& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.Inventory)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    // repeated .portfolio.mmo.ItemSlot slots = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      total_size += 1UL * this_._internal_slots_size();
+      for (const auto& msg : this_._internal_slots()) {
+        total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+      }
+    }
+    // uint64 gold = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_gold() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(
+            this_._internal_gold());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void Inventory::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<Inventory*>(&to_msg);
+  auto& from = static_cast<const Inventory&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  ::google::protobuf::Arena* arena = _this->GetArena();
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.Inventory)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      _this->_internal_mutable_slots()->InternalMergeFromWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), arena,
+          from._internal_slots());
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_gold() != 0) {
+        _this->_impl_.gold_ = from._impl_.gold_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void Inventory::CopyFrom(const Inventory& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.Inventory)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void Inventory::InternalSwap(Inventory* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _impl_.slots_.InternalSwap(&other->_impl_.slots_);
+  swap(_impl_.gold_, other->_impl_.gold_);
+}
+
+::google::protobuf::Metadata Inventory::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+ItemAmount::ItemAmount(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, ItemAmount_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.ItemAmount)
+}
+ItemAmount::ItemAmount(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const ItemAmount& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, ItemAmount_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE ItemAmount::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void ItemAmount::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, item_id_),
+           0,
+           offsetof(Impl_, count_) -
+               offsetof(Impl_, item_id_) +
+               sizeof(Impl_::count_));
+}
+ItemAmount::~ItemAmount() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.ItemAmount)
+  SharedDtor(*this);
+}
+inline void ItemAmount::SharedDtor(MessageLite& self) {
+  ItemAmount& this_ = static_cast<ItemAmount&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull ItemAmount_class_data_ =
+        ItemAmount::InternalGenerateClassData_(ItemAmount_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+ItemAmount::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&ItemAmount_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(ItemAmount_class_data_.tc_table);
+  return ItemAmount_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+ItemAmount::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&ItemAmount_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&ItemAmount_globals_));
+  return ItemAmount_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const ItemAmount::ParseTableT_
+    ItemAmount::_table_ =
+        ItemAmount::InternalGenerateParseTable_(ItemAmount_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void ItemAmount::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.ItemAmount)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    ::memset(&this_._impl_.item_id_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.count_) -
+                 reinterpret_cast<char*>(&this_._impl_.item_id_)) +
+                 sizeof(_impl_.count_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL ItemAmount::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const ItemAmount& this_ = static_cast<const ItemAmount&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL ItemAmount::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const ItemAmount& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.ItemAmount)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 item_id = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_item_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          1, this_._internal_item_id(), target);
+    }
+  }
+
+  // uint32 count = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_count() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          2, this_._internal_count(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.ItemAmount)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t ItemAmount::ByteSizeLong(const MessageLite& base) {
+  const ItemAmount& this_ = static_cast<const ItemAmount&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t ItemAmount::ByteSizeLong() const {
+  const ItemAmount& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.ItemAmount)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    // uint32 item_id = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_item_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_item_id());
+      }
+    }
+    // uint32 count = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_count() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_count());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void ItemAmount::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<ItemAmount*>(&to_msg);
+  auto& from = static_cast<const ItemAmount&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.ItemAmount)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (from._internal_item_id() != 0) {
+        _this->_impl_.item_id_ = from._impl_.item_id_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_count() != 0) {
+        _this->_impl_.count_ = from._impl_.count_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void ItemAmount::CopyFrom(const ItemAmount& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.ItemAmount)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void ItemAmount::InternalSwap(ItemAmount* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(ItemAmount, _impl_.count_)
+      + sizeof(ItemAmount::_impl_.count_)
+      - PROTOBUF_FIELD_OFFSET(ItemAmount, _impl_.item_id_)>(
+          reinterpret_cast<char*>(&_impl_.item_id_),
+          reinterpret_cast<char*>(&other->_impl_.item_id_));
+}
+
+::google::protobuf::Metadata ItemAmount::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+void Gain::set_allocated_item(::portfolio::mmo::ItemAmount* PROTOBUF_NULLABLE item) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_what();
+  if (item) {
+    ::google::protobuf::Arena* submessage_arena = item->GetArena();
+    if (message_arena != submessage_arena) {
+      item = ::google::protobuf::internal::GetOwnedMessage(message_arena, item, submessage_arena);
+    }
+    set_has_item();
+    _impl_.what_.item_ = item;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Gain.item)
+}
+Gain::Gain(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, Gain_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.Gain)
+}
+PROTOBUF_NDEBUG_INLINE Gain::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+    [[maybe_unused]] const ::portfolio::mmo::Gain& from_msg)
+      : _has_bits_{from._has_bits_},
+        what_{},
+        _oneof_case_{from._oneof_case_[0]} {}
+
+Gain::Gain(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
+    const Gain& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, Gain_get_class_data()) {
+
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  Gain* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  _impl_.reason_ = from._impl_.reason_;
+  switch (what_case()) {
+    case WHAT_NOT_SET:
+      break;
+      case kItem:
+        _impl_.what_.item_ = Super_::CopyConstruct(arena, *from._impl_.what_.item_);
+        break;
+      case kGold:
+        _impl_.what_.gold_ = from._impl_.what_.gold_;
+        break;
+  }
+
+  // @@protoc_insertion_point(copy_constructor:portfolio.mmo.Gain)
+}
+PROTOBUF_NDEBUG_INLINE Gain::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+      : what_{},
+        _oneof_case_{} {}
+
+inline void Gain::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.reason_ = {};
+}
+Gain::~Gain() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.Gain)
+  SharedDtor(*this);
+}
+inline void Gain::SharedDtor(MessageLite& self) {
+  Gain& this_ = static_cast<Gain&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  if (this_.has_what()) {
+    this_.clear_what();
+  }
+  this_._impl_.~Impl_();
+}
+
+void Gain::clear_what() {
+// @@protoc_insertion_point(one_of_clear_start:portfolio.mmo.Gain)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  switch (what_case()) {
+    case kItem: {
+      if (GetArena() == nullptr) {
+        delete _impl_.what_.item_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.what_.item_);
+      }
+      break;
+    }
+    case kGold: {
+      // No need to clear
+      break;
+    }
+    case WHAT_NOT_SET: {
+      break;
+    }
+  }
+  _impl_._oneof_case_[0] = WHAT_NOT_SET;
+}
+
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull Gain_class_data_ =
+        Gain::InternalGenerateClassData_(Gain_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+Gain::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&Gain_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(Gain_class_data_.tc_table);
+  return Gain_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+Gain::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&Gain_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&Gain_globals_));
+  return Gain_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const Gain::ParseTableT_
+    Gain::_table_ =
+        Gain::InternalGenerateParseTable_(Gain_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void Gain::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.Gain)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  this_._impl_.reason_ = 0;
+  clear_what();
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL Gain::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const Gain& this_ = static_cast<const Gain&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL Gain::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const Gain& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.Gain)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // .portfolio.mmo.GainReason reason = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_reason() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteEnumToArray(
+          1, this_._internal_reason(), target);
+    }
+  }
+
+  switch (this_.what_case()) {
+    case kItem: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          2, *this_._impl_.what_.item_, this_._impl_.what_.item_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kGold: {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt64ToArray(
+          3, this_._internal_gold(), target);
+      break;
+    }
+    default:
+      break;
+  }
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.Gain)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t Gain::ByteSizeLong(const MessageLite& base) {
+  const Gain& this_ = static_cast<const Gain&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t Gain::ByteSizeLong() const {
+  const Gain& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.Gain)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+   {
+    // .portfolio.mmo.GainReason reason = 1;
+    cached_has_bits = this_._impl_._has_bits_[0];
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_reason() != 0) {
+        total_size += 1 +
+                      ::_pbi::WireFormatLite::EnumSize(this_._internal_reason());
+      }
+    }
+  }
+  switch (this_.what_case()) {
+    // .portfolio.mmo.ItemAmount item = 2;
+    case kItem: {
+      total_size += 1 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.what_.item_);
+      break;
+    }
+    // uint64 gold = 3;
+    case kGold: {
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(
+          this_._internal_gold());
+      break;
+    }
+    case WHAT_NOT_SET: {
+      break;
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void Gain::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<Gain*>(&to_msg);
+  auto& from = static_cast<const Gain&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  ::google::protobuf::Arena* arena = _this->GetArena();
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.Gain)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (from._internal_reason() != 0) {
+      _this->_impl_.reason_ = from._impl_.reason_;
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  if (const uint32_t oneof_from_case =
+          from._impl_._oneof_case_[0]) {
+    const uint32_t oneof_to_case = _this->_impl_._oneof_case_[0];
+    const bool oneof_needs_init = oneof_to_case != oneof_from_case;
+    if (oneof_needs_init) {
+      if (oneof_to_case != 0) {
+        _this->clear_what();
+      }
+      _this->_impl_._oneof_case_[0] = oneof_from_case;
+    }
+
+    switch (oneof_from_case) {
+      case kItem: {
+        if (oneof_needs_init) {
+          _this->_impl_.what_.item_ = Super_::CopyConstruct(arena, *from._impl_.what_.item_);
+        } else {
+          _this->_impl_.what_.item_->MergeFrom(*from._impl_.what_.item_);
+        }
+        break;
+      }
+      case kGold: {
+        _this->_impl_.what_.gold_ = from._impl_.what_.gold_;
+        break;
+      }
+      case WHAT_NOT_SET:
+        break;
+    }
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void Gain::CopyFrom(const Gain& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.Gain)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void Gain::InternalSwap(Gain* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  swap(_impl_.reason_, other->_impl_.reason_);
+  swap(_impl_.what_, other->_impl_.what_);
+  swap(_impl_._oneof_case_[0], other->_impl_._oneof_case_[0]);
+}
+
+::google::protobuf::Metadata Gain::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+InventoryChanged::InventoryChanged(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, InventoryChanged_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.InventoryChanged)
+}
+PROTOBUF_NDEBUG_INLINE InventoryChanged::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+    [[maybe_unused]] const ::portfolio::mmo::InventoryChanged& from_msg)
+      : _has_bits_{from._has_bits_},
+        slots_ {
+          visibility, ::_pbi::InternalMetadataOffset::Build<
+              ::portfolio::mmo::InventoryChanged,
+              PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_.slots_)>()
+          , arena, from.slots_
+        }
+        ,
+        gains_ {
+          visibility, ::_pbi::InternalMetadataOffset::Build<
+              ::portfolio::mmo::InventoryChanged,
+              PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_.gains_)>()
+          , arena, from.gains_
+        }
+     {}
+
+InventoryChanged::InventoryChanged(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
+    const InventoryChanged& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, InventoryChanged_get_class_data()) {
+
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  InventoryChanged* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  _impl_.gold_ = from._impl_.gold_;
+
+  // @@protoc_insertion_point(copy_constructor:portfolio.mmo.InventoryChanged)
+}
+PROTOBUF_NDEBUG_INLINE InventoryChanged::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+      : slots_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::InventoryChanged,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_.slots_)>()
+         }
+        ,
+        gains_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::InventoryChanged,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::InventoryChanged, _impl_.gains_)>()
+         }
+     {}
+
+inline void InventoryChanged::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.gold_ = {};
+}
+InventoryChanged::~InventoryChanged() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.InventoryChanged)
+  SharedDtor(*this);
+}
+inline void InventoryChanged::SharedDtor(MessageLite& self) {
+  InventoryChanged& this_ = static_cast<InventoryChanged&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull InventoryChanged_class_data_ =
+        InventoryChanged::InternalGenerateClassData_(InventoryChanged_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+InventoryChanged::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&InventoryChanged_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(InventoryChanged_class_data_.tc_table);
+  return InventoryChanged_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+InventoryChanged::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&InventoryChanged_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&InventoryChanged_globals_));
+  return InventoryChanged_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const InventoryChanged::ParseTableT_
+    InventoryChanged::_table_ =
+        InventoryChanged::InternalGenerateParseTable_(InventoryChanged_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void InventoryChanged::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.InventoryChanged)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      _impl_.slots_.Clear();
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      _impl_.gains_.Clear();
+    }
+  }
+  this_._impl_.gold_ = ::uint64_t{0u};
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL InventoryChanged::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const InventoryChanged& this_ = static_cast<const InventoryChanged&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL InventoryChanged::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const InventoryChanged& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.InventoryChanged)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // repeated .portfolio.mmo.ItemSlot slots = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    for (unsigned i = 0, n = static_cast<unsigned>(
+                             this_._internal_slots_size());
+         i < n; i++) {
+      const auto& repfield = this_._internal_slots().Get(i);
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          1, repfield, repfield.GetCachedSize(), target,
+          stream);
+    }
+  }
+
+  // uint64 gold = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (this_._internal_gold() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt64ToArray(
+          2, this_._internal_gold(), target);
+    }
+  }
+
+  // repeated .portfolio.mmo.Gain gains = 3;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    for (unsigned i = 0, n = static_cast<unsigned>(
+                             this_._internal_gains_size());
+         i < n; i++) {
+      const auto& repfield = this_._internal_gains().Get(i);
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          3, repfield, repfield.GetCachedSize(), target,
+          stream);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.InventoryChanged)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t InventoryChanged::ByteSizeLong(const MessageLite& base) {
+  const InventoryChanged& this_ = static_cast<const InventoryChanged&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t InventoryChanged::ByteSizeLong() const {
+  const InventoryChanged& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.InventoryChanged)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    // repeated .portfolio.mmo.ItemSlot slots = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      total_size += 1UL * this_._internal_slots_size();
+      for (const auto& msg : this_._internal_slots()) {
+        total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+      }
+    }
+    // repeated .portfolio.mmo.Gain gains = 3;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      total_size += 1UL * this_._internal_gains_size();
+      for (const auto& msg : this_._internal_gains()) {
+        total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+      }
+    }
+    // uint64 gold = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (this_._internal_gold() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(
+            this_._internal_gold());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void InventoryChanged::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<InventoryChanged*>(&to_msg);
+  auto& from = static_cast<const InventoryChanged&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  ::google::protobuf::Arena* arena = _this->GetArena();
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.InventoryChanged)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      _this->_internal_mutable_slots()->InternalMergeFromWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), arena,
+          from._internal_slots());
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      _this->_internal_mutable_gains()->InternalMergeFromWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), arena,
+          from._internal_gains());
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (from._internal_gold() != 0) {
+        _this->_impl_.gold_ = from._impl_.gold_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void InventoryChanged::CopyFrom(const InventoryChanged& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.InventoryChanged)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void InventoryChanged::InternalSwap(InventoryChanged* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _impl_.slots_.InternalSwap(&other->_impl_.slots_);
+  _impl_.gains_.InternalSwap(&other->_impl_.gains_);
+  swap(_impl_.gold_, other->_impl_.gold_);
+}
+
+::google::protobuf::Metadata InventoryChanged::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+UseItem::UseItem(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, UseItem_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.UseItem)
+}
+UseItem::UseItem(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const UseItem& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, UseItem_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE UseItem::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void UseItem::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, slot_),
+           0,
+           offsetof(Impl_, request_id_) -
+               offsetof(Impl_, slot_) +
+               sizeof(Impl_::request_id_));
+}
+UseItem::~UseItem() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.UseItem)
+  SharedDtor(*this);
+}
+inline void UseItem::SharedDtor(MessageLite& self) {
+  UseItem& this_ = static_cast<UseItem&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull UseItem_class_data_ =
+        UseItem::InternalGenerateClassData_(UseItem_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+UseItem::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&UseItem_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(UseItem_class_data_.tc_table);
+  return UseItem_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+UseItem::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&UseItem_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&UseItem_globals_));
+  return UseItem_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const UseItem::ParseTableT_
+    UseItem::_table_ =
+        UseItem::InternalGenerateParseTable_(UseItem_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void UseItem::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.UseItem)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    ::memset(&this_._impl_.slot_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.request_id_) -
+                 reinterpret_cast<char*>(&this_._impl_.slot_)) +
+                 sizeof(_impl_.request_id_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL UseItem::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const UseItem& this_ = static_cast<const UseItem&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL UseItem::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const UseItem& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.UseItem)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 slot = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_slot() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          1, this_._internal_slot(), target);
+    }
+  }
+
+  // uint32 request_id = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_request_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          2, this_._internal_request_id(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.UseItem)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t UseItem::ByteSizeLong(const MessageLite& base) {
+  const UseItem& this_ = static_cast<const UseItem&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t UseItem::ByteSizeLong() const {
+  const UseItem& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.UseItem)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    // uint32 slot = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_slot() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_slot());
+      }
+    }
+    // uint32 request_id = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_request_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_request_id());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void UseItem::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<UseItem*>(&to_msg);
+  auto& from = static_cast<const UseItem&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.UseItem)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (from._internal_slot() != 0) {
+        _this->_impl_.slot_ = from._impl_.slot_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_request_id() != 0) {
+        _this->_impl_.request_id_ = from._impl_.request_id_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void UseItem::CopyFrom(const UseItem& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.UseItem)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void UseItem::InternalSwap(UseItem* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(UseItem, _impl_.request_id_)
+      + sizeof(UseItem::_impl_.request_id_)
+      - PROTOBUF_FIELD_OFFSET(UseItem, _impl_.slot_)>(
+          reinterpret_cast<char*>(&_impl_.slot_),
+          reinterpret_cast<char*>(&other->_impl_.slot_));
+}
+
+::google::protobuf::Metadata UseItem::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+RequestResult::RequestResult(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, RequestResult_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.RequestResult)
+}
+RequestResult::RequestResult(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const RequestResult& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, RequestResult_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE RequestResult::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void RequestResult::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, request_id_),
+           0,
+           offsetof(Impl_, result_) -
+               offsetof(Impl_, request_id_) +
+               sizeof(Impl_::result_));
+}
+RequestResult::~RequestResult() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.RequestResult)
+  SharedDtor(*this);
+}
+inline void RequestResult::SharedDtor(MessageLite& self) {
+  RequestResult& this_ = static_cast<RequestResult&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull RequestResult_class_data_ =
+        RequestResult::InternalGenerateClassData_(RequestResult_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+RequestResult::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&RequestResult_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(RequestResult_class_data_.tc_table);
+  return RequestResult_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+RequestResult::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&RequestResult_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&RequestResult_globals_));
+  return RequestResult_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const RequestResult::ParseTableT_
+    RequestResult::_table_ =
+        RequestResult::InternalGenerateParseTable_(RequestResult_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void RequestResult::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.RequestResult)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    ::memset(&this_._impl_.request_id_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.result_) -
+                 reinterpret_cast<char*>(&this_._impl_.request_id_)) +
+                 sizeof(_impl_.result_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL RequestResult::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const RequestResult& this_ = static_cast<const RequestResult&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL RequestResult::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const RequestResult& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.RequestResult)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 request_id = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_request_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          1, this_._internal_request_id(), target);
+    }
+  }
+
+  // .portfolio.mmo.FailReason result = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_result() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteEnumToArray(
+          2, this_._internal_result(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.RequestResult)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t RequestResult::ByteSizeLong(const MessageLite& base) {
+  const RequestResult& this_ = static_cast<const RequestResult&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t RequestResult::ByteSizeLong() const {
+  const RequestResult& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.RequestResult)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    // uint32 request_id = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_request_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_request_id());
+      }
+    }
+    // .portfolio.mmo.FailReason result = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_result() != 0) {
+        total_size += 1 +
+                      ::_pbi::WireFormatLite::EnumSize(this_._internal_result());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void RequestResult::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<RequestResult*>(&to_msg);
+  auto& from = static_cast<const RequestResult&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.RequestResult)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (from._internal_request_id() != 0) {
+        _this->_impl_.request_id_ = from._impl_.request_id_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_result() != 0) {
+        _this->_impl_.result_ = from._impl_.result_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void RequestResult::CopyFrom(const RequestResult& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.RequestResult)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void RequestResult::InternalSwap(RequestResult* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(RequestResult, _impl_.result_)
+      + sizeof(RequestResult::_impl_.result_)
+      - PROTOBUF_FIELD_OFFSET(RequestResult, _impl_.request_id_)>(
+          reinterpret_cast<char*>(&_impl_.request_id_),
+          reinterpret_cast<char*>(&other->_impl_.request_id_));
+}
+
+::google::protobuf::Metadata RequestResult::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
 ActionFailed::ActionFailed(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
 #if defined(PROTOBUF_CUSTOM_VTABLE)
     : Super_(arena, ActionFailed_get_class_data()) {
@@ -20041,9 +23302,9 @@ inline void Cooldown::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, skill_id_),
            0,
-           offsetof(Impl_, end_tick_) -
+           offsetof(Impl_, potion_) -
                offsetof(Impl_, skill_id_) +
-               sizeof(Impl_::end_tick_));
+               sizeof(Impl_::potion_));
 }
 Cooldown::~Cooldown() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.Cooldown)
@@ -20092,12 +23353,12 @@ PROTOBUF_NOINLINE void Cooldown::Clear() {
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
     ::memset(&this_._impl_.skill_id_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.end_tick_) -
+                 reinterpret_cast<char*>(&this_._impl_.potion_) -
                  reinterpret_cast<char*>(&this_._impl_.skill_id_)) +
-                 sizeof(_impl_.end_tick_));
+                 sizeof(_impl_.potion_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -20140,6 +23401,15 @@ PROTOBUF_NOINLINE void Cooldown::Clear() {
     }
   }
 
+  // uint32 potion = 3;
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (this_._internal_potion() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          3, this_._internal_potion(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -20163,7 +23433,7 @@ PROTOBUF_NOINLINE void Cooldown::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
     // uint32 skill_id = 1;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (this_._internal_skill_id() != 0) {
@@ -20176,6 +23446,13 @@ PROTOBUF_NOINLINE void Cooldown::Clear() {
       if (this_._internal_end_tick() != 0) {
         total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
             this_._internal_end_tick());
+      }
+    }
+    // uint32 potion = 3;
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (this_._internal_potion() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_potion());
       }
     }
   }
@@ -20196,7 +23473,7 @@ void Cooldown::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (from._internal_skill_id() != 0) {
         _this->_impl_.skill_id_ = from._impl_.skill_id_;
@@ -20205,6 +23482,11 @@ void Cooldown::MergeImpl(::google::protobuf::MessageLite& to_msg,
     if (CheckHasBit(cached_has_bits, 0x00000002U)) {
       if (from._internal_end_tick() != 0) {
         _this->_impl_.end_tick_ = from._impl_.end_tick_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (from._internal_potion() != 0) {
+        _this->_impl_.potion_ = from._impl_.potion_;
       }
     }
   }
@@ -20226,8 +23508,8 @@ void Cooldown::InternalSwap(Cooldown* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) 
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.end_tick_)
-      + sizeof(Cooldown::_impl_.end_tick_)
+      PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.potion_)
+      + sizeof(Cooldown::_impl_.potion_)
       - PROTOBUF_FIELD_OFFSET(Cooldown, _impl_.skill_id_)>(
           reinterpret_cast<char*>(&_impl_.skill_id_),
           reinterpret_cast<char*>(&other->_impl_.skill_id_));

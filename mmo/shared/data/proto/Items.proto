@@ -1,0 +1,51 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+import "Enums.proto";
+
+message ItemsRow {
+  // 아이템의 번호(종류 × 1000 + 차례. 장비 1, 소모품 2, 재료 3, 골드 4)
+  uint32 id = 1;
+  // 이름(Strings의 키). 설명은 item.desc.<번호>의 키다
+  string name_key = 2;
+  // 종류
+  ItemKind kind = 3;
+  // 종(같은 장비의 등급 넷을 묶는 번호. 34)
+  optional uint32 family = 4;
+  // 등급(이름의 색)
+  ItemGrade grade = 5;
+  // 장비 칸(34)
+  optional EquipSlot slot = 6;
+  // 입으면 더하는 공격력(34)
+  optional uint32 attack = 7;
+  // 입으면 더하는 방어력(34)
+  optional uint32 defense = 8;
+  // 입으면 더하는 최대 체력(34)
+  optional uint32 max_hp = 9;
+  // 입으면 더하는 최대 마나(34)
+  optional uint32 max_mp = 10;
+  // 필요 레벨. 비우면 없음(스킬북은 가르치는 Skills의 줄을 따름)
+  optional uint32 level = 11;
+  // 직업(Classes의 id). 비우면 공용
+  optional uint32 class = 12;
+  // 겹치는지(겹치면 인벤토리 칸 하나에 수량으로 쌓이고 상한은 없음)
+  bool stackable = 13;
+  // 상점에 파는 값(골드. 37)
+  uint32 sell_price = 14;
+  // 쓰는 종류
+  ItemUse use = 15;
+  // 쓰는 종류의 값(회복량, 스킬 번호, Pets의 줄)
+  optional uint32 use_value = 16;
+  // 쓰는 시간(ms). 0이면 바로(귀환 주문서 3초)
+  uint32 use_ms = 17;
+  // 쿨다운(ms). 물약은 쓰는 종류(체력 회복, 마나 회복)마다 하나의 쿨다운에 걸린다
+  uint32 cooldown_ms = 18;
+}
+
+message Items {
+  repeated ItemsRow rows = 1;
+}

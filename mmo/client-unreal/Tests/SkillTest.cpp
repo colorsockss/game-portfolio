@@ -291,6 +291,18 @@ namespace
 		Expect(Target.Info.effects_size() == 1 && Target.Info.effects(0).end_tick() == Start + 12, "the same effect only renews its end");
 		const std::optional<double> Half = Scene.World.ProgressRatio(Target, Scene.GameData, 15.0 / 20);
 		Expect(Half && *Half > 0.49 && *Half < 0.51, "half of a 30 tick cast has passed after 15 ticks");
+		{
+			// 귀환(32)의 길이는 쓴 아이템의 쓰는 시간이다(3초 = 60틱).
+			FScene Recall;
+			portfolio::mmo::data::ItemsRow* Scroll = Recall.GameData.Items.add_rows();
+			Scroll->set_id(2005);
+			Scroll->set_use_ms(3000);
+			Packet Started = Cast(Monster, 2005, Start + 60);
+			Started.mutable_progress()->mutable_state()->set_kind(portfolio::mmo::PROGRESS_KIND_RECALL);
+			Recall.Apply(Started);
+			const std::optional<double> Quarter = Recall.World.ProgressRatio(Recall.World.Entities().at(Monster), Recall.GameData, 15.0 / 20);
+			Expect(Quarter && *Quarter > 0.24 && *Quarter < 0.26, "a recall's length is its item's use time");
+		}
 		Scene.World.Expire(11.0 / 20);
 		Expect(Target.Info.effects_size() == 1, "the effect stays before its end tick");
 		Scene.World.Expire(12.0 / 20);

@@ -7,29 +7,30 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 개발 명령(68). --dev로 띄운 서버만 DevCommand를 실행한다. 명령마다 평소의 시스템 함수를 불러 평소와 같은 패킷이 나간다.
-    /// 지금의 명령은 순간 이동("tp x z", m), 몬스터 부르기("spawn 몬스터번호 [x z]", m), 레벨 주기("level n". 경험치는 0)이고, 아이템·골드·성향은 32, 44가 더한다.
+    /// 지금의 명령은 순간 이동("tp x z", m), 몬스터 부르기("spawn 몬스터번호 [x z]", m), 레벨 주기("level n". 경험치는 0), 아이템 주기("item 번호 [수]"),
+    /// 골드 주기("gold n")이고, 성향은 44가 더한다.
     /// </summary>
     internal sealed class DevSystem
     {
         private readonly GameData _data;
         private readonly FieldMap _field;
         private readonly EntityTable _entities;
-        private readonly Grid _grid;
         private readonly MovementSystem _movement;
         private readonly ProgressSystem _progress;
         private readonly SpawnSystem _spawn;
         private readonly GrowthSystem _growth;
+        private readonly InventorySystem _inventory;
 
-        public DevSystem(GameData data, FieldMap field, EntityTable entities, Grid grid, MovementSystem movement, ProgressSystem progress, SpawnSystem spawn, GrowthSystem growth)
+        public DevSystem(GameData data, FieldMap field, EntityTable entities, MovementSystem movement, ProgressSystem progress, SpawnSystem spawn, GrowthSystem growth, InventorySystem inventory)
         {
             _data = data;
             _field = field;
             _entities = entities;
-            _grid = grid;
             _movement = movement;
             _progress = progress;
             _spawn = spawn;
             _growth = growth;
+            _inventory = inventory;
         }
 
         /// <summary>
@@ -63,6 +64,19 @@ namespace PortfolioMmo.Server
                     _growth.SetLevel(player, level);
                     player.Session.Send(new Packet { ExpGained = new ExpGained { Exp = 0 } });
                     return Outcome.Done;
+                case "item" when ((words.Length == 2) || (words.Length == 3)) && uint.TryParse(words[1], NumberStyles.None, CultureInfo.InvariantCulture, out uint itemId)
+                    && (_data.Item(itemId) is { Kind: not ItemKind.Gold }):
+                    uint count = 1;
+                    if ((words.Length == 3) && !(uint.TryParse(words[2], NumberStyles.None, CultureInfo.InvariantCulture, out count) && (count >= 1)))
+                    {
+                        return Outcome.Fail(FailReason.InvalidCommand);
+                    }
+
+                    FailReason added = _inventory.Add(player, itemId, count, GainReason.DevCommand);
+                    return added == FailReason.None ? Outcome.Done : Outcome.Fail(added);
+                case "gold" when (words.Length == 2) && ulong.TryParse(words[1], NumberStyles.None, CultureInfo.InvariantCulture, out ulong gold) && (gold >= 1):
+                    _inventory.AddGold(player, gold, GainReason.DevCommand);
+                    return Outcome.Done;
                 default:
                     return Outcome.Fail(FailReason.InvalidCommand);
             }
@@ -79,14 +93,7 @@ namespace PortfolioMmo.Server
                 return Outcome.Fail(FailReason.Blocked);
             }
 
-            player.X = x;
-            player.Z = z;
-            player.Moved = true;
-            player.Teleported = true;
-            player.Dirty = true;
-            player.MoveBudget = 0;
-            _grid.Moved(player);
-            _movement.Reset(player);
+            _movement.Teleport(player, x, z);
             _progress.Moved(player);
             return Outcome.Done;
         }

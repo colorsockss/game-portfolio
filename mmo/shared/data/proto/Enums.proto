@@ -63,3 +63,63 @@ enum EffectKind {
   // 방어력 올림
   EFFECT_KIND_DEFENSE_UP = 4;
 }
+
+enum ItemKind {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  ITEM_KIND_UNSPECIFIED = 0;
+  // 장비(겹치지 않고 강화 수치를 가짐. 34)
+  ITEM_KIND_EQUIPMENT = 1;
+  // 소모품(물약, 주문서, 스킬북, 펫 아이템)
+  ITEM_KIND_CONSUMABLE = 2;
+  // 재료(채집물, 몬스터 부산물)
+  ITEM_KIND_MATERIAL = 3;
+  // 골드(바닥에 떨어질 때만 아이템. 33)
+  ITEM_KIND_GOLD = 4;
+}
+
+enum ItemGrade {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  ITEM_GRADE_UNSPECIFIED = 0;
+  // 일반
+  ITEM_GRADE_COMMON = 1;
+  // 고급
+  ITEM_GRADE_UNCOMMON = 2;
+  // 희귀
+  ITEM_GRADE_RARE = 3;
+  // 영웅
+  ITEM_GRADE_EPIC = 4;
+}
+
+enum EquipSlot {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  EQUIP_SLOT_UNSPECIFIED = 0;
+  // 무기
+  EQUIP_SLOT_WEAPON = 1;
+  // 투구
+  EQUIP_SLOT_HELMET = 2;
+  // 갑옷
+  EQUIP_SLOT_ARMOR = 3;
+  // 장갑
+  EQUIP_SLOT_GLOVES = 4;
+  // 신발
+  EQUIP_SLOT_BOOTS = 5;
+  // 장신구
+  EQUIP_SLOT_ACCESSORY = 6;
+}
+
+enum ItemUse {
+  // 쓰지 않음(장비, 재료, 골드)
+  ITEM_USE_NONE = 0;
+  // 체력 회복(값만큼)
+  ITEM_USE_HEAL_HP = 1;
+  // 마나 회복(값만큼)
+  ITEM_USE_HEAL_MP = 2;
+  // 귀환(쓰는 시간 뒤 마을의 부활 지점)
+  ITEM_USE_RECALL = 3;
+  // 스킬 배우기(값은 Skills의 줄. 36)
+  ITEM_USE_LEARN_SKILL = 4;
+  // 강화(UseItem이 아니라 강화 요청으로 씀. 35)
+  ITEM_USE_ENCHANT = 5;
+  // 펫 얻기(값은 Pets의 줄. 96)
+  ITEM_USE_GET_PET = 6;
+}

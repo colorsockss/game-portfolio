@@ -48,8 +48,9 @@ namespace MmoWorld
 	{
 		for (const portfolio::mmo::Cooldown& Entry : Cooldowns.entries())
 		{
-			Ends[Entry.skill_id()] = Entry.end_tick();
-			if (Predicted && Predicted->first == Entry.skill_id())
+			const uint32_t Key = Entry.potion() != 0 ? PotionKey(Entry.potion()) : Entry.skill_id();
+			Ends[Key] = Entry.end_tick();
+			if (Predicted && Predicted->first == Key)
 			{
 				Predicted.reset();
 			}

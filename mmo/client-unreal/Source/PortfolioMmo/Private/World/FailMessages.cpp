@@ -20,6 +20,11 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_STUNNED: return "fail.stunned";
 		case portfolio::mmo::FAIL_REASON_CANCELLED: return "fail.cancelled";
 		case portfolio::mmo::FAIL_REASON_INVALID_COMMAND: return "fail.invalidCommand";
+		case portfolio::mmo::FAIL_REASON_INVENTORY_FULL: return "fail.inventoryFull";
+		case portfolio::mmo::FAIL_REASON_NO_ITEM: return "fail.noItem";
+		case portfolio::mmo::FAIL_REASON_UNUSABLE_ITEM: return "fail.unusableItem";
+		case portfolio::mmo::FAIL_REASON_IN_COMBAT: return "fail.inCombat";
+		case portfolio::mmo::FAIL_REASON_TOO_FAST: return "fail.tooFast";
 		default: return "fail.other";
 		}
 	}

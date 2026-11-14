@@ -272,3 +272,70 @@ B
 Max MP {1}
 Attack {2}
 Defense {3}
+*
+item.hpPotion1체력 물약	HP Potion
+9
+item.hpPotion2상급 체력 물약Greater HP Potion
+*
+item.mpPotion1마나 물약	MP Potion
+9
+item.mpPotion2상급 마나 물약Greater MP Potion
+.
+item.recall귀환 주문서Recall Scroll
+?
+item.desc.2001체력을 120 채웁니다.Restores 120 HP.
+?
+item.desc.2002체력을 350 채웁니다.Restores 350 HP.
+=
+item.desc.2003마나를 80 채웁니다.Restores 80 MP.
+?
+item.desc.2004마나를 220 채웁니다.Restores 220 MP.
+�
+item.desc.2005J3초 뒤 마을로 돌아갑니다. 전투 중에는 쓸 수 없습니다.:Returns you to town after 3 seconds. Not usable in combat.
+
+grade.common일반Common
+"
+grade.uncommon고급Uncommon
+
+
+grade.rare희귀Rare
+
+
+grade.epic영웅Epic
+
+inventory.title가방Bag
+&
+inventory.gold
+골드 {0}Gold {0}
+
+
+detail.use쓰기Use
+8
+detail.quickslot퀵슬롯에 올리기To Quickslot
+5
+detail.level필요 레벨 {0}Requires level {0}
+'
+detail.class직업: {0}
+Class: {0}
+8
+detail.sell파는 값 {0} 골드Sells for {0} gold
+G
+fail.inventoryFull가방이 가득 찼습니다.Your bag is full.
+I
+fail.noItem그 아이템이 없습니다.You do not have that item.
+R
+fail.unusableItem"쓸 수 없는 아이템입니다.That item cannot be used.
+N
+fail.inCombat&전투 중에는 쓸 수 없습니다.Not usable in combat.
+?
+notice.gainItem{0} {1}개를 얻었습니다Got {0} ×{1}
+>
+notice.gainGold골드 {0}을 얻었습니다Got {0} gold
+!
+progress.recall귀환Recall
+L
+fail.tooFast(요청을 너무 자주 보냈습니다.Too many requests.
+
+detail.count{0}개×{0}
+D
+quickslot.full빈 퀵슬롯이 없습니다.No free quickslot.

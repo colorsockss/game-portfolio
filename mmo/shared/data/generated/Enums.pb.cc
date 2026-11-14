@@ -32,7 +32,7 @@ namespace data {
 }  // namespace mmo
 }  // namespace portfolio
 static const ::_pb::EnumDescriptor* PROTOBUF_NONNULL
-    file_level_enum_descriptors_Enums_2eproto[5];
+    file_level_enum_descriptors_Enums_2eproto[9];
 static constexpr const ::_pb::ServiceDescriptor* PROTOBUF_NONNULL* PROTOBUF_NULLABLE
     file_level_service_descriptors_Enums_2eproto = nullptr;
 const ::uint32_t TableStruct_Enums_2eproto::offsets[1] = {};
@@ -57,14 +57,29 @@ const char descriptor_table_protodef_Enums_2eproto[] ABSL_ATTRIBUTE_SECTION_VARI
     "LF\020\002*\214\001\n\nEffectKind\022\033\n\027EFFECT_KIND_UNSPE"
     "CIFIED\020\000\022\024\n\020EFFECT_KIND_STUN\020\001\022\024\n\020EFFECT"
     "_KIND_SLOW\020\002\022\031\n\025EFFECT_KIND_ATTACK_UP\020\003\022"
-    "\032\n\026EFFECT_KIND_DEFENSE_UP\020\004B\024\252\002\021Portfoli"
-    "oMmo.Datab\006proto3"
+    "\032\n\026EFFECT_KIND_DEFENSE_UP\020\004*\204\001\n\010ItemKind"
+    "\022\031\n\025ITEM_KIND_UNSPECIFIED\020\000\022\027\n\023ITEM_KIND"
+    "_EQUIPMENT\020\001\022\030\n\024ITEM_KIND_CONSUMABLE\020\002\022\026"
+    "\n\022ITEM_KIND_MATERIAL\020\003\022\022\n\016ITEM_KIND_GOLD"
+    "\020\004*\201\001\n\tItemGrade\022\032\n\026ITEM_GRADE_UNSPECIFI"
+    "ED\020\000\022\025\n\021ITEM_GRADE_COMMON\020\001\022\027\n\023ITEM_GRAD"
+    "E_UNCOMMON\020\002\022\023\n\017ITEM_GRADE_RARE\020\003\022\023\n\017ITE"
+    "M_GRADE_EPIC\020\004*\262\001\n\tEquipSlot\022\032\n\026EQUIP_SL"
+    "OT_UNSPECIFIED\020\000\022\025\n\021EQUIP_SLOT_WEAPON\020\001\022"
+    "\025\n\021EQUIP_SLOT_HELMET\020\002\022\024\n\020EQUIP_SLOT_ARM"
+    "OR\020\003\022\025\n\021EQUIP_SLOT_GLOVES\020\004\022\024\n\020EQUIP_SLO"
+    "T_BOOTS\020\005\022\030\n\024EQUIP_SLOT_ACCESSORY\020\006*\243\001\n\007"
+    "ItemUse\022\021\n\rITEM_USE_NONE\020\000\022\024\n\020ITEM_USE_H"
+    "EAL_HP\020\001\022\024\n\020ITEM_USE_HEAL_MP\020\002\022\023\n\017ITEM_U"
+    "SE_RECALL\020\003\022\030\n\024ITEM_USE_LEARN_SKILL\020\004\022\024\n"
+    "\020ITEM_USE_ENCHANT\020\005\022\024\n\020ITEM_USE_GET_PET\020"
+    "\006B\024\252\002\021PortfolioMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Enums_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Enums_2eproto = {
     false,
     false,
-    697,
+    1311,
     descriptor_table_protodef_Enums_2eproto,
     "Enums.proto",
     &descriptor_table_Enums_2eproto_once,
@@ -115,6 +130,34 @@ EffectKind_descriptor() {
 }
 PROTOBUF_CONSTINIT const uint32_t EffectKind_internal_data_[] = {
     327680u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+ItemKind_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[5];
+}
+PROTOBUF_CONSTINIT const uint32_t ItemKind_internal_data_[] = {
+    327680u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+ItemGrade_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[6];
+}
+PROTOBUF_CONSTINIT const uint32_t ItemGrade_internal_data_[] = {
+    327680u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+EquipSlot_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[7];
+}
+PROTOBUF_CONSTINIT const uint32_t EquipSlot_internal_data_[] = {
+    458752u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+ItemUse_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[8];
+}
+PROTOBUF_CONSTINIT const uint32_t ItemUse_internal_data_[] = {
+    458752u, 0u, };
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace data
 }  // namespace mmo

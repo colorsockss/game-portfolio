@@ -20,7 +20,10 @@ namespace MmoWorld
 		/** 끝나는 틱부터 다시 쓸 수 있다. 서버의 SkillSystem.Ready와 같다. */
 		static bool Ready(uint32_t EndTick, uint32_t Tick) { return Tick >= EndTick; }
 
-		/** 스킬의 쿨다운이 끝나는 틱. 모르면 0. */
+		/** 물약의 쿨다운의 키(32): 물약은 Items의 쓰는 종류(1 체력 회복, 2 마나 회복)마다 하나의 쿨다운이고, 스킬 번호(101부터)와 겹치지 않게 맨 위 비트를 켠다. */
+		static constexpr uint32_t PotionKey(uint32_t Use) { return 0x80000000u | Use; }
+
+		/** 스킬(이나 PotionKey)의 쿨다운이 끝나는 틱. 모르면 0. */
 		uint32_t End(uint32_t SkillId) const;
 
 		/** 어림한 서버 틱(소수는 버림)에 쓸 수 있는가. */

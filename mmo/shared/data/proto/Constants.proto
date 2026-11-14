@@ -48,4 +48,6 @@ message Constants {
   uint32 rate_limit_kick_ms = 20;
   // 버린 것이 이만큼 없으면 버린 시간을 처음부터 다시 세는 시간(ms)
   uint32 rate_limit_reset_ms = 21;
+  // 인벤토리 칸 수
+  uint32 inventory_slots = 22;
 }

@@ -38,11 +38,25 @@ namespace PortfolioMmo.Data {
             "UkdFVBABEhUKEVNLSUxMX0NFTlRFUl9TRUxGEAIqjAEKCkVmZmVjdEtpbmQS",
             "GwoXRUZGRUNUX0tJTkRfVU5TUEVDSUZJRUQQABIUChBFRkZFQ1RfS0lORF9T",
             "VFVOEAESFAoQRUZGRUNUX0tJTkRfU0xPVxACEhkKFUVGRkVDVF9LSU5EX0FU",
-            "VEFDS19VUBADEhoKFkVGRkVDVF9LSU5EX0RFRkVOU0VfVVAQBEIUqgIRUG9y",
-            "dGZvbGlvTW1vLkRhdGFiBnByb3RvMw=="));
+            "VEFDS19VUBADEhoKFkVGRkVDVF9LSU5EX0RFRkVOU0VfVVAQBCqEAQoISXRl",
+            "bUtpbmQSGQoVSVRFTV9LSU5EX1VOU1BFQ0lGSUVEEAASFwoTSVRFTV9LSU5E",
+            "X0VRVUlQTUVOVBABEhgKFElURU1fS0lORF9DT05TVU1BQkxFEAISFgoSSVRF",
+            "TV9LSU5EX01BVEVSSUFMEAMSEgoOSVRFTV9LSU5EX0dPTEQQBCqBAQoJSXRl",
+            "bUdyYWRlEhoKFklURU1fR1JBREVfVU5TUEVDSUZJRUQQABIVChFJVEVNX0dS",
+            "QURFX0NPTU1PThABEhcKE0lURU1fR1JBREVfVU5DT01NT04QAhITCg9JVEVN",
+            "X0dSQURFX1JBUkUQAxITCg9JVEVNX0dSQURFX0VQSUMQBCqyAQoJRXF1aXBT",
+            "bG90EhoKFkVRVUlQX1NMT1RfVU5TUEVDSUZJRUQQABIVChFFUVVJUF9TTE9U",
+            "X1dFQVBPThABEhUKEUVRVUlQX1NMT1RfSEVMTUVUEAISFAoQRVFVSVBfU0xP",
+            "VF9BUk1PUhADEhUKEUVRVUlQX1NMT1RfR0xPVkVTEAQSFAoQRVFVSVBfU0xP",
+            "VF9CT09UUxAFEhgKFEVRVUlQX1NMT1RfQUNDRVNTT1JZEAYqowEKB0l0ZW1V",
+            "c2USEQoNSVRFTV9VU0VfTk9ORRAAEhQKEElURU1fVVNFX0hFQUxfSFAQARIU",
+            "ChBJVEVNX1VTRV9IRUFMX01QEAISEwoPSVRFTV9VU0VfUkVDQUxMEAMSGAoU",
+            "SVRFTV9VU0VfTEVBUk5fU0tJTEwQBBIUChBJVEVNX1VTRV9FTkNIQU5UEAUS",
+            "FAoQSVRFTV9VU0VfR0VUX1BFVBAGQhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), typeof(global::PortfolioMmo.Data.ItemKind), typeof(global::PortfolioMmo.Data.ItemGrade), typeof(global::PortfolioMmo.Data.EquipSlot), typeof(global::PortfolioMmo.Data.ItemUse), }, null, null));
     }
     #endregion
 
@@ -149,6 +163,114 @@ namespace PortfolioMmo.Data {
     /// 방어력 올림
     /// </summary>
     [pbr::OriginalName("EFFECT_KIND_DEFENSE_UP")] DefenseUp = 4,
+  }
+
+  public enum ItemKind {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("ITEM_KIND_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 장비(겹치지 않고 강화 수치를 가짐. 34)
+    /// </summary>
+    [pbr::OriginalName("ITEM_KIND_EQUIPMENT")] Equipment = 1,
+    /// <summary>
+    /// 소모품(물약, 주문서, 스킬북, 펫 아이템)
+    /// </summary>
+    [pbr::OriginalName("ITEM_KIND_CONSUMABLE")] Consumable = 2,
+    /// <summary>
+    /// 재료(채집물, 몬스터 부산물)
+    /// </summary>
+    [pbr::OriginalName("ITEM_KIND_MATERIAL")] Material = 3,
+    /// <summary>
+    /// 골드(바닥에 떨어질 때만 아이템. 33)
+    /// </summary>
+    [pbr::OriginalName("ITEM_KIND_GOLD")] Gold = 4,
+  }
+
+  public enum ItemGrade {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("ITEM_GRADE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 일반
+    /// </summary>
+    [pbr::OriginalName("ITEM_GRADE_COMMON")] Common = 1,
+    /// <summary>
+    /// 고급
+    /// </summary>
+    [pbr::OriginalName("ITEM_GRADE_UNCOMMON")] Uncommon = 2,
+    /// <summary>
+    /// 희귀
+    /// </summary>
+    [pbr::OriginalName("ITEM_GRADE_RARE")] Rare = 3,
+    /// <summary>
+    /// 영웅
+    /// </summary>
+    [pbr::OriginalName("ITEM_GRADE_EPIC")] Epic = 4,
+  }
+
+  public enum EquipSlot {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("EQUIP_SLOT_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 무기
+    /// </summary>
+    [pbr::OriginalName("EQUIP_SLOT_WEAPON")] Weapon = 1,
+    /// <summary>
+    /// 투구
+    /// </summary>
+    [pbr::OriginalName("EQUIP_SLOT_HELMET")] Helmet = 2,
+    /// <summary>
+    /// 갑옷
+    /// </summary>
+    [pbr::OriginalName("EQUIP_SLOT_ARMOR")] Armor = 3,
+    /// <summary>
+    /// 장갑
+    /// </summary>
+    [pbr::OriginalName("EQUIP_SLOT_GLOVES")] Gloves = 4,
+    /// <summary>
+    /// 신발
+    /// </summary>
+    [pbr::OriginalName("EQUIP_SLOT_BOOTS")] Boots = 5,
+    /// <summary>
+    /// 장신구
+    /// </summary>
+    [pbr::OriginalName("EQUIP_SLOT_ACCESSORY")] Accessory = 6,
+  }
+
+  public enum ItemUse {
+    /// <summary>
+    /// 쓰지 않음(장비, 재료, 골드)
+    /// </summary>
+    [pbr::OriginalName("ITEM_USE_NONE")] None = 0,
+    /// <summary>
+    /// 체력 회복(값만큼)
+    /// </summary>
+    [pbr::OriginalName("ITEM_USE_HEAL_HP")] HealHp = 1,
+    /// <summary>
+    /// 마나 회복(값만큼)
+    /// </summary>
+    [pbr::OriginalName("ITEM_USE_HEAL_MP")] HealMp = 2,
+    /// <summary>
+    /// 귀환(쓰는 시간 뒤 마을의 부활 지점)
+    /// </summary>
+    [pbr::OriginalName("ITEM_USE_RECALL")] Recall = 3,
+    /// <summary>
+    /// 스킬 배우기(값은 Skills의 줄. 36)
+    /// </summary>
+    [pbr::OriginalName("ITEM_USE_LEARN_SKILL")] LearnSkill = 4,
+    /// <summary>
+    /// 강화(UseItem이 아니라 강화 요청으로 씀. 35)
+    /// </summary>
+    [pbr::OriginalName("ITEM_USE_ENCHANT")] Enchant = 5,
+    /// <summary>
+    /// 펫 얻기(값은 Pets의 줄. 96)
+    /// </summary>
+    [pbr::OriginalName("ITEM_USE_GET_PET")] GetPet = 6,
   }
 
   #endregion

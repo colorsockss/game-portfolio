@@ -50,6 +50,7 @@ void UMmoHudWidget::NativeOnInitialized()
 	InteractButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleInteractClicked);
 	SettingsButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleSettingsClicked);
 	CharacterButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter(); });
+	BagButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleInventory(); });
 	// 메뉴의 키 표시는 키 표의 키다(설정 창은 뒤로 가기의 키가 연다). 창이 아직 없는 버튼은 그 항목이 잇기 전까지 누를 수 없다.
 	const TPair<UMmoButtonWidget*, EMmoAction> Menus[] = {
 		{ BagButton, EMmoAction::Bag }, { CharacterButton, EMmoAction::Character }, { SkillsButton, EMmoAction::Skills },
@@ -58,7 +59,7 @@ void UMmoHudWidget::NativeOnInitialized()
 	for (const TPair<UMmoButtonWidget*, EMmoAction>& Menu : Menus)
 	{
 		Menu.Key->SetKeyHint(MmoKeys::Hint(Menu.Value));
-		Menu.Key->SetIsEnabled(Menu.Key == SettingsButton || Menu.Key == CharacterButton);
+		Menu.Key->SetIsEnabled(Menu.Key == SettingsButton || Menu.Key == CharacterButton || Menu.Key == BagButton);
 	}
 	for (int32 Index = 0; Index < QuickslotCount(); ++Index)
 	{
@@ -90,6 +91,7 @@ void UMmoHudWidget::ShowSlots(double ServerTick)
 	if (Class != SlotClass)
 	{
 		SlotClass = Class;
+		ShownPotions.Reset();
 		if (!Icons)
 		{
 			Icons = LoadObject<UMmoIcons>(nullptr, UMmoIcons::Path);
@@ -107,10 +109,32 @@ void UMmoHudWidget::ShowSlots(double ServerTick)
 		}
 	}
 
+	ShownPotions.SetNum(Slots.Num());
 	for (int32 Index = 0; Index < Slots.Num(); ++Index)
 	{
 		const portfolio::mmo::data::SkillsRow* Skill = SlotSkills[Index] != 0 ? Session->Data().Skill(SlotSkills[Index]) : nullptr;
-		SlotShades[Index]->SetPercent(Skill ? static_cast<float>(Session->Combat().Cooldowns().Remaining(Skill->id(), Skill->cooldown_ms(), ServerTick)) : 0.0f);
+		if (Skill)
+		{
+			SlotShades[Index]->SetPercent(static_cast<float>(Session->Combat().Cooldowns().Remaining(Skill->id(), Skill->cooldown_ms(), ServerTick)));
+			continue;
+		}
+		// 물약(32): 글자 아이콘과 가진 수의 합, 쓰는 종류의 쿨다운.
+		const portfolio::mmo::data::ItemsRow* Potion = Session->Data().Item(Session->QuickslotPotion(Index));
+		const uint32 Count = Potion ? Session->Inventory().CountOf(Potion->id()) : 0;
+		const uint64 Shown = Potion ? (static_cast<uint64>(Potion->id()) << 32 | Count) : 0;
+		if (Shown != ShownPotions[Index])
+		{
+			ShownPotions[Index] = Shown;
+			const FText Name = Potion ? MmoText::Get(this, UTF8_TO_TCHAR(Potion->name_key().c_str())) : FText::GetEmpty();
+			Slots[Index]->SetIcon(Potion && Icons ? Icons->Load(EMmoIconKind::Item, Potion->id()) : nullptr, Name);
+			if (Potion)
+			{
+				Slots[Index]->SetLabel(FText::FromString(FString::Printf(TEXT("%s %u"), *Name.ToString().Left(1), Count)));
+			}
+		}
+		SlotShades[Index]->SetPercent(Potion
+			? static_cast<float>(Session->Combat().Cooldowns().Remaining(MmoWorld::FCooldowns::PotionKey(Potion->use()), Potion->cooldown_ms(), ServerTick))
+			: 0.0f);
 	}
 }
 
@@ -129,8 +153,9 @@ void UMmoHudWidget::ShowProgress(double NowSeconds)
 	if (Ratio)
 	{
 		CastBar->SetPercent(static_cast<float>(*Ratio));
-		const portfolio::mmo::data::SkillsRow* Skill = Session->Data().Skill(Me->Info.progress().id());
-		CastText->SetText(Skill ? MmoText::Get(this, UTF8_TO_TCHAR(Skill->name_key().c_str())) : FText::GetEmpty());
+		const portfolio::mmo::data::SkillsRow* Skill = Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_CAST ? Session->Data().Skill(Me->Info.progress().id()) : nullptr;
+		CastText->SetText(Skill ? MmoText::Get(this, UTF8_TO_TCHAR(Skill->name_key().c_str()))
+			: Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_RECALL ? MmoText::Get(this, TEXT("progress.recall")) : FText::GetEmpty());
 	}
 }
 
@@ -357,10 +382,22 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	ShowEffects(ServerTick);
 	ShowInteract();
 	ShowStats(InDeltaTime);
-	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀).
+	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀). 요청 번호가 있는 요청의 실패와 얻은 것(32)도 같다.
+	UMmoUiManager* Ui = GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>();
 	for (const portfolio::mmo::FailReason Reason : Session->Combat().TakeNotices())
 	{
-		GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowNotice(MmoText::Get(this, UTF8_TO_TCHAR(MmoWorld::FailKey(Reason))));
+		Ui->ShowNotice(MmoText::Get(this, UTF8_TO_TCHAR(MmoWorld::FailKey(Reason))));
+	}
+	for (const MmoWorld::FRequestFailure& Failure : Session->Inventory().TakeFailures())
+	{
+		Ui->ShowNotice(MmoText::Get(this, UTF8_TO_TCHAR(MmoWorld::FailKey(Failure.Reason))));
+	}
+	for (const MmoWorld::FItemGain& Gain : Session->Inventory().TakeGains())
+	{
+		const portfolio::mmo::data::ItemsRow* Item = Session->Data().Item(Gain.ItemId);
+		Ui->ShowNotice(Item
+			? MmoText::Format(this, TEXT("notice.gainItem"), { MmoText::Get(this, UTF8_TO_TCHAR(Item->name_key().c_str())).ToString(), FString::FromInt(Gain.Count) })
+			: MmoText::Format(this, TEXT("notice.gainGold"), { FText::AsNumber(Gain.Gold).ToString() }));
 	}
 
 	const MmoWorld::FFieldMap* Field = Session->Field();

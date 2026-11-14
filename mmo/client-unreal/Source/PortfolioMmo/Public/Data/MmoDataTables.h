@@ -14,6 +14,7 @@
 #include "Skills.pb.h"
 #include "Strings.pb.h"
 #include "Levels.pb.h"
+#include "Items.pb.h"
 #include "Zones.pb.h"
 #pragma pop_macro("check")
 #pragma pop_macro("verify")

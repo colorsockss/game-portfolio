@@ -166,6 +166,10 @@ private:
 	/** 캐릭터 창(31). */
 	UPROPERTY()
 	TObjectPtr<UInputAction> CharacterAction;
+
+	/** 인벤토리 창(32). */
+	UPROPERTY()
+	TObjectPtr<UInputAction> BagAction;
 	UPROPERTY()
 	TObjectPtr<UInputAction> FreeCameraAction;
 	UPROPERTY()

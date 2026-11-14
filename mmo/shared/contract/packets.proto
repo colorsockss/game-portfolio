@@ -54,6 +54,10 @@ message Packet {
     // 300–399: 성장과 아이템
     SelfStats self_stats = 300;
     ExpGained exp_gained = 301;
+    Inventory inventory = 302;
+    InventoryChanged inventory_changed = 303;
+    UseItem use_item = 304;
+    RequestResult request_result = 305;
   }
 }
 
@@ -337,7 +341,7 @@ message EffectState {
 // 진행 중인 일. 같은 세 필드를 진행 패킷(Progress, backlog 26)도 쓴다. 진행 중인 일이 없으면 kind가 NONE이다.
 message ProgressState {
   ProgressKind kind = 1;
-  // 그 일의 번호(시전이면 Skills, 채집이면 GatherNodes, 제작이면 Recipes의 줄, 귀환이면 0).
+  // 그 일의 번호(시전이면 Skills, 채집이면 GatherNodes, 제작이면 Recipes의 줄, 귀환이면 쓴 아이템의 Items 번호).
   uint32 id = 2;
   uint32 end_tick = 3;
 }
@@ -419,6 +423,66 @@ message ExpGained {
   uint32 exp = 2;
 }
 
+// 아이템이 있는 곳. 장비 칸(34), 창고(75)는 그 항목이 더한다.
+enum ItemPlace {
+  ITEM_PLACE_INVENTORY = 0;
+}
+
+// 칸 하나. item_id가 0이면 빈 칸이다(InventoryChanged에서 칸이 비었음을 알림).
+message ItemSlot {
+  ItemPlace place = 1;
+  uint32 index = 2;
+  uint32 item_id = 3;
+  uint32 count = 4;
+  // 강화 수치(장비. 35).
+  uint32 enchant = 5;
+}
+
+// 서버 → 본인. 월드에 들어올 때(EnterWorldResult 뒤) 인벤토리 전체: 빈 칸이 아닌 칸들과 골드.
+message Inventory {
+  repeated ItemSlot slots = 1;
+  uint64 gold = 2;
+}
+
+// 얻은 까닭. 줍기(33), 구매(37), 채집(47), 제작(48), 퀘스트 보상(50)은 그 항목이 더한다.
+enum GainReason {
+  GAIN_REASON_UNSPECIFIED = 0;
+  GAIN_REASON_DEV_COMMAND = 1;
+}
+
+message ItemAmount {
+  uint32 item_id = 1;
+  uint32 count = 2;
+}
+
+// 새로 얻은 것 하나: 까닭과, 아이템이나 골드.
+message Gain {
+  GainReason reason = 1;
+  oneof what {
+    ItemAmount item = 2;
+    uint64 gold = 3;
+  }
+}
+
+// 서버 → 본인. 이 틱에 바뀐 칸들, 지금 골드, 새로 얻은 것. 옮기거나 바꾼 것(벗기, 창고에서 찾기, 상점에 판 값)은 gains에 싣지 않는다.
+message InventoryChanged {
+  repeated ItemSlot slots = 1;
+  uint64 gold = 2;
+  repeated Gain gains = 3;
+}
+
+// 클라이언트 → 서버. 인벤토리 칸의 아이템을 쓴다. 답은 RequestResult(같은 요청 번호)다.
+message UseItem {
+  uint32 slot = 1;
+  uint32 request_id = 2;
+}
+
+// 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
+message RequestResult {
+  uint32 request_id = 1;
+  FailReason result = 2;
+}
+
 // 서버 → 클라이언트. 요청 번호가 없는 요청이 실패했다(어느 요청인지와 이유). 끊지 않는다.
 message ActionFailed {
   FailReason reason = 1;
@@ -454,6 +518,16 @@ enum FailReason {
   FAIL_REASON_CANCELLED = 12;
   // 쓸 수 없는 명령(--dev가 아닌 서버의 DevCommand, 모르는 명령, 값이 맞지 않는 명령).
   FAIL_REASON_INVALID_COMMAND = 13;
+  // 넣을 자리가 없다(겹치는 아이템은 같은 아이템이 든 칸이나 빈 칸, 겹치지 않는 아이템은 빈 칸. 32).
+  FAIL_REASON_INVENTORY_FULL = 14;
+  // 그 칸에 아이템이 없다, 또는 진행 중인 일이 끝날 때 그 아이템을 더 가지지 않았다(32).
+  FAIL_REASON_NO_ITEM = 15;
+  // 쓰는 종류가 없는 아이템(장비, 재료)이나 아직 쓸 수 없는 아이템(32).
+  FAIL_REASON_UNUSABLE_ITEM = 16;
+  // 전투 상태에서는 할 수 없다(귀환 주문서. 32).
+  FAIL_REASON_IN_COMBAT = 17;
+  // 요청을 너무 자주 보내 빈도 제한이 버렸다(요청 번호가 있는 요청에만 RequestResult로 답한다. 28, 32).
+  FAIL_REASON_TOO_FAST = 18;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
@@ -550,8 +624,11 @@ message Cooldowns {
 }
 
 message Cooldown {
+  // 스킬의 번호. 물약의 쿨다운이면 0이다.
   uint32 skill_id = 1;
   uint32 end_tick = 2;
+  // 물약의 쿨다운이면 Items의 쓰는 종류(ItemUse의 값: 1 체력 회복, 2 마나 회복)이고 스킬이면 0이다. 단계가 다른 물약도 같은 쿨다운에 걸린다(32).
+  uint32 potion = 3;
 }
 
 // 서버 → 클라이언트. 서버가 옮기는 직선 발사체가 나갔다(그 틱). 나간 자리(x, z)에서 yaw 쪽으로 speed(좌표 단위의 초당 값)로 날아가므로

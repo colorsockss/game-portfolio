@@ -324,13 +324,24 @@ namespace MmoWorld
 
 	std::optional<double> FWorldState::ProgressRatio(const FEntity& Entity, const MmoData::FGameData& Data, double NowSeconds) const
 	{
-		if (!Entity.Info.has_progress() || Entity.Info.progress().kind() != portfolio::mmo::PROGRESS_KIND_CAST)
+		if (!Entity.Info.has_progress())
 		{
 			return std::nullopt;
 		}
 
-		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Entity.Info.progress().id());
-		const double Length = Skill ? Units::TicksFromMilliseconds(Skill->cast_ms()) : 0;
+		// 길이: 시전은 Skills의 시전 시간, 귀환은 쓴 아이템(Items)의 쓰는 시간. 채집과 제작은 그 항목(47, 48)이 더한다.
+		double Length = 0;
+		const portfolio::mmo::ProgressState& Progress = Entity.Info.progress();
+		if (Progress.kind() == portfolio::mmo::PROGRESS_KIND_CAST)
+		{
+			const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Progress.id());
+			Length = Skill ? Units::TicksFromMilliseconds(Skill->cast_ms()) : 0;
+		}
+		else if (Progress.kind() == portfolio::mmo::PROGRESS_KIND_RECALL)
+		{
+			const portfolio::mmo::data::ItemsRow* Item = Data.Item(Progress.id());
+			Length = Item ? Units::TicksFromMilliseconds(Item->use_ms()) : 0;
+		}
 		if (Length <= 0)
 		{
 			return std::nullopt;

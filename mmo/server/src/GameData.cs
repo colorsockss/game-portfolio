@@ -24,8 +24,9 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<(uint Class, uint Level), LevelsRow> _levels = new Dictionary<(uint Class, uint Level), LevelsRow>();
         private readonly Dictionary<uint, SkillsRow> _skills = new Dictionary<uint, SkillsRow>();
         private readonly Dictionary<uint, EffectsRow> _effects = new Dictionary<uint, EffectsRow>();
+        private readonly Dictionary<uint, ItemsRow> _items = new Dictionary<uint, ItemsRow>();
 
-        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects)
+        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null)
         {
             Hash = hash;
             Constants = constants;
@@ -53,6 +54,11 @@ namespace PortfolioMmo.Server
             foreach (EffectsRow row in effects.Rows)
             {
                 _effects.Add(row.Id, row);
+            }
+
+            foreach (ItemsRow row in (items ?? new Items()).Rows)
+            {
+                _items.Add(row.Id, row);
             }
         }
 
@@ -157,6 +163,14 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 번호의 아이템(32). 없는 번호면 null(개발 명령에 실려 온 번호라 실패로 답함).
+        /// </summary>
+        public ItemsRow? Item(uint id)
+        {
+            return _items.GetValueOrDefault(id);
+        }
+
+        /// <summary>
         /// 실행 파일 옆의 데이터 폴더.
         /// </summary>
         public static string DefaultFolder => Path.Combine(AppContext.BaseDirectory, "data");
@@ -176,7 +190,8 @@ namespace PortfolioMmo.Server
                 Monsters.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Monsters.bytes"))),
                 Spawns.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Spawns.bytes"))),
                 Skills.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Skills.bytes"))),
-                Effects.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Effects.bytes"))));
+                Effects.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Effects.bytes"))),
+                Items.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Items.bytes"))));
         }
 
         /// <summary>

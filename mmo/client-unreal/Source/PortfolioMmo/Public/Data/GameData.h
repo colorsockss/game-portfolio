@@ -38,6 +38,9 @@ namespace MmoData
 		/** 직업마다의 기본 공격(사거리, 타격까지의 시간, 발사체). id가 CharacterClass의 값이다. */
 		portfolio::mmo::data::Classes Classes;
 
+		/** 아이템(32: 이름의 키, 종류, 등급, 겹침, 쓰는 종류와 값, 쿨다운). */
+		portfolio::mmo::data::Items Items;
+
 		/** 직업과 레벨마다의 필요 경험치와 기본 능력치(31: 경험치 바의 비율). */
 		portfolio::mmo::data::Levels Levels;
 
@@ -55,6 +58,9 @@ namespace MmoData
 
 		/** 직업의 줄. 없으면 nullptr. */
 		const portfolio::mmo::data::ClassesRow* Class(uint32_t Id) const;
+
+		/** 아이템의 줄. 없으면 nullptr. */
+		const portfolio::mmo::data::ItemsRow* Item(uint32_t Id) const;
 
 		/** 직업과 레벨의 줄. 없으면 nullptr(그 직업의 최대 레벨보다 높음). */
 		const portfolio::mmo::data::LevelsRow* Level(uint32_t Class, uint32_t Level) const;

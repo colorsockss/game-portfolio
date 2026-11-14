@@ -17,6 +17,7 @@
 #include "Net/MmoSession.h"
 #include "UI/MmoButtonWidget.h"
 #include "UI/MmoConfirmWidget.h"
+#include "UI/MmoItemDetailWidget.h"
 #include "UI/MmoNoticeWidget.h"
 #include "UI/MmoQuantityWidget.h"
 #include "UI/MmoTextBlock.h"
@@ -55,6 +56,10 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::Death);
 		case EScreen::Character:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Character);
+		case EScreen::Inventory:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Inventory);
+		case EScreen::ItemDetail:
+			return MmoUiPaths::ClassOf(MmoUiPaths::ItemDetail);
 		}
 		checkNoEntry();
 		return {};
@@ -282,6 +287,8 @@ void UMmoUiManager::ReturnToCharacterSelect()
 	Close(EScreen::Confirm);
 	Close(EScreen::Settings);
 	Close(EScreen::Character);
+	Close(EScreen::Inventory);
+	Close(EScreen::ItemDetail);
 	Close(EScreen::Hud);
 	Open(EScreen::CharacterSelect);
 }
@@ -359,6 +366,8 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		// 내가 죽으면 열린 창을 닫고 사망 화면을 띄운다(대상은 전투 모델이 이미 풀었다. 자동 사냥을 끄는 것은 40).
 		Close(EScreen::Settings);
 		Close(EScreen::Character);
+		Close(EScreen::Inventory);
+		Close(EScreen::ItemDetail);
 		Close(EScreen::Confirm);
 		Close(EScreen::Quantity);
 		Open(EScreen::Death);
@@ -381,9 +390,30 @@ void UMmoUiManager::ToggleCharacter()
 	}
 }
 
+void UMmoUiManager::ToggleInventory()
+{
+	if (Stack.IsOpen(EScreen::Inventory))
+	{
+		Close(EScreen::ItemDetail);
+		Close(EScreen::Inventory);
+	}
+	else if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
+	{
+		Open(EScreen::Inventory);
+	}
+}
+
+void UMmoUiManager::ShowItemDetail(uint32 Slot)
+{
+	Open(EScreen::ItemDetail, [Slot](UUserWidget& Widget)
+	{
+		CastChecked<UMmoItemDetailWidget>(&Widget)->SetUp(Slot);
+	});
+}
+
 void UMmoUiManager::OpenFromCommandLine()
 {
-	// 개발용: -MmoOpen=Settings|Character|Confirm|Quantity|Notice면 처음 월드에 들어간 뒤 한 번 그 화면을 연다(화면 크기마다의 배치를 클릭 없이 봄).
+	// 개발용: -MmoOpen=Settings|Character|Inventory|Confirm|Quantity|Notice면 처음 월드에 들어간 뒤 한 번 그 화면을 연다(화면 크기마다의 배치를 클릭 없이 봄).
 	static bool bOpened = false;
 	FString Screen;
 	if (bOpened || !FParse::Value(FCommandLine::Get(), TEXT("MmoOpen="), Screen))
@@ -398,6 +428,10 @@ void UMmoUiManager::OpenFromCommandLine()
 	else if (Screen == TEXT("Character"))
 	{
 		Open(EScreen::Character);
+	}
+	else if (Screen == TEXT("Inventory"))
+	{
+		Open(EScreen::Inventory);
 	}
 	else if (Screen == TEXT("Confirm"))
 	{
@@ -424,6 +458,8 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Close(EScreen::Confirm);
 	Close(EScreen::Settings);
 	Close(EScreen::Character);
+	Close(EScreen::Inventory);
+	Close(EScreen::ItemDetail);
 	Close(EScreen::Hud);
 	Close(EScreen::CharacterCreate);
 	Close(EScreen::CharacterSelect);

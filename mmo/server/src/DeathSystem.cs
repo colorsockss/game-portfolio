@@ -13,7 +13,6 @@ namespace PortfolioMmo.Server
     internal sealed class DeathSystem
     {
         private readonly EntityTable _entities;
-        private readonly Grid _grid;
         private readonly Scheduler _scheduler;
         private readonly MovementSystem _movement;
         private readonly TickEvents _events;
@@ -24,10 +23,9 @@ namespace PortfolioMmo.Server
         private readonly uint _reviveHpPercent;
         private readonly (int X, int Z) _respawn;
 
-        public DeathSystem(EntityTable entities, Grid grid, Scheduler scheduler, MovementSystem movement, TickEvents events, EffectSystem effects, ProgressSystem progress, GrowthSystem growth, GameData data)
+        public DeathSystem(EntityTable entities, Scheduler scheduler, MovementSystem movement, TickEvents events, EffectSystem effects, ProgressSystem progress, GrowthSystem growth, GameData data)
         {
             _entities = entities;
-            _grid = grid;
             _scheduler = scheduler;
             _movement = movement;
             _events = events;
@@ -94,14 +92,7 @@ namespace PortfolioMmo.Server
 
             player.Dead = false;
             player.Hp = Math.Max(1, (uint)((ulong)player.MaxHp * _reviveHpPercent / 100));
-            player.X = _respawn.X;
-            player.Z = _respawn.Z;
-            player.Moved = true;
-            player.Teleported = true;
-            player.Dirty = true;
-            player.MoveBudget = 0;
-            _grid.Moved(player);
-            _movement.Reset(player);
+            _movement.Teleport(player, _respawn.X, _respawn.Z);
             _events.Revived(player);
             return Outcome.Done;
         }

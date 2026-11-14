@@ -5,6 +5,7 @@
 #include <fstream>
 #include <set>
 #include <sstream>
+#include <string>
 
 #include "Data/GameData.h"
 #include "Data/Strings.h"
@@ -101,6 +102,8 @@ namespace
 		for (const auto& Row : Data->Zones.rows()) { ExpectKey(Row.name_key()); }
 		for (const auto& Row : Data->Monsters.rows()) { ExpectKey(Row.name_key()); }
 		for (const auto& Row : Data->Skills.rows()) { ExpectKey(Row.name_key()); }
+		// 아이템(32)은 이름과 설명(item.desc.<번호>)이 모두 있다.
+		for (const auto& Row : Data->Items.rows()) { ExpectKey(Row.name_key()); ExpectKey("item.desc." + std::to_string(Row.id())); }
 		for (int Value = portfolio::mmo::FailReason_MIN; Value <= portfolio::mmo::FailReason_MAX; ++Value)
 		{
 			if (portfolio::mmo::FailReason_IsValid(Value) && Value != portfolio::mmo::FAIL_REASON_NONE)

@@ -20,6 +20,7 @@
 #include "Components/SafeZoneSlot.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
+#include "Components/TileView.h"
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
 #include "Engine/Texture2D.h"
@@ -33,6 +34,9 @@
 #include "UI/MmoConfirmWidget.h"
 #include "UI/MmoDeathWidget.h"
 #include "UI/MmoHudWidget.h"
+#include "UI/MmoInventoryWidget.h"
+#include "UI/MmoItemDetailWidget.h"
+#include "UI/MmoItemSlotWidget.h"
 #include "UI/MmoIcons.h"
 #include "UI/MmoJoystickWidget.h"
 #include "UI/MmoLoginWidget.h"
@@ -101,6 +105,8 @@ namespace
 		/** 창의 폭(좁은 창, 넓은 창). 창은 가운데에 이 폭으로 둔다. */
 		float WindowNarrow = 360.0f;
 		float WindowWide = 440.0f;
+		/** 아이템 칸 한 변(32). */
+		float ItemSlot = 64.0f;
 		/** HUD의 요소가 화면 모서리(안전 영역 안)에서 떨어지는 거리. */
 		float HudMargin = 24.0f;
 		float JoystickSize = 240.0f;
@@ -604,6 +610,73 @@ namespace
 		return Builder.Save();
 	}
 
+	/** 아이템 칸(32): 등급의 색 테두리 안에 아이콘(그림이나 글자)과 오른쪽 아래의 겹친 수. 목록 위젯의 항목이라 크기가 정해져 있다. */
+	UClass* CreateItemSlot()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::ItemSlot, UMmoItemSlotWidget::StaticClass());
+		USizeBox* Size = Builder.Add<USizeBox>(TEXT("Size"));
+		Size->SetWidthOverride(Style.ItemSlot);
+		Size->SetHeightOverride(Style.ItemSlot);
+		Builder.SetRoot(Size);
+		UBorder* Grade = Builder.Add<UBorder>(TEXT("GradeBorder"), true);
+		Grade->SetPadding(FMargin(2.0f));
+		Size->SetContent(Grade);
+		UBorder* Inner = Builder.Add<UBorder>(TEXT("Inner"));
+		Inner->SetBrushColor(Style.BarBack);
+		Grade->SetContent(Inner);
+		UOverlay* Stack = Builder.Add<UOverlay>(TEXT("Stack"));
+		Inner->SetContent(Stack);
+		UImage* Icon = Builder.Add<UImage>(TEXT("IconImage"), true);
+		Icon->SetVisibility(ESlateVisibility::Collapsed);
+		UOverlaySlot* IconSlot = Stack->AddChildToOverlay(Icon);
+		IconSlot->SetHorizontalAlignment(HAlign_Fill);
+		IconSlot->SetVerticalAlignment(VAlign_Fill);
+		UOverlaySlot* LetterSlot = Stack->AddChildToOverlay(Builder.Text(TEXT("LetterText"), FText::GetEmpty(), Style.TitleSize, true));
+		LetterSlot->SetHorizontalAlignment(HAlign_Center);
+		LetterSlot->SetVerticalAlignment(VAlign_Center);
+		UOverlaySlot* CountSlot = Stack->AddChildToOverlay(Builder.Text(TEXT("CountText"), FText::GetEmpty(), Style.KeySize, true));
+		CountSlot->SetHorizontalAlignment(HAlign_Right);
+		CountSlot->SetVerticalAlignment(VAlign_Bottom);
+		return Builder.Save() ? Builder.GeneratedClass() : nullptr;
+	}
+
+	/** 인벤토리 창(32): 제목, 칸의 목록 위젯(한 줄에 6칸, 보이는 줄만 만듦), 골드, 닫기. */
+	bool CreateInventory(UClass* ItemSlotClass)
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Inventory, UMmoInventoryWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 6 + Style.Gap * 2, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("inventory.title"), Style.TitleSize), Style.Section);
+		UTileView* Grid = Builder.Add<UTileView>(TEXT("Grid"), true);
+		Grid->SetEntryWidth(Style.ItemSlot);
+		Grid->SetEntryHeight(Style.ItemSlot);
+		// 항목 위젯의 클래스는 보호된 속성이라 리플렉션으로 넣는다.
+		FClassProperty* Entry = FindFProperty<FClassProperty>(UListViewBase::StaticClass(), TEXT("EntryWidgetClass"));
+		Entry->SetObjectPropertyValue_InContainer(Grid, ItemSlotClass);
+		USizeBox* GridSize = Builder.Add<USizeBox>(TEXT("GridSize"));
+		GridSize->SetHeightOverride(Style.ItemSlot * 5);
+		GridSize->SetContent(Grid);
+		AddWithGap(*Column, GridSize);
+		AddWithGap(*Column, Builder.Text(TEXT("GoldText"), FText::GetEmpty(), Style.BodySize, true));
+		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
+		return Builder.Save();
+	}
+
+	/** 아이템 상세 창(32): 이름(등급의 색), 등급·필요 레벨·직업·파는 값, 설명, 쓰기·퀵슬롯·닫기. 맞지 않는 버튼은 기반 클래스가 감춘다. */
+	bool CreateItemDetail()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::ItemDetail, UMmoItemDetailWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
+		AddWithGap(*Column, Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.TitleSize, true), Style.Section);
+		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.SmallSize + 2, true));
+		UTextBlock* Desc = Builder.Text(TEXT("DescText"), FText::GetEmpty(), Style.BodySize, true);
+		Desc->SetAutoWrapText(true);
+		AddWithGap(*Column, Desc, Style.Section);
+		AddWithGap(*Column, Builder.Button(TEXT("UseButton"), TEXT("detail.use")));
+		AddWithGap(*Column, Builder.Button(TEXT("QuickslotButton"), TEXT("detail.quickslot")));
+		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
+		return Builder.Save();
+	}
+
 	/** 캐릭터 창(31): 제목, 레벨, 경험치, 능력치 넷(여러 줄 글 하나), 닫기. 글은 기반 클래스가 채운다. */
 	bool CreateCharacter()
 	{
@@ -726,8 +799,9 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 {
 	FWidgetBlueprintBuilder::ButtonClass = CreateButton();
 	UClass* Joystick = CreateJoystick();
-	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+	UClass* ItemSlot = CreateItemSlot();
+	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
+		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateItemDetail() && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 
