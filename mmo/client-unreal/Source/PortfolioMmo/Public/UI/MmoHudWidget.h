@@ -12,7 +12,8 @@ class UTextBlock;
 
 /**
  * 게임 중의 HUD(WBP_Hud의 기반). 내 체력·마나 바(지금/최대), 걸린 효과와 전투 상태의 글자 아이콘과 남은 시간, 내 대상의 정보(이름과 레벨,
- * 체력 바), 퀵슬롯(쿨다운 가림, PC는 1–8의 키 표시)과 내 진행 바(시전), 터치 기기의 가상 조이스틱과 공격·대상 고르기 버튼,
+ * 체력 바), 퀵슬롯(쿨다운 가림, PC는 키 표의 키 표시)과 내 진행 바(시전), 터치 기기의 가상 조이스틱과 공격·대상 고르기·상호작용 버튼,
+ * 메뉴 버튼(가방, 캐릭터, 스킬, 퀘스트, 설정. 설정 말고는 그 창을 만드는 항목 32, 31, 36, 50이 잇기 전까지 누를 수 없음),
  * 내 캐릭터가 있는 구역(이름, 권장 레벨, 안전 지대)을 보인다. 경험치 바(31) 등은 그 항목이 더한다.
  */
 UCLASS(Abstract)
@@ -47,6 +48,15 @@ private:
 
 	/** 퀵슬롯 칸을 눌렀다(PC의 1–8 키와 같은 일). */
 	void UseSlot(int32 Index);
+
+	/** 상호작용 버튼: 후보의 종류에 따라 글을 바꾸고, 후보가 없으면 누를 수 없게 한다. */
+	void ShowInteract();
+
+	UFUNCTION()
+	void HandleInteractClicked();
+
+	UFUNCTION()
+	void HandleSettingsClicked();
 
 	UFUNCTION()
 	void HandleAttackClicked();
@@ -100,6 +110,25 @@ private:
 	TObjectPtr<UMmoButtonWidget> TargetButton;
 
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> InteractButton;
+
+	/** 메뉴 버튼(PC와 터치 기기 모두 보임). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> BagButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> CharacterButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> SkillsButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> QuestButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> SettingsButton;
+
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> EffectsText;
 
 	UPROPERTY(meta = (BindWidget))
@@ -123,6 +152,8 @@ private:
 	uint32 SlotClass = MAX_uint32;
 	FString ShownEffects = TEXT("-");
 	uint32 ShownProgress = MAX_uint32;
+	/** 마지막으로 보인 상호작용의 종류(MmoWorld::EInteractKind). 처음에는 어떤 종류와도 다르게 둔다. */
+	uint8 ShownInteract = MAX_uint8;
 
 	/** 마지막으로 보인 (지금 값, 최대값). 처음에는 어떤 값과도 다르게 둔다. */
 	uint64 ShownHp = MAX_uint64;

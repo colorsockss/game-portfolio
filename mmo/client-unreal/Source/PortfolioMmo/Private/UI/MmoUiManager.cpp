@@ -9,6 +9,7 @@
 #include "Game/MmoCueSubsystem.h"
 #include "Game/MmoPlayerController.h"
 #include "GameFramework/PlayerController.h"
+#include "Input/MmoKeys.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSession.h"
 #include "UI/MmoConfirmWidget.h"
@@ -84,6 +85,8 @@ void UMmoUiManager::Initialize(FSubsystemCollectionBase& Collection)
 	{
 		TouchReleaser = MakeShared<FMmoTouchReleaser>(Touches);
 		FSlateApplication::Get().RegisterInputPreProcessor(TouchReleaser);
+		KeyCodeInput = MakeShared<FMmoKeyCodeInput>();
+		FSlateApplication::Get().RegisterInputPreProcessor(KeyCodeInput);
 	}
 	UMmoSession& Net = Session();
 	PacketHandle = Net.OnPacket.AddUObject(this, &UMmoUiManager::HandlePacket);
@@ -95,6 +98,10 @@ void UMmoUiManager::Deinitialize()
 	if (TouchReleaser && FSlateApplication::IsInitialized())
 	{
 		FSlateApplication::Get().UnregisterInputPreProcessor(TouchReleaser);
+	}
+	if (KeyCodeInput && FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().UnregisterInputPreProcessor(KeyCodeInput);
 	}
 	if (UMmoSession* Net = GetLocalPlayer()->GetGameInstance()->GetSubsystem<UMmoSession>())
 	{

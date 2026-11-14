@@ -85,6 +85,9 @@ private:
 	MmoScreen::FTouchOwners Touches;
 	/** 모든 터치의 뗌을 위젯보다 먼저 보는 Slate 입력 전처리기(손가락의 주인을 놓음). */
 	TSharedPtr<IInputProcessor> TouchReleaser;
+
+	/** 글자·숫자 키를 키 코드로 다시 읽는다(Mac의 입력기, 89). */
+	TSharedPtr<IInputProcessor> KeyCodeInput;
 	FDelegateHandle PacketHandle;
 	FDelegateHandle ClosedHandle;
 };

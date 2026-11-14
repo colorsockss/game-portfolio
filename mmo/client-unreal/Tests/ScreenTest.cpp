@@ -1,8 +1,9 @@
-// Screen/의 엔진 없는 코드(화면 스택, 터치 나눔)를 UE 없이 컴파일해 확인한다. run.mjs가 빌드하고 실행한다.
+// Screen/의 엔진 없는 코드(화면 스택, 터치 나눔, 탭과 끌기)를 UE 없이 컴파일해 확인한다. run.mjs가 빌드하고 실행한다.
 #include <cstdio>
 #include <cstdlib>
 
 #include "Screen/ScreenStack.h"
+#include "Screen/TouchGestures.h"
 #include "Screen/TouchOwners.h"
 
 namespace
@@ -129,6 +130,34 @@ namespace
 	}
 }
 
+namespace
+{
+	/** 짧게 누르고 거의 움직이지 않으면 탭(누른 자리), 많이 움직였거나 오래 눌렀거나 두 손가락 벌리기에 쓴 손가락은 탭이 아니다. */
+	void TapsAndDragsAreTold()
+	{
+		using MmoScreen::FTouchGestures;
+		FTouchGestures Gestures;
+		double X = 0;
+		double Y = 0;
+		Gestures.Down(0, 100, 200, 1.0);
+		Expect(!Gestures.Move(0, 110, 205), "a small move is not a drag");
+		Expect(Gestures.Up(0, 1.2, X, Y) && X == 100 && Y == 200, "a short press is a tap at where it went down");
+
+		Gestures.Down(1, 100, 200, 2.0);
+		Expect(Gestures.Move(1, 130, 200), "moving past the threshold is a drag");
+		Expect(Gestures.Move(1, 101, 200), "a drag stays a drag after coming back");
+		Expect(!Gestures.Up(1, 2.1, X, Y), "a drag is not a tap");
+
+		Gestures.Down(2, 0, 0, 3.0);
+		Expect(!Gestures.Up(2, 3.0 + FTouchGestures::TapSeconds + 0.01, X, Y), "a long press is not a tap");
+
+		Gestures.Down(3, 0, 0, 4.0);
+		Gestures.MarkDrag(3);
+		Expect(!Gestures.Up(3, 4.1, X, Y), "a pinching finger is not a tap");
+		Expect(!Gestures.Up(4, 4.1, X, Y), "a finger that never went down is not a tap");
+	}
+}
+
 int main()
 {
 	LoginThenGame();
@@ -139,6 +168,7 @@ int main()
 	CharacterSelectionTakesInputAndCreateClosesWithBack();
 	QuantityIsAPopupClosedByBack();
 	FingersKeepTheirOwnerUntilReleased();
+	TapsAndDragsAreTold();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

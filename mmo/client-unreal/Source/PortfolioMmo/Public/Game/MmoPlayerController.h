@@ -4,7 +4,9 @@
 #include "GameFramework/PlayerController.h"
 #include "Protocol/MmoPackets.h"
 #include "World/MoveSender.h"
+#include "Screen/TouchGestures.h"
 #include "Screen/TouchOwners.h"
+#include "World/Interaction.h"
 #include "World/PathFinder.h"
 
 #include <optional>
@@ -22,9 +24,10 @@ struct FInputActionValue;
  * 대상과 공격(개체를 누르면 대상, 대상인 몬스터를 다시 누르거나 F면 공격하러 감, Tab은 가장 가까운 적. 다가가서 사거리 안이고 선이 트인
  * 곳에 서면 AttackStart를 보냄), 스킬(퀵슬롯의 1–8 키와 HUD의 칸. 대상에게 쓰는 스킬은 같은 방법으로 다가가서 UseSkill을 보냄),
  * 내게 걸린 감속(최대 속도를 줄임)과 기절(이동과 행동의 입력을 막음),
- * 카메라(마우스 오른쪽 끌기와 휠, 터치 끌기와 두 손가락 벌리기), 뒤로 가기(Esc, Android 뒤로 버튼. 화면 관리자에 넘김)를 받고,
+ * 카메라(마우스 오른쪽 끌기와 휠, 터치 끌기와 두 손가락 벌리기), 터치의 탭(PC의 왼쪽 클릭과 같은 누르기. 빈 땅은 대상을 풂),
+ * 상호작용(E와 HUD의 버튼. 10 m 안의 가장 가까운 것까지 걸어가 함), 뒤로 가기(Esc, Android 뒤로 버튼. 화면 관리자에 넘김)를 받고,
  * 프레임마다 캐릭터의 자리를 FMoveSender에 넘겨 보낼 때가 되면 Move를 보낸다. PositionReset이 오면 그 자리로 옮긴다.
- * 입력 액션과 매핑은 에셋 없이 여기서 만든다.
+ * 입력 액션과 매핑은 에셋 없이 키 표(MmoKeys)로 여기서 만든다. 글 상자에 초점이 있는 동안은 키보드 입력을 버린다.
  */
 UCLASS()
 class AMmoPlayerController : public APlayerController
@@ -57,6 +60,15 @@ public:
 	/** 퀵슬롯의 칸(0부터)의 스킬을 누른다(1–8 키와 HUD의 칸). 쓸 수 없으면(쿨다운, 마나, 대상 없음 등) 아무것도 보내지 않는다. */
 	void UseQuickslot(int32 Index);
 
+	/** 상호작용 키(E)와 HUD의 상호작용 버튼: 10 m 안의 가장 가까운 상호작용할 수 있는 것까지 걸어가 그 종류의 일을 한다. 없으면 아무것도 하지 않는다. */
+	void Interact();
+
+	/** 내 자리에서 상호작용 버튼이 고를 후보(HUD가 글을 바꾸는 데 씀). */
+	std::optional<MmoWorld::FInteractTarget> InteractCandidate() const;
+
+	/** 키보드 입력은 글 상자에 초점이 있는 동안 버린다(이동과 단축키가 글 입력과 겹치지 않게). */
+	virtual bool InputKey(const FInputKeyEventArgs& Params) override;
+
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
@@ -68,8 +80,20 @@ private:
 	void HandleLook(const FInputActionValue& Value);
 	void HandleZoom(const FInputActionValue& Value);
 	void HandleBack();
-	/** 왼쪽 클릭: 커서 아래의 땅까지 걷는다(터치 기기와 -faketouches에서는 하지 않음). */
+	/** 왼쪽 클릭: 커서 아래를 누른다(터치 기기와 -faketouches에서는 탭이 같은 일을 함). */
 	void HandleClick();
+
+	/**
+	 * 화면의 자리(뷰포트 픽셀)를 누른다: 상호작용할 수 있는 개체면 걸어가 상호작용하고, 다른 개체면 대상(이미 대상인 몬스터면 공격하러 감)이다.
+	 * 빈 곳이면 bWalk일 때(PC) 그 땅까지 걷고, 아니면(터치) 대상을 푼다.
+	 */
+	void PressAt(const FVector2D& ScreenPosition, bool bWalk);
+
+	/** 상호작용하러 가는 중이면: 실행 거리 안이고 선이 트였으면 그 일을 하고, 아니면 길을 찾아 걷는다(UpdateEngagement처럼). */
+	void UpdateInteraction();
+
+	/** 상호작용의 일(줍기 33, 채집 47, 말하기 37이 넣음). 지금은 로그만 남긴다. */
+	void Act(const MmoWorld::FInteractTarget& Target);
 	/** 경로를 따라가는 중이면 다음 점 쪽을 이번 프레임의 이동 입력으로 넣는다. */
 	void FollowPath();
 
@@ -95,7 +119,7 @@ private:
 	bool IsStunned() const;
 
 	UMmoSession& Session() const;
-	/** 터치: 한 손가락으로 끌면 카메라를 돌리고, 두 손가락을 벌리면 당긴다. */
+	/** 터치: 한 손가락으로 끌면 카메라를 돌리고, 짧게 누르면(탭) 그 자리를 누르며, 두 손가락을 벌리면 당긴다. */
 	void UpdateTouchCamera();
 	void HandlePacket(const portfolio::mmo::Packet& Packet);
 
@@ -120,6 +144,8 @@ private:
 	TObjectPtr<UInputAction> AttackAction;
 	UPROPERTY()
 	TObjectPtr<UInputAction> TargetAction;
+	UPROPERTY()
+	TObjectPtr<UInputAction> InteractAction;
 	/** 퀵슬롯 칸마다의 키(1–8). */
 	UPROPERTY()
 	TArray<TObjectPtr<UInputAction>> SlotActions;
@@ -128,6 +154,12 @@ private:
 	/** 세션의 필드로 처음 걸을 때 만든다(버퍼가 필드 크기라 한 번만). */
 	std::optional<MmoWorld::FPathFinder> PathFinder;
 	MmoWorld::FPathFollower PathFollower;
+	MmoWorld::FInteraction Interaction;
+	/** 상호작용하러 가는 길을 찾은 때의 개체 자리. */
+	MmoWorld::FPoint InteractGoal;
+	MmoScreen::FTouchGestures Gestures;
+	/** 손가락마다 카메라의 것이었는지(뗄 때 탭인지 보려고. 주인은 뗄 때 이미 놓임). */
+	bool bCameraFinger[MmoScreen::FTouchOwners::MaxFingers] = {};
 	std::vector<MmoWorld::FPoint> Path;
 	bool bManualMoveBlocked = false;
 	/** 대상에게 공격하러 가는 중(손 이동 입력, 대상 바꿈, 대상이 풀림으로 끝남). */

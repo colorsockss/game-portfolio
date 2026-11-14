@@ -235,6 +235,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kWanderPauseMaxMsFieldNumber = 13,
     kReviveHpPercentFieldNumber = 14,
     kDeadMonsterMsFieldNumber = 15,
+    kInteractRangeFieldNumber = 16,
+    kInteractPickRangeFieldNumber = 17,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -386,11 +388,31 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_dead_monster_ms(::uint32_t value);
 
   public:
+  // double interact_range = 16;
+  void clear_interact_range() ;
+  [[nodiscard]] double interact_range() const;
+  void set_interact_range(double value);
+
+  private:
+  double _internal_interact_range() const;
+  void _internal_set_interact_range(double value);
+
+  public:
+  // double interact_pick_range = 17;
+  void clear_interact_pick_range() ;
+  [[nodiscard]] double interact_pick_range() const;
+  void set_interact_pick_range(double value);
+
+  private:
+  double _internal_interact_pick_range() const;
+  void _internal_set_interact_pick_range(double value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<4, 15,
+      ::google::protobuf::internal::TcParseTable<5, 17,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -434,6 +456,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t wander_pause_max_ms_;
     ::uint32_t revive_hp_percent_;
     ::uint32_t dead_monster_ms_;
+    double interact_range_;
+    double interact_pick_range_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -814,6 +838,54 @@ inline ::uint32_t Constants::_internal_dead_monster_ms() const {
 inline void Constants::_internal_set_dead_monster_ms(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.dead_monster_ms_ = value;
+}
+
+// double interact_range = 16;
+inline void Constants::clear_interact_range() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.interact_range_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00008000U);
+}
+inline double Constants::interact_range() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.interact_range)
+  return _internal_interact_range();
+}
+inline void Constants::set_interact_range(double value) {
+  _internal_set_interact_range(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00008000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.interact_range)
+}
+inline double Constants::_internal_interact_range() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.interact_range_;
+}
+inline void Constants::_internal_set_interact_range(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.interact_range_ = value;
+}
+
+// double interact_pick_range = 17;
+inline void Constants::clear_interact_pick_range() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.interact_pick_range_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00010000U);
+}
+inline double Constants::interact_pick_range() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.interact_pick_range)
+  return _internal_interact_pick_range();
+}
+inline void Constants::set_interact_pick_range(double value) {
+  _internal_set_interact_pick_range(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00010000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.interact_pick_range)
+}
+inline double Constants::_internal_interact_pick_range() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.interact_pick_range_;
+}
+inline void Constants::_internal_set_interact_pick_range(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.interact_pick_range_ = value;
 }
 
 #ifdef __GNUC__

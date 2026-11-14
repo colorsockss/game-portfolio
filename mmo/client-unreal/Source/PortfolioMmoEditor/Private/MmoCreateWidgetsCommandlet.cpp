@@ -483,11 +483,21 @@ namespace
 			Slots->AddChildToHorizontalBox(Size)->SetPadding(FMargin(Index == 0 ? 0.0f : Style.Gap * 0.5f, 0.0f, 0.0f, 0.0f));
 		}
 
-		// 오른쪽 아래에 터치 기기에서만 보이는 공격 버튼과 대상 고르기 버튼.
+		// 오른쪽 아래에 터치 기기에서만 보이는 상호작용, 대상 고르기, 공격 버튼. PC에서는 E, Tab, F가 같은 일을 한다.
 		Corner(*Root, Row(Builder, TEXT("TouchButtons"), {
+			Builder.Button(TEXT("InteractButton"), LOCTEXT("InteractButton", "상호작용"), true),
 			Builder.Button(TEXT("TargetButton"), LOCTEXT("TargetButton", "대상"), true),
 			Builder.Button(TEXT("AttackButton"), LOCTEXT("AttackButton", "공격"), true),
 		}), ECorner::BottomRight, FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5));
+
+		// 오른쪽 위에 메뉴 버튼(PC와 터치 기기 모두). 키 표시와 누를 수 있는지는 UMmoHudWidget이 정한다.
+		Corner(*Root, Row(Builder, TEXT("MenuButtons"), {
+			Builder.Button(TEXT("BagButton"), LOCTEXT("BagButton", "가방")),
+			Builder.Button(TEXT("CharacterButton"), LOCTEXT("CharacterButton", "캐릭터")),
+			Builder.Button(TEXT("SkillsButton"), LOCTEXT("SkillsButton", "스킬")),
+			Builder.Button(TEXT("QuestButton"), LOCTEXT("QuestButton", "퀘스트")),
+			Builder.Button(TEXT("SettingsButton"), LOCTEXT("SettingsButton", "설정")),
+		}), ECorner::TopRight);
 		return Builder.Save();
 	}
 

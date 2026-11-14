@@ -36,4 +36,8 @@ message Constants {
   uint32 revive_hp_percent = 14;
   // 죽은 몬스터가 쓰러진 채 남는 시간(ms). 다시 나오는 시간은 죽은 틱부터 센다
   uint32 dead_monster_ms = 15;
+  // 상호작용을 실행하는 거리(m). 이 안이고 선이 트인 곳에서 줍기·채집·말하기를 한다
+  double interact_range = 16;
+  // 상호작용 버튼이 고르는 거리(m). 이 안의 가장 가까운 상호작용할 수 있는 것을 고른다
+  double interact_pick_range = 17;
 }

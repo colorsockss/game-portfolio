@@ -7,10 +7,12 @@
 #include "Framework/Application/SlateApplication.h"
 #include "Game/MmoCoordinates.h"
 #include "Game/MmoPlayerController.h"
+#include "Input/MmoKeys.h"
 #include "UI/MmoButtonWidget.h"
 #include "GameFramework/Pawn.h"
 #include "Net/MmoSession.h"
 #include "UI/MmoJoystickWidget.h"
+#include "UI/MmoUiManager.h"
 #include "World/CombatState.h"
 #include "World/Units.h"
 
@@ -48,6 +50,18 @@ void UMmoHudWidget::NativeOnInitialized()
 	Super::NativeOnInitialized();
 	AttackButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleAttackClicked);
 	TargetButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleTargetClicked);
+	InteractButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleInteractClicked);
+	SettingsButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleSettingsClicked);
+	// 메뉴의 키 표시는 키 표의 키다(설정 창은 뒤로 가기의 키가 연다). 창이 아직 없는 버튼은 그 항목이 잇기 전까지 누를 수 없다.
+	const TPair<UMmoButtonWidget*, EMmoAction> Menus[] = {
+		{ BagButton, EMmoAction::Bag }, { CharacterButton, EMmoAction::Character }, { SkillsButton, EMmoAction::Skills },
+		{ QuestButton, EMmoAction::Quest }, { SettingsButton, EMmoAction::Back },
+	};
+	for (const TPair<UMmoButtonWidget*, EMmoAction>& Menu : Menus)
+	{
+		Menu.Key->SetKeyHint(MmoKeys::Hint(Menu.Value));
+		Menu.Key->SetIsEnabled(Menu.Key == SettingsButton);
+	}
 	for (int32 Index = 0; Index < QuickslotCount(); ++Index)
 	{
 		UMmoButtonWidget* Slot = WidgetTree->FindWidget<UMmoButtonWidget>(*FString::Printf(TEXT("Slot%d"), Index));
@@ -85,8 +99,8 @@ void UMmoHudWidget::ShowSlots(double ServerTick)
 			const portfolio::mmo::data::SkillsRow* Skill = Index < static_cast<int32>(Skills.size()) ? Session->Data().Skill(Skills[Index]) : nullptr;
 			SlotSkills[Index] = Skill ? Skill->id() : 0;
 			Slots[Index]->SetLabel(Skill ? FText::FromString(ShortName(*Skill)) : FText::GetEmpty());
-			// 키 표시는 PC만(키 표는 89, 크기와 규칙은 93).
-			Slots[Index]->SetKeyHint(UMmoButtonWidget::IsTouchDevice() ? FText::GetEmpty() : FText::AsNumber(Index + 1));
+			// 키 표시는 PC만(크기와 규칙은 93).
+			Slots[Index]->SetKeyHint(MmoKeys::Hint(MmoKeys::Slot(Index)));
 		}
 	}
 
@@ -161,6 +175,40 @@ void UMmoHudWidget::HandleTargetClicked()
 	}
 }
 
+void UMmoHudWidget::HandleInteractClicked()
+{
+	if (AMmoPlayerController* Controller = GetOwningPlayer<AMmoPlayerController>())
+	{
+		Controller->Interact();
+	}
+}
+
+void UMmoHudWidget::HandleSettingsClicked()
+{
+	GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->Open(MmoScreen::EScreen::Settings);
+}
+
+void UMmoHudWidget::ShowInteract()
+{
+	const AMmoPlayerController* Controller = GetOwningPlayer<AMmoPlayerController>();
+	const std::optional<MmoWorld::FInteractTarget> Candidate = Controller ? Controller->InteractCandidate() : std::nullopt;
+	const MmoWorld::EInteractKind Kind = Candidate ? Candidate->Kind : MmoWorld::EInteractKind::None;
+	if (static_cast<uint8>(Kind) == ShownInteract)
+	{
+		return;
+	}
+	ShownInteract = static_cast<uint8>(Kind);
+	// 그림은 아이콘 표(73)가 생기면 더한다.
+	switch (Kind)
+	{
+	case MmoWorld::EInteractKind::PickUp: InteractButton->SetLabel(NSLOCTEXT("MmoHud", "PickUp", "줍기")); break;
+	case MmoWorld::EInteractKind::Gather: InteractButton->SetLabel(NSLOCTEXT("MmoHud", "Gather", "채집")); break;
+	case MmoWorld::EInteractKind::Talk: InteractButton->SetLabel(NSLOCTEXT("MmoHud", "Talk", "말하기")); break;
+	default: InteractButton->SetLabel(NSLOCTEXT("MmoHud", "Interact", "상호작용")); break;
+	}
+	InteractButton->SetIsEnabled(Kind != MmoWorld::EInteractKind::None);
+}
+
 void UMmoHudWidget::ShowTarget()
 {
 	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
@@ -210,6 +258,7 @@ void UMmoHudWidget::NativeConstruct()
 	SlotClass = MAX_uint32;
 	ShownEffects = TEXT("-");
 	ShownProgress = MAX_uint32;
+	ShownInteract = MAX_uint8;
 }
 
 void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -225,6 +274,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	ShowSlots(ServerTick);
 	ShowProgress(Now);
 	ShowEffects(ServerTick);
+	ShowInteract();
 
 	const MmoWorld::FFieldMap* Field = Session->Field();
 	const APawn* Self = GetOwningPlayerPawn();

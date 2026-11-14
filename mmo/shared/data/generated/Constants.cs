@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKPAwoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLEAwoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -33,12 +33,13 @@ namespace PortfolioMmo.Data {
             "EhsKE3JldHVybl9yYW5nZV9tYXJnaW4YCiABKAESHAoUcmV0dXJuX3JlZ2Vu",
             "X3BlcmNlbnQYCyABKA0SGwoTd2FuZGVyX3BhdXNlX21pbl9tcxgMIAEoDRIb",
             "ChN3YW5kZXJfcGF1c2VfbWF4X21zGA0gASgNEhkKEXJldml2ZV9ocF9wZXJj",
-            "ZW50GA4gASgNEhcKD2RlYWRfbW9uc3Rlcl9tcxgPIAEoDUIUqgIRUG9ydGZv",
-            "bGlvTW1vLkRhdGFiBnByb3RvMw=="));
+            "ZW50GA4gASgNEhcKD2RlYWRfbW9uc3Rlcl9tcxgPIAEoDRIWCg5pbnRlcmFj",
+            "dF9yYW5nZRgQIAEoARIbChNpbnRlcmFjdF9waWNrX3JhbmdlGBEgASgBQhSq",
+            "AhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange" }, null, null, null, null)
           }));
     }
     #endregion
@@ -95,6 +96,8 @@ namespace PortfolioMmo.Data {
       wanderPauseMaxMs_ = other.wanderPauseMaxMs_;
       reviveHpPercent_ = other.reviveHpPercent_;
       deadMonsterMs_ = other.deadMonsterMs_;
+      interactRange_ = other.interactRange_;
+      interactPickRange_ = other.interactPickRange_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -329,6 +332,36 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "interact_range" field.</summary>
+    public const int InteractRangeFieldNumber = 16;
+    private double interactRange_;
+    /// <summary>
+    /// 상호작용을 실행하는 거리(m). 이 안이고 선이 트인 곳에서 줍기·채집·말하기를 한다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double InteractRange {
+      get { return interactRange_; }
+      set {
+        interactRange_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "interact_pick_range" field.</summary>
+    public const int InteractPickRangeFieldNumber = 17;
+    private double interactPickRange_;
+    /// <summary>
+    /// 상호작용 버튼이 고르는 거리(m). 이 안의 가장 가까운 상호작용할 수 있는 것을 고른다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double InteractPickRange {
+      get { return interactPickRange_; }
+      set {
+        interactPickRange_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -359,6 +392,8 @@ namespace PortfolioMmo.Data {
       if (WanderPauseMaxMs != other.WanderPauseMaxMs) return false;
       if (ReviveHpPercent != other.ReviveHpPercent) return false;
       if (DeadMonsterMs != other.DeadMonsterMs) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(InteractRange, other.InteractRange)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(InteractPickRange, other.InteractPickRange)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -381,6 +416,8 @@ namespace PortfolioMmo.Data {
       if (WanderPauseMaxMs != 0) hash ^= WanderPauseMaxMs.GetHashCode();
       if (ReviveHpPercent != 0) hash ^= ReviveHpPercent.GetHashCode();
       if (DeadMonsterMs != 0) hash ^= DeadMonsterMs.GetHashCode();
+      if (InteractRange != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(InteractRange);
+      if (InteractPickRange != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(InteractPickRange);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -459,6 +496,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(120);
         output.WriteUInt32(DeadMonsterMs);
       }
+      if (InteractRange != 0D) {
+        output.WriteRawTag(129, 1);
+        output.WriteDouble(InteractRange);
+      }
+      if (InteractPickRange != 0D) {
+        output.WriteRawTag(137, 1);
+        output.WriteDouble(InteractPickRange);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -529,6 +574,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(120);
         output.WriteUInt32(DeadMonsterMs);
       }
+      if (InteractRange != 0D) {
+        output.WriteRawTag(129, 1);
+        output.WriteDouble(InteractRange);
+      }
+      if (InteractPickRange != 0D) {
+        output.WriteRawTag(137, 1);
+        output.WriteDouble(InteractPickRange);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -583,6 +636,12 @@ namespace PortfolioMmo.Data {
       }
       if (DeadMonsterMs != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(DeadMonsterMs);
+      }
+      if (InteractRange != 0D) {
+        size += 2 + 8;
+      }
+      if (InteractPickRange != 0D) {
+        size += 2 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -640,6 +699,12 @@ namespace PortfolioMmo.Data {
       }
       if (other.DeadMonsterMs != 0) {
         DeadMonsterMs = other.DeadMonsterMs;
+      }
+      if (other.InteractRange != 0D) {
+        InteractRange = other.InteractRange;
+      }
+      if (other.InteractPickRange != 0D) {
+        InteractPickRange = other.InteractPickRange;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -720,6 +785,14 @@ namespace PortfolioMmo.Data {
             DeadMonsterMs = input.ReadUInt32();
             break;
           }
+          case 129: {
+            InteractRange = input.ReadDouble();
+            break;
+          }
+          case 137: {
+            InteractPickRange = input.ReadDouble();
+            break;
+          }
         }
       }
     #endif
@@ -797,6 +870,14 @@ namespace PortfolioMmo.Data {
           }
           case 120: {
             DeadMonsterMs = input.ReadUInt32();
+            break;
+          }
+          case 129: {
+            InteractRange = input.ReadDouble();
+            break;
+          }
+          case 137: {
+            InteractPickRange = input.ReadDouble();
             break;
           }
         }
