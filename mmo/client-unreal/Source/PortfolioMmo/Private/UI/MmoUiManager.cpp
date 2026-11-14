@@ -45,6 +45,8 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::Confirm);
 		case EScreen::Quantity:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Quantity);
+		case EScreen::Death:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Death);
 		}
 		checkNoEntry();
 		return {};
@@ -288,6 +290,18 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		Close(EScreen::CharacterSelect);
 		Open(EScreen::Hud);
 		OpenFromCommandLine();
+	}
+	else if (Packet.body_case() == portfolio::mmo::Packet::kDied && Packet.died().id() == Session().World().SelfId())
+	{
+		// 내가 죽으면 열린 창을 닫고 사망 화면을 띄운다(대상은 전투 모델이 이미 풀었다. 자동 사냥을 끄는 것은 40).
+		Close(EScreen::Settings);
+		Close(EScreen::Confirm);
+		Close(EScreen::Quantity);
+		Open(EScreen::Death);
+	}
+	else if (Packet.body_case() == portfolio::mmo::Packet::kRevived && Packet.revived().id() == Session().World().SelfId())
+	{
+		Close(EScreen::Death);
 	}
 }
 

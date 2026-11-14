@@ -74,6 +74,9 @@ namespace PortfolioMmo.Contract.Tests
                 new Packet { AttackSwing = new AttackSwing { AttackerId = 0, TargetId = 1234 } },
                 new Packet { Damaged = new Damaged { AttackerId = 7, TargetId = 1234, Damage = 18, Hp = 42, Critical = true } },
                 new Packet { Died = new Died { Id = 1234, KillerId = 7 } },
+                new Packet { Revive = new Revive() },
+                new Packet { Revived = new Revived { Id = 7, Hp = 45, MaxHp = 150 } },
+                new Packet { ActionFailed = new ActionFailed { Reason = FailReason.NotDead, Request = RequestKind.Revive } },
             };
 
             using var stream = new MemoryStream();

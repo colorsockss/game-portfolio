@@ -39,6 +39,8 @@ message Packet {
     AttackSwing attack_swing = 204;
     Damaged damaged = 205;
     Died died = 206;
+    Revive revive = 207;
+    Revived revived = 208;
 
     // 300–399: 성장과 아이템
     SelfStats self_stats = 300;
@@ -400,12 +402,17 @@ enum FailReason {
   FAIL_REASON_NO_TARGET = 1;
   // 공격할 수 없는 대상(CanAttack이 거짓, 복귀 중인 몬스터).
   FAIL_REASON_INVALID_TARGET = 2;
+  // 죽은 동안에는 할 수 없는 요청.
+  FAIL_REASON_DEAD = 3;
+  // 살아 있는데 부활을 요청했다.
+  FAIL_REASON_NOT_DEAD = 4;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
 enum RequestKind {
   REQUEST_KIND_UNSPECIFIED = 0;
   REQUEST_KIND_ATTACK = 1;
+  REQUEST_KIND_REVIVE = 2;
 }
 
 // 클라이언트 → 서버. 대상을 기본 공격한다. 이미 공격 중이면 대상만 바꾼다. 다가가는 것은 클라이언트의 이동이다.
@@ -436,4 +443,15 @@ message Damaged {
 message Died {
   uint32 id = 1;
   uint32 killer_id = 2;
+}
+
+// 클라이언트 → 서버. 죽은 내 캐릭터를 마을의 부활 지점에서 일으킨다. 살아 있으면 ActionFailed(NOT_DEAD).
+message Revive {}
+
+// 서버 → 클라이언트. 부활(체력과 최대 체력). 그 개체를 받은 연결과 본인에게 간다. 자리는 보는 쪽에는 순간 이동 표시가 있는 움직임,
+// 본인에게는 PositionReset이 알린다.
+message Revived {
+  uint32 id = 1;
+  uint32 hp = 2;
+  uint32 max_hp = 3;
 }

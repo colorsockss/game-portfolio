@@ -38,6 +38,10 @@ struct FMmoEntityVisual
 	/** 피해(Damaged)를 받을 때 트는 동작. */
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr<UAnimSequence> Hit;
+
+	/** 죽음(Died)에 트고 마지막 자세로 멈추는 동작. */
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UAnimSequence> Death;
 };
 
 /**

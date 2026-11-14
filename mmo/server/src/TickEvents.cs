@@ -52,6 +52,12 @@ namespace PortfolioMmo.Server
                 new Packet { Died = new Died { Id = dead.Id } }));
         }
 
+        public void Revived(Creature revived)
+        {
+            var packet = new Packet { Revived = new Revived { Id = revived.Id, Hp = revived.Hp, MaxHp = revived.MaxHp } };
+            _events.Add(new Event(revived, null, packet, packet));
+        }
+
         /// <summary>
         /// 사건을 난 순서대로 받는 연결에 넣고 비운다. 받는 연결은 대상 둘레 3×3 시야 칸의 플레이어 가운데 시야 집합에 대상이 든 연결이다
         /// (개체마다 받은 연결의 목록을 두는 것은 52).

@@ -17,6 +17,7 @@ namespace MmoUiPaths
 	inline const TCHAR* const Settings = TEXT("/Game/UI/WBP_Settings");
 	inline const TCHAR* const Confirm = TEXT("/Game/UI/WBP_Confirm");
 	inline const TCHAR* const Quantity = TEXT("/Game/UI/WBP_Quantity");
+	inline const TCHAR* const Death = TEXT("/Game/UI/WBP_Death");
 	inline const TCHAR* const Button = TEXT("/Game/UI/WBP_Button");
 	inline const TCHAR* const Notice = TEXT("/Game/UI/WBP_Notice");
 	inline const TCHAR* const NameTag = TEXT("/Game/UI/WBP_NameTag");

@@ -67,6 +67,7 @@ namespace PortfolioMmo.Server.Tests
             {
                 FieldSize = fieldSize, CombatDurationMs = 5000, RegenPercent = 5, CombatRegenPercent = 1, CritChance = 0.05, CritMultiplier = 1.5, PlayerRadius = 0.34,
                 UnreachableMs = 5000, RepathDistance = 3, ReturnRangeMargin = 4, ReturnRegenPercent = 20, WanderPauseMinMs = 3000, WanderPauseMaxMs = 6000,
+                ReviveHpPercent = 30, DeadMonsterMs = 3000,
             };
         }
 
@@ -183,9 +184,9 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// 무리 하나. 자리는 미터이고 흩는 반경과 배회 반경의 처음 값은 0이다(놓인 점에 서서 배회하지 않음).
         /// </summary>
-        public static SpawnsRow Spawn(uint id, int x, int z, uint monsterId, uint count = 1, double scatter = 0, double wander = 0)
+        public static SpawnsRow Spawn(uint id, int x, int z, uint monsterId, uint count = 1, double scatter = 0, double wander = 0, uint respawnMs = 30000)
         {
-            return new SpawnsRow { Id = id, X = x, Z = z, MonsterId = monsterId, Count = count, ScatterRadius = scatter, RespawnMs = 30000, WanderRadius = wander };
+            return new SpawnsRow { Id = id, X = x, Z = z, MonsterId = monsterId, Count = count, ScatterRadius = scatter, RespawnMs = respawnMs, WanderRadius = wander };
         }
 
         /// <summary>

@@ -9,6 +9,8 @@
 
 class AStaticMeshActor;
 class UMaterialInterface;
+class USkeletalMeshComponent;
+class UStaticMeshComponent;
 class UMmoEntityVisuals;
 struct FMmoEntityVisual;
 
@@ -56,6 +58,12 @@ private:
 	/** 발사체와 대상의 원을 그린다. */
 	void DrawCombat(const MmoWorld::FWorldState& World, MmoWorld::FCombatState& Combat);
 
+	/** 개체가 죽어 있으면 쓰러진 자세로 둔다(모습을 입히거나 불러온 뒤). */
+	void ShowDeadIfDead(uint32 Id, USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, const FMmoEntityVisual* Row);
+
+	/** 부활한 액터에 잠깐 부활의 자리 표시를 보인다. */
+	void ShowRevive(const AActor& Actor);
+
 	/** 자리 표시 액터 하나(엔진의 기본 도형, 색은 커스텀 프리미티브 데이터). */
 	AStaticMeshActor* SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color);
 
@@ -79,6 +87,10 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> MarkerMaterial;
+
+	UPROPERTY()
+	TObjectPtr<AStaticMeshActor> ReviveMarker;
+	double ReviveMarkerUntil = 0.0;
 
 	FStreamableManager Streamable;
 };

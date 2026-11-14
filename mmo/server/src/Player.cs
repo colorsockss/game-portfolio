@@ -105,6 +105,14 @@ namespace PortfolioMmo.Server
             StateChanged = true;
         }
 
+        /// <summary>
+        /// 요청 번호가 없는 요청의 실패를 이 연결에 알린다(끊지 않음).
+        /// </summary>
+        internal void Fail(FailReason reason, RequestKind request)
+        {
+            Session.Send(new Packet { ActionFailed = new ActionFailed { Reason = reason, Request = request } });
+        }
+
         protected override void Fill(EntityEnter enter)
         {
             base.Fill(enter);

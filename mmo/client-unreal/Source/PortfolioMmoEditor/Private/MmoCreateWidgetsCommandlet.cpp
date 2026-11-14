@@ -29,6 +29,7 @@
 #include "UI/MmoCharacterCreateWidget.h"
 #include "UI/MmoCharacterSelectWidget.h"
 #include "UI/MmoConfirmWidget.h"
+#include "UI/MmoDeathWidget.h"
 #include "UI/MmoHudWidget.h"
 #include "UI/MmoJoystickWidget.h"
 #include "UI/MmoLoginWidget.h"
@@ -484,6 +485,16 @@ namespace
 		return Builder.Save();
 	}
 
+	/** 사망 화면: 어두운 바탕 위 가운데 창에 제목과 부활 버튼. */
+	bool CreateDeath()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Death, UMmoDeathWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
+		AddWithGap(*Column, Builder.Text(TEXT("Title"), LOCTEXT("DeathTitle", "쓰러졌습니다"), Style.TitleSize), Style.Section);
+		Column->AddChildToVerticalBox(Builder.Button(TEXT("ReviveButton"), LOCTEXT("Revive", "마을에서 부활")));
+		return Builder.Save();
+	}
+
 	bool CreateSettings()
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Settings, UMmoSettingsWidget::StaticClass());
@@ -583,7 +594,7 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	FWidgetBlueprintBuilder::ButtonClass = CreateButton();
 	UClass* Joystick = CreateJoystick();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateConfirm() && CreateQuantity();
+		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateConfirm() && CreateQuantity() && CreateDeath();
 	return bOk ? 0 : 1;
 }
 

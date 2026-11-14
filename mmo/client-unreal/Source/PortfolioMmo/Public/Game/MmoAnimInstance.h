@@ -5,6 +5,7 @@
 
 #include "MmoAnimInstance.generated.h"
 
+class UAnimMontage;
 class UAnimSequenceBase;
 
 /**
@@ -27,4 +28,18 @@ public:
 
 	/** 동작 하나를 한 번 튼다. 트는 중인 동작은 끊는다. */
 	void PlayAction(UAnimSequenceBase* Sequence);
+
+	/** 쓰러지는 동작을 틀고 마지막 자세로 멈춘다. bAlreadyDown이면 처음부터 쓰러진 자세다(죽은 채 시야에 들어옴). */
+	void PlayDeath(UAnimSequenceBase* Sequence, bool bAlreadyDown);
+
+	/** 쓰러진 자세를 풀고 이동 동작으로 돌아간다(부활). */
+	void StandUp();
+
+protected:
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+private:
+	/** 쓰러진 자세를 붙잡는 몽타주. */
+	UPROPERTY()
+	TObjectPtr<UAnimMontage> DeathMontage;
 };

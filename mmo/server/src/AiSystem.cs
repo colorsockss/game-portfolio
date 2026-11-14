@@ -58,6 +58,11 @@ namespace PortfolioMmo.Server
             _monsters.Add(monster);
         }
 
+        public void Remove(Monster monster)
+        {
+            _monsters.Remove(monster);
+        }
+
         public void Step(uint tick, uint elapsedTicks)
         {
             bool regenerate = _second.Due(tick);

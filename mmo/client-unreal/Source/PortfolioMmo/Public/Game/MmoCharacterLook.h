@@ -28,6 +28,12 @@ namespace MmoCharacterLook
 	void PlayAction(USkeletalMeshComponent& Mesh, UAnimSequenceBase* Sequence);
 
 	/**
+	 * 쓰러뜨리거나(bDead) 일으킨다. 모습을 입혔으면 죽음 동작을 마지막 자세로 멈추고(bInstant면 처음부터 그 자세), 자리 표시면 원기둥을 눕힌다.
+	 * Death가 nullptr이면 자리 표시만 다룬다.
+	 */
+	void SetDead(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UAnimSequenceBase* Death, bool bDead, bool bInstant);
+
+	/**
 	 * 스켈레탈 메시 컴포넌트를 액터의 앞(+X)을 보는 사람 크기로 둔다. Feet는 그 컴포넌트의 부모에서 발(지면)까지다.
 	 * 들여온 메시는 +Y를 보고(Unreal의 스켈레탈 메시 관례) 키가 2.72 m라 돌리고 줄인다.
 	 */

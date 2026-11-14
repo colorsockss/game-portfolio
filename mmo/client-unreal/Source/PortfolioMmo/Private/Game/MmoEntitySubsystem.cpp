@@ -25,6 +25,9 @@ namespace
 	/** 자리 표시의 색: 내 대상의 원(노랑), 발사체(밝은 보라). */
 	const FLinearColor TargetColor(1.0f, 0.85f, 0.2f);
 	const FLinearColor ProjectileColor(0.8f, 0.5f, 1.0f);
+	/** 부활의 자리 표시(초록 구)와 보이는 시간(초). 이펙트로 바꾸는 것은 27. */
+	const FLinearColor ReviveColor(0.3f, 1.0f, 0.4f);
+	constexpr double ReviveMarkerSeconds = 1.0;
 
 	/** 표현 표에서 개체를 찾는 키: 플레이어는 직업, 몬스터·NPC·채집물은 템플릿 번호, 바닥 아이템은 아이템 번호. */
 	int32 KeyOf(const portfolio::mmo::EntityEnter& Info)
@@ -131,6 +134,20 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		{
 			PlayAction(Event.Target, &FMmoEntityVisual::Hit);
 		}
+		else if (Event.Kind == MmoWorld::ECombatEventKind::Death || Event.Kind == MmoWorld::ECombatEventKind::Revive)
+		{
+			const bool bDead = Event.Kind == MmoWorld::ECombatEventKind::Death;
+			if (AActor* Actor = Actors.FindRef(Event.Target))
+			{
+				const FMmoEntityVisual* Row = Looks.FindRef(Event.Target);
+				const auto [Mesh, Placeholder] = ComponentsOf(*Actor);
+				MmoCharacterLook::SetDead(*Mesh, *Placeholder, Row ? Row->Death.Get() : nullptr, bDead, false);
+				if (!bDead)
+				{
+					ShowRevive(*Actor);
+				}
+			}
+		}
 		OnCombatEvent.Broadcast(Event);
 	}
 	DrawCombat(World, Combat);
@@ -170,6 +187,12 @@ void UMmoEntitySubsystem::DrawCombat(const MmoWorld::FWorldState& World, MmoWorl
 		ProjectileMarkers[Index]->SetActorHiddenInGame(true);
 	}
 
+	// 부활의 자리 표시는 정한 시간이 지나면 감춘다.
+	if (ReviveMarker && FPlatformTime::Seconds() > ReviveMarkerUntil)
+	{
+		ReviveMarker->SetActorHiddenInGame(true);
+	}
+
 	// 대상의 발밑에 납작한 원을 둔다.
 	const AActor* Target = Combat.Target() != 0 ? Actors.FindRef(Combat.Target()) : nullptr;
 	if (!TargetMarker && Target)
@@ -184,6 +207,17 @@ void UMmoEntitySubsystem::DrawCombat(const MmoWorld::FWorldState& World, MmoWorl
 			TargetMarker->SetActorLocation(Target->GetActorLocation() + FVector(0.0, 0.0, 2.0));
 		}
 	}
+}
+
+void UMmoEntitySubsystem::ShowRevive(const AActor& Actor)
+{
+	if (!ReviveMarker)
+	{
+		ReviveMarker = SpawnMarker(TEXT("Sphere"), FVector(1.0), ReviveColor);
+	}
+	ReviveMarker->SetActorLocation(Actor.GetActorLocation() + FVector(0.0, 0.0, 90.0));
+	ReviveMarker->SetActorHiddenInGame(false);
+	ReviveMarkerUntil = FPlatformTime::Seconds() + ReviveMarkerSeconds;
 }
 
 AStaticMeshActor* UMmoEntitySubsystem::SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color)
@@ -221,14 +255,16 @@ void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::
 
 	const auto [Mesh, Placeholder] = ComponentsOf(Actor);
 	const FMmoEntityVisual* Row = Visuals->Find(Info.kind(), KeyOf(Info));
-	if (Row && Row->Mesh.Get() && Row->Animation.Get() && Row->Attack.Get() && Row->Hit.Get())
+	if (Row && Row->Mesh.Get() && Row->Animation.Get() && Row->Attack.Get() && Row->Hit.Get() && Row->Death.Get())
 	{
 		MmoCharacterLook::Apply(*Mesh, *Placeholder, Row->Mesh.Get(), Row->Animation.Get());
 		Looks.Add(Id, Row);
+		ShowDeadIfDead(Id, *Mesh, *Placeholder, Row);
 		return;
 	}
 
 	MmoCharacterLook::ShowPlaceholder(*Mesh, *Placeholder, Visuals->Placeholder);
+	ShowDeadIfDead(Id, *Mesh, *Placeholder, nullptr);
 	if (!Row)
 	{
 		// shortcut: 표에 줄이 없는 템플릿은 원기둥으로 남는다. 템플릿마다의 자리 표시는 backlog 73이 만든다.
@@ -238,7 +274,7 @@ void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::
 	const TWeakObjectPtr<AActor> Requested(&Actor);
 	const double Started = FPlatformTime::Seconds();
 	Streamable.RequestAsyncLoad(
-		TArray<FSoftObjectPath>{ Row->Mesh.ToSoftObjectPath(), Row->Animation.ToSoftObjectPath(), Row->Attack.ToSoftObjectPath(), Row->Hit.ToSoftObjectPath() },
+		TArray<FSoftObjectPath>{ Row->Mesh.ToSoftObjectPath(), Row->Animation.ToSoftObjectPath(), Row->Attack.ToSoftObjectPath(), Row->Hit.ToSoftObjectPath(), Row->Death.ToSoftObjectPath() },
 		FStreamableDelegate::CreateWeakLambda(this, [this, Id, Requested, Row, Started]()
 		{
 			// 그동안 개체가 나갔거나 다시 들어와 다른 액터가 되었으면 버린다(새 액터는 자기 요청을 따로 했다).
@@ -251,8 +287,20 @@ void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::
 			const auto [LoadedMesh, LoadedPlaceholder] = ComponentsOf(*Current);
 			MmoCharacterLook::Apply(*LoadedMesh, *LoadedPlaceholder, Row->Mesh.Get(), Row->Animation.Get());
 			Looks.Add(Id, Row);
+			ShowDeadIfDead(Id, *LoadedMesh, *LoadedPlaceholder, Row);
 			UE_LOG(LogMmoNet, Display, TEXT("Loaded the look of entity %u in %.0f ms"), Id, (FPlatformTime::Seconds() - Started) * 1000.0);
 		}));
+}
+
+void UMmoEntitySubsystem::ShowDeadIfDead(uint32 Id, USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, const FMmoEntityVisual* Row)
+{
+	// 죽은 채 시야에 들어온 개체(EntityEnter의 "죽었는지")는 처음부터 쓰러진 자세다.
+	const auto& Entities = GetWorld()->GetGameInstance()->GetSubsystem<UMmoSession>()->World().Entities();
+	const auto Found = Entities.find(Id);
+	if (Found != Entities.end() && Found->second.Info.dead())
+	{
+		MmoCharacterLook::SetDead(Mesh, Placeholder, Row ? Row->Death.Get() : nullptr, true, true);
+	}
 }
 
 TStatId UMmoEntitySubsystem::GetStatId() const

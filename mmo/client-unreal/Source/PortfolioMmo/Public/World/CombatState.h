@@ -21,6 +21,8 @@ namespace MmoWorld
 		Damage,
 		/** 죽음(Died). 죽음 표시는 이미 개체에 반영했다. */
 		Death,
+		/** 부활(Revived). 체력과 죽음 표시는 이미 개체에 반영했다. */
+		Revive,
 	};
 
 	/** 화면이 받은 순서대로 그릴 사건. 공격자 번호 0은 받지 않은 개체다(개체를 찾지 않고 대상 쪽만 그린다). */
@@ -65,7 +67,7 @@ namespace MmoWorld
 		/** 대상을 고른다(0이면 푼다). 공격 중에 풀거나 다른 대상으로 바꾸면 공격을 끝내고 AttackStop을 돌려준다. */
 		std::optional<portfolio::mmo::Packet> SetTarget(uint32_t Id);
 
-		/** 대상을 공격하기 시작한다(다가간 뒤, 밀린 위치를 보낸 뒤). 이미 공격 중이면 nullopt. 첫 공격이면 내 공격 동작을 미리 쌓는다. */
+		/** 대상을 공격하기 시작한다(다가간 뒤, 밀린 위치를 보낸 뒤). 이미 공격 중이거나 내가 죽어 있으면 nullopt. 첫 공격이면 내 공격 동작을 미리 쌓는다. */
 		std::optional<portfolio::mmo::Packet> StartAttack(uint32_t SelfId);
 
 		/** 공격을 멈춘다. 공격 중이 아니었으면 nullopt. */
@@ -109,6 +111,8 @@ namespace MmoWorld
 		uint32_t TargetId = 0;
 		bool bAttacking = false;
 		bool bPredicted = false;
+		/** 내가 죽어 있다(Died부터 Revived까지). */
+		bool bSelfDead = false;
 		uint32_t Self = 0;
 		std::vector<FCombatEvent> Events;
 		std::vector<FProjectile> Flying;

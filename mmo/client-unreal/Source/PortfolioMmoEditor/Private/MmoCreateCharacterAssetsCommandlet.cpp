@@ -215,9 +215,10 @@ namespace
 			Row.Animation = TSoftClassPtr<UMmoAnimInstance>(FSoftObjectPath(FString::Printf(TEXT("%s/ABP_%s.ABP_%s_C"), *Folder, Class.ClassName, Class.ClassName)));
 			Row.Attack = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_%s.%s_Anim_CharacterArmature_%s"), *Folder, *Source, Class.Attack, *Source, Class.Attack)));
 			Row.Hit = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_RecieveHit.%s_Anim_CharacterArmature_RecieveHit"), *Folder, *Source, *Source)));
-			if (!Row.Mesh.LoadSynchronous() || !Row.Animation.LoadSynchronous() || !Row.Attack.LoadSynchronous() || !Row.Hit.LoadSynchronous())
+			Row.Death = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_Death.%s_Anim_CharacterArmature_Death"), *Folder, *Source, *Source)));
+			if (!Row.Mesh.LoadSynchronous() || !Row.Animation.LoadSynchronous() || !Row.Attack.LoadSynchronous() || !Row.Hit.LoadSynchronous() || !Row.Death.LoadSynchronous())
 			{
-				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the mesh, the anim blueprint or the attack/hit animation is missing."), *Folder);
+				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the mesh, the anim blueprint or the attack/hit/death animation is missing."), *Folder);
 				return false;
 			}
 		}

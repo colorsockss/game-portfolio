@@ -31,7 +31,7 @@ namespace MmoWorld
 
 	std::optional<portfolio::mmo::Packet> FCombatState::StartAttack(uint32_t SelfId)
 	{
-		if (TargetId == 0 || bAttacking)
+		if (TargetId == 0 || bAttacking || bSelfDead)
 		{
 			return std::nullopt;
 		}
@@ -98,10 +98,22 @@ namespace MmoWorld
 		}
 		case portfolio::mmo::Packet::kDied:
 			Events.push_back({ ECombatEventKind::Death, Packet.died().killer_id(), Packet.died().id(), 0, false, Packet.died().id() == Me });
-			if (Packet.died().id() == TargetId)
+			if (Packet.died().id() == Me)
+			{
+				// 서버가 내 공격 상태를 이미 끝냈으므로 AttackStop을 보내지 않고 대상과 공격 중 표시만 내린다.
+				bSelfDead = true;
+				bAttacking = false;
+				bPredicted = false;
+				TargetId = 0;
+			}
+			else if (Packet.died().id() == TargetId)
 			{
 				Release(Stop);
 			}
+			break;
+		case portfolio::mmo::Packet::kRevived:
+			Events.push_back({ ECombatEventKind::Revive, 0, Packet.revived().id(), 0, false, Packet.revived().id() == Me });
+			bSelfDead &= Packet.revived().id() != Me;
 			break;
 		case portfolio::mmo::Packet::kEntitiesLeave:
 			for (const uint32_t Id : Packet.entities_leave().ids())
@@ -184,6 +196,7 @@ namespace MmoWorld
 		TargetId = 0;
 		bAttacking = false;
 		bPredicted = false;
+		bSelfDead = false;
 		Events.clear();
 		Flying.clear();
 	}

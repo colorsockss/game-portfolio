@@ -153,6 +153,14 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 		return;
 	}
 
+	// 죽은 동안에는 이동과 행동의 요청을 만들지 않는다(사망 화면이 손 조작을 막음). 부활의 PositionReset 뒤에 다시 보낸다.
+	if (Session().World().SelfState().bDead)
+	{
+		PathFollower.Start({});
+		bEngaged = false;
+		return;
+	}
+
 	// 개발용: -MmoAttack이면 걷기가 끝난 뒤 대상이 없을 때마다 가장 가까운 적에게 공격하러 간다(키 입력 없이 전투를 확인).
 	if (PathFollower.IsDone() && !bEngaged && Session().Combat().Target() == 0 && FParse::Param(FCommandLine::Get(), TEXT("MmoAttack")))
 	{
@@ -247,7 +255,7 @@ void AMmoPlayerController::Engage()
 
 void AMmoPlayerController::AttackOrTargetNearest()
 {
-	if (bManualMoveBlocked)
+	if (bManualMoveBlocked || Session().World().SelfState().bDead)
 	{
 		return;
 	}
@@ -261,7 +269,7 @@ void AMmoPlayerController::AttackOrTargetNearest()
 void AMmoPlayerController::TargetNearest()
 {
 	const APawn* Self = GetPawn();
-	if (!Self || bManualMoveBlocked)
+	if (!Self || bManualMoveBlocked || Session().World().SelfState().bDead)
 	{
 		return;
 	}
@@ -323,6 +331,10 @@ void AMmoPlayerController::UpdateEngagement()
 
 void AMmoPlayerController::HandleClick()
 {
+	if (Session().World().SelfState().bDead)
+	{
+		return;
+	}
 	// 터치 기기에서는 이동을 조이스틱만 쓴다(빈 땅을 누르는 것은 대상 풀기. backlog 24). 창이 열린 동안은 손 조작을 막는다.
 	if (bManualMoveBlocked || FPlatformMisc::SupportsTouchInput() || FSlateApplication::Get().IsFakingTouchEvents())
 	{
@@ -367,7 +379,7 @@ void AMmoPlayerController::HandleBack()
 void AMmoPlayerController::HandleMove(const FInputActionValue& Value)
 {
 	APawn* Self = GetPawn();
-	if (!Self || bManualMoveBlocked)
+	if (!Self || bManualMoveBlocked || Session().World().SelfState().bDead)
 	{
 		return;
 	}

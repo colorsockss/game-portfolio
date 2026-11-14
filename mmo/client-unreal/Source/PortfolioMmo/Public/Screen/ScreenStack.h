@@ -18,6 +18,8 @@ namespace MmoScreen
 		Settings,
 		Confirm,
 		Quantity,
+		/** 사망 화면(부활 버튼). 뒤로 가기로 닫히지 않고 손 조작을 막는다. */
+		Death,
 	};
 
 	/** 화면이 올라가는 층. 아래에서 위로 그린다. */

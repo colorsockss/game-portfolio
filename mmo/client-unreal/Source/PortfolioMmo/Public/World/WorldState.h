@@ -105,6 +105,8 @@ namespace MmoWorld
 		uint32_t CombatEndTick = 0;
 		/** 이 틱부터 선공 표시가 없다(44). */
 		uint32_t AggressorEndTick = 0;
+		/** 내가 죽어 있다(Died부터 Revived까지). 죽은 동안에는 이동과 행동의 요청을 만들지 않는다. */
+		bool bDead = false;
 	};
 
 	/**

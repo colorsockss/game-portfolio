@@ -28,6 +28,8 @@ namespace PortfolioMmo.Server
         private readonly AiSystem _ai;
         private readonly CombatSystem _combat;
         private readonly TickEvents _events;
+        private readonly SpawnSystem _spawn;
+        private readonly DeathSystem _deaths;
 
         /// <summary>
         /// 빈 월드를 만든다.
@@ -43,8 +45,11 @@ namespace PortfolioMmo.Server
             _events = new TickEvents(_grid);
             _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events);
             // 놓인 점의 번호는 플레이어보다 먼저 받는다.
-            new SpawnSystem(data, field, _entities, _grid, _ai, _scheduler, random).PlaceAll();
+            _spawn = new SpawnSystem(data, field, _entities, _grid, _ai, _scheduler, random);
+            _spawn.PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
+            _deaths = new DeathSystem(_entities, _grid, _scheduler, _movement, _events, data);
+            _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
         }
 
@@ -110,6 +115,13 @@ namespace PortfolioMmo.Server
                         Kick(session, KickReason.MalformedPacket);
                     }
 
+                    break;
+                // 죽은 동안에는 Ping, LeaveWorld, Revive, AttackStop(할 일 없음)만 받고, Move는 되돌리며(MovementSystem), 나머지는 실패로 답한다.
+                case Packet.BodyOneofCase.AttackStart when player is { Dead: true }:
+                    player.Fail(FailReason.Dead, RequestKind.Attack);
+                    break;
+                case Packet.BodyOneofCase.Revive when player != null:
+                    _deaths.Revive(player);
                     break;
                 case Packet.BodyOneofCase.AttackStart when player != null:
                     _combat.Start(player, packet.AttackStart);
@@ -236,6 +248,8 @@ namespace PortfolioMmo.Server
             {
                 ScheduledKind.UnreachableEnd => _ai.IsUnreachableCurrent(job),
                 ScheduledKind.Strike => _combat.IsStrikeCurrent(job),
+                ScheduledKind.Despawn => _deaths.IsDespawnCurrent(job),
+                ScheduledKind.Respawn => _spawn.PlacedAt(job.Owner) != null,
                 _ => throw UnknownKind(job.Kind),
             };
         }
@@ -246,6 +260,7 @@ namespace PortfolioMmo.Server
             {
                 ScheduledKind.UnreachableEnd => false,
                 ScheduledKind.Strike => true,
+                ScheduledKind.Despawn or ScheduledKind.Respawn => false,
                 _ => throw UnknownKind(kind),
             };
         }
@@ -256,6 +271,12 @@ namespace PortfolioMmo.Server
             {
                 case ScheduledKind.UnreachableEnd:
                     _ai.EndUnreachable(job);
+                    break;
+                case ScheduledKind.Despawn:
+                    _spawn.Despawn((Monster)_entities.Find(job.Owner)!);
+                    break;
+                case ScheduledKind.Respawn:
+                    _spawn.Respawn(_spawn.PlacedAt(job.Owner)!);
                     break;
                 default:
                     throw UnknownKind(job.Kind);

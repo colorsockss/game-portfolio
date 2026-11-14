@@ -22,7 +22,7 @@ namespace PortfolioMmo.Server
         private readonly AiSystem _ai;
         private readonly Scheduler _scheduler;
         private readonly Random _random;
-        private readonly List<PlacedPoint> _placed = new List<PlacedPoint>();
+        private readonly Dictionary<uint, PlacedPoint> _placed = new Dictionary<uint, PlacedPoint>();
 
         public SpawnSystem(GameData data, FieldMap field, EntityTable entities, Grid grid, AiSystem ai, Scheduler scheduler, Random random)
         {
@@ -35,7 +35,15 @@ namespace PortfolioMmo.Server
             _random = random;
         }
 
-        public IReadOnlyList<PlacedPoint> Placed => _placed;
+        public Dictionary<uint, PlacedPoint>.ValueCollection Placed => _placed.Values;
+
+        /// <summary>
+        /// 번호의 놓인 점. 없으면 null.
+        /// </summary>
+        public PlacedPoint? PlacedAt(uint id)
+        {
+            return _placed.GetValueOrDefault(id);
+        }
 
         /// <summary>
         /// 모든 무리를 놓는다. 놓인 점의 번호를 플레이어보다 먼저 받으므로 서버가 뜰 때(World를 만들 때) 한 번만 부른다.
@@ -52,19 +60,25 @@ namespace PortfolioMmo.Server
                 {
                     (int x, int z) = Scatter(centerX, centerZ, spawn.ScatterRadius * Units.PerMeter);
                     var placed = new PlacedPoint(_entities.ReservePlacedId(), x, z, spawn, template);
-                    _placed.Add(placed);
+                    _placed.Add(placed.Id, placed);
                     Respawn(placed);
                 }
             }
         }
 
         /// <summary>
-        /// 놓인 점에 몬스터를 새로 놓는다: 가득 찬 체력, 대기 상태, 빈 피해 표. 번호는 놓인 점의 것이다.
+        /// 놓인 점에 몬스터를 새로 놓는다: 가득 찬 체력, 대기 상태, 빈 피해 표. 번호는 놓인 점의 것이다. 같은 번호의 옛 몬스터가 아직 남아 있으면
+        /// (다시 나오는 시간이 쓰러진 채 남는 시간보다 짧음) 먼저 뺀다.
         /// </summary>
         public Monster Respawn(PlacedPoint placed)
         {
-            // 같은 번호의 옛 몬스터가 건 타격이 새 몬스터의 것으로 읽히지 않게 새 세대 번호로 시작한다.
-            var monster = new Monster(placed) { StrikeGeneration = _scheduler.NewGeneration() };
+            if (_entities.Find(placed.Id) is Monster old)
+            {
+                Despawn(old);
+            }
+
+            // 같은 번호의 옛 몬스터가 건 예약(타격, 사라짐)이 새 몬스터의 것으로 읽히지 않게 새 세대 번호로 시작한다.
+            var monster = new Monster(placed) { StrikeGeneration = _scheduler.NewGeneration(), LifeGeneration = _scheduler.NewGeneration() };
             MonstersRow template = placed.Template;
             monster.SetStats(new Stats(template.MaxHp, 0, template.Attack, template.Defense));
             monster.Hp = monster.MaxHp;
@@ -73,6 +87,16 @@ namespace PortfolioMmo.Server
             _grid.Add(monster);
             _ai.Add(monster);
             return monster;
+        }
+
+        /// <summary>
+        /// 몬스터를 월드에서 뺀다(죽은 몬스터가 사라짐). 다음 시야 차례에 받은 연결이 EntitiesLeave로 받는다.
+        /// </summary>
+        public void Despawn(Monster monster)
+        {
+            _entities.Remove(monster);
+            _grid.Remove(monster);
+            _ai.Remove(monster);
         }
 
         /// <summary>

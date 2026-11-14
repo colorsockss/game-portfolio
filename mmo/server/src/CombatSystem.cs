@@ -19,6 +19,16 @@ namespace PortfolioMmo.Server
         private readonly TickEvents _events;
         private readonly uint _combatTicks;
 
+        /// <summary>
+        /// 이 틱에 죽은 개체(죽은 차례). 전투 차례의 끝에서 DeathSystem이 정리한다.
+        /// </summary>
+        private readonly List<Creature> _died = new List<Creature>();
+
+        /// <summary>
+        /// 죽음을 정리하는 쪽. World가 만든 뒤에 잇는다(둘이 서로를 부름).
+        /// </summary>
+        public DeathSystem? Deaths { get; set; }
+
         public CombatSystem(EntityTable entities, FieldMap field, Scheduler scheduler, StatSystem stats, GameData data, TickEvents events)
         {
             _entities = entities;
@@ -53,13 +63,13 @@ namespace PortfolioMmo.Server
             Entity? found = _entities.Find(request.TargetId);
             if ((found == null) || !player.Visible.Contains(found) || (found is Creature { Dead: true }))
             {
-                Fail(player, FailReason.NoTarget);
+                player.Fail(FailReason.NoTarget, RequestKind.Attack);
                 return;
             }
 
             if ((found is not Creature target) || !CanAttack(player, target) || IsReturning(target))
             {
-                Fail(player, FailReason.InvalidTarget);
+                player.Fail(FailReason.InvalidTarget, RequestKind.Attack);
                 return;
             }
 
@@ -97,6 +107,13 @@ namespace PortfolioMmo.Server
                     TrySwing(attacker, tick);
                 }
             }
+
+            foreach (Creature dead in _died)
+            {
+                Deaths?.Died(dead, tick);
+            }
+
+            _died.Clear();
         }
 
         /// <summary>
@@ -116,7 +133,7 @@ namespace PortfolioMmo.Server
                 attacker.AttackTarget = 0;
                 if (attacker is Player player)
                 {
-                    Fail(player, FailReason.InvalidTarget);
+                    player.Fail(FailReason.InvalidTarget, RequestKind.Attack);
                 }
 
                 return;
@@ -175,18 +192,19 @@ namespace PortfolioMmo.Server
                 target.Dead = true;
                 target.AttackTarget = 0;
                 target.StrikeGeneration = _scheduler.NewGeneration();
+                if (target is Monster dead)
+                {
+                    dead.Killer = dead.Damage.Killer();
+                }
+
                 _events.Died(target, attacker);
+                _died.Add(target);
             }
         }
 
         private static bool IsReturning(Creature target)
         {
             return target is Monster { State: MonsterState.Return };
-        }
-
-        private static void Fail(Player player, FailReason reason)
-        {
-            player.Session.Send(new Packet { ActionFailed = new ActionFailed { Reason = reason, Request = RequestKind.Attack } });
         }
 
         /// <summary>

@@ -49,11 +49,11 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
     {
       PROTOBUF_FIELD_OFFSET(Constants, _impl_._has_bits_),
       0, // no _extensions_
-      13, 120,  // max_field_number, fast_idx_mask
+      15, 120,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294959104,  // skipmap
+      4294934528,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      13,  // num_field_entries
+      15,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -116,8 +116,14 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Constants, _impl_.wander_pause_max_ms_), 12>(),
        {104, 12, 0,
         PROTOBUF_FIELD_OFFSET(Constants, _impl_.wander_pause_max_ms_)}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
+      // uint32 revive_hp_percent = 14;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Constants, _impl_.revive_hp_percent_), 13>(),
+       {112, 13, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.revive_hp_percent_)}},
+      // uint32 dead_monster_ms = 15;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Constants, _impl_.dead_monster_ms_), 14>(),
+       {120, 14, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.dead_monster_ms_)}},
     }}, {{
       65535, 65535
     }}, {{
@@ -147,6 +153,10 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.wander_pause_min_ms_), _Internal::kHasBitsOffset + 11, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 wander_pause_max_ms = 13;
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.wander_pause_max_ms_), _Internal::kHasBitsOffset + 12, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 revive_hp_percent = 14;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.revive_hp_percent_), _Internal::kHasBitsOffset + 13, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 dead_monster_ms = 15;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.dead_monster_ms_), _Internal::kHasBitsOffset + 14, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -170,7 +180,9 @@ inline constexpr Constants::Impl_::Impl_(
         return_regen_percent_{0u},
         return_range_margin_{0},
         wander_pause_min_ms_{0u},
-        wander_pause_max_ms_{0u} {}
+        wander_pause_max_ms_{0u},
+        revive_hp_percent_{0u},
+        dead_monster_ms_{0u} {}
 
 template <typename>
 constexpr Constants::Constants(::_pbi::ConstantInitialized,
@@ -276,7 +288,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_._has_bits_),
-        16, // hasbit index offset
+        18, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.field_size_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.combat_duration_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.regen_percent_),
@@ -290,6 +302,8 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.return_regen_percent_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.wander_pause_min_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.wander_pause_max_ms_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.revive_hp_percent_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.dead_monster_ms_),
         0,
         1,
         2,
@@ -303,6 +317,8 @@ const ::uint32_t
         9,
         11,
         12,
+        13,
+        14,
 };
 
 static const ::_pbi::MigrationSchema
@@ -315,7 +331,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\017Constants.proto\022\022portfolio.mmo.data\"\333\002"
+    "\n\017Constants.proto\022\022portfolio.mmo.data\"\217\003"
     "\n\tConstants\022\022\n\nfield_size\030\001 \001(\r\022\032\n\022comba"
     "t_duration_ms\030\002 \001(\r\022\025\n\rregen_percent\030\003 \001"
     "(\r\022\034\n\024combat_regen_percent\030\004 \001(\r\022\023\n\013crit"
@@ -324,14 +340,15 @@ const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_
     "\010 \001(\r\022\027\n\017repath_distance\030\t \001(\001\022\033\n\023return"
     "_range_margin\030\n \001(\001\022\034\n\024return_regen_perc"
     "ent\030\013 \001(\r\022\033\n\023wander_pause_min_ms\030\014 \001(\r\022\033"
-    "\n\023wander_pause_max_ms\030\r \001(\rB\024\252\002\021Portfoli"
-    "oMmo.Datab\006proto3"
+    "\n\023wander_pause_max_ms\030\r \001(\r\022\031\n\021revive_hp"
+    "_percent\030\016 \001(\r\022\027\n\017dead_monster_ms\030\017 \001(\rB"
+    "\024\252\002\021PortfolioMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Constants_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Constants_2eproto = {
     false,
     false,
-    417,
+    469,
     descriptor_table_protodef_Constants_2eproto,
     "Constants.proto",
     &descriptor_table_Constants_2eproto_once,
@@ -379,9 +396,9 @@ inline void Constants::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, field_size_),
            0,
-           offsetof(Impl_, wander_pause_max_ms_) -
+           offsetof(Impl_, dead_monster_ms_) -
                offsetof(Impl_, field_size_) +
-               sizeof(Impl_::wander_pause_max_ms_));
+               sizeof(Impl_::dead_monster_ms_));
 }
 Constants::~Constants() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.Constants)
@@ -437,12 +454,12 @@ PROTOBUF_NOINLINE void Constants::Clear() {
                  reinterpret_cast<char*>(&this_._impl_.field_size_)) +
                  sizeof(_impl_.repath_distance_));
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x00001f00U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00007f00U)) {
     ::memset(&this_._impl_.unreachable_ms_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.wander_pause_max_ms_) -
+                 reinterpret_cast<char*>(&this_._impl_.dead_monster_ms_) -
                  reinterpret_cast<char*>(&this_._impl_.unreachable_ms_)) +
-                 sizeof(_impl_.wander_pause_max_ms_));
+                 sizeof(_impl_.dead_monster_ms_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -584,6 +601,24 @@ PROTOBUF_NOINLINE void Constants::Clear() {
     }
   }
 
+  // uint32 revive_hp_percent = 14;
+  if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+    if (this_._internal_revive_hp_percent() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          14, this_._internal_revive_hp_percent(), target);
+    }
+  }
+
+  // uint32 dead_monster_ms = 15;
+  if (CheckHasBit(cached_has_bits, 0x00004000U)) {
+    if (this_._internal_dead_monster_ms() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          15, this_._internal_dead_monster_ms(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -661,7 +696,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
       }
     }
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x00001f00U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00007f00U)) {
     // uint32 unreachable_ms = 8;
     if (CheckHasBit(cached_has_bits, 0x00000100U)) {
       if (this_._internal_unreachable_ms() != 0) {
@@ -694,6 +729,20 @@ PROTOBUF_NOINLINE void Constants::Clear() {
       if (this_._internal_wander_pause_max_ms() != 0) {
         total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
             this_._internal_wander_pause_max_ms());
+      }
+    }
+    // uint32 revive_hp_percent = 14;
+    if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+      if (this_._internal_revive_hp_percent() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_revive_hp_percent());
+      }
+    }
+    // uint32 dead_monster_ms = 15;
+    if (CheckHasBit(cached_has_bits, 0x00004000U)) {
+      if (this_._internal_dead_monster_ms() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_dead_monster_ms());
       }
     }
   }
@@ -756,7 +805,7 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x00001f00U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00007f00U)) {
     if (CheckHasBit(cached_has_bits, 0x00000100U)) {
       if (from._internal_unreachable_ms() != 0) {
         _this->_impl_.unreachable_ms_ = from._impl_.unreachable_ms_;
@@ -782,6 +831,16 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
         _this->_impl_.wander_pause_max_ms_ = from._impl_.wander_pause_max_ms_;
       }
     }
+    if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+      if (from._internal_revive_hp_percent() != 0) {
+        _this->_impl_.revive_hp_percent_ = from._impl_.revive_hp_percent_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00004000U)) {
+      if (from._internal_dead_monster_ms() != 0) {
+        _this->_impl_.dead_monster_ms_ = from._impl_.dead_monster_ms_;
+      }
+    }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
@@ -801,8 +860,8 @@ void Constants::InternalSwap(Constants* PROTOBUF_RESTRICT PROTOBUF_NONNULL other
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Constants, _impl_.wander_pause_max_ms_)
-      + sizeof(Constants::_impl_.wander_pause_max_ms_)
+      PROTOBUF_FIELD_OFFSET(Constants, _impl_.dead_monster_ms_)
+      + sizeof(Constants::_impl_.dead_monster_ms_)
       - PROTOBUF_FIELD_OFFSET(Constants, _impl_.field_size_)>(
           reinterpret_cast<char*>(&_impl_.field_size_),
           reinterpret_cast<char*>(&other->_impl_.field_size_));

@@ -50,14 +50,11 @@ namespace PortfolioMmo.Server
             long deltaZ = (long)move.Z - player.Z;
             double distance = Math.Sqrt((deltaX * deltaX) + (deltaZ * deltaZ));
             // 선 검사는 좌표가 필드 안이고 거리가 짧은 것을 본 뒤에 한다(패킷의 아무 좌표로 긴 선을 세지 않게).
-            if (!_field.Contains(move.X, move.Z) || (distance > player.MoveBudget)
+            // 죽은 동안의 Move는 모두 되돌린다(25).
+            if (player.Dead || !_field.Contains(move.X, move.Z) || (distance > player.MoveBudget)
                 || !_field.CanWalkLine(player.X, player.Z, move.X, move.Z, Walker.Player))
             {
-                player.Ack++;
-                player.Session.Send(new Packet
-                {
-                    PositionReset = new PositionReset { X = player.X, Z = player.Z, Ack = player.Ack },
-                });
+                Reset(player);
                 return true;
             }
 
@@ -69,6 +66,18 @@ namespace PortfolioMmo.Server
             player.Dirty = true;
             _grid.Moved(player);
             return true;
+        }
+
+        /// <summary>
+        /// 플레이어를 서버의 지금 자리로 되돌린다: ack를 올리고 PositionReset을 보낸다. 그 ack를 실은 Move만 다시 받는다.
+        /// </summary>
+        public void Reset(Player player)
+        {
+            player.Ack++;
+            player.Session.Send(new Packet
+            {
+                PositionReset = new PositionReset { X = player.X, Z = player.Z, Ack = player.Ack },
+            });
         }
 
         /// <summary>

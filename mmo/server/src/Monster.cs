@@ -103,6 +103,16 @@ namespace PortfolioMmo.Server
 
         internal uint WanderResumeTick { get; set; }
 
+        /// <summary>
+        /// 이 몬스터의 수명의 세대 번호(사라짐의 예약). 놓일 때 새 번호를 받아, 같은 번호로 다시 나온 몬스터에 옛 예약이 걸리지 않는다.
+        /// </summary>
+        internal ulong LifeGeneration { get; set; }
+
+        /// <summary>
+        /// 죽는 순간 피해 표에서 합이 가장 큰 편(잡은 편). 경험치(31)와 드롭의 주인(33)이 쓴다. 표가 비었으면 null.
+        /// </summary>
+        public uint? Killer { get; internal set; }
+
         protected override void Fill(EntityEnter enter)
         {
             base.Fill(enter);

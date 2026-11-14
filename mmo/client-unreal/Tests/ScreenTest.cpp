@@ -54,6 +54,10 @@ namespace
 		Stack.Open(EScreen::Settings);
 		Expect(Stack.Back(true) == MmoScreen::FScreenStack::EBack::Close, "an open window is closed before the target is released");
 		Stack.Close(EScreen::Settings);
+		Stack.Open(EScreen::Death);
+		Expect(Stack.InputMode() == EInputMode::Window && Stack.Back(true) == MmoScreen::FScreenStack::EBack::ReleaseTarget,
+			"the death screen stops the character and back does not close it");
+		Stack.Close(EScreen::Death);
 	}
 
 	void PopupWinsOverALaterWindow()

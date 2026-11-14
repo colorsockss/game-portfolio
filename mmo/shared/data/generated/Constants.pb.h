@@ -233,6 +233,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kReturnRangeMarginFieldNumber = 10,
     kWanderPauseMinMsFieldNumber = 12,
     kWanderPauseMaxMsFieldNumber = 13,
+    kReviveHpPercentFieldNumber = 14,
+    kDeadMonsterMsFieldNumber = 15,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -364,11 +366,31 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_wander_pause_max_ms(::uint32_t value);
 
   public:
+  // uint32 revive_hp_percent = 14;
+  void clear_revive_hp_percent() ;
+  [[nodiscard]] ::uint32_t revive_hp_percent() const;
+  void set_revive_hp_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_revive_hp_percent() const;
+  void _internal_set_revive_hp_percent(::uint32_t value);
+
+  public:
+  // uint32 dead_monster_ms = 15;
+  void clear_dead_monster_ms() ;
+  [[nodiscard]] ::uint32_t dead_monster_ms() const;
+  void set_dead_monster_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_dead_monster_ms() const;
+  void _internal_set_dead_monster_ms(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<4, 13,
+      ::google::protobuf::internal::TcParseTable<4, 15,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -410,6 +432,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     double return_range_margin_;
     ::uint32_t wander_pause_min_ms_;
     ::uint32_t wander_pause_max_ms_;
+    ::uint32_t revive_hp_percent_;
+    ::uint32_t dead_monster_ms_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -742,6 +766,54 @@ inline ::uint32_t Constants::_internal_wander_pause_max_ms() const {
 inline void Constants::_internal_set_wander_pause_max_ms(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.wander_pause_max_ms_ = value;
+}
+
+// uint32 revive_hp_percent = 14;
+inline void Constants::clear_revive_hp_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.revive_hp_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00002000U);
+}
+inline ::uint32_t Constants::revive_hp_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.revive_hp_percent)
+  return _internal_revive_hp_percent();
+}
+inline void Constants::set_revive_hp_percent(::uint32_t value) {
+  _internal_set_revive_hp_percent(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00002000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.revive_hp_percent)
+}
+inline ::uint32_t Constants::_internal_revive_hp_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.revive_hp_percent_;
+}
+inline void Constants::_internal_set_revive_hp_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.revive_hp_percent_ = value;
+}
+
+// uint32 dead_monster_ms = 15;
+inline void Constants::clear_dead_monster_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.dead_monster_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00004000U);
+}
+inline ::uint32_t Constants::dead_monster_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.dead_monster_ms)
+  return _internal_dead_monster_ms();
+}
+inline void Constants::set_dead_monster_ms(::uint32_t value) {
+  _internal_set_dead_monster_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00004000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.dead_monster_ms)
+}
+inline ::uint32_t Constants::_internal_dead_monster_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.dead_monster_ms_;
+}
+inline void Constants::_internal_set_dead_monster_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.dead_monster_ms_ = value;
 }
 
 #ifdef __GNUC__

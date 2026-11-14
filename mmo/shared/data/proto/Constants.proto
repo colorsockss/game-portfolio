@@ -32,4 +32,8 @@ message Constants {
   uint32 wander_pause_min_ms = 12;
   // 배회에서 한 점에 서 있는 가장 긴 시간(ms)
   uint32 wander_pause_max_ms = 13;
+  // 부활할 때 채우는 최대 체력의 비율(%)
+  uint32 revive_hp_percent = 14;
+  // 죽은 몬스터가 쓰러진 채 남는 시간(ms). 다시 나오는 시간은 죽은 틱부터 센다
+  uint32 dead_monster_ms = 15;
 }

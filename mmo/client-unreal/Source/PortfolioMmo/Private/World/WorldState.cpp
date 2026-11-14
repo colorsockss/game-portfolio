@@ -178,6 +178,16 @@ namespace MmoWorld
 				Found->second.Info.set_dead(true);
 				Found->second.Info.set_hp(0);
 			}
+			Mine.bDead |= Packet.died().id() == Self;
+			break;
+		case portfolio::mmo::Packet::kRevived:
+			if (const auto Found = Visible.find(Packet.revived().id()); Found != Visible.end())
+			{
+				Found->second.Info.set_dead(false);
+				Found->second.Info.set_hp(Packet.revived().hp());
+				Found->second.Info.set_max_hp(Packet.revived().max_hp());
+			}
+			Mine.bDead &= Packet.revived().id() != Self;
 			break;
 		case portfolio::mmo::Packet::kSelfVitals:
 			Mine.Hp = Packet.self_vitals().hp();

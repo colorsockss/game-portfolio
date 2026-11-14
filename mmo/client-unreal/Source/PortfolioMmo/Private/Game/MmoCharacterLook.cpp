@@ -40,6 +40,24 @@ namespace MmoCharacterLook
 		}
 	}
 
+	void SetDead(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UAnimSequenceBase* Death, bool bDead, bool bInstant)
+	{
+		// 자리 표시의 원기둥(높이 1.8 m, 가운데가 0.9 m 위)은 옆으로 눕혀 땅에 둔다.
+		Placeholder.SetRelativeRotation(bDead ? FRotator(90.0, 0.0, 0.0) : FRotator::ZeroRotator);
+		Placeholder.SetRelativeLocation(FVector(0.0, 0.0, bDead ? 30.0 : 90.0));
+		if (UMmoAnimInstance* Instance = Cast<UMmoAnimInstance>(Mesh.GetAnimInstance()))
+		{
+			if (bDead)
+			{
+				Instance->PlayDeath(Death, bInstant);
+			}
+			else
+			{
+				Instance->StandUp();
+			}
+		}
+	}
+
 	void SetUpBody(USkeletalMeshComponent& Mesh, const FVector& Feet)
 	{
 		// Quaternius 캐릭터의 바인드 포즈에서 발바닥(0)부터 머리 끝까지가 272 단위다. 자리 표시와 캡슐에 맞춰 1.8 m로 줄인다.

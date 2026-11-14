@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLbAgoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKPAwoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -32,12 +32,13 @@ namespace PortfolioMmo.Data {
             "dW5yZWFjaGFibGVfbXMYCCABKA0SFwoPcmVwYXRoX2Rpc3RhbmNlGAkgASgB",
             "EhsKE3JldHVybl9yYW5nZV9tYXJnaW4YCiABKAESHAoUcmV0dXJuX3JlZ2Vu",
             "X3BlcmNlbnQYCyABKA0SGwoTd2FuZGVyX3BhdXNlX21pbl9tcxgMIAEoDRIb",
-            "ChN3YW5kZXJfcGF1c2VfbWF4X21zGA0gASgNQhSqAhFQb3J0Zm9saW9NbW8u",
-            "RGF0YWIGcHJvdG8z"));
+            "ChN3YW5kZXJfcGF1c2VfbWF4X21zGA0gASgNEhkKEXJldml2ZV9ocF9wZXJj",
+            "ZW50GA4gASgNEhcKD2RlYWRfbW9uc3Rlcl9tcxgPIAEoDUIUqgIRUG9ydGZv",
+            "bGlvTW1vLkRhdGFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs" }, null, null, null, null)
           }));
     }
     #endregion
@@ -92,6 +93,8 @@ namespace PortfolioMmo.Data {
       returnRegenPercent_ = other.returnRegenPercent_;
       wanderPauseMinMs_ = other.wanderPauseMinMs_;
       wanderPauseMaxMs_ = other.wanderPauseMaxMs_;
+      reviveHpPercent_ = other.reviveHpPercent_;
+      deadMonsterMs_ = other.deadMonsterMs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -296,6 +299,36 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "revive_hp_percent" field.</summary>
+    public const int ReviveHpPercentFieldNumber = 14;
+    private uint reviveHpPercent_;
+    /// <summary>
+    /// 부활할 때 채우는 최대 체력의 비율(%)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint ReviveHpPercent {
+      get { return reviveHpPercent_; }
+      set {
+        reviveHpPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "dead_monster_ms" field.</summary>
+    public const int DeadMonsterMsFieldNumber = 15;
+    private uint deadMonsterMs_;
+    /// <summary>
+    /// 죽은 몬스터가 쓰러진 채 남는 시간(ms). 다시 나오는 시간은 죽은 틱부터 센다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint DeadMonsterMs {
+      get { return deadMonsterMs_; }
+      set {
+        deadMonsterMs_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -324,6 +357,8 @@ namespace PortfolioMmo.Data {
       if (ReturnRegenPercent != other.ReturnRegenPercent) return false;
       if (WanderPauseMinMs != other.WanderPauseMinMs) return false;
       if (WanderPauseMaxMs != other.WanderPauseMaxMs) return false;
+      if (ReviveHpPercent != other.ReviveHpPercent) return false;
+      if (DeadMonsterMs != other.DeadMonsterMs) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -344,6 +379,8 @@ namespace PortfolioMmo.Data {
       if (ReturnRegenPercent != 0) hash ^= ReturnRegenPercent.GetHashCode();
       if (WanderPauseMinMs != 0) hash ^= WanderPauseMinMs.GetHashCode();
       if (WanderPauseMaxMs != 0) hash ^= WanderPauseMaxMs.GetHashCode();
+      if (ReviveHpPercent != 0) hash ^= ReviveHpPercent.GetHashCode();
+      if (DeadMonsterMs != 0) hash ^= DeadMonsterMs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -414,6 +451,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(104);
         output.WriteUInt32(WanderPauseMaxMs);
       }
+      if (ReviveHpPercent != 0) {
+        output.WriteRawTag(112);
+        output.WriteUInt32(ReviveHpPercent);
+      }
+      if (DeadMonsterMs != 0) {
+        output.WriteRawTag(120);
+        output.WriteUInt32(DeadMonsterMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -476,6 +521,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(104);
         output.WriteUInt32(WanderPauseMaxMs);
       }
+      if (ReviveHpPercent != 0) {
+        output.WriteRawTag(112);
+        output.WriteUInt32(ReviveHpPercent);
+      }
+      if (DeadMonsterMs != 0) {
+        output.WriteRawTag(120);
+        output.WriteUInt32(DeadMonsterMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -524,6 +577,12 @@ namespace PortfolioMmo.Data {
       }
       if (WanderPauseMaxMs != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(WanderPauseMaxMs);
+      }
+      if (ReviveHpPercent != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ReviveHpPercent);
+      }
+      if (DeadMonsterMs != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(DeadMonsterMs);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -575,6 +634,12 @@ namespace PortfolioMmo.Data {
       }
       if (other.WanderPauseMaxMs != 0) {
         WanderPauseMaxMs = other.WanderPauseMaxMs;
+      }
+      if (other.ReviveHpPercent != 0) {
+        ReviveHpPercent = other.ReviveHpPercent;
+      }
+      if (other.DeadMonsterMs != 0) {
+        DeadMonsterMs = other.DeadMonsterMs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -647,6 +712,14 @@ namespace PortfolioMmo.Data {
             WanderPauseMaxMs = input.ReadUInt32();
             break;
           }
+          case 112: {
+            ReviveHpPercent = input.ReadUInt32();
+            break;
+          }
+          case 120: {
+            DeadMonsterMs = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -716,6 +789,14 @@ namespace PortfolioMmo.Data {
           }
           case 104: {
             WanderPauseMaxMs = input.ReadUInt32();
+            break;
+          }
+          case 112: {
+            ReviveHpPercent = input.ReadUInt32();
+            break;
+          }
+          case 120: {
+            DeadMonsterMs = input.ReadUInt32();
             break;
           }
         }

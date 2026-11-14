@@ -354,6 +354,36 @@ namespace
 		Expect(bStopped && !Map->IsSafe(FromSafe.X, FromSafe.Z), "from inside the safe zone it stops only after leaving it");
 		Expect(FCombatState::CanStrikeFrom(*Map, -11 * M + 16, 0, MmoWorld::FEntity{ 0, -11 * M, 0, 0, {}, {} }, 2), "a target that is not a monster can be struck from a safe zone");
 	}
+	/** Died와 Revived가 개체와 내 상태에 든다. 내가 죽으면 대상이 풀리고 공격 중 표시가 내려가되 AttackStop은 만들지 않고, 죽은 동안 공격을 만들지 않으며,
+	 * 부활 뒤에는 다시 만든다. */
+	void MyDeathStopsRequestsUntilRevived()
+	{
+		const MmoData::FGameData Info = Data();
+		MmoWorld::FWorldState World;
+		FCombatState Combat;
+		Apply(World, Combat, Info, Entered(1));
+		Apply(World, Combat, Info, Enter(1, portfolio::mmo::ENTITY_KIND_PLAYER, 0, 0));
+		Apply(World, Combat, Info, Enter(5, portfolio::mmo::ENTITY_KIND_MONSTER, 64, 0, 1));
+		Combat.SetTarget(5);
+		Combat.StartAttack(1);
+		Combat.TakeEvents();
+
+		const std::optional<portfolio::mmo::Packet> Stop = Apply(World, Combat, Info, Died(1, 5));
+		Expect(!Stop.has_value() && Combat.Target() == 0 && !Combat.IsAttacking(), "my death releases the target without AttackStop");
+		Expect(World.SelfState().bDead && World.Entities().at(1).Info.dead(), "my death is kept");
+		Combat.SetTarget(5);
+		Expect(!Combat.StartAttack(1).has_value(), "no attack while dead");
+
+		portfolio::mmo::Packet Revived;
+		Revived.mutable_revived()->set_id(1);
+		Revived.mutable_revived()->set_hp(45);
+		Revived.mutable_revived()->set_max_hp(150);
+		Apply(World, Combat, Info, Revived);
+		Expect(!World.SelfState().bDead && !World.Entities().at(1).Info.dead() && World.Entities().at(1).Info.hp() == 45, "Revived stands the entity up with its hp");
+		Expect(Combat.StartAttack(1).has_value(), "attacks are made again after reviving");
+		const std::vector<MmoWorld::FCombatEvent> Events = Combat.TakeEvents();
+		Expect(Events.size() >= 2 && Events[0].Kind == ECombatEventKind::Death && Events[1].Kind == ECombatEventKind::Revive, "death and revive come out as events");
+	}
 }
 
 int main()
@@ -364,6 +394,7 @@ int main()
 	TheFirstSwingIsPredictedOnce();
 	ProjectilesLaunchAfterTheHitDelay();
 	ApproachStopsWhereTheStrikeIsAllowed();
+	MyDeathStopsRequestsUntilRevived();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

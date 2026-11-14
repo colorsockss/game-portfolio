@@ -18,6 +18,16 @@ namespace PortfolioMmo.Server
         /// 공격자(주인)의 기본 공격이 대상(A)에 맞는 틱(24). 세대 번호는 공격자의 StrikeGeneration이고 전투 차례로 넘긴다.
         /// </summary>
         Strike = 2,
+
+        /// <summary>
+        /// 죽은 몬스터(주인)가 사라지는 틱(25). 세대 번호는 몬스터의 LifeGeneration이다.
+        /// </summary>
+        Despawn = 3,
+
+        /// <summary>
+        /// 놓인 점(주인)에 몬스터가 다시 나오는 틱(25). 놓인 점의 리스폰은 한 번만 걸리므로 세대 번호를 쓰지 않는다.
+        /// </summary>
+        Respawn = 4,
     }
 
     /// <summary>
