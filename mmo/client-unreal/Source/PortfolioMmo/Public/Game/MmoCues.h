@@ -5,6 +5,7 @@
 
 #include "MmoCues.generated.h"
 
+class UMaterialInterface;
 class UNiagaraSystem;
 class USoundBase;
 class USoundClass;
@@ -77,6 +78,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundClass> MusicClass;
+
+	/** 맞은 개체에 0.1초 덮는 머티리얼(오버레이). 스칼라 파라미터 Flash(0–1)가 불투명도다. */
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInterface> HitFlash;
 
 	UPROPERTY(EditAnywhere)
 	TArray<FMmoCueRow> Rows;

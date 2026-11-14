@@ -60,6 +60,9 @@ public:
 	/** 지금 켜져 있는 이펙트 수. */
 	int32 ActiveEffects();
 
+	/** 피격 번쩍임의 머티리얼(연출 표의 HitFlash). 표가 없으면 nullptr. */
+	UMaterialInterface* HitFlashMaterial();
+
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
 

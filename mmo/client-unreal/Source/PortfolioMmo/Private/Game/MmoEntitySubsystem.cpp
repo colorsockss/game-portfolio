@@ -14,6 +14,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Game/MmoAnimInstance.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
@@ -29,6 +30,13 @@ namespace
 	const FLinearColor TargetColor(1.0f, 0.85f, 0.2f);
 	const FLinearColor AreaColor(1.0f, 0.45f, 0.1f);
 	constexpr double AreaMarkerSeconds = 0.5;
+	/** 공격·스킬 동작 동안 대상 쪽을 보는 시간(초). 동작(0.75–1.2초)의 휘두름이 끝날 즈음까지이고, 그 뒤 서버의 방향으로 돌아온다. */
+	constexpr double FaceSeconds = 0.7;
+	/** 돌려 그리는 메시가 도는 빠르기(FInterpTo의 속도). */
+	constexpr float FaceTurnSpeed = 15.0f;
+	/** 피격 번쩍임의 길이(초)와 처음 불투명도. */
+	constexpr double HitFlashSeconds = 0.1;
+	constexpr float HitFlashOpacity = 0.7f;
 	/** 연출을 트는 높이(언리얼 단위): 가슴(1 m). */
 	const FVector Chest(0.0, 0.0, 100.0);
 
@@ -67,6 +75,10 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 	for (const uint32 Id : World.TakeLeft())
 	{
 		Looks.Remove(Id);
+		Facings.Remove(Id);
+		MeshYaw.Remove(Id);
+		FlashMaterials.Remove(Id);
+		FlashUntil.Remove(Id);
 		if (TObjectPtr<AActor> Actor; Actors.RemoveAndCopyValue(Id, Actor) && Actor)
 		{
 			Actor->Destroy();
@@ -142,6 +154,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		if (Event.Kind == MmoWorld::ECombatEventKind::Swing)
 		{
 			PlayAction(Event.Attacker, &FMmoEntityVisual::Attack);
+			FaceTarget(Event.Attacker, Event.Target, Now);
 		}
 		else if (Event.Kind == MmoWorld::ECombatEventKind::Skill)
 		{
@@ -158,6 +171,11 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		else if (Event.Kind == MmoWorld::ECombatEventKind::Damage)
 		{
 			PlayAction(Event.Target, &FMmoEntityVisual::Hit);
+			FlashHit(Event.Target, Now);
+			if (AMmoCharacter* Self = Event.Target == World.SelfId() && Event.Damage > 0 ? Cast<AMmoCharacter>(Actors.FindRef(Event.Target)) : nullptr)
+			{
+				Self->Shake();
+			}
 			if (const AActor* Target = Actors.FindRef(Event.Target))
 			{
 				Cues().Play(EMmoCue::Hit, CueKey(Event.Attacker).Key, CueKey(Event.Attacker).Value, Target->GetActorLocation() + Chest);
@@ -179,6 +197,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		}
 		OnCombatEvent.Broadcast(Event);
 	}
+	DrawFacingAndFlashes(Now, DeltaTime);
 
 	const double ServerTick = World.Clock().Now(Now);
 	for (auto It = CastEnds.CreateIterator(); It; ++It)
@@ -196,6 +215,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 void UMmoEntitySubsystem::ShowSkill(const MmoWorld::FCombatEvent& Event, const MmoData::FGameData& Data)
 {
 	CastEnds.Remove(Event.Attacker);
+	FaceTarget(Event.Attacker, Event.Target, FPlatformTime::Seconds());
 	const FMmoEntityVisual* Row = Looks.FindRef(Event.Attacker);
 	PlayAction(Event.Attacker, Row && !Row->Skill.IsNull() ? &FMmoEntityVisual::Skill : &FMmoEntityVisual::Attack);
 
@@ -223,6 +243,100 @@ void UMmoEntitySubsystem::ShowSkill(const MmoWorld::FCombatEvent& Event, const M
 		const double Diameter = Skill->radius() * 2.0;
 		Flash(AreaMarkers, AreaUntil, TEXT("Cylinder"), AreaColor, At->GetActorLocation() + FVector(0.0, 0.0, 3.0), FVector(Diameter, Diameter, 0.02), AreaMarkerSeconds);
 	}
+}
+
+void UMmoEntitySubsystem::FaceTarget(uint32 Attacker, uint32 Target, double Now)
+{
+	// 받지 않은 행위자(번호 0)나 대상(직선 발사체의 SkillUsed가 받지 않은 대상을 실을 수 있음), 자기에게 쓴 스킬은 돌리지 않는다.
+	if (Attacker != 0 && Target != Attacker && Actors.Contains(Attacker) && Actors.Contains(Target))
+	{
+		Facings.Add(Attacker, { Target, Now + FaceSeconds });
+	}
+}
+
+void UMmoEntitySubsystem::DrawFacingAndFlashes(double Now, float DeltaTime)
+{
+	for (auto It = Facings.CreateIterator(); It; ++It)
+	{
+		if (Now >= It.Value().Until || !Actors.Contains(It.Value().Target))
+		{
+			It.RemoveCurrent();
+		}
+		else
+		{
+			MeshYaw.FindOrAdd(It.Key());
+		}
+	}
+	for (auto It = MeshYaw.CreateIterator(); It; ++It)
+	{
+		AActor* Actor = Actors.FindRef(It.Key());
+		if (!Actor)
+		{
+			It.RemoveCurrent();
+			continue;
+		}
+		// 대상 쪽(동작 동안)과 서버의 방향(액터의 방향, 그 뒤) 사이의 각을 돌린다.
+		float Goal = 0.0f;
+		if (const FFacing* Facing = Facings.Find(It.Key()))
+		{
+			const FVector ToTarget = Actors.FindRef(Facing->Target)->GetActorLocation() - Actor->GetActorLocation();
+			if (!ToTarget.IsNearlyZero(1.0))
+			{
+				Goal = FMath::FindDeltaAngleDegrees(Actor->GetActorRotation().Yaw, ToTarget.Rotation().Yaw);
+			}
+		}
+		float& Yaw = It.Value();
+		Yaw = FMath::FInterpTo(Yaw, Goal, DeltaTime, FaceTurnSpeed);
+		USkeletalMeshComponent* Mesh = ComponentsOf(*Actor).Key;
+		// 들여온 메시는 −90° 돌려 둔다(MmoCharacterLook::SetUpBody). 그 위에 더한다.
+		Mesh->SetRelativeRotation(FRotator(0.0, -90.0 + Yaw, 0.0));
+		if (!Facings.Contains(It.Key()) && FMath::Abs(Yaw) < 0.5f)
+		{
+			Mesh->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
+			It.RemoveCurrent();
+		}
+	}
+
+	for (auto It = FlashUntil.CreateIterator(); It; ++It)
+	{
+		const AActor* Actor = Actors.FindRef(It.Key());
+		UMaterialInstanceDynamic* Material = FlashMaterials.FindRef(It.Key());
+		const double Left = It.Value() - Now;
+		if (Material)
+		{
+			Material->SetScalarParameterValue(TEXT("Flash"), Left > 0.0 ? HitFlashOpacity * static_cast<float>(Left / HitFlashSeconds) : 0.0f);
+		}
+		if (Left <= 0.0)
+		{
+			if (Actor)
+			{
+				const auto [Mesh, Placeholder] = ComponentsOf(*const_cast<AActor*>(Actor));
+				Mesh->SetOverlayMaterial(nullptr);
+				Placeholder->SetOverlayMaterial(nullptr);
+			}
+			It.RemoveCurrent();
+		}
+	}
+}
+
+void UMmoEntitySubsystem::FlashHit(uint32 Id, double Now)
+{
+	AActor* Actor = Actors.FindRef(Id);
+	UMaterialInterface* Base = Actor ? Cues().HitFlashMaterial() : nullptr;
+	if (!Base)
+	{
+		return;
+	}
+	TObjectPtr<UMaterialInstanceDynamic>& Material = FlashMaterials.FindOrAdd(Id);
+	if (!Material)
+	{
+		Material = UMaterialInstanceDynamic::Create(Base, this);
+	}
+	Material->SetScalarParameterValue(TEXT("Flash"), HitFlashOpacity);
+	// 모습을 입힌 메시와 자리 표시 가운데 보이는 쪽에 덮는다.
+	const auto [Mesh, Placeholder] = ComponentsOf(*Actor);
+	(Mesh->IsVisible() ? static_cast<UMeshComponent*>(Mesh) : static_cast<UMeshComponent*>(Placeholder))->SetOverlayMaterial(Material);
+	FlashUntil.Add(Id, Now + HitFlashSeconds);
 }
 
 UMmoCueSubsystem& UMmoEntitySubsystem::Cues() const

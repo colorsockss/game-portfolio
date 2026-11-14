@@ -51,7 +51,7 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(new uint[] { 1, 2 }, data.Classes.Rows.Select(row => row.Id));
             Assert.False(data.Classes.Rows[0].HasProjectileSpeed);
             Assert.True(data.Classes.Rows[1].HasProjectileSpeed);
-            Assert.Equal(300u, data.Classes.Rows[0].HitDelayMs);
+            Assert.Equal(430u, data.Classes.Rows[0].HitDelayMs);
 
             for (uint level = 1; level <= 30; level++)
             {

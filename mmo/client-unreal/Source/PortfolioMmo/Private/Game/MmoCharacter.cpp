@@ -6,6 +6,8 @@
 #include "Game/MmoCharacterLook.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "HAL/IConsoleManager.h"
+#include "HAL/PlatformTime.h"
 #include "World/Units.h"
 
 namespace
@@ -53,6 +55,24 @@ AMmoCharacter::AMmoCharacter()
 	MmoCharacterLook::SetUpPlaceholder(*Placeholder, FVector::ZeroVector);
 }
 
+namespace
+{
+	/** 카메라 흔들림을 켜고 끄는 한 곳(처음 값은 켬). 설정 창의 줄과 기기에 남기는 것은 77이 이 값에 잇는다. */
+	TAutoConsoleVariable<bool> CVarCameraShake(TEXT("Mmo.CameraShake"), true, TEXT("Shake the camera a little when my character is hit."));
+
+	/** 흔들림의 길이(초)와 세기(언리얼 단위, 카메라 거리 13–36 m에서 약하게 보이는 값). */
+	constexpr double ShakeSeconds = 0.2;
+	constexpr double ShakeStrength = 12.0;
+}
+
+void AMmoCharacter::Shake()
+{
+	if (CVarCameraShake.GetValueOnGameThread())
+	{
+		ShakeUntil = FPlatformTime::Seconds() + ShakeSeconds;
+	}
+}
+
 void AMmoCharacter::Zoom(float Amount)
 {
 	WantedArmLength = FMath::Clamp(WantedArmLength - Amount, MinArmLength, MaxArmLength);
@@ -61,6 +81,10 @@ void AMmoCharacter::Zoom(float Amount)
 void AMmoCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	// 흔들림: 남은 시간만큼 줄어드는 무작위 자리로 카메라 팔의 끝을 옮긴다.
+	const double ShakeLeft = ShakeUntil - FPlatformTime::Seconds();
+	CameraArm->SocketOffset = ShakeLeft > 0.0 ? FMath::VRand() * ShakeStrength * (ShakeLeft / ShakeSeconds) : FVector::ZeroVector;
 
 	// 카메라가 놓일 자리(반지름 0.3 m)가 카메라를 막는 것(건물과 테두리의 산의 상자. ECC_Camera) 안이면 밖으로 나올 때까지 0.5 m씩 당긴다.
 	// 나무·바위·울타리와 캐릭터는 카메라를 막지 않는다.

@@ -1,6 +1,7 @@
 #include "MmoCreateCharacterAssetsCommandlet.h"
 
 #include "AnimGraphNode_BlendSpacePlayer.h"
+#include "AnimGraphNode_LayeredBoneBlend.h"
 #include "AnimGraphNode_Root.h"
 #include "AnimGraphNode_Slot.h"
 #include "Animation/AnimBlueprint.h"
@@ -105,8 +106,10 @@ namespace
 	}
 
 	/**
-	 * 애니메이션 블루프린트 ABP_<직업>(부모 UMmoAnimInstance)를 만든다: 이동 블렌드 스페이스(축 = 인스턴스의 Speed) → 슬롯(DefaultSlot) → 출력.
-	 * 공격·피격 동작은 UMmoAnimInstance::PlayAction이 슬롯에 넣는다. 블렌드 스페이스를 만든 뒤에 부른다.
+	 * 애니메이션 블루프린트 ABP_<직업>(부모 UMmoAnimInstance)를 만든다. 이동 블렌드 스페이스(축 = 인스턴스의 Speed)를 둘 두어,
+	 * 하나는 그대로 하체가 되고 다른 하나는 상체 슬롯(UpperBody)을 지나 뼈마다 섞기(Abdomen부터 위)의 상체가 된 뒤, 온몸 슬롯(DefaultSlot) → 출력이다.
+	 * 공격·스킬·피격 동작은 UMmoAnimInstance::PlayAction이 상체 슬롯에, 죽음은 온몸 슬롯에 넣는다(걷는 중에 쳐도 다리는 걷는 동작을 이어 감).
+	 * 상체 슬롯은 뼈대의 슬롯 그룹에 등록하고 뼈대를 저장한다. 블렌드 스페이스를 만든 뒤에 부른다.
 	 */
 	bool CreateAnimBlueprint(const FClassAnimations& Class)
 	{
@@ -151,33 +154,69 @@ namespace
 			return false;
 		}
 
-		FGraphNodeCreator<UAnimGraphNode_BlendSpacePlayer> PlayerCreator(*Graph);
-		UAnimGraphNode_BlendSpacePlayer* Player = PlayerCreator.CreateNode();
-		Player->Node.SetBlendSpace(Locomotion);
-		Player->NodePosX = -600;
-		PlayerCreator.Finalize();
-
-		FGraphNodeCreator<UK2Node_VariableGet> SpeedCreator(*Graph);
-		UK2Node_VariableGet* Speed = SpeedCreator.CreateNode();
-		Speed->VariableReference.SetSelfMember(GET_MEMBER_NAME_CHECKED(UMmoAnimInstance, Speed));
-		Speed->NodePosX = -900;
-		SpeedCreator.Finalize();
-
-		FGraphNodeCreator<UAnimGraphNode_Slot> SlotCreator(*Graph);
-		UAnimGraphNode_Slot* Slot = SlotCreator.CreateNode();
-		Slot->Node.SlotName = UMmoAnimInstance::SlotName;
-		Slot->NodePosX = -300;
-		SlotCreator.Finalize();
+		// 동작을 상체에만 넣는 슬롯은 뼈대의 슬롯 그룹에 있어야 몽타주가 그 슬롯을 찾는다.
+		Skeleton->RegisterSlotNode(UMmoAnimInstance::UpperSlotName);
+		if (!Save(Skeleton->GetPackage(), Skeleton, FPackageName::LongPackageNameToFilename(Skeleton->GetPackage()->GetName(), FPackageName::GetAssetPackageExtension())))
+		{
+			return false;
+		}
 
 		const UEdGraphSchema* Schema = Graph->GetSchema();
-		UEdGraphPin* SpeedOut = Speed->GetValuePin();
-		UEdGraphPin* X = PinOf(*Player, TEXT("X"), EGPD_Input);
-		UEdGraphPin* PlayerOut = PinOf(*Player, TEXT("Pose"), EGPD_Output);
-		UEdGraphPin* SlotIn = PinOf(*Slot, TEXT("Source"), EGPD_Input);
-		UEdGraphPin* SlotOut = PinOf(*Slot, TEXT("Pose"), EGPD_Output);
+		// 이동 블렌드 스페이스(속도로 섞음). 포즈 핀은 하나에만 이을 수 있어 하체와 상체에 하나씩 둔다.
+		auto Locomotion2 = [&](int32 PosY) -> UEdGraphPin*
+		{
+			FGraphNodeCreator<UAnimGraphNode_BlendSpacePlayer> PlayerCreator(*Graph);
+			UAnimGraphNode_BlendSpacePlayer* Player = PlayerCreator.CreateNode();
+			Player->Node.SetBlendSpace(Locomotion);
+			Player->NodePosX = -900;
+			Player->NodePosY = PosY;
+			PlayerCreator.Finalize();
+			FGraphNodeCreator<UK2Node_VariableGet> SpeedCreator(*Graph);
+			UK2Node_VariableGet* Speed = SpeedCreator.CreateNode();
+			Speed->VariableReference.SetSelfMember(GET_MEMBER_NAME_CHECKED(UMmoAnimInstance, Speed));
+			Speed->NodePosX = -1200;
+			Speed->NodePosY = PosY;
+			SpeedCreator.Finalize();
+			UEdGraphPin* X = PinOf(*Player, TEXT("X"), EGPD_Input);
+			UEdGraphPin* Out = PinOf(*Player, TEXT("Pose"), EGPD_Output);
+			return X && Out && Schema->TryCreateConnection(Speed->GetValuePin(), X) ? Out : nullptr;
+		};
+		auto MakeSlot = [&](FName SlotName, int32 PosX, int32 PosY)
+		{
+			FGraphNodeCreator<UAnimGraphNode_Slot> SlotCreator(*Graph);
+			UAnimGraphNode_Slot* Slot = SlotCreator.CreateNode();
+			Slot->Node.SlotName = SlotName;
+			Slot->NodePosX = PosX;
+			Slot->NodePosY = PosY;
+			SlotCreator.Finalize();
+			return Slot;
+		};
+
+		UEdGraphPin* Lower = Locomotion2(0);
+		UEdGraphPin* UpperSource = Locomotion2(300);
+		UAnimGraphNode_Slot* Upper = MakeSlot(UMmoAnimInstance::UpperSlotName, -600, 300);
+
+		FGraphNodeCreator<UAnimGraphNode_LayeredBoneBlend> BlendCreator(*Graph);
+		UAnimGraphNode_LayeredBoneBlend* Blend = BlendCreator.CreateNode();
+		Blend->Node.LayerSetup[0].BranchFilters.Add({ UMmoAnimInstance::UpperBodyBone, 0 });
+		// 상체의 회전을 메시 공간에서 섞어, 하체가 돌아도 상체 동작이 같은 쪽을 본다.
+		Blend->Node.bMeshSpaceRotationBlend = true;
+		Blend->NodePosX = -300;
+		BlendCreator.Finalize();
+
+		UAnimGraphNode_Slot* Full = MakeSlot(UMmoAnimInstance::SlotName, 0, 0);
+
 		UEdGraphPin* Result = PinOf(*Root, TEXT("Result"), EGPD_Input);
-		if (!SpeedOut || !X || !PlayerOut || !SlotIn || !SlotOut || !Result || !Schema->TryCreateConnection(SpeedOut, X)
-			|| !Schema->TryCreateConnection(PlayerOut, SlotIn) || !Schema->TryCreateConnection(SlotOut, Result))
+		UEdGraphPin* UpperIn = PinOf(*Upper, TEXT("Source"), EGPD_Input);
+		UEdGraphPin* UpperOut = PinOf(*Upper, TEXT("Pose"), EGPD_Output);
+		UEdGraphPin* Base = PinOf(*Blend, TEXT("BasePose"), EGPD_Input);
+		UEdGraphPin* Layer = PinOf(*Blend, TEXT("BlendPoses_0"), EGPD_Input);
+		UEdGraphPin* BlendOut = PinOf(*Blend, TEXT("Pose"), EGPD_Output);
+		UEdGraphPin* FullIn = PinOf(*Full, TEXT("Source"), EGPD_Input);
+		UEdGraphPin* FullOut = PinOf(*Full, TEXT("Pose"), EGPD_Output);
+		if (!Lower || !UpperSource || !Result || !UpperIn || !UpperOut || !Base || !Layer || !BlendOut || !FullIn || !FullOut
+			|| !Schema->TryCreateConnection(Lower, Base) || !Schema->TryCreateConnection(UpperSource, UpperIn) || !Schema->TryCreateConnection(UpperOut, Layer)
+			|| !Schema->TryCreateConnection(BlendOut, FullIn) || !Schema->TryCreateConnection(FullOut, Result))
 		{
 			UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("Could not wire the anim graph of %s."), *PackageName);
 			return false;

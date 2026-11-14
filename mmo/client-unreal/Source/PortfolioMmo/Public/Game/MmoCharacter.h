@@ -29,6 +29,9 @@ public:
 	/** 서버가 정한 자리로 순간 이동한다(PositionReset). Location은 지면의 자리다. */
 	void Teleport(const FVector& Location);
 
+	/** 카메라를 약하게 흔든다(내가 맞음). 콘솔 변수 Mmo.CameraShake가 0이면 흔들지 않는다. */
+	void Shake();
+
 	UStaticMeshComponent& PlaceholderMesh() const { return *Placeholder; }
 
 private:
@@ -40,6 +43,9 @@ private:
 
 	/** 고른 카메라 거리(휠과 두 손가락). 카메라가 놓일 자리가 막는 것 안이면 그보다 당긴다. */
 	float WantedArmLength = 0.0f;
+
+	/** 흔들림이 끝나는 때(초, FPlatformTime). */
+	double ShakeUntil = 0.0;
 
 	/** 모습을 불러오는 동안 보이는 단순한 메시. */
 	UPROPERTY(VisibleAnywhere)

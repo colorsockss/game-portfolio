@@ -33,6 +33,15 @@ TStatId UMmoCueSubsystem::GetStatId() const
 	RETURN_QUICK_DECLARE_CYCLE_STAT(UMmoCueSubsystem, STATGROUP_Tickables);
 }
 
+UMaterialInterface* UMmoCueSubsystem::HitFlashMaterial()
+{
+	if (!Cues)
+	{
+		Cues = LoadObject<UMmoCues>(nullptr, UMmoCues::Path);
+	}
+	return Cues ? Cues->HitFlash.Get() : nullptr;
+}
+
 const FMmoCueRow* UMmoCueSubsystem::Row(EMmoCue Cue, int32 Kind, int32 Key)
 {
 	if (!Cues)

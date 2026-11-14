@@ -4,6 +4,9 @@
 #include "Game/MmoCues.h"
 #include "Game/MmoEntityVisuals.h"
 #include "HAL/FileManager.h"
+#include "Materials/Material.h"
+#include "Materials/MaterialExpressionConstant3Vector.h"
+#include "Materials/MaterialExpressionScalarParameter.h"
 #include "Misc/PackageName.h"
 #include "NiagaraSystem.h"
 #include "Sound/SoundAttenuation.h"
@@ -223,9 +226,31 @@ int32 UMmoCreateEffectAssetsCommandlet::Main(const FString& Params)
 		}
 	}
 
+	// 피격 번쩍임: 빛을 받지 않는 흰색을 파라미터 Flash만큼 비치게 덮는다(오버레이 머티리얼이라 캐릭터 머티리얼을 고치지 않음).
+	UMaterial* Flash = CreateSimple<UMaterial>(TEXT("M_HitFlash"));
+	Flash->MaterialDomain = MD_Surface;
+	Flash->BlendMode = BLEND_Translucent;
+	Flash->SetShadingModel(MSM_Unlit);
+	Flash->SetUsageByFlag(MATUSAGE_SkeletalMesh, true);
+	UMaterialExpressionScalarParameter* Opacity = NewObject<UMaterialExpressionScalarParameter>(Flash);
+	Opacity->ParameterName = TEXT("Flash");
+	Opacity->DefaultValue = 0.0f;
+	UMaterialExpressionConstant3Vector* FlashColor = NewObject<UMaterialExpressionConstant3Vector>(Flash);
+	FlashColor->Constant = FLinearColor(1.0f, 1.0f, 1.0f);
+	Flash->GetExpressionCollection().AddExpression(Opacity);
+	Flash->GetExpressionCollection().AddExpression(FlashColor);
+	Flash->GetEditorOnlyData()->EmissiveColor.Connect(0, FlashColor);
+	Flash->GetEditorOnlyData()->Opacity.Connect(0, Opacity);
+	Flash->PostEditChange();
+	if (!SaveSimple(Flash))
+	{
+		return 1;
+	}
+
 	UMmoCues* Cues = CreateSimple<UMmoCues>(TEXT("DA_Cues"));
 	Cues->EffectsClass = Effects;
 	Cues->MusicClass = Music;
+	Cues->HitFlash = Flash;
 	const int32 Player = UMmoEntityVisuals::PlayerKind();
 	const int32 Monster = UMmoEntityVisuals::MonsterKind();
 	const auto Add = [Cues](EMmoCue Cue, int32 Kind, int32 Key, const TSoftObjectPtr<UNiagaraSystem>& Effect, USoundBase* Sound)

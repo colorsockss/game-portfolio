@@ -4,12 +4,14 @@
 #include "Animation/AnimSequenceBase.h"
 
 const FName UMmoAnimInstance::SlotName(TEXT("DefaultSlot"));
+const FName UMmoAnimInstance::UpperSlotName(TEXT("UpperBody"));
+const FName UMmoAnimInstance::UpperBodyBone(TEXT("Abdomen"));
 
 void UMmoAnimInstance::PlayAction(UAnimSequenceBase* Sequence, bool bLoop)
 {
 	if (Sequence && !DeathMontage)
 	{
-		PlaySlotAnimationAsDynamicMontage(Sequence, SlotName, 0.1f, 0.15f, 1.0f, bLoop ? MAX_int32 : 1);
+		PlaySlotAnimationAsDynamicMontage(Sequence, UpperSlotName, 0.1f, 0.15f, 1.0f, bLoop ? MAX_int32 : 1);
 	}
 }
 
@@ -17,7 +19,7 @@ void UMmoAnimInstance::StopAction()
 {
 	if (!DeathMontage)
 	{
-		StopSlotAnimation(0.15f, SlotName);
+		StopSlotAnimation(0.15f, UpperSlotName);
 	}
 }
 

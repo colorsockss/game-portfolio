@@ -11,6 +11,7 @@ class AStaticMeshActor;
 class UMmoCueSubsystem;
 class UNiagaraComponent;
 class UMaterialInterface;
+class UMaterialInstanceDynamic;
 class USkeletalMeshComponent;
 class UStaticMeshComponent;
 class UMmoEntityVisuals;
@@ -81,6 +82,15 @@ private:
 	/** 동작을 끊는다(시전의 끝, 취소, 내 스킬의 실패). */
 	void StopAction(uint32 Id);
 
+	/** 공격·스킬 동작 동안 행위자를 대상 쪽으로 돌려 그린다. 행위자나 대상을 받지 않았거나 같은 개체면 돌리지 않는다. */
+	void FaceTarget(uint32 Attacker, uint32 Target, double Now);
+
+	/** 돌려 그리는 메시의 방향을 대상 쪽(동작 동안)이나 서버의 방향(그 뒤)으로 옮기고, 끝난 번쩍임을 걷는다. */
+	void DrawFacingAndFlashes(double Now, float DeltaTime);
+
+	/** 맞은 개체를 0.1초 번쩍인다(보이는 메시에 번쩍임 머티리얼을 덮음). */
+	void FlashHit(uint32 Id, double Now);
+
 	/** 풀에서 감춰진 자리 표시를 꺼내(없으면 만듦) Seconds 동안 보인다. */
 	void Flash(TArray<TObjectPtr<AStaticMeshActor>>& Pool, TArray<double>& Until, const TCHAR* Shape, const FLinearColor& Color, const FVector& Location, const FVector& Scale, double Seconds);
 
@@ -104,6 +114,22 @@ private:
 	/** 발사체 번호 → 그 발사체에 붙인 이펙트. 발사체가 끝나면 풀로 돌려놓는다. */
 	UPROPERTY()
 	TMap<uint32, TObjectPtr<UNiagaraComponent>> ProjectileEffects;
+
+	/** 동작 동안 대상 쪽으로 돌려 그리는 개체: 대상과 끝나는 때(초). */
+	struct FFacing
+	{
+		uint32 Target = 0;
+		double Until = 0.0;
+	};
+	TMap<uint32, FFacing> Facings;
+
+	/** 메시를 서버의 방향에서 돌린 각(도). 0으로 돌아오면 지운다. 그리기만 바꾸고 액터와 보내는 Move의 방향은 그대로다. */
+	TMap<uint32, float> MeshYaw;
+
+	/** 번쩍이는 개체 → 덮은 머티리얼(파라미터 Flash를 줄임)과 끝나는 때(초). */
+	UPROPERTY()
+	TMap<uint32, TObjectPtr<UMaterialInstanceDynamic>> FlashMaterials;
+	TMap<uint32, double> FlashUntil;
 
 	/** 직선 발사체(서버의 번호) → 그 발사체에 붙인 이펙트. 따라가는 발사체와 번호 공간이 달라 따로 둔다. */
 	UPROPERTY()
