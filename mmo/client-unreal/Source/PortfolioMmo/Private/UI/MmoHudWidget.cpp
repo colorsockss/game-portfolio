@@ -1,5 +1,6 @@
 #include "UI/MmoHudWidget.h"
 
+#include "UI/MmoText.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
@@ -20,23 +21,15 @@
 
 namespace
 {
-	/** 스킬의 짧은 이름. shortcut: Strings의 키의 마지막 마디(74 전). 문자열 테이블이 생기면 그 글로 바꾼다. */
-	FString ShortName(const portfolio::mmo::data::SkillsRow& Skill)
-	{
-		const FString Key = UTF8_TO_TCHAR(Skill.name_key().c_str());
-		int32 Dot = INDEX_NONE;
-		return Key.FindLastChar(TEXT('.'), Dot) ? Key.Mid(Dot + 1) : Key;
-	}
-
-	/** 효과의 글자 아이콘(아이콘 표는 73). */
-	const TCHAR* EffectLabel(portfolio::mmo::data::EffectKind Kind)
+	/** 효과의 글자 아이콘의 Strings 키(아이콘 표는 73). */
+	const TCHAR* EffectKey(portfolio::mmo::data::EffectKind Kind)
 	{
 		switch (Kind)
 		{
-		case portfolio::mmo::data::EFFECT_KIND_STUN: return TEXT("기절");
-		case portfolio::mmo::data::EFFECT_KIND_SLOW: return TEXT("감속");
-		case portfolio::mmo::data::EFFECT_KIND_ATTACK_UP: return TEXT("공격↑");
-		case portfolio::mmo::data::EFFECT_KIND_DEFENSE_UP: return TEXT("방어↑");
+		case portfolio::mmo::data::EFFECT_KIND_STUN: return TEXT("effect.stun");
+		case portfolio::mmo::data::EFFECT_KIND_SLOW: return TEXT("effect.slow");
+		case portfolio::mmo::data::EFFECT_KIND_ATTACK_UP: return TEXT("effect.attackUp");
+		case portfolio::mmo::data::EFFECT_KIND_DEFENSE_UP: return TEXT("effect.defenseUp");
 		default: return TEXT("?");
 		}
 	}
@@ -100,7 +93,7 @@ void UMmoHudWidget::ShowSlots(double ServerTick)
 		{
 			const portfolio::mmo::data::SkillsRow* Skill = Index < static_cast<int32>(Skills.size()) ? Session->Data().Skill(Skills[Index]) : nullptr;
 			SlotSkills[Index] = Skill ? Skill->id() : 0;
-			Slots[Index]->SetLabel(Skill ? FText::FromString(ShortName(*Skill)) : FText::GetEmpty());
+			Slots[Index]->SetLabel(Skill ? MmoText::Get(this, UTF8_TO_TCHAR(Skill->name_key().c_str())) : FText::GetEmpty());
 			// 키 표시는 PC만(크기와 규칙은 93).
 			Slots[Index]->SetKeyHint(MmoKeys::Hint(MmoKeys::Slot(Index)));
 		}
@@ -129,7 +122,7 @@ void UMmoHudWidget::ShowProgress(double NowSeconds)
 	{
 		CastBar->SetPercent(static_cast<float>(*Ratio));
 		const portfolio::mmo::data::SkillsRow* Skill = Session->Data().Skill(Me->Info.progress().id());
-		CastText->SetText(Skill ? FText::FromString(ShortName(*Skill)) : FText::GetEmpty());
+		CastText->SetText(Skill ? MmoText::Get(this, UTF8_TO_TCHAR(Skill->name_key().c_str())) : FText::GetEmpty());
 	}
 }
 
@@ -144,14 +137,14 @@ void UMmoHudWidget::ShowEffects(double ServerTick)
 	};
 	if (ServerTick < Session->World().SelfState().CombatEndTick)
 	{
-		Add(TEXT("전투"), Session->World().SelfState().CombatEndTick);
+		Add(*MmoText::Get(this, TEXT("hud.combat")).ToString(), Session->World().SelfState().CombatEndTick);
 	}
 	for (int32 Index = 0; Me && Index < Me->Info.effects_size(); ++Index)
 	{
 		const portfolio::mmo::EffectState& Effect = Me->Info.effects(Index);
 		if (const portfolio::mmo::data::EffectsRow* Row = Session->Data().Effect(Effect.effect_id()))
 		{
-			Add(EffectLabel(Row->kind()), Effect.end_tick());
+			Add(*MmoText::Get(this, EffectKey(Row->kind())).ToString(), Effect.end_tick());
 		}
 	}
 	if (Text != ShownEffects)
@@ -207,8 +200,8 @@ void UMmoHudWidget::ShowStats(float DeltaTime)
 		Players += Id != World.SelfId() && Entity.Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER ? 1 : 0;
 	}
 	const std::optional<double> Latency = GetGameInstance()->GetSubsystem<UMmoConnection>()->Latency().Milliseconds();
-	StatsText->SetText(FText::FromString(FString::Printf(TEXT("%.0f FPS  캐릭터 %d  지연 %s"), StatsFrames / StatsSeconds, Players,
-		Latency ? *FString::Printf(TEXT("%.0f ms"), *Latency) : TEXT("-"))));
+	StatsText->SetText(MmoText::Format(this, TEXT("hud.stats"), { FString::Printf(TEXT("%.0f"), StatsFrames / StatsSeconds), FString::FromInt(Players),
+		Latency ? MmoText::Format(this, TEXT("hud.latency"), { FString::Printf(TEXT("%.0f"), *Latency) }).ToString() : MmoText::Get(this, TEXT("hud.latencyUnknown")).ToString() }));
 	StatsSeconds = 0.0f;
 	StatsFrames = 0;
 }
@@ -226,10 +219,10 @@ void UMmoHudWidget::ShowInteract()
 	// 그림은 아이콘 표(73)가 생기면 더한다.
 	switch (Kind)
 	{
-	case MmoWorld::EInteractKind::PickUp: InteractButton->SetLabel(NSLOCTEXT("MmoHud", "PickUp", "줍기")); break;
-	case MmoWorld::EInteractKind::Gather: InteractButton->SetLabel(NSLOCTEXT("MmoHud", "Gather", "채집")); break;
-	case MmoWorld::EInteractKind::Talk: InteractButton->SetLabel(NSLOCTEXT("MmoHud", "Talk", "말하기")); break;
-	default: InteractButton->SetLabel(NSLOCTEXT("MmoHud", "Interact", "상호작용")); break;
+	case MmoWorld::EInteractKind::PickUp: InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.pickUp"))); break;
+	case MmoWorld::EInteractKind::Gather: InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.gather"))); break;
+	case MmoWorld::EInteractKind::Talk: InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.talk"))); break;
+	default: InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.none"))); break;
 	}
 	InteractButton->SetIsEnabled(Kind != MmoWorld::EInteractKind::None);
 }
@@ -257,12 +250,11 @@ void UMmoHudWidget::ShowTarget()
 		FString Name = UTF8_TO_TCHAR(Info.name().c_str());
 		if (const portfolio::mmo::data::MonstersRow* Row = Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER ? Session->Data().Monster(Info.template_id()) : nullptr)
 		{
-			// shortcut: 이름은 Strings의 키 그대로(74 전).
-			Name = FString::Printf(TEXT("%s  Lv %u"), UTF8_TO_TCHAR(Row->name_key().c_str()), Row->level());
+			Name = MmoText::Format(this, TEXT("hud.level"), { MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString(), FString::FromInt(Row->level()) }).ToString();
 		}
 		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER)
 		{
-			Name += FString::Printf(TEXT("  Lv %u"), Info.level());
+			Name = MmoText::Format(this, TEXT("hud.level"), { Name, FString::FromInt(Info.level()) }).ToString();
 		}
 		TargetNameText->SetText(FText::FromString(Name));
 		TargetPanel->SetVisibility(ESlateVisibility::HitTestInvisible);
@@ -290,6 +282,16 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	if (Session->Strings().Version() != ShownLanguage)
+	{
+		ShownLanguage = Session->Strings().Version();
+		ShownZone = MAX_uint32;
+		ShownTarget = MAX_uint32;
+		SlotClass = MAX_uint32;
+		ShownEffects = TEXT("-");
+		ShownProgress = MAX_uint32;
+		ShownInteract = MAX_uint8;
+	}
 	const MmoWorld::FSelfState& Vitals = Session->World().SelfState();
 	ShowBar(*HpBar, *HpText, Vitals.Hp, Vitals.MaxHp, ShownHp);
 	ShowBar(*MpBar, *MpText, Vitals.Mp, Vitals.MaxMp, ShownMp);
@@ -304,7 +306,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀).
 	for (const portfolio::mmo::FailReason Reason : Session->Combat().TakeNotices())
 	{
-		GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowNotice(FText::FromString(UTF8_TO_TCHAR(MmoWorld::FailMessage(Reason))));
+		GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowNotice(MmoText::Get(this, UTF8_TO_TCHAR(MmoWorld::FailKey(Reason))));
 	}
 
 	const MmoWorld::FFieldMap* Field = Session->Field();
@@ -354,12 +356,9 @@ void UMmoHudWidget::ShowZone(uint32 Zone)
 		return;
 	}
 
-	// shortcut: 이름은 Strings의 키를 그대로 보인다. 문자열 테이블(backlog 74)이 생기면 그 글로 바꾼다.
-	FString Text = UTF8_TO_TCHAR(Row->name_key().c_str());
-	if (Row->has_min_level() && Row->has_max_level())
-	{
-		Text += FString::Printf(TEXT("  Lv %u–%u"), Row->min_level(), Row->max_level());
-	}
-	ZoneText->SetText(FText::FromString(Text));
+	const FText Name = MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str()));
+	ZoneText->SetText(Row->has_min_level() && Row->has_max_level()
+		? MmoText::Format(this, TEXT("hud.zone"), { Name.ToString(), FString::FromInt(Row->min_level()), FString::FromInt(Row->max_level()) })
+		: Name);
 	SafeZoneText->SetVisibility(Row->safe() ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
 }

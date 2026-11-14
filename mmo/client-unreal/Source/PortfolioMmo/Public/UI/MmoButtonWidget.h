@@ -41,6 +41,13 @@ public:
 	UPROPERTY(EditAnywhere)
 	FText Label;
 
+	/** 라벨의 Strings 키(74). 있으면 실행 중에 그 문장으로 라벨을 채운다(Label은 디자인 화면에서만 보임). */
+	UPROPERTY(EditAnywhere)
+	FString LabelKey;
+
+	/** LabelKey의 문장으로 라벨을 다시 채운다(언어가 바뀜). */
+	void RefreshText();
+
 	UPROPERTY(EditAnywhere)
 	FText KeyHint;
 

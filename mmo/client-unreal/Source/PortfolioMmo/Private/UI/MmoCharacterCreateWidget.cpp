@@ -1,5 +1,6 @@
 #include "UI/MmoCharacterCreateWidget.h"
 
+#include "UI/MmoText.h"
 #include "UI/MmoButtonWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
@@ -8,7 +9,6 @@
 #include "Net/MmoSession.h"
 #include "UI/MmoUiManager.h"
 
-#define LOCTEXT_NAMESPACE "MmoCharacterCreate"
 
 void UMmoCharacterCreateWidget::NativeOnInitialized()
 {
@@ -24,6 +24,7 @@ void UMmoCharacterCreateWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	bCreating = false;
+	NameBox->SetHintText(MmoText::Get(this, TEXT("create.nameHint")));
 	NameBox->SetText(FText::GetEmpty());
 	StatusText->SetText(FText::GetEmpty());
 	CreateButton->SetWaiting(false);
@@ -45,7 +46,7 @@ void UMmoCharacterCreateWidget::HandleCreateClicked()
 {
 	bCreating = true;
 	CreateButton->SetWaiting(true);
-	StatusText->SetText(LOCTEXT("Creating", "만드는 중…"));
+	StatusText->SetText(MmoText::Get(this, TEXT("create.creating")));
 	Session().CreateCharacter(
 		NameBox->GetText().ToString().TrimStartAndEnd(), bMageSelected ? portfolio::mmo::CHARACTER_CLASS_MAGE : portfolio::mmo::CHARACTER_CLASS_KNIGHT);
 }
@@ -69,16 +70,16 @@ void UMmoCharacterCreateWidget::HandlePacket(const portfolio::mmo::Packet& Packe
 		Close();
 		return;
 	case portfolio::mmo::CREATE_CHARACTER_RESULT_CODE_INVALID_NAME:
-		StatusText->SetText(LOCTEXT("InvalidName", "이름은 한글·영문·숫자 2–12자입니다."));
+		StatusText->SetText(MmoText::Get(this, TEXT("create.invalidName")));
 		break;
 	case portfolio::mmo::CREATE_CHARACTER_RESULT_CODE_NAME_TAKEN:
-		StatusText->SetText(LOCTEXT("NameTaken", "이미 있는 이름입니다."));
+		StatusText->SetText(MmoText::Get(this, TEXT("create.nameTaken")));
 		break;
 	case portfolio::mmo::CREATE_CHARACTER_RESULT_CODE_TOO_MANY:
-		StatusText->SetText(LOCTEXT("TooMany", "캐릭터를 더 만들 수 없습니다."));
+		StatusText->SetText(MmoText::Get(this, TEXT("create.tooMany")));
 		break;
 	default:
-		StatusText->SetText(LOCTEXT("CreateFailed", "캐릭터를 만들지 못했습니다."));
+		StatusText->SetText(MmoText::Get(this, TEXT("create.failed")));
 		break;
 	}
 }
@@ -100,4 +101,3 @@ UMmoSession& UMmoCharacterCreateWidget::Session() const
 	return *GetGameInstance()->GetSubsystem<UMmoSession>();
 }
 
-#undef LOCTEXT_NAMESPACE

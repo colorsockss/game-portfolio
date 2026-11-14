@@ -1,5 +1,7 @@
 #include "UI/MmoButtonWidget.h"
 
+#include "UI/MmoText.h"
+
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "Engine/World.h"
@@ -10,6 +12,14 @@
 bool UMmoButtonWidget::IsTouchDevice()
 {
 	return FPlatformMisc::SupportsTouchInput() || (FSlateApplication::IsInitialized() && FSlateApplication::Get().IsFakingTouchEvents());
+}
+
+void UMmoButtonWidget::RefreshText()
+{
+	if (!LabelKey.IsEmpty())
+	{
+		SetLabel(MmoText::Get(this, LabelKey));
+	}
 }
 
 void UMmoButtonWidget::SetLabel(const FText& InLabel)
@@ -40,6 +50,10 @@ void UMmoButtonWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	SetLabel(Label);
+	if (!IsDesignTime())
+	{
+		RefreshText();
+	}
 	SetKeyHint(KeyHint);
 	Size->SetMinDesiredHeight(IsTouchDevice() ? MinHeightTouch : MinHeightPointer);
 	if (bTouchOnly && !IsDesignTime() && !IsTouchDevice())

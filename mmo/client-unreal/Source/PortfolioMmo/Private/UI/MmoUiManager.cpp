@@ -1,5 +1,6 @@
 #include "UI/MmoUiManager.h"
 
+#include "UI/MmoText.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/AssetManager.h"
 #include "Engine/GameInstance.h"
@@ -12,13 +13,14 @@
 #include "Input/MmoKeys.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSession.h"
+#include "UI/MmoButtonWidget.h"
 #include "UI/MmoConfirmWidget.h"
 #include "UI/MmoNoticeWidget.h"
 #include "UI/MmoQuantityWidget.h"
+#include "UI/MmoTextBlock.h"
 #include "UI/MmoUiPaths.h"
 #include "UI/MmoUiRoot.h"
 
-#define LOCTEXT_NAMESPACE "MmoUi"
 
 using MmoScreen::EScreen;
 
@@ -94,6 +96,7 @@ void UMmoUiManager::Initialize(FSubsystemCollectionBase& Collection)
 	}
 	UMmoSession& Net = Session();
 	PacketHandle = Net.OnPacket.AddUObject(this, &UMmoUiManager::HandlePacket);
+	LanguageHandle = Net.OnLanguageChanged.AddUObject(this, &UMmoUiManager::RefreshTexts);
 	ClosedHandle = Net.OnClosed.AddUObject(this, &UMmoUiManager::HandleClosed);
 }
 
@@ -111,6 +114,7 @@ void UMmoUiManager::Deinitialize()
 	{
 		Net->OnPacket.Remove(PacketHandle);
 		Net->OnClosed.Remove(ClosedHandle);
+		Net->OnLanguageChanged.Remove(LanguageHandle);
 	}
 	Super::Deinitialize();
 }
@@ -194,6 +198,25 @@ void UMmoUiManager::Back()
 	}
 }
 
+void UMmoUiManager::RefreshTexts()
+{
+	// 키로 채운 버튼과 글 상자를 다시 채운다. 코드가 채우는 글(상태 줄, HUD)은 화면이 Strings의 Version을 보고 다시 채운다.
+	for (TObjectIterator<UMmoButtonWidget> It; It; ++It)
+	{
+		if (It->GetWorld() == GetLocalPlayer()->GetWorld())
+		{
+			It->RefreshText();
+		}
+	}
+	for (TObjectIterator<UMmoTextBlock> It; It; ++It)
+	{
+		if (It->GetWorld() == GetLocalPlayer()->GetWorld())
+		{
+			It->RefreshText();
+		}
+	}
+}
+
 void UMmoUiManager::ToggleHidden()
 {
 	if (Root)
@@ -243,7 +266,7 @@ void UMmoUiManager::Quantity(const FText& Title, int32 Max, TFunction<void(int32
 
 void UMmoUiManager::LogOut()
 {
-	Confirm(LOCTEXT("LogOutQuestion", "로그아웃할까요?"), [this]
+	Confirm(MmoText::Get(GetLocalPlayer(), TEXT("settings.logOutQuestion")), [this]
 	{
 		Session().LogOut();
 	});
@@ -346,11 +369,11 @@ void UMmoUiManager::OpenFromCommandLine()
 	}
 	else if (Screen == TEXT("Confirm"))
 	{
-		Confirm(LOCTEXT("PreviewConfirm", "확인 팝업의 배치를 봅니다. 긴 문장은 판의 폭에서 줄을 바꿉니다."), nullptr);
+		Confirm(MmoText::Get(GetLocalPlayer(), TEXT("dev.previewConfirm")), nullptr);
 	}
 	else if (Screen == TEXT("Quantity"))
 	{
-		Quantity(LOCTEXT("PreviewQuantity", "몇 개를 버릴까요?"), 99, nullptr);
+		Quantity(MmoText::Get(GetLocalPlayer(), TEXT("dev.previewQuantity")), 99, nullptr);
 	}
 	else if (Screen == TEXT("Notice"))
 	{
@@ -358,7 +381,7 @@ void UMmoUiManager::OpenFromCommandLine()
 		FTimerHandle Timer;
 		PlayerController()->GetWorldTimerManager().SetTimer(Timer, FTimerDelegate::CreateWeakLambda(this, [this, Count = 0]() mutable
 		{
-			ShowNotice(FText::Format(LOCTEXT("PreviewNotice", "알림 {0}번째 줄"), FText::AsNumber(++Count)));
+			ShowNotice(MmoText::Format(GetLocalPlayer(), TEXT("dev.previewNotice"), { FString::FromInt(++Count) }));
 		}), 1.0f, true);
 	}
 }
@@ -374,7 +397,7 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Open(EScreen::Login);
 	if (bWasPlaying && Reason != UMmoSession::LoggedOutReason)
 	{
-		ShowNotice(LOCTEXT("Disconnected", "서버와 연결이 끊겼습니다."));
+		ShowNotice(MmoText::Get(GetLocalPlayer(), TEXT("common.disconnected")));
 	}
 }
 
@@ -388,4 +411,3 @@ UMmoSession& UMmoUiManager::Session() const
 	return *GetLocalPlayer()->GetGameInstance()->GetSubsystem<UMmoSession>();
 }
 
-#undef LOCTEXT_NAMESPACE

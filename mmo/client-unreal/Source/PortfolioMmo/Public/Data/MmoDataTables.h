@@ -12,6 +12,7 @@
 #include "MapGrid.pb.h"
 #include "Monsters.pb.h"
 #include "Skills.pb.h"
+#include "Strings.pb.h"
 #include "Zones.pb.h"
 #pragma pop_macro("check")
 #pragma pop_macro("verify")

@@ -44,6 +44,9 @@ public:
 	/** 뒤로 가기(Esc, Android 뒤로 버튼). 닫을 창이 없고 게임 중이면 설정을 연다. */
 	void Back();
 
+	/** 언어가 바뀌면 키로 채운 버튼과 글 상자(이 월드의 것)를 다시 채운다(74). */
+	void RefreshTexts();
+
 	/** 개발 빌드의 UI 숨기기(68): 뿌리 위젯의 층(이름표, HUD, 창, 팝업, 알림)을 모두 감추거나 다시 보인다. */
 	void ToggleHidden();
 
@@ -99,4 +102,5 @@ private:
 	TSharedPtr<IInputProcessor> KeyCodeInput;
 	FDelegateHandle PacketHandle;
 	FDelegateHandle ClosedHandle;
+	FDelegateHandle LanguageHandle;
 };

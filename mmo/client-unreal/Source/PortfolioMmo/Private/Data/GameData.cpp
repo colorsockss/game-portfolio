@@ -95,7 +95,9 @@ namespace MmoData
 		const std::optional<std::string> Monsters = Read("Monsters.bytes");
 		const std::optional<std::string> Skills = Read("Skills.bytes");
 		const std::optional<std::string> Effects = Read("Effects.bytes");
-		if (!Constants || !Zones || !Grid || !Classes || !Monsters || !Skills || !Effects || !Data.Constants.ParseFromString(*Constants)
+		const std::optional<std::string> Strings = Read("Strings.bytes");
+		if (!Constants || !Zones || !Grid || !Classes || !Monsters || !Skills || !Effects || !Strings || !Data.Strings.ParseFromString(*Strings)
+			|| !Data.Constants.ParseFromString(*Constants)
 			|| !Data.Zones.ParseFromString(*Zones) || !Data.Grid.ParseFromString(*Grid) || !Data.Classes.ParseFromString(*Classes)
 			|| !Data.Monsters.ParseFromString(*Monsters) || !Data.Skills.ParseFromString(*Skills) || !Data.Effects.ParseFromString(*Effects))
 		{

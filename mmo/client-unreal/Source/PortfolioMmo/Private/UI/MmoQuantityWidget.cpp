@@ -1,5 +1,6 @@
 #include "UI/MmoQuantityWidget.h"
 
+#include "UI/MmoText.h"
 #include "Components/TextBlock.h"
 #include "Engine/LocalPlayer.h"
 #include "UI/MmoButtonWidget.h"
@@ -34,7 +35,7 @@ void UMmoQuantityWidget::Change(int32 Delta)
 
 void UMmoQuantityWidget::Refresh()
 {
-	ValueText->SetText(FText::Format(NSLOCTEXT("MmoUi", "QuantityValue", "{0} / {1}"), FText::AsNumber(Current), FText::AsNumber(Max)));
+	ValueText->SetText(MmoText::Format(this, TEXT("common.quantity"), { FString::FromInt(Current), FString::FromInt(Max) }));
 	MinusTenButton->SetIsEnabled(Current > 1);
 	MinusOneButton->SetIsEnabled(Current > 1);
 	PlusOneButton->SetIsEnabled(Current < Max);

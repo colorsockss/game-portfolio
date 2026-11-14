@@ -1,5 +1,6 @@
 #include "UI/MmoSettingsWidget.h"
 
+#include "UI/MmoText.h"
 #include "UI/MmoButtonWidget.h"
 #include "Engine/LocalPlayer.h"
 #include "UI/MmoUiManager.h"
@@ -22,7 +23,7 @@ void UMmoSettingsWidget::NativeOnInitialized()
 void UMmoSettingsWidget::ShowStatsLabel()
 {
 	const bool bShown = GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->IsStatsShown();
-	StatsButton->SetLabel(bShown ? NSLOCTEXT("MmoSettings", "StatsOn", "성능 표시: 켬") : NSLOCTEXT("MmoSettings", "StatsOff", "성능 표시: 끔"));
+	StatsButton->SetLabel(MmoText::Get(this, bShown ? TEXT("settings.statsOn") : TEXT("settings.statsOff")));
 }
 
 void UMmoSettingsWidget::HandleCharacterSelectClicked()

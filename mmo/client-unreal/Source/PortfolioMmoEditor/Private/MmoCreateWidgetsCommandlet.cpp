@@ -37,11 +37,11 @@
 #include "UI/MmoNoticeWidget.h"
 #include "UI/MmoQuantityWidget.h"
 #include "UI/MmoSettingsWidget.h"
+#include "UI/MmoTextBlock.h"
 #include "UI/MmoUiPaths.h"
 #include "UObject/SavePackage.h"
 #include "WidgetBlueprint.h"
 
-#define LOCTEXT_NAMESPACE "MmoUi"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMmoCreateWidgets, Log, All);
 
@@ -148,21 +148,43 @@ namespace
 			return Widget;
 		}
 
-		/** 스타일 표의 글자색과 그림자로 글을 만든다. */
+		/** 스타일 표의 글자색과 그림자로 글을 만든다. 코드가 채우는 글(상태 줄 등)이다. */
 		UTextBlock* Text(const TCHAR* Name, const FText& Value, int32 Size, bool bBound = false, const FLinearColor& Color = Style.Text)
 		{
 			UTextBlock* Block = Add<UTextBlock>(Name, bBound);
-			Block->SetText(Value);
-			FSlateFontInfo Font = Block->GetFont();
-			Font.Size = Size;
-			Block->SetFont(Font);
-			Block->SetColorAndOpacity(FSlateColor(Color));
-			Block->SetShadowOffset(FVector2D(1.0, 1.0));
-			Block->SetShadowColorAndOpacity(Style.Shadow);
+			StyleText(*Block, Value, Size, Color);
 			return Block;
 		}
 
-		/** 공용 버튼(WBP_Button)을 놓는다. 이름이 기반 클래스의 BindWidget과 같아야 한다. */
+		/** 고정된 글: Strings의 키를 가진 글 상자(실행 중에 그 언어의 문장으로 채움. 디자인 화면에서는 키가 보임). */
+		UMmoTextBlock* KeyText(const TCHAR* Name, const TCHAR* Key, int32 Size, bool bBound = false, const FLinearColor& Color = Style.Text)
+		{
+			UMmoTextBlock* Block = Add<UMmoTextBlock>(Name, bBound);
+			Block->TextKey = Key;
+			StyleText(*Block, FText::FromString(Key), Size, Color);
+			return Block;
+		}
+
+		void StyleText(UTextBlock& Block, const FText& Value, int32 Size, const FLinearColor& Color)
+		{
+			Block.SetText(Value);
+			FSlateFontInfo Font = Block.GetFont();
+			Font.Size = Size;
+			Block.SetFont(Font);
+			Block.SetColorAndOpacity(FSlateColor(Color));
+			Block.SetShadowOffset(FVector2D(1.0, 1.0));
+			Block.SetShadowColorAndOpacity(Style.Shadow);
+		}
+
+		/** 라벨이 Strings의 키인 공용 버튼(실행 중에 그 언어의 문장으로 채움). */
+		UMmoButtonWidget* Button(const TCHAR* Name, const TCHAR* LabelKey, bool bTouchOnly = false)
+		{
+			UMmoButtonWidget* Result = Button(Name, FText::FromString(LabelKey), bTouchOnly);
+			Result->LabelKey = LabelKey;
+			return Result;
+		}
+
+		/** 공용 버튼(WBP_Button)을 놓는다. 이름이 기반 클래스의 BindWidget과 같아야 한다. 라벨은 코드가 채우거나(빈 글) 언어와 상관없는 기호다. */
 		UMmoButtonWidget* Button(const TCHAR* Name, const FText& Label, bool bTouchOnly = false)
 		{
 			UMmoButtonWidget* Result = Add<UMmoButtonWidget>(ButtonClass, Name, true);
@@ -352,11 +374,11 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Login, UMmoLoginWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Backdrop);
-		AddWithGap(*Column, Builder.Text(TEXT("Title"), LOCTEXT("Title", "PortfolioMmo"), Style.TitleSize + 4), Style.Section);
+		AddWithGap(*Column, Builder.Text(TEXT("Title"), FText::AsCultureInvariant(TEXT("PortfolioMmo")), Style.TitleSize + 4), Style.Section);
 		UEditableTextBox* LoginIdBox = Builder.Add<UEditableTextBox>(TEXT("LoginIdBox"), true);
-		LoginIdBox->SetHintText(LOCTEXT("LoginIdHint", "아이디 (영문 소문자·숫자·_ 4–16자)"));
+		LoginIdBox->SetHintText(FText::FromString(TEXT("login.idHint")));
 		AddWithGap(*Column, LoginIdBox);
-		AddWithGap(*Column, Builder.Button(TEXT("LogInButton"), LOCTEXT("LogIn", "로그인")));
+		AddWithGap(*Column, Builder.Button(TEXT("LogInButton"), TEXT("login.logIn")));
 		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), Style.SmallSize + 2, true);
 		Status->SetAutoWrapText(true);
 		Column->AddChildToVerticalBox(Status);
@@ -437,7 +459,7 @@ namespace
 		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Hp"), Style.Hp));
 		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Mp"), Style.Mp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, Style.Gap));
 		Zone->AddChildToVerticalBox(Builder.Text(TEXT("ZoneText"), FText::GetEmpty(), Style.BodySize, true));
-		UTextBlock* SafeZoneText = Builder.Text(TEXT("SafeZoneText"), LOCTEXT("SafeZone", "안전 지대"), Style.SmallSize, true, Style.Positive);
+		UMmoTextBlock* SafeZoneText = Builder.KeyText(TEXT("SafeZoneText"), TEXT("hud.safeZone"), Style.SmallSize, true, Style.Positive);
 		SafeZoneText->SetVisibility(ESlateVisibility::Collapsed);
 		Zone->AddChildToVerticalBox(SafeZoneText);
 		// 걸린 효과와 전투 상태의 글자 아이콘과 남은 시간(아이콘 표는 73).
@@ -485,9 +507,9 @@ namespace
 
 		// 오른쪽 아래에 터치 기기에서만 보이는 상호작용, 대상 고르기, 공격 버튼. PC에서는 E, Tab, F가 같은 일을 한다.
 		Corner(*Root, Row(Builder, TEXT("TouchButtons"), {
-			Builder.Button(TEXT("InteractButton"), LOCTEXT("InteractButton", "상호작용"), true),
-			Builder.Button(TEXT("TargetButton"), LOCTEXT("TargetButton", "대상"), true),
-			Builder.Button(TEXT("AttackButton"), LOCTEXT("AttackButton", "공격"), true),
+			Builder.Button(TEXT("InteractButton"), TEXT("interact.none"), true),
+			Builder.Button(TEXT("TargetButton"), TEXT("hud.target"), true),
+			Builder.Button(TEXT("AttackButton"), TEXT("hud.attack"), true),
 		}), ECorner::BottomRight, FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5));
 
 		// 오른쪽 위에 메뉴 버튼(PC와 터치 기기 모두. 키 표시와 누를 수 있는지는 UMmoHudWidget이 정함), 그 아래 시연 표시(설정 창에서 켬).
@@ -496,11 +518,11 @@ namespace
 		UTextBlock* Stats = Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.SmallSize, true);
 		Stats->SetVisibility(ESlateVisibility::Collapsed);
 		TopRight->AddChildToVerticalBox(Row(Builder, TEXT("MenuButtons"), {
-			Builder.Button(TEXT("BagButton"), LOCTEXT("BagButton", "가방")),
-			Builder.Button(TEXT("CharacterButton"), LOCTEXT("CharacterButton", "캐릭터")),
-			Builder.Button(TEXT("SkillsButton"), LOCTEXT("SkillsButton", "스킬")),
-			Builder.Button(TEXT("QuestButton"), LOCTEXT("QuestButton", "퀘스트")),
-			Builder.Button(TEXT("SettingsButton"), LOCTEXT("SettingsButton", "설정")),
+			Builder.Button(TEXT("BagButton"), TEXT("menu.bag")),
+			Builder.Button(TEXT("CharacterButton"), TEXT("menu.character")),
+			Builder.Button(TEXT("SkillsButton"), TEXT("menu.skills")),
+			Builder.Button(TEXT("QuestButton"), TEXT("menu.quest")),
+			Builder.Button(TEXT("SettingsButton"), TEXT("menu.settings")),
 		}));
 		TopRight->AddChildToVerticalBox(Stats)->SetHorizontalAlignment(HAlign_Right);
 		return Builder.Save();
@@ -553,8 +575,8 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Death, UMmoDeathWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
-		AddWithGap(*Column, Builder.Text(TEXT("Title"), LOCTEXT("DeathTitle", "쓰러졌습니다"), Style.TitleSize), Style.Section);
-		Column->AddChildToVerticalBox(Builder.Button(TEXT("ReviveButton"), LOCTEXT("Revive", "마을에서 부활")));
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("death.title"), Style.TitleSize), Style.Section);
+		Column->AddChildToVerticalBox(Builder.Button(TEXT("ReviveButton"), TEXT("death.revive")));
 		return Builder.Save();
 	}
 
@@ -562,12 +584,12 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Settings, UMmoSettingsWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
-		AddWithGap(*Column, Builder.Text(TEXT("Title"), LOCTEXT("SettingsTitle", "설정"), Style.TitleSize), Style.Section);
-		AddWithGap(*Column, Builder.Button(TEXT("CharacterSelectButton"), LOCTEXT("CharacterSelect", "캐릭터 선택")));
-		AddWithGap(*Column, Builder.Button(TEXT("LogOutButton"), LOCTEXT("LogOut", "로그아웃")));
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("settings.title"), Style.TitleSize), Style.Section);
+		AddWithGap(*Column, Builder.Button(TEXT("CharacterSelectButton"), TEXT("settings.characterSelect")));
+		AddWithGap(*Column, Builder.Button(TEXT("LogOutButton"), TEXT("settings.logOut")));
 		// 시연 표시의 줄. 글(켬/끔)은 기반 클래스가 채운다.
 		AddWithGap(*Column, Builder.Button(TEXT("StatsButton"), FText::GetEmpty()));
-		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), LOCTEXT("Close", "닫기")));
+		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
 	}
 
@@ -575,7 +597,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::CharacterSelect, UMmoCharacterSelectWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowWide, Style.Backdrop);
-		AddWithGap(*Column, Builder.Text(TEXT("Title"), LOCTEXT("CharacterSelectTitle", "캐릭터 선택"), Style.TitleSize), Style.Section);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("select.title"), Style.TitleSize), Style.Section);
 
 		// 칸 4개(Constant의 캐릭터 수). 글은 기반 클래스가 SetLabel로 채운다.
 		for (int32 Index = 0; Index < 4; ++Index)
@@ -584,7 +606,7 @@ namespace
 		}
 
 		Column->AddChildToVerticalBox(Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("CreateButton"), LOCTEXT("Create", "만들기")), Builder.Button(TEXT("StartButton"), LOCTEXT("Start", "시작")) }))
+			Builder.Button(TEXT("CreateButton"), TEXT("select.create")), Builder.Button(TEXT("StartButton"), TEXT("select.start")) }))
 			->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, Style.Gap));
 		Cast<UVerticalBoxSlot>(Column->GetChildAt(Column->GetChildrenCount() - 1)->Slot)->SetHorizontalAlignment(HAlign_Right);
 		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), Style.SmallSize + 2, true);
@@ -597,14 +619,14 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::CharacterCreate, UMmoCharacterCreateWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
-		AddWithGap(*Column, Builder.Text(TEXT("Title"), LOCTEXT("CharacterCreateTitle", "캐릭터 만들기"), Style.TitleSize), Style.Section);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("create.title"), Style.TitleSize), Style.Section);
 		UEditableTextBox* NameBox = Builder.Add<UEditableTextBox>(TEXT("NameBox"), true);
-		NameBox->SetHintText(LOCTEXT("NameHint", "이름 (한글·영문·숫자 2–12자)"));
+		NameBox->SetHintText(FText::FromString(TEXT("create.nameHint")));
 		AddWithGap(*Column, NameBox, Style.Section);
 		AddWithGap(*Column, Row(Builder, TEXT("Classes"), {
-			Builder.Button(TEXT("KnightButton"), LOCTEXT("Knight", "기사")), Builder.Button(TEXT("MageButton"), LOCTEXT("Mage", "마법사")) }), Style.Section);
+			Builder.Button(TEXT("KnightButton"), TEXT("class.knight")), Builder.Button(TEXT("MageButton"), TEXT("class.mage")) }), Style.Section);
 		UHorizontalBox* Buttons = Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("CancelButton"), LOCTEXT("Cancel", "취소")), Builder.Button(TEXT("CreateButton"), LOCTEXT("Create", "만들기")) });
+			Builder.Button(TEXT("CancelButton"), TEXT("common.cancel")), Builder.Button(TEXT("CreateButton"), TEXT("create.create")) });
 		Column->AddChildToVerticalBox(Buttons)->SetPadding(FMargin(0.0f, 0.0f, 0.0f, Style.Gap));
 		Cast<UVerticalBoxSlot>(Buttons->Slot)->SetHorizontalAlignment(HAlign_Right);
 		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), Style.SmallSize + 2, true);
@@ -621,7 +643,7 @@ namespace
 		Message->SetAutoWrapText(true);
 		AddWithGap(*Column, Message, Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("YesButton"), LOCTEXT("Yes", "예")), Builder.Button(TEXT("NoButton"), LOCTEXT("No", "아니요")) }));
+			Builder.Button(TEXT("YesButton"), TEXT("common.yes")), Builder.Button(TEXT("NoButton"), TEXT("common.no")) }));
 		return Builder.Save();
 	}
 
@@ -635,13 +657,13 @@ namespace
 		AddWithGap(*Column, Value, Style.Section);
 		Cast<UVerticalBoxSlot>(Value->Slot)->SetHorizontalAlignment(HAlign_Center);
 		UHorizontalBox* Steps = Row(Builder, TEXT("Steps"), {
-			Builder.Button(TEXT("MinusTenButton"), LOCTEXT("MinusTen", "−10")), Builder.Button(TEXT("MinusOneButton"), LOCTEXT("MinusOne", "−1")),
-			Builder.Button(TEXT("PlusOneButton"), LOCTEXT("PlusOne", "+1")), Builder.Button(TEXT("PlusTenButton"), LOCTEXT("PlusTen", "+10")),
-			Builder.Button(TEXT("MaxButton"), LOCTEXT("Max", "최대")) });
+			Builder.Button(TEXT("MinusTenButton"), FText::AsCultureInvariant(TEXT("−10"))), Builder.Button(TEXT("MinusOneButton"), FText::AsCultureInvariant(TEXT("−1"))),
+			Builder.Button(TEXT("PlusOneButton"), FText::AsCultureInvariant(TEXT("+1"))), Builder.Button(TEXT("PlusTenButton"), FText::AsCultureInvariant(TEXT("+10"))),
+			Builder.Button(TEXT("MaxButton"), TEXT("common.max")) });
 		AddWithGap(*Column, Steps, Style.Section);
 		Cast<UVerticalBoxSlot>(Steps->Slot)->SetHorizontalAlignment(HAlign_Center);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("CancelButton"), LOCTEXT("Cancel", "취소")), Builder.Button(TEXT("OkButton"), LOCTEXT("Ok", "확인")) }));
+			Builder.Button(TEXT("CancelButton"), TEXT("common.cancel")), Builder.Button(TEXT("OkButton"), TEXT("common.ok")) }));
 		return Builder.Save();
 	}
 }
@@ -663,4 +685,3 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	return bOk ? 0 : 1;
 }
 
-#undef LOCTEXT_NAMESPACE

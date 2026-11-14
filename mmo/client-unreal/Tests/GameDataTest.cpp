@@ -6,6 +6,8 @@
 #include <sstream>
 
 #include "Data/GameData.h"
+#include "Data/Strings.h"
+#include "World/FailMessages.h"
 #include "World/FieldMap.h"
 
 namespace
@@ -75,6 +77,64 @@ namespace
 			&& Data->Grid.cells().size() == 360000, "the map grid matches the field");
 		const std::optional<MmoWorld::FFieldMap> Field = MmoWorld::FFieldMap::Make(Data->Constants.field_size(), Data->Zones.rows(), Data->Grid);
 		Expect(Field && !Field->CanWalk(-300 * 32, 0) && Field->CanWalk(Town.respawn_x() * 32, Town.respawn_z() * 32), "the border is a wall and the respawn point is open");
+
+		// 문자열(74): 모든 줄의 두 열이 차 있고, 테이블의 이름 열과 실패 이유가 가리키는 키가 모두 있다.
+		MmoData::FStrings Strings;
+		Strings.Load(Data->Strings);
+		for (const portfolio::mmo::data::StringsRow& Row : Data->Strings.rows())
+		{
+			if (Row.ko().empty() || Row.en().empty())
+			{
+				std::printf("FAIL: string %s is missing a language\n", Row.id().c_str());
+				++Failures;
+			}
+		}
+		auto ExpectKey = [&Strings](const std::string& Key)
+		{
+			if (!Strings.Has(Key))
+			{
+				std::printf("FAIL: %s is not in Strings\n", Key.c_str());
+				++Failures;
+			}
+		};
+		for (const auto& Row : Data->Zones.rows()) { ExpectKey(Row.name_key()); }
+		for (const auto& Row : Data->Monsters.rows()) { ExpectKey(Row.name_key()); }
+		for (const auto& Row : Data->Skills.rows()) { ExpectKey(Row.name_key()); }
+		for (int Value = portfolio::mmo::FailReason_MIN; Value <= portfolio::mmo::FailReason_MAX; ++Value)
+		{
+			if (portfolio::mmo::FailReason_IsValid(Value) && Value != portfolio::mmo::FAIL_REASON_NONE)
+			{
+				const std::string Key = MmoWorld::FailKey(static_cast<portfolio::mmo::FailReason>(Value));
+				Expect(Key != "fail.other", "every FailReason has its own key");
+				ExpectKey(Key);
+			}
+		}
+		ExpectKey("fail.other");
+	}
+
+	/** 고른 언어의 열을 답하고, {0}·{1}을 채우며(없는 번호와 숫자가 아닌 중괄호는 그대로), 없는 키는 키 그대로다. */
+	void StringsFollowTheLanguage()
+	{
+		portfolio::mmo::data::Strings Table;
+		auto Add = [&Table](const char* Id, const char* Ko, const char* En)
+		{
+			portfolio::mmo::data::StringsRow* Row = Table.add_rows();
+			Row->set_id(Id);
+			Row->set_ko(Ko);
+			Row->set_en(En);
+		};
+		Add("hello", "안녕 {0}, {1}", "Hi {0}, {1}");
+		Add("brace", "{a} {2}", "{a} {2}");
+		MmoData::FStrings Strings;
+		Strings.Load(Table);
+		Expect(Strings.Get("hello") == "안녕 {0}, {1}", "Korean is the first language");
+		Expect(Strings.Format("hello", { "A", "B" }) == "안녕 A, B", "slots are filled in order");
+		Expect(Strings.Format("brace", { "x" }) == "{a} {2}", "unknown slots and other braces stay");
+		Expect(Strings.Get("missing.key") == "missing.key", "a missing key shows the key");
+		const uint32_t Version = Strings.Version();
+		Expect(Strings.SetLanguage(MmoData::ELanguage::English) && Strings.Version() == Version + 1, "changing the language bumps the version");
+		Expect(!Strings.SetLanguage(MmoData::ELanguage::English) && Strings.Version() == Version + 1, "the same language changes nothing");
+		Expect(Strings.Format("hello", { "A", "B" }) == "Hi A, B", "English uses its own column");
 	}
 }
 
@@ -82,6 +142,7 @@ int main(int ArgumentCount, char** Arguments)
 {
 	ParsesTheHash();
 	LoadNeedsTheHashFile();
+	StringsFollowTheLanguage();
 	if (ArgumentCount < 2)
 	{
 		std::printf("FAIL: run.mjs passes the generated data folder\n");

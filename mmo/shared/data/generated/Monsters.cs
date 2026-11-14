@@ -129,7 +129,7 @@ namespace PortfolioMmo.Data {
     public const int NameKeyFieldNumber = 2;
     private string nameKey_ = "";
     /// <summary>
-    /// 이름(Strings의 키. Strings는 backlog 74가 만든다)
+    /// 이름(Strings의 키)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

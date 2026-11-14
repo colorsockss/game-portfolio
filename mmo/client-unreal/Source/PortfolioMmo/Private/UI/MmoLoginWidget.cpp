@@ -1,5 +1,6 @@
 #include "UI/MmoLoginWidget.h"
 
+#include "UI/MmoText.h"
 #include "UI/MmoButtonWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
@@ -8,14 +9,13 @@
 #include "Net/MmoSession.h"
 #include "Net/MmoSettings.h"
 
-#define LOCTEXT_NAMESPACE "MmoLogin"
 
 void UMmoLoginWidget::LogIn(const FString& LoginId)
 {
 	bExplained = false;
 	LoginIdBox->SetText(FText::FromString(LoginId));
 	LogInButton->SetWaiting(true);
-	SetStatus(LOCTEXT("Connecting", "서버에 연결하는 중…"));
+	SetStatus(MmoText::Get(this, TEXT("login.connecting")));
 	Session().LogIn(LoginId);
 }
 
@@ -44,6 +44,7 @@ void UMmoLoginWidget::NativeOnInitialized()
 void UMmoLoginWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	LoginIdBox->SetHintText(MmoText::Get(this, TEXT("login.idHint")));
 	// 화면이 뜨면 바로 아이디를 칠 수 있게 한다.
 	LoginIdBox->SetKeyboardFocus();
 }
@@ -63,7 +64,7 @@ void UMmoLoginWidget::HandleLoginIdCommitted(const FText& Text, ETextCommit::Typ
 
 void UMmoLoginWidget::HandleConnected()
 {
-	SetStatus(LOCTEXT("LoggingIn", "로그인하는 중…"));
+	SetStatus(MmoText::Get(this, TEXT("login.loggingIn")));
 }
 
 void UMmoLoginWidget::HandlePacket(const portfolio::mmo::Packet& Packet)
@@ -75,25 +76,22 @@ void UMmoLoginWidget::HandlePacket(const portfolio::mmo::Packet& Packet)
 		switch (Result.result())
 		{
 		case portfolio::mmo::LOGIN_RESULT_CODE_OK:
-			SetStatus(FText::Format(LOCTEXT("LoggedIn", "{0}(으)로 로그인했습니다."), FText::FromString(Session().LoginId())));
+			SetStatus(MmoText::Format(this, TEXT("login.loggedIn"), { Session().LoginId() }));
 			return;
 		case portfolio::mmo::LOGIN_RESULT_CODE_INVALID_LOGIN_ID:
-			SetStatus(LOCTEXT("InvalidLoginId", "아이디 형식이 맞지 않습니다. 영문 소문자, 숫자, _로 4–16자입니다."));
+			SetStatus(MmoText::Get(this, TEXT("login.invalidId")));
 			break;
 		case portfolio::mmo::LOGIN_RESULT_CODE_VERSION_MISMATCH:
 		case portfolio::mmo::LOGIN_RESULT_CODE_DATA_MISMATCH:
 			// 버전(패킷)이나 데이터(테이블, 맵)가 서버와 다르면 다시 붙어도 같으므로 새 빌드를 받는 곳을 보인다.
-			SetStatus(FText::Format(
-				Result.result() == portfolio::mmo::LOGIN_RESULT_CODE_VERSION_MISMATCH
-					? LOCTEXT("VersionMismatch", "서버와 버전이 다릅니다. 새 빌드를 받아 주세요.\n{0}")
-					: LOCTEXT("DataMismatch", "서버와 게임 데이터가 다릅니다. 새 빌드를 받아 주세요.\n{0}"),
-				FText::FromString(GetDefault<UMmoSettings>()->ReleasesUrl)));
+			SetStatus(MmoText::Format(this, Result.result() == portfolio::mmo::LOGIN_RESULT_CODE_VERSION_MISMATCH ? TEXT("login.versionMismatch") : TEXT("login.dataMismatch"),
+				{ GetDefault<UMmoSettings>()->ReleasesUrl }));
 			break;
 		case portfolio::mmo::LOGIN_RESULT_CODE_SERVER_FULL:
-			SetStatus(LOCTEXT("ServerFull", "서버가 가득 찼습니다. 잠시 뒤에 다시 시도해 주세요."));
+			SetStatus(MmoText::Get(this, TEXT("login.serverFull")));
 			break;
 		default:
-			SetStatus(LOCTEXT("LoginFailed", "로그인하지 못했습니다."));
+			SetStatus(MmoText::Get(this, TEXT("login.failed")));
 			break;
 		}
 		// 서버가 이어서 연결을 끊으므로 끊김 메시지로 덮지 않는다.
@@ -106,22 +104,22 @@ void UMmoLoginWidget::HandlePacket(const portfolio::mmo::Packet& Packet)
 		switch (Reason)
 		{
 		case portfolio::mmo::KICK_REASON_DUPLICATE_LOGIN:
-			SetStatus(LOCTEXT("DuplicateLogin", "다른 곳에서 같은 아이디로 로그인해 연결이 끊겼습니다."));
+			SetStatus(MmoText::Get(this, TEXT("kick.duplicateLogin")));
 			break;
 		case portfolio::mmo::KICK_REASON_SERVER_SHUTDOWN:
-			SetStatus(LOCTEXT("ServerShutdown", "서버가 내려가 연결이 끊겼습니다."));
+			SetStatus(MmoText::Get(this, TEXT("kick.serverShutdown")));
 			break;
 		case portfolio::mmo::KICK_REASON_IDLE_TIMEOUT:
-			SetStatus(LOCTEXT("IdleTimeout", "오랫동안 응답이 없어 서버가 연결을 끊었습니다."));
+			SetStatus(MmoText::Get(this, TEXT("kick.idleTimeout")));
 			break;
 		case portfolio::mmo::KICK_REASON_MALFORMED_PACKET:
-			SetStatus(LOCTEXT("MalformedPacket", "서버가 읽을 수 없는 패킷을 보내 연결이 끊겼습니다."));
+			SetStatus(MmoText::Get(this, TEXT("kick.malformedPacket")));
 			break;
 		case portfolio::mmo::KICK_REASON_RATE_LIMITED:
-			SetStatus(LOCTEXT("RateLimited", "요청을 너무 자주 보내 연결이 끊겼습니다."));
+			SetStatus(MmoText::Get(this, TEXT("kick.rateLimited")));
 			break;
 		default:
-			SetStatus(LOCTEXT("Kicked", "서버가 연결을 끊었습니다."));
+			SetStatus(MmoText::Get(this, TEXT("kick.other")));
 			break;
 		}
 		bExplained = true;
@@ -132,11 +130,11 @@ void UMmoLoginWidget::HandleClosed(const FString& Reason)
 {
 	if (Reason == UMmoSession::LoggedOutReason)
 	{
-		SetStatus(LOCTEXT("LoggedOut", "로그아웃했습니다."));
+		SetStatus(MmoText::Get(this, TEXT("login.loggedOut")));
 	}
 	else if (!bExplained)
 	{
-		SetStatus(LOCTEXT("Disconnected", "서버와 연결이 끊겼습니다."));
+		SetStatus(MmoText::Get(this, TEXT("common.disconnected")));
 	}
 	LogInButton->SetWaiting(false);
 }
@@ -151,4 +149,3 @@ UMmoSession& UMmoLoginWidget::Session() const
 	return *GetGameInstance()->GetSubsystem<UMmoSession>();
 }
 
-#undef LOCTEXT_NAMESPACE

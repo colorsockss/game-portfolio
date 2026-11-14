@@ -4,6 +4,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Protocol/MmoPackets.h"
 #include "Data/GameData.h"
+#include "Data/Strings.h"
 #include "World/FieldMap.h"
 #include "World/CombatState.h"
 #include "World/WorldState.h"
@@ -25,6 +26,7 @@ public:
 	DECLARE_MULTICAST_DELEGATE(FOnConnected);
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnPacket, const portfolio::mmo::Packet&);
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnClosed, const FString& /* Reason */);
+	DECLARE_MULTICAST_DELEGATE(FOnLanguageChanged);
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
@@ -64,6 +66,14 @@ public:
 	/** 시작할 때 읽은 기획 데이터. */
 	const MmoData::FGameData& Data() const { return GameData; }
 
+	/** 화면의 글(Strings 테이블과 고른 언어). 글은 MmoText로 꺼낸다. */
+	const MmoData::FStrings& Strings() const { return StringTable; }
+
+	/** 언어를 바꾼다. 바뀌면 OnLanguageChanged로 알린다(열린 화면이 글을 다시 채움). 설정 창의 줄과 기기에 남기는 것은 77이다. */
+	void SetLanguage(MmoData::ELanguage Language);
+
+	FOnLanguageChanged OnLanguageChanged;
+
 	/** 기획 데이터로 편 필드의 격자. 데이터를 읽지 못했으면 nullptr. */
 	const MmoWorld::FFieldMap* Field() const { return FieldMap ? &*FieldMap : nullptr; }
 
@@ -91,5 +101,6 @@ private:
 	portfolio::mmo::CharacterList CharacterList;
 	/** 시작할 때 한 번 읽은 기획 데이터. 읽지 못하면 해시가 0이라 서버가 DATA_MISMATCH로 거절한다. */
 	MmoData::FGameData GameData;
+	MmoData::FStrings StringTable;
 	std::optional<MmoWorld::FFieldMap> FieldMap;
 };

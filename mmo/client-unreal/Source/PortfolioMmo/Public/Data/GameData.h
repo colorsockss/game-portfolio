@@ -47,6 +47,9 @@ namespace MmoData
 		/** 효과(종류, 값, 지속 시간). id가 EffectState.effect_id다. */
 		portfolio::mmo::data::Effects Effects;
 
+		/** 화면의 이름과 문장(키, 한국어, 영어). 조회와 언어는 MmoData::FStrings가 한다. */
+		portfolio::mmo::data::Strings Strings;
+
 		/** 직업의 줄. 없으면 nullptr. */
 		const portfolio::mmo::data::ClassesRow* Class(uint32_t Id) const;
 

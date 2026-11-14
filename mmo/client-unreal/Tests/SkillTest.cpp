@@ -10,7 +10,6 @@
 
 #include "World/CombatState.h"
 #include "World/DevCommand.h"
-#include "World/FailMessages.h"
 #include "World/Latency.h"
 
 namespace
@@ -529,24 +528,6 @@ namespace
 		Expect(MmoWorld::DevCommandPacket("   ").dev_command().line().empty(), "a blank line is sent empty");
 	}
 
-	/** FailReason의 모든 값에 그 값만의 글이 있다(빠진 값은 일반적인 글로 떨어짐). */
-	void EveryFailReasonHasAMessage()
-	{
-		const std::string Generic = MmoWorld::FailMessage(static_cast<portfolio::mmo::FailReason>(portfolio::mmo::FailReason_MAX + 1));
-		for (int Value = portfolio::mmo::FailReason_MIN; Value <= portfolio::mmo::FailReason_MAX; ++Value)
-		{
-			if (!portfolio::mmo::FailReason_IsValid(Value) || Value == portfolio::mmo::FAIL_REASON_NONE)
-			{
-				continue;
-			}
-			const std::string Message = MmoWorld::FailMessage(static_cast<portfolio::mmo::FailReason>(Value));
-			if (Message.empty() || Message == Generic)
-			{
-				std::printf("FAIL: FailReason %d has no message\n", Value);
-				++Failures;
-			}
-		}
-	}
 }
 
 int main(int ArgumentCount, char** Arguments)
@@ -568,7 +549,6 @@ int main(int ArgumentCount, char** Arguments)
 	LineSkillsFireWithOrWithoutATarget();
 	FailuresBecomeNotices();
 	LeavingTheWorldStopsRequests();
-	EveryFailReasonHasAMessage();
 	DevCommandsCarryTheLine();
 	LatencyIsPingToPong();
 	if (Failures > 0)

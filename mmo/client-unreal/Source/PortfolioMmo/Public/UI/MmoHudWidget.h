@@ -172,6 +172,9 @@ private:
 	uint32 ShownTarget = MAX_uint32;
 	uint64 ShownMp = MAX_uint64;
 
+	/** 마지막으로 글을 채운 언어(Strings의 Version). 바뀌면 보인 값을 모두 잊어 새 언어로 다시 채운다. */
+	uint32 ShownLanguage = MAX_uint32;
+
 	/** 마지막으로 보인 구역. 처음에는 어떤 구역과도 다르게 둔다. */
 	uint32 ShownZone = MAX_uint32;
 };

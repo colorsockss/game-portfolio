@@ -10,7 +10,7 @@ import "Enums.proto";
 message MonstersRow {
   // 몬스터의 번호(EntityEnter.template_id)
   uint32 id = 1;
-  // 이름(Strings의 키. Strings는 backlog 74가 만든다)
+  // 이름(Strings의 키)
   string name_key = 2;
   // 종류
   MonsterKind kind = 3;

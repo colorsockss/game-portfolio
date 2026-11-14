@@ -65,6 +65,15 @@ void UMmoSession::LoadData()
 		if (Loaded)
 		{
 			GameData = *Loaded;
+			StringTable.Load(GameData.Strings);
+#if !UE_BUILD_SHIPPING
+			// 개발용: -MmoLanguage=en이면 영어로 시작한다(언어 설정 77 전).
+			FString Language;
+			if (FParse::Value(FCommandLine::Get(), TEXT("MmoLanguage="), Language) && Language == TEXT("en"))
+			{
+				StringTable.SetLanguage(MmoData::ELanguage::English);
+			}
+#endif
 			FieldMap = MmoWorld::FFieldMap::Make(GameData.Constants.field_size(), GameData.Zones.rows(), GameData.Grid);
 			if (!FieldMap)
 			{
@@ -123,9 +132,29 @@ void UMmoSession::EnterWorld(uint64 CharacterId)
 	Connection().Send(Packet);
 }
 
+void UMmoSession::SetLanguage(MmoData::ELanguage Language)
+{
+	if (StringTable.SetLanguage(Language))
+	{
+		OnLanguageChanged.Broadcast();
+	}
+}
+
 #if !UE_BUILD_SHIPPING
 namespace
 {
+	/** 개발 빌드의 콘솔 명령: 언어를 바꾼다(ko, en). 열린 화면의 글이 다시 채워지는지 보는 데 쓴다. */
+	FAutoConsoleCommandWithWorldAndArgs GMmoLanguageCommand(
+		TEXT("Mmo.Language"),
+		TEXT("Switch the screen language: 'Mmo.Language en' or 'Mmo.Language ko'."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic([](const TArray<FString>& Args, UWorld* World)
+		{
+			if (UMmoSession* Session = World && World->GetGameInstance() ? World->GetGameInstance()->GetSubsystem<UMmoSession>() : nullptr)
+			{
+				Session->SetLanguage(Args.Num() > 0 && Args[0] == TEXT("en") ? MmoData::ELanguage::English : MmoData::ELanguage::Korean);
+			}
+		}));
+
 	/** 개발 빌드의 콘솔 명령: 글 한 줄을 DevCommand로 보낸다(채팅창 41 전). --dev 서버만 실행한다. 예: Mmo.Dev tp 100 -20 */
 	FAutoConsoleCommandWithWorldAndArgs GMmoDevCommand(
 		TEXT("Mmo.Dev"),

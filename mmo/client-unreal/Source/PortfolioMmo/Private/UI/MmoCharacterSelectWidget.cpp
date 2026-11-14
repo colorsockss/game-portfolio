@@ -1,5 +1,6 @@
 #include "UI/MmoCharacterSelectWidget.h"
 
+#include "UI/MmoText.h"
 #include "UI/MmoButtonWidget.h"
 #include "Components/TextBlock.h"
 #include "Engine/GameInstance.h"
@@ -8,13 +9,12 @@
 #include "Net/MmoSession.h"
 #include "UI/MmoUiManager.h"
 
-#define LOCTEXT_NAMESPACE "MmoCharacterSelect"
 
 namespace
 {
-	FText ClassName(portfolio::mmo::CharacterClass Class)
+	FString ClassKey(portfolio::mmo::CharacterClass Class)
 	{
-		return Class == portfolio::mmo::CHARACTER_CLASS_MAGE ? LOCTEXT("Mage", "마법사") : LOCTEXT("Knight", "기사");
+		return Class == portfolio::mmo::CHARACTER_CLASS_MAGE ? TEXT("class.mage") : TEXT("class.knight");
 	}
 
 }
@@ -30,6 +30,8 @@ void UMmoCharacterSelectWidget::NativeOnInitialized()
 	CreateButton->OnClicked.AddDynamic(this, &UMmoCharacterSelectWidget::HandleCreateClicked);
 	// 닫혀 있는 동안에도 목록이 바뀌면(만들기 화면에서 만듦) 다시 그린다. AddUObject는 이 위젯이 사라지면 저절로 건너뛴다.
 	Session().OnPacket.AddUObject(this, &UMmoCharacterSelectWidget::HandlePacket);
+	// 언어가 바뀌면 칸의 글(이름과 직업)을 다시 채운다.
+	Session().OnLanguageChanged.AddUObject(this, &UMmoCharacterSelectWidget::Refresh);
 }
 
 void UMmoCharacterSelectWidget::NativeConstruct()
@@ -66,7 +68,7 @@ void UMmoCharacterSelectWidget::HandleStartClicked()
 		return;
 	}
 	bEntering = true;
-	StatusText->SetText(LOCTEXT("Entering", "들어가는 중…"));
+	StatusText->SetText(MmoText::Get(this, TEXT("select.entering")));
 	Session().EnterWorld(Session().Characters().characters(Selected).id());
 	Refresh();
 }
@@ -90,7 +92,7 @@ void UMmoCharacterSelectWidget::HandlePacket(const portfolio::mmo::Packet& Packe
 		&& Packet.enter_world_result().result() != portfolio::mmo::ENTER_WORLD_RESULT_CODE_OK)
 	{
 		bEntering = false;
-		StatusText->SetText(LOCTEXT("NoSuchCharacter", "그 캐릭터로 들어갈 수 없습니다."));
+		StatusText->SetText(MmoText::Get(this, TEXT("select.enterFailed")));
 		Refresh();
 	}
 }
@@ -112,8 +114,8 @@ void UMmoCharacterSelectWidget::Refresh()
 		Buttons[Index]->SetIsEnabled(bFilled && !bEntering);
 		Buttons[Index]->SetSelected(Index == Selected);
 		Buttons[Index]->SetLabel(bFilled
-			? FText::Format(LOCTEXT("Slot", "{0}  ({1})"), FText::FromString(UTF8_TO_TCHAR(List.characters(Index).name().c_str())), ClassName(List.characters(Index).character_class()))
-			: LOCTEXT("EmptySlot", "빈 칸"));
+			? MmoText::Format(this, TEXT("select.slot"), { UTF8_TO_TCHAR(List.characters(Index).name().c_str()), MmoText::Get(this, ClassKey(List.characters(Index).character_class())).ToString() })
+			: MmoText::Get(this, TEXT("select.emptySlot")));
 	}
 	StartButton->SetIsEnabled(Selected != INDEX_NONE && !bEntering);
 	CreateButton->SetIsEnabled(List.characters_size() < portfolio::mmo::CONSTANT_MAX_CHARACTERS && !bEntering);
@@ -124,4 +126,3 @@ UMmoSession& UMmoCharacterSelectWidget::Session() const
 	return *GetGameInstance()->GetSubsystem<UMmoSession>();
 }
 
-#undef LOCTEXT_NAMESPACE

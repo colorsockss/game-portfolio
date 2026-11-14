@@ -1,5 +1,6 @@
 #include "UI/MmoNameTagLayer.h"
 
+#include "UI/MmoText.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/CanvasPanel.h"
@@ -148,9 +149,8 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 		float Hp = -1.0f;
 		if (Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER)
 		{
-			// shortcut: 이름은 Strings의 키를 그대로 보인다. 문자열 테이블(backlog 74)이 생기면 그 글로 바꾼다.
 			const portfolio::mmo::data::MonstersRow* Row = Session->Data().Monster(Info.template_id());
-			Tag.SetName(Row ? FString::Printf(TEXT("%s  Lv %u"), UTF8_TO_TCHAR(Row->name_key().c_str()), Row->level()) : FString(),
+			Tag.SetName(Row ? MmoText::Format(this, TEXT("hud.level"), { MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString(), FString::FromInt(Row->level()) }).ToString() : FString(),
 				Row && Row->aggressive() ? AggressiveColor : FLinearColor::White);
 			Hp = Info.max_hp() > 0 ? static_cast<float>(Info.hp()) / Info.max_hp() : -1.0f;
 		}
@@ -175,11 +175,11 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 			const portfolio::mmo::data::EffectsRow* Row = Session->Data().Effect(Effect.effect_id());
 			if (Row && Row->kind() == portfolio::mmo::data::EFFECT_KIND_STUN)
 			{
-				Status += TEXT("[기절]");
+				Status += TEXT("[") + MmoText::Get(this, TEXT("effect.stun")).ToString() + TEXT("]");
 			}
 			else if (Row && Row->kind() == portfolio::mmo::data::EFFECT_KIND_SLOW)
 			{
-				Status += TEXT("[감속]");
+				Status += TEXT("[") + MmoText::Get(this, TEXT("effect.slow")).ToString() + TEXT("]");
 			}
 		}
 		Tag.SetStatus(Status);

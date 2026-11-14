@@ -1,0 +1,19 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message StringsRow {
+  // 문장 키. 앞부분이 쓰는 곳이다(화면, 테이블은 zone·monster·skill). 코드와 테이블의 이름 열(ref Strings)이 이 키를 쓴다
+  string id = 1;
+  // 한국어. {0}, {1}은 코드가 넘기는 값이다
+  string ko = 2;
+  // 영어. 한국어와 같은 {0}, {1}을 쓴다
+  string en = 3;
+}
+
+message Strings {
+  repeated StringsRow rows = 1;
+}
