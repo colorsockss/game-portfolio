@@ -1,5 +1,9 @@
 #include "Net/MmoSession.h"
 
+#include <utility>
+
+#include "Game/MmoGameUserSettings.h"
+
 #include "Engine/GameInstance.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -66,14 +70,12 @@ void UMmoSession::LoadData()
 		{
 			GameData = *Loaded;
 			StringTable.Load(GameData.Strings);
+			// 기기에 남긴 언어(77. 처음에는 기기의 언어)로 시작한다. 개발용 -MmoLanguage=ko|en이 이긴다.
+			FString Language = UMmoGameUserSettings::Get().LanguageCode();
 #if !UE_BUILD_SHIPPING
-			// 개발용: -MmoLanguage=en이면 영어로 시작한다(언어 설정 77 전).
-			FString Language;
-			if (FParse::Value(FCommandLine::Get(), TEXT("MmoLanguage="), Language) && Language == TEXT("en"))
-			{
-				StringTable.SetLanguage(MmoData::ELanguage::English);
-			}
+			FParse::Value(FCommandLine::Get(), TEXT("MmoLanguage="), Language);
 #endif
+			StringTable.SetLanguage(Language == TEXT("en") ? MmoData::ELanguage::English : MmoData::ELanguage::Korean);
 			FieldMap = MmoWorld::FFieldMap::Make(GameData.Constants.field_size(), GameData.Zones.rows(), GameData.Grid);
 			if (!FieldMap)
 			{
@@ -111,6 +113,15 @@ void UMmoSession::LogIn(const FString& InLoginId)
 
 void UMmoSession::LogOut()
 {
+	// 월드 안이면 Logout을 보내고 서버가 저장하고 닫기를 기다린다(77). 닫히면 끊김 알림이 아니라 로그아웃으로 알린다.
+	if (WorldState.InWorld() && Connection().IsConnected())
+	{
+		bLoggingOut = true;
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_logout();
+		Connection().Send(Packet);
+		return;
+	}
 	// 직접 닫으면 연결은 OnClosed를 보내지 않으므로 끊김을 여기서 처리한다.
 	Connection().Close();
 	HandleClosed(LoggedOutReason);
@@ -220,8 +231,10 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 	OnPacket.Broadcast(Packet);
 }
 
-void UMmoSession::HandleClosed(const FString& Reason)
+void UMmoSession::HandleClosed(const FString& InReason)
 {
+	// 내가 로그아웃해 서버가 닫은 것은 끊김이 아니다(다시 붙지 않는 판단은 64가 씀).
+	const FString Reason = std::exchange(bLoggingOut, false) ? LoggedOutReason : InReason;
 	// 보이던 개체(내 캐릭터 포함)가 모두 나간 것으로 큐에 들어가 화면이 지운다.
 	WorldState.Reset();
 	CombatState.Reset();

@@ -640,12 +640,27 @@ namespace
 	bool CreateSettings()
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Settings, UMmoSettingsWidget::StaticClass());
-		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
+		UVerticalBox* Column = Builder.Window(Style.WindowWide, Style.Dim);
 		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("settings.title"), Style.TitleSize), Style.Section);
+		// 기기에 남기는 설정의 줄(77)과 시연 표시(30)를 두 칸씩. 글(지금 값)은 기반 클래스가 채운다.
+		const auto Pair = [&](const TCHAR* Name, const TCHAR* Left, const TCHAR* Right)
+		{
+			UHorizontalBox* Line = Builder.Add<UHorizontalBox>(Name);
+			for (const TCHAR* Button : { Left, Right })
+			{
+				UHorizontalBoxSlot* Slot = Line->AddChildToHorizontalBox(Builder.Button(Button, FText::GetEmpty()));
+				Slot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+				Slot->SetPadding(FMargin(Button == Left ? 0.0f : Style.Gap * 0.5f, 0.0f, Button == Left ? Style.Gap * 0.5f : 0.0f, 0.0f));
+			}
+			AddWithGap(*Column, Line);
+		};
+		Pair(TEXT("Volumes"), TEXT("EffectVolumeButton"), TEXT("MusicVolumeButton"));
+		Pair(TEXT("Graphics"), TEXT("QualityButton"), TEXT("FrameButton"));
+		Pair(TEXT("Options"), TEXT("LanguageButton"), TEXT("ShakeButton"));
+		AddWithGap(*Column, Builder.Button(TEXT("StatsButton"), FText::GetEmpty()), Style.Section);
 		AddWithGap(*Column, Builder.Button(TEXT("CharacterSelectButton"), TEXT("settings.characterSelect")));
 		AddWithGap(*Column, Builder.Button(TEXT("LogOutButton"), TEXT("settings.logOut")));
-		// 시연 표시의 줄. 글(켬/끔)은 기반 클래스가 채운다.
-		AddWithGap(*Column, Builder.Button(TEXT("StatsButton"), FText::GetEmpty()));
+		AddWithGap(*Column, Builder.Button(TEXT("QuitButton"), TEXT("settings.quit")));
 		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
 	}

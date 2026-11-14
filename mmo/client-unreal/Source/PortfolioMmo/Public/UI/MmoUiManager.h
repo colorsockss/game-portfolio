@@ -93,6 +93,12 @@ public:
 	/** 월드를 떠나 캐릭터 선택으로 돌아간다(설정 창의 버튼). 연결은 그대로다. */
 	void ReturnToCharacterSelect();
 
+	/** 확인 팝업을 거쳐 캐릭터 선택으로 돌아간다(설정 창. 77). */
+	void ConfirmCharacterSelect();
+
+	/** 확인 팝업을 거쳐 게임을 끝낸다(설정 창의 게임 종료. 77). 월드 안이면 로그아웃을 마친 뒤 끝낸다. */
+	void QuitGame();
+
 private:
 	void Show(MmoScreen::EScreen Screen, UUserWidget& Widget, const FOnShown& OnShown);
 	void ApplyInputMode();
@@ -124,4 +130,7 @@ private:
 	FDelegateHandle PacketHandle;
 	FDelegateHandle ClosedHandle;
 	FDelegateHandle LanguageHandle;
+
+	/** 게임 종료로 로그아웃하는 중이다(닫히면 앱을 끝냄). */
+	bool bQuitting = false;
 };

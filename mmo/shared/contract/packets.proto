@@ -23,6 +23,7 @@ message Packet {
     LeaveWorld leave_world = 11;
     ActionFailed action_failed = 12;
     DevCommand dev_command = 13;
+    Logout logout = 14;
 
     // 100–199: 월드(이동과 시야)
     Move move = 100;
@@ -256,6 +257,9 @@ enum EnterWorldResultCode {
 }
 
 // 클라이언트 → 서버. 캐릭터 선택으로 돌아간다. 월드에 있을 때만 보낼 수 있다. 서버는 캐릭터를 저장하고 월드에서 뺀 뒤
+// 클라이언트 → 서버. 로그아웃한다(77): 월드에 있으면 그 틱에 캐릭터를 빼며 사본을 넣고, 남은 패킷을 보낸 뒤 연결을 닫는다. 죽은 동안과 기절한 동안에도 받는다.
+message Logout {}
+
 // CharacterList를 보낸다. 연결은 그대로다.
 message LeaveWorld {}
 

@@ -1,5 +1,10 @@
 #include "UI/MmoUiManager.h"
 
+#include <utility>
+
+#include "Game/MmoGameUserSettings.h"
+#include "Kismet/KismetSystemLibrary.h"
+
 #include "World/DevCommand.h"
 
 #include "UI/MmoText.h"
@@ -103,6 +108,8 @@ private:
 void UMmoUiManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+	// 기기에 남긴 설정의 엔진 쪽(프레임 상한, 해상도 배율, 그림자, 카메라 흔들림)을 시작할 때 적용한다(77. 소리는 월드에 들어갈 때).
+	UMmoGameUserSettings::Get().ApplyMmo(nullptr);
 	if (FSlateApplication::IsInitialized())
 	{
 		TouchReleaser = MakeShared<FMmoTouchReleaser>(Touches);
@@ -292,6 +299,27 @@ void UMmoUiManager::LogOut()
 	});
 }
 
+void UMmoUiManager::ConfirmCharacterSelect()
+{
+	Confirm(MmoText::Get(GetLocalPlayer(), TEXT("settings.characterSelectQuestion")), [this] { ReturnToCharacterSelect(); });
+}
+
+void UMmoUiManager::QuitGame()
+{
+	Confirm(MmoText::Get(GetLocalPlayer(), TEXT("settings.quitQuestion")), [this]
+	{
+		// 월드 안이면 로그아웃과 같은 길(Logout을 보내고 서버가 닫기를 기다림)로 나간 뒤 끝낸다(77).
+		if (Session().World().InWorld())
+		{
+			bQuitting = true;
+			Session().LogOut();
+			return;
+		}
+		Session().LogOut();
+		UKismetSystemLibrary::QuitGame(GetLocalPlayer()->GetWorld(), nullptr, EQuitPreference::Quit, false);
+	});
+}
+
 void UMmoUiManager::ReturnToCharacterSelect()
 {
 	Session().LeaveWorld();
@@ -364,6 +392,10 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 	{
 		Close(EScreen::Login);
 		Open(EScreen::CharacterSelect);
+		// 마지막으로 쓴 ID를 기기에 남긴다(77. 로그인 화면이 채워 둠).
+		UMmoGameUserSettings& Settings = UMmoGameUserSettings::Get();
+		Settings.LastLoginId = Session().LoginId();
+		Settings.SaveSettings();
 	}
 	else if (Packet.body_case() == portfolio::mmo::Packet::kEnterWorldResult
 		&& Packet.enter_world_result().result() == portfolio::mmo::ENTER_WORLD_RESULT_CODE_OK)
@@ -371,6 +403,8 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		Close(EScreen::CharacterCreate);
 		Close(EScreen::CharacterSelect);
 		Open(EScreen::Hud);
+		// 기기에 남긴 설정(소리의 두 크기, 이펙트 상한 등)을 이 월드의 연출에 적용한다(77).
+		UMmoGameUserSettings::Get().ApplyMmo(GetLocalPlayer()->GetWorld());
 		OpenFromCommandLine();
 #if !UE_BUILD_SHIPPING
 		// 개발용: -MmoDevCommand="level 5"면 처음 월드에 들어간 뒤 한 번 그 개발 명령을 보낸다(콘솔을 열지 않고 확인과 시연을 맞춤. --dev 서버만 실행).
@@ -532,6 +566,11 @@ void UMmoUiManager::OpenFromCommandLine()
 
 void UMmoUiManager::HandleClosed(const FString& Reason)
 {
+	if (std::exchange(bQuitting, false))
+	{
+		UKismetSystemLibrary::QuitGame(GetLocalPlayer()->GetWorld(), nullptr, EQuitPreference::Quit, false);
+		return;
+	}
 	const bool bWasPlaying = Stack.IsOpen(EScreen::Hud);
 	Close(EScreen::Confirm);
 	Close(EScreen::Settings);

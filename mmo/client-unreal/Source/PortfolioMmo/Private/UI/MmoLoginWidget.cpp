@@ -1,5 +1,7 @@
 #include "UI/MmoLoginWidget.h"
 
+#include "Game/MmoGameUserSettings.h"
+
 #include "UI/MmoText.h"
 #include "UI/MmoButtonWidget.h"
 #include "Components/EditableTextBox.h"
@@ -45,6 +47,11 @@ void UMmoLoginWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	LoginIdBox->SetHintText(MmoText::Get(this, TEXT("login.idHint")));
+	if (LoginIdBox->GetText().IsEmpty())
+	{
+		// 마지막으로 쓴 ID(77).
+		LoginIdBox->SetText(FText::FromString(UMmoGameUserSettings::Get().LastLoginId));
+	}
 	// 화면이 뜨면 바로 아이디를 칠 수 있게 한다.
 	LoginIdBox->SetKeyboardFocus();
 }

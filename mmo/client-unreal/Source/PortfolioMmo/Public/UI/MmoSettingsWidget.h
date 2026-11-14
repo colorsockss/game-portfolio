@@ -26,8 +26,38 @@ private:
 	UFUNCTION()
 	void HandleCloseClicked();
 
+	UFUNCTION()
+	void HandleQuitClicked();
+
 	/** 시연 표시의 줄에 지금 켰는지를 보인다. */
 	void ShowStatsLabel();
+
+	/** 기기에 남기는 설정의 줄(77)의 글을 지금 값으로 채운다. */
+	void ShowSettingLabels();
+
+	/** 설정을 바꾼 뒤: 바로 적용하고 기기에 남기고 글을 고친다. */
+	void Changed();
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> EffectVolumeButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> MusicVolumeButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> QualityButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> FrameButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> LanguageButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> ShakeButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> QuitButton;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> CharacterSelectButton;

@@ -812,3 +812,36 @@ I
 fail.storageFull창고가 가득 찼습니다.Your storage is full.
 
 menu.map지도Map
+5
+settings.effectVolume효과음 {0}%Effects {0}%
+2
+settings.musicVolume배경음 {0}%
+Music {0}%
+8
+settings.quality그래픽 품질: {0}Graphics: {0}
+"
+settings.qualityLow낮음Low
+(
+settings.qualityMedium중간Medium
+$
+settings.qualityHigh높음High
+>
+settings.frameLimit프레임 상한: {0}Frame limit: {0}
+3
+settings.frameUnlimited제한 없음	Unlimited
+/
+settings.language언어: {0}Language: {0}
++
+settings.languageKo	한국어	한국어
+'
+settings.languageEnEnglishEnglish
+>
+settings.shakeOn카메라 흔들림: 켬Camera shake: On
+@
+settings.shakeOff카메라 흔들림: 끔Camera shake: Off
+)
+settings.quit게임 종료	Quit Game
+@
+settings.quitQuestion게임을 끝낼까요?Quit the game?
+h
+ settings.characterSelectQuestion'캐릭터 선택으로 돌아갈까요?Return to character select?

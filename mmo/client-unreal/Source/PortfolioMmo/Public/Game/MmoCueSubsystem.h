@@ -33,7 +33,10 @@ class PORTFOLIOMMO_API UMmoCueSubsystem : public UTickableWorldSubsystem
 
 public:
 	/** 동시에 켜는 이펙트의 상한. shortcut: 한 값이다. 그래픽 품질의 단계(77)가 생기면 그 단계가 정한다. */
-	static constexpr int32 MaxActiveEffects = 32;
+	/** 동시에 켜는 이펙트 수의 상한. 그래픽 품질의 단계가 정한다(77). */
+	int32 MaxActiveEffects = 32;
+
+	void SetEffectLimit(int32 Limit) { MaxActiveEffects = Limit; }
 
 	/** 같은 소리를 한 번에 트는 수의 상한(처음 값). */
 	static constexpr int32 MaxSameSound = 8;

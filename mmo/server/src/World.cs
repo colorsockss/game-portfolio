@@ -228,6 +228,11 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.LeaveWorld when player != null:
                     _login.LeaveWorld(session);
                     break;
+                // 로그아웃(77)은 죽은 동안과 기절한 동안에도 받는다(Blocked가 막지 않음). 캐릭터를 빼며 사본을 넣고 남은 패킷을 보낸 뒤 닫는다.
+                case Packet.BodyOneofCase.Logout when session.LoginId != null:
+                    _login.LogOut(session);
+                    session.Close();
+                    break;
                 case Packet.BodyOneofCase.Move when player != null:
                     Answer(player, _movement.Move(player, packet.Move), RequestKind.Unspecified);
                     _progress.Moved(player);

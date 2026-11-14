@@ -36,8 +36,11 @@ public:
 	/** 서버에 연결해 LoginId로 로그인한다. 결과는 OnPacket의 LoginResult로, 실패는 OnClosed로도 온다. */
 	void LogIn(const FString& InLoginId);
 
-	/** 연결을 닫는다. OnClosed가 LoggedOutReason으로 온다. */
+	/** 로그아웃한다(77): 월드 안이면 Logout을 보내고 서버가 닫기를 기다리며, 아니면 연결을 닫는다. 어느 쪽이든 OnClosed가 LoggedOutReason으로 온다. */
 	void LogOut();
+
+	/** 로그아웃을 보내고 서버가 닫기를 기다리는 중이다. */
+	bool IsLoggingOut() const { return bLoggingOut; }
 
 	/** 캐릭터를 만든다(캐릭터 선택 중). 결과는 OnPacket의 CreateCharacterResult와 바뀐 CharacterList로 온다. */
 	void CreateCharacter(const FString& Name, portfolio::mmo::CharacterClass Class);
@@ -113,6 +116,7 @@ private:
 	MmoWorld::FInventory InventoryState;
 	MmoWorld::FInventory StorageState{ true };
 	MmoWorld::FSkillBook SkillBook;
+	bool bLoggingOut = false;
 	portfolio::mmo::CharacterList CharacterList;
 	/** 시작할 때 한 번 읽은 기획 데이터. 읽지 못하면 해시가 0이라 서버가 DATA_MISMATCH로 거절한다. */
 	MmoData::FGameData GameData;
