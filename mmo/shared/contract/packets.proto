@@ -47,6 +47,8 @@ message Packet {
     ProgressCancelled progress_cancelled = 212;
     EffectApplied effect_applied = 213;
     Cooldowns cooldowns = 214;
+    ProjectileLaunched projectile_launched = 215;
+    ProjectileEnded projectile_ended = 216;
 
     // 300–399: 성장과 아이템
     SelfStats self_stats = 300;
@@ -482,7 +484,8 @@ message Revived {
 }
 
 // 클라이언트 → 서버. 스킬을 쓴다. target_id는 대상(0이면 대상 없음). 중심이 자기인 스킬과 자기에게 쓰는 회복·강화는 대상을 보지 않는다.
-// force_attack은 강제 공격 표시이고 값을 보는 규칙은 44가 넣는다. 방향은 싣지 않는다.
+// force_attack은 강제 공격 표시이고 값을 보는 규칙은 44가 넣는다. 방향은 싣지 않는다. 직선 발사체의 스킬은 대상, 사거리, 선을 보지 않고
+// 나가는 틱에 대상(없거나 죽었으면 캐릭터가 보는 쪽)으로 방향을 정한다.
 message UseSkill {
   uint32 skill_id = 1;
   uint32 target_id = 2;
@@ -490,7 +493,8 @@ message UseSkill {
 }
 
 // 서버 → 클라이언트. 스킬 동작의 시작(시전 시간이 있으면 발동). 결과는 타격까지의 시간 뒤에 따로 온다. 받는 연결과 번호 0의 규칙은 AttackSwing과 같고,
-// 대상이 없거나 자기에게 쓴 스킬은 target_id가 시전자다.
+// 대상이 없거나 자기에게 쓴 스킬은 target_id가 시전자다. 직선 발사체의 스킬은 쏜 쪽을 받은 연결과 쏜 쪽 자신에게 가고, 실린 대상의 번호를
+// 받지 않은 개체여도 0으로 바꾸지 않는다(대상은 방향만 정하고 서버가 확인하지 않음).
 message SkillUsed {
   uint32 caster_id = 1;
   uint32 skill_id = 2;
@@ -524,4 +528,23 @@ message Cooldowns {
 message Cooldown {
   uint32 skill_id = 1;
   uint32 end_tick = 2;
+}
+
+// 서버 → 클라이언트. 서버가 옮기는 직선 발사체가 나갔다(그 틱). 나간 자리(x, z)에서 yaw 쪽으로 speed(좌표 단위의 초당 값)로 날아가므로
+// 클라이언트는 "나간 자리 + 방향 × 속도 × (서버 틱 − tick) ÷ 초당 틱 수"에 그린다. 방향은 서버가 발사체를 옮기는 값과 같다.
+// 쏜 쪽을 받은 연결과 쏜 쪽 자신에게 간다. id는 서버가 매긴 발사체의 번호이고 개체 번호와는 다른 공간이다.
+message ProjectileLaunched {
+  uint32 id = 1;
+  uint32 caster_id = 2;
+  sint32 x = 3;
+  sint32 z = 4;
+  uint32 tick = 5;
+  uint32 yaw = 6;
+  uint32 speed = 7;
+}
+
+// 서버 → 클라이언트. 직선 발사체의 끝(맞음, 벽, 사거리, 쏜 쪽이 죽거나 기절함). 받는 연결은 ProjectileLaunched와 같고, 쏜 쪽이 월드에서
+// 빠져 끝난 것은 보내지 않는다(받은 쪽은 쏜 쪽의 EntitiesLeave로 지움). 맞은 결과는 Damaged와 EffectApplied가 따로 알린다.
+message ProjectileEnded {
+  uint32 id = 1;
 }

@@ -105,6 +105,10 @@ private:
 	UPROPERTY()
 	TMap<uint32, TObjectPtr<UNiagaraComponent>> ProjectileEffects;
 
+	/** 직선 발사체(서버의 번호) → 그 발사체에 붙인 이펙트. 따라가는 발사체와 번호 공간이 달라 따로 둔다. */
+	UPROPERTY()
+	TMap<uint32, TObjectPtr<UNiagaraComponent>> LineEffects;
+
 	/** 타격까지의 시간 뒤에 틀 스킬의 맞는 연출: 틀 때(초), 스킬, 그 자리의 개체. */
 	struct FPendingHit
 	{

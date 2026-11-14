@@ -36,6 +36,7 @@ namespace PortfolioMmo.Server
             foreach (MonstersRow row in monsters.Rows)
             {
                 _monsters.Add(row.Id, row);
+                MaxMonsterRadius = Math.Max(MaxMonsterRadius, row.Radius);
             }
 
             foreach (LevelsRow row in levels.Rows)
@@ -59,6 +60,11 @@ namespace PortfolioMmo.Server
         /// 생성물 전체의 해시. 클라이언트가 Login.data_hash에 실어 보낸 값과 다르면 로그인을 거절한다.
         /// </summary>
         public ulong Hash { get; }
+
+        /// <summary>
+        /// Monsters의 가장 큰 반지름(m). 직선 발사체가 후보를 찾는 넓이에 더한다.
+        /// </summary>
+        public double MaxMonsterRadius { get; }
 
         /// <summary>
         /// 밸런스의 수(키-값 테이블).

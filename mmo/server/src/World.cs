@@ -33,6 +33,7 @@ namespace PortfolioMmo.Server
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
         private readonly SkillSystem _skills;
+        private readonly ProjectileSystem _projectiles;
 
         /// <summary>
         /// 빈 월드를 만든다.
@@ -49,8 +50,10 @@ namespace PortfolioMmo.Server
             _progress = new ProgressSystem(_entities, _scheduler, _events);
             _effects = new EffectSystem(_entities, _scheduler, _events, stats, _progress, data);
             _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events, _progress);
-            _skills = new SkillSystem(_entities, _grid, field, _scheduler, data, _events, _combat, _effects, _progress);
+            _projectiles = new ProjectileSystem(_entities, _grid, field, data, _events, _combat, _effects);
+            _skills = new SkillSystem(_entities, _grid, field, _scheduler, data, _events, _combat, _effects, _progress, _projectiles);
             _combat.Skills = _skills;
+            _combat.Projectiles = _projectiles;
             // 놓인 점의 번호는 플레이어보다 먼저 받는다.
             _spawn = new SpawnSystem(data, field, _entities, _grid, _ai, _scheduler, random);
             _spawn.PlaceAll();
@@ -76,6 +79,11 @@ namespace PortfolioMmo.Server
         internal ProgressSystem Progress => _progress;
 
         internal EffectSystem Effects => _effects;
+
+        /// <summary>
+        /// 날고 있는 직선 발사체(테스트가 수를 봄).
+        /// </summary>
+        internal ProjectileSystem Projectiles => _projectiles;
 
         /// <summary>
         /// 개체를 옮긴다(테스트가 플레이어를 둠).

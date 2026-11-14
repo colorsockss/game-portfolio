@@ -1,6 +1,6 @@
 #pragma once
 
-// 내 대상과 기본 공격, 스킬 쓰기와 쿨다운, 화면이 꺼내 갈 전투 사건, 따라가는 발사체(엔진 없는 코드). Unity 클라이언트가 같은 구조를 C#으로 옮긴다.
+// 내 대상과 기본 공격, 스킬 쓰기와 쿨다운, 화면이 꺼내 갈 전투 사건, 따라가는 발사체와 서버가 옮기는 직선 발사체(엔진 없는 코드). Unity 클라이언트가 같은 구조를 C#으로 옮긴다.
 // 서버의 패킷은 FWorldState에 먼저 반영(체력, 죽음, 효과, 진행 중인 일)한 뒤 여기에 넘긴다. 보낼 요청(AttackStart, AttackStop, UseSkill)은
 // 함수가 돌려주고 부르는 쪽이 보낸다.
 #include <cstdint>
@@ -81,6 +81,23 @@ namespace MmoWorld
 		double Speed = 0;
 	};
 
+	/** 서버가 옮기는 직선 발사체 하나(83). ProjectileLaunched가 실은 나간 자리와 틱에서 계산하고, 쏜 쪽을 그린 자리나 받은 때로 어림하지 않는다. */
+	struct FLineProjectile
+	{
+		/** 서버가 매긴 번호(ProjectileEnded가 가리킴). 따라가는 발사체의 번호와는 다른 공간이다. */
+		uint32_t Id = 0;
+		uint32_t Caster = 0;
+		int32_t X = 0;
+		int32_t Z = 0;
+		uint32_t Tick = 0;
+		uint32_t Yaw = 0;
+		/** 속도(좌표 단위/초). */
+		uint32_t Speed = 0;
+
+		/** 서버 틱 ServerTick(어림한 소수 틱)에 그릴 자리: 나간 자리 + 방향 × 속도 × (ServerTick − 나간 틱). 나간 틱 전이면 나간 자리다. */
+		FPose At(double ServerTick) const;
+	};
+
 	class FCombatState
 	{
 	public:
@@ -119,14 +136,20 @@ namespace MmoWorld
 
 		const std::vector<FProjectile>& Projectiles() const { return Flying; }
 
+		/** 날고 있는 직선 발사체(ProjectileLaunched부터 ProjectileEnded나 쏜 쪽의 나감까지). */
+		const std::vector<FLineProjectile>& LineProjectiles() const { return Lines; }
+
 		/** 퀵슬롯의 스킬(앞 칸부터, 최대 CONSTANT_QUICKSLOT_COUNT). 임시: 스킬 배우기(36) 전에는 그 직업의 스킬을 모두 번호 차례로 둔다. */
 		static std::vector<uint32_t> Quickslots(const MmoData::FGameData& Data, uint32_t CharacterClass);
 
 		/** 대상에게 쓰는 스킬인가(단일 피해, 상태 이상, 대상 중심의 범위 피해). 아니면 그 자리에서 쓴다(대상이 있어도 다가가지 않음). */
 		static bool TargetsOther(const portfolio::mmo::data::SkillsRow& Skill);
 
+		/** 서버가 옮기는 직선 발사체로 나가는 스킬인가(발사체의 속도가 있음, 83). 대상이 없어도 쓰고, 있으면 다른 대상 스킬처럼 다가간다. */
+		static bool Launches(const portfolio::mmo::data::SkillsRow& Skill);
+
 		/**
-		 * 퀵슬롯의 스킬을 누른다: 죽음, 기절, 진행 중, 쿨다운, 마나, 대상(대상에게 쓰는 스킬)을 먼저 보고, 통과하면 그 스킬을 기다리게 둔다
+		 * 퀵슬롯의 스킬을 누른다: 죽음, 기절, 진행 중, 쿨다운, 마나, 대상(직선 발사체가 아닌 대상 스킬)을 먼저 보고, 통과하면 그 스킬을 기다리게 둔다
 		 * (UpdateSkill이 이어 감). 어긋나면 그 이유이고 아무것도 보내지 않는다.
 		 */
 		portfolio::mmo::FailReason PressSkill(uint32_t SkillId, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds);
@@ -139,12 +162,13 @@ namespace MmoWorld
 
 		/**
 		 * 누른 스킬을 (X, Z)에서 할 일: 그 자리에서 쓰는 스킬은 Fire. 대상에게 쓰는 스킬은 지금 자리에서 칠 수 있으면(사거리, 선, 몬스터면 안전 지대 밖)
-		 * Fire, 아니면 Approach. 대상이 없어지거나 죽었으면 그만두고 None이다.
+		 * Fire, 아니면 Approach. 대상이 없어지거나 죽었으면 그만두고 None이다. 직선 발사체의 스킬은 살아 있는 대상이 없으면 바로 Fire다.
 		 */
 		FSkillStep UpdateSkill(const FWorldState& World, const FFieldMap& Field, const MmoData::FGameData& Data, int32_t X, int32_t Z);
 
 		/**
 		 * 누른 스킬을 보낸다: 시전 시간이 있으면 캐릭터를 세우고 밀린 위치를 먼저 보내며(Sender.Flush), 쥐고 있던 이동 입력을 놓을 때까지 무시한다.
+		 * 직선 발사체의 스킬도 밀린 위치와 방향을 먼저 보낸다(대상이 없으면 서버가 보는 쪽으로 쏨). 대상은 살아 있을 때만 싣는다.
 		 * 시전 시간이 없으면 쿨다운을 미리 돌린다. 내 동작(시전이면 ProgressStart, 아니면 Skill)을 미리 쌓고 답을 기다린다.
 		 */
 		FSkillFire FireSkill(const FWorldState& World, const MmoData::FGameData& Data, FMoveSender& Sender, int32_t X, int32_t Z, uint32_t Yaw, double NowSeconds);
@@ -192,5 +216,6 @@ namespace MmoWorld
 		FCooldowns SkillCooldowns;
 		std::vector<FCombatEvent> Events;
 		std::vector<FProjectile> Flying;
+		std::vector<FLineProjectile> Lines;
 	};
 }

@@ -7,9 +7,8 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 스킬(26). 입력 차례에 UseSkill을 확인하고 비용까지만 하며(시전 시간이 있으면 시전을 시작), 발동(SkillUsed)과 결과는 전투 차례에서 한다.
-    /// 피해는 CombatSystem.Hit을, 효과는 EffectSystem을, 시전은 ProgressSystem을 쓴다.
-    /// 임시 상태: 스킬 배우기(36) 전에는 자기 직업의 스킬을 모두 배운 것으로 본다. 직선으로 나는 발사체(83) 전에는 마법사의 첫째 스킬도
-    /// 대상에게 타격까지의 시간 뒤에 바로 맞는다. 파티(42) 전에는 회복과 강화가 늘 자기에게 쓰인다.
+    /// 피해는 CombatSystem.Hit을, 효과는 EffectSystem을, 시전은 ProgressSystem을, 발사체의 속도가 있는 스킬의 결과는 ProjectileSystem(83)을 쓴다.
+    /// 임시 상태: 스킬 배우기(36) 전에는 자기 직업의 스킬을 모두 배운 것으로 본다. 파티(42) 전에는 회복과 강화가 늘 자기에게 쓰인다.
     /// </summary>
     internal sealed class SkillSystem
     {
@@ -22,11 +21,13 @@ namespace PortfolioMmo.Server
         private readonly CombatSystem _combat;
         private readonly EffectSystem _effects;
         private readonly ProgressSystem _progress;
+        private readonly ProjectileSystem _projectiles;
         private readonly uint _combatTicks;
         private readonly List<Entity> _query = new List<Entity>();
 
         public SkillSystem(
-            EntityTable entities, Grid grid, FieldMap field, Scheduler scheduler, GameData data, TickEvents events, CombatSystem combat, EffectSystem effects, ProgressSystem progress)
+            EntityTable entities, Grid grid, FieldMap field, Scheduler scheduler, GameData data, TickEvents events, CombatSystem combat, EffectSystem effects, ProgressSystem progress,
+            ProjectileSystem projectiles)
         {
             _entities = entities;
             _grid = grid;
@@ -37,6 +38,7 @@ namespace PortfolioMmo.Server
             _combat = combat;
             _effects = effects;
             _progress = progress;
+            _projectiles = projectiles;
             _combatTicks = Units.TicksFromMilliseconds(data.Constants.CombatDurationMs);
         }
 
@@ -46,6 +48,14 @@ namespace PortfolioMmo.Server
         public static bool TargetsOther(SkillsRow skill)
         {
             return skill.Kind is SkillKind.SingleDamage or SkillKind.Debuff || ((skill.Kind == SkillKind.AreaDamage) && (skill.Center == SkillCenter.Target));
+        }
+
+        /// <summary>
+        /// 서버가 옮기는 직선 발사체로 나가는 스킬인가(83). 대상, 사거리, 선을 미리 보지 않고 실려 온 대상은 방향만 정한다.
+        /// </summary>
+        public static bool Launches(SkillsRow skill)
+        {
+            return skill.HasProjectileSpeed;
         }
 
         /// <summary>
@@ -140,11 +150,17 @@ namespace PortfolioMmo.Server
 
         /// <summary>
         /// 대상의 확인: 대상에게 쓰는 스킬은 대상이 있고 살아 있고 받은 개체인지, CanAttack, 복귀 중이 아닌지, 사거리, 선(사거리 안인데 막혔으면 막힘).
-        /// 그 자리에서 쓰는 스킬은 보지 않고 시전자에게 쓴다(회복과 강화의 파티원은 42).
+        /// 그 자리에서 쓰는 스킬은 보지 않고 시전자에게 쓴다(회복과 강화의 파티원은 42). 직선 발사체의 스킬은 보지 않고 실려 온 번호를 그대로 둔다.
         /// </summary>
         private FailReason CheckTarget(Player player, SkillsRow skill, uint requested, out uint targetId)
         {
             targetId = player.Id;
+            if (Launches(skill))
+            {
+                targetId = requested;
+                return FailReason.None;
+            }
+
             if (!TargetsOther(skill))
             {
                 return FailReason.None;
@@ -236,16 +252,25 @@ namespace PortfolioMmo.Server
 
         /// <summary>
         /// 발동: SkillUsed를 내고, 피해나 상태 이상을 주는 스킬이면 시전자를 전투 상태로 두며, 결과를 타격까지의 시간 뒤에 적용한다(0이면 지금).
+        /// 직선 발사체의 스킬은 결과 대신 발사체가 나간다.
         /// </summary>
         private void Begin(Creature caster, SkillsRow skill, uint targetId, uint tick)
         {
-            _events.SkillUsed(caster, skill.Id, _entities.Find(targetId) ?? caster);
+            if (Launches(skill))
+            {
+                _events.SkillUsedByCaster(caster, skill.Id, targetId != 0 ? targetId : caster.Id);
+            }
+            else
+            {
+                _events.SkillUsed(caster, skill.Id, _entities.Find(targetId) ?? caster);
+            }
+
             if (Offensive(skill))
             {
                 caster.CombatEndTick = tick + _combatTicks;
             }
 
-            if (targetId != caster.Id)
+            if ((targetId != caster.Id) && (_entities.Find(targetId) != null))
             {
                 caster.LastSkillTarget = targetId;
             }
@@ -262,9 +287,16 @@ namespace PortfolioMmo.Server
 
         /// <summary>
         /// 결과. 대상에게 쓰는 스킬은 대상이 결과를 받을 수 없게 됐으면(죽음, 월드에서 빠짐, CanAttack 거짓, 복귀 중) 아무것도 하지 않는다.
+        /// 직선 발사체의 스킬은 발사체를 내고, 결과는 발사체가 닿을 때 준다.
         /// </summary>
         private void Apply(Creature caster, SkillsRow skill, uint targetId, uint tick)
         {
+            if (Launches(skill))
+            {
+                _projectiles.Launch(caster, skill, targetId, tick);
+                return;
+            }
+
             switch (skill.Kind)
             {
                 case SkillKind.SingleDamage:

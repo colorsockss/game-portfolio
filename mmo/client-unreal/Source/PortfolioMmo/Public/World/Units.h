@@ -28,6 +28,14 @@ namespace MmoWorld::Units
 		return static_cast<uint32_t>((Milliseconds + MillisecondsPerTick - 1) / MillisecondsPerTick);
 	}
 
+	/** yaw 쪽의 단위 벡터(x, z). 서버의 Units.Direction과 같은 식이다(직선 발사체의 방향). */
+	inline void Direction(uint32_t Yaw, double& OutX, double& OutZ)
+	{
+		const double Radians = Yaw * 2.0 * 3.14159265358979323846 / YawSteps;
+		OutX = std::sin(Radians);
+		OutZ = std::cos(Radians);
+	}
+
 	/** 좌표 칸 → 미터. 보간한 소수 칸도 받는다. */
 	inline double ToMeters(double Cells)
 	{

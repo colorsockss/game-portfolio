@@ -36,6 +36,11 @@ namespace PortfolioMmo.Server
         /// </summary>
         public SkillSystem? Skills { get; set; }
 
+        /// <summary>
+        /// 직선 발사체를 옮기는 쪽(83). World가 만든 뒤에 잇는다(발사체가 이곳의 피해를 씀).
+        /// </summary>
+        public ProjectileSystem? Projectiles { get; set; }
+
         public CombatSystem(EntityTable entities, FieldMap field, Scheduler scheduler, StatSystem stats, GameData data, TickEvents events, ProgressSystem progress)
         {
             _entities = entities;
@@ -104,7 +109,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 전투 차례: 예약한 일이 넘긴 이 틱의 타격과 스킬의 일을 차례대로 하고, 공격 상태인 개체 가운데 다음 공격 틱이 된 것의 공격을 시작한다.
+        /// 전투 차례: 예약한 일이 넘긴 이 틱의 타격과 스킬의 일을 차례대로 하고, 직선 발사체를 옮기며(83), 공격 상태인 개체 가운데 다음 공격 틱이 된 것의 공격을 시작한다.
         /// 기절했거나 진행 중인 일이 있는 개체의 기본 공격은 끄지 않고 쉰다. 앞의 일로 이 차례에 죽거나 기절한 공격자의 일은 다시 보고 버린다.
         /// </summary>
         public void Step(uint tick)
@@ -130,6 +135,7 @@ namespace PortfolioMmo.Server
             }
 
             _scheduler.CombatJobs.Clear();
+            Projectiles?.Step(tick);
             foreach (Entity entity in _entities.All)
             {
                 if ((entity is Creature { Dead: false, Progress: null } attacker) && (attacker.AttackTarget != 0) && (attacker.NextAttackTick <= tick)

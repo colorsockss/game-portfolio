@@ -125,7 +125,19 @@ namespace MmoWorld
 				{
 					Release(Stop);
 				}
+				// 나간 쪽의 직선 발사체는 끝을 받지 못하므로 여기서 지운다.
+				std::erase_if(Lines, [Id](const FLineProjectile& Line) { return Line.Caster == Id; });
 			}
+			break;
+		case portfolio::mmo::Packet::kProjectileLaunched:
+		{
+			const portfolio::mmo::ProjectileLaunched& Launched = Packet.projectile_launched();
+			Lines.push_back({ Launched.id(), Launched.caster_id(), Launched.x(), Launched.z(), Launched.tick(), Launched.yaw(), Launched.speed() });
+			break;
+		}
+		case portfolio::mmo::Packet::kProjectileEnded:
+			// 모르는 번호(나간 뒤에 받은 끝 등)는 지울 것이 없다.
+			std::erase_if(Lines, [Id = Packet.projectile_ended().id()](const FLineProjectile& Line) { return Line.Id == Id; });
 			break;
 		case portfolio::mmo::Packet::kActionFailed:
 			// 다른 요청의 실패는 공격도 스킬도 건드리지 않는다.
@@ -248,6 +260,16 @@ namespace MmoWorld
 		SkillCooldowns.Reset();
 		Events.clear();
 		Flying.clear();
+		Lines.clear();
+	}
+
+	FPose FLineProjectile::At(double ServerTick) const
+	{
+		double DX = 0;
+		double DZ = 0;
+		Units::Direction(Yaw, DX, DZ);
+		const double Distance = Speed * std::max(0.0, ServerTick - Tick) / Units::TicksPerSecond;
+		return { X + DX * Distance, Z + DZ * Distance, static_cast<double>(Yaw) };
 	}
 
 	std::vector<uint32_t> FCombatState::Quickslots(const MmoData::FGameData& Data, uint32_t CharacterClass)
@@ -269,6 +291,11 @@ namespace MmoWorld
 	{
 		return Skill.kind() == portfolio::mmo::data::SKILL_KIND_SINGLE_DAMAGE || Skill.kind() == portfolio::mmo::data::SKILL_KIND_DEBUFF
 			|| (Skill.kind() == portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE && Skill.center() == portfolio::mmo::data::SKILL_CENTER_TARGET);
+	}
+
+	bool FCombatState::Launches(const portfolio::mmo::data::SkillsRow& Skill)
+	{
+		return Skill.has_projectile_speed();
 	}
 
 	portfolio::mmo::FailReason FCombatState::PressSkill(uint32_t SkillId, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds)
@@ -295,7 +322,7 @@ namespace MmoWorld
 		{
 			return portfolio::mmo::FAIL_REASON_NOT_ENOUGH_MP;
 		}
-		if (TargetsOther(*Skill))
+		if (TargetsOther(*Skill) && !Launches(*Skill))
 		{
 			const auto Target = World.Entities().find(TargetId);
 			if (Target == World.Entities().end() || Target->second.Info.dead())
@@ -324,6 +351,10 @@ namespace MmoWorld
 		const auto Target = World.Entities().find(TargetId);
 		if (Target == World.Entities().end() || Target->second.Info.dead())
 		{
+			if (Launches(*Skill))
+			{
+				return { FSkillStep::EKind::Fire };
+			}
 			Pending = 0;
 			return {};
 		}
@@ -347,19 +378,27 @@ namespace MmoWorld
 		{
 			Fire.bStop = true;
 			bHoldMove = true;
+		}
+		else
+		{
+			SkillCooldowns.Predict(Skill->id(), static_cast<uint32_t>(std::max(0.0, std::floor(World.Clock().Now(NowSeconds)))), Skill->cooldown_ms());
+		}
+		// 서버가 보는 자리와 쪽을 화면과 같게 한다(시전은 선 자리, 직선 발사체는 대상이 없을 때 쏘는 쪽).
+		if (Skill->cast_ms() > 0 || Launches(*Skill))
+		{
 			portfolio::mmo::Packet Move;
 			if (Sender.Flush(X, Z, Yaw, World.Ack(), *Move.mutable_move()))
 			{
 				Fire.Packets.push_back(Move);
 			}
 		}
-		else
-		{
-			SkillCooldowns.Predict(Skill->id(), static_cast<uint32_t>(std::max(0.0, std::floor(World.Clock().Now(NowSeconds)))), Skill->cooldown_ms());
-		}
 
 		// 그 자리에서 쓰는 스킬도 대상을 싣는다(파티원에게 쓰는 회복과 강화는 42). 자기 중심의 범위 피해는 대상이 없다.
-		const uint32_t Target = TargetsOther(*Skill) || Skill->kind() != portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE ? TargetId : 0;
+		// 직선 발사체는 살아 있는 대상만 싣는다(없으면 보는 쪽으로 나감).
+		const auto Held = World.Entities().find(TargetId);
+		const bool bLiveTarget = Held != World.Entities().end() && !Held->second.Info.dead();
+		const uint32_t Target = Launches(*Skill) ? (bLiveTarget ? TargetId : 0)
+			: TargetsOther(*Skill) || Skill->kind() != portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE ? TargetId : 0;
 		portfolio::mmo::Packet Use;
 		Use.mutable_use_skill()->set_skill_id(Skill->id());
 		Use.mutable_use_skill()->set_target_id(Target);

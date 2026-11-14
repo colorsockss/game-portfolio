@@ -210,8 +210,12 @@ void UMmoEntitySubsystem::ShowSkill(const MmoWorld::FCombatEvent& Event, const M
 		return;
 	}
 	// 자기 중심의 범위와 그 자리에서 쓰는 스킬은 시전자에, 나머지는 대상에 둔다. 시전자를 받지 않았으면(0) 대상 쪽만.
+	// 직선 발사체의 스킬은 빗나갈 수 있어 맞는 연출을 미리 두지 않는다(맞으면 피해의 연출이 남).
 	const uint32 Anchor = !MmoWorld::FCombatState::TargetsOther(*Skill) && Event.Attacker != 0 ? Event.Attacker : Event.Target;
-	PendingHits.Add({ FPlatformTime::Seconds() + Skill->hit_delay_ms() / 1000.0, Event.Skill, Anchor });
+	if (!MmoWorld::FCombatState::Launches(*Skill))
+	{
+		PendingHits.Add({ FPlatformTime::Seconds() + Skill->hit_delay_ms() / 1000.0, Event.Skill, Anchor });
+	}
 	const AActor* At = Actors.FindRef(Anchor);
 	if (At && Skill->kind() == portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE)
 	{
@@ -316,6 +320,33 @@ void UMmoEntitySubsystem::DrawCombat(const MmoWorld::FWorldState& World, MmoWorl
 	for (auto It = ProjectileEffects.CreateIterator(); It; ++It)
 	{
 		if (!Flying.Contains(It.Key()))
+		{
+			Cues().StopLoop(It.Value());
+			It.RemoveCurrent();
+		}
+	}
+
+	// 직선 발사체는 모델이 답한 자리(나간 자리와 틱에서 어림한 서버 틱까지)에 그리고, 끝 사건이나 쏜 쪽의 나감으로 목록에서 빠지면 그 자리에서 지운다.
+	const double ServerTick = World.Clock().Now(Now);
+	TSet<uint32> Lines;
+	for (const MmoWorld::FLineProjectile& Line : Combat.LineProjectiles())
+	{
+		const MmoWorld::FPose Pose = Line.At(ServerTick);
+		const FVector Location = MmoCoordinates::ToWorld(Pose.X, Pose.Z) + Chest;
+		TObjectPtr<UNiagaraComponent>& Effect = LineEffects.FindOrAdd(Line.Id);
+		if (!Effect)
+		{
+			Effect = Cues().StartLoop(EMmoCue::Projectile, CueKey(Line.Caster).Key, CueKey(Line.Caster).Value, Location);
+		}
+		if (Effect)
+		{
+			Effect->SetWorldLocation(Location);
+		}
+		Lines.Add(Line.Id);
+	}
+	for (auto It = LineEffects.CreateIterator(); It; ++It)
+	{
+		if (!Lines.Contains(It.Key()))
 		{
 			Cues().StopLoop(It.Value());
 			It.RemoveCurrent();

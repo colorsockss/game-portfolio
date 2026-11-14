@@ -1,3 +1,5 @@
+using System;
+
 namespace PortfolioMmo.Contract
 {
     /// <summary>
@@ -41,6 +43,24 @@ namespace PortfolioMmo.Contract
         public static uint TicksFromMilliseconds(uint milliseconds)
         {
             return (uint)(((ulong)milliseconds + MillisecondsPerTick - 1) / MillisecondsPerTick);
+        }
+
+        /// <summary>
+        /// (dx, dz) 쪽의 yaw(0이 +z, 위에서 볼 때 +x 쪽으로 는다). 가장 가까운 칸으로 반올림하고 0 이상 YawSteps 미만으로 감는다. (0, 0)이면 0이다.
+        /// </summary>
+        public static uint YawOf(double dx, double dz)
+        {
+            int steps = (int)Math.Round(Math.Atan2(dx, dz) / (2 * Math.PI) * YawSteps) % (int)YawSteps;
+            return (uint)(steps < 0 ? steps + (int)YawSteps : steps);
+        }
+
+        /// <summary>
+        /// yaw 쪽의 단위 벡터(dx, dz). 서버가 직선 발사체를 옮기는 방향이고 클라이언트도 같은 식으로 그린다.
+        /// </summary>
+        public static (double X, double Z) Direction(uint yaw)
+        {
+            double radians = yaw * 2 * Math.PI / YawSteps;
+            return (Math.Sin(radians), Math.Cos(radians));
         }
     }
 }

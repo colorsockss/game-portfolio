@@ -388,7 +388,7 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            uint yaw = (uint)(((int)Math.Round(Math.Atan2(dx, dz) / (2 * Math.PI) * Units.YawSteps) % (int)Units.YawSteps + (int)Units.YawSteps) % (int)Units.YawSteps);
+            uint yaw = Units.YawOf(dx, dz);
             if (yaw != monster.Yaw)
             {
                 monster.Yaw = yaw;

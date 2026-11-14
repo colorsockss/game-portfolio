@@ -45,7 +45,7 @@ namespace PortfolioMmo.Server.Tests
         };
 
         /// <summary>
-        /// 시험용 스킬(실제 데이터의 차례와 종류. 계수는 1이나 2이고 쿨다운은 1초, 마나는 10, 타격까지의 시간은 300 ms다).
+        /// 시험용 스킬(실제 데이터의 차례와 종류. 계수는 1이나 2이고 쿨다운은 1초, 마나는 10, 타격까지의 시간은 300 ms다). 201은 20 m/s(틱마다 1 m)의 직선 발사체다.
         /// 기사: 101 단일, 102 기절, 103 방어력 올림, 104 자기 중심 범위(4 m), 105 감속을 거는 단일, 106 공격력 올림.
         /// 마법사: 201 감속을 거는 단일(12 m), 202 대상 중심 범위(4 m, 시전 1.5초), 203 회복(계수 2, 시전 1초), 204 감속을 거는 자기 중심 범위(5 m),
         /// 205 시전하는 단일(시전 2초).
@@ -60,7 +60,7 @@ namespace PortfolioMmo.Server.Tests
                 Skill(104, 1, SkillKind.AreaDamage, 0, SkillCenter.Self, radius: 4),
                 Skill(105, 1, SkillKind.SingleDamage, 2, SkillCenter.Target, effect: 2),
                 Skill(106, 1, SkillKind.Buff, 0, SkillCenter.Self, coefficient: 0, effect: 4, hitDelayMs: 0),
-                Skill(201, 2, SkillKind.SingleDamage, 12, SkillCenter.Target, effect: 2),
+                Skill(201, 2, SkillKind.SingleDamage, 12, SkillCenter.Target, effect: 2, projectileSpeed: 20),
                 Skill(202, 2, SkillKind.AreaDamage, 12, SkillCenter.Target, radius: 4, castMs: 1500),
                 Skill(203, 2, SkillKind.Heal, 0, SkillCenter.Self, coefficient: 2, castMs: 1000),
                 Skill(204, 2, SkillKind.AreaDamage, 0, SkillCenter.Self, radius: 5, effect: 2),
@@ -69,7 +69,8 @@ namespace PortfolioMmo.Server.Tests
         };
 
         public static SkillsRow Skill(
-            uint id, uint characterClass, SkillKind kind, double range, SkillCenter center, double coefficient = 1, double radius = 0, uint castMs = 0, uint effect = 0, uint hitDelayMs = 300)
+            uint id, uint characterClass, SkillKind kind, double range, SkillCenter center, double coefficient = 1, double radius = 0, uint castMs = 0, uint effect = 0, uint hitDelayMs = 300,
+            double projectileSpeed = 0)
         {
             var row = new SkillsRow
             {
@@ -84,6 +85,11 @@ namespace PortfolioMmo.Server.Tests
             if (effect > 0)
             {
                 row.Effect = effect;
+            }
+
+            if (projectileSpeed > 0)
+            {
+                row.ProjectileSpeed = projectileSpeed;
             }
 
             return row;

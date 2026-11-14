@@ -4,7 +4,7 @@ using PortfolioMmo.Contract;
 namespace PortfolioMmo.Server
 {
     /// <summary>
-    /// 그 틱의 사건(공격 동작의 시작, 피해, 죽음. 뒤에는 스킬 사용, 진행 중인 일, 효과, 부활, 발사체, 범위 예고)을 난 순서대로 가진다.
+    /// 그 틱의 사건(공격 동작의 시작, 피해, 죽음, 스킬 사용, 진행 중인 일, 효과, 부활, 직선 발사체. 뒤에는 범위 예고)을 난 순서대로 가진다.
     /// 시야 차례가 들어옴·나감·움직임을 보낸 뒤 Deliver가 사건마다 "사건의 대상을 받은 연결 모두와 대상 자신"에게 넣는다.
     /// 받는 연결이 받지 않은 행위자(공격자, 죽인 개체)의 번호는 0으로 싣는다.
     /// </summary>
@@ -67,6 +67,28 @@ namespace PortfolioMmo.Server
                 caster,
                 new Packet { SkillUsed = new SkillUsed { CasterId = caster.Id, SkillId = skillId, TargetId = target.Id } },
                 new Packet { SkillUsed = new SkillUsed { SkillId = skillId, TargetId = target.Id } }));
+        }
+
+        /// <summary>
+        /// 직선 발사체의 스킬 동작의 시작. 대상은 방향만 정하고 확인하지 않으므로 쏜 쪽을 받은 연결과 쏜 쪽 자신에게 보내고, 대상의 번호는
+        /// 받는 연결이 받지 않은 개체여도 그대로 싣는다(83). 대상이 없으면 targetId가 시전자다.
+        /// </summary>
+        public void SkillUsedByCaster(Creature caster, uint skillId, uint targetId)
+        {
+            Self(caster, new Packet { SkillUsed = new SkillUsed { CasterId = caster.Id, SkillId = skillId, TargetId = targetId } });
+        }
+
+        /// <summary>
+        /// 직선 발사체가 나감과 끝. 쏜 쪽을 받은 연결과 쏜 쪽 자신에게 간다(83).
+        /// </summary>
+        public void ProjectileLaunched(Creature caster, ProjectileLaunched launched)
+        {
+            Self(caster, new Packet { ProjectileLaunched = launched });
+        }
+
+        public void ProjectileEnded(Creature caster, uint id)
+        {
+            Self(caster, new Packet { ProjectileEnded = new ProjectileEnded { Id = id } });
         }
 
         public void Progress(Creature creature)

@@ -1,5 +1,6 @@
 // 스킬 쓰기, 쿨다운, 효과, 진행 중인 일(World/의 CombatState, Cooldowns, WorldState)을 UE 없이 본다. 쿨다운의 규칙은 서버의
 // WorldSkillTests가 낸 비교 벡터(mmo/shared/vectors/cooldowns.tsv)로 맞춘다. run.mjs가 빌드하고 실행한다.
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
@@ -34,7 +35,8 @@ namespace
 	constexpr uint32_t Start = 100;
 
 	/**
-	 * 시험용 데이터: 101 단일(2 m), 103 강화(그 자리), 104 자기 중심 범위, 202 대상 중심 범위(12 m, 시전 1.5초), 205 단일(12 m, 시전 2초).
+	 * 시험용 데이터: 101 단일(2 m), 103 강화(그 자리), 104 자기 중심 범위, 201 직선 발사체(12 m, 20 m/s), 202 대상 중심 범위(12 m, 시전 1.5초),
+	 * 205 단일(12 m, 시전 2초).
 	 * 쿨다운은 1초, 마나는 10이다. 효과 1은 기절, 2는 감속 50%다.
 	 */
 	MmoData::FGameData Data()
@@ -54,6 +56,8 @@ namespace
 		Skill(101, portfolio::mmo::data::SKILL_KIND_SINGLE_DAMAGE, portfolio::mmo::data::SKILL_CENTER_TARGET, 2, 0);
 		Skill(103, portfolio::mmo::data::SKILL_KIND_BUFF, portfolio::mmo::data::SKILL_CENTER_SELF, 0, 0);
 		Skill(104, portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE, portfolio::mmo::data::SKILL_CENTER_SELF, 0, 0);
+		Skill(201, portfolio::mmo::data::SKILL_KIND_SINGLE_DAMAGE, portfolio::mmo::data::SKILL_CENTER_TARGET, 12, 0);
+		Result.Skills.mutable_rows(Result.Skills.rows_size() - 1)->set_projectile_speed(20);
 		Skill(202, portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE, portfolio::mmo::data::SKILL_CENTER_TARGET, 12, 1500);
 		Skill(205, portfolio::mmo::data::SKILL_KIND_SINGLE_DAMAGE, portfolio::mmo::data::SKILL_CENTER_TARGET, 12, 2000);
 		portfolio::mmo::data::EffectsRow* Stun = Result.Effects.add_rows();
@@ -164,8 +168,8 @@ namespace
 		}
 	};
 
-	/** 빈 Size m 필드. Safe의 x 칸(m)들은 안전 지대다. */
-	MmoWorld::FFieldMap Field(uint32_t Size, std::vector<int32_t> Safe = {})
+	/** 빈 Size m 필드. Safe의 x 칸(m)들은 안전 지대이고, Walls의 x 칸(m)들은 z 전체가 벽이다. */
+	MmoWorld::FFieldMap Field(uint32_t Size, std::vector<int32_t> Safe = {}, std::vector<int32_t> Walls = {})
 	{
 		portfolio::mmo::data::MapGrid Grid;
 		Grid.set_width(Size);
@@ -173,7 +177,15 @@ namespace
 		const int32_t Min = -static_cast<int32_t>(Size) / 2;
 		Grid.set_origin_x(Min);
 		Grid.set_origin_z(Min);
-		Grid.set_cells(std::string(static_cast<size_t>(Size) * Size, '\0'));
+		std::string Cells(static_cast<size_t>(Size) * Size, '\0');
+		for (const int32_t X : Walls)
+		{
+			for (uint32_t Row = 0; Row < Size; ++Row)
+			{
+				Cells[Row * Size + static_cast<uint32_t>(X - Min)] = 1;
+			}
+		}
+		Grid.set_cells(Cells);
 		google::protobuf::RepeatedPtrField<portfolio::mmo::data::ZonesRow> Zones;
 		for (const int32_t X : Safe)
 		{
@@ -360,6 +372,99 @@ namespace
 	}
 }
 
+namespace
+{
+	Packet Launched(uint32_t Id, uint32_t Caster, int32_t X, int32_t Z, uint32_t Tick, uint32_t Yaw, uint32_t Speed)
+	{
+		Packet Result;
+		portfolio::mmo::ProjectileLaunched* Launch = Result.mutable_projectile_launched();
+		Launch->set_id(Id);
+		Launch->set_caster_id(Caster);
+		Launch->set_x(X);
+		Launch->set_z(Z);
+		Launch->set_tick(Tick);
+		Launch->set_yaw(Yaw);
+		Launch->set_speed(Speed);
+		return Result;
+	}
+
+	Packet Ended(uint32_t Id)
+	{
+		Packet Result;
+		Result.mutable_projectile_ended()->set_id(Id);
+		return Result;
+	}
+
+	bool Near(double A, double B)
+	{
+		return std::abs(A - B) < 1e-6;
+	}
+
+	/** 직선 발사체는 사건의 나간 자리와 틱에서 서버 틱에 따라 나아가고, 끝 사건과 쏜 쪽의 나감으로 지워지며, 모르는 번호의 끝은 버린다. */
+	void LineProjectilesFollowTheirLaunch()
+	{
+		FScene Scene;
+		Scene.Apply(Launched(7, Monster, 320, -64, Start + 2, 64, 640));
+		Scene.Apply(Launched(8, Monster, 0, 0, Start + 3, 0, 640));
+		Expect(Scene.Combat.LineProjectiles().size() == 2, "launched line projectiles are kept");
+		const MmoWorld::FLineProjectile& Line = Scene.Combat.LineProjectiles()[0];
+		const MmoWorld::FPose Before = Line.At(Start + 1);
+		const MmoWorld::FPose Later = Line.At(Start + 12);
+		Expect(Near(Before.X, 320) && Near(Before.Z, -64), "before its tick it waits where it left");
+		Expect(Near(Later.X, 320 + 320) && Near(Later.Z, -64), "it moves speed × ticks ÷ 20 along its yaw");
+		Expect(Near(Scene.Combat.LineProjectiles()[1].At(Start + 5.5).Z, 80), "fractional server ticks move it smoothly");
+
+		Scene.Apply(Ended(99));
+		Expect(Scene.Combat.LineProjectiles().size() == 2, "an unknown end is ignored");
+		Scene.Apply(Ended(7));
+		Expect(Scene.Combat.LineProjectiles().size() == 1 && Scene.Combat.LineProjectiles()[0].Id == 8, "an end removes that projectile");
+		Packet Leave;
+		Leave.mutable_entities_leave()->add_ids(Monster);
+		Scene.Apply(Leave);
+		Expect(Scene.Combat.LineProjectiles().empty(), "the caster leaving removes its projectiles");
+	}
+
+	/**
+	 * 직선 발사체의 스킬은 대상 없이 바로 보내고, 살아 있는 대상이 있으면 사거리 밖이거나 선이 막혔을 때 다가간 뒤 보낸다. 보내기 직전에
+	 * 밀린 위치와 방향을 먼저 보내고(세우지는 않음), 대상은 살아 있을 때만 싣는다.
+	 */
+	void LineSkillsFireWithOrWithoutATarget()
+	{
+		const MmoWorld::FFieldMap Open = Field(64);
+		FScene None;
+		None.Combat.SetTarget(0);
+		Expect(None.Combat.PressSkill(201, None.World, None.GameData, 0) == portfolio::mmo::FAIL_REASON_NONE, "a line skill needs no target");
+		Expect(None.Combat.UpdateSkill(None.World, Open, None.GameData, 0, 0).Kind == FSkillStep::EKind::Fire, "without a target it fires at once");
+		MmoWorld::FMoveSender Sender;
+		Packet Move;
+		Sender.Update(1, 0, 0, 0, 0, *Move.mutable_move());
+		const MmoWorld::FSkillFire Fire = None.Combat.FireSkill(None.World, None.GameData, Sender, 10, 0, 64, 0);
+		Expect(!Fire.bStop && Fire.Packets.size() == 2 && Fire.Packets[0].move().x() == 10 && Fire.Packets[0].move().yaw() == 64
+			&& Fire.Packets[1].use_skill().skill_id() == 201 && Fire.Packets[1].use_skill().target_id() == 0,
+			"it flushes the position and facing first, then sends UseSkill without a target");
+
+		FScene Far(20);
+		Expect(Far.Combat.PressSkill(201, Far.World, Far.GameData, 0) == portfolio::mmo::FAIL_REASON_NONE, "a line skill takes a far target");
+		const FSkillStep Step = Far.Combat.UpdateSkill(Far.World, Open, Far.GameData, 0, 0);
+		Expect(Step.Kind == FSkillStep::EKind::Approach && Step.Goal.X == 20 * M, "it walks toward a target out of range");
+		const MmoWorld::FSkillFire Near5 = FScene(5).Fire(201, Open);
+		Expect(!Near5.Packets.empty() && Near5.Packets.back().use_skill().target_id() == Monster, "a target in range gets the skill with its id");
+
+		FScene Walled(5);
+		Walled.Combat.PressSkill(201, Walled.World, Walled.GameData, 0);
+		Expect(Walled.Combat.UpdateSkill(Walled.World, Field(64, {}, { 2 }), Walled.GameData, 0, 0).Kind == FSkillStep::EKind::Approach,
+			"it walks around a wall before a target behind it");
+
+		FScene Dead(5);
+		Packet Died;
+		Died.mutable_died()->set_id(Monster);
+		Dead.Apply(Died);
+		Dead.Combat.SetTarget(Monster);
+		const MmoWorld::FSkillFire Facing = Dead.Fire(201, Open);
+		Expect(!Facing.Packets.empty() && Facing.Packets.back().use_skill().target_id() == 0, "a dead target is not sent");
+	}
+}
+
 int main(int ArgumentCount, char** Arguments)
 {
 	if (ArgumentCount < 3)
@@ -375,6 +480,8 @@ int main(int ArgumentCount, char** Arguments)
 	MySlowAndStunAreAnswered();
 	TargetSkillsApproachAndSelfSkillsFireInPlace();
 	CastsStopAndIgnoreTheHeldMove();
+	LineProjectilesFollowTheirLaunch();
+	LineSkillsFireWithOrWithoutATarget();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;

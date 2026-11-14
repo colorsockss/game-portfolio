@@ -83,6 +83,8 @@ namespace PortfolioMmo.Contract.Tests
                 new Packet { ProgressCancelled = new ProgressCancelled { Id = 7, Reason = FailReason.Cancelled } },
                 new Packet { EffectApplied = new EffectApplied { Id = 1234, Effect = new EffectState { EffectId = 2, EndTick = 4060 } } },
                 new Packet { Cooldowns = new Cooldowns { Entries = { new Cooldown { SkillId = 101, EndTick = 4020 }, new Cooldown { SkillId = 102 } } } },
+                new Packet { ProjectileLaunched = new ProjectileLaunched { Id = 9, CasterId = 1234, X = -320, Z = 640, Tick = 4006, Yaw = 192, Speed = 480 } },
+                new Packet { ProjectileEnded = new ProjectileEnded { Id = 9 } },
                 new Packet { ActionFailed = new ActionFailed { Reason = FailReason.Blocked, Request = RequestKind.Skill } },
             };
 

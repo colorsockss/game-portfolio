@@ -356,7 +356,7 @@ namespace PortfolioMmo.Data {
 
     private double projectileSpeed_;
     /// <summary>
-    /// 직선으로 나는 발사체의 속도(m/s). 83이 채운다
+    /// 직선으로 나는 발사체의 속도(m/s). 있으면 대상과 사거리와 선을 미리 보지 않고 서버가 옮기는 발사체로 나간다(83). 1/32 m/s의 배수
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

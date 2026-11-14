@@ -442,7 +442,7 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// 감속 중에는 이동 예산이 줄어 원래 속도의 Move가 되돌려진다. 기절 중에는 Move가 되돌려지고 UseSkill과 AttackStart가 "기절"로 실패하며,
         /// AttackSwing 뒤 타격 전에 기절한 공격자의 타격은 적용되지 않는다. 켜 둔 기본 공격은 기절한 동안 쉬고 끝나면 AttackStart 없이 이어진다.
-        /// 마법사의 첫째 스킬에 맞은 대상에 감속이 붙는다.
+        /// 마법사의 첫째 스킬(직선 발사체)에 맞은 대상에 감속이 붙는다.
         /// </summary>
         [Fact]
         public void SlowsAndStunsHoldPlayersBack()
@@ -484,7 +484,7 @@ namespace PortfolioMmo.Server.Tests
             World cold = CombatWorld(TestData.Draw(64));
             Session mage = Fighter(cold, "hero_01", 5, 0, CharacterClass.Mage);
             UseSkill(cold, mage, 201, cold.Monsters[0].Id);
-            StepFor(cold, 7);
+            StepUntil(cold, () => cold.Monsters[0].SlowPercent > 0, 20);
             Assert.Equal(50u, cold.Monsters[0].SlowPercent);
         }
 

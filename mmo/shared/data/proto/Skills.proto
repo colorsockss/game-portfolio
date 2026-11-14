@@ -36,7 +36,7 @@ message SkillsRow {
   uint32 mp = 13;
   // 필요 레벨(36)
   uint32 level = 14;
-  // 직선으로 나는 발사체의 속도(m/s). 83이 채운다
+  // 직선으로 나는 발사체의 속도(m/s). 있으면 대상과 사거리와 선을 미리 보지 않고 서버가 옮기는 발사체로 나간다(83). 1/32 m/s의 배수
   optional double projectile_speed = 15;
   // 거는 효과(Effects의 줄)
   optional uint32 effect = 16;
