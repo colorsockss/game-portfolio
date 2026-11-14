@@ -214,6 +214,10 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UInputAction> AutoHuntAction;
+
+	/** 전체 지도(76). */
+	UPROPERTY()
+	TObjectPtr<UInputAction> MapAction;
 	/** 상호작용하러 가는 길을 찾은 때의 개체 자리. */
 	MmoWorld::FPoint InteractGoal;
 	MmoScreen::FTouchGestures Gestures;

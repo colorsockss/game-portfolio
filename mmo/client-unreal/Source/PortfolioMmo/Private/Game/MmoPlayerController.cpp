@@ -102,6 +102,9 @@ void AMmoPlayerController::SetupInputComponent()
 	CharacterAction = NewObject<UInputAction>(this, TEXT("Character"));
 	CharacterAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(CharacterAction, MmoKeys::KeyOf(EMmoAction::Character));
+	MapAction = NewObject<UInputAction>(this, TEXT("Map"));
+	MapAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(MapAction, MmoKeys::KeyOf(EMmoAction::Map));
 	AutoHuntAction = NewObject<UInputAction>(this, TEXT("AutoHunt"));
 	AutoHuntAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(AutoHuntAction, MmoKeys::KeyOf(EMmoAction::AutoHunt));
@@ -155,6 +158,7 @@ void AMmoPlayerController::SetupInputComponent()
 		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter();
 	});
 	Enhanced->BindActionValueLambda(AutoHuntAction, ETriggerEvent::Started, [this](const FInputActionValue&) { ToggleAutoHunt(); });
+	Enhanced->BindActionValueLambda(MapAction, ETriggerEvent::Started, [this](const FInputActionValue&) { GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleMap(); });
 	Enhanced->BindActionValueLambda(SkillsAction, ETriggerEvent::Started, [this](const FInputActionValue&)
 	{
 		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleSkills();

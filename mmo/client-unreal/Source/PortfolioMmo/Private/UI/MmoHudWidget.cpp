@@ -1,6 +1,11 @@
 #include "UI/MmoHudWidget.h"
 
 #include "UI/MmoText.h"
+#include "UI/MmoMapDrawing.h"
+#include "Components/Button.h"
+#include "Components/Image.h"
+#include "Components/CanvasPanel.h"
+#include "Game/MmoCoordinates.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
@@ -47,6 +52,7 @@ void UMmoHudWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	AttackButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleAttackClicked);
+	MinimapButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleMinimapClicked);
 	AutoButton->SetKeyHint(MmoKeys::Hint(EMmoAction::AutoHunt));
 	AutoButton->OnClickedNative.AddWeakLambda(this, [this]
 	{
@@ -380,6 +386,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	{
 		AutoButton->SetSelected(Controller->IsAutoHunting());
 	}
+	ShowMinimap(Now);
 	ShowInteract();
 	ShowStats(InDeltaTime);
 	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀). 요청 번호가 있는 요청의 실패와 얻은 것(32)도 같다.
@@ -468,4 +475,39 @@ void UMmoHudWidget::ShowZone(uint32 Zone)
 		? MmoText::Format(this, TEXT("hud.zone"), { Name.ToString(), FString::FromInt(Row->min_level()), FString::FromInt(Row->max_level()) })
 		: Name);
 	SafeZoneText->SetVisibility(Row->safe() ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+}
+
+void UMmoHudWidget::HandleMinimapClicked()
+{
+	GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleMap();
+}
+
+void UMmoHudWidget::ShowMinimap(double Now)
+{
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const MmoWorld::FFieldMap* Field = Session->Field();
+	const APawn* Self = GetOwningPlayerPawn();
+	if (!Field || !Self || Now < NextMinimap)
+	{
+		return;
+	}
+	NextMinimap = Now + 0.2;
+	if (!MinimapTexture)
+	{
+		// 바탕 그림은 격자에서 한 번 만든다(화면을 찍지 않음).
+		MinimapTexture = MmoMapDrawing::MakeTexture(this, *Field);
+	}
+	const FVector Location = Self->GetActorLocation();
+	const std::vector<MmoWorld::FMapPoint> Points = MmoWorld::FMapView::Points(*Field, Session->Data(), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location),
+		MmoCoordinates::ToYaw(Self->GetActorRotation()));
+	const double Span = MinimapMeters / Field->GridSize();
+	const double MinU = Points[0].U - Span / 2;
+	const double MinV = Points[0].V - Span / 2;
+	FSlateBrush Brush;
+	Brush.SetResourceObject(MinimapTexture);
+	Brush.ImageSize = FVector2D(MinimapSize, MinimapSize);
+	Brush.SetUVRegion(FBox2f(FVector2f(MinU, MinV), FVector2f(MinU + Span, MinV + Span)));
+	MinimapImage->SetBrush(Brush);
+	MmoMapDrawing::PlaceDots(*MinimapDots, MinimapDotPool, Points, MinU, MinV, Span, MinimapSize);
+	MinimapArrow->SetRenderTransformAngle(static_cast<float>(Points[0].YawDegrees));
 }

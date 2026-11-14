@@ -5,6 +5,16 @@
 
 #include "MmoHudWidget.generated.h"
 
+class UTexture2D;
+
+class UBorder;
+
+class UCanvasPanel;
+
+class UImage;
+
+class UButton;
+
 class UMmoButtonWidget;
 class UMmoIcons;
 class UMmoJoystickWidget;
@@ -30,6 +40,10 @@ class UMmoHudWidget : public UUserWidget
 public:
 	/** 퀵슬롯의 칸 수(packets.proto의 CONSTANT_QUICKSLOT_COUNT). 위젯 생성기가 칸을 이만큼 만든다. */
 	static PORTFOLIOMMO_API int32 QuickslotCount();
+
+	/** 미니맵 그림의 한 변(픽셀)과 보이는 둘레(m). */
+	static constexpr float MinimapSize = 180.0f;
+	static constexpr double MinimapMeters = 60.0;
 
 protected:
 	virtual void NativeOnInitialized() override;
@@ -124,6 +138,34 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TargetHpText;
+
+	/** 미니맵(76): 내 자리를 가운데에 둔 둘레 60 m. 북쪽이 위로 고정이고 내 방향은 화살표가 돈다. 누르면 전체 지도를 연다. */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> MinimapButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> MinimapImage;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCanvasPanel> MinimapDots;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> MinimapArrow;
+
+	UPROPERTY()
+	TObjectPtr<UTexture2D> MinimapTexture;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UBorder>> MinimapDotPool;
+
+	double NextMinimap = 0;
+
+	UFUNCTION()
+	void HandleMinimapClicked();
+
+	/** 미니맵을 0.2초마다 옮긴다. */
+	void ShowMinimap(double Now);
+
 
 	/** 자동 사냥(40). PC와 터치 기기 모두 보이고 켜져 있으면 고른 상태다. */
 	UPROPERTY(meta = (BindWidget))

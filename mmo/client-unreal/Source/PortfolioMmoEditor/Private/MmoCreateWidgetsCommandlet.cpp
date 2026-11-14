@@ -49,6 +49,7 @@
 #include "UI/MmoQuickslotBarWidget.h"
 #include "UI/MmoShopWidget.h"
 #include "UI/MmoStorageWidget.h"
+#include "UI/MmoMapWidget.h"
 #include "UI/MmoSkillsWidget.h"
 #include "UI/MmoSettingsWidget.h"
 #include "UI/MmoTextBlock.h"
@@ -550,6 +551,36 @@ namespace
 			Builder.Button(TEXT("QuestButton"), TEXT("menu.quest")),
 			Builder.Button(TEXT("SettingsButton"), TEXT("menu.settings")),
 		}));
+		// 미니맵(76): 투명한 버튼(누르면 지도) 안에 바탕 그림, 점의 캔버스, 가운데의 내 화살표.
+		UButton* Minimap = Builder.Add<UButton>(TEXT("MinimapButton"), true);
+		FButtonStyle Clear;
+		Clear.SetNormal(FSlateNoResource());
+		Clear.SetHovered(FSlateNoResource());
+		Clear.SetPressed(FSlateNoResource());
+		Clear.SetNormalPadding(FMargin(0.0f));
+		Clear.SetPressedPadding(FMargin(0.0f));
+		Minimap->SetStyle(Clear);
+		USizeBox* MinimapSize = Builder.Add<USizeBox>(TEXT("MinimapSize"));
+		MinimapSize->SetWidthOverride(UMmoHudWidget::MinimapSize);
+		MinimapSize->SetHeightOverride(UMmoHudWidget::MinimapSize);
+		Minimap->SetContent(MinimapSize);
+		UOverlay* MinimapStack = Builder.Add<UOverlay>(TEXT("MinimapStack"));
+		MinimapSize->SetContent(MinimapStack);
+		UOverlaySlot* MinimapImageSlot = MinimapStack->AddChildToOverlay(Builder.Add<UImage>(TEXT("MinimapImage"), true));
+		MinimapImageSlot->SetHorizontalAlignment(HAlign_Fill);
+		MinimapImageSlot->SetVerticalAlignment(VAlign_Fill);
+		UCanvasPanel* MinimapDots = Builder.Add<UCanvasPanel>(TEXT("MinimapDots"), true);
+		MinimapDots->SetVisibility(ESlateVisibility::HitTestInvisible);
+		UOverlaySlot* DotsSlot = MinimapStack->AddChildToOverlay(MinimapDots);
+		DotsSlot->SetHorizontalAlignment(HAlign_Fill);
+		DotsSlot->SetVerticalAlignment(VAlign_Fill);
+		UTextBlock* Arrow = Builder.Text(TEXT("MinimapArrow"), FText::AsCultureInvariant(TEXT("▲")), Style.BodySize, true, Style.Cast);
+		Arrow->SetRenderTransformPivot(FVector2D(0.5, 0.5));
+		UOverlaySlot* ArrowSlot = MinimapStack->AddChildToOverlay(Arrow);
+		ArrowSlot->SetHorizontalAlignment(HAlign_Center);
+		ArrowSlot->SetVerticalAlignment(VAlign_Center);
+		TopRight->AddChildToVerticalBox(Minimap)->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, 0.0f));
+		Cast<UVerticalBoxSlot>(Minimap->Slot)->SetHorizontalAlignment(HAlign_Right);
 		TopRight->AddChildToVerticalBox(Stats)->SetHorizontalAlignment(HAlign_Right);
 		return Builder.Save();
 	}
@@ -733,6 +764,35 @@ namespace
 		AddWithGap(*Column, Builder.Text(TEXT("GoldText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
 			Builder.Button(TEXT("ActButton"), TEXT("shop.buy")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+		return Builder.Save();
+	}
+
+	/** 전체 지도(76): 제목, 지도 그림(점과 구역 이름의 캔버스, 내 화살표를 겹침), 닫기. */
+	bool CreateMap()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Map, UMmoMapWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(UMmoMapWidget::MapSize + Style.PanelPadding * 2, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("menu.map"), Style.TitleSize), Style.Gap);
+		USizeBox* Size = Builder.Add<USizeBox>(TEXT("MapSize"));
+		Size->SetWidthOverride(UMmoMapWidget::MapSize);
+		Size->SetHeightOverride(UMmoMapWidget::MapSize);
+		UOverlay* Stack = Builder.Add<UOverlay>(TEXT("MapStack"));
+		Size->SetContent(Stack);
+		UOverlaySlot* ImageSlot = Stack->AddChildToOverlay(Builder.Add<UImage>(TEXT("MapImage"), true));
+		ImageSlot->SetHorizontalAlignment(HAlign_Fill);
+		ImageSlot->SetVerticalAlignment(VAlign_Fill);
+		UCanvasPanel* Dots = Builder.Add<UCanvasPanel>(TEXT("MapDots"), true);
+		Dots->SetVisibility(ESlateVisibility::HitTestInvisible);
+		UOverlaySlot* DotsSlot = Stack->AddChildToOverlay(Dots);
+		DotsSlot->SetHorizontalAlignment(HAlign_Fill);
+		DotsSlot->SetVerticalAlignment(VAlign_Fill);
+		UTextBlock* Arrow = Builder.Text(TEXT("SelfArrow"), FText::AsCultureInvariant(TEXT("▲")), Style.BodySize, true, Style.Cast);
+		Arrow->SetRenderTransformPivot(FVector2D(0.5, 0.5));
+		UCanvasPanelSlot* ArrowSlot = Dots->AddChildToCanvas(Arrow);
+		ArrowSlot->SetAutoSize(true);
+		ArrowSlot->SetAlignment(FVector2D(0.5, 0.5));
+		AddWithGap(*Column, Size, Style.Section);
+		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), { Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
 		return Builder.Save();
 	}
 
@@ -944,7 +1004,7 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	UClass* ItemSlot = CreateItemSlot();
 	UClass* QuickslotBar = CreateQuickslotBar();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && QuickslotBar && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateStorage(ItemSlot) && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateStorage(ItemSlot) && CreateMap() && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 
