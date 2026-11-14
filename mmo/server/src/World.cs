@@ -31,6 +31,7 @@ namespace PortfolioMmo.Server
         private readonly InventorySystem _inventory;
         private readonly QuickslotSystem _quickslots;
         private readonly ShopSystem _shop;
+        private readonly StorageSystem _storage;
         private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
@@ -70,15 +71,18 @@ namespace PortfolioMmo.Server
             _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, _save, random);
             // NPC도 놓인 점의 번호를 플레이어보다 먼저 받는다(37). 움직이지 않고 칸을 막지 않는다.
             Npc? shop = null;
+            Npc? keeper = null;
             foreach (NpcsRow row in data.Npcs.Rows)
             {
                 var npc = new Npc(_entities.ReservePlacedId(), row);
                 _entities.Add(npc);
                 _grid.Add(npc);
                 shop = row.Role == NpcRole.Shop ? npc : shop;
+                keeper = row.Role == NpcRole.Storage ? npc : keeper;
             }
 
             _shop = new ShopSystem(data, field, _inventory, shop);
+            _storage = new StorageSystem(data, field, _inventory, keeper);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
             _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
@@ -262,6 +266,15 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.Sell when player != null:
                     Respond(player, packet.Sell.RequestId, _shop.Sell(player, packet.Sell));
                     break;
+                case Packet.BodyOneofCase.StorageOpen when player != null:
+                    Answer(player, _storage.Open(player), RequestKind.Storage);
+                    break;
+                case Packet.BodyOneofCase.StorageDeposit when player != null:
+                    Respond(player, packet.StorageDeposit.RequestId, _storage.Deposit(player, packet.StorageDeposit));
+                    break;
+                case Packet.BodyOneofCase.StorageWithdraw when player != null:
+                    Respond(player, packet.StorageWithdraw.RequestId, _storage.Withdraw(player, packet.StorageWithdraw));
+                    break;
                 case Packet.BodyOneofCase.AttackStart when player != null:
                     Answer(player, _combat.Start(player, packet.AttackStart), RequestKind.Attack);
                     break;
@@ -291,6 +304,7 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.AttackStart => RequestKind.Attack,
                 Packet.BodyOneofCase.UseSkill => RequestKind.Skill,
                 Packet.BodyOneofCase.Revive => RequestKind.Revive,
+                Packet.BodyOneofCase.StorageOpen => RequestKind.Storage,
                 _ => null,
             };
         }
@@ -310,6 +324,8 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.Enchant => packet.Enchant.RequestId,
                 Packet.BodyOneofCase.Buy => packet.Buy.RequestId,
                 Packet.BodyOneofCase.Sell => packet.Sell.RequestId,
+                Packet.BodyOneofCase.StorageDeposit => packet.StorageDeposit.RequestId,
+                Packet.BodyOneofCase.StorageWithdraw => packet.StorageWithdraw.RequestId,
                 _ => null,
             };
         }

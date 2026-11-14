@@ -32,6 +32,8 @@ namespace MmoScreen
 		Skills,
 		/** 상점 창(37). */
 		Shop,
+		/** 창고 창(75). */
+		Storage,
 	};
 
 	/** 화면이 올라가는 층. 아래에서 위로 그린다. */

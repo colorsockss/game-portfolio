@@ -22,6 +22,9 @@ public:
 	/** 입은 장비의 칸이다(SlotIndex는 장비 칸 번호. 34). */
 	bool bEquipment = false;
 
+	/** 창고의 칸이다(SlotIndex는 창고 칸 번호. 75). */
+	bool bStorage = false;
+
 	/** 0이 아니면 칸이 아니라 그 아이템을 수 없이 그린다(상점의 사기 목록. 37). */
 	uint32 ItemId = 0;
 };

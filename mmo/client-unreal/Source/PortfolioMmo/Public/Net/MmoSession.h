@@ -65,6 +65,9 @@ public:
 	/** 내 인벤토리(32). 요청 번호가 있는 요청(UseItem)은 여기서 패킷을 만들어 Send로 보낸다. */
 	MmoWorld::FInventory& Inventory() { return InventoryState; }
 
+	/** 내 창고(75). StorageOpen의 답(Storage)부터 채워진다. 맡기기와 찾기의 요청은 Inventory()가 만든다. */
+	const MmoWorld::FInventory& Storage() const { return StorageState; }
+
 	/** 배운 스킬과 퀵슬롯(36). 퀵슬롯을 바꾸는 SetQuickslot은 여기서 만들어 Send로 보내고, 서버의 Quickslots가 오면 바뀐다. */
 	const MmoWorld::FSkillBook& Skills() const { return SkillBook; }
 	MmoWorld::FSkillBook& Skills() { return SkillBook; }
@@ -108,6 +111,7 @@ private:
 	MmoWorld::FWorldState WorldState;
 	MmoWorld::FCombatState CombatState;
 	MmoWorld::FInventory InventoryState;
+	MmoWorld::FInventory StorageState{ true };
 	MmoWorld::FSkillBook SkillBook;
 	portfolio::mmo::CharacterList CharacterList;
 	/** 시작할 때 한 번 읽은 기획 데이터. 읽지 못하면 해시가 0이라 서버가 DATA_MISMATCH로 거절한다. */

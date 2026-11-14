@@ -22,6 +22,7 @@ namespace MmoScreen
 			{ ELayer::Window, true, EInputMode::Window }, // Enchant
 			{ ELayer::Window, true, EInputMode::Window }, // Skills
 			{ ELayer::Window, true, EInputMode::Window }, // Shop
+			{ ELayer::Window, true, EInputMode::Window }, // Storage
 		};
 		return Rules[static_cast<size_t>(Screen)];
 	}

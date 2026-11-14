@@ -199,8 +199,34 @@ namespace
 	}
 }
 
+namespace
+{
+	/** 창고의 모델(75)은 Storage(전체)와 StorageChanged만 반영하고 인벤토리의 패킷은 무시한다. 맡기기와 찾기는 번호를 붙여 기다린다. */
+	void StorageMirrorsItsOwnPackets()
+	{
+		MmoWorld::FInventory Storage(true);
+		portfolio::mmo::Packet Whole;
+		AddSlot(Whole.mutable_storage()->mutable_slots(), 4, 2001, 7);
+		Storage.Apply(Whole);
+		portfolio::mmo::Packet Bag;
+		AddSlot(Bag.mutable_inventory()->mutable_slots(), 0, 3001, 1);
+		Storage.Apply(Bag);
+		Expect(Storage.CountOf(2001) == 7 && Storage.CountOf(3001) == 0, "the storage takes only its own packets");
+		portfolio::mmo::Packet Changed;
+		AddSlot(Changed.mutable_storage_changed()->mutable_slots(), 4, 0, 0);
+		Storage.Apply(Changed);
+		Expect(Storage.Slots().empty(), "an emptied storage slot is removed");
+		MmoWorld::FInventory Inventory;
+		const portfolio::mmo::Packet Deposit = Inventory.Deposit(2, 3);
+		const portfolio::mmo::Packet Withdraw = Inventory.Withdraw(4, 1);
+		Expect(Deposit.storage_deposit().count() == 3 && Withdraw.storage_withdraw().slot() == 4 && Inventory.IsWaiting(Withdraw.storage_withdraw().request_id()),
+			"storage requests wait for their results");
+	}
+}
+
 int main()
 {
+	StorageMirrorsItsOwnPackets();
 	ShopRequestsAndAffordableCounts();
 	EnchantChancesComeFromTheTable();
 	EquipmentChecksAndCompares();

@@ -31,6 +31,22 @@ namespace MmoWorld
 
 	void FInventory::Apply(const portfolio::mmo::Packet& Packet)
 	{
+		if (bStorage)
+		{
+			if (Packet.body_case() == portfolio::mmo::Packet::kStorage)
+			{
+				Filled.clear();
+			}
+			if (Packet.body_case() == portfolio::mmo::Packet::kStorage || Packet.body_case() == portfolio::mmo::Packet::kStorageChanged)
+			{
+				for (const portfolio::mmo::ItemSlot& Slot : Packet.body_case() == portfolio::mmo::Packet::kStorage ? Packet.storage().slots() : Packet.storage_changed().slots())
+				{
+					Put(Slot);
+				}
+				++Changes;
+			}
+			return;
+		}
 		switch (Packet.body_case())
 		{
 		case portfolio::mmo::Packet::kInventory:
@@ -214,6 +230,26 @@ namespace MmoWorld
 		Packet.mutable_buy()->set_item_id(ItemId);
 		Packet.mutable_buy()->set_count(Count);
 		Packet.mutable_buy()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
+	portfolio::mmo::Packet FInventory::Deposit(uint32_t Slot, uint32_t Count)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_storage_deposit()->set_slot(Slot);
+		Packet.mutable_storage_deposit()->set_count(Count);
+		Packet.mutable_storage_deposit()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
+	portfolio::mmo::Packet FInventory::Withdraw(uint32_t StorageSlot, uint32_t Count)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_storage_withdraw()->set_slot(StorageSlot);
+		Packet.mutable_storage_withdraw()->set_count(Count);
+		Packet.mutable_storage_withdraw()->set_request_id(++NextRequest);
 		Waiting.insert(NextRequest);
 		return Packet;
 	}

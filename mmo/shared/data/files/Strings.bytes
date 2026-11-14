@@ -794,3 +794,19 @@ a
 kick.serverErrort서버에서 오류가 나 연결을 끊었습니다. 다시 접속하면 마지막으로 저장된 상태입니다.iThe server hit an error and closed the connection. Your last saved state will be back when you reconnect.
 
 hud.auto자동 사냥Auto
+3
+
+npc.keeper창고지기 도담Dodam the Keeper
+ 
+storage.title창고Storage
+"
+storage.mine
+내 가방My Bag
+�
+storage.hintE창고 칸을 누르면 찾고, 가방 칸을 누르면 맡깁니다.:Tap a storage slot to take it out, a bag slot to store it.
+D
+storage.depositCount몇 개를 맡길까요?How many to store?
+H
+storage.withdrawCount몇 개를 찾을까요?How many to take out?
+I
+fail.storageFull창고가 가득 찼습니다.Your storage is full.

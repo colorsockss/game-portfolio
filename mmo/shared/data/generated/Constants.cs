@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLQBgoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLnBgoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -43,12 +43,12 @@ namespace PortfolioMmo.Data {
             "dW50X3JhbmdlGBsgASgBEhwKFGF1dG9faHVudF9ocF9wZXJjZW50GBwgASgN",
             "EhwKFGF1dG9faHVudF9tcF9wZXJjZW50GB0gASgNEhwKFGF1dG9faHVudF9l",
             "eGNsdWRlX21zGB4gASgNEhoKEmF1dG9faHVudF9zdGFsbF9tcxgfIAEoDRIh",
-            "ChlhdXRvX2h1bnRfbWFudWFsX3BhdXNlX21zGCAgASgNQhSqAhFQb3J0Zm9s",
-            "aW9NbW8uRGF0YWIGcHJvdG8z"));
+            "ChlhdXRvX2h1bnRfbWFudWFsX3BhdXNlX21zGCAgASgNEhUKDXN0b3JhZ2Vf",
+            "c2xvdHMYISABKA1CFKoCEVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots" }, null, null, null, null)
           }));
     }
     #endregion
@@ -121,6 +121,7 @@ namespace PortfolioMmo.Data {
       autoHuntExcludeMs_ = other.autoHuntExcludeMs_;
       autoHuntStallMs_ = other.autoHuntStallMs_;
       autoHuntManualPauseMs_ = other.autoHuntManualPauseMs_;
+      storageSlots_ = other.storageSlots_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -595,6 +596,21 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "storage_slots" field.</summary>
+    public const int StorageSlotsFieldNumber = 33;
+    private uint storageSlots_;
+    /// <summary>
+    /// 창고 칸 수(75. 캐릭터마다)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint StorageSlots {
+      get { return storageSlots_; }
+      set {
+        storageSlots_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -641,6 +657,7 @@ namespace PortfolioMmo.Data {
       if (AutoHuntExcludeMs != other.AutoHuntExcludeMs) return false;
       if (AutoHuntStallMs != other.AutoHuntStallMs) return false;
       if (AutoHuntManualPauseMs != other.AutoHuntManualPauseMs) return false;
+      if (StorageSlots != other.StorageSlots) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -679,6 +696,7 @@ namespace PortfolioMmo.Data {
       if (AutoHuntExcludeMs != 0) hash ^= AutoHuntExcludeMs.GetHashCode();
       if (AutoHuntStallMs != 0) hash ^= AutoHuntStallMs.GetHashCode();
       if (AutoHuntManualPauseMs != 0) hash ^= AutoHuntManualPauseMs.GetHashCode();
+      if (StorageSlots != 0) hash ^= StorageSlots.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -821,6 +839,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(128, 2);
         output.WriteUInt32(AutoHuntManualPauseMs);
       }
+      if (StorageSlots != 0) {
+        output.WriteRawTag(136, 2);
+        output.WriteUInt32(StorageSlots);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -955,6 +977,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(128, 2);
         output.WriteUInt32(AutoHuntManualPauseMs);
       }
+      if (StorageSlots != 0) {
+        output.WriteRawTag(136, 2);
+        output.WriteUInt32(StorageSlots);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1057,6 +1083,9 @@ namespace PortfolioMmo.Data {
       }
       if (AutoHuntManualPauseMs != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(AutoHuntManualPauseMs);
+      }
+      if (StorageSlots != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(StorageSlots);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1162,6 +1191,9 @@ namespace PortfolioMmo.Data {
       }
       if (other.AutoHuntManualPauseMs != 0) {
         AutoHuntManualPauseMs = other.AutoHuntManualPauseMs;
+      }
+      if (other.StorageSlots != 0) {
+        StorageSlots = other.StorageSlots;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1306,6 +1338,10 @@ namespace PortfolioMmo.Data {
             AutoHuntManualPauseMs = input.ReadUInt32();
             break;
           }
+          case 264: {
+            StorageSlots = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -1447,6 +1483,10 @@ namespace PortfolioMmo.Data {
           }
           case 256: {
             AutoHuntManualPauseMs = input.ReadUInt32();
+            break;
+          }
+          case 264: {
+            StorageSlots = input.ReadUInt32();
             break;
           }
         }

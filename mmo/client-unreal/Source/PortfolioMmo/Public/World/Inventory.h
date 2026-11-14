@@ -41,6 +41,11 @@ namespace MmoWorld
 	class FInventory
 	{
 	public:
+		FInventory() = default;
+
+		/** bStorage면 창고(75)의 모델이다: Storage(전체)와 StorageChanged(바뀐 칸)만 반영하고 다른 패킷은 무시한다(골드 없음). */
+		explicit FInventory(bool bInStorage) : bStorage(bInStorage) {}
+
 		/** 월드를 떠날 때 비운다. */
 		void Reset();
 
@@ -94,6 +99,12 @@ namespace MmoWorld
 		/** Buy(상점에서 Shops의 아이템을 Count개 사기. 37)를 만든다. 상점이 하나라 NPC를 싣지 않는다. */
 		portfolio::mmo::Packet Buy(uint32_t ItemId, uint32_t Count);
 
+		/** StorageDeposit(인벤토리 칸의 아이템을 Count개 창고에 맡기기. 75)을 만든다. */
+		portfolio::mmo::Packet Deposit(uint32_t Slot, uint32_t Count);
+
+		/** StorageWithdraw(창고 칸의 아이템을 Count개 찾기. 75)를 만든다. */
+		portfolio::mmo::Packet Withdraw(uint32_t StorageSlot, uint32_t Count);
+
 		/** Sell(인벤토리 칸의 아이템을 Count개 팔기. 37)을 만든다. */
 		portfolio::mmo::Packet Sell(uint32_t Slot, uint32_t Count);
 
@@ -122,6 +133,7 @@ namespace MmoWorld
 		std::vector<FRequestFailure> TakeFailures();
 
 	private:
+		bool bStorage = false;
 		std::map<uint32_t, portfolio::mmo::ItemSlot> Filled;
 		std::map<uint32_t, portfolio::mmo::ItemSlot> Equipped;
 		uint64_t Money = 0;

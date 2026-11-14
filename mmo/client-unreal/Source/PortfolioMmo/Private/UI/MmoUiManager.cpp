@@ -67,6 +67,8 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::Skills);
 		case EScreen::Shop:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Shop);
+		case EScreen::Storage:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Storage);
 		}
 		checkNoEntry();
 		return {};
@@ -299,6 +301,7 @@ void UMmoUiManager::ReturnToCharacterSelect()
 	Close(EScreen::Enchant);
 	Close(EScreen::Skills);
 	Close(EScreen::Shop);
+	Close(EScreen::Storage);
 	Close(EScreen::Hud);
 	Open(EScreen::CharacterSelect);
 }
@@ -347,6 +350,12 @@ void UMmoUiManager::ApplyInputMode()
 
 void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 {
+	// 창고를 열면(StorageOpen의 답) 창고 창을 연다(75).
+	if (Packet.body_case() == portfolio::mmo::Packet::kStorage && Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
+	{
+		Close(EScreen::Inventory);
+		Open(EScreen::Storage);
+	}
 	if (Packet.body_case() == portfolio::mmo::Packet::kLoginResult
 		&& Packet.login_result().result() == portfolio::mmo::LOGIN_RESULT_CODE_OK)
 	{
@@ -387,6 +396,7 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		Close(EScreen::Enchant);
 		Close(EScreen::Skills);
 		Close(EScreen::Shop);
+		Close(EScreen::Storage);
 		Close(EScreen::Confirm);
 		Close(EScreen::Quantity);
 		Open(EScreen::Death);
@@ -515,6 +525,7 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Close(EScreen::Enchant);
 	Close(EScreen::Skills);
 	Close(EScreen::Shop);
+	Close(EScreen::Storage);
 	Close(EScreen::Hud);
 	Close(EScreen::CharacterCreate);
 	Close(EScreen::CharacterSelect);

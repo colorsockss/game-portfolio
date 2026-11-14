@@ -31,7 +31,8 @@ void UMmoItemSlotWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 		Show(Entry->ItemId, 0);
 		return;
 	}
-	const MmoWorld::FInventory& Inventory = GetGameInstance()->GetSubsystem<UMmoSession>()->Inventory();
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const MmoWorld::FInventory& Inventory = Entry && Entry->bStorage ? Session->Storage() : Session->Inventory();
 	const std::map<uint32_t, portfolio::mmo::ItemSlot>& Place = Entry && Entry->bEquipment ? Inventory.Worn() : Inventory.Slots();
 	const auto Found = Entry ? Place.find(static_cast<uint32>(Entry->SlotIndex)) : Place.end();
 	Found == Place.end() ? Show(0, 0) : Show(Found->second.item_id(), Found->second.count());

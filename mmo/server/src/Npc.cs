@@ -17,6 +17,21 @@ namespace PortfolioMmo.Server
 
         public NpcsRow Row { get; }
 
+        /// <summary>
+        /// 플레이어가 이 NPC 곁인가: range(1/32 m) 안("사거리 밖")이고 선이 트였는가("막힘"). 상점(37)과 창고(75)가 함께 쓴다.
+        /// </summary>
+        internal FailReason Reach(Player player, FieldMap field, long range)
+        {
+            long dx = (long)X - player.X;
+            long dz = (long)Z - player.Z;
+            if ((dx * dx) + (dz * dz) > range * range)
+            {
+                return FailReason.OutOfRange;
+            }
+
+            return field.HasLine(player.X, player.Z, X, Z) ? FailReason.None : FailReason.Blocked;
+        }
+
         protected override void Fill(EntityEnter enter)
         {
             enter.TemplateId = Row.Id;

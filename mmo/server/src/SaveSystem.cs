@@ -69,7 +69,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 플레이어의 저장할 상태 전부의 사본(까닭이 무엇이든 전부를 담음). 성향은 44, 퀘스트 진행은 50, 펫은 96, 창고는 75가 더한다.
+        /// 플레이어의 저장할 상태 전부의 사본(까닭이 무엇이든 전부를 담음. 창고 75 포함). 성향은 44, 퀘스트 진행은 50, 펫은 96이 더한다.
         /// </summary>
         public static CharacterSnapshot Snapshot(Player player)
         {
@@ -77,6 +77,8 @@ namespace PortfolioMmo.Server
             var items = new List<SavedItem>();
             items.AddRange(bag.Slots.Where(slot => slot.ItemId != 0).Select(slot => new SavedItem(ItemPlace.Inventory, slot.Index, slot.ItemId, slot.Count, slot.Enchant)));
             items.AddRange(bag.Equipment.Where(slot => slot.ItemId != 0).Select(slot => new SavedItem(ItemPlace.Equipment, slot.Index, slot.ItemId, slot.Count, slot.Enchant)));
+            // 창고(75)도 담는다. 빠뜨리면 items의 그 주인 줄을 지우고 다시 넣을 때 창고가 지워진다.
+            items.AddRange(bag.Storage.Where(slot => slot.ItemId != 0).Select(slot => new SavedItem(ItemPlace.Storage, slot.Index, slot.ItemId, slot.Count, slot.Enchant)));
             List<SavedQuickslot> quickslots = player.Quickslots.Select((entry, index) => new SavedQuickslot((uint)index, entry.Kind, entry.Id))
                 .Where(entry => entry.Kind != QuickslotKind.Empty).ToList();
             return new CharacterSnapshot(

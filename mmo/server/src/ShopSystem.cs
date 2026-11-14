@@ -88,23 +88,11 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 상점 NPC까지 3 m 안("사거리 밖")이고 선이 트였는가("막힘"). 상점 NPC가 없는 데이터(시험)면 "사거리 밖"이다.
+        /// 상점 NPC 곁인가. 상점 NPC가 없는 데이터(시험)면 "사거리 밖"이다.
         /// </summary>
         private FailReason Near(Player player)
         {
-            if (_shop == null)
-            {
-                return FailReason.OutOfRange;
-            }
-
-            long dx = (long)_shop.X - player.X;
-            long dz = (long)_shop.Z - player.Z;
-            if ((dx * dx) + (dz * dz) > _interactRange * _interactRange)
-            {
-                return FailReason.OutOfRange;
-            }
-
-            return _field.HasLine(player.X, player.Z, _shop.X, _shop.Z) ? FailReason.None : FailReason.Blocked;
+            return _shop?.Reach(player, _field, _interactRange) ?? FailReason.OutOfRange;
         }
     }
 }

@@ -70,6 +70,11 @@ message Packet {
     Quickslots quickslots = 315;
     Buy buy = 316;
     Sell sell = 317;
+    StorageOpen storage_open = 318;
+    Storage storage = 319;
+    StorageChanged storage_changed = 320;
+    StorageDeposit storage_deposit = 321;
+    StorageWithdraw storage_withdraw = 322;
   }
 }
 
@@ -448,6 +453,8 @@ enum ItemPlace {
   ITEM_PLACE_INVENTORY = 0;
   // 입은 장비. 칸 번호는 장비 칸(Items의 EquipSlot 값) − 1이다(0 무기, 1 투구, 2 갑옷, 3 장갑, 4 신발, 5 장신구. 34).
   ITEM_PLACE_EQUIPMENT = 1;
+  // 창고(75). Storage와 StorageChanged만 싣고 InventoryChanged는 싣지 않는다.
+  ITEM_PLACE_STORAGE = 2;
 }
 
 // 칸 하나. item_id가 0이면 빈 칸이다(InventoryChanged에서 칸이 비었음을 알림).
@@ -593,6 +600,33 @@ message Sell {
   uint32 request_id = 3;
 }
 
+// 클라이언트 → 서버. 창고를 연다(75). 창고 NPC가 하나라 NPC를 싣지 않는다. 답은 Storage(전체)이고 실패는 ActionFailed(창고)다.
+message StorageOpen {}
+
+// 서버 → 본인. 창고 전체(빈 칸이 아닌 칸들. 있는 곳은 창고). StorageOpen에 답한다.
+message Storage {
+  repeated ItemSlot slots = 1;
+}
+
+// 서버 → 본인. 이 틱에 바뀐 창고의 칸들(빈 칸은 item_id 0).
+message StorageChanged {
+  repeated ItemSlot slots = 1;
+}
+
+// 클라이언트 → 서버. 인벤토리 칸의 아이템을 count개 창고에 맡긴다(75. 입은 장비는 벗어야 맡김).
+message StorageDeposit {
+  uint32 slot = 1;
+  uint32 count = 2;
+  uint32 request_id = 3;
+}
+
+// 클라이언트 → 서버. 창고 칸의 아이템을 count개 찾는다(75. 새로 얻은 것이 아님).
+message StorageWithdraw {
+  uint32 slot = 1;
+  uint32 count = 2;
+  uint32 request_id = 3;
+}
+
 // 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
 message RequestResult {
   uint32 request_id = 1;
@@ -660,6 +694,8 @@ enum FailReason {
   FAIL_REASON_NOT_ENOUGH_GOLD = 25;
   // 상점에 팔 수 없는 아이템이다(파는 값이 없음. 37).
   FAIL_REASON_UNSELLABLE = 26;
+  // 창고에 넣을 자리가 없다(75).
+  FAIL_REASON_STORAGE_FULL = 27;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
@@ -672,6 +708,8 @@ enum RequestKind {
   REQUEST_KIND_CHAT = 4;
   // 퀵슬롯 바꾸기(36).
   REQUEST_KIND_QUICKSLOT = 5;
+  // 창고 열기(75).
+  REQUEST_KIND_STORAGE = 6;
 }
 
 // 클라이언트 → 서버. 대상을 기본 공격한다. 이미 공격 중이면 대상만 바꾼다. 다가가는 것은 클라이언트의 이동이다.

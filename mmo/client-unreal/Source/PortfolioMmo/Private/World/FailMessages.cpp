@@ -33,6 +33,7 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_ALREADY_LEARNED: return "fail.alreadyLearned";
 		case portfolio::mmo::FAIL_REASON_NOT_ENOUGH_GOLD: return "fail.notEnoughGold";
 		case portfolio::mmo::FAIL_REASON_UNSELLABLE: return "fail.unsellable";
+		case portfolio::mmo::FAIL_REASON_STORAGE_FULL: return "fail.storageFull";
 		default: return "fail.other";
 		}
 	}

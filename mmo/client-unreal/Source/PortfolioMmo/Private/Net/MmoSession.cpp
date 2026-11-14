@@ -178,6 +178,7 @@ void UMmoSession::LeaveWorld()
 	WorldState.Reset();
 	CombatState.Reset();
 	InventoryState.Reset();
+	StorageState.Reset();
 	SkillBook.Reset();
 }
 
@@ -210,6 +211,7 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 	const double Now = FPlatformTime::Seconds();
 	WorldState.Apply(Packet, Now);
 	InventoryState.Apply(Packet);
+	StorageState.Apply(Packet);
 	SkillBook.Apply(Packet);
 	if (const std::optional<portfolio::mmo::Packet> Stop = CombatState.Apply(Packet, WorldState, GameData, Now))
 	{
@@ -224,6 +226,7 @@ void UMmoSession::HandleClosed(const FString& Reason)
 	WorldState.Reset();
 	CombatState.Reset();
 	InventoryState.Reset();
+	StorageState.Reset();
 	SkillBook.Reset();
 	OnClosed.Broadcast(Reason);
 }

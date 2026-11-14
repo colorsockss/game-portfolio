@@ -249,8 +249,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kAutoHuntRangeFieldNumber = 27,
     kAutoHuntMpPercentFieldNumber = 29,
     kAutoHuntExcludeMsFieldNumber = 30,
-    kAutoHuntStallMsFieldNumber = 31,
     kAutoHuntManualPauseMsFieldNumber = 32,
+    kStorageSlotsFieldNumber = 33,
+    kAutoHuntStallMsFieldNumber = 31,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -542,16 +543,6 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_auto_hunt_exclude_ms(::uint32_t value);
 
   public:
-  // uint32 auto_hunt_stall_ms = 31;
-  void clear_auto_hunt_stall_ms() ;
-  [[nodiscard]] ::uint32_t auto_hunt_stall_ms() const;
-  void set_auto_hunt_stall_ms(::uint32_t value);
-
-  private:
-  ::uint32_t _internal_auto_hunt_stall_ms() const;
-  void _internal_set_auto_hunt_stall_ms(::uint32_t value);
-
-  public:
   // uint32 auto_hunt_manual_pause_ms = 32;
   void clear_auto_hunt_manual_pause_ms() ;
   [[nodiscard]] ::uint32_t auto_hunt_manual_pause_ms() const;
@@ -562,13 +553,33 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_auto_hunt_manual_pause_ms(::uint32_t value);
 
   public:
+  // uint32 storage_slots = 33;
+  void clear_storage_slots() ;
+  [[nodiscard]] ::uint32_t storage_slots() const;
+  void set_storage_slots(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_storage_slots() const;
+  void _internal_set_storage_slots(::uint32_t value);
+
+  public:
+  // uint32 auto_hunt_stall_ms = 31;
+  void clear_auto_hunt_stall_ms() ;
+  [[nodiscard]] ::uint32_t auto_hunt_stall_ms() const;
+  void set_auto_hunt_stall_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_auto_hunt_stall_ms() const;
+  void _internal_set_auto_hunt_stall_ms(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 31,
+      ::google::protobuf::internal::TcParseTable<5, 32,
                           0, 0,
-                          2>;
+                          7>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
       const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
   friend class ::google::protobuf::internal::TcParser;
@@ -624,8 +635,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     double auto_hunt_range_;
     ::uint32_t auto_hunt_mp_percent_;
     ::uint32_t auto_hunt_exclude_ms_;
-    ::uint32_t auto_hunt_stall_ms_;
     ::uint32_t auto_hunt_manual_pause_ms_;
+    ::uint32_t storage_slots_;
+    ::uint32_t auto_hunt_stall_ms_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1348,7 +1360,7 @@ inline void Constants::_internal_set_auto_hunt_exclude_ms(::uint32_t value) {
 inline void Constants::clear_auto_hunt_stall_ms() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.auto_hunt_stall_ms_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x20000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x80000000U);
 }
 inline ::uint32_t Constants::auto_hunt_stall_ms() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_stall_ms)
@@ -1356,7 +1368,7 @@ inline ::uint32_t Constants::auto_hunt_stall_ms() const {
 }
 inline void Constants::set_auto_hunt_stall_ms(::uint32_t value) {
   _internal_set_auto_hunt_stall_ms(value);
-  SetHasBit(_impl_._has_bits_[0], 0x20000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x80000000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_stall_ms)
 }
 inline ::uint32_t Constants::_internal_auto_hunt_stall_ms() const {
@@ -1372,7 +1384,7 @@ inline void Constants::_internal_set_auto_hunt_stall_ms(::uint32_t value) {
 inline void Constants::clear_auto_hunt_manual_pause_ms() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.auto_hunt_manual_pause_ms_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x40000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x20000000U);
 }
 inline ::uint32_t Constants::auto_hunt_manual_pause_ms() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_manual_pause_ms)
@@ -1380,7 +1392,7 @@ inline ::uint32_t Constants::auto_hunt_manual_pause_ms() const {
 }
 inline void Constants::set_auto_hunt_manual_pause_ms(::uint32_t value) {
   _internal_set_auto_hunt_manual_pause_ms(value);
-  SetHasBit(_impl_._has_bits_[0], 0x40000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x20000000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_manual_pause_ms)
 }
 inline ::uint32_t Constants::_internal_auto_hunt_manual_pause_ms() const {
@@ -1390,6 +1402,30 @@ inline ::uint32_t Constants::_internal_auto_hunt_manual_pause_ms() const {
 inline void Constants::_internal_set_auto_hunt_manual_pause_ms(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.auto_hunt_manual_pause_ms_ = value;
+}
+
+// uint32 storage_slots = 33;
+inline void Constants::clear_storage_slots() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.storage_slots_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x40000000U);
+}
+inline ::uint32_t Constants::storage_slots() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.storage_slots)
+  return _internal_storage_slots();
+}
+inline void Constants::set_storage_slots(::uint32_t value) {
+  _internal_set_storage_slots(value);
+  SetHasBit(_impl_._has_bits_[0], 0x40000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.storage_slots)
+}
+inline ::uint32_t Constants::_internal_storage_slots() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.storage_slots_;
+}
+inline void Constants::_internal_set_storage_slots(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.storage_slots_ = value;
 }
 
 #ifdef __GNUC__

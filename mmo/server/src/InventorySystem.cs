@@ -31,6 +31,28 @@ namespace PortfolioMmo.Server
         public ItemSlot[] Equipment { get; } = new ItemSlot[6];
 
         /// <summary>
+        /// 창고(75). 인벤토리와 같은 칸이고 들어올 때 함께 읽는다. 클라이언트에는 StorageOpen 때 보낸다.
+        /// </summary>
+        public ItemSlot[] Storage { get; private set; } = new ItemSlot[0];
+
+        /// <summary>
+        /// 이 틱에 바뀐 창고 칸의 번호. 시야 차례에 StorageChanged 하나로 보낸다.
+        /// </summary>
+        public SortedSet<int> ChangedStorage { get; } = new SortedSet<int>();
+
+        /// <summary>
+        /// 창고를 size칸으로 만든다.
+        /// </summary>
+        public void MakeStorage(int size)
+        {
+            Storage = new ItemSlot[size];
+            for (int index = 0; index < size; index++)
+            {
+                Storage[index] = new ItemSlot { Place = ItemPlace.Storage, Index = (uint)index };
+            }
+        }
+
+        /// <summary>
         /// 이 틱에 바뀐 장비 칸의 번호.
         /// </summary>
         public SortedSet<int> ChangedEquipment { get; } = new SortedSet<int>();
@@ -94,9 +116,10 @@ namespace PortfolioMmo.Server
         public void Enter(Player player, CharacterSnapshot state, bool revived)
         {
             Bag bag = player.Bag = new Bag((int)_data.Constants.InventorySlots);
+            bag.MakeStorage((int)_data.Constants.StorageSlots);
             foreach (SavedItem item in state.Items)
             {
-                ItemSlot[] place = item.Place == ItemPlace.Equipment ? bag.Equipment : bag.Slots;
+                ItemSlot[] place = item.Place switch { ItemPlace.Equipment => bag.Equipment, ItemPlace.Storage => bag.Storage, _ => bag.Slots };
                 if ((item.Slot < place.Length) && (_data.Item(item.ItemId) != null))
                 {
                     (place[item.Slot].ItemId, place[item.Slot].Count, place[item.Slot].Enchant) = (item.ItemId, item.Count, item.Enchant);
@@ -432,6 +455,16 @@ namespace PortfolioMmo.Server
             foreach (Player player in players)
             {
                 Bag bag = player.Bag;
+                if (bag.ChangedStorage.Count > 0)
+                {
+                    // 창고의 바뀜은 StorageChanged로만 간다(75).
+                    player.DirtyFast = true;
+                    var storage = new StorageChanged();
+                    storage.Slots.Add(bag.ChangedStorage.Select(index => bag.Storage[index].Clone()));
+                    bag.ChangedStorage.Clear();
+                    player.Session.Send(new Packet { StorageChanged = storage });
+                }
+
                 if ((bag.Changed.Count == 0) && (bag.ChangedEquipment.Count == 0) && !bag.GoldChanged && (bag.Gains.Count == 0))
                 {
                     continue;

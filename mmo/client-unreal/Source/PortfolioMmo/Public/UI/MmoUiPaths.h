@@ -25,6 +25,7 @@ namespace MmoUiPaths
 	inline const TCHAR* const Enchant = TEXT("/Game/UI/WBP_Enchant");
 	inline const TCHAR* const Skills = TEXT("/Game/UI/WBP_Skills");
 	inline const TCHAR* const Shop = TEXT("/Game/UI/WBP_Shop");
+	inline const TCHAR* const Storage = TEXT("/Game/UI/WBP_Storage");
 	inline const TCHAR* const QuickslotBar = TEXT("/Game/UI/WBP_QuickslotBar");
 	inline const TCHAR* const Button = TEXT("/Game/UI/WBP_Button");
 	inline const TCHAR* const Notice = TEXT("/Game/UI/WBP_Notice");

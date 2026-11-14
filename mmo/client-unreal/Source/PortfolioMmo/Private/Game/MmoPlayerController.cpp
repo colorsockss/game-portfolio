@@ -793,6 +793,13 @@ void AMmoPlayerController::Act(const MmoWorld::FInteractTarget& Target)
 		{
 			GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowShop();
 		}
+		else if (Npc && Npc->role() == portfolio::mmo::data::NPC_ROLE_STORAGE)
+		{
+			// 창고의 내용은 서버가 Storage로 보내고, 화면 관리자가 그것을 받아 창고 창을 연다(75).
+			portfolio::mmo::Packet Open;
+			Open.mutable_storage_open();
+			Session().Send(Open);
+		}
 	}
 }
 

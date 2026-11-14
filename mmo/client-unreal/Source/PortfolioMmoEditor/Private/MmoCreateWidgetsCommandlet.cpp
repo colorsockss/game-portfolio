@@ -48,6 +48,7 @@
 #include "UI/MmoQuantityWidget.h"
 #include "UI/MmoQuickslotBarWidget.h"
 #include "UI/MmoShopWidget.h"
+#include "UI/MmoStorageWidget.h"
 #include "UI/MmoSkillsWidget.h"
 #include "UI/MmoSettingsWidget.h"
 #include "UI/MmoTextBlock.h"
@@ -735,6 +736,35 @@ namespace
 		return Builder.Save();
 	}
 
+	/** 창고 창(75): 제목, 안내 글, 창고 칸(왼쪽)과 내 가방 칸(오른쪽)을 나란히(보이는 줄만 만드는 목록 위젯, 한 줄 5칸), 닫기. */
+	bool CreateStorage(UClass* ItemSlotClass)
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Storage, UMmoStorageWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 10 + Style.Gap * 6 + Style.PanelPadding * 2, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("storage.title"), Style.TitleSize), Style.Gap);
+		UTextBlock* Hint = Builder.KeyText(TEXT("HintText"), TEXT("storage.hint"), Style.SmallSize + 2);
+		Hint->SetAutoWrapText(true);
+		AddWithGap(*Column, Hint, Style.Section);
+		const auto Side = [&](const TCHAR* Name, const TCHAR* TitleKey)
+		{
+			UVerticalBox* Box = Builder.Add<UVerticalBox>(*FString::Printf(TEXT("%sBox"), Name));
+			AddWithGap(*Box, Builder.KeyText(*FString::Printf(TEXT("%sTitle"), Name), TitleKey, Style.SmallSize + 2));
+			UTileView* Tiles = Builder.Add<UTileView>(Name, true);
+			Tiles->SetEntryWidth(Style.ItemSlot);
+			Tiles->SetEntryHeight(Style.ItemSlot);
+			FindFProperty<FClassProperty>(UListViewBase::StaticClass(), TEXT("EntryWidgetClass"))->SetObjectPropertyValue_InContainer(Tiles, ItemSlotClass);
+			USizeBox* Size = Builder.Add<USizeBox>(*FString::Printf(TEXT("%sSize"), Name));
+			Size->SetWidthOverride(Style.ItemSlot * 5 + Style.Gap * 2);
+			Size->SetHeightOverride(Style.ItemSlot * 5);
+			Size->SetContent(Tiles);
+			Box->AddChildToVerticalBox(Size);
+			return Box;
+		};
+		AddWithGap(*Column, Row(Builder, TEXT("Sides"), { Side(TEXT("StorageGrid"), TEXT("storage.title")), Side(TEXT("BagGrid"), TEXT("storage.mine")) }), Style.Section);
+		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), { Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+		return Builder.Save();
+	}
+
 	/** 인벤토리 창(32): 제목, 칸의 목록 위젯(한 줄에 6칸, 보이는 줄만 만듦), 골드, 닫기. */
 	bool CreateInventory(UClass* ItemSlotClass)
 	{
@@ -914,7 +944,7 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	UClass* ItemSlot = CreateItemSlot();
 	UClass* QuickslotBar = CreateQuickslotBar();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && QuickslotBar && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateStorage(ItemSlot) && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 
