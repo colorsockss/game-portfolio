@@ -708,7 +708,8 @@ namespace
 	bool CreateCharacterSelect()
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::CharacterSelect, UMmoCharacterSelectWidget::StaticClass());
-		UVerticalBox* Column = Builder.Window(Style.WindowWide, Style.Backdrop);
+		// 바탕은 반투명이라 뒤의 월드에 세운 고른 캐릭터(34)가 보인다.
+		UVerticalBox* Column = Builder.Window(Style.WindowWide, Style.Dim);
 		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("select.title"), Style.TitleSize), Style.Section);
 
 		// 칸 4개(Constant의 캐릭터 수). 글은 기반 클래스가 SetLabel로 채운다.

@@ -5,7 +5,11 @@
 
 #include "MmoCharacterSelectWidget.generated.h"
 
+class ACameraActor;
+class ASkeletalMeshActor;
+class UMaterialInstanceDynamic;
 class UMmoButtonWidget;
+class UStaticMeshComponent;
 class UTextBlock;
 class UMmoSession;
 
@@ -26,8 +30,28 @@ class UMmoCharacterSelectWidget : public UUserWidget
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 private:
+	/**
+	 * 고른 캐릭터를 카메라 앞(창의 왼쪽)에 세워 보인다(34). 메시와 대기 동작은 표현 표의 직업 줄, 무기는 그 직업의 기본 무기다.
+	 * shortcut: 38 전에는 입은 무기를 저장하지 않아 기본 무기이고, 38이 CharacterList의 입은 무기를 쓴다. 0이면 미리 보기를 치운다.
+	 */
+	void ShowPreview(uint32 CharacterClass);
+
+	TWeakObjectPtr<ASkeletalMeshActor> Preview;
+
+	/** 미리 보기를 비추는 카메라(필드 위 높은 곳. 월드에 들어가 폰을 받으면 시점이 폰으로 돌아감). */
+	TWeakObjectPtr<ACameraActor> PreviewCamera;
+
+	UPROPERTY()
+	TObjectPtr<UStaticMeshComponent> PreviewWeapon;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> HiddenWeapon;
+
+	uint32 PreviewClass = 0;
+
 	UFUNCTION()
 	void HandleSlot0Clicked();
 

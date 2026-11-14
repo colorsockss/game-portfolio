@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 
 class UAnimSequenceBase;
+class UMmoEntityVisuals;
 class UMaterialInterface;
 class UMmoAnimInstance;
 class USkeletalMesh;
@@ -14,8 +15,20 @@ class UStaticMeshComponent;
  * 개체 액터(내 캐릭터와 다른 개체)의 모습을 바꾸는 도우미. 무엇을 입힐지는 표현 표(UMmoEntityVisuals)가 정하고,
  * 언제 입힐지(불러오기가 끝났을 때)는 UMmoEntitySubsystem이 정한다. 액터는 스켈레탈 메시와 자리 표시 메시를 하나씩 가진다.
  */
+namespace portfolio::mmo::data
+{
+	class ItemsRow;
+}
+
 namespace MmoCharacterLook
 {
+	/**
+	 * 손의 무기(34). 캐릭터 팩의 메시에 구워진 무기는 그 재질 칸(MI_<직업>_Weapon)을 Hidden(투명한 재질)으로 감추고, Item이 있으면 표현 표의 무기 메시나
+	 * 자리 표시 막대를 Weapon_R 뼈에 붙인다(없으면 만든다). 막대는 뼈의 축(Weapon_R → Weapon_R_end)을 따라 놓는다. Item이 없으면 맨손이다.
+	 */
+	void ShowWeapon(USkeletalMeshComponent& Mesh, TObjectPtr<UStaticMeshComponent>& Weapon, const portfolio::mmo::data::ItemsRow* Item, const UMmoEntityVisuals* Visuals,
+		UMaterialInterface* Hidden);
+
 	/** 자리 표시(종류마다의 도형과 색)를 보이고 스켈레탈 메시를 감춘다. 불러오는 동안과 표에 줄이 없는 개체가 이렇게 보인다. */
 	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* Shape, UMaterialInterface* Material, const FLinearColor& Color, const FVector& Scale);
 

@@ -8,6 +8,19 @@
 #include "Misc/CommandLine.h"
 #include "Net/MmoSession.h"
 #include "UI/MmoUiManager.h"
+#include "Animation/SkeletalMeshActor.h"
+#include "Camera/CameraActor.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
+#include "Engine/World.h"
+#include "Game/MmoAnimInstance.h"
+#include "Game/MmoCharacterLook.h"
+#include "Game/MmoCueSubsystem.h"
+#include "Game/MmoEntityVisuals.h"
+#include "GameFramework/PlayerController.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 
 namespace
@@ -118,7 +131,70 @@ void UMmoCharacterSelectWidget::Refresh()
 			: MmoText::Get(this, TEXT("select.emptySlot")));
 	}
 	StartButton->SetIsEnabled(Selected != INDEX_NONE && !bEntering);
+	ShowPreview(Selected != INDEX_NONE && Selected < List.characters_size() ? static_cast<uint32>(List.characters(Selected).character_class()) : 0);
 	CreateButton->SetIsEnabled(List.characters_size() < portfolio::mmo::CONSTANT_MAX_CHARACTERS && !bEntering);
+}
+
+void UMmoCharacterSelectWidget::NativeDestruct()
+{
+	ShowPreview(0);
+	Super::NativeDestruct();
+}
+
+void UMmoCharacterSelectWidget::ShowPreview(uint32 CharacterClass)
+{
+	if (CharacterClass == PreviewClass && (CharacterClass == 0 || Preview.IsValid()))
+	{
+		return;
+	}
+	PreviewClass = CharacterClass;
+	if (Preview.IsValid())
+	{
+		Preview->Destroy();
+	}
+	Preview.Reset();
+	PreviewWeapon = nullptr;
+	const UMmoEntityVisuals* Visuals = CharacterClass != 0 ? LoadObject<UMmoEntityVisuals>(nullptr, UMmoEntityVisuals::Path) : nullptr;
+	const FMmoEntityVisual* Row = Visuals ? Visuals->Find(UMmoEntityVisuals::PlayerKind(), static_cast<int32>(CharacterClass)) : nullptr;
+	APlayerController* Controller = GetOwningPlayer();
+	if (!Row || !Controller)
+	{
+		if (PreviewCamera.IsValid())
+		{
+			PreviewCamera->Destroy();
+		}
+		PreviewCamera.Reset();
+		return;
+	}
+
+	// 필드의 것과 겹치지 않게 높이 200 m에 세우고, 3.5 m 앞의 카메라가 몸의 가운데를 비춘다. 캐릭터는 화면의 왼쪽(가운데의 창에 가리지 않게)이다.
+	// 팩의 메시는 +Y를 보므로 카메라(−X 쪽)를 보게 하려면 yaw 90도다.
+	const FVector Stage(0.0, 0.0, 20000.0);
+	FActorSpawnParameters Spawn;
+	Spawn.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	if (!PreviewCamera.IsValid())
+	{
+		PreviewCamera = GetWorld()->SpawnActor<ACameraActor>(Stage + FVector(-350.0, 110.0, 100.0), FRotator(-5.0, 0.0, 0.0), Spawn);
+	}
+	Controller->SetViewTarget(PreviewCamera.Get());
+	ASkeletalMeshActor* Actor = GetWorld()->SpawnActor<ASkeletalMeshActor>(Stage, FRotator(0.0, 90.0, 0.0), Spawn);
+	USkeletalMeshComponent* Mesh = Actor->GetSkeletalMeshComponent();
+	Mesh->SetMobility(EComponentMobility::Movable);
+	Mesh->SetSkeletalMesh(Row->Mesh.LoadSynchronous());
+	Mesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	Mesh->SetAnimInstanceClass(Row->Animation.LoadSynchronous());
+	Mesh->SetWorldScale3D(FVector(180.0 / 272.0));
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Preview = Actor;
+
+	UMmoCueSubsystem* Cues = GetWorld()->GetSubsystem<UMmoCueSubsystem>();
+	if (!HiddenWeapon && Cues && Cues->HitFlashMaterial())
+	{
+		HiddenWeapon = UMaterialInstanceDynamic::Create(Cues->HitFlashMaterial(), this);
+		HiddenWeapon->SetScalarParameterValue(TEXT("Flash"), 0.0f);
+	}
+	const portfolio::mmo::data::ClassesRow* Class = Session().Data().Class(CharacterClass);
+	MmoCharacterLook::ShowWeapon(*Mesh, PreviewWeapon, Class ? Session().Data().Item(Class->start_weapon()) : nullptr, Visuals, HiddenWeapon);
 }
 
 UMmoSession& UMmoCharacterSelectWidget::Session() const
