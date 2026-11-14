@@ -8,7 +8,7 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 배운 스킬과 퀵슬롯(36). 서버는 퀵슬롯의 값을 기억만 하고, 배운 스킬과 새로 얻은 물약은 퀵슬롯에 없고 빈 자리가 있으면 가장 앞의 빈 자리에 올린다.
-    /// 바뀐 퀵슬롯은 시야 차례(Flush)에 Quickslots 하나로 보낸다. 저장(38) 전에는 들어올 때마다 첫 스킬만 배운 채이고 퀵슬롯은 처음 상태가 올라간 배치다.
+    /// 바뀐 퀵슬롯은 시야 차례(Flush)에 Quickslots 하나로 보낸다. 배운 스킬과 퀵슬롯은 저장한다(38).
     /// </summary>
     internal sealed class QuickslotSystem
     {
@@ -20,29 +20,45 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 월드에 들어온 플레이어(Inventory 뒤): 첫 스킬을 배운 채로 두고, 첫 스킬과 처음 상태의 물약을 차례로 올린 뒤 LearnedSkills와 Quickslots를 보낸다.
+        /// 월드에 들어온 플레이어(Inventory 뒤): 저장한 배운 스킬과 퀵슬롯을 되살리고 LearnedSkills와 Quickslots를 보낸다. 처음 상태는 캐릭터를 만들 때 넣었다(StartQuickslots).
         /// </summary>
-        public void Enter(Player player)
+        public void Enter(Player player, CharacterSnapshot state)
         {
-            ClassesRow row = _data.Class(player.Class);
             player.Skills.Clear();
+            player.Skills.UnionWith(state.Skills);
             Array.Clear(player.Quickslots);
-            if (row.FirstSkill != 0)
+            foreach (SavedQuickslot slot in state.Quickslots.Where(slot => slot.Slot < player.Quickslots.Length))
             {
-                player.Skills.Add(row.FirstSkill);
-                Place(player, QuickslotKind.Skill, row.FirstSkill);
-            }
-
-            foreach (uint itemId in row.StartItems.Where(IsPotion))
-            {
-                Place(player, QuickslotKind.Item, itemId);
+                player.Quickslots[slot.Slot] = (slot.Kind, slot.Id);
             }
 
             player.QuickslotsChanged = false;
             var learned = new LearnedSkills();
-            learned.Skills.Add(player.Skills);
+            learned.Skills.Add(player.Skills.OrderBy(skill => skill));
             player.Session.Send(new Packet { LearnedSkills = learned });
             player.Session.Send(new Packet { Quickslots = Whole(player) });
+        }
+
+        /// <summary>
+        /// 새 캐릭터의 퀵슬롯: 첫 스킬과 처음 상태의 물약을 위의 규칙(빈 자리에 차례로)으로 올린 배치.
+        /// </summary>
+        public static List<SavedQuickslot> StartQuickslots(GameData data, ClassesRow row)
+        {
+            var slots = new List<SavedQuickslot>();
+            if (row.FirstSkill != 0)
+            {
+                slots.Add(new SavedQuickslot(0, QuickslotKind.Skill, row.FirstSkill));
+            }
+
+            foreach (uint itemId in row.StartItems.Where(itemId => data.Item(itemId) is { Use: ItemUse.HealHp or ItemUse.HealMp }).Distinct())
+            {
+                if (slots.Count < (int)Constant.QuickslotCount)
+                {
+                    slots.Add(new SavedQuickslot((uint)slots.Count, QuickslotKind.Item, itemId));
+                }
+            }
+
+            return slots;
         }
 
         /// <summary>
@@ -70,6 +86,7 @@ namespace PortfolioMmo.Server
         public void Learn(Player player, uint skillId)
         {
             player.Skills.Add(skillId);
+            player.DirtyFast = true;
             player.Session.Send(new Packet { SkillLearned = new SkillLearned { Skill = skillId } });
             Place(player, QuickslotKind.Skill, skillId);
         }
@@ -121,6 +138,7 @@ namespace PortfolioMmo.Server
             foreach (Player player in players.Where(player => player.QuickslotsChanged))
             {
                 player.QuickslotsChanged = false;
+                player.DirtyFast = true;
                 player.Session.Send(new Packet { Quickslots = Whole(player) });
             }
         }

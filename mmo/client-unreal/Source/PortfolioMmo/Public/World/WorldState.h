@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "Data/GameData.h"
@@ -163,6 +164,9 @@ namespace MmoWorld
 		/** 지난번에 꺼낸 뒤로 쌓인 성장의 사건(얻은 양이 0보다 큰 ExpGained, 레벨이 오른 EntityState). */
 		std::vector<FGrowthEvent> TakeGrowth();
 
+		/** 죽은 채 빠졌던 캐릭터라 부활 지점에서 부활해 들어왔는가(EnterWorldResult의 표시. 38). 꺼내면 내린다. */
+		bool TakeRevivedOnEnter() { return std::exchange(bRevivedOnEnter, false); }
+
 		/** 내가 전투 상태인가: 어림한 서버의 지금 틱이 전투 상태가 끝나는 틱 앞이다. */
 		bool InCombat(double NowSeconds) const { return ServerClock.Now(NowSeconds) < Mine.CombatEndTick; }
 
@@ -216,5 +220,6 @@ namespace MmoWorld
 		std::vector<uint32_t> Left;
 		std::vector<uint32_t> Entered;
 		std::vector<FGrowthEvent> Growth;
+		bool bRevivedOnEnter = false;
 	};
 }

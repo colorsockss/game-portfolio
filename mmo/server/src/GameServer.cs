@@ -125,7 +125,7 @@ namespace PortfolioMmo.Server
         public int Port => ((IPEndPoint)_listener.LocalEndpoint).Port;
 
         /// <summary>
-        /// cancellationToken이 취소될 때까지 서버를 돌린다. 취소되면 모두에게 SERVER_SHUTDOWN을 보내고, 위치를 저장하고 닫는다.
+        /// cancellationToken이 취소될 때까지 서버를 돌린다. 취소되면 모두에게 SERVER_SHUTDOWN을 보내고(빠지는 플레이어마다 사본을 넣음), 저장 스레드의 큐가 빌 때까지 기다린 뒤 닫는다.
         /// </summary>
         public async Task RunAsync(CancellationToken cancellationToken)
         {
@@ -351,7 +351,7 @@ namespace PortfolioMmo.Server
                 + $"cpu {(cpu - _statsCpuStarted).TotalSeconds / seconds * 100:F0}%, "
                 + $"heap {GC.GetTotalMemory(false) / 1e6:F0} MB, working set {Environment.WorkingSet / 1e6:F0} MB, "
                 + $"alloc {(allocated - _statsAllocatedStarted) / seconds / 1e6:F1} MB/s, "
-                + $"gc {GC.CollectionCount(0)}/{GC.CollectionCount(1)}/{GC.CollectionCount(2)}\n{_profile.Report()}");
+                + $"gc {GC.CollectionCount(0)}/{GC.CollectionCount(1)}/{GC.CollectionCount(2)}\n{_world.SaveReport()}\n{_profile.Report()}");
 
             _statsTicks = 0;
             _statsTickTime = TimeSpan.Zero;

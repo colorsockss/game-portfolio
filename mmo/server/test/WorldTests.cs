@@ -118,6 +118,7 @@ namespace PortfolioMmo.Server.Tests
 
             world.Receive(thief, new Packet { EnterWorld = new EnterWorld { CharacterId = (ulong)id } });
             world.Receive(thief, new Packet { EnterWorld = new EnterWorld { CharacterId = 999 } });
+            world.CompleteSaves();
             var noSuchCharacter = new Packet { EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.NoSuchCharacter } };
             Assert.Equal(new[] { noSuchCharacter, noSuchCharacter }, Take(thief));
             Assert.Null(thief.Player);
@@ -139,6 +140,7 @@ namespace PortfolioMmo.Server.Tests
             Take(observer);
 
             world.Receive(leaver, new Packet { LeaveWorld = new LeaveWorld() });
+            world.CompleteSaves();
             Assert.Equal(new[] { List(("hero01", CharacterClass.Knight)) }, Take(leaver).Select(WithoutIds));
             Assert.Null(leaver.Player);
             world.Step();
@@ -390,7 +392,7 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 나간 플레이어의 위치는 그 틱에 저장되고, 서버를 다시 띄운 뒤 같은 캐릭터로 들어오면 그 자리에서 시작한다.
+        /// 나간 플레이어의 사본은 그 틱에 큐에 들어가 저장되고, 서버를 다시 띄운 뒤 같은 캐릭터로 들어오면 그 자리에서 시작한다.
         /// </summary>
         [Fact]
         public void LeavingSavesThePositionForTheNextServer()
@@ -402,8 +404,8 @@ namespace PortfolioMmo.Server.Tests
             WalkTo(world, session, 100, 0);
             Move(world, session, 100, 0, ack: 0, yaw: 32);
             world.Disconnect(session);
-            world.Step();
-            Assert.Equal(new SavedPosition(100, 0, 32), store.Load(id)!.Position);
+            world.CompleteSaves();
+            Assert.Equal(new SavedPosition(100, 0, 32), store.Load(id)!.State.Position);
 
             World restarted = NewWorld(store: store);
             Session again = LogIn(restarted, "hero_01");
@@ -416,7 +418,7 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 나간 틱 안에 다시 들어오면 아직 저장하지 않은 위치에서 이어 간다.
+        /// 나간 틱 안에 다시 들어와도 읽기가 나갈 때의 사본 뒤에 돌아 그 자리에서 이어 간다.
         /// </summary>
         [Fact]
         public void RejoiningBeforeTheSaveKeepsThePosition()
@@ -447,18 +449,21 @@ namespace PortfolioMmo.Server.Tests
             long id = session.Player!.CharacterId;
             WalkTo(world, session, 100, 0);
 
-            world.Step(World.SaveIntervalTicks * 2);
-            Assert.Equal(new SavedPosition(100, 0, 0), store.Load(id)!.Position);
+            world.Step(SaveSystem.SlowIntervalTicks * 2);
+            world.CompleteSaves();
+            Assert.Equal(new SavedPosition(100, 0, 0), store.Load(id)!.State.Position);
 
             Move(world, session, 200, 0, ack: 0);
-            while (world.Tick % World.SaveIntervalTicks != World.SaveIntervalTicks - 1)
+            while (world.Tick % SaveSystem.SlowIntervalTicks != SaveSystem.SlowIntervalTicks - 1)
             {
                 world.Step();
             }
 
-            Assert.Equal(new SavedPosition(100, 0, 0), store.Load(id)!.Position);
+            world.CompleteSaves();
+            Assert.Equal(new SavedPosition(100, 0, 0), store.Load(id)!.State.Position);
             world.Step();
-            Assert.Equal(new SavedPosition(200, 0, 0), store.Load(id)!.Position);
+            world.CompleteSaves();
+            Assert.Equal(new SavedPosition(200, 0, 0), store.Load(id)!.State.Position);
         }
 
         /// <summary>
@@ -480,7 +485,7 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 접속 중인 플레이어는 움직였으면 저장 간격마다 저장된다.
+        /// 접속 중인 플레이어는 움직였으면 60초 주기마다 저장된다.
         /// </summary>
         [Fact]
         public void MovedPlayersAreSavedEveryInterval()
@@ -490,14 +495,16 @@ namespace PortfolioMmo.Server.Tests
             Session session = Join(world, "hero_01");
             long id = session.Player!.CharacterId;
             WalkTo(world, session, 100, 0);
-            Assert.Equal(new SavedPosition(0, 0, 0), store.Load(id)!.Position);
+            world.CompleteSaves();
+            Assert.Equal(new SavedPosition(0, 0, 0), store.Load(id)!.State.Position);
 
-            while (world.Tick % World.SaveIntervalTicks != 0)
+            while (world.Tick % SaveSystem.SlowIntervalTicks != 0)
             {
                 world.Step();
             }
 
-            Assert.Equal(new SavedPosition(100, 0, 0), store.Load(id)!.Position);
+            world.CompleteSaves();
+            Assert.Equal(new SavedPosition(100, 0, 0), store.Load(id)!.State.Position);
         }
 
         /// <summary>
@@ -515,6 +522,7 @@ namespace PortfolioMmo.Server.Tests
         {
             var session = new Session();
             world.Receive(session, LoginPacket(loginId));
+            world.CompleteSaves();
             return session;
         }
 
@@ -547,6 +555,7 @@ namespace PortfolioMmo.Server.Tests
         private static void Create(World world, Session session, string name, CharacterClass characterClass)
         {
             world.Receive(session, new Packet { CreateCharacter = new CreateCharacter { Name = name, CharacterClass = characterClass } });
+            world.CompleteSaves();
         }
 
         /// <summary>
@@ -555,6 +564,7 @@ namespace PortfolioMmo.Server.Tests
         private static void Enter(World world, Session session, long characterId)
         {
             world.Receive(session, new Packet { EnterWorld = new EnterWorld { CharacterId = (ulong)characterId } });
+            world.CompleteSaves();
         }
 
         /// <summary>
@@ -650,7 +660,7 @@ namespace PortfolioMmo.Server.Tests
             var list = new CharacterList();
             foreach ((string name, CharacterClass characterClass) in characters)
             {
-                list.Characters.Add(new CharacterSummary { Name = name, CharacterClass = characterClass });
+                list.Characters.Add(new CharacterSummary { Name = name, CharacterClass = characterClass, Level = 1 });
             }
 
             return new Packet { CharacterList = list };

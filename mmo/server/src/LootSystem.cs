@@ -11,6 +11,7 @@ namespace PortfolioMmo.Server
     /// </summary>
     internal sealed class LootSystem
     {
+        private readonly SaveSystem _save;
         private readonly GameData _data;
         private readonly EntityTable _entities;
         private readonly Grid _grid;
@@ -22,8 +23,9 @@ namespace PortfolioMmo.Server
         private readonly uint _ownerOnlyTicks;
         private readonly long _interactRange;
 
-        public LootSystem(GameData data, EntityTable entities, Grid grid, FieldMap field, Scheduler scheduler, InventorySystem inventory, Random random)
+        public LootSystem(GameData data, EntityTable entities, Grid grid, FieldMap field, Scheduler scheduler, InventorySystem inventory, SaveSystem save, Random random)
         {
+            _save = save;
             _data = data;
             _entities = entities;
             _grid = grid;
@@ -156,7 +158,9 @@ namespace PortfolioMmo.Server
             ItemSlot slot = player.Bag.Slots[request.Slot];
             uint itemId = slot.ItemId;
             uint enchant = slot.Enchant;
+            // 인벤토리에서 빼기 → 사본을 큐에 넣기 → 바닥 개체 놓기(38). 내놓은 쪽의 사본이 주운 쪽의 사본보다 먼저 큐에 들어가 아이템이 두 곳에 저장되지 않는다.
             _inventory.Remove(player, (int)request.Slot, request.Count);
+            _save.SaveNow(player);
             Place(itemId, request.Count, enchant, player.X, player.Z, 0, 0, true, tick);
             return FailReason.None;
         }

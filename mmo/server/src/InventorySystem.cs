@@ -88,40 +88,60 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 월드에 들어온 플레이어(EnterWorldResult 뒤): 직업의 처음 상태로 채우고 Inventory로 전체를 보낸다. 저장(38) 전에는 들어올 때마다 처음 상태다.
+        /// 월드에 들어온 플레이어(EnterWorldResult 뒤): 저장한 칸, 입은 장비, 골드를 되살려 능력치를 다시 구하고 체력과 마나를 저장한 값(최대를 넘지 않음)으로 둔 뒤
+        /// Inventory로 전체를 보낸다. revived면(죽은 채 빠짐) 체력은 부활할 때의 비율이다. 이어서 배운 스킬과 퀵슬롯을 되살린다.
         /// </summary>
-        public void Enter(Player player)
+        public void Enter(Player player, CharacterSnapshot state, bool revived)
         {
-            player.Bag = new Bag((int)_data.Constants.InventorySlots);
-            ClassesRow row = _data.Class(player.Class);
-            for (int index = 0; index < Math.Min(row.StartItems.Count, row.StartCounts.Count); index++)
+            Bag bag = player.Bag = new Bag((int)_data.Constants.InventorySlots);
+            foreach (SavedItem item in state.Items)
             {
-                Add(player, row.StartItems[index], row.StartCounts[index], GainReason.Unspecified);
+                ItemSlot[] place = item.Place == ItemPlace.Equipment ? bag.Equipment : bag.Slots;
+                if ((item.Slot < place.Length) && (_data.Item(item.ItemId) != null))
+                {
+                    (place[item.Slot].ItemId, place[item.Slot].Count, place[item.Slot].Enchant) = (item.ItemId, item.Count, item.Enchant);
+                }
             }
 
-            // 기본 무기는 입힌 채로 준다(34). 능력치를 다시 구하고 체력과 마나를 채운다(들어올 때는 가득).
-            if (row.StartWeapon != 0)
-            {
-                ItemSlot weapon = player.Bag.Equipment[(int)_data.Item(row.StartWeapon)!.Slot - 1];
-                weapon.ItemId = row.StartWeapon;
-                weapon.Count = 1;
-                EquipmentChanged(player);
-                player.Hp = player.MaxHp;
-                player.Mp = player.MaxMp;
-                // 아직 아무도 받지 않은 개체라 EntityState 대신 EntityEnter가 무기를 싣는다.
-                player.StateChanged = false;
-            }
-
-            Bag bag = player.Bag;
-            bag.Changed.Clear();
-            bag.ChangedEquipment.Clear();
-            bag.Gains.Clear();
-            bag.GoldChanged = false;
+            bag.Gold = state.Gold;
+            EquipmentChanged(player);
+            player.Hp = revived ? Math.Max(1, (uint)((ulong)player.MaxHp * _data.Constants.ReviveHpPercent / 100)) : Math.Min(state.Hp, player.MaxHp);
+            player.Mp = Math.Min(state.Mp, player.MaxMp);
+            // 아직 아무도 받지 않은 개체라 EntityState 대신 EntityEnter가 무기를 싣고, 보는 쪽은 EntityEnter로 지금 체력을 받는다.
+            player.StateChanged = false;
+            player.VitalsChanged = false;
             var whole = new Inventory();
             whole.Slots.Add(bag.Slots.Concat(bag.Equipment).Where(slot => slot.ItemId != 0).Select(slot => slot.Clone()));
             whole.Gold = bag.Gold;
             player.Session.Send(new Packet { Inventory = whole });
-            _quickslots.Enter(player);
+            _quickslots.Enter(player, state);
+        }
+
+        /// <summary>
+        /// 새 캐릭터의 아이템: 처음 상태의 아이템을 앞 칸부터 하나씩(같은 아이템은 한 칸에 겹침), 기본 무기는 입힌 채(34).
+        /// </summary>
+        public static List<SavedItem> StartItems(GameData data, ClassesRow row)
+        {
+            var items = new List<SavedItem>();
+            for (int index = 0; index < Math.Min(row.StartItems.Count, row.StartCounts.Count); index++)
+            {
+                int found = items.FindIndex(item => item.ItemId == row.StartItems[index]);
+                if (found >= 0)
+                {
+                    items[found] = items[found] with { Count = items[found].Count + row.StartCounts[index] };
+                }
+                else
+                {
+                    items.Add(new SavedItem(ItemPlace.Inventory, (uint)items.Count, row.StartItems[index], row.StartCounts[index], 0));
+                }
+            }
+
+            if (row.StartWeapon != 0)
+            {
+                items.Add(new SavedItem(ItemPlace.Equipment, (uint)data.Item(row.StartWeapon)!.Slot - 1, row.StartWeapon, 1, 0));
+            }
+
+            return items;
         }
 
         /// <summary>
@@ -417,6 +437,7 @@ namespace PortfolioMmo.Server
                     continue;
                 }
 
+                player.DirtyFast = true;
                 var changed = new InventoryChanged { Gold = bag.Gold };
                 changed.Slots.Add(bag.Changed.Select(index => bag.Slots[index].Clone()));
                 changed.Slots.Add(bag.ChangedEquipment.Select(index => bag.Equipment[index].Clone()));

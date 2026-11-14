@@ -437,10 +437,11 @@ namespace PortfolioMmo.Server.Tests
             Assert.DoesNotContain(Combat(away), IsDamaged);
         }
 
-        private static World CombatWorld(string[] rows, Classes? classes = null, Constants? constants = null, IEnumerable<MonstersRow>? monsters = null, IEnumerable<SpawnsRow>? spawns = null)
+        private static World CombatWorld(
+            string[] rows, Classes? classes = null, Constants? constants = null, IEnumerable<MonstersRow>? monsters = null, IEnumerable<SpawnsRow>? spawns = null, CharacterStore? store = null)
         {
             GameData data = TestData.WithMonsters(spawns ?? new[] { TestData.Spawn(1, 0, 0, 2) }, rows, classes, constants, monsters);
-            return new World(10, spawnHalfExtent: 0, new Random(1), new CharacterStore(":memory:"), data);
+            return new World(10, spawnHalfExtent: 0, new Random(1), store ?? new CharacterStore(":memory:"), data);
         }
 
         /// <summary>

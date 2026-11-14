@@ -100,6 +100,7 @@ namespace MmoWorld
 			Left.push_back(Id);
 		}
 		Self = 0;
+		bRevivedOnEnter = false;
 		LastAck = 0;
 		LastTick = 0;
 		ServerClock.Reset();
@@ -115,6 +116,7 @@ namespace MmoWorld
 		{
 		case portfolio::mmo::Packet::kEnterWorldResult:
 			Self = Packet.enter_world_result().self_id();
+			bRevivedOnEnter = Packet.enter_world_result().revived();
 			ObserveTick(Packet.enter_world_result().tick(), NowSeconds);
 			break;
 		case portfolio::mmo::Packet::kPong:

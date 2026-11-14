@@ -47,7 +47,7 @@ namespace PortfolioMmo.Server
         public uint Level { get; private set; } = 1;
 
         /// <summary>
-        /// 지금 레벨에서 쌓은 경험치(31). 최대 레벨에서는 0이다. 저장(38) 전에는 들어올 때마다 레벨 1, 경험치 0으로 시작한다.
+        /// 지금 레벨에서 쌓은 경험치(31). 최대 레벨에서는 0이다. 저장한다(38).
         /// </summary>
         public uint Exp { get; set; }
 
@@ -57,7 +57,7 @@ namespace PortfolioMmo.Server
         internal Bag Bag { get; set; } = new Bag(0);
 
         /// <summary>
-        /// 배운 스킬(36). 저장(38) 전에는 들어올 때마다 첫 스킬만 배운 채다.
+        /// 배운 스킬(36). 저장한다(38).
         /// </summary>
         internal HashSet<uint> Skills { get; } = new HashSet<uint>();
 
@@ -86,9 +86,14 @@ namespace PortfolioMmo.Server
         internal double MoveBudget { get; set; }
 
         /// <summary>
-        /// 마지막으로 저장한 뒤에 움직였다.
+        /// 5초 바뀜 표시(38): 마지막 사본 뒤에 아이템, 골드, 스킬, 퀵슬롯, 레벨이 바뀌었다. 5초 주기의 저장 차례가 사본을 넣는다.
         /// </summary>
-        internal bool Dirty { get; set; }
+        internal bool DirtyFast { get; set; }
+
+        /// <summary>
+        /// 60초 바뀜 표시(38): 마지막 사본 뒤에 위치, 체력, 마나, 경험치가 바뀌었다. 60초 주기의 저장 차례가 사본을 넣는다.
+        /// </summary>
+        internal bool DirtySlow { get; set; }
 
         /// <summary>
         /// 로그인한 뒤 아직 자기 EntityEnter를 보내지 않았다.

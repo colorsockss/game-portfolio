@@ -5275,11 +5275,11 @@ constexpr EnterWorldResult::ParseTableT_ EnterWorldResult::InternalGenerateParse
     {
       PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_._has_bits_),
       0, // no _extensions_
-      3, 24,  // max_field_number, fast_idx_mask
+      4, 24,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967288,  // skipmap
+      4294967280,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      3,  // num_field_entries
+      4,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -5289,7 +5289,10 @@ constexpr EnterWorldResult::ParseTableT_ EnterWorldResult::InternalGenerateParse
       ::_pbi::TcParser::GetTable<::portfolio::mmo::EnterWorldResult>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      {::_pbi::TcParser::MiniParse, {}},
+      // bool revived = 4;
+      {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EnterWorldResult, _impl_.revived_), 3>(),
+       {32, 3, 0,
+        PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.revived_)}},
       // .portfolio.mmo.EnterWorldResultCode result = 1;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EnterWorldResult, _impl_.result_), 0>(),
        {8, 0, 0,
@@ -5311,6 +5314,8 @@ constexpr EnterWorldResult::ParseTableT_ EnterWorldResult::InternalGenerateParse
       {PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.self_id_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 tick = 3;
       {PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.tick_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // bool revived = 4;
+      {PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.revived_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
     }},
     // no aux_entries
     {{
@@ -5324,7 +5329,8 @@ inline constexpr EnterWorldResult::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : result_{static_cast< ::portfolio::mmo::EnterWorldResultCode >(0)},
         self_id_{0u},
-        tick_{0u} {}
+        tick_{0u},
+        revived_{false} {}
 
 template <typename>
 constexpr EnterWorldResult::EnterWorldResult(::_pbi::ConstantInitialized,
@@ -7090,11 +7096,11 @@ constexpr CharacterSummary::ParseTableT_ CharacterSummary::InternalGenerateParse
     {
       PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_._has_bits_),
       0, // no _extensions_
-      3, 24,  // max_field_number, fast_idx_mask
+      5, 56,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967288,  // skipmap
+      4294967264,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      3,  // num_field_entries
+      5,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -7117,6 +7123,16 @@ constexpr CharacterSummary::ParseTableT_ CharacterSummary::InternalGenerateParse
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CharacterSummary, _impl_.character_class_), 2>(),
        {24, 2, 0,
         PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.character_class_)}},
+      // uint32 level = 4;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CharacterSummary, _impl_.level_), 3>(),
+       {32, 3, 0,
+        PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.level_)}},
+      // uint32 weapon_item_id = 5;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CharacterSummary, _impl_.weapon_item_id_), 4>(),
+       {40, 4, 0,
+        PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.weapon_item_id_)}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
     }}, {{
       65535, 65535
     }}, {{
@@ -7126,6 +7142,10 @@ constexpr CharacterSummary::ParseTableT_ CharacterSummary::InternalGenerateParse
       {PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.name_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
       // .portfolio.mmo.CharacterClass character_class = 3;
       {PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.character_class_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kOpenEnum)},
+      // uint32 level = 4;
+      {PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.level_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 weapon_item_id = 5;
+      {PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.weapon_item_id_), _Internal::kHasBitsOffset + 4, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -7144,7 +7164,9 @@ inline constexpr CharacterSummary::Impl_::Impl_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         id_{::uint64_t{0u}},
-        character_class_{static_cast< ::portfolio::mmo::CharacterClass >(0)} {}
+        character_class_{static_cast< ::portfolio::mmo::CharacterClass >(0)},
+        level_{0u},
+        weapon_item_id_{0u} {}
 
 template <typename>
 constexpr CharacterSummary::CharacterSummary(::_pbi::ConstantInitialized,
@@ -10779,13 +10801,17 @@ const ::uint32_t
         0x000, // bitmap
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_._has_bits_),
-        6, // hasbit index offset
+        8, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_.name_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_.character_class_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_.level_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterSummary, _impl_.weapon_item_id_),
         1,
         0,
         2,
+        3,
+        4,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::CharacterList, _impl_._has_bits_),
         4, // hasbit index offset
@@ -10810,13 +10836,15 @@ const ::uint32_t
         0,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorldResult, _impl_._has_bits_),
-        6, // hasbit index offset
+        7, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorldResult, _impl_.result_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorldResult, _impl_.self_id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorldResult, _impl_.tick_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EnterWorldResult, _impl_.revived_),
         0,
         1,
         2,
+        3,
         0x000, // bitmap
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Pong, _impl_._has_bits_),
@@ -11294,65 +11322,65 @@ static const ::_pbi::MigrationSchema
         {76, sizeof(::portfolio::mmo::DevCommand)},
         {81, sizeof(::portfolio::mmo::Ping)},
         {82, sizeof(::portfolio::mmo::CharacterSummary)},
-        {91, sizeof(::portfolio::mmo::CharacterList)},
-        {96, sizeof(::portfolio::mmo::CreateCharacter)},
-        {103, sizeof(::portfolio::mmo::CreateCharacterResult)},
-        {108, sizeof(::portfolio::mmo::EnterWorld)},
-        {113, sizeof(::portfolio::mmo::EnterWorldResult)},
-        {122, sizeof(::portfolio::mmo::LeaveWorld)},
-        {123, sizeof(::portfolio::mmo::Pong)},
-        {128, sizeof(::portfolio::mmo::Move)},
-        {139, sizeof(::portfolio::mmo::PositionReset)},
-        {148, sizeof(::portfolio::mmo::EntitiesEnter)},
-        {153, sizeof(::portfolio::mmo::EntityEnter)},
-        {212, sizeof(::portfolio::mmo::EffectState)},
-        {219, sizeof(::portfolio::mmo::ProgressState)},
-        {228, sizeof(::portfolio::mmo::EntityState)},
-        {239, sizeof(::portfolio::mmo::EntitiesLeave)},
-        {244, sizeof(::portfolio::mmo::EntityMoves)},
-        {251, sizeof(::portfolio::mmo::EntityMove)},
-        {264, sizeof(::portfolio::mmo::SelfVitals)},
-        {275, sizeof(::portfolio::mmo::EntityVitals)},
-        {280, sizeof(::portfolio::mmo::EntityVital)},
-        {289, sizeof(::portfolio::mmo::SelfStats)},
-        {300, sizeof(::portfolio::mmo::ExpGained)},
-        {307, sizeof(::portfolio::mmo::ItemSlot)},
-        {320, sizeof(::portfolio::mmo::Inventory)},
-        {327, sizeof(::portfolio::mmo::ItemAmount)},
-        {334, sizeof(::portfolio::mmo::Gain)},
-        {345, sizeof(::portfolio::mmo::InventoryChanged)},
-        {354, sizeof(::portfolio::mmo::UseItem)},
-        {361, sizeof(::portfolio::mmo::PickUp)},
-        {368, sizeof(::portfolio::mmo::DropItem)},
-        {377, sizeof(::portfolio::mmo::Equip)},
-        {384, sizeof(::portfolio::mmo::Unequip)},
-        {391, sizeof(::portfolio::mmo::Enchant)},
-        {402, sizeof(::portfolio::mmo::EnchantResult)},
-        {409, sizeof(::portfolio::mmo::LearnedSkills)},
-        {414, sizeof(::portfolio::mmo::SkillLearned)},
-        {419, sizeof(::portfolio::mmo::Quickslot)},
-        {426, sizeof(::portfolio::mmo::SetQuickslot)},
-        {433, sizeof(::portfolio::mmo::Quickslots)},
-        {438, sizeof(::portfolio::mmo::Buy)},
-        {447, sizeof(::portfolio::mmo::Sell)},
-        {456, sizeof(::portfolio::mmo::RequestResult)},
-        {463, sizeof(::portfolio::mmo::ActionFailed)},
-        {470, sizeof(::portfolio::mmo::AttackStart)},
-        {475, sizeof(::portfolio::mmo::AttackStop)},
-        {476, sizeof(::portfolio::mmo::AttackSwing)},
-        {483, sizeof(::portfolio::mmo::Damaged)},
-        {496, sizeof(::portfolio::mmo::Died)},
-        {503, sizeof(::portfolio::mmo::Revive)},
-        {504, sizeof(::portfolio::mmo::Revived)},
-        {513, sizeof(::portfolio::mmo::UseSkill)},
-        {522, sizeof(::portfolio::mmo::SkillUsed)},
-        {531, sizeof(::portfolio::mmo::Progress)},
-        {538, sizeof(::portfolio::mmo::ProgressCancelled)},
-        {545, sizeof(::portfolio::mmo::EffectApplied)},
-        {552, sizeof(::portfolio::mmo::Cooldowns)},
-        {557, sizeof(::portfolio::mmo::Cooldown)},
-        {566, sizeof(::portfolio::mmo::ProjectileLaunched)},
-        {583, sizeof(::portfolio::mmo::ProjectileEnded)},
+        {95, sizeof(::portfolio::mmo::CharacterList)},
+        {100, sizeof(::portfolio::mmo::CreateCharacter)},
+        {107, sizeof(::portfolio::mmo::CreateCharacterResult)},
+        {112, sizeof(::portfolio::mmo::EnterWorld)},
+        {117, sizeof(::portfolio::mmo::EnterWorldResult)},
+        {128, sizeof(::portfolio::mmo::LeaveWorld)},
+        {129, sizeof(::portfolio::mmo::Pong)},
+        {134, sizeof(::portfolio::mmo::Move)},
+        {145, sizeof(::portfolio::mmo::PositionReset)},
+        {154, sizeof(::portfolio::mmo::EntitiesEnter)},
+        {159, sizeof(::portfolio::mmo::EntityEnter)},
+        {218, sizeof(::portfolio::mmo::EffectState)},
+        {225, sizeof(::portfolio::mmo::ProgressState)},
+        {234, sizeof(::portfolio::mmo::EntityState)},
+        {245, sizeof(::portfolio::mmo::EntitiesLeave)},
+        {250, sizeof(::portfolio::mmo::EntityMoves)},
+        {257, sizeof(::portfolio::mmo::EntityMove)},
+        {270, sizeof(::portfolio::mmo::SelfVitals)},
+        {281, sizeof(::portfolio::mmo::EntityVitals)},
+        {286, sizeof(::portfolio::mmo::EntityVital)},
+        {295, sizeof(::portfolio::mmo::SelfStats)},
+        {306, sizeof(::portfolio::mmo::ExpGained)},
+        {313, sizeof(::portfolio::mmo::ItemSlot)},
+        {326, sizeof(::portfolio::mmo::Inventory)},
+        {333, sizeof(::portfolio::mmo::ItemAmount)},
+        {340, sizeof(::portfolio::mmo::Gain)},
+        {351, sizeof(::portfolio::mmo::InventoryChanged)},
+        {360, sizeof(::portfolio::mmo::UseItem)},
+        {367, sizeof(::portfolio::mmo::PickUp)},
+        {374, sizeof(::portfolio::mmo::DropItem)},
+        {383, sizeof(::portfolio::mmo::Equip)},
+        {390, sizeof(::portfolio::mmo::Unequip)},
+        {397, sizeof(::portfolio::mmo::Enchant)},
+        {408, sizeof(::portfolio::mmo::EnchantResult)},
+        {415, sizeof(::portfolio::mmo::LearnedSkills)},
+        {420, sizeof(::portfolio::mmo::SkillLearned)},
+        {425, sizeof(::portfolio::mmo::Quickslot)},
+        {432, sizeof(::portfolio::mmo::SetQuickslot)},
+        {439, sizeof(::portfolio::mmo::Quickslots)},
+        {444, sizeof(::portfolio::mmo::Buy)},
+        {453, sizeof(::portfolio::mmo::Sell)},
+        {462, sizeof(::portfolio::mmo::RequestResult)},
+        {469, sizeof(::portfolio::mmo::ActionFailed)},
+        {476, sizeof(::portfolio::mmo::AttackStart)},
+        {481, sizeof(::portfolio::mmo::AttackStop)},
+        {482, sizeof(::portfolio::mmo::AttackSwing)},
+        {489, sizeof(::portfolio::mmo::Damaged)},
+        {502, sizeof(::portfolio::mmo::Died)},
+        {509, sizeof(::portfolio::mmo::Revive)},
+        {510, sizeof(::portfolio::mmo::Revived)},
+        {519, sizeof(::portfolio::mmo::UseSkill)},
+        {528, sizeof(::portfolio::mmo::SkillUsed)},
+        {537, sizeof(::portfolio::mmo::Progress)},
+        {544, sizeof(::portfolio::mmo::ProgressCancelled)},
+        {551, sizeof(::portfolio::mmo::EffectApplied)},
+        {558, sizeof(::portfolio::mmo::Cooldowns)},
+        {563, sizeof(::portfolio::mmo::Cooldown)},
+        {572, sizeof(::portfolio::mmo::ProjectileLaunched)},
+        {589, sizeof(::portfolio::mmo::ProjectileEnded)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -11500,198 +11528,199 @@ const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "nResult\022.\n\006result\030\001 \001(\0162\036.portfolio.mmo."
     "LoginResultCodeJ\004\010\002\020\003J\004\010\003\020\004\"3\n\006Kicked\022)\n"
     "\006reason\030\001 \001(\0162\031.portfolio.mmo.KickReason"
-    "\"\032\n\nDevCommand\022\014\n\004line\030\001 \001(\t\"\006\n\004Ping\"d\n\020"
-    "CharacterSummary\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001"
-    "(\t\0226\n\017character_class\030\003 \001(\0162\035.portfolio."
-    "mmo.CharacterClass\"D\n\rCharacterList\0223\n\nc"
+    "\"\032\n\nDevCommand\022\014\n\004line\030\001 \001(\t\"\006\n\004Ping\"\213\001\n"
+    "\020CharacterSummary\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 "
+    "\001(\t\0226\n\017character_class\030\003 \001(\0162\035.portfolio"
+    ".mmo.CharacterClass\022\r\n\005level\030\004 \001(\r\022\026\n\016we"
+    "apon_item_id\030\005 \001(\r\"D\n\rCharacterList\0223\n\nc"
     "haracters\030\001 \003(\0132\037.portfolio.mmo.Characte"
     "rSummary\"W\n\017CreateCharacter\022\014\n\004name\030\001 \001("
     "\t\0226\n\017character_class\030\002 \001(\0162\035.portfolio.m"
     "mo.CharacterClass\"Q\n\025CreateCharacterResu"
     "lt\0228\n\006result\030\001 \001(\0162(.portfolio.mmo.Creat"
     "eCharacterResultCode\"\"\n\nEnterWorld\022\024\n\014ch"
-    "aracter_id\030\001 \001(\004\"f\n\020EnterWorldResult\0223\n\006"
+    "aracter_id\030\001 \001(\004\"w\n\020EnterWorldResult\0223\n\006"
     "result\030\001 \001(\0162#.portfolio.mmo.EnterWorldR"
     "esultCode\022\017\n\007self_id\030\002 \001(\r\022\014\n\004tick\030\003 \001(\r"
-    "\"\014\n\nLeaveWorld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r\"6\n\004"
-    "Move\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003yaw\030\003 \001(\r\022"
-    "\013\n\003ack\030\004 \001(\r\"2\n\rPositionReset\022\t\n\001x\030\001 \001(\021"
-    "\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEntitiesEnte"
-    "r\022,\n\010entities\030\001 \003(\0132\032.portfolio.mmo.Enti"
-    "tyEnter\"\204\005\n\013EntityEnter\022\n\n\002id\030\001 \001(\r\022\t\n\001x"
-    "\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\'\n\004kind\030\007"
-    " \001(\0162\031.portfolio.mmo.EntityKind\022\014\n\004name\030"
-    "\005 \001(\t\0226\n\017character_class\030\006 \001(\0162\035.portfol"
-    "io.mmo.CharacterClass\022\r\n\005level\030\010 \001(\r\022,\n\n"
-    "name_color\030\t \001(\0162\030.portfolio.mmo.NameCol"
-    "or\022\026\n\016weapon_item_id\030\n \001(\r\022\023\n\013template_i"
-    "d\030\013 \001(\r\022\n\n\002hp\030\014 \001(\r\022\016\n\006max_hp\030\r \001(\r\022+\n\007e"
-    "ffects\030\016 \003(\0132\032.portfolio.mmo.EffectState"
-    "\022.\n\010progress\030\017 \001(\0132\034.portfolio.mmo.Progr"
-    "essState\022\014\n\004dead\030\020 \001(\010\022\r\n\005speed\030\021 \001(\r\022\020\n"
-    "\010move_yaw\030\022 \001(\r\022\016\n\006next_x\030\023 \001(\021\022\016\n\006next_"
-    "z\030\024 \001(\021\022\017\n\007item_id\030\025 \001(\r\022\r\n\005count\030\026 \001(\r\022"
-    "\017\n\007enchant\030\027 \001(\r\022\031\n\017owner_player_id\030\030 \001("
-    "\rH\000\022\030\n\016owner_party_id\030\031 \001(\rH\000\022\033\n\023owner_o"
-    "nly_end_tick\030\032 \001(\r\022\031\n\021dropped_by_player\030"
-    "\033 \001(\010B\007\n\005owner\"2\n\013EffectState\022\021\n\teffect_"
-    "id\030\001 \001(\r\022\020\n\010end_tick\030\002 \001(\r\"X\n\rProgressSt"
-    "ate\022)\n\004kind\030\001 \001(\0162\033.portfolio.mmo.Progre"
-    "ssKind\022\n\n\002id\030\002 \001(\r\022\020\n\010end_tick\030\003 \001(\r\"n\n\013"
-    "EntityState\022\n\n\002id\030\001 \001(\r\022,\n\nname_color\030\002 "
-    "\001(\0162\030.portfolio.mmo.NameColor\022\026\n\016weapon_"
-    "item_id\030\003 \001(\r\022\r\n\005level\030\004 \001(\r\"\034\n\rEntities"
-    "Leave\022\013\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n\004tic"
-    "k\030\001 \001(\r\022+\n\010entities\030\002 \003(\0132\031.portfolio.mm"
-    "o.EntityMove\"M\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022\t"
-    "\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\020\n\010tel"
-    "eport\030\005 \001(\010\"Y\n\nSelfVitals\022\n\n\002hp\030\001 \001(\r\022\n\n"
-    "\002mp\030\002 \001(\r\022\027\n\017combat_end_tick\030\003 \001(\r\022\032\n\022ag"
-    "gressor_end_tick\030\004 \001(\r\"<\n\014EntityVitals\022,"
-    "\n\010entities\030\001 \003(\0132\032.portfolio.mmo.EntityV"
-    "ital\"5\n\013EntityVital\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 "
-    "\001(\r\022\016\n\006max_hp\030\003 \001(\r\"L\n\tSelfStats\022\016\n\006max_"
-    "hp\030\001 \001(\r\022\016\n\006max_mp\030\002 \001(\r\022\016\n\006attack\030\003 \001(\r"
-    "\022\017\n\007defense\030\004 \001(\r\"(\n\tExpGained\022\016\n\006amount"
-    "\030\001 \001(\021\022\013\n\003exp\030\002 \001(\r\"s\n\010ItemSlot\022\'\n\005place"
-    "\030\001 \001(\0162\030.portfolio.mmo.ItemPlace\022\r\n\005inde"
-    "x\030\002 \001(\r\022\017\n\007item_id\030\003 \001(\r\022\r\n\005count\030\004 \001(\r\022"
-    "\017\n\007enchant\030\005 \001(\r\"A\n\tInventory\022&\n\005slots\030\001"
-    " \003(\0132\027.portfolio.mmo.ItemSlot\022\014\n\004gold\030\002 "
-    "\001(\004\",\n\nItemAmount\022\017\n\007item_id\030\001 \001(\r\022\r\n\005co"
-    "unt\030\002 \001(\r\"t\n\004Gain\022)\n\006reason\030\001 \001(\0162\031.port"
-    "folio.mmo.GainReason\022)\n\004item\030\002 \001(\0132\031.por"
-    "tfolio.mmo.ItemAmountH\000\022\016\n\004gold\030\003 \001(\004H\000B"
-    "\006\n\004what\"l\n\020InventoryChanged\022&\n\005slots\030\001 \003"
-    "(\0132\027.portfolio.mmo.ItemSlot\022\014\n\004gold\030\002 \001("
-    "\004\022\"\n\005gains\030\003 \003(\0132\023.portfolio.mmo.Gain\"+\n"
-    "\007UseItem\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001"
-    "(\r\"/\n\006PickUp\022\021\n\tentity_id\030\001 \001(\r\022\022\n\nreque"
-    "st_id\030\002 \001(\r\";\n\010DropItem\022\014\n\004slot\030\001 \001(\r\022\r\n"
-    "\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\")\n\005Equi"
-    "p\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"1\n\007U"
-    "nequip\022\022\n\nequip_slot\030\001 \001(\r\022\022\n\nrequest_id"
-    "\030\002 \001(\r\"i\n\007Enchant\022\'\n\005place\030\001 \001(\0162\030.portf"
-    "olio.mmo.ItemPlace\022\014\n\004slot\030\002 \001(\r\022\023\n\013scro"
-    "ll_slot\030\003 \001(\r\022\022\n\nrequest_id\030\004 \001(\r\"1\n\rEnc"
-    "hantResult\022\017\n\007success\030\001 \001(\010\022\017\n\007enchant\030\002"
-    " \001(\r\"\037\n\rLearnedSkills\022\016\n\006skills\030\001 \003(\r\"\035\n"
-    "\014SkillLearned\022\r\n\005skill\030\001 \001(\r\"C\n\tQuickslo"
-    "t\022*\n\004kind\030\001 \001(\0162\034.portfolio.mmo.Quickslo"
-    "tKind\022\n\n\002id\030\002 \001(\r\"E\n\014SetQuickslot\022\r\n\005ind"
-    "ex\030\001 \001(\r\022&\n\004slot\030\002 \001(\0132\030.portfolio.mmo.Q"
-    "uickslot\"5\n\nQuickslots\022\'\n\005slots\030\001 \003(\0132\030."
-    "portfolio.mmo.Quickslot\"9\n\003Buy\022\017\n\007item_i"
-    "d\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001"
-    "(\r\"7\n\004Sell\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022"
-    "\022\n\nrequest_id\030\003 \001(\r\"N\n\rRequestResult\022\022\n\n"
-    "request_id\030\001 \001(\r\022)\n\006result\030\002 \001(\0162\031.portf"
-    "olio.mmo.FailReason\"f\n\014ActionFailed\022)\n\006r"
-    "eason\030\001 \001(\0162\031.portfolio.mmo.FailReason\022+"
-    "\n\007request\030\002 \001(\0162\032.portfolio.mmo.RequestK"
-    "ind\" \n\013AttackStart\022\021\n\ttarget_id\030\001 \001(\r\"\014\n"
-    "\nAttackStop\"5\n\013AttackSwing\022\023\n\013attacker_i"
-    "d\030\001 \001(\r\022\021\n\ttarget_id\030\002 \001(\r\"_\n\007Damaged\022\023\n"
-    "\013attacker_id\030\001 \001(\r\022\021\n\ttarget_id\030\002 \001(\r\022\016\n"
-    "\006damage\030\003 \001(\r\022\n\n\002hp\030\004 \001(\r\022\020\n\010critical\030\005 "
-    "\001(\010\"%\n\004Died\022\n\n\002id\030\001 \001(\r\022\021\n\tkiller_id\030\002 \001"
-    "(\r\"\010\n\006Revive\"1\n\007Revived\022\n\n\002id\030\001 \001(\r\022\n\n\002h"
-    "p\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"E\n\010UseSkill\022\020\n\010s"
-    "kill_id\030\001 \001(\r\022\021\n\ttarget_id\030\002 \001(\r\022\024\n\014forc"
-    "e_attack\030\003 \001(\010\"C\n\tSkillUsed\022\021\n\tcaster_id"
-    "\030\001 \001(\r\022\020\n\010skill_id\030\002 \001(\r\022\021\n\ttarget_id\030\003 "
-    "\001(\r\"C\n\010Progress\022\n\n\002id\030\001 \001(\r\022+\n\005state\030\002 \001"
-    "(\0132\034.portfolio.mmo.ProgressState\"J\n\021Prog"
-    "ressCancelled\022\n\n\002id\030\001 \001(\r\022)\n\006reason\030\002 \001("
-    "\0162\031.portfolio.mmo.FailReason\"G\n\rEffectAp"
-    "plied\022\n\n\002id\030\001 \001(\r\022*\n\006effect\030\002 \001(\0132\032.port"
-    "folio.mmo.EffectState\"5\n\tCooldowns\022(\n\007en"
-    "tries\030\001 \003(\0132\027.portfolio.mmo.Cooldown\">\n\010"
-    "Cooldown\022\020\n\010skill_id\030\001 \001(\r\022\020\n\010end_tick\030\002"
-    " \001(\r\022\016\n\006potion\030\003 \001(\r\"s\n\022ProjectileLaunch"
-    "ed\022\n\n\002id\030\001 \001(\r\022\021\n\tcaster_id\030\002 \001(\r\022\t\n\001x\030\003"
-    " \001(\021\022\t\n\001z\030\004 \001(\021\022\014\n\004tick\030\005 \001(\r\022\013\n\003yaw\030\006 \001"
-    "(\r\022\r\n\005speed\030\007 \001(\r\"\035\n\017ProjectileEnded\022\n\n\002"
-    "id\030\001 \001(\r*Q\n\017ProtocolVersion\022 \n\034PROTOCOL_"
-    "VERSION_UNSPECIFIED\020\000\022\034\n\030PROTOCOL_VERSIO"
-    "N_CURRENT\020\002*\314\002\n\010Constant\022\030\n\024CONSTANT_UNS"
-    "PECIFIED\020\000\022\034\n\030CONSTANT_UNITS_PER_METER\020 "
-    "\022$\n\037CONSTANT_MAP_HALF_EXTENT_METERS\020\200\010\022\027"
-    "\n\022CONSTANT_YAW_STEPS\020\200\002\022\035\n\031CONSTANT_TICK"
-    "S_PER_SECOND\020\024\022(\n$CONSTANT_MAX_SPEED_MET"
-    "ERS_PER_SECOND\020\006\022\"\n\036CONSTANT_PING_INTERV"
-    "AL_SECONDS\020\005\022!\n\035CONSTANT_IDLE_TIMEOUT_SE"
-    "CONDS\020\017\022\033\n\027CONSTANT_MAX_CHARACTERS\020\004\022\034\n\030"
-    "CONSTANT_QUICKSLOT_COUNT\020\010*\303\001\n\017LoginResu"
-    "ltCode\022\030\n\024LOGIN_RESULT_CODE_OK\020\000\022&\n\"LOGI"
-    "N_RESULT_CODE_INVALID_LOGIN_ID\020\001\022&\n\"LOGI"
-    "N_RESULT_CODE_VERSION_MISMATCH\020\002\022!\n\035LOGI"
-    "N_RESULT_CODE_SERVER_FULL\020\003\022#\n\037LOGIN_RES"
-    "ULT_CODE_DATA_MISMATCH\020\004*\311\001\n\nKickReason\022"
-    "\033\n\027KICK_REASON_UNSPECIFIED\020\000\022\037\n\033KICK_REA"
-    "SON_DUPLICATE_LOGIN\020\001\022\037\n\033KICK_REASON_SER"
-    "VER_SHUTDOWN\020\002\022 \n\034KICK_REASON_MALFORMED_"
-    "PACKET\020\003\022\034\n\030KICK_REASON_IDLE_TIMEOUT\020\004\022\034"
-    "\n\030KICK_REASON_RATE_LIMITED\020\005*g\n\016Characte"
-    "rClass\022\037\n\033CHARACTER_CLASS_UNSPECIFIED\020\000\022"
-    "\032\n\026CHARACTER_CLASS_KNIGHT\020\001\022\030\n\024CHARACTER"
-    "_CLASS_MAGE\020\002*\367\001\n\031CreateCharacterResultC"
-    "ode\022#\n\037CREATE_CHARACTER_RESULT_CODE_OK\020\000"
-    "\022-\n)CREATE_CHARACTER_RESULT_CODE_INVALID"
-    "_NAME\020\001\022+\n\'CREATE_CHARACTER_RESULT_CODE_"
-    "NAME_TAKEN\020\002\022)\n%CREATE_CHARACTER_RESULT_"
-    "CODE_TOO_MANY\020\003\022.\n*CREATE_CHARACTER_RESU"
-    "LT_CODE_INVALID_CLASS\020\004*e\n\024EnterWorldRes"
-    "ultCode\022\036\n\032ENTER_WORLD_RESULT_CODE_OK\020\000\022"
-    "-\n)ENTER_WORLD_RESULT_CODE_NO_SUCH_CHARA"
-    "CTER\020\001*\251\001\n\nEntityKind\022\033\n\027ENTITY_KIND_UNS"
-    "PECIFIED\020\000\022\026\n\022ENTITY_KIND_PLAYER\020\001\022\027\n\023EN"
-    "TITY_KIND_MONSTER\020\002\022\023\n\017ENTITY_KIND_NPC\020\003"
-    "\022\033\n\027ENTITY_KIND_GATHER_NODE\020\004\022\033\n\027ENTITY_"
-    "KIND_GROUND_ITEM\020\005*S\n\tNameColor\022\025\n\021NAME_"
-    "COLOR_NORMAL\020\000\022\030\n\024NAME_COLOR_AGGRESSOR\020\001"
-    "\022\025\n\021NAME_COLOR_OUTLAW\020\002*\213\001\n\014ProgressKind"
-    "\022\026\n\022PROGRESS_KIND_NONE\020\000\022\026\n\022PROGRESS_KIN"
-    "D_CAST\020\001\022\030\n\024PROGRESS_KIND_GATHER\020\002\022\027\n\023PR"
-    "OGRESS_KIND_CRAFT\020\003\022\030\n\024PROGRESS_KIND_REC"
-    "ALL\020\004*\?\n\tItemPlace\022\030\n\024ITEM_PLACE_INVENTO"
-    "RY\020\000\022\030\n\024ITEM_PLACE_EQUIPMENT\020\001*t\n\nGainRe"
-    "ason\022\033\n\027GAIN_REASON_UNSPECIFIED\020\000\022\033\n\027GAI"
-    "N_REASON_DEV_COMMAND\020\001\022\027\n\023GAIN_REASON_PI"
-    "CK_UP\020\002\022\023\n\017GAIN_REASON_BUY\020\003*\\\n\rQuickslo"
-    "tKind\022\030\n\024QUICKSLOT_KIND_EMPTY\020\000\022\030\n\024QUICK"
-    "SLOT_KIND_SKILL\020\001\022\027\n\023QUICKSLOT_KIND_ITEM"
-    "\020\002*\202\006\n\nFailReason\022\024\n\020FAIL_REASON_NONE\020\000\022"
-    "\031\n\025FAIL_REASON_NO_TARGET\020\001\022\036\n\032FAIL_REASO"
-    "N_INVALID_TARGET\020\002\022\024\n\020FAIL_REASON_DEAD\020\003"
-    "\022\030\n\024FAIL_REASON_NOT_DEAD\020\004\022\033\n\027FAIL_REASO"
-    "N_NOT_LEARNED\020\005\022\030\n\024FAIL_REASON_COOLDOWN\020"
-    "\006\022\035\n\031FAIL_REASON_NOT_ENOUGH_MP\020\007\022\034\n\030FAIL"
-    "_REASON_OUT_OF_RANGE\020\010\022\027\n\023FAIL_REASON_BL"
-    "OCKED\020\t\022\024\n\020FAIL_REASON_BUSY\020\n\022\027\n\023FAIL_RE"
-    "ASON_STUNNED\020\013\022\031\n\025FAIL_REASON_CANCELLED\020"
-    "\014\022\037\n\033FAIL_REASON_INVALID_COMMAND\020\r\022\036\n\032FA"
-    "IL_REASON_INVENTORY_FULL\020\016\022\027\n\023FAIL_REASO"
-    "N_NO_ITEM\020\017\022\035\n\031FAIL_REASON_UNUSABLE_ITEM"
-    "\020\020\022\031\n\025FAIL_REASON_IN_COMBAT\020\021\022\030\n\024FAIL_RE"
-    "ASON_TOO_FAST\020\022\022\034\n\030FAIL_REASON_ALREADY_G"
-    "ONE\020\023\022\031\n\025FAIL_REASON_NOT_YOURS\020\024\022\035\n\031FAIL"
-    "_REASON_LEVEL_TOO_LOW\020\025\022\033\n\027FAIL_REASON_W"
-    "RONG_CLASS\020\026\022\033\n\027FAIL_REASON_MAX_ENCHANT\020"
-    "\027\022\037\n\033FAIL_REASON_ALREADY_LEARNED\020\030\022\037\n\033FA"
-    "IL_REASON_NOT_ENOUGH_GOLD\020\031\022\032\n\026FAIL_REAS"
-    "ON_UNSELLABLE\020\032*\250\001\n\013RequestKind\022\034\n\030REQUE"
-    "ST_KIND_UNSPECIFIED\020\000\022\027\n\023REQUEST_KIND_AT"
-    "TACK\020\001\022\027\n\023REQUEST_KIND_REVIVE\020\002\022\026\n\022REQUE"
-    "ST_KIND_SKILL\020\003\022\025\n\021REQUEST_KIND_CHAT\020\004\022\032"
-    "\n\026REQUEST_KIND_QUICKSLOT\020\005B\030\252\002\025Portfolio"
-    "Mmo.Contractb\006proto3"
+    "\022\017\n\007revived\030\004 \001(\010\"\014\n\nLeaveWorld\"\024\n\004Pong\022"
+    "\014\n\004tick\030\001 \001(\r\"6\n\004Move\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 "
+    "\001(\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack\030\004 \001(\r\"2\n\rPositio"
+    "nReset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030\003 \001("
+    "\r\"=\n\rEntitiesEnter\022,\n\010entities\030\001 \003(\0132\032.p"
+    "ortfolio.mmo.EntityEnter\"\204\005\n\013EntityEnter"
+    "\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003ya"
+    "w\030\004 \001(\r\022\'\n\004kind\030\007 \001(\0162\031.portfolio.mmo.En"
+    "tityKind\022\014\n\004name\030\005 \001(\t\0226\n\017character_clas"
+    "s\030\006 \001(\0162\035.portfolio.mmo.CharacterClass\022\r"
+    "\n\005level\030\010 \001(\r\022,\n\nname_color\030\t \001(\0162\030.port"
+    "folio.mmo.NameColor\022\026\n\016weapon_item_id\030\n "
+    "\001(\r\022\023\n\013template_id\030\013 \001(\r\022\n\n\002hp\030\014 \001(\r\022\016\n\006"
+    "max_hp\030\r \001(\r\022+\n\007effects\030\016 \003(\0132\032.portfoli"
+    "o.mmo.EffectState\022.\n\010progress\030\017 \001(\0132\034.po"
+    "rtfolio.mmo.ProgressState\022\014\n\004dead\030\020 \001(\010\022"
+    "\r\n\005speed\030\021 \001(\r\022\020\n\010move_yaw\030\022 \001(\r\022\016\n\006next"
+    "_x\030\023 \001(\021\022\016\n\006next_z\030\024 \001(\021\022\017\n\007item_id\030\025 \001("
+    "\r\022\r\n\005count\030\026 \001(\r\022\017\n\007enchant\030\027 \001(\r\022\031\n\017own"
+    "er_player_id\030\030 \001(\rH\000\022\030\n\016owner_party_id\030\031"
+    " \001(\rH\000\022\033\n\023owner_only_end_tick\030\032 \001(\r\022\031\n\021d"
+    "ropped_by_player\030\033 \001(\010B\007\n\005owner\"2\n\013Effec"
+    "tState\022\021\n\teffect_id\030\001 \001(\r\022\020\n\010end_tick\030\002 "
+    "\001(\r\"X\n\rProgressState\022)\n\004kind\030\001 \001(\0162\033.por"
+    "tfolio.mmo.ProgressKind\022\n\n\002id\030\002 \001(\r\022\020\n\010e"
+    "nd_tick\030\003 \001(\r\"n\n\013EntityState\022\n\n\002id\030\001 \001(\r"
+    "\022,\n\nname_color\030\002 \001(\0162\030.portfolio.mmo.Nam"
+    "eColor\022\026\n\016weapon_item_id\030\003 \001(\r\022\r\n\005level\030"
+    "\004 \001(\r\"\034\n\rEntitiesLeave\022\013\n\003ids\030\001 \003(\r\"H\n\013E"
+    "ntityMoves\022\014\n\004tick\030\001 \001(\r\022+\n\010entities\030\002 \003"
+    "(\0132\031.portfolio.mmo.EntityMove\"M\n\nEntityM"
+    "ove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n"
+    "\003yaw\030\004 \001(\r\022\020\n\010teleport\030\005 \001(\010\"Y\n\nSelfVita"
+    "ls\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002 \001(\r\022\027\n\017combat_end"
+    "_tick\030\003 \001(\r\022\032\n\022aggressor_end_tick\030\004 \001(\r\""
+    "<\n\014EntityVitals\022,\n\010entities\030\001 \003(\0132\032.port"
+    "folio.mmo.EntityVital\"5\n\013EntityVital\022\n\n\002"
+    "id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"L\n\t"
+    "SelfStats\022\016\n\006max_hp\030\001 \001(\r\022\016\n\006max_mp\030\002 \001("
+    "\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007defense\030\004 \001(\r\"(\n\tEx"
+    "pGained\022\016\n\006amount\030\001 \001(\021\022\013\n\003exp\030\002 \001(\r\"s\n\010"
+    "ItemSlot\022\'\n\005place\030\001 \001(\0162\030.portfolio.mmo."
+    "ItemPlace\022\r\n\005index\030\002 \001(\r\022\017\n\007item_id\030\003 \001("
+    "\r\022\r\n\005count\030\004 \001(\r\022\017\n\007enchant\030\005 \001(\r\"A\n\tInv"
+    "entory\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.It"
+    "emSlot\022\014\n\004gold\030\002 \001(\004\",\n\nItemAmount\022\017\n\007it"
+    "em_id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\"t\n\004Gain\022)\n\006re"
+    "ason\030\001 \001(\0162\031.portfolio.mmo.GainReason\022)\n"
+    "\004item\030\002 \001(\0132\031.portfolio.mmo.ItemAmountH\000"
+    "\022\016\n\004gold\030\003 \001(\004H\000B\006\n\004what\"l\n\020InventoryCha"
+    "nged\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.Item"
+    "Slot\022\014\n\004gold\030\002 \001(\004\022\"\n\005gains\030\003 \003(\0132\023.port"
+    "folio.mmo.Gain\"+\n\007UseItem\022\014\n\004slot\030\001 \001(\r\022"
+    "\022\n\nrequest_id\030\002 \001(\r\"/\n\006PickUp\022\021\n\tentity_"
+    "id\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\";\n\010DropItem"
+    "\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest"
+    "_id\030\003 \001(\r\")\n\005Equip\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequ"
+    "est_id\030\002 \001(\r\"1\n\007Unequip\022\022\n\nequip_slot\030\001 "
+    "\001(\r\022\022\n\nrequest_id\030\002 \001(\r\"i\n\007Enchant\022\'\n\005pl"
+    "ace\030\001 \001(\0162\030.portfolio.mmo.ItemPlace\022\014\n\004s"
+    "lot\030\002 \001(\r\022\023\n\013scroll_slot\030\003 \001(\r\022\022\n\nreques"
+    "t_id\030\004 \001(\r\"1\n\rEnchantResult\022\017\n\007success\030\001"
+    " \001(\010\022\017\n\007enchant\030\002 \001(\r\"\037\n\rLearnedSkills\022\016"
+    "\n\006skills\030\001 \003(\r\"\035\n\014SkillLearned\022\r\n\005skill\030"
+    "\001 \001(\r\"C\n\tQuickslot\022*\n\004kind\030\001 \001(\0162\034.portf"
+    "olio.mmo.QuickslotKind\022\n\n\002id\030\002 \001(\r\"E\n\014Se"
+    "tQuickslot\022\r\n\005index\030\001 \001(\r\022&\n\004slot\030\002 \001(\0132"
+    "\030.portfolio.mmo.Quickslot\"5\n\nQuickslots\022"
+    "\'\n\005slots\030\001 \003(\0132\030.portfolio.mmo.Quickslot"
+    "\"9\n\003Buy\022\017\n\007item_id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022"
+    "\022\n\nrequest_id\030\003 \001(\r\"7\n\004Sell\022\014\n\004slot\030\001 \001("
+    "\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"N\n\r"
+    "RequestResult\022\022\n\nrequest_id\030\001 \001(\r\022)\n\006res"
+    "ult\030\002 \001(\0162\031.portfolio.mmo.FailReason\"f\n\014"
+    "ActionFailed\022)\n\006reason\030\001 \001(\0162\031.portfolio"
+    ".mmo.FailReason\022+\n\007request\030\002 \001(\0162\032.portf"
+    "olio.mmo.RequestKind\" \n\013AttackStart\022\021\n\tt"
+    "arget_id\030\001 \001(\r\"\014\n\nAttackStop\"5\n\013AttackSw"
+    "ing\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\ttarget_id\030\002 "
+    "\001(\r\"_\n\007Damaged\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\tt"
+    "arget_id\030\002 \001(\r\022\016\n\006damage\030\003 \001(\r\022\n\n\002hp\030\004 \001"
+    "(\r\022\020\n\010critical\030\005 \001(\010\"%\n\004Died\022\n\n\002id\030\001 \001(\r"
+    "\022\021\n\tkiller_id\030\002 \001(\r\"\010\n\006Revive\"1\n\007Revived"
+    "\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r"
+    "\"E\n\010UseSkill\022\020\n\010skill_id\030\001 \001(\r\022\021\n\ttarget"
+    "_id\030\002 \001(\r\022\024\n\014force_attack\030\003 \001(\010\"C\n\tSkill"
+    "Used\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill_id\030\002 \001("
+    "\r\022\021\n\ttarget_id\030\003 \001(\r\"C\n\010Progress\022\n\n\002id\030\001"
+    " \001(\r\022+\n\005state\030\002 \001(\0132\034.portfolio.mmo.Prog"
+    "ressState\"J\n\021ProgressCancelled\022\n\n\002id\030\001 \001"
+    "(\r\022)\n\006reason\030\002 \001(\0162\031.portfolio.mmo.FailR"
+    "eason\"G\n\rEffectApplied\022\n\n\002id\030\001 \001(\r\022*\n\006ef"
+    "fect\030\002 \001(\0132\032.portfolio.mmo.EffectState\"5"
+    "\n\tCooldowns\022(\n\007entries\030\001 \003(\0132\027.portfolio"
+    ".mmo.Cooldown\">\n\010Cooldown\022\020\n\010skill_id\030\001 "
+    "\001(\r\022\020\n\010end_tick\030\002 \001(\r\022\016\n\006potion\030\003 \001(\r\"s\n"
+    "\022ProjectileLaunched\022\n\n\002id\030\001 \001(\r\022\021\n\tcaste"
+    "r_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\014\n\004tick"
+    "\030\005 \001(\r\022\013\n\003yaw\030\006 \001(\r\022\r\n\005speed\030\007 \001(\r\"\035\n\017Pr"
+    "ojectileEnded\022\n\n\002id\030\001 \001(\r*Q\n\017ProtocolVer"
+    "sion\022 \n\034PROTOCOL_VERSION_UNSPECIFIED\020\000\022\034"
+    "\n\030PROTOCOL_VERSION_CURRENT\020\002*\314\002\n\010Constan"
+    "t\022\030\n\024CONSTANT_UNSPECIFIED\020\000\022\034\n\030CONSTANT_"
+    "UNITS_PER_METER\020 \022$\n\037CONSTANT_MAP_HALF_E"
+    "XTENT_METERS\020\200\010\022\027\n\022CONSTANT_YAW_STEPS\020\200\002"
+    "\022\035\n\031CONSTANT_TICKS_PER_SECOND\020\024\022(\n$CONST"
+    "ANT_MAX_SPEED_METERS_PER_SECOND\020\006\022\"\n\036CON"
+    "STANT_PING_INTERVAL_SECONDS\020\005\022!\n\035CONSTAN"
+    "T_IDLE_TIMEOUT_SECONDS\020\017\022\033\n\027CONSTANT_MAX"
+    "_CHARACTERS\020\004\022\034\n\030CONSTANT_QUICKSLOT_COUN"
+    "T\020\010*\303\001\n\017LoginResultCode\022\030\n\024LOGIN_RESULT_"
+    "CODE_OK\020\000\022&\n\"LOGIN_RESULT_CODE_INVALID_L"
+    "OGIN_ID\020\001\022&\n\"LOGIN_RESULT_CODE_VERSION_M"
+    "ISMATCH\020\002\022!\n\035LOGIN_RESULT_CODE_SERVER_FU"
+    "LL\020\003\022#\n\037LOGIN_RESULT_CODE_DATA_MISMATCH\020"
+    "\004*\311\001\n\nKickReason\022\033\n\027KICK_REASON_UNSPECIF"
+    "IED\020\000\022\037\n\033KICK_REASON_DUPLICATE_LOGIN\020\001\022\037"
+    "\n\033KICK_REASON_SERVER_SHUTDOWN\020\002\022 \n\034KICK_"
+    "REASON_MALFORMED_PACKET\020\003\022\034\n\030KICK_REASON"
+    "_IDLE_TIMEOUT\020\004\022\034\n\030KICK_REASON_RATE_LIMI"
+    "TED\020\005*g\n\016CharacterClass\022\037\n\033CHARACTER_CLA"
+    "SS_UNSPECIFIED\020\000\022\032\n\026CHARACTER_CLASS_KNIG"
+    "HT\020\001\022\030\n\024CHARACTER_CLASS_MAGE\020\002*\367\001\n\031Creat"
+    "eCharacterResultCode\022#\n\037CREATE_CHARACTER"
+    "_RESULT_CODE_OK\020\000\022-\n)CREATE_CHARACTER_RE"
+    "SULT_CODE_INVALID_NAME\020\001\022+\n\'CREATE_CHARA"
+    "CTER_RESULT_CODE_NAME_TAKEN\020\002\022)\n%CREATE_"
+    "CHARACTER_RESULT_CODE_TOO_MANY\020\003\022.\n*CREA"
+    "TE_CHARACTER_RESULT_CODE_INVALID_CLASS\020\004"
+    "*e\n\024EnterWorldResultCode\022\036\n\032ENTER_WORLD_"
+    "RESULT_CODE_OK\020\000\022-\n)ENTER_WORLD_RESULT_C"
+    "ODE_NO_SUCH_CHARACTER\020\001*\251\001\n\nEntityKind\022\033"
+    "\n\027ENTITY_KIND_UNSPECIFIED\020\000\022\026\n\022ENTITY_KI"
+    "ND_PLAYER\020\001\022\027\n\023ENTITY_KIND_MONSTER\020\002\022\023\n\017"
+    "ENTITY_KIND_NPC\020\003\022\033\n\027ENTITY_KIND_GATHER_"
+    "NODE\020\004\022\033\n\027ENTITY_KIND_GROUND_ITEM\020\005*S\n\tN"
+    "ameColor\022\025\n\021NAME_COLOR_NORMAL\020\000\022\030\n\024NAME_"
+    "COLOR_AGGRESSOR\020\001\022\025\n\021NAME_COLOR_OUTLAW\020\002"
+    "*\213\001\n\014ProgressKind\022\026\n\022PROGRESS_KIND_NONE\020"
+    "\000\022\026\n\022PROGRESS_KIND_CAST\020\001\022\030\n\024PROGRESS_KI"
+    "ND_GATHER\020\002\022\027\n\023PROGRESS_KIND_CRAFT\020\003\022\030\n\024"
+    "PROGRESS_KIND_RECALL\020\004*\?\n\tItemPlace\022\030\n\024I"
+    "TEM_PLACE_INVENTORY\020\000\022\030\n\024ITEM_PLACE_EQUI"
+    "PMENT\020\001*t\n\nGainReason\022\033\n\027GAIN_REASON_UNS"
+    "PECIFIED\020\000\022\033\n\027GAIN_REASON_DEV_COMMAND\020\001\022"
+    "\027\n\023GAIN_REASON_PICK_UP\020\002\022\023\n\017GAIN_REASON_"
+    "BUY\020\003*\\\n\rQuickslotKind\022\030\n\024QUICKSLOT_KIND"
+    "_EMPTY\020\000\022\030\n\024QUICKSLOT_KIND_SKILL\020\001\022\027\n\023QU"
+    "ICKSLOT_KIND_ITEM\020\002*\202\006\n\nFailReason\022\024\n\020FA"
+    "IL_REASON_NONE\020\000\022\031\n\025FAIL_REASON_NO_TARGE"
+    "T\020\001\022\036\n\032FAIL_REASON_INVALID_TARGET\020\002\022\024\n\020F"
+    "AIL_REASON_DEAD\020\003\022\030\n\024FAIL_REASON_NOT_DEA"
+    "D\020\004\022\033\n\027FAIL_REASON_NOT_LEARNED\020\005\022\030\n\024FAIL"
+    "_REASON_COOLDOWN\020\006\022\035\n\031FAIL_REASON_NOT_EN"
+    "OUGH_MP\020\007\022\034\n\030FAIL_REASON_OUT_OF_RANGE\020\010\022"
+    "\027\n\023FAIL_REASON_BLOCKED\020\t\022\024\n\020FAIL_REASON_"
+    "BUSY\020\n\022\027\n\023FAIL_REASON_STUNNED\020\013\022\031\n\025FAIL_"
+    "REASON_CANCELLED\020\014\022\037\n\033FAIL_REASON_INVALI"
+    "D_COMMAND\020\r\022\036\n\032FAIL_REASON_INVENTORY_FUL"
+    "L\020\016\022\027\n\023FAIL_REASON_NO_ITEM\020\017\022\035\n\031FAIL_REA"
+    "SON_UNUSABLE_ITEM\020\020\022\031\n\025FAIL_REASON_IN_CO"
+    "MBAT\020\021\022\030\n\024FAIL_REASON_TOO_FAST\020\022\022\034\n\030FAIL"
+    "_REASON_ALREADY_GONE\020\023\022\031\n\025FAIL_REASON_NO"
+    "T_YOURS\020\024\022\035\n\031FAIL_REASON_LEVEL_TOO_LOW\020\025"
+    "\022\033\n\027FAIL_REASON_WRONG_CLASS\020\026\022\033\n\027FAIL_RE"
+    "ASON_MAX_ENCHANT\020\027\022\037\n\033FAIL_REASON_ALREAD"
+    "Y_LEARNED\020\030\022\037\n\033FAIL_REASON_NOT_ENOUGH_GO"
+    "LD\020\031\022\032\n\026FAIL_REASON_UNSELLABLE\020\032*\250\001\n\013Req"
+    "uestKind\022\034\n\030REQUEST_KIND_UNSPECIFIED\020\000\022\027"
+    "\n\023REQUEST_KIND_ATTACK\020\001\022\027\n\023REQUEST_KIND_"
+    "REVIVE\020\002\022\026\n\022REQUEST_KIND_SKILL\020\003\022\025\n\021REQU"
+    "EST_KIND_CHAT\020\004\022\032\n\026REQUEST_KIND_QUICKSLO"
+    "T\020\005B\030\252\002\025PortfolioMmo.Contractb\006proto3"
 };
 static ::absl::once_flag descriptor_table_packets_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_packets_2eproto = {
     false,
     false,
-    10420,
+    10477,
     descriptor_table_protodef_packets_2eproto,
     "packets.proto",
     &descriptor_table_packets_2eproto_once,
@@ -15362,9 +15391,9 @@ CharacterSummary::CharacterSummary(
                offsetof(Impl_, id_),
            reinterpret_cast<const char*>(&from._impl_) +
                offsetof(Impl_, id_),
-           offsetof(Impl_, character_class_) -
+           offsetof(Impl_, weapon_item_id_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::character_class_));
+               sizeof(Impl_::weapon_item_id_));
 
   // @@protoc_insertion_point(copy_constructor:portfolio.mmo.CharacterSummary)
 }
@@ -15378,9 +15407,9 @@ inline void CharacterSummary::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) 
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, id_),
            0,
-           offsetof(Impl_, character_class_) -
+           offsetof(Impl_, weapon_item_id_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::character_class_));
+               sizeof(Impl_::weapon_item_id_));
 }
 CharacterSummary::~CharacterSummary() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.CharacterSummary)
@@ -15433,12 +15462,12 @@ PROTOBUF_NOINLINE void CharacterSummary::Clear() {
   if (CheckHasBit(cached_has_bits, 0x00000001U)) {
     this_._impl_.name_.ClearNonDefaultToEmpty();
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x00000006U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001eU)) {
     ::memset(&this_._impl_.id_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.character_class_) -
+                 reinterpret_cast<char*>(&this_._impl_.weapon_item_id_) -
                  reinterpret_cast<char*>(&this_._impl_.id_)) +
-                 sizeof(_impl_.character_class_));
+                 sizeof(_impl_.weapon_item_id_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -15491,6 +15520,24 @@ PROTOBUF_NOINLINE void CharacterSummary::Clear() {
     }
   }
 
+  // uint32 level = 4;
+  if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+    if (this_._internal_level() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          4, this_._internal_level(), target);
+    }
+  }
+
+  // uint32 weapon_item_id = 5;
+  if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+    if (this_._internal_weapon_item_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          5, this_._internal_weapon_item_id(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -15514,7 +15561,7 @@ PROTOBUF_NOINLINE void CharacterSummary::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
     // string name = 2;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (!this_._internal_name().empty()) {
@@ -15536,6 +15583,20 @@ PROTOBUF_NOINLINE void CharacterSummary::Clear() {
                       ::_pbi::WireFormatLite::EnumSize(this_._internal_character_class());
       }
     }
+    // uint32 level = 4;
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      if (this_._internal_level() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_level());
+      }
+    }
+    // uint32 weapon_item_id = 5;
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      if (this_._internal_weapon_item_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_weapon_item_id());
+      }
+    }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
@@ -15554,7 +15615,7 @@ void CharacterSummary::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (!from._internal_name().empty()) {
         _this->_internal_set_name(from._internal_name());
@@ -15572,6 +15633,16 @@ void CharacterSummary::MergeImpl(::google::protobuf::MessageLite& to_msg,
     if (CheckHasBit(cached_has_bits, 0x00000004U)) {
       if (from._internal_character_class() != 0) {
         _this->_impl_.character_class_ = from._impl_.character_class_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      if (from._internal_level() != 0) {
+        _this->_impl_.level_ = from._impl_.level_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      if (from._internal_weapon_item_id() != 0) {
+        _this->_impl_.weapon_item_id_ = from._impl_.weapon_item_id_;
       }
     }
   }
@@ -15596,8 +15667,8 @@ void CharacterSummary::InternalSwap(CharacterSummary* PROTOBUF_RESTRICT PROTOBUF
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_, &other->_impl_.name_, arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.character_class_)
-      + sizeof(CharacterSummary::_impl_.character_class_)
+      PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.weapon_item_id_)
+      + sizeof(CharacterSummary::_impl_.weapon_item_id_)
       - PROTOBUF_FIELD_OFFSET(CharacterSummary, _impl_.id_)>(
           reinterpret_cast<char*>(&_impl_.id_),
           reinterpret_cast<char*>(&other->_impl_.id_));
@@ -16463,9 +16534,9 @@ inline void EnterWorldResult::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) 
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, result_),
            0,
-           offsetof(Impl_, tick_) -
+           offsetof(Impl_, revived_) -
                offsetof(Impl_, result_) +
-               sizeof(Impl_::tick_));
+               sizeof(Impl_::revived_));
 }
 EnterWorldResult::~EnterWorldResult() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.EnterWorldResult)
@@ -16514,12 +16585,12 @@ PROTOBUF_NOINLINE void EnterWorldResult::Clear() {
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
     ::memset(&this_._impl_.result_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.tick_) -
+                 reinterpret_cast<char*>(&this_._impl_.revived_) -
                  reinterpret_cast<char*>(&this_._impl_.result_)) +
-                 sizeof(_impl_.tick_));
+                 sizeof(_impl_.revived_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -16571,6 +16642,15 @@ PROTOBUF_NOINLINE void EnterWorldResult::Clear() {
     }
   }
 
+  // bool revived = 4;
+  if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+    if (this_._internal_revived() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteBoolToArray(
+          4, this_._internal_revived(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -16594,7 +16674,7 @@ PROTOBUF_NOINLINE void EnterWorldResult::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
     // .portfolio.mmo.EnterWorldResultCode result = 1;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (this_._internal_result() != 0) {
@@ -16616,6 +16696,12 @@ PROTOBUF_NOINLINE void EnterWorldResult::Clear() {
             this_._internal_tick());
       }
     }
+    // bool revived = 4;
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      if (this_._internal_revived() != 0) {
+        total_size += 2;
+      }
+    }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
@@ -16634,7 +16720,7 @@ void EnterWorldResult::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (from._internal_result() != 0) {
         _this->_impl_.result_ = from._impl_.result_;
@@ -16648,6 +16734,11 @@ void EnterWorldResult::MergeImpl(::google::protobuf::MessageLite& to_msg,
     if (CheckHasBit(cached_has_bits, 0x00000004U)) {
       if (from._internal_tick() != 0) {
         _this->_impl_.tick_ = from._impl_.tick_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      if (from._internal_revived() != 0) {
+        _this->_impl_.revived_ = from._impl_.revived_;
       }
     }
   }
@@ -16669,8 +16760,8 @@ void EnterWorldResult::InternalSwap(EnterWorldResult* PROTOBUF_RESTRICT PROTOBUF
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.tick_)
-      + sizeof(EnterWorldResult::_impl_.tick_)
+      PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.revived_)
+      + sizeof(EnterWorldResult::_impl_.revived_)
       - PROTOBUF_FIELD_OFFSET(EnterWorldResult, _impl_.result_)>(
           reinterpret_cast<char*>(&_impl_.result_),
           reinterpret_cast<char*>(&other->_impl_.result_));

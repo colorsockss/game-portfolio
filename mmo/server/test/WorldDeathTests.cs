@@ -31,6 +31,7 @@ namespace PortfolioMmo.Server.Tests
             world.Receive(knight, new Packet { Ping = new Ping() });
             Assert.Equal(new[] { Packet.BodyOneofCase.Pong }, Take(knight).Select(packet => packet.BodyCase));
             world.Receive(knight, new Packet { LeaveWorld = new LeaveWorld() });
+            world.CompleteSaves();
             Assert.Equal(new[] { Packet.BodyOneofCase.CharacterList }, Take(knight).Select(packet => packet.BodyCase));
             Assert.False(knight.IsClosing);
         }

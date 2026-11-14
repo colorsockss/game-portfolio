@@ -127,27 +127,30 @@ void UMmoCharacterSelectWidget::Refresh()
 		Buttons[Index]->SetIsEnabled(bFilled && !bEntering);
 		Buttons[Index]->SetSelected(Index == Selected);
 		Buttons[Index]->SetLabel(bFilled
-			? MmoText::Format(this, TEXT("select.slot"), { UTF8_TO_TCHAR(List.characters(Index).name().c_str()), MmoText::Get(this, ClassKey(List.characters(Index).character_class())).ToString() })
+			? MmoText::Format(this, TEXT("select.slot"), { UTF8_TO_TCHAR(List.characters(Index).name().c_str()), MmoText::Get(this, ClassKey(List.characters(Index).character_class())).ToString(),
+				FString::FromInt(List.characters(Index).level()) })
 			: MmoText::Get(this, TEXT("select.emptySlot")));
 	}
 	StartButton->SetIsEnabled(Selected != INDEX_NONE && !bEntering);
-	ShowPreview(Selected != INDEX_NONE && Selected < List.characters_size() ? static_cast<uint32>(List.characters(Selected).character_class()) : 0);
+	const bool bPicked = Selected != INDEX_NONE && Selected < List.characters_size();
+	ShowPreview(bPicked ? static_cast<uint32>(List.characters(Selected).character_class()) : 0, bPicked ? List.characters(Selected).weapon_item_id() : 0);
 	CreateButton->SetIsEnabled(List.characters_size() < portfolio::mmo::CONSTANT_MAX_CHARACTERS && !bEntering);
 }
 
 void UMmoCharacterSelectWidget::NativeDestruct()
 {
-	ShowPreview(0);
+	ShowPreview(0, 0);
 	Super::NativeDestruct();
 }
 
-void UMmoCharacterSelectWidget::ShowPreview(uint32 CharacterClass)
+void UMmoCharacterSelectWidget::ShowPreview(uint32 CharacterClass, uint32 WeaponItemId)
 {
-	if (CharacterClass == PreviewClass && (CharacterClass == 0 || Preview.IsValid()))
+	if (CharacterClass == PreviewClass && WeaponItemId == PreviewWeaponItemId && (CharacterClass == 0 || Preview.IsValid()))
 	{
 		return;
 	}
 	PreviewClass = CharacterClass;
+	PreviewWeaponItemId = WeaponItemId;
 	if (Preview.IsValid())
 	{
 		Preview->Destroy();
@@ -193,8 +196,8 @@ void UMmoCharacterSelectWidget::ShowPreview(uint32 CharacterClass)
 		HiddenWeapon = UMaterialInstanceDynamic::Create(Cues->HitFlashMaterial(), this);
 		HiddenWeapon->SetScalarParameterValue(TEXT("Flash"), 0.0f);
 	}
-	const portfolio::mmo::data::ClassesRow* Class = Session().Data().Class(CharacterClass);
-	MmoCharacterLook::ShowWeapon(*Mesh, PreviewWeapon, Class ? Session().Data().Item(Class->start_weapon()) : nullptr, Visuals, HiddenWeapon);
+	// 목록의 입은 무기(38)를 든다.
+	MmoCharacterLook::ShowWeapon(*Mesh, PreviewWeapon, Session().Data().Item(WeaponItemId), Visuals, HiddenWeapon);
 }
 
 UMmoSession& UMmoCharacterSelectWidget::Session() const

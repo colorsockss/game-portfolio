@@ -8755,6 +8755,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EnterWorldResult final : public ::g
     kResultFieldNumber = 1,
     kSelfIdFieldNumber = 2,
     kTickFieldNumber = 3,
+    kRevivedFieldNumber = 4,
   };
   // .portfolio.mmo.EnterWorldResultCode result = 1;
   void clear_result() ;
@@ -8786,11 +8787,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EnterWorldResult final : public ::g
   void _internal_set_tick(::uint32_t value);
 
   public:
+  // bool revived = 4;
+  void clear_revived() ;
+  [[nodiscard]] bool revived() const;
+  void set_revived(bool value);
+
+  private:
+  bool _internal_revived() const;
+  void _internal_set_revived(bool value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.EnterWorldResult)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<2, 3,
+      ::google::protobuf::internal::TcParseTable<2, 4,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -8822,6 +8833,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EnterWorldResult final : public ::g
     int result_;
     ::uint32_t self_id_;
     ::uint32_t tick_;
+    bool revived_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -11381,6 +11393,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED CharacterSummary final : public ::g
     kNameFieldNumber = 2,
     kIdFieldNumber = 1,
     kCharacterClassFieldNumber = 3,
+    kLevelFieldNumber = 4,
+    kWeaponItemIdFieldNumber = 5,
   };
   // string name = 2;
   void clear_name() ;
@@ -11417,11 +11431,31 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED CharacterSummary final : public ::g
   void _internal_set_character_class(::portfolio::mmo::CharacterClass value);
 
   public:
+  // uint32 level = 4;
+  void clear_level() ;
+  [[nodiscard]] ::uint32_t level() const;
+  void set_level(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_level() const;
+  void _internal_set_level(::uint32_t value);
+
+  public:
+  // uint32 weapon_item_id = 5;
+  void clear_weapon_item_id() ;
+  [[nodiscard]] ::uint32_t weapon_item_id() const;
+  void set_weapon_item_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_weapon_item_id() const;
+  void _internal_set_weapon_item_id(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.CharacterSummary)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<2, 3,
+      ::google::protobuf::internal::TcParseTable<3, 5,
                           0, 43,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -11453,6 +11487,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED CharacterSummary final : public ::g
     ::google::protobuf::internal::ArenaStringPtr name_;
     ::uint64_t id_;
     int character_class_;
+    ::uint32_t level_;
+    ::uint32_t weapon_item_id_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -21852,6 +21888,54 @@ inline void CharacterSummary::_internal_set_character_class(::portfolio::mmo::Ch
   _impl_.character_class_ = value;
 }
 
+// uint32 level = 4;
+inline void CharacterSummary::clear_level() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.level_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000008U);
+}
+inline ::uint32_t CharacterSummary::level() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.CharacterSummary.level)
+  return _internal_level();
+}
+inline void CharacterSummary::set_level(::uint32_t value) {
+  _internal_set_level(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000008U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.CharacterSummary.level)
+}
+inline ::uint32_t CharacterSummary::_internal_level() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.level_;
+}
+inline void CharacterSummary::_internal_set_level(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.level_ = value;
+}
+
+// uint32 weapon_item_id = 5;
+inline void CharacterSummary::clear_weapon_item_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.weapon_item_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000010U);
+}
+inline ::uint32_t CharacterSummary::weapon_item_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.CharacterSummary.weapon_item_id)
+  return _internal_weapon_item_id();
+}
+inline void CharacterSummary::set_weapon_item_id(::uint32_t value) {
+  _internal_set_weapon_item_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000010U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.CharacterSummary.weapon_item_id)
+}
+inline ::uint32_t CharacterSummary::_internal_weapon_item_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.weapon_item_id_;
+}
+inline void CharacterSummary::_internal_set_weapon_item_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.weapon_item_id_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // CharacterList
@@ -22133,6 +22217,30 @@ inline ::uint32_t EnterWorldResult::_internal_tick() const {
 inline void EnterWorldResult::_internal_set_tick(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.tick_ = value;
+}
+
+// bool revived = 4;
+inline void EnterWorldResult::clear_revived() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.revived_ = false;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000008U);
+}
+inline bool EnterWorldResult::revived() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.EnterWorldResult.revived)
+  return _internal_revived();
+}
+inline void EnterWorldResult::set_revived(bool value) {
+  _internal_set_revived(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000008U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.EnterWorldResult.revived)
+}
+inline bool EnterWorldResult::_internal_revived() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.revived_;
+}
+inline void EnterWorldResult::_internal_set_revived(bool value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.revived_ = value;
 }
 
 // -------------------------------------------------------------------

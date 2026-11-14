@@ -125,7 +125,7 @@ namespace PortfolioMmo.Server.Tests
         {
             using var cancellation = new CancellationTokenSource();
             using var store = new CharacterStore(":memory:");
-            long id = store.Create("hero_01", "Arthur", CharacterClass.Knight, 0, 0).Character!.Id;
+            long id = store.Create("hero_01", "Arthur", CharacterClass.Knight, TestData.Saved(0, 0)).Id;
             var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), store, TestData.Data));
             Task running = server.RunAsync(cancellation.Token);
 
@@ -154,7 +154,7 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(KickReason.ServerShutdown, packet!.Kicked.Reason);
             client.Close();
             await running.WaitAsync(s_timeout);
-            Assert.Equal(new SavedPosition(0, 0, 0), store.Load(id)!.Position);
+            Assert.Equal(new SavedPosition(0, 0, 0), store.Load(id)!.State.Position);
         }
 
         /// <summary>

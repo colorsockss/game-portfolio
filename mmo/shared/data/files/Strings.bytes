@@ -70,10 +70,8 @@ Characters
 select.create	만들기Create
 
 select.start시작Start
-%
-select.slot
-{0}  ({1})
-{0}  ({1})
+3
+select.slot{0}  ({1} Lv {2}){0}  ({1} Lv {2})
 "
 select.emptySlot빈 칸Empty
 3
@@ -790,3 +788,5 @@ B
 fail.notEnoughGold골드가 모자랍니다.Not enough gold.
 K
 fail.unsellable"팔 수 없는 아이템입니다.That cannot be sold.
+a
+notice.revivedOnEnter&부활 지점에서 부활했습니다 You revived at the respawn point

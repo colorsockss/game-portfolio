@@ -62,7 +62,7 @@ namespace PortfolioMmo.Server
             player.Z = move.Z;
             player.Yaw = move.Yaw;
             player.Moved = true;
-            player.Dirty = true;
+            player.DirtySlow = true;
             _grid.Moved(player);
             return Outcome.Done;
         }
@@ -77,7 +77,7 @@ namespace PortfolioMmo.Server
             player.Z = z;
             player.Moved = true;
             player.Teleported = true;
-            player.Dirty = true;
+            player.DirtySlow = true;
             player.MoveBudget = 0;
             _grid.Moved(player);
             Reset(player);

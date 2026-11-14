@@ -13,16 +13,12 @@ namespace PortfolioMmo.Server
     /// </summary>
     public sealed class World : IScheduledRunner
     {
-        /// <summary>
-        /// 움직인 플레이어의 위치를 저장하는 간격(틱, 60초). 서버가 죽으면 이만큼의 이동을 잃는다. 나간 플레이어는 그 틱에 저장한다.
-        /// </summary>
-        public const uint SaveIntervalTicks = 60 * Units.TicksPerSecond;
-
         private readonly EntityTable _entities = new EntityTable();
         private readonly Grid _grid = new Grid();
         private readonly LoginSystem _login;
         private readonly MovementSystem _movement;
         private readonly ViewSystem _view;
+        private readonly SaveQueue _queue;
         private readonly SaveSystem _save;
         private readonly Scheduler _scheduler = new Scheduler();
         private readonly VitalsSystem _vitals;
@@ -48,10 +44,11 @@ namespace PortfolioMmo.Server
         /// </summary>
         public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store, GameData data, bool dev = false)
         {
-            _save = new SaveSystem(store, _entities, SaveIntervalTicks);
+            _queue = new SaveQueue(store);
+            _save = new SaveSystem(_queue, _entities);
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
             var stats = new StatSystem(data, random);
-            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, store, data, field, _entities, _grid, _save, stats);
+            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, _queue, data, field, _entities, _grid, _save, stats, () => Tick);
             _vitals = new VitalsSystem(_entities, data);
             _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random);
             _events = new TickEvents(_grid);
@@ -69,7 +66,8 @@ namespace PortfolioMmo.Server
             _growth = new GrowthSystem(_entities, stats, data);
             _quickslots = new QuickslotSystem(data);
             _inventory = new InventorySystem(data, _progress, _movement, stats, _quickslots, random);
-            _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, random);
+            _login.Entered = _inventory.Enter;
+            _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, _save, random);
             // NPC도 놓인 점의 번호를 플레이어보다 먼저 받는다(37). 움직이지 않고 칸을 막지 않는다.
             Npc? shop = null;
             foreach (NpcsRow row in data.Npcs.Rows)
@@ -188,12 +186,7 @@ namespace PortfolioMmo.Server
                     _login.CreateCharacter(session, packet.CreateCharacter);
                     break;
                 case Packet.BodyOneofCase.EnterWorld when selecting:
-                    _login.EnterWorld(session, packet.EnterWorld, Tick);
-                    if (session.Player is Player entered)
-                    {
-                        _inventory.Enter(entered);
-                    }
-
+                    _login.EnterWorld(session, packet.EnterWorld);
                     break;
                 case Packet.BodyOneofCase.LeaveWorld when player != null:
                     _login.LeaveWorld(session);
@@ -354,6 +347,8 @@ namespace PortfolioMmo.Server
         public void Step(uint elapsedTicks = 1, TickProfile? profile = null)
         {
             long started = Stopwatch.GetTimestamp();
+            // 저장 스레드에서 돌아온 결과(목록, 만들기, 캐릭터 읽기)를 입력 차례에 반영한다(38).
+            _queue.CompleteFinished();
             _growth.Rewarded.Clear();
             _scheduler.Step(Tick, this);
             long scheduled = Stopwatch.GetTimestamp();
@@ -498,11 +493,38 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 나간 플레이어와 움직인 플레이어의 위치를 지금 저장한다. 서버가 내려갈 때 부른다.
+        /// 접속한 모두의 사본을 한 묶음으로 넣고 큐가 빌 때까지 기다린다(내려갈 때). 기다리는 한도와 쓰기가 실패했을 때의 규칙은 39가 정한다.
         /// </summary>
         public void SaveAll()
         {
             _save.SaveAll();
+            if (!_queue.WaitIdle(TimeSpan.FromSeconds(30)))
+            {
+                Console.Error.WriteLine($"Shutting down with {_queue.Pending} save job(s) still queued.");
+            }
         }
+
+        /// <summary>
+        /// 저장 스레드의 큐가 빌 때까지 기다리고 돌아온 결과를 지금 반영한다(시험이 목록·만들기·들어오기의 답을 틱 없이 받음).
+        /// </summary>
+        internal void CompleteSaves()
+        {
+            _queue.WaitIdle(TimeSpan.FromSeconds(10));
+            _queue.CompleteFinished();
+        }
+
+        /// <summary>
+        /// 10초 통계의 저장 스레드 줄: 끝난 일의 수, 평균과 가장 긴 시간, 남은 일.
+        /// </summary>
+        public string SaveReport()
+        {
+            (int jobs, TimeSpan total, TimeSpan max) = _queue.TakeStats();
+            return $"save: {jobs} jobs, avg {(jobs == 0 ? 0 : total.TotalMilliseconds / jobs):F2} ms max {max.TotalMilliseconds:F2} ms, pending {_queue.Pending}";
+        }
+
+        /// <summary>
+        /// 저장 스레드의 큐(시험이 늦추거나 묶음의 시간을 봄).
+        /// </summary>
+        internal SaveQueue Saves => _queue;
     }
 }

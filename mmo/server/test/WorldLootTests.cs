@@ -166,11 +166,11 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(5u, other.Player!.Bag.CountOf(2001));
         }
 
-        private static World LootWorld(string[] rows)
+        private static World LootWorld(string[] rows, CharacterStore? store = null)
         {
             MonstersRow dropper = TestData.Monster(2, aggressive: false);
             dropper.DropGroup = 1;
-            return new World(10, spawnHalfExtent: 0, new Random(1), new CharacterStore(":memory:"),
+            return new World(10, spawnHalfExtent: 0, new Random(1), store ?? new CharacterStore(":memory:"),
                 TestData.WithMonsters(new[] { TestData.Spawn(1, 0, 0, 2, respawnMs: 1000) }, rows, null, null, new[] { TestData.Monster(1, aggressive: true), dropper }));
         }
 

@@ -24,7 +24,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 월드에 들어온 플레이어의 능력치를 구하고 체력과 마나를 가득 채운다(캐릭터 저장 38 전에는 들어올 때마다 가득 참).
+        /// 월드에 들어온 플레이어의 능력치를 구하고 체력과 마나를 가득 채운다. 저장한 체력과 마나는 그 뒤에 InventorySystem.Enter가 둔다(38).
         /// </summary>
         public void Enter(Player player)
         {

@@ -42,7 +42,7 @@ namespace PortfolioMmo.Server.Tests
         {
             var stats = new StatSystem(TestData.Data, new System.Random(1));
             Session session = new Session();
-            var player = new Player(1, new CharacterRecord(1, "hero_01", "hero01", CharacterClass.Knight, default), session, default);
+            var player = new Player(1, new CharacterRecord(1, "hero_01", "hero01", CharacterClass.Knight, TestData.Saved(0, 0)), session, default);
             stats.Enter(player);
             Assert.Equal((150u, 50u), (player.Hp, player.Mp));
 

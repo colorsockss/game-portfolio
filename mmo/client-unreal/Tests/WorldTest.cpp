@@ -429,8 +429,26 @@ namespace
 	}
 }
 
+namespace
+{
+	/** 죽은 채 빠졌다가 들어온 표시(38)는 한 번만 꺼내지고, 표시가 없으면 사건도 없다. */
+	void RevivedOnEnterIsTakenOnce()
+	{
+		MmoWorld::FWorldState World;
+		portfolio::mmo::Packet Entered;
+		Entered.mutable_enter_world_result()->set_self_id(3);
+		Entered.mutable_enter_world_result()->set_revived(true);
+		World.Apply(Entered, 0.0);
+		Expect(World.TakeRevivedOnEnter() && !World.TakeRevivedOnEnter(), "the revived mark is taken once");
+		Entered.mutable_enter_world_result()->set_revived(false);
+		World.Apply(Entered, 0.0);
+		Expect(!World.TakeRevivedOnEnter(), "a normal entry is not an event");
+	}
+}
+
 int main()
 {
+	RevivedOnEnterIsTakenOnce();
 	UnitsConvert();
 	MoveSenderSendsChangesAtTheTickRate();
 	MoveSenderFlushesBeforeActions();

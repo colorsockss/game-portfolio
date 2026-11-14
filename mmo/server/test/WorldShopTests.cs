@@ -89,10 +89,10 @@ namespace PortfolioMmo.Server.Tests
             Assert.Empty(changed.Gains);
         }
 
-        private static World ShopWorld(string[] rows)
+        private static World ShopWorld(string[] rows, CharacterStore? store = null)
         {
             var npcs = new Npcs { Rows = { new NpcsRow { Id = 1, NameKey = "npc.test", Role = NpcRole.Shop, X = 0, Z = 0 } } };
-            return new World(10, spawnHalfExtent: 0, new System.Random(1), new CharacterStore(":memory:"),
+            return new World(10, spawnHalfExtent: 0, new System.Random(1), store ?? new CharacterStore(":memory:"),
                 TestData.WithMonsters(new SpawnsRow[0], rows, null, null, null, null, npcs));
         }
 

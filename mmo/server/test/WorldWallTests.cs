@@ -88,14 +88,14 @@ namespace PortfolioMmo.Server.Tests
         public void BlockedSavedPositionsMoveToTheRespawnPoint(int x, int z, string why)
         {
             var store = new CharacterStore(":memory:");
-            long id = store.Create("hero_01", "hero01", CharacterClass.Knight, x, z).Character!.Id;
+            long id = store.Create("hero_01", "hero01", CharacterClass.Knight, TestData.Saved(x, z)).Id;
             World world = new World(10, spawnHalfExtent: 0, new Random(1), store, TestData.WithMap(-3, 2, s_wallRows));
             Session session = LogIn(world, "hero_01");
             Enter(world, session, id);
             Assert.True((-3 * M, 2 * M) == (session.Player!.X, session.Player.Z), why);
 
             world.SaveAll();
-            Assert.Equal((-3 * M, 2 * M), (store.Load(id)!.Position.X, store.Load(id)!.Position.Z));
+            Assert.Equal((-3 * M, 2 * M), (store.Load(id)!.State.Position.X, store.Load(id)!.State.Position.Z));
         }
 
         /// <summary>

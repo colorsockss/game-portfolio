@@ -63,6 +63,7 @@ namespace PortfolioMmo.Server
             }
 
             player.Exp = level >= maxLevel ? 0 : (uint)exp;
+            player.DirtySlow = true;
             SetLevel(player, level);
             player.Session.Send(new Packet { ExpGained = new ExpGained { Amount = (int)Math.Min(amount, int.MaxValue), Exp = player.Exp } });
         }
@@ -78,6 +79,7 @@ namespace PortfolioMmo.Server
             }
 
             player.SetDisplayState(level, player.NameColor, player.WeaponItemId);
+            player.DirtyFast = true;
             _stats.Recalculate(player);
             player.Hp = player.MaxHp;
             player.Mp = player.MaxMp;

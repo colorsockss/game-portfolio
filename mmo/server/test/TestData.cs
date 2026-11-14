@@ -270,6 +270,14 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 저장소에 바로 만드는 캐릭터의 상태(38): 자리 (x, z), 레벨 1, 기사의 가득 찬 체력·마나, 빈 인벤토리.
+        /// </summary>
+        public static CharacterSnapshot Saved(int x, int z)
+        {
+            return new CharacterSnapshot(0, new SavedPosition(x, z, 0), 1, 0, KnightLevel1.MaxHp, KnightLevel1.MaxMp, 0, 0, new SavedItem[0], new uint[0], new SavedQuickslot[0]);
+        }
+
+        /// <summary>
         /// 시험용 상점(37): 2001 체력 물약 20골드, 2002 상급 체력 물약 30골드, 2005 귀환 주문서 50골드, 1003 공용 투구(겹치지 않음) 100골드.
         /// </summary>
         public static Shops Shops => new Shops

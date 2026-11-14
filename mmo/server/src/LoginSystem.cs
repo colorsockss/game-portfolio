@@ -9,6 +9,8 @@ namespace PortfolioMmo.Server
     /// <summary>
     /// 로그인한 계정, 캐릭터 목록·만들기, 월드에 들어가고 나가기, 끊기.
     /// 연결은 로그인 전 → 캐릭터 선택(Session.LoginId만 있음) → 월드(Session.Player도 있음)다.
+    /// 데이터베이스의 일(목록 읽기, 만들기, 캐릭터 읽기)은 저장 스레드의 큐에 넣고, 결과가 돌아온 틱(입력 차례)에 패킷을 보낸다(38). 같은 큐라 그 캐릭터의
+    /// 남은 사본이 다 쓰인 뒤에 읽힌다.
     /// </summary>
     internal sealed partial class LoginSystem
     {
@@ -32,7 +34,7 @@ namespace PortfolioMmo.Server
         /// </summary>
         private readonly System.Random _random;
 
-        private readonly CharacterStore _store;
+        private readonly SaveQueue _queue;
         private readonly GameData _data;
         private readonly FieldMap _field;
         private readonly EntityTable _entities;
@@ -46,11 +48,18 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<string, Session> _accounts = new Dictionary<string, Session>();
 
         /// <summary>
+        /// 불러오는 중인 캐릭터 번호 → 결과를 받을 연결. 같은 캐릭터의 EnterWorld가 또 오면 읽기를 다시 넣지 않고 연결만 바꾼다.
+        /// </summary>
+        private readonly Dictionary<long, Session> _loading = new Dictionary<long, Session>();
+
+        private readonly System.Func<uint> _tick;
+
+        /// <summary>
         /// 마을의 부활 지점(1/32 m). 새 캐릭터와 들어올 자리가 막힌 캐릭터가 여기서 시작한다.
         /// </summary>
         private readonly (int X, int Z) _respawn;
 
-        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, CharacterStore store, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save, StatSystem stats)
+        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, SaveQueue queue, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save, StatSystem stats, System.Func<uint> tick)
         {
             ZonesRow town = data.Zones.Rows.FirstOrDefault(zone => zone.Kind == ZoneKind.Town)
                 ?? throw new System.ArgumentException("Zones needs a town row with the respawn point.", nameof(data));
@@ -59,13 +68,19 @@ namespace PortfolioMmo.Server
             _maxPlayers = maxPlayers;
             _spawnHalfExtent = spawnHalfExtent;
             _random = random;
-            _store = store;
+            _queue = queue;
+            _tick = tick;
             _data = data;
             _entities = entities;
             _grid = grid;
             _save = save;
             _stats = stats;
         }
+
+        /// <summary>
+        /// 불러온 캐릭터가 월드에 들어온 뒤(EnterWorldResult, 경험치, 쿨다운 뒤) 아이템·스킬·퀵슬롯을 되살리는 일. World가 정한다.
+        /// </summary>
+        public System.Action<Player, CharacterSnapshot, bool>? Entered { get; set; }
 
         /// <summary>
         /// 로그인을 처리한다. 프로토콜 버전 → 데이터 해시 → ID 형식 → 동접 상한 순으로 보고, 실패하면 LoginResult를 보내고 끊는다. 같은 계정이 이미 로그인해 있으면 예전 연결을 끊는다.
@@ -88,7 +103,7 @@ namespace PortfolioMmo.Server
 
             if (previous != null)
             {
-                // 예전 연결의 캐릭터는 월드에서 빠지고(위치는 저장 대기로 남음), 새 연결이 그 자리를 이어 간다.
+                // 예전 연결의 캐릭터는 그 틱에 월드에서 빠지며 사본을 넣는다. 새 연결은 캐릭터 선택부터 하고, 그 EnterWorld는 큐에서 사본 뒤에 읽힌다.
                 Kick(previous, KickReason.DuplicateLogin);
             }
 
@@ -114,24 +129,39 @@ namespace PortfolioMmo.Server
             }
             else
             {
-                // 처음 들어갈 자리는 만들 때 정해 저장한다.
-                (int x, int z) = StartPosition();
-                result = _store.Create(session.LoginId!, create.Name, create.CharacterClass, x, z).Result;
+                // 처음 들어갈 자리와 처음 상태는 만들 때 정해 한 트랜잭션에 넣는다. 결과와 바뀐 목록은 저장 스레드에서 돌아온 틱에 보낸다.
+                _queue.Enqueue(new CreateJob(session, create.Name, create.CharacterClass, StartState(create.CharacterClass)));
+                return;
             }
 
             session.Send(new Packet { CreateCharacterResult = new CreateCharacterResult { Result = result } });
-            if (result == CreateCharacterResultCode.Ok)
+        }
+
+        /// <summary>
+        /// 고른 캐릭터로 월드에 들어간다: 읽기를 큐에 넣고 결과가 돌아온 틱(Loaded)에 개체를 만든다. 불러오는 중인 캐릭터면 결과를 받을 연결만 바꾼다.
+        /// </summary>
+        public void EnterWorld(Session session, EnterWorld enter)
+        {
+            long id = (long)enter.CharacterId;
+            bool loading = _loading.ContainsKey(id);
+            _loading[id] = session;
+            if (!loading)
             {
-                SendCharacterList(session);
+                _queue.Enqueue(new LoadJob(this, id));
             }
         }
 
         /// <summary>
-        /// 고른 캐릭터로 월드에 들어간다. 이 계정의 캐릭터가 아니면 실패로 답한다.
+        /// 캐릭터를 읽었다(입력 차례). 기다리던 연결이 끊겼거나 이미 월드에 있으면 결과를 버린다. 이 계정의 캐릭터가 아니면 실패로 답한다.
+        /// 읽은 체력이 0이면(죽은 채 빠짐) 마을의 부활 지점에서 부활할 때의 체력으로 시작하고 표시를 켠다(무법자의 지점은 44. 페널티는 죽을 때 이미 줬음).
         /// </summary>
-        public void EnterWorld(Session session, EnterWorld enter, uint tick)
+        private void Loaded(long id, CharacterRecord? character)
         {
-            CharacterRecord? character = _store.Load((long)enter.CharacterId);
+            if (!_loading.Remove(id, out Session? session) || session.IsClosing || (session.Player != null) || (session.LoginId == null))
+            {
+                return;
+            }
+
             if ((character == null) || (character.LoginId != session.LoginId))
             {
                 session.Send(new Packet { EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.NoSuchCharacter } });
@@ -140,25 +170,29 @@ namespace PortfolioMmo.Server
 
             // 맵이 바뀌어 저장된 자리가 막혔거나 필드 밖이면 마을의 부활 지점으로 옮긴다(무법자도 같음. 죽은 것이 아님).
             // 들어올 때 옮기므로 다른 연결은 옮긴 자리의 EntityEnter만 본다.
-            SavedPosition position = _save.PositionOf(character);
-            bool blocked = !_field.CanWalk(position.X, position.Z, Walker.Player);
-            if (blocked)
+            CharacterSnapshot state = character.State;
+            SavedPosition position = state.Position;
+            bool revived = state.Hp == 0;
+            bool moved = revived || !_field.CanWalk(position.X, position.Z, Walker.Player);
+            if (moved)
             {
                 position = new SavedPosition(_respawn.X, _respawn.Z, position.Yaw);
             }
 
-            var player = new Player(_entities.NextPlayerId(), character, session, position) { Dirty = blocked };
+            var player = new Player(_entities.NextPlayerId(), character, session, position) { Exp = state.Exp, DirtySlow = moved };
+            player.SetDisplayState(_data.HasLevel(character.Class, state.Level) ? state.Level : 1, player.NameColor, 0);
             _stats.Enter(player);
             _entities.Add(player);
             _grid.Add(player);
             session.Player = player;
             session.Send(new Packet
             {
-                EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.Ok, SelfId = player.Id, Tick = tick },
+                EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.Ok, SelfId = player.Id, Tick = _tick(), Revived = revived },
             });
             // 지금 경험치를 알린다(얻은 양 0. 31).
             session.Send(new Packet { ExpGained = new ExpGained { Exp = player.Exp } });
             player.SendCooldowns(_data.Skills.Rows.Where(skill => skill.Class == (uint)player.Class).Select(skill => skill.Id));
+            Entered?.Invoke(player, state, revived);
         }
 
         /// <summary>
@@ -167,6 +201,7 @@ namespace PortfolioMmo.Server
         public void LeaveWorld(Session session)
         {
             Remove(session);
+            // 나갈 때의 사본 뒤에 읽혀 방금의 레벨과 무기가 실린다.
             SendCharacterList(session);
         }
 
@@ -232,17 +267,135 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 계정의 캐릭터 목록을 보낸다.
+        /// 계정의 캐릭터 목록을 읽어(저장 스레드) 돌아온 틱에 보낸다.
         /// </summary>
         private void SendCharacterList(Session session)
         {
+            _queue.Enqueue(new ListJob(session, session.LoginId!));
+        }
+
+        /// <summary>
+        /// 새 캐릭터의 처음 상태: 자리, 레벨 1의 가득 찬 체력·마나, 처음 상태의 아이템(입힌 기본 무기), 첫 스킬과 그것으로 채운 퀵슬롯.
+        /// </summary>
+        private CharacterSnapshot StartState(CharacterClass characterClass)
+        {
+            (int x, int z) = StartPosition();
+            ClassesRow row = _data.Class(characterClass);
+            LevelsRow level = _data.Level(characterClass, 1);
+            return new CharacterSnapshot(
+                0, new SavedPosition(x, z, 0), 1, 0, level.MaxHp, level.MaxMp, 0, 0, InventorySystem.StartItems(_data, row),
+                row.FirstSkill != 0 ? new[] { row.FirstSkill } : System.Array.Empty<uint>(), QuickslotSystem.StartQuickslots(_data, row));
+        }
+
+        private static Packet ListPacket(List<CharacterListEntry> characters)
+        {
             var list = new CharacterList();
-            foreach (CharacterRecord character in _store.List(session.LoginId!))
+            list.Characters.Add(characters.Select(character => new CharacterSummary
             {
-                list.Characters.Add(new CharacterSummary { Id = (ulong)character.Id, Name = character.Name, CharacterClass = character.Class });
+                Id = (ulong)character.Id, Name = character.Name, CharacterClass = character.Class, Level = character.Level, WeaponItemId = character.WeaponItemId,
+            }));
+            return new Packet { CharacterList = list };
+        }
+
+        /// <summary>
+        /// 목록 읽기. 돌아온 틱에 연결이 아직 열려 있으면 보낸다.
+        /// </summary>
+        private sealed class ListJob : StoreJob
+        {
+            private readonly Session _session;
+            private readonly string _loginId;
+            private List<CharacterListEntry> _characters = new List<CharacterListEntry>();
+
+            public ListJob(Session session, string loginId)
+            {
+                _session = session;
+                _loginId = loginId;
             }
 
-            session.Send(new Packet { CharacterList = list });
+            public override void Run(CharacterStore store)
+            {
+                _characters = store.List(_loginId);
+            }
+
+            public override void Complete()
+            {
+                if (!_session.IsClosing && (Failure == null))
+                {
+                    _session.Send(ListPacket(_characters));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 캐릭터 만들기와 그 뒤의 목록 읽기.
+        /// </summary>
+        private sealed class CreateJob : StoreJob
+        {
+            private readonly Session _session;
+            private readonly string _loginId;
+            private readonly string _name;
+            private readonly CharacterClass _class;
+            private readonly CharacterSnapshot _start;
+            private CreateCharacterResultCode _result;
+            private List<CharacterListEntry> _characters = new List<CharacterListEntry>();
+
+            public CreateJob(Session session, string name, CharacterClass characterClass, CharacterSnapshot start)
+            {
+                _session = session;
+                _loginId = session.LoginId!;
+                _name = name;
+                _class = characterClass;
+                _start = start;
+            }
+
+            public override void Run(CharacterStore store)
+            {
+                _result = store.Create(_loginId, _name, _class, _start).Result;
+                if (_result == CreateCharacterResultCode.Ok)
+                {
+                    _characters = store.List(_loginId);
+                }
+            }
+
+            public override void Complete()
+            {
+                if (_session.IsClosing || (Failure != null))
+                {
+                    return;
+                }
+
+                _session.Send(new Packet { CreateCharacterResult = new CreateCharacterResult { Result = _result } });
+                if (_result == CreateCharacterResultCode.Ok)
+                {
+                    _session.Send(ListPacket(_characters));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 캐릭터 읽기(들어오기).
+        /// </summary>
+        private sealed class LoadJob : StoreJob
+        {
+            private readonly LoginSystem _login;
+            private readonly long _id;
+            private CharacterRecord? _character;
+
+            public LoadJob(LoginSystem login, long id)
+            {
+                _login = login;
+                _id = id;
+            }
+
+            public override void Run(CharacterStore store)
+            {
+                _character = store.Load(_id);
+            }
+
+            public override void Complete()
+            {
+                _login.Loaded(_id, Failure == null ? _character : null);
+            }
         }
 
         /// <summary>
@@ -259,7 +412,8 @@ namespace PortfolioMmo.Server
             session.Player = null;
             _entities.Remove(player);
             _grid.Remove(player);
-            _save.Left(player);
+            // 월드에서 빠지는 틱에 사본 하나짜리 묶음을 넣는다(LeaveWorld, 끊김, 같은 계정의 재로그인).
+            _save.SaveNow(player);
         }
     }
 }

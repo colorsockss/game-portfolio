@@ -380,6 +380,10 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	{
 		Ui->ShowNotice(MmoText::Get(this, UTF8_TO_TCHAR(MmoWorld::FailKey(Failure.Reason))));
 	}
+	if (Session->World().TakeRevivedOnEnter())
+	{
+		Ui->ShowNotice(MmoText::Get(this, TEXT("notice.revivedOnEnter")));
+	}
 	for (const uint32_t Skill : Session->Skills().TakeLearned())
 	{
 		const portfolio::mmo::data::SkillsRow* Row = Session->Data().Skill(Skill);

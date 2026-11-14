@@ -9,7 +9,7 @@ using PortfolioMmo.Contract;
 namespace PortfolioMmo.Server
 {
     /// <summary>
-    /// 서버 진입점. SIGINT·SIGTERM을 받으면 모두에게 SERVER_SHUTDOWN을 보내고 위치를 저장한 뒤 내려간다.
+    /// 서버 진입점. SIGINT·SIGTERM을 받으면 모두에게 SERVER_SHUTDOWN을 보내고, 접속한 모두의 사본을 넣어 저장 스레드의 큐가 빌 때까지 기다린 뒤 내려간다(38).
     /// </summary>
     public static class Program
     {

@@ -188,6 +188,10 @@ message CharacterSummary {
   uint64 id = 1;
   string name = 2;
   CharacterClass character_class = 3;
+  // 레벨(38).
+  uint32 level = 4;
+  // 입은 무기(Items의 번호, 없으면 0. 캐릭터 선택에 세워 보임. 38).
+  uint32 weapon_item_id = 5;
 }
 
 // 서버 → 클라이언트. 이 계정의 캐릭터들(만든 차례). 로그인 뒤, 캐릭터를 만든 뒤, LeaveWorld 뒤에 온다.
@@ -233,6 +237,8 @@ message EnterWorldResult {
   uint32 self_id = 2;
   // 서버의 지금 틱 번호(EntityMoves.tick과 같은 수). 클라이언트가 서버 시계를 맞춘다.
   uint32 tick = 3;
+  // 죽은 채 빠졌던 캐릭터라 부활 지점에서 부활해 들어왔다(38).
+  bool revived = 4;
 }
 
 // 월드에 들어가기의 결과.
