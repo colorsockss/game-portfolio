@@ -105,6 +105,11 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 직업과 레벨의 Levels 줄(필요 경험치와 기본 능력치). 없으면 던진다(데이터가 그 직업과 레벨을 빠뜨림).
         /// </summary>
+        public bool HasLevel(CharacterClass characterClass, uint level)
+        {
+            return _levels.ContainsKey(((uint)characterClass, level));
+        }
+
         public LevelsRow Level(CharacterClass characterClass, uint level)
         {
             return _levels.TryGetValue(((uint)characterClass, level), out LevelsRow? row)

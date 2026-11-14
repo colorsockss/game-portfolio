@@ -23,8 +23,9 @@ namespace PortfolioMmo.Server.Tests
             Session mage = Join(world, "hero_02", CharacterClass.Mage);
             world.Step();
 
-            Assert.Equal(new[] { Entered(1), Cooldowns(101, 102, 103, 104, 105, 106), SelfStats(TestData.KnightLevel1), SelfVitals(150, 50) }, knight.Outbox.Take(4));
-            Assert.Equal(new[] { Cooldowns(201, 202, 203, 204, 205), SelfStats(TestData.MageLevel1), SelfVitals(100, 120) }, TakeVitals(mage));
+            var exp = new Packet { ExpGained = new ExpGained() };
+            Assert.Equal(new[] { Entered(1), exp, Cooldowns(101, 102, 103, 104, 105, 106), SelfStats(TestData.KnightLevel1), SelfVitals(150, 50) }, knight.Outbox.Take(5));
+            Assert.Equal(new[] { exp, Cooldowns(201, 202, 203, 204, 205), SelfStats(TestData.MageLevel1), SelfVitals(100, 120) }, TakeVitals(mage));
             Assert.Equal(TestData.MageLevel1, mage.Player!.Stats);
         }
 

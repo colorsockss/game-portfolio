@@ -95,6 +95,9 @@ void AMmoPlayerController::SetupInputComponent()
 	Mapping->MapKey(AttackAction, MmoKeys::KeyOf(EMmoAction::Attack));
 	Mapping->MapKey(TargetAction, MmoKeys::KeyOf(EMmoAction::TargetNearest));
 	Mapping->MapKey(InteractAction, MmoKeys::KeyOf(EMmoAction::Interact));
+	CharacterAction = NewObject<UInputAction>(this, TEXT("Character"));
+	CharacterAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(CharacterAction, MmoKeys::KeyOf(EMmoAction::Character));
 #if !UE_BUILD_SHIPPING
 	// 시연 영상의 UI 숨기기와 자유 카메라는 개발 빌드만 듣는다.
 	HideUiAction = NewObject<UInputAction>(this, TEXT("HideUi"));
@@ -133,6 +136,10 @@ void AMmoPlayerController::SetupInputComponent()
 	}
 	Enhanced->BindAction(TargetAction, ETriggerEvent::Started, this, &AMmoPlayerController::TargetNearest);
 	Enhanced->BindAction(InteractAction, ETriggerEvent::Started, this, &AMmoPlayerController::Interact);
+	Enhanced->BindActionValueLambda(CharacterAction, ETriggerEvent::Started, [this](const FInputActionValue&)
+	{
+		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter();
+	});
 #if !UE_BUILD_SHIPPING
 	Enhanced->BindAction(HideUiAction, ETriggerEvent::Started, this, &AMmoPlayerController::ToggleHideUi);
 	Enhanced->BindAction(FreeCameraAction, ETriggerEvent::Started, this, &AMmoPlayerController::ToggleFreeCamera);

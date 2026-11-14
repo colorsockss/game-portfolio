@@ -28,6 +28,7 @@
 #include "UObject/SavePackage.h"
 #include "UI/MmoButtonWidget.h"
 #include "UI/MmoCharacterCreateWidget.h"
+#include "UI/MmoCharacterWidget.h"
 #include "UI/MmoCharacterSelectWidget.h"
 #include "UI/MmoConfirmWidget.h"
 #include "UI/MmoDeathWidget.h"
@@ -71,6 +72,7 @@ namespace
 		/** 체력·마나 바의 채움과 바탕. */
 		FLinearColor Hp{ 0.75f, 0.12f, 0.10f, 1.0f };
 		FLinearColor Mp{ 0.15f, 0.35f, 0.85f, 1.0f };
+		FLinearColor Exp{ 0.55f, 0.75f, 0.2f, 1.0f };
 		FLinearColor BarBack{ 0.0f, 0.0f, 0.0f, 0.6f };
 		/** 진행 바(시전 등)의 채움, 상태 이상과 효과의 글자 아이콘, 퀵슬롯의 쿨다운 가림. */
 		FLinearColor Cast{ 0.95f, 0.75f, 0.2f, 1.0f };
@@ -460,12 +462,13 @@ namespace
 		Corner(*Root, Builder.Add<UUserWidget>(JoystickClass, TEXT("Joystick"), true), ECorner::BottomLeft,
 			FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5));
 
-		// 왼쪽 위에 내 체력·마나 바, 그 아래 지금 구역(이름과 권장 레벨)과 안전 지대 표시.
+		// 왼쪽 위에 내 체력·마나·경험치 바, 그 아래 지금 구역(이름과 권장 레벨)과 안전 지대 표시.
 		UVerticalBox* Zone = Builder.Add<UVerticalBox>(TEXT("Zone"));
 		Zone->SetVisibility(ESlateVisibility::HitTestInvisible);
 		Corner(*Root, Zone, ECorner::TopLeft);
 		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Hp"), Style.Hp));
-		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Mp"), Style.Mp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, Style.Gap));
+		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Mp"), Style.Mp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
+		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Exp"), Style.Exp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, Style.Gap));
 		Zone->AddChildToVerticalBox(Builder.Text(TEXT("ZoneText"), FText::GetEmpty(), Style.BodySize, true));
 		UMmoTextBlock* SafeZoneText = Builder.KeyText(TEXT("SafeZoneText"), TEXT("hud.safeZone"), Style.SmallSize, true, Style.Positive);
 		SafeZoneText->SetVisibility(ESlateVisibility::Collapsed);
@@ -601,6 +604,19 @@ namespace
 		return Builder.Save();
 	}
 
+	/** 캐릭터 창(31): 제목, 레벨, 경험치, 능력치 넷(여러 줄 글 하나), 닫기. 글은 기반 클래스가 채운다. */
+	bool CreateCharacter()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Character, UMmoCharacterWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("character.title"), Style.TitleSize), Style.Section);
+		AddWithGap(*Column, Builder.Text(TEXT("LevelText"), FText::GetEmpty(), Style.BodySize, true));
+		AddWithGap(*Column, Builder.Text(TEXT("ExpText"), FText::GetEmpty(), Style.BodySize, true));
+		AddWithGap(*Column, Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
+		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
+		return Builder.Save();
+	}
+
 	bool CreateCharacterSelect()
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::CharacterSelect, UMmoCharacterSelectWidget::StaticClass());
@@ -711,7 +727,7 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	FWidgetBlueprintBuilder::ButtonClass = CreateButton();
 	UClass* Joystick = CreateJoystick();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 

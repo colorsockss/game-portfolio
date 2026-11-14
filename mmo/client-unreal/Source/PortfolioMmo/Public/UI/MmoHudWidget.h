@@ -11,6 +11,11 @@ class UMmoJoystickWidget;
 class UProgressBar;
 class UTextBlock;
 
+namespace MmoWorld
+{
+	struct FGrowthEvent;
+}
+
 /**
  * 게임 중의 HUD(WBP_Hud의 기반). 내 체력·마나 바(지금/최대), 걸린 효과와 전투 상태의 글자 아이콘과 남은 시간, 내 대상의 정보(이름과 레벨,
  * 체력 바), 퀵슬롯(쿨다운 가림, PC는 키 표의 키 표시)과 내 진행 바(시전), 터치 기기의 가상 조이스틱과 공격·대상 고르기·상호작용 버튼,
@@ -29,6 +34,7 @@ public:
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
@@ -71,6 +77,12 @@ private:
 	/** 바 하나에 지금 값과 최대값을 보인다. 값이 바뀌었을 때만 고친다. */
 	static void ShowBar(UProgressBar& Bar, UTextBlock& Text, uint32 Value, uint32 Max, uint64& Shown);
 
+	/** 경험치 바(31). */
+	void ShowExp();
+
+	/** 얻은 경험치와 내 레벨 업을 알림 층에 띄운다(31). */
+	void HandleGrowthEvent(const MmoWorld::FGrowthEvent& Event);
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoJoystickWidget> Joystick;
 
@@ -93,6 +105,13 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> MpText;
+
+	/** 다음 레벨까지의 경험치(31). 글은 비율(최대 레벨이면 MAX). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UProgressBar> ExpBar;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> ExpText;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidget> TargetPanel;
@@ -176,6 +195,9 @@ private:
 	uint64 ShownTargetHp = MAX_uint64;
 	uint32 ShownTarget = MAX_uint32;
 	uint64 ShownMp = MAX_uint64;
+	/** 보인 경험치 비율(천분율). */
+	uint32 ShownExp = MAX_uint32;
+	FDelegateHandle GrowthHandle;
 
 	/** 마지막으로 글을 채운 언어(Strings의 Version). 바뀌면 보인 값을 모두 잊어 새 언어로 다시 채운다. */
 	uint32 ShownLanguage = MAX_uint32;

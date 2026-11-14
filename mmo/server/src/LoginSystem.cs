@@ -156,6 +156,8 @@ namespace PortfolioMmo.Server
             {
                 EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.Ok, SelfId = player.Id, Tick = tick },
             });
+            // 지금 경험치를 알린다(얻은 양 0. 31).
+            session.Send(new Packet { ExpGained = new ExpGained { Exp = player.Exp } });
             player.SendCooldowns(_data.Skills.Rows.Where(skill => skill.Class == (uint)player.Class).Select(skill => skill.Id));
         }
 

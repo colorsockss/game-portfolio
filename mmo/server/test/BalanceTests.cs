@@ -26,6 +26,17 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 1레벨에서 최대 레벨까지 두 직업 모두 2시간쯤(105–135분) 걸린다(성장 표, 수치 표 도구와 같은 40번).
+        /// </summary>
+        [Fact]
+        public void BothClassesReachTheMaxLevelInAboutTwoHours()
+        {
+            List<GrowthRow> growth = Growth.Table(GameData.Load(GameData.DefaultFolder), 40, 1);
+            Assert.Equal(58, growth.Count);
+            Assert.Empty(Growth.Problems(growth));
+        }
+
+        /// <summary>
         /// 같은 씨앗이면 같은 표가 나오고, 기준에 어긋난 줄은 이유와 함께 적힌다.
         /// </summary>
         [Fact]

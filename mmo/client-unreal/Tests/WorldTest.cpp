@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include "Data/GameData.h"
 #include "World/MoveSender.h"
 #include "World/Units.h"
 #include "World/WorldState.h"
@@ -338,6 +339,60 @@ namespace
 		Expect(World.SelfState().Hp == 0 && World.SelfState().MaxHp == 0, "leaving the world clears my state");
 	}
 
+	/**
+	 * 경험치(31): ExpGained가 지금 경험치를 채우고 얻은 양이 0보다 크면 사건을 쌓는다(들어올 때의 0은 쌓지 않음). 비율은 지금 경험치 ÷ 필요 경험치이고
+	 * 최대 레벨(다음 줄이 없음)이면 가득이다. EntityState로 레벨이 오른 개체마다 레벨 업 사건이 쌓이고 내 것인지가 붙는다.
+	 */
+	void ExpAndLevelUpsAreKept()
+	{
+		MmoData::FGameData Data;
+		for (uint32_t Level = 1; Level <= 3; ++Level)
+		{
+			portfolio::mmo::data::LevelsRow* Row = Data.Levels.add_rows();
+			Row->set_class_(portfolio::mmo::CHARACTER_CLASS_MAGE);
+			Row->set_level(Level);
+			Row->set_exp(200);
+		}
+		MmoWorld::FWorldState World;
+		portfolio::mmo::Packet Entered;
+		Entered.mutable_enter_world_result()->set_self_id(1);
+		World.Apply(Entered, 0);
+		Expect(World.ExpRatio(Data) == 0.0, "no ratio before my entity arrives");
+		portfolio::mmo::Packet Me = Enter(1, 0, 0, "me");
+		Me.mutable_entities_enter()->mutable_entities(0)->set_level(1);
+		World.Apply(Me, 0);
+		portfolio::mmo::Packet Other = Enter(2, 0, 0, "other");
+		Other.mutable_entities_enter()->mutable_entities(0)->set_level(5);
+		World.Apply(Other, 0);
+
+		portfolio::mmo::Packet Start;
+		Start.mutable_exp_gained();
+		World.Apply(Start, 0);
+		Expect(World.TakeGrowth().empty(), "the zero ExpGained on entering is not an event");
+		portfolio::mmo::Packet Gained;
+		Gained.mutable_exp_gained()->set_amount(50);
+		Gained.mutable_exp_gained()->set_exp(50);
+		World.Apply(Gained, 0);
+		Expect(World.SelfState().Exp == 50 && Near(World.ExpRatio(Data), 0.25), "ExpGained fills my exp and the ratio");
+
+		const auto LevelTo = [&World](uint32_t Id, uint32_t Level)
+		{
+			portfolio::mmo::Packet State;
+			State.mutable_entity_state()->set_id(Id);
+			State.mutable_entity_state()->set_level(Level);
+			World.Apply(State, 0);
+		};
+		LevelTo(1, 3);
+		LevelTo(2, 6);
+		LevelTo(2, 6);
+		const std::vector<MmoWorld::FGrowthEvent> Events = World.TakeGrowth();
+		Expect(Events.size() == 3 && Events[0].Kind == MmoWorld::FGrowthEvent::EKind::ExpGained && Events[0].Value == 50,
+			"the gain comes first");
+		Expect(Events.size() == 3 && Events[1].Kind == MmoWorld::FGrowthEvent::EKind::LevelUp && Events[1].bMine && Events[1].Value == 3
+			&& Events[2].Id == 2 && !Events[2].bMine, "each raised level is one event and an unchanged state is none");
+		Expect(World.ExpRatio(Data) == 1.0, "the max level is full");
+	}
+
 	/** 전투 상태는 어림한 서버 틱이 끝나는 틱 앞일 때만이다. 틱 100을 0초에 받았으니 1초 뒤는 틱 120이다. */
 	void CombatFollowsTheServerClock()
 	{
@@ -389,6 +444,7 @@ int main()
 	EnteredEntitiesStartAtTheLastTick();
 	KindsAndDisplayStatesAreKept();
 	VitalsAndStatsAreKept();
+	ExpAndLevelUpsAreKept();
 	CombatFollowsTheServerClock();
 	TeleportsDoNotSlide();
 	if (Failures > 0)

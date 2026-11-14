@@ -197,6 +197,21 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		}
 		OnCombatEvent.Broadcast(Event);
 	}
+	for (const MmoWorld::FGrowthEvent& Event : World.TakeGrowth())
+	{
+		if (Event.Kind == MmoWorld::FGrowthEvent::EKind::LevelUp)
+		{
+			if (const AActor* Actor = Actors.FindRef(Event.Id))
+			{
+				Cues().Play(EMmoCue::LevelUp, 0, 0, Actor->GetActorLocation());
+			}
+			if (Event.bMine)
+			{
+				Cues().PlayUi(EMmoCue::UiLevelUp);
+			}
+		}
+		OnGrowthEvent.Broadcast(Event);
+	}
 	DrawFacingAndFlashes(Now, DeltaTime);
 
 	const double ServerTick = World.Clock().Now(Now);

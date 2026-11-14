@@ -53,6 +53,7 @@ message Packet {
 
     // 300–399: 성장과 아이템
     SelfStats self_stats = 300;
+    ExpGained exp_gained = 301;
   }
 }
 
@@ -407,6 +408,15 @@ message SelfStats {
   uint32 max_mp = 2;
   uint32 attack = 3;
   uint32 defense = 4;
+}
+
+// 서버 → 클라이언트. 경험치가 바뀌었다(본인에게만). 몬스터의 경험치를 받을 때와, 월드에 들어올 때 얻은 양 0으로 한 번(EnterWorldResult 뒤) 간다.
+// 오른 레벨은 EntityState가 알린다.
+message ExpGained {
+  // 얻은 양. 사망 페널티(45)가 잃은 양을 음수로 싣는다.
+  sint32 amount = 1;
+  // 지금 레벨에서 쌓은 경험치(받은 뒤의 값).
+  uint32 exp = 2;
 }
 
 // 서버 → 클라이언트. 요청 번호가 없는 요청이 실패했다(어느 요청인지와 이유). 끊지 않는다.

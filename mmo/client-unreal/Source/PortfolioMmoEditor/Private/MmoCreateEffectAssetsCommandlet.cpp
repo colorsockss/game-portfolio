@@ -199,12 +199,19 @@ int32 UMmoCreateEffectAssetsCommandlet::Main(const FString& Params)
 	{
 		return FMath::Sin(UE_DOUBLE_TWO_PI * (500.0 * T + 1700.0 * T * T)) * Envelope(T, 0.005, 20.0) * 0.35;
 	}), Effects, nullptr, false);
+	USoundWave* LevelUp = CreateSound(TEXT("S_UiLevelUp"), Synth(0.9, [](double T)
+	{
+		// 도·미·솔·도의 오르는 네 음.
+		const double Notes[] = { 523.25, 659.25, 783.99, 1046.5 };
+		const int32 Index = FMath::Min(3, static_cast<int32>(T / 0.15));
+		return FMath::Sin(UE_DOUBLE_TWO_PI * Notes[Index] * T) * Envelope(T - Index * 0.15, 0.01, Index == 3 ? 3.0 : 10.0) * 0.4;
+	}), Effects, nullptr, false);
 	// 구역의 종류(ZoneKind): 1 마을, 2 사냥터, 3 채집지, 4 보스 자리.
 	USoundWave* Town = CreateSound(TEXT("M_Town"), Pad({ 261.63, 329.63, 392.0 }, false), Music, nullptr, true);
 	USoundWave* Hunting = CreateSound(TEXT("M_Hunting"), Pad({ 220.0, 261.63, 329.63 }, false), Music, nullptr, true);
 	USoundWave* Gathering = CreateSound(TEXT("M_Gathering"), Pad({ 174.61, 220.0, 261.63 }, false), Music, nullptr, true);
 	USoundWave* Boss = CreateSound(TEXT("M_Boss"), Pad({ 146.83, 174.61, 220.0 }, true), Music, nullptr, true);
-	if (!Hit || !Skill || !Revive || !Step || !Click || !Window || !Town || !Hunting || !Gathering || !Boss)
+	if (!Hit || !Skill || !Revive || !LevelUp || !Step || !Click || !Window || !Town || !Hunting || !Gathering || !Boss)
 	{
 		return 1;
 	}
@@ -277,5 +284,7 @@ int32 UMmoCreateEffectAssetsCommandlet::Main(const FString& Params)
 	Add(EMmoCue::Music, 0, 2, nullptr, Hunting);
 	Add(EMmoCue::Music, 0, 3, nullptr, Gathering);
 	Add(EMmoCue::Music, 0, 4, nullptr, Boss);
+	Add(EMmoCue::LevelUp, 0, 0, Burst, nullptr);
+	Add(EMmoCue::UiLevelUp, 0, 0, nullptr, LevelUp);
 	return SaveSimple(Cues) ? 0 : 1;
 }

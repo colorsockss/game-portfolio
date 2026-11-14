@@ -16,6 +16,7 @@ namespace MmoScreen
 			{ ELayer::Popup, true, EInputMode::Window },  // Confirm
 			{ ELayer::Popup, true, EInputMode::Window },  // Quantity
 			{ ELayer::Window, false, EInputMode::Window }, // Death: 부활로만 닫힌다.
+			{ ELayer::Window, true, EInputMode::Window }, // Character
 		};
 		return Rules[static_cast<size_t>(Screen)];
 	}

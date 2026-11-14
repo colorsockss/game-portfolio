@@ -45,6 +45,11 @@ namespace PortfolioMmo.Server
         /// </summary>
         public uint Level { get; private set; } = 1;
 
+        /// <summary>
+        /// 지금 레벨에서 쌓은 경험치(31). 최대 레벨에서는 0이다. 저장(38) 전에는 들어올 때마다 레벨 1, 경험치 0으로 시작한다.
+        /// </summary>
+        public uint Exp { get; set; }
+
         public NameColor NameColor { get; private set; }
 
         public uint WeaponItemId { get; private set; }

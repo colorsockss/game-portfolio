@@ -7,7 +7,7 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 죽음과 부활(25). 전투 차례의 끝에서 그 틱에 죽은 개체를 정리하고(죽은 플레이어를 피해 표에서 뺌, 죽은 몬스터의 사라짐과 리스폰을 예약),
-    /// Revive를 받으면 마을의 부활 지점에서 일으킨다. 효과를 떼고(알리지 않음) 진행 중인 일을 취소한다(26). 선공 표시(44)는 그 항목이 Died에 잇는다.
+    /// 죽은 몬스터의 경험치를 GrowthSystem에 넘기며(31), Revive를 받으면 마을의 부활 지점에서 일으킨다. 효과를 떼고(알리지 않음) 진행 중인 일을 취소한다(26). 선공 표시(44)는 그 항목이 Died에 잇는다.
     /// 쿨다운과 성향은 남긴다. 사망 페널티는 45다.
     /// </summary>
     internal sealed class DeathSystem
@@ -19,11 +19,12 @@ namespace PortfolioMmo.Server
         private readonly TickEvents _events;
         private readonly EffectSystem _effects;
         private readonly ProgressSystem _progress;
+        private readonly GrowthSystem _growth;
         private readonly uint _deadMonsterTicks;
         private readonly uint _reviveHpPercent;
         private readonly (int X, int Z) _respawn;
 
-        public DeathSystem(EntityTable entities, Grid grid, Scheduler scheduler, MovementSystem movement, TickEvents events, EffectSystem effects, ProgressSystem progress, GameData data)
+        public DeathSystem(EntityTable entities, Grid grid, Scheduler scheduler, MovementSystem movement, TickEvents events, EffectSystem effects, ProgressSystem progress, GrowthSystem growth, GameData data)
         {
             _entities = entities;
             _grid = grid;
@@ -32,6 +33,7 @@ namespace PortfolioMmo.Server
             _events = events;
             _effects = effects;
             _progress = progress;
+            _growth = growth;
             _deadMonsterTicks = Units.TicksFromMilliseconds(data.Constants.DeadMonsterMs);
             _reviveHpPercent = data.Constants.ReviveHpPercent;
             ZonesRow town = data.Zones.Rows.First(zone => zone.Kind == ZoneKind.Town);
@@ -59,6 +61,7 @@ namespace PortfolioMmo.Server
 
                     break;
                 case Monster monster:
+                    _growth.Killed(monster);
                     // 쓰러진 채 남았다가 사라지고, 다시 나오는 시간은 죽은 틱부터 센다.
                     _scheduler.Add(tick + _deadMonsterTicks, ScheduledKind.Despawn, monster.Id, 0, 0, monster.LifeGeneration);
                     // 개발 명령으로 부른 몬스터는 다시 나오지 않는다(68).

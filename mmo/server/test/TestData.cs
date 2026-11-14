@@ -136,6 +136,23 @@ namespace PortfolioMmo.Server.Tests
             };
         }
 
+        /// <summary>
+        /// 두 직업의 레벨 1–max. 필요 경험치는 모두 100이고 능력치는 레벨마다 (100 + 10L, 50 + 5L, 10 + L, 5 + L)이다(성장 31의 시험).
+        /// </summary>
+        public static Levels LevelsUpTo(uint max)
+        {
+            var levels = new Levels();
+            for (uint characterClass = 1; characterClass <= 2; characterClass++)
+            {
+                for (uint level = 1; level <= max; level++)
+                {
+                    levels.Rows.Add(Level(characterClass, level, new Stats(100 + (10 * level), 50 + (5 * level), 10 + level, 5 + level)));
+                }
+            }
+
+            return levels;
+        }
+
         private static LevelsRow Level(uint characterClass, uint level, Stats stats)
         {
             return new LevelsRow
@@ -214,7 +231,7 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// WithMonsters에 직업, 상수, 몬스터를 바꾼 데이터. null이면 처음 값이다.
         /// </summary>
-        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters)
+        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters, Levels? levels = null)
         {
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             int min = -(int)size / 2;
@@ -230,7 +247,7 @@ namespace PortfolioMmo.Server.Tests
             };
             table.Rows.Add(zones);
             return new GameData(
-                Hash, constants ?? Constants(size), table, grid, classes ?? Classes, Levels,
+                Hash, constants ?? Constants(size), table, grid, classes ?? Classes, levels ?? Levels,
                 new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects);
         }
 

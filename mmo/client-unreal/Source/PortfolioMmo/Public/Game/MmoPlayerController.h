@@ -162,6 +162,10 @@ private:
 	TObjectPtr<UInputAction> InteractAction;
 	UPROPERTY()
 	TObjectPtr<UInputAction> HideUiAction;
+
+	/** 캐릭터 창(31). */
+	UPROPERTY()
+	TObjectPtr<UInputAction> CharacterAction;
 	UPROPERTY()
 	TObjectPtr<UInputAction> FreeCameraAction;
 	UPROPERTY()

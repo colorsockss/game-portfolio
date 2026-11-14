@@ -7,6 +7,7 @@
 #include "Engine/GameInstance.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Game/MmoCoordinates.h"
+#include "Game/MmoEntitySubsystem.h"
 #include "Game/MmoPlayerController.h"
 #include "Input/MmoKeys.h"
 #include "UI/MmoButtonWidget.h"
@@ -48,6 +49,7 @@ void UMmoHudWidget::NativeOnInitialized()
 	TargetButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleTargetClicked);
 	InteractButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleInteractClicked);
 	SettingsButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleSettingsClicked);
+	CharacterButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter(); });
 	// 메뉴의 키 표시는 키 표의 키다(설정 창은 뒤로 가기의 키가 연다). 창이 아직 없는 버튼은 그 항목이 잇기 전까지 누를 수 없다.
 	const TPair<UMmoButtonWidget*, EMmoAction> Menus[] = {
 		{ BagButton, EMmoAction::Bag }, { CharacterButton, EMmoAction::Character }, { SkillsButton, EMmoAction::Skills },
@@ -56,7 +58,7 @@ void UMmoHudWidget::NativeOnInitialized()
 	for (const TPair<UMmoButtonWidget*, EMmoAction>& Menu : Menus)
 	{
 		Menu.Key->SetKeyHint(MmoKeys::Hint(Menu.Value));
-		Menu.Key->SetIsEnabled(Menu.Key == SettingsButton);
+		Menu.Key->SetIsEnabled(Menu.Key == SettingsButton || Menu.Key == CharacterButton);
 	}
 	for (int32 Index = 0; Index < QuickslotCount(); ++Index)
 	{
@@ -282,6 +284,50 @@ void UMmoHudWidget::NativeConstruct()
 	ShownEffects = TEXT("-");
 	ShownProgress = MAX_uint32;
 	ShownInteract = MAX_uint8;
+	ShownExp = MAX_uint32;
+	if (UMmoEntitySubsystem* Entities = GetWorld()->GetSubsystem<UMmoEntitySubsystem>())
+	{
+		GrowthHandle = Entities->OnGrowthEvent.AddUObject(this, &UMmoHudWidget::HandleGrowthEvent);
+	}
+}
+
+void UMmoHudWidget::NativeDestruct()
+{
+	if (UMmoEntitySubsystem* Entities = GetWorld() ? GetWorld()->GetSubsystem<UMmoEntitySubsystem>() : nullptr)
+	{
+		Entities->OnGrowthEvent.Remove(GrowthHandle);
+	}
+	Super::NativeDestruct();
+}
+
+void UMmoHudWidget::HandleGrowthEvent(const MmoWorld::FGrowthEvent& Event)
+{
+	UMmoUiManager* Ui = GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>();
+	if (Event.Kind == MmoWorld::FGrowthEvent::EKind::ExpGained)
+	{
+		Ui->ShowNotice(MmoText::Format(this, TEXT("notice.exp"), { FString::FromInt(Event.Value) }));
+	}
+	else if (Event.bMine)
+	{
+		Ui->ShowNotice(MmoText::Format(this, TEXT("notice.levelUp"), { FString::FromInt(Event.Value) }));
+	}
+}
+
+void UMmoHudWidget::ShowExp()
+{
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const double Ratio = Session->World().ExpRatio(Session->Data());
+	const MmoWorld::FEntity* Me = Session->World().SelfEntity();
+	const bool bMax = Me && !Session->Data().Level(static_cast<uint32>(Me->Info.character_class()), Me->Info.level() + 1);
+	// 천분율로 견줘 바뀔 때만 채운다. 최대 레벨은 따로 둔다(비율이 같은 1이라도 글이 다름).
+	const uint32 Shown = bMax ? 1001 : static_cast<uint32>(Ratio * 1000);
+	if (Shown == ShownExp)
+	{
+		return;
+	}
+	ShownExp = Shown;
+	ExpBar->SetPercent(static_cast<float>(Ratio));
+	ExpText->SetText(bMax ? MmoText::Get(this, TEXT("hud.expMax")) : FText::FromString(FString::Printf(TEXT("%.1f%%"), Ratio * 100.0)));
 }
 
 void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -297,10 +343,12 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		ShownEffects = TEXT("-");
 		ShownProgress = MAX_uint32;
 		ShownInteract = MAX_uint8;
+		ShownExp = MAX_uint32;
 	}
 	const MmoWorld::FSelfState& Vitals = Session->World().SelfState();
 	ShowBar(*HpBar, *HpText, Vitals.Hp, Vitals.MaxHp, ShownHp);
 	ShowBar(*MpBar, *MpText, Vitals.Mp, Vitals.MaxMp, ShownMp);
+	ShowExp();
 	ShowTarget();
 	const double Now = FPlatformTime::Seconds();
 	const double ServerTick = Session->World().Clock().Now(Now);

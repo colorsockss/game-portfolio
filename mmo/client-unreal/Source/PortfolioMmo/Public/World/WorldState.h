@@ -109,8 +109,23 @@ namespace MmoWorld
 		uint32_t CombatEndTick = 0;
 		/** 이 틱부터 선공 표시가 없다(44). */
 		uint32_t AggressorEndTick = 0;
+		/** 지금 레벨에서 쌓은 경험치(ExpGained). 내 레벨은 내 개체의 Info.level()이다. */
+		uint32_t Exp = 0;
 		/** 내가 죽어 있다(Died부터 Revived까지). 죽은 동안에는 이동과 행동의 요청을 만들지 않는다. */
 		bool bDead = false;
+	};
+
+	/** 화면이 꺼내 가는 성장의 사건(31): 얻은 경험치(나), 레벨이 오른 개체(나와 남). */
+	struct FGrowthEvent
+	{
+		enum class EKind : uint8_t { ExpGained, LevelUp };
+		EKind Kind = EKind::ExpGained;
+		/** LevelUp의 개체 번호. */
+		uint32_t Id = 0;
+		/** ExpGained의 얻은 양, LevelUp의 새 레벨. */
+		int32_t Value = 0;
+		/** 내 것이다(ExpGained는 늘 내 것). */
+		bool bMine = false;
 	};
 
 	/**
@@ -141,6 +156,12 @@ namespace MmoWorld
 
 		/** 내 체력, 마나, 능력치. 다른 개체의 체력은 Entities()의 Info(hp, max_hp)에 있다. */
 		const FSelfState& SelfState() const { return Mine; }
+
+		/** 다음 레벨까지 쌓은 비율(0–1): 지금 경험치 ÷ 내 직업과 레벨의 필요 경험치. 최대 레벨이면 1, 내 개체가 없으면 0. */
+		double ExpRatio(const MmoData::FGameData& Data) const;
+
+		/** 지난번에 꺼낸 뒤로 쌓인 성장의 사건(얻은 양이 0보다 큰 ExpGained, 레벨이 오른 EntityState). */
+		std::vector<FGrowthEvent> TakeGrowth();
 
 		/** 내가 전투 상태인가: 어림한 서버의 지금 틱이 전투 상태가 끝나는 틱 앞이다. */
 		bool InCombat(double NowSeconds) const { return ServerClock.Now(NowSeconds) < Mine.CombatEndTick; }
@@ -194,5 +215,6 @@ namespace MmoWorld
 		std::unordered_map<uint32_t, FEntity> Visible;
 		std::vector<uint32_t> Left;
 		std::vector<uint32_t> Entered;
+		std::vector<FGrowthEvent> Growth;
 	};
 }

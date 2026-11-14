@@ -44,6 +44,9 @@ public:
 	/** 뒤로 가기(Esc, Android 뒤로 버튼). 닫을 창이 없고 게임 중이면 설정을 연다. */
 	void Back();
 
+	/** 캐릭터 창을 열고 닫는다(HUD의 캐릭터 버튼과 C 키. 31). 게임 중이고 죽어 있지 않을 때만 연다. */
+	void ToggleCharacter();
+
 	/** 언어가 바뀌면 키로 채운 버튼과 글 상자(이 월드의 것)를 다시 채운다(74). */
 	void RefreshTexts();
 

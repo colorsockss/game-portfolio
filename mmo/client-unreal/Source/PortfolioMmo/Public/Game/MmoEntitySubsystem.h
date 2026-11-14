@@ -48,6 +48,11 @@ public:
 	/** 전투 사건(받은 순서). 동작을 튼 뒤에 알린다. */
 	FOnCombatEvent OnCombatEvent;
 
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnGrowthEvent, const MmoWorld::FGrowthEvent&);
+
+	/** 성장 사건(31: 얻은 경험치, 레벨 업). 레벨 업 이펙트와 내 레벨 업 소리를 튼 뒤에 알린다(알림은 HUD가 띄움). */
+	FOnGrowthEvent OnGrowthEvent;
+
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
 

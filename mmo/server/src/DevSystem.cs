@@ -7,7 +7,7 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 개발 명령(68). --dev로 띄운 서버만 DevCommand를 실행한다. 명령마다 평소의 시스템 함수를 불러 평소와 같은 패킷이 나간다.
-    /// 지금의 명령은 순간 이동("tp x z", m)과 몬스터 부르기("spawn 몬스터번호 [x z]", m)이고, 레벨·아이템·골드·성향은 31, 32, 44가 더한다.
+    /// 지금의 명령은 순간 이동("tp x z", m), 몬스터 부르기("spawn 몬스터번호 [x z]", m), 레벨 주기("level n". 경험치는 0)이고, 아이템·골드·성향은 32, 44가 더한다.
     /// </summary>
     internal sealed class DevSystem
     {
@@ -18,8 +18,9 @@ namespace PortfolioMmo.Server
         private readonly MovementSystem _movement;
         private readonly ProgressSystem _progress;
         private readonly SpawnSystem _spawn;
+        private readonly GrowthSystem _growth;
 
-        public DevSystem(GameData data, FieldMap field, EntityTable entities, Grid grid, MovementSystem movement, ProgressSystem progress, SpawnSystem spawn)
+        public DevSystem(GameData data, FieldMap field, EntityTable entities, Grid grid, MovementSystem movement, ProgressSystem progress, SpawnSystem spawn, GrowthSystem growth)
         {
             _data = data;
             _field = field;
@@ -28,6 +29,7 @@ namespace PortfolioMmo.Server
             _movement = movement;
             _progress = progress;
             _spawn = spawn;
+            _growth = growth;
         }
 
         /// <summary>
@@ -54,6 +56,13 @@ namespace PortfolioMmo.Server
                     }
 
                     return Spawn(monsterId, spawnX, spawnZ);
+                case "level" when (words.Length == 2) && uint.TryParse(words[1], NumberStyles.None, CultureInfo.InvariantCulture, out uint level)
+                    && (level >= 1) && (level <= _growth.MaxLevel(player.Class)):
+                    // 평소의 레벨 업처럼 능력치를 다시 구하고 EntityState를 보낸다. 경험치는 새 레벨의 0으로 둔다.
+                    player.Exp = 0;
+                    _growth.SetLevel(player, level);
+                    player.Session.Send(new Packet { ExpGained = new ExpGained { Exp = 0 } });
+                    return Outcome.Done;
                 default:
                     return Outcome.Fail(FailReason.InvalidCommand);
             }

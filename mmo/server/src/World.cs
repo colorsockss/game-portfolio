@@ -30,6 +30,7 @@ namespace PortfolioMmo.Server
         private readonly TickEvents _events;
         private readonly SpawnSystem _spawn;
         private readonly DeathSystem _deaths;
+        private readonly GrowthSystem _growth;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
         private readonly SkillSystem _skills;
@@ -60,11 +61,12 @@ namespace PortfolioMmo.Server
             _spawn = new SpawnSystem(data, field, _entities, _grid, _ai, _scheduler, random);
             _spawn.PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
-            _deaths = new DeathSystem(_entities, _grid, _scheduler, _movement, _events, _effects, _progress, data);
+            _growth = new GrowthSystem(_entities, stats, data);
+            _deaths = new DeathSystem(_entities, _grid, _scheduler, _movement, _events, _effects, _progress, _growth, data);
             _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
             _rateLimits = RateLimiter.Limits.From(data.Constants);
-            _dev = dev ? new DevSystem(data, field, _entities, _grid, _movement, _progress, _spawn) : null;
+            _dev = dev ? new DevSystem(data, field, _entities, _grid, _movement, _progress, _spawn, _growth) : null;
         }
 
         /// <summary>
@@ -83,6 +85,8 @@ namespace PortfolioMmo.Server
         internal ProgressSystem Progress => _progress;
 
         internal EffectSystem Effects => _effects;
+
+        internal GrowthSystem Growth => _growth;
 
         /// <summary>
         /// 날고 있는 직선 발사체(테스트가 수를 봄).
@@ -253,6 +257,7 @@ namespace PortfolioMmo.Server
         public void Step(uint elapsedTicks = 1, TickProfile? profile = null)
         {
             long started = Stopwatch.GetTimestamp();
+            _growth.Rewarded.Clear();
             _scheduler.Step(Tick, this);
             long scheduled = Stopwatch.GetTimestamp();
             _ai.Step(Tick, elapsedTicks);

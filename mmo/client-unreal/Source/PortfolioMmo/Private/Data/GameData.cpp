@@ -41,6 +41,18 @@ namespace MmoData
 		return nullptr;
 	}
 
+	const portfolio::mmo::data::LevelsRow* FGameData::Level(uint32_t Class, uint32_t Level) const
+	{
+		for (const portfolio::mmo::data::LevelsRow& Row : Levels.rows())
+		{
+			if (Row.class_() == Class && Row.level() == Level)
+			{
+				return &Row;
+			}
+		}
+		return nullptr;
+	}
+
 	const portfolio::mmo::data::MonstersRow* FGameData::Monster(uint32_t Id) const
 	{
 		for (const portfolio::mmo::data::MonstersRow& Row : Monsters.rows())
@@ -96,7 +108,9 @@ namespace MmoData
 		const std::optional<std::string> Skills = Read("Skills.bytes");
 		const std::optional<std::string> Effects = Read("Effects.bytes");
 		const std::optional<std::string> Strings = Read("Strings.bytes");
+		const std::optional<std::string> Levels = Read("Levels.bytes");
 		if (!Constants || !Zones || !Grid || !Classes || !Monsters || !Skills || !Effects || !Strings || !Data.Strings.ParseFromString(*Strings)
+			|| !Levels || !Data.Levels.ParseFromString(*Levels)
 			|| !Data.Constants.ParseFromString(*Constants)
 			|| !Data.Zones.ParseFromString(*Zones) || !Data.Grid.ParseFromString(*Grid) || !Data.Classes.ParseFromString(*Classes)
 			|| !Data.Monsters.ParseFromString(*Monsters) || !Data.Skills.ParseFromString(*Skills) || !Data.Effects.ParseFromString(*Effects))

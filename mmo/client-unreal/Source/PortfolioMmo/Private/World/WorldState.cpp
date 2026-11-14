@@ -106,6 +106,7 @@ namespace MmoWorld
 		Mine = {};
 		Visible.clear();
 		Entered.clear();
+		Growth.clear();
 	}
 
 	void FWorldState::Apply(const portfolio::mmo::Packet& Packet, double NowSeconds)
@@ -163,6 +164,10 @@ namespace MmoWorld
 				const portfolio::mmo::EntityState& State = Packet.entity_state();
 				Found->second.Info.set_name_color(State.name_color());
 				Found->second.Info.set_weapon_item_id(State.weapon_item_id());
+				if (State.level() > Found->second.Info.level())
+				{
+					Growth.push_back({ FGrowthEvent::EKind::LevelUp, State.id(), static_cast<int32_t>(State.level()), State.id() == Self });
+				}
 				Found->second.Info.set_level(State.level());
 			}
 			break;
@@ -219,6 +224,13 @@ namespace MmoWorld
 			Mine.Mp = Packet.self_vitals().mp();
 			Mine.CombatEndTick = Packet.self_vitals().combat_end_tick();
 			Mine.AggressorEndTick = Packet.self_vitals().aggressor_end_tick();
+			break;
+		case portfolio::mmo::Packet::kExpGained:
+			Mine.Exp = Packet.exp_gained().exp();
+			if (Packet.exp_gained().amount() > 0)
+			{
+				Growth.push_back({ FGrowthEvent::EKind::ExpGained, Self, Packet.exp_gained().amount(), true });
+			}
 			break;
 		case portfolio::mmo::Packet::kSelfStats:
 			Mine.MaxHp = Packet.self_stats().max_hp();
@@ -324,6 +336,28 @@ namespace MmoWorld
 			return std::nullopt;
 		}
 		return std::clamp(1.0 - (Entity.Info.progress().end_tick() - ServerClock.Now(NowSeconds)) / Length, 0.0, 1.0);
+	}
+
+	double FWorldState::ExpRatio(const MmoData::FGameData& Data) const
+	{
+		const FEntity* Me = SelfEntity();
+		if (!Me)
+		{
+			return 0.0;
+		}
+		const uint32_t Class = static_cast<uint32_t>(Me->Info.character_class());
+		const portfolio::mmo::data::LevelsRow* Row = Data.Level(Class, Me->Info.level());
+		// 다음 레벨의 줄이 없으면 최대 레벨이다(그 줄의 필요 경험치는 쓰지 않음).
+		if (!Row || !Data.Level(Class, Me->Info.level() + 1) || Row->exp() == 0)
+		{
+			return 1.0;
+		}
+		return std::min(1.0, static_cast<double>(Mine.Exp) / Row->exp());
+	}
+
+	std::vector<FGrowthEvent> FWorldState::TakeGrowth()
+	{
+		return std::exchange(Growth, {});
 	}
 
 	std::vector<uint32_t> FWorldState::TakeLeft()
