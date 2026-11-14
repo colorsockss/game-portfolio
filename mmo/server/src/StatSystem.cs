@@ -37,14 +37,14 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 능력치 = 기본값(플레이어는 그 직업과 레벨의 Levels 줄, 몬스터는 Monsters의 줄) + 효과(공격력·방어력 올림의 값). 장비와 강화(34, 35)의 몫은
+        /// 능력치 = 기본값(플레이어는 그 직업과 레벨의 Levels 줄 + 입은 장비(34), 몬스터는 Monsters의 줄) + 효과(공격력·방어력 올림의 값). 강화(35)의 몫은
         /// 그 항목이 더한다. 플레이어 본인에게는 이 틱의 VitalsSystem이 SelfStats를 보낸다.
         /// </summary>
         public void Recalculate(Creature creature)
         {
             Stats stats = creature switch
             {
-                Player player => Of(_data.Level(player.Class, player.Level)),
+                Player player => WithEquipment(Of(_data.Level(player.Class, player.Level)), player),
                 Monster monster => new Stats(monster.Template.MaxHp, 0, monster.Template.Attack, monster.Template.Defense),
                 _ => throw new ArgumentException($"{creature.Kind} has no stats.", nameof(creature)),
             };
@@ -56,6 +56,22 @@ namespace PortfolioMmo.Server
             {
                 changed.StatsChanged = true;
             }
+        }
+
+        /// <summary>
+        /// 입은 장비의 능력치를 더한다(34). 강화의 몫은 35가 더한다.
+        /// </summary>
+        private Stats WithEquipment(Stats stats, Player player)
+        {
+            foreach (ItemSlot worn in player.Bag.Equipment)
+            {
+                if ((worn.ItemId != 0) && (_data.Item(worn.ItemId) is ItemsRow item))
+                {
+                    stats = new Stats(stats.MaxHp + item.MaxHp, stats.MaxMp + item.MaxMp, stats.Attack + item.Attack, stats.Defense + item.Defense);
+                }
+            }
+
+            return stats;
         }
 
         private static Stats Of(LevelsRow row)

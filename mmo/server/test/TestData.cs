@@ -34,7 +34,7 @@ namespace PortfolioMmo.Server.Tests
 
         /// <summary>
         /// 시험용 아이템(32): 2001 체력 물약(50, 쿨다운 10초), 2002 상급 체력 물약(100, 같은 쿨다운), 2003 마나 물약(40), 2005 귀환 주문서(3초),
-        /// 3001 겹치는 재료, 1001 겹치지 않는 장비, 4001 골드. 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
+        /// 3001 겹치는 재료, 4001 골드, 장비 1001 기사의 검(공격력 5), 1002 마법사의 지팡이(6), 1003 공용 투구(방어력 3), 1004 레벨 2의 갑옷(방어력 6, 최대 체력 20). 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
         /// </summary>
         public static Items Items => new Items
         {
@@ -45,7 +45,10 @@ namespace PortfolioMmo.Server.Tests
                 new ItemsRow { Id = 2003, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.HealMp, UseValue = 40, CooldownMs = 10000 },
                 new ItemsRow { Id = 2005, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.Recall, UseMs = 3000 },
                 new ItemsRow { Id = 3001, NameKey = "item.test", Kind = ItemKind.Material, Grade = ItemGrade.Common, Stackable = true },
-                new ItemsRow { Id = 1001, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 1, Slot = EquipSlot.Weapon },
+                new ItemsRow { Id = 1001, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 1, Slot = EquipSlot.Weapon, Class = 1, Level = 1, Attack = 5 },
+                new ItemsRow { Id = 1002, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 2, Slot = EquipSlot.Weapon, Class = 2, Level = 1, Attack = 6 },
+                new ItemsRow { Id = 1003, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 3, Slot = EquipSlot.Helmet, Level = 1, Defense = 3 },
+                new ItemsRow { Id = 1004, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 4, Slot = EquipSlot.Armor, Level = 2, Defense = 6, MaxHp = 20 },
                 new ItemsRow { Id = 4001, NameKey = "item.test", Kind = ItemKind.Gold, Grade = ItemGrade.Common, Stackable = true },
             },
         };

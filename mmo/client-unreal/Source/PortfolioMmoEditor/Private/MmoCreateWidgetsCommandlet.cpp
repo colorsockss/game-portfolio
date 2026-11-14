@@ -66,6 +66,7 @@ namespace
 		FLinearColor Panel{ 0.06f, 0.07f, 0.09f, 0.96f };
 		FLinearColor Text{ 0.92f, 0.92f, 0.90f, 1.0f };
 		FLinearColor Positive{ 0.45f, 0.9f, 0.55f, 1.0f };
+		FLinearColor Negative{ 1.0f, 0.4f, 0.35f, 1.0f };
 		FLinearColor Shadow{ 0.0f, 0.0f, 0.0f, 0.8f };
 		FLinearColor NoticeBack{ 0.0f, 0.0f, 0.0f, 0.65f };
 		FLinearColor ButtonNormal{ 0.82f, 0.80f, 0.74f, 1.0f };
@@ -646,6 +647,16 @@ namespace
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Inventory, UMmoInventoryWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 6 + Style.Gap * 2, Style.Dim);
 		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("inventory.title"), Style.TitleSize), Style.Section);
+		// 입은 장비 여섯 칸(34): 무기, 투구, 갑옷, 장갑, 신발, 장신구.
+		AddWithGap(*Column, Builder.KeyText(TEXT("EquipmentTitle"), TEXT("inventory.equipment"), Style.SmallSize + 2));
+		UTileView* EquipGrid = Builder.Add<UTileView>(TEXT("EquipGrid"), true);
+		EquipGrid->SetEntryWidth(Style.ItemSlot);
+		EquipGrid->SetEntryHeight(Style.ItemSlot);
+		FindFProperty<FClassProperty>(UListViewBase::StaticClass(), TEXT("EntryWidgetClass"))->SetObjectPropertyValue_InContainer(EquipGrid, ItemSlotClass);
+		USizeBox* EquipSize = Builder.Add<USizeBox>(TEXT("EquipSize"));
+		EquipSize->SetHeightOverride(Style.ItemSlot);
+		EquipSize->SetContent(EquipGrid);
+		AddWithGap(*Column, EquipSize, Style.Section);
 		UTileView* Grid = Builder.Add<UTileView>(TEXT("Grid"), true);
 		Grid->SetEntryWidth(Style.ItemSlot);
 		Grid->SetEntryHeight(Style.ItemSlot);
@@ -668,9 +679,12 @@ namespace
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
 		AddWithGap(*Column, Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.TitleSize, true), Style.Section);
 		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.SmallSize + 2, true));
+		AddWithGap(*Column, Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.BodySize, true));
+		AddWithGap(*Column, Builder.Text(TEXT("WarnText"), FText::GetEmpty(), Style.SmallSize + 2, true, Style.Negative));
 		UTextBlock* Desc = Builder.Text(TEXT("DescText"), FText::GetEmpty(), Style.BodySize, true);
 		Desc->SetAutoWrapText(true);
 		AddWithGap(*Column, Desc, Style.Section);
+		AddWithGap(*Column, Builder.Button(TEXT("EquipButton"), TEXT("detail.equip")));
 		AddWithGap(*Column, Builder.Button(TEXT("UseButton"), TEXT("detail.use")));
 		AddWithGap(*Column, Builder.Button(TEXT("QuickslotButton"), TEXT("detail.quickslot")));
 		AddWithGap(*Column, Builder.Button(TEXT("DropButton"), TEXT("detail.drop")));

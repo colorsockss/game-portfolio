@@ -403,11 +403,11 @@ void UMmoUiManager::ToggleInventory()
 	}
 }
 
-void UMmoUiManager::ShowItemDetail(uint32 Slot)
+void UMmoUiManager::ShowItemDetail(uint32 Slot, bool bEquipment)
 {
-	Open(EScreen::ItemDetail, [Slot](UUserWidget& Widget)
+	Open(EScreen::ItemDetail, [Slot, bEquipment](UUserWidget& Widget)
 	{
-		CastChecked<UMmoItemDetailWidget>(&Widget)->SetUp(Slot);
+		CastChecked<UMmoItemDetailWidget>(&Widget)->SetUp(Slot, bEquipment);
 	});
 }
 

@@ -24,18 +24,18 @@ namespace PortfolioMmo.Data {
     static ClassesReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1DbGFzc2VzLnByb3RvEhJwb3J0Zm9saW8ubW1vLmRhdGEi1AEKCkNsYXNz",
+            "Cg1DbGFzc2VzLnByb3RvEhJwb3J0Zm9saW8ubW1vLmRhdGEi6gEKCkNsYXNz",
             "ZXNSb3cSCgoCaWQYASABKA0SFAoMYXR0YWNrX3JhbmdlGAIgASgBEhoKEmF0",
             "dGFja19pbnRlcnZhbF9tcxgDIAEoDRIUCgxoaXRfZGVsYXlfbXMYBCABKA0S",
             "HQoQcHJvamVjdGlsZV9zcGVlZBgFIAEoAUgAiAEBEhMKC2ZpcnN0X3NraWxs",
             "GAYgASgNEhMKC3N0YXJ0X2l0ZW1zGAcgAygNEhQKDHN0YXJ0X2NvdW50cxgI",
-            "IAMoDUITChFfcHJvamVjdGlsZV9zcGVlZCI3CgdDbGFzc2VzEiwKBHJvd3MY",
-            "ASADKAsyHi5wb3J0Zm9saW8ubW1vLmRhdGEuQ2xhc3Nlc1Jvd0IUqgIRUG9y",
-            "dGZvbGlvTW1vLkRhdGFiBnByb3RvMw=="));
+            "IAMoDRIUCgxzdGFydF93ZWFwb24YCSABKA1CEwoRX3Byb2plY3RpbGVfc3Bl",
+            "ZWQiNwoHQ2xhc3NlcxIsCgRyb3dzGAEgAygLMh4ucG9ydGZvbGlvLm1tby5k",
+            "YXRhLkNsYXNzZXNSb3dCFKoCEVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.ClassesRow), global::PortfolioMmo.Data.ClassesRow.Parser, new[]{ "Id", "AttackRange", "AttackIntervalMs", "HitDelayMs", "ProjectileSpeed", "FirstSkill", "StartItems", "StartCounts" }, new[]{ "ProjectileSpeed" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.ClassesRow), global::PortfolioMmo.Data.ClassesRow.Parser, new[]{ "Id", "AttackRange", "AttackIntervalMs", "HitDelayMs", "ProjectileSpeed", "FirstSkill", "StartItems", "StartCounts", "StartWeapon" }, new[]{ "ProjectileSpeed" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Classes), global::PortfolioMmo.Data.Classes.Parser, new[]{ "Rows" }, null, null, null, null)
           }));
     }
@@ -88,6 +88,7 @@ namespace PortfolioMmo.Data {
       firstSkill_ = other.firstSkill_;
       startItems_ = other.startItems_.Clone();
       startCounts_ = other.startCounts_.Clone();
+      startWeapon_ = other.startWeapon_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -230,6 +231,21 @@ namespace PortfolioMmo.Data {
       get { return startCounts_; }
     }
 
+    /// <summary>Field number for the "start_weapon" field.</summary>
+    public const int StartWeaponFieldNumber = 9;
+    private uint startWeapon_;
+    /// <summary>
+    /// 입힌 채로 주는 기본 무기(Items의 줄. 34)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint StartWeapon {
+      get { return startWeapon_; }
+      set {
+        startWeapon_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -253,6 +269,7 @@ namespace PortfolioMmo.Data {
       if (FirstSkill != other.FirstSkill) return false;
       if(!startItems_.Equals(other.startItems_)) return false;
       if(!startCounts_.Equals(other.startCounts_)) return false;
+      if (StartWeapon != other.StartWeapon) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -268,6 +285,7 @@ namespace PortfolioMmo.Data {
       if (FirstSkill != 0) hash ^= FirstSkill.GetHashCode();
       hash ^= startItems_.GetHashCode();
       hash ^= startCounts_.GetHashCode();
+      if (StartWeapon != 0) hash ^= StartWeapon.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -312,6 +330,10 @@ namespace PortfolioMmo.Data {
       }
       startItems_.WriteTo(output, _repeated_startItems_codec);
       startCounts_.WriteTo(output, _repeated_startCounts_codec);
+      if (StartWeapon != 0) {
+        output.WriteRawTag(72);
+        output.WriteUInt32(StartWeapon);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -348,6 +370,10 @@ namespace PortfolioMmo.Data {
       }
       startItems_.WriteTo(ref output, _repeated_startItems_codec);
       startCounts_.WriteTo(ref output, _repeated_startCounts_codec);
+      if (StartWeapon != 0) {
+        output.WriteRawTag(72);
+        output.WriteUInt32(StartWeapon);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -378,6 +404,9 @@ namespace PortfolioMmo.Data {
       }
       size += startItems_.CalculateSize(_repeated_startItems_codec);
       size += startCounts_.CalculateSize(_repeated_startCounts_codec);
+      if (StartWeapon != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(StartWeapon);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -410,6 +439,9 @@ namespace PortfolioMmo.Data {
       }
       startItems_.Add(other.startItems_);
       startCounts_.Add(other.startCounts_);
+      if (other.StartWeapon != 0) {
+        StartWeapon = other.StartWeapon;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -463,6 +495,10 @@ namespace PortfolioMmo.Data {
             startCounts_.AddEntriesFrom(input, _repeated_startCounts_codec);
             break;
           }
+          case 72: {
+            StartWeapon = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -514,6 +550,10 @@ namespace PortfolioMmo.Data {
           case 66:
           case 64: {
             startCounts_.AddEntriesFrom(ref input, _repeated_startCounts_codec);
+            break;
+          }
+          case 72: {
+            StartWeapon = input.ReadUInt32();
             break;
           }
         }

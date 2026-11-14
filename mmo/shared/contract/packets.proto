@@ -60,6 +60,8 @@ message Packet {
     RequestResult request_result = 305;
     PickUp pick_up = 306;
     DropItem drop_item = 307;
+    Equip equip = 308;
+    Unequip unequip = 309;
   }
 }
 
@@ -425,9 +427,11 @@ message ExpGained {
   uint32 exp = 2;
 }
 
-// 아이템이 있는 곳. 장비 칸(34), 창고(75)는 그 항목이 더한다.
+// 아이템이 있는 곳. 창고(75)는 그 항목이 더한다.
 enum ItemPlace {
   ITEM_PLACE_INVENTORY = 0;
+  // 입은 장비. 칸 번호는 장비 칸(Items의 EquipSlot 값) − 1이다(0 무기, 1 투구, 2 갑옷, 3 장갑, 4 신발, 5 장신구. 34).
+  ITEM_PLACE_EQUIPMENT = 1;
 }
 
 // 칸 하나. item_id가 0이면 빈 칸이다(InventoryChanged에서 칸이 비었음을 알림).
@@ -440,7 +444,7 @@ message ItemSlot {
   uint32 enchant = 5;
 }
 
-// 서버 → 본인. 월드에 들어올 때(EnterWorldResult 뒤) 인벤토리 전체: 빈 칸이 아닌 칸들과 골드.
+// 서버 → 본인. 월드에 들어올 때(EnterWorldResult 뒤) 인벤토리 전체: 빈 칸이 아닌 칸들(입은 장비 포함)과 골드.
 message Inventory {
   repeated ItemSlot slots = 1;
   uint64 gold = 2;
@@ -492,6 +496,18 @@ message DropItem {
   uint32 slot = 1;
   uint32 count = 2;
   uint32 request_id = 3;
+}
+
+// 클라이언트 → 서버. 인벤토리 칸의 장비를 입는다(그 장비 칸에 있던 것은 그 인벤토리 칸으로 옴). 답은 RequestResult다.
+message Equip {
+  uint32 slot = 1;
+  uint32 request_id = 2;
+}
+
+// 클라이언트 → 서버. 장비 칸(Items의 EquipSlot 값)의 장비를 벗어 인벤토리의 빈 칸에 넣는다. 답은 RequestResult다.
+message Unequip {
+  uint32 equip_slot = 1;
+  uint32 request_id = 2;
 }
 
 // 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
@@ -549,6 +565,10 @@ enum FailReason {
   FAIL_REASON_ALREADY_GONE = 19;
   // 주인만 줍는 시간 안의 남의 드롭이다(33).
   FAIL_REASON_NOT_YOURS = 20;
+  // 아이템의 필요 레벨에 모자란다(34).
+  FAIL_REASON_LEVEL_TOO_LOW = 21;
+  // 다른 직업의 장비다(34).
+  FAIL_REASON_WRONG_CLASS = 22;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.

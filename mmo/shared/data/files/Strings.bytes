@@ -390,3 +390,257 @@ E
 item.loot.troll트롤의 피Troll Blood
 �
 item.desc.3109J몬스터에게서 얻은 재료입니다. 상점에 팔 수 있습니다.5A material from a monster. You can sell it at a shop.
+$
+
+item.eq.f1
+낡은 검
+Worn Sword
+-
+item.desc.1011무기입니다.	A weapon.
+-
+item.desc.1012무기입니다.	A weapon.
+-
+item.desc.1013무기입니다.	A weapon.
+-
+item.desc.1014무기입니다.	A weapon.
+%
+
+item.eq.f2
+강철 검Steel Sword
+-
+item.desc.1021무기입니다.	A weapon.
+-
+item.desc.1022무기입니다.	A weapon.
+-
+item.desc.1023무기입니다.	A weapon.
+-
+item.desc.1024무기입니다.	A weapon.
+)
+
+item.eq.f3기사의 검Knight Sword
+-
+item.desc.1031무기입니다.	A weapon.
+-
+item.desc.1032무기입니다.	A weapon.
+-
+item.desc.1033무기입니다.	A weapon.
+-
+item.desc.1034무기입니다.	A weapon.
+)
+
+item.eq.f4나무 지팡이	Oak Staff
+-
+item.desc.1041무기입니다.	A weapon.
+-
+item.desc.1042무기입니다.	A weapon.
+-
+item.desc.1043무기입니다.	A weapon.
+-
+item.desc.1044무기입니다.	A weapon.
+-
+
+item.eq.f5수정 지팡이Crystal Staff
+-
+item.desc.1051무기입니다.	A weapon.
+-
+item.desc.1052무기입니다.	A weapon.
+-
+item.desc.1053무기입니다.	A weapon.
+-
+item.desc.1054무기입니다.	A weapon.
+7
+
+item.eq.f6대마법사의 지팡이Archmage Staff
+-
+item.desc.1061무기입니다.	A weapon.
+-
+item.desc.1062무기입니다.	A weapon.
+-
+item.desc.1063무기입니다.	A weapon.
+-
+item.desc.1064무기입니다.	A weapon.
+(
+
+item.eq.f7가죽 모자Leather Cap
+-
+item.desc.1071투구입니다.	A helmet.
+-
+item.desc.1072투구입니다.	A helmet.
+-
+item.desc.1073투구입니다.	A helmet.
+-
+item.desc.1074투구입니다.	A helmet.
+#
+
+item.eq.f8
+철 투구	Iron Helm
+-
+item.desc.1081투구입니다.	A helmet.
+-
+item.desc.1082투구입니다.	A helmet.
+-
+item.desc.1083투구입니다.	A helmet.
+-
+item.desc.1084투구입니다.	A helmet.
+(
+
+item.eq.f9기사 투구Knight Helm
+-
+item.desc.1091투구입니다.	A helmet.
+-
+item.desc.1092투구입니다.	A helmet.
+-
+item.desc.1093투구입니다.	A helmet.
+-
+item.desc.1094투구입니다.	A helmet.
++
+item.eq.f10가죽 갑옷Leather Armor
+/
+item.desc.1101갑옷입니다.Body armor.
+/
+item.desc.1102갑옷입니다.Body armor.
+/
+item.desc.1103갑옷입니다.Body armor.
+/
+item.desc.1104갑옷입니다.Body armor.
+(
+item.eq.f11사슬 갑옷
+Chain Mail
+/
+item.desc.1111갑옷입니다.Body armor.
+/
+item.desc.1112갑옷입니다.Body armor.
+/
+item.desc.1113갑옷입니다.Body armor.
+/
+item.desc.1114갑옷입니다.Body armor.
+)
+item.eq.f12판금 갑옷Plate Armor
+/
+item.desc.1121갑옷입니다.Body armor.
+/
+item.desc.1122갑옷입니다.Body armor.
+/
+item.desc.1123갑옷입니다.Body armor.
+/
+item.desc.1124갑옷입니다.Body armor.
+,
+item.eq.f13가죽 장갑Leather Gloves
++
+item.desc.1131장갑입니다.Gloves.
++
+item.desc.1132장갑입니다.Gloves.
++
+item.desc.1133장갑입니다.Gloves.
++
+item.desc.1134장갑입니다.Gloves.
+)
+item.eq.f14
+철 장갑Iron Gauntlets
++
+item.desc.1141장갑입니다.Gloves.
++
+item.desc.1142장갑입니다.Gloves.
++
+item.desc.1143장갑입니다.Gloves.
++
+item.desc.1144장갑입니다.Gloves.
+.
+item.eq.f15기사 장갑Knight Gauntlets
++
+item.desc.1151장갑입니다.Gloves.
++
+item.desc.1152장갑입니다.Gloves.
++
+item.desc.1153장갑입니다.Gloves.
++
+item.desc.1154장갑입니다.Gloves.
++
+item.eq.f16가죽 신발Leather Boots
+*
+item.desc.1161신발입니다.Boots.
+*
+item.desc.1162신발입니다.Boots.
+*
+item.desc.1163신발입니다.Boots.
+*
+item.desc.1164신발입니다.Boots.
+%
+item.eq.f17
+철 장화
+Iron Boots
+*
+item.desc.1171신발입니다.Boots.
+*
+item.desc.1172신발입니다.Boots.
+*
+item.desc.1173신발입니다.Boots.
+*
+item.desc.1174신발입니다.Boots.
+*
+item.eq.f18기사 장화Knight Boots
+*
+item.desc.1181신발입니다.Boots.
+*
+item.desc.1182신발입니다.Boots.
+*
+item.desc.1183신발입니다.Boots.
+*
+item.desc.1184신발입니다.Boots.
+)
+item.eq.f19구리 반지Copper Ring
+4
+item.desc.1191장신구입니다.An accessory.
+4
+item.desc.1192장신구입니다.An accessory.
+4
+item.desc.1193장신구입니다.An accessory.
+4
+item.desc.1194장신구입니다.An accessory.
+&
+item.eq.f20
+은 반지Silver Ring
+4
+item.desc.1201장신구입니다.An accessory.
+4
+item.desc.1202장신구입니다.An accessory.
+4
+item.desc.1203장신구입니다.An accessory.
+4
+item.desc.1204장신구입니다.An accessory.
+$
+item.eq.f21
+금 반지	Gold Ring
+4
+item.desc.1211장신구입니다.An accessory.
+4
+item.desc.1212장신구입니다.An accessory.
+4
+item.desc.1213장신구입니다.An accessory.
+4
+item.desc.1214장신구입니다.An accessory.
+
+detail.equip입기Equip
+!
+detail.unequip벗기Unequip
+/
+detail.stat.attack공격력 {0}
+Attack {0}
+1
+detail.stat.defense방어력 {0}Defense {0}
+2
+detail.stat.maxHp최대 체력 {0}
+Max HP {0}
+2
+detail.stat.maxMp최대 마나 {0}
+Max MP {0}
+&
+detail.compare	{0} ({1})	{0} ({1})
+E
+detail.cannotEquip입을 수 없습니다: {0}Cannot equip: {0}
+(
+inventory.equipment장비	Equipment
+F
+fail.levelTooLow레벨이 모자랍니다.Your level is too low.
+P
+fail.wrongClass!다른 직업의 장비입니다.That is for another class.

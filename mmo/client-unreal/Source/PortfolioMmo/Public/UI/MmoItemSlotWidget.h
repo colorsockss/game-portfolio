@@ -18,6 +18,9 @@ class UMmoItemSlotEntry : public UObject
 
 public:
 	int32 SlotIndex = 0;
+
+	/** 입은 장비의 칸이다(SlotIndex는 장비 칸 번호. 34). */
+	bool bEquipment = false;
 };
 
 /**

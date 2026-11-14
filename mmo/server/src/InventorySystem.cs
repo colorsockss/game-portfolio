@@ -18,7 +18,22 @@ namespace PortfolioMmo.Server
             {
                 Slots[index] = new ItemSlot { Place = ItemPlace.Inventory, Index = (uint)index };
             }
+
+            for (int index = 0; index < Equipment.Length; index++)
+            {
+                Equipment[index] = new ItemSlot { Place = ItemPlace.Equipment, Index = (uint)index };
+            }
         }
+
+        /// <summary>
+        /// 입은 장비(34). 칸 번호는 장비 칸(EquipSlot 값) − 1이다.
+        /// </summary>
+        public ItemSlot[] Equipment { get; } = new ItemSlot[6];
+
+        /// <summary>
+        /// 이 틱에 바뀐 장비 칸의 번호.
+        /// </summary>
+        public SortedSet<int> ChangedEquipment { get; } = new SortedSet<int>();
 
         /// <summary>
         /// 칸들. 빈 칸은 아이템 번호가 0이다. 칸의 객체는 바꾸지 않고 값만 고친다(보낼 때 복사함).
@@ -55,11 +70,13 @@ namespace PortfolioMmo.Server
         private readonly GameData _data;
         private readonly ProgressSystem _progress;
         private readonly MovementSystem _movement;
+        private readonly StatSystem _stats;
         private readonly (int X, int Z) _respawn;
 
-        public InventorySystem(GameData data, ProgressSystem progress, MovementSystem movement)
+        public InventorySystem(GameData data, ProgressSystem progress, MovementSystem movement, StatSystem stats)
         {
             _data = data;
+            _stats = stats;
             _progress = progress;
             _movement = movement;
             ZonesRow town = data.Zones.Rows.First(zone => zone.Kind == ZoneKind.Town);
@@ -78,12 +95,26 @@ namespace PortfolioMmo.Server
                 Add(player, row.StartItems[index], row.StartCounts[index], GainReason.Unspecified);
             }
 
+            // 기본 무기는 입힌 채로 준다(34). 능력치를 다시 구하고 체력과 마나를 채운다(들어올 때는 가득).
+            if (row.StartWeapon != 0)
+            {
+                ItemSlot weapon = player.Bag.Equipment[(int)_data.Item(row.StartWeapon)!.Slot - 1];
+                weapon.ItemId = row.StartWeapon;
+                weapon.Count = 1;
+                EquipmentChanged(player);
+                player.Hp = player.MaxHp;
+                player.Mp = player.MaxMp;
+                // 아직 아무도 받지 않은 개체라 EntityState 대신 EntityEnter가 무기를 싣는다.
+                player.StateChanged = false;
+            }
+
             Bag bag = player.Bag;
             bag.Changed.Clear();
+            bag.ChangedEquipment.Clear();
             bag.Gains.Clear();
             bag.GoldChanged = false;
             var whole = new Inventory();
-            whole.Slots.Add(bag.Slots.Where(slot => slot.ItemId != 0).Select(slot => slot.Clone()));
+            whole.Slots.Add(bag.Slots.Concat(bag.Equipment).Where(slot => slot.ItemId != 0).Select(slot => slot.Clone()));
             whole.Gold = bag.Gold;
             player.Session.Send(new Packet { Inventory = whole });
         }
@@ -237,6 +268,79 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// Equip(입력 차례): 칸의 아이템이 장비인지, 필요 레벨, 직업(비우면 공용)을 보고 그 장비 칸에 입힌다. 그 장비 칸에 있던 것은 그 인벤토리 칸으로 온다.
+        /// </summary>
+        public FailReason Equip(Player player, Equip request)
+        {
+            if ((request.Slot >= player.Bag.Slots.Length) || (player.Bag.Slots[request.Slot].ItemId == 0))
+            {
+                return FailReason.NoItem;
+            }
+
+            ItemSlot slot = player.Bag.Slots[request.Slot];
+            ItemsRow item = _data.Item(slot.ItemId)!;
+            if (item.Kind != ItemKind.Equipment)
+            {
+                return FailReason.UnusableItem;
+            }
+
+            if (item.HasLevel && (player.Level < item.Level))
+            {
+                return FailReason.LevelTooLow;
+            }
+
+            if (item.HasClass && (item.Class != (uint)player.Class))
+            {
+                return FailReason.WrongClass;
+            }
+
+            int index = (int)item.Slot - 1;
+            ItemSlot worn = player.Bag.Equipment[index];
+            (worn.ItemId, slot.ItemId) = (slot.ItemId, worn.ItemId);
+            (worn.Count, slot.Count) = (slot.Count, worn.Count);
+            (worn.Enchant, slot.Enchant) = (slot.Enchant, worn.Enchant);
+            player.Bag.Changed.Add((int)request.Slot);
+            player.Bag.ChangedEquipment.Add(index);
+            EquipmentChanged(player);
+            return FailReason.None;
+        }
+
+        /// <summary>
+        /// Unequip(입력 차례): 장비 칸(EquipSlot 값)의 장비를 인벤토리의 첫 빈 칸에 넣는다. 빈 칸이 없으면 "인벤토리 가득"이다.
+        /// </summary>
+        public FailReason Unequip(Player player, Unequip request)
+        {
+            if ((request.EquipSlot < 1) || (request.EquipSlot > player.Bag.Equipment.Length) || (player.Bag.Equipment[request.EquipSlot - 1].ItemId == 0))
+            {
+                return FailReason.NoItem;
+            }
+
+            ItemSlot? empty = player.Bag.Slots.FirstOrDefault(slot => slot.ItemId == 0);
+            if (empty == null)
+            {
+                return FailReason.InventoryFull;
+            }
+
+            int index = (int)request.EquipSlot - 1;
+            ItemSlot worn = player.Bag.Equipment[index];
+            (empty.ItemId, empty.Count, empty.Enchant) = (worn.ItemId, worn.Count, worn.Enchant);
+            (worn.ItemId, worn.Count, worn.Enchant) = (0u, 0u, 0u);
+            player.Bag.Changed.Add((int)empty.Index);
+            player.Bag.ChangedEquipment.Add(index);
+            EquipmentChanged(player);
+            return FailReason.None;
+        }
+
+        /// <summary>
+        /// 입은 장비가 바뀌었다: 능력치를 다시 구하고(본인에게 SelfStats), 무기가 바뀌었으면 표시 상태(EntityState)를 바꾼다. 방어구는 모습을 바꾸지 않는다.
+        /// </summary>
+        private void EquipmentChanged(Player player)
+        {
+            _stats.Recalculate(player);
+            player.SetDisplayState(player.Level, player.NameColor, player.Bag.Equipment[(int)EquipSlot.Weapon - 1].ItemId);
+        }
+
+        /// <summary>
         /// 시야 차례: 이 틱에 바뀐 칸, 골드, 새로 얻은 것이 있는 플레이어에게 InventoryChanged 하나를 보낸다.
         /// </summary>
         public void Flush(IEnumerable<Player> players)
@@ -244,15 +348,17 @@ namespace PortfolioMmo.Server
             foreach (Player player in players)
             {
                 Bag bag = player.Bag;
-                if ((bag.Changed.Count == 0) && !bag.GoldChanged && (bag.Gains.Count == 0))
+                if ((bag.Changed.Count == 0) && (bag.ChangedEquipment.Count == 0) && !bag.GoldChanged && (bag.Gains.Count == 0))
                 {
                     continue;
                 }
 
                 var changed = new InventoryChanged { Gold = bag.Gold };
                 changed.Slots.Add(bag.Changed.Select(index => bag.Slots[index].Clone()));
+                changed.Slots.Add(bag.ChangedEquipment.Select(index => bag.Equipment[index].Clone()));
                 changed.Gains.Add(bag.Gains);
                 bag.Changed.Clear();
+                bag.ChangedEquipment.Clear();
                 bag.Gains.Clear();
                 bag.GoldChanged = false;
                 player.Session.Send(new Packet { InventoryChanged = changed });

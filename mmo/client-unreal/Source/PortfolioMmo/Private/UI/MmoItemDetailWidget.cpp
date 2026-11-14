@@ -8,6 +8,7 @@
 #include "UI/MmoItemSlotWidget.h"
 #include "UI/MmoText.h"
 #include "UI/MmoUiManager.h"
+#include "World/FailMessages.h"
 
 namespace
 {
@@ -34,20 +35,23 @@ void UMmoItemDetailWidget::NativeOnInitialized()
 	UseButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleUseClicked);
 	QuickslotButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleQuickslotClicked);
 	DropButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleDropClicked);
+	EquipButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleEquipClicked);
 	CloseButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleCloseClicked);
 }
 
-void UMmoItemDetailWidget::SetUp(uint32 InSlotIndex)
+void UMmoItemDetailWidget::SetUp(uint32 InSlotIndex, bool bInEquipment)
 {
 	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
-	const auto Found = Session->Inventory().Slots().find(InSlotIndex);
-	const portfolio::mmo::data::ItemsRow* Item = Found != Session->Inventory().Slots().end() ? Session->Data().Item(Found->second.item_id()) : nullptr;
+	const std::map<uint32_t, portfolio::mmo::ItemSlot>& Place = bInEquipment ? Session->Inventory().Worn() : Session->Inventory().Slots();
+	const auto Found = Place.find(InSlotIndex);
+	const portfolio::mmo::data::ItemsRow* Item = Found != Place.end() ? Session->Data().Item(Found->second.item_id()) : nullptr;
 	if (!Item)
 	{
 		Close();
 		return;
 	}
 	SlotIndex = InSlotIndex;
+	bEquipment = bInEquipment;
 	ItemId = Item->id();
 	PendingRequest = 0;
 	UseButton->SetWaiting(false);
@@ -69,10 +73,47 @@ void UMmoItemDetailWidget::SetUp(uint32 InSlotIndex)
 	InfoText->SetText(FText::FromString(Info));
 	DescText->SetText(MmoText::Get(this, *FString::Printf(TEXT("item.desc.%u"), Item->id())));
 
-	// 쓰기는 지금 쓸 수 있는 종류(물약, 귀환)만, 퀵슬롯은 물약만 보인다.
-	const bool bUsable = IsPotion(*Item) || Item->use() == portfolio::mmo::data::ITEM_USE_RECALL;
+	// 쓰기는 지금 쓸 수 있는 종류(물약, 귀환)만, 퀵슬롯은 물약만, 떨어뜨리기는 입지 않은 것만 보인다.
+	const bool bUsable = !bEquipment && (IsPotion(*Item) || Item->use() == portfolio::mmo::data::ITEM_USE_RECALL);
 	UseButton->SetVisibility(bUsable ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-	QuickslotButton->SetVisibility(IsPotion(*Item) ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	QuickslotButton->SetVisibility(!bEquipment && IsPotion(*Item) ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	DropButton->SetVisibility(bEquipment ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
+
+	// 장비(34): 능력치 줄(입지 않은 것은 입은 것과의 비교), 입기·벗기, 입을 수 없는 까닭.
+	const bool bGear = Item->kind() == portfolio::mmo::data::ITEM_KIND_EQUIPMENT;
+	EquipButton->SetVisibility(bGear ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	StatsText->SetVisibility(bGear ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	WarnText->SetVisibility(ESlateVisibility::Collapsed);
+	if (bGear)
+	{
+		const MmoWorld::FStatDelta Delta = bEquipment ? MmoWorld::FStatDelta{} : Session->Inventory().Compare(Session->Data(), *Item);
+		FString Stats;
+		const auto Line = [&](const TCHAR* Key, uint32 Value, int32 Change)
+		{
+			if (Value == 0 && Change == 0)
+			{
+				return;
+			}
+			const FString Base = MmoText::Format(this, Key, { FString::FromInt(Value) }).ToString();
+			Stats += (Stats.IsEmpty() ? TEXT("") : TEXT("\n")) + (bEquipment ? Base
+				: MmoText::Format(this, TEXT("detail.compare"), { Base, FString::Printf(TEXT("%+d"), Change) }).ToString());
+		};
+		Line(TEXT("detail.stat.attack"), Item->attack(), Delta.Attack);
+		Line(TEXT("detail.stat.defense"), Item->defense(), Delta.Defense);
+		Line(TEXT("detail.stat.maxHp"), Item->max_hp(), Delta.MaxHp);
+		Line(TEXT("detail.stat.maxMp"), Item->max_mp(), Delta.MaxMp);
+		StatsText->SetText(FText::FromString(Stats));
+		EquipButton->SetLabel(MmoText::Get(this, bEquipment ? TEXT("detail.unequip") : TEXT("detail.equip")));
+		const MmoWorld::FEntity* Me = Session->World().SelfEntity();
+		const portfolio::mmo::FailReason Reason = bEquipment || !Me ? portfolio::mmo::FAIL_REASON_NONE
+			: MmoWorld::FInventory::CanEquip(*Item, static_cast<uint32>(Me->Info.character_class()), Me->Info.level());
+		EquipButton->SetIsEnabled(Reason == portfolio::mmo::FAIL_REASON_NONE);
+		if (Reason != portfolio::mmo::FAIL_REASON_NONE)
+		{
+			WarnText->SetText(MmoText::Format(this, TEXT("detail.cannotEquip"), { MmoText::Get(this, UTF8_TO_TCHAR(MmoWorld::FailKey(Reason))).ToString() }));
+			WarnText->SetVisibility(ESlateVisibility::HitTestInvisible);
+		}
+	}
 }
 
 void UMmoItemDetailWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -84,9 +125,11 @@ void UMmoItemDetailWidget::NativeTick(const FGeometry& MyGeometry, float InDelta
 		PendingRequest = 0;
 		UseButton->SetWaiting(false);
 		DropButton->SetWaiting(false);
+		EquipButton->SetWaiting(false);
 	}
-	const auto Found = Session->Inventory().Slots().find(SlotIndex);
-	if (Found == Session->Inventory().Slots().end() || Found->second.item_id() != ItemId)
+	const std::map<uint32_t, portfolio::mmo::ItemSlot>& Place = bEquipment ? Session->Inventory().Worn() : Session->Inventory().Slots();
+	const auto Found = Place.find(SlotIndex);
+	if (Found == Place.end() || Found->second.item_id() != ItemId)
 	{
 		Close();
 	}
@@ -149,6 +192,14 @@ void UMmoItemDetailWidget::SendDrop(uint32 Count)
 	Session->Send(Session->Inventory().DropItem(SlotIndex, Count));
 	PendingRequest = Session->Inventory().RequestId();
 	DropButton->SetWaiting(true);
+}
+
+void UMmoItemDetailWidget::HandleEquipClicked()
+{
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	Session->Send(bEquipment ? Session->Inventory().Unequip(SlotIndex + 1) : Session->Inventory().Equip(SlotIndex));
+	PendingRequest = Session->Inventory().RequestId();
+	EquipButton->SetWaiting(true);
 }
 
 void UMmoItemDetailWidget::HandleCloseClicked()

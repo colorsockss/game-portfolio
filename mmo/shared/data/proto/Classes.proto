@@ -22,6 +22,8 @@ message ClassesRow {
   repeated uint32 start_items = 7;
   // 처음 상태의 아이템마다의 수(startItems와 같은 차례)
   repeated uint32 start_counts = 8;
+  // 입힌 채로 주는 기본 무기(Items의 줄. 34)
+  uint32 start_weapon = 9;
 }
 
 message Classes {

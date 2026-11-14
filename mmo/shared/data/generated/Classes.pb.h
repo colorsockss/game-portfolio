@@ -236,6 +236,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
     kProjectileSpeedFieldNumber = 5,
     kHitDelayMsFieldNumber = 4,
     kFirstSkillFieldNumber = 6,
+    kStartWeaponFieldNumber = 9,
   };
   // repeated uint32 start_items = 7;
   [[nodiscard]] int start_items_size() const;
@@ -336,11 +337,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
   void _internal_set_first_skill(::uint32_t value);
 
   public:
+  // uint32 start_weapon = 9;
+  void clear_start_weapon() ;
+  [[nodiscard]] ::uint32_t start_weapon() const;
+  void set_start_weapon(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_start_weapon() const;
+  void _internal_set_start_weapon(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.ClassesRow)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<3, 8,
+      ::google::protobuf::internal::TcParseTable<4, 9,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -377,6 +388,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
     double projectile_speed_;
     ::uint32_t hit_delay_ms_;
     ::uint32_t first_skill_;
+    ::uint32_t start_weapon_;
     ::google::protobuf::internal::CachedSize _start_items_cached_byte_size_;
     ::google::protobuf::internal::CachedSize _start_counts_cached_byte_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
@@ -860,6 +872,30 @@ inline ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL
 ClassesRow::_internal_mutable_start_counts() {
   ::google::protobuf::internal::TSanRead(&_impl_);
   return &_impl_.start_counts_;
+}
+
+// uint32 start_weapon = 9;
+inline void ClassesRow::clear_start_weapon() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.start_weapon_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000100U);
+}
+inline ::uint32_t ClassesRow::start_weapon() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.start_weapon)
+  return _internal_start_weapon();
+}
+inline void ClassesRow::set_start_weapon(::uint32_t value) {
+  _internal_set_start_weapon(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000100U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.start_weapon)
+}
+inline ::uint32_t ClassesRow::_internal_start_weapon() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.start_weapon_;
+}
+inline void ClassesRow::_internal_set_start_weapon(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.start_weapon_ = value;
 }
 
 // -------------------------------------------------------------------

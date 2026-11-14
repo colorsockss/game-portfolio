@@ -33,6 +33,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTileView> Grid;
 
+	/** 입은 장비 여섯 칸(34). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTileView> EquipGrid;
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> GoldText;
 
@@ -41,6 +45,9 @@ private:
 
 	UPROPERTY()
 	TArray<TObjectPtr<UMmoItemSlotEntry>> Entries;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UMmoItemSlotEntry>> EquipEntries;
 
 	/** 마지막으로 채운 인벤토리의 판과 언어. */
 	uint32 ShownVersion = MAX_uint32;

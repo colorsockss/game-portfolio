@@ -64,7 +64,7 @@ namespace PortfolioMmo.Server
             _spawn.PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
             _growth = new GrowthSystem(_entities, stats, data);
-            _inventory = new InventorySystem(data, _progress, _movement);
+            _inventory = new InventorySystem(data, _progress, _movement, stats);
             _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, random);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
             _combat.Deaths = _deaths;
@@ -200,6 +200,12 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.DropItem when player != null:
                     Respond(player, packet.DropItem.RequestId, _loot.Drop(player, packet.DropItem, Tick));
                     break;
+                case Packet.BodyOneofCase.Equip when player != null:
+                    Respond(player, packet.Equip.RequestId, _inventory.Equip(player, packet.Equip));
+                    break;
+                case Packet.BodyOneofCase.Unequip when player != null:
+                    Respond(player, packet.Unequip.RequestId, _inventory.Unequip(player, packet.Unequip));
+                    break;
                 case Packet.BodyOneofCase.AttackStart when player != null:
                     Answer(player, _combat.Start(player, packet.AttackStart), RequestKind.Attack);
                     break;
@@ -243,6 +249,8 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.UseItem => packet.UseItem.RequestId,
                 Packet.BodyOneofCase.PickUp => packet.PickUp.RequestId,
                 Packet.BodyOneofCase.DropItem => packet.DropItem.RequestId,
+                Packet.BodyOneofCase.Equip => packet.Equip.RequestId,
+                Packet.BodyOneofCase.Unequip => packet.Unequip.RequestId,
                 _ => null,
             };
         }

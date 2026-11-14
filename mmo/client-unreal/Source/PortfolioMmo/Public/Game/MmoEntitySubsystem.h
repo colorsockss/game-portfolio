@@ -57,6 +57,9 @@ protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
 
 private:
+	/** 모습을 입힌 플레이어의 손에 입은 무기를 그린다(34). 구워진 무기는 감추고, 무기가 0이면 맨손이다. */
+	void ShowWeapon(uint32 Id, AActor& Actor, uint32 ItemId);
+
 	/** 액터에 개체의 모습을 입힌다(불러오는 중이면 자리 표시). */
 	void ShowEntity(uint32 Id, AActor& Actor, const portfolio::mmo::EntityEnter& Info);
 
@@ -112,6 +115,14 @@ private:
 
 	/** 모습을 입힌 개체 → 그 표현 줄(Visuals의 줄을 가리킴). */
 	TMap<uint32, const FMmoEntityVisual*> Looks;
+
+	/** 플레이어의 손에 붙인 무기(34)와 마지막으로 그린 입은 무기(아이템 번호). */
+	TMap<uint32, TObjectPtr<UStaticMeshComponent>> Weapons;
+	TMap<uint32, uint32> ShownWeapons;
+
+	/** 캐릭터 메시에 구워진 무기를 감추는 투명한 재질(피격 번쩍임의 재질을 0으로). */
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> HiddenWeaponMaterial;
 
 	UPROPERTY()
 	TObjectPtr<AStaticMeshActor> TargetMarker;

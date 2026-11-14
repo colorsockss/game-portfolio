@@ -22,6 +22,15 @@ namespace MmoWorld
 		uint64_t Gold = 0;
 	};
 
+	/** 장비를 입었을 때 능력치가 바뀌는 양(34): 그 장비 칸에 입은 것과의 차이. */
+	struct FStatDelta
+	{
+		int32_t Attack = 0;
+		int32_t Defense = 0;
+		int32_t MaxHp = 0;
+		int32_t MaxMp = 0;
+	};
+
 	/** 요청 하나의 실패(RequestResult). */
 	struct FRequestFailure
 	{
@@ -40,6 +49,15 @@ namespace MmoWorld
 
 		/** 빈 칸이 아닌 칸(칸 번호 → 칸). */
 		const std::map<uint32_t, portfolio::mmo::ItemSlot>& Slots() const { return Filled; }
+
+		/** 입은 장비(장비 칸 번호 = EquipSlot 값 − 1 → 칸. 34). */
+		const std::map<uint32_t, portfolio::mmo::ItemSlot>& Worn() const { return Equipped; }
+
+		/** 이 직업과 레벨이 그 장비를 입을 수 있는가(서버의 Equip과 같은 차례: 장비인지, 필요 레벨, 직업). 입을 수 있으면 NONE이다. */
+		static portfolio::mmo::FailReason CanEquip(const portfolio::mmo::data::ItemsRow& Item, uint32_t Class, uint32_t Level);
+
+		/** 그 장비를 입으면 능력치가 얼마나 바뀌는가: 테이블의 능력치에서 그 장비 칸에 지금 입은 것의 능력치를 뺀다(강화의 몫은 35). */
+		FStatDelta Compare(const MmoData::FGameData& Data, const portfolio::mmo::data::ItemsRow& Item) const;
 
 		uint64_t Gold() const { return Money; }
 
@@ -64,6 +82,12 @@ namespace MmoWorld
 		/** DropItem(칸의 아이템을 Count개 떨어뜨리기. 33)을 만든다. */
 		portfolio::mmo::Packet DropItem(uint32_t Slot, uint32_t Count);
 
+		/** Equip(인벤토리 칸의 장비를 입기. 34)을 만든다. */
+		portfolio::mmo::Packet Equip(uint32_t Slot);
+
+		/** Unequip(장비 칸(EquipSlot 값)의 장비를 벗기. 34)을 만든다. */
+		portfolio::mmo::Packet Unequip(uint32_t EquipSlot);
+
 		/** 마지막으로 매긴 요청 번호. */
 		uint32_t RequestId() const { return NextRequest; }
 
@@ -78,6 +102,7 @@ namespace MmoWorld
 
 	private:
 		std::map<uint32_t, portfolio::mmo::ItemSlot> Filled;
+		std::map<uint32_t, portfolio::mmo::ItemSlot> Equipped;
 		uint64_t Money = 0;
 		uint32_t Changes = 0;
 		uint32_t NextRequest = 0;

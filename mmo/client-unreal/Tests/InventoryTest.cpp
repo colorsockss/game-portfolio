@@ -1,6 +1,7 @@
 // World/Inventory(32)와 물약의 쿨다운 키를 UE 없이 컴파일해 확인한다. run.mjs가 빌드하고 실행한다.
 #include <cstdio>
 #include <cstdlib>
+#include <optional>
 
 #include "Data/GameData.h"
 #include "World/Cooldowns.h"
@@ -107,8 +108,54 @@ namespace
 	}
 }
 
+namespace
+{
+	/** 장비(34): 입을 수 있는지(장비인지, 레벨, 직업)와, 입은 것과의 능력치 차이. 입은 장비는 장비 칸 쪽에 들어간다. */
+	void EquipmentChecksAndCompares()
+	{
+		MmoData::FGameData Data;
+		auto AddItem = [&Data](uint32_t Id, uint32_t Level, std::optional<uint32_t> Class, uint32_t Attack)
+		{
+			portfolio::mmo::data::ItemsRow* Row = Data.Items.add_rows();
+			Row->set_id(Id);
+			Row->set_kind(portfolio::mmo::data::ITEM_KIND_EQUIPMENT);
+			Row->set_slot(portfolio::mmo::data::EQUIP_SLOT_WEAPON);
+			Row->set_level(Level);
+			if (Class)
+			{
+				Row->set_class_(*Class);
+			}
+			Row->set_attack(Attack);
+			return Row;
+		};
+		const portfolio::mmo::data::ItemsRow& Old = *AddItem(1011, 1, 1, 6);
+		const portfolio::mmo::data::ItemsRow& New = *AddItem(1021, 10, 1, 16);
+		const portfolio::mmo::data::ItemsRow& Staff = *AddItem(1041, 1, 2, 7);
+		portfolio::mmo::data::ItemsRow Potion;
+		Potion.set_kind(portfolio::mmo::data::ITEM_KIND_CONSUMABLE);
+		Expect(MmoWorld::FInventory::CanEquip(Potion, 1, 30) == portfolio::mmo::FAIL_REASON_UNUSABLE_ITEM, "a potion is not equipment");
+		Expect(MmoWorld::FInventory::CanEquip(New, 1, 9) == portfolio::mmo::FAIL_REASON_LEVEL_TOO_LOW, "the level is checked");
+		Expect(MmoWorld::FInventory::CanEquip(Staff, 1, 30) == portfolio::mmo::FAIL_REASON_WRONG_CLASS, "the class is checked");
+		Expect(MmoWorld::FInventory::CanEquip(New, 1, 10) == portfolio::mmo::FAIL_REASON_NONE, "a matching piece can be worn");
+
+		MmoWorld::FInventory Inventory;
+		Expect(Inventory.Compare(Data, New).Attack == 16, "nothing worn compares against zero");
+		portfolio::mmo::Packet Whole;
+		portfolio::mmo::ItemSlot* Worn = Whole.mutable_inventory()->add_slots();
+		Worn->set_place(portfolio::mmo::ITEM_PLACE_EQUIPMENT);
+		Worn->set_index(0);
+		Worn->set_item_id(Old.id());
+		Worn->set_count(1);
+		Inventory.Apply(Whole);
+		Expect(Inventory.Worn().size() == 1 && Inventory.Slots().empty(), "worn pieces go to the equipment side");
+		Expect(Inventory.Compare(Data, New).Attack == 10, "the difference subtracts what is worn in that slot");
+		Expect(Inventory.Equip(4).equip().slot() == 4 && Inventory.Unequip(1).unequip().equip_slot() == 1, "equip and unequip carry their slots");
+	}
+}
+
 int main()
 {
+	EquipmentChecksAndCompares();
 	SlotsAndRoomFollowTheServer();
 	RequestsWaitForTheirResult();
 	PotionCooldownsUseTheirOwnKey();

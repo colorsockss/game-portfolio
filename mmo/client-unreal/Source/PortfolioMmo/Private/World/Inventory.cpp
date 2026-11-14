@@ -7,6 +7,7 @@ namespace MmoWorld
 	void FInventory::Reset()
 	{
 		Filled.clear();
+		Equipped.clear();
 		Money = 0;
 		++Changes;
 		Waiting.clear();
@@ -16,13 +17,14 @@ namespace MmoWorld
 
 	void FInventory::Put(const portfolio::mmo::ItemSlot& Slot)
 	{
+		std::map<uint32_t, portfolio::mmo::ItemSlot>& Place = Slot.place() == portfolio::mmo::ITEM_PLACE_EQUIPMENT ? Equipped : Filled;
 		if (Slot.item_id() == 0)
 		{
-			Filled.erase(Slot.index());
+			Place.erase(Slot.index());
 		}
 		else
 		{
-			Filled[Slot.index()] = Slot;
+			Place[Slot.index()] = Slot;
 		}
 	}
 
@@ -32,6 +34,7 @@ namespace MmoWorld
 		{
 		case portfolio::mmo::Packet::kInventory:
 			Filled.clear();
+			Equipped.clear();
 			for (const portfolio::mmo::ItemSlot& Slot : Packet.inventory().slots())
 			{
 				Put(Slot);
@@ -107,6 +110,55 @@ namespace MmoWorld
 		portfolio::mmo::Packet Packet;
 		Packet.mutable_use_item()->set_slot(Slot);
 		Packet.mutable_use_item()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
+	portfolio::mmo::FailReason FInventory::CanEquip(const portfolio::mmo::data::ItemsRow& Item, uint32_t Class, uint32_t Level)
+	{
+		if (Item.kind() != portfolio::mmo::data::ITEM_KIND_EQUIPMENT)
+		{
+			return portfolio::mmo::FAIL_REASON_UNUSABLE_ITEM;
+		}
+		if (Item.has_level() && Level < Item.level())
+		{
+			return portfolio::mmo::FAIL_REASON_LEVEL_TOO_LOW;
+		}
+		if (Item.has_class_() && Item.class_() != Class)
+		{
+			return portfolio::mmo::FAIL_REASON_WRONG_CLASS;
+		}
+		return portfolio::mmo::FAIL_REASON_NONE;
+	}
+
+	FStatDelta FInventory::Compare(const MmoData::FGameData& Data, const portfolio::mmo::data::ItemsRow& Item) const
+	{
+		FStatDelta Delta{ static_cast<int32_t>(Item.attack()), static_cast<int32_t>(Item.defense()), static_cast<int32_t>(Item.max_hp()), static_cast<int32_t>(Item.max_mp()) };
+		const auto Found = Equipped.find(static_cast<uint32_t>(Item.slot()) - 1);
+		if (const portfolio::mmo::data::ItemsRow* Current = Found != Equipped.end() ? Data.Item(Found->second.item_id()) : nullptr)
+		{
+			Delta.Attack -= static_cast<int32_t>(Current->attack());
+			Delta.Defense -= static_cast<int32_t>(Current->defense());
+			Delta.MaxHp -= static_cast<int32_t>(Current->max_hp());
+			Delta.MaxMp -= static_cast<int32_t>(Current->max_mp());
+		}
+		return Delta;
+	}
+
+	portfolio::mmo::Packet FInventory::Equip(uint32_t Slot)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_equip()->set_slot(Slot);
+		Packet.mutable_equip()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
+	portfolio::mmo::Packet FInventory::Unequip(uint32_t EquipSlot)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_unequip()->set_equip_slot(EquipSlot);
+		Packet.mutable_unequip()->set_request_id(++NextRequest);
 		Waiting.insert(NextRequest);
 		return Packet;
 	}

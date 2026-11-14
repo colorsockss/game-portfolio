@@ -23,6 +23,15 @@ void UMmoInventoryWidget::NativeOnInitialized()
 		Entries.Add(Entry);
 	}
 	Grid->SetListItems(Entries);
+	EquipGrid->OnItemClicked().AddUObject(this, &UMmoInventoryWidget::HandleItemClicked);
+	for (int32 Index = 0; Index < 6; ++Index)
+	{
+		UMmoItemSlotEntry* Entry = NewObject<UMmoItemSlotEntry>(this);
+		Entry->SlotIndex = Index;
+		Entry->bEquipment = true;
+		EquipEntries.Add(Entry);
+	}
+	EquipGrid->SetListItems(EquipEntries);
 }
 
 void UMmoInventoryWidget::NativeConstruct()
@@ -43,15 +52,17 @@ void UMmoInventoryWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	ShownLanguage = Session->Strings().Version();
 	// 보이는 항목만 다시 그린다(목록 위젯이 만든 칸 위젯은 보이는 줄의 것뿐).
 	Grid->RegenerateAllEntries();
+	EquipGrid->RegenerateAllEntries();
 	GoldText->SetText(MmoText::Format(this, TEXT("inventory.gold"), { FText::AsNumber(Session->Inventory().Gold()).ToString() }));
 }
 
 void UMmoInventoryWidget::HandleItemClicked(UObject* Item)
 {
 	const UMmoItemSlotEntry* Entry = Cast<UMmoItemSlotEntry>(Item);
-	if (Entry && GetGameInstance()->GetSubsystem<UMmoSession>()->Inventory().Slots().count(static_cast<uint32>(Entry->SlotIndex)))
+	const MmoWorld::FInventory& Inventory = GetGameInstance()->GetSubsystem<UMmoSession>()->Inventory();
+	if (Entry && (Entry->bEquipment ? Inventory.Worn() : Inventory.Slots()).count(static_cast<uint32>(Entry->SlotIndex)))
 	{
-		GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowItemDetail(static_cast<uint32>(Entry->SlotIndex));
+		GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowItemDetail(static_cast<uint32>(Entry->SlotIndex), Entry->bEquipment);
 	}
 }
 

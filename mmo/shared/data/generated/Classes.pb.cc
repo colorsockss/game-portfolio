@@ -51,11 +51,11 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
     {
       PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_._has_bits_),
       0, // no _extensions_
-      8, 56,  // max_field_number, fast_idx_mask
+      9, 120,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967040,  // skipmap
+      4294966784,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      8,  // num_field_entries
+      9,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -65,10 +65,7 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
       ::_pbi::TcParser::GetTable<::portfolio::mmo::data::ClassesRow>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      // repeated uint32 start_counts = 8;
-      {::_pbi::TcParser::FastV32P1,
-       {66, 1, 0,
-        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_counts_)}},
+      {::_pbi::TcParser::MiniParse, {}},
       // uint32 id = 1;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.id_), 3>(),
        {8, 3, 0,
@@ -97,6 +94,20 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
       {::_pbi::TcParser::FastV32P1,
        {58, 0, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_items_)}},
+      // repeated uint32 start_counts = 8;
+      {::_pbi::TcParser::FastV32P1,
+       {66, 1, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_counts_)}},
+      // uint32 start_weapon = 9;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.start_weapon_), 8>(),
+       {72, 8, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_weapon_)}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
     }}, {{
       65535, 65535
     }}, {{
@@ -116,6 +127,8 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
       {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_items_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcRepeated | ::_fl::kPackedUInt32)},
       // repeated uint32 start_counts = 8;
       {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_counts_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcRepeated | ::_fl::kPackedUInt32)},
+      // uint32 start_weapon = 9;
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_weapon_), _Internal::kHasBitsOffset + 8, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -142,7 +155,8 @@ inline constexpr ClassesRow::Impl_::Impl_(
         attack_interval_ms_{0u},
         projectile_speed_{0},
         hit_delay_ms_{0u},
-        first_skill_{0u} {}
+        first_skill_{0u},
+        start_weapon_{0u} {}
 
 template <typename>
 constexpr ClassesRow::ClassesRow(::_pbi::ConstantInitialized,
@@ -398,7 +412,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_._has_bits_),
-        11, // hasbit index offset
+        12, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.attack_range_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.attack_interval_ms_),
@@ -407,6 +421,7 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.first_skill_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.start_items_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.start_counts_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.start_weapon_),
         3,
         2,
         4,
@@ -415,6 +430,7 @@ const ::uint32_t
         7,
         0,
         1,
+        8,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Classes, _impl_._has_bits_),
         4, // hasbit index offset
@@ -425,7 +441,7 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::data::ClassesRow)},
-        {19, sizeof(::portfolio::mmo::data::Classes)},
+        {21, sizeof(::portfolio::mmo::data::Classes)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -434,21 +450,21 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Classes_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\rClasses.proto\022\022portfolio.mmo.data\"\324\001\n\n"
+    "\n\rClasses.proto\022\022portfolio.mmo.data\"\352\001\n\n"
     "ClassesRow\022\n\n\002id\030\001 \001(\r\022\024\n\014attack_range\030\002"
     " \001(\001\022\032\n\022attack_interval_ms\030\003 \001(\r\022\024\n\014hit_"
     "delay_ms\030\004 \001(\r\022\035\n\020projectile_speed\030\005 \001(\001"
     "H\000\210\001\001\022\023\n\013first_skill\030\006 \001(\r\022\023\n\013start_item"
-    "s\030\007 \003(\r\022\024\n\014start_counts\030\010 \003(\rB\023\n\021_projec"
-    "tile_speed\"7\n\007Classes\022,\n\004rows\030\001 \003(\0132\036.po"
-    "rtfolio.mmo.data.ClassesRowB\024\252\002\021Portfoli"
-    "oMmo.Datab\006proto3"
+    "s\030\007 \003(\r\022\024\n\014start_counts\030\010 \003(\r\022\024\n\014start_w"
+    "eapon\030\t \001(\rB\023\n\021_projectile_speed\"7\n\007Clas"
+    "ses\022,\n\004rows\030\001 \003(\0132\036.portfolio.mmo.data.C"
+    "lassesRowB\024\252\002\021PortfolioMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Classes_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Classes_2eproto = {
     false,
     false,
-    337,
+    359,
     descriptor_table_protodef_Classes_2eproto,
     "Classes.proto",
     &descriptor_table_Classes_2eproto_once,
@@ -513,9 +529,9 @@ ClassesRow::ClassesRow(
                offsetof(Impl_, attack_range_),
            reinterpret_cast<const char*>(&from._impl_) +
                offsetof(Impl_, attack_range_),
-           offsetof(Impl_, first_skill_) -
+           offsetof(Impl_, start_weapon_) -
                offsetof(Impl_, attack_range_) +
-               sizeof(Impl_::first_skill_));
+               sizeof(Impl_::start_weapon_));
 
   // @@protoc_insertion_point(copy_constructor:portfolio.mmo.data.ClassesRow)
 }
@@ -538,9 +554,9 @@ inline void ClassesRow::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, attack_range_),
            0,
-           offsetof(Impl_, first_skill_) -
+           offsetof(Impl_, start_weapon_) -
                offsetof(Impl_, attack_range_) +
-               sizeof(Impl_::first_skill_));
+               sizeof(Impl_::start_weapon_));
 }
 ClassesRow::~ClassesRow() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.ClassesRow)
@@ -604,6 +620,7 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
                  reinterpret_cast<char*>(&this_._impl_.attack_range_)) +
                  sizeof(_impl_.first_skill_));
   }
+  this_._impl_.start_weapon_ = 0u;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -701,6 +718,15 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
     }
   }
 
+  // uint32 start_weapon = 9;
+  if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+    if (this_._internal_start_weapon() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          9, this_._internal_start_weapon(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -775,6 +801,15 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
       }
     }
   }
+   {
+    // uint32 start_weapon = 9;
+    if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+      if (this_._internal_start_weapon() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_start_weapon());
+      }
+    }
+  }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
 }
@@ -828,6 +863,11 @@ void ClassesRow::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
   }
+  if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+    if (from._internal_start_weapon() != 0) {
+      _this->_impl_.start_weapon_ = from._impl_.start_weapon_;
+    }
+  }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
@@ -848,8 +888,8 @@ void ClassesRow::InternalSwap(ClassesRow* PROTOBUF_RESTRICT PROTOBUF_NONNULL oth
   _impl_.start_items_.InternalSwap(&other->_impl_.start_items_);
   _impl_.start_counts_.InternalSwap(&other->_impl_.start_counts_);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.first_skill_)
-      + sizeof(ClassesRow::_impl_.first_skill_)
+      PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_weapon_)
+      + sizeof(ClassesRow::_impl_.start_weapon_)
       - PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.attack_range_)>(
           reinterpret_cast<char*>(&_impl_.attack_range_),
           reinterpret_cast<char*>(&other->_impl_.attack_range_));

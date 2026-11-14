@@ -41,6 +41,30 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 장비(34)는 84줄이고 종마다 등급 넷이다. 1단계(필요 레벨 1) 장비는 사냥터 1의 몬스터(묶음 1–3), 2단계(10)는 사냥터 2와 3의 몬스터(4–9)의
+        /// 드롭 묶음에만 있고 3단계(20)는 어느 묶음에도 없다(제작 48). 직업의 기본 무기는 그 직업의 1단계 일반 등급 무기다.
+        /// </summary>
+        [Fact]
+        public void EquipmentRowsAndDropsFollowTheirTiers()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            ItemsRow[] equipment = Enumerable.Range(1000, 1000).Select(id => data.Item((uint)id)).OfType<ItemsRow>().Where(item => item.Kind == ItemKind.Equipment).ToArray();
+            Assert.Equal(84, equipment.Length);
+            Assert.All(equipment.GroupBy(item => item.Family), family => Assert.Equal(new[] { ItemGrade.Common, ItemGrade.Uncommon, ItemGrade.Rare, ItemGrade.Epic }, family.Select(item => item.Grade).OrderBy(grade => grade)));
+            for (uint group = 1; group <= 9; group++)
+            {
+                uint tier = group <= 3 ? 1u : 10u;
+                Assert.All(data.DropGroup(group)!.Items.Select(id => data.Item(id)!).Where(item => item.Kind == ItemKind.Equipment), item => Assert.Equal(tier, item.Level));
+            }
+
+            foreach (ClassesRow row in data.Classes.Rows)
+            {
+                ItemsRow weapon = data.Item(row.StartWeapon)!;
+                Assert.Equal((EquipSlot.Weapon, row.Id, 1u, ItemGrade.Common), (weapon.Slot, weapon.Class, weapon.Level, weapon.Grade));
+            }
+        }
+
+        /// <summary>
         /// 직업은 2줄, 레벨은 직업 2 × 레벨 1–30의 60줄이고, 같은 레벨에서 기사는 최대 체력과 방어력이, 마법사는 최대 마나와 공격력이 높다.
         /// 마법사만 기본 공격의 발사체가 있다.
         /// </summary>
