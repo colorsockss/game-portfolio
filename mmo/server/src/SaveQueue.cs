@@ -12,9 +12,19 @@ namespace PortfolioMmo.Server
     internal abstract class StoreJob
     {
         /// <summary>
-        /// Run이 던진 예외. 실패의 규칙(다시 쓰기, 내려가기)은 39가 정하고, 지금은 로그만 남긴다.
+        /// Run이 던진 예외. 쓰기의 실패는 저장 스레드를 멈추고(SaveQueue.WriteFailed) 서버가 끝난다. 읽기의 실패는 그 일의 Complete가 실패로 답한다(39).
         /// </summary>
         public Exception? Failure { get; set; }
+
+        /// <summary>
+        /// 쓰기 묶음인가(실패하면 뒤의 일을 하지 않음).
+        /// </summary>
+        public virtual bool IsWrite => false;
+
+        /// <summary>
+        /// 이 일을 부른 연결. Complete에서 예외가 나면 이 연결만 끊는다(39).
+        /// </summary>
+        public Session? Owner { get; init; }
 
         public abstract void Run(CharacterStore store);
 
@@ -34,6 +44,8 @@ namespace PortfolioMmo.Server
         private readonly ConcurrentQueue<StoreJob> _finished = new ConcurrentQueue<StoreJob>();
         private int _running;
         private int _pending;
+        private int _pendingWrites;
+        private volatile bool _writeFailed;
         private readonly object _statsLock = new object();
         private int _statsJobs;
         private TimeSpan _statsTotal;
@@ -55,6 +67,16 @@ namespace PortfolioMmo.Server
         public int Pending => Volatile.Read(ref _pending);
 
         /// <summary>
+        /// 아직 쓰지 못한 쓰기 묶음의 수(내려갈 때의 로그).
+        /// </summary>
+        public int PendingWrites => Volatile.Read(ref _pendingWrites);
+
+        /// <summary>
+        /// 쓰기 묶음 하나가 실패했다. 그 묶음과 뒤의 일은 하지 않고(앞에서부터 쓴 만큼만 남아 아이템이 복사되지 않음), 서버는 새 사본 없이 끝난다(39).
+        /// </summary>
+        public bool WriteFailed => _writeFailed;
+
+        /// <summary>
         /// 지난번에 꺼낸 뒤로 끝난 일의 수, 든 시간의 합과 가장 긴 것(10초 통계 줄. 측정용).
         /// </summary>
         public (int Jobs, TimeSpan Total, TimeSpan Max) TakeStats()
@@ -70,6 +92,11 @@ namespace PortfolioMmo.Server
         public void Enqueue(StoreJob job)
         {
             Interlocked.Increment(ref _pending);
+            if (job.IsWrite)
+            {
+                Interlocked.Increment(ref _pendingWrites);
+            }
+
             _jobs.Enqueue(job);
             if (Interlocked.CompareExchange(ref _running, 1, 0) == 0)
             {
@@ -78,18 +105,25 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 틱 스레드: 끝난 일의 결과를 끝난 차례대로 반영한다.
+        /// 틱 스레드: 끝난 일의 결과를 끝난 차례대로 반영한다. 결과를 반영하다 난 예외는 onError로 넘기고 다음 일을 이어 한다(39).
         /// </summary>
-        public void CompleteFinished()
+        public void CompleteFinished(Action<StoreJob, Exception> onError)
         {
             while (_finished.TryDequeue(out StoreJob? job))
             {
                 if (job.Failure != null)
                 {
-                    Console.Error.WriteLine($"{job.GetType().Name} failed: {job.Failure.Message}");
+                    Console.Error.WriteLine($"{job.GetType().Name} failed: {job.Failure}");
                 }
 
-                job.Complete();
+                try
+                {
+                    job.Complete();
+                }
+                catch (Exception exception)
+                {
+                    onError(job, exception);
+                }
             }
         }
 
@@ -113,12 +147,29 @@ namespace PortfolioMmo.Server
             return true;
         }
 
+        private void Done(StoreJob job)
+        {
+            if (job.IsWrite)
+            {
+                Interlocked.Decrement(ref _pendingWrites);
+            }
+
+            Interlocked.Decrement(ref _pending);
+        }
+
         private void Pump()
         {
             while (true)
             {
                 while (_jobs.TryDequeue(out StoreJob? job))
                 {
+                    if (_writeFailed)
+                    {
+                        // 쓰기가 실패한 뒤의 일은 하지 않는다(뒤의 묶음이 앞의 실패를 건너뛰어 쓰이지 않게).
+                        Done(job);
+                        continue;
+                    }
+
                     if (Delay > TimeSpan.Zero)
                     {
                         Thread.Sleep(Delay);
@@ -142,8 +193,14 @@ namespace PortfolioMmo.Server
                         _statsMax = elapsed > _statsMax ? elapsed : _statsMax;
                     }
 
+                    if ((job.Failure != null) && job.IsWrite)
+                    {
+                        Console.Error.WriteLine($"Writing a save batch failed; later jobs are dropped: {job.Failure}");
+                        _writeFailed = true;
+                    }
+
                     _finished.Enqueue(job);
-                    Interlocked.Decrement(ref _pending);
+                    Done(job);
                 }
 
                 Volatile.Write(ref _running, 0);

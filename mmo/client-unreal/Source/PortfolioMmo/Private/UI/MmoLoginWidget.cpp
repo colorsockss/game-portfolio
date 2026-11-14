@@ -118,6 +118,9 @@ void UMmoLoginWidget::HandlePacket(const portfolio::mmo::Packet& Packet)
 		case portfolio::mmo::KICK_REASON_RATE_LIMITED:
 			SetStatus(MmoText::Get(this, TEXT("kick.rateLimited")));
 			break;
+		case portfolio::mmo::KICK_REASON_SERVER_ERROR:
+			SetStatus(MmoText::Get(this, TEXT("kick.serverError")));
+			break;
 		default:
 			SetStatus(MmoText::Get(this, TEXT("kick.other")));
 			break;

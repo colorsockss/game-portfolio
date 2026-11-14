@@ -103,6 +103,8 @@ namespace PortfolioMmo.Server
                 _batch = batch;
             }
 
+            public override bool IsWrite => true;
+
             public override void Run(CharacterStore store)
             {
                 store.Write(_batch);

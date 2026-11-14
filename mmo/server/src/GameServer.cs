@@ -125,18 +125,23 @@ namespace PortfolioMmo.Server
         public int Port => ((IPEndPoint)_listener.LocalEndpoint).Port;
 
         /// <summary>
-        /// cancellationToken이 취소될 때까지 서버를 돌린다. 취소되면 모두에게 SERVER_SHUTDOWN을 보내고(빠지는 플레이어마다 사본을 넣음), 저장 스레드의 큐가 빌 때까지 기다린 뒤 닫는다.
+        /// cancellationToken이 취소될 때까지 서버를 돌린다. 취소되면 모두에게 SERVER_SHUTDOWN을 보내고(빠지는 플레이어마다 사본을 넣음), 저장 스레드의 큐를
+        /// 한도(10초) 안에서 다 쓴 뒤 닫고 0을 낸다. 입력 밖의 차례에서 예외가 나거나 저장 스레드의 쓰기가 실패하면 틱을 멈추고 새 사본 없이 이미 큐에 든 묶음만
+        /// 같은 한도 안에서 마저 쓴 뒤 1을 낸다(39. systemd가 다시 띄움).
         /// </summary>
-        public async Task RunAsync(CancellationToken cancellationToken)
+        public async Task<int> RunAsync(CancellationToken cancellationToken)
         {
             _listener.Start();
-            Task accepting = AcceptAsync(cancellationToken);
+            // 오류로 멈출 때도 받기를 먼저 그치게 연결한 토큰으로 받는다(멈춘 소켓에서 받으면 던짐).
+            using var stopping = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            Task accepting = AcceptAsync(stopping.Token);
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1.0 / Units.TicksPerSecond));
+            bool failed = false;
             try
             {
-                while (await timer.WaitForNextTickAsync(cancellationToken))
+                while (!failed && await timer.WaitForNextTickAsync(cancellationToken))
                 {
-                    RunTick();
+                    failed = !RunTickSafely();
                 }
             }
             catch (OperationCanceledException)
@@ -144,8 +149,20 @@ namespace PortfolioMmo.Server
                 // 내려간다.
             }
 
+            stopping.Cancel();
             _listener.Stop();
             await accepting;
+            if (failed)
+            {
+                _world.WaitForSaves(World.ShutdownSaveLimit);
+                foreach (Connection connection in _connections)
+                {
+                    connection.Abort();
+                }
+
+                return 1;
+            }
+
             Drain();
             foreach (Connection connection in _connections)
             {
@@ -164,6 +181,32 @@ namespace PortfolioMmo.Server
             {
                 // 닫지 않는 클라이언트는 더 기다리지 않는다.
             }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// 틱 하나를 돌린다. 입력의 예외는 월드가 그 연결만 끊어 여기까지 오지 않는다. 그 밖의 차례에서 예외가 났거나 저장 스레드의 쓰기가 실패했으면 false다.
+        /// </summary>
+        private bool RunTickSafely()
+        {
+            try
+            {
+                RunTick();
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine($"Tick {_world.Tick} failed; stopping: {exception}");
+                return false;
+            }
+
+            if (_world.SaveFailed)
+            {
+                Console.Error.WriteLine("A save batch failed to write; stopping without new snapshots.");
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>

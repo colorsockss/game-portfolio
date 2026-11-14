@@ -147,7 +147,7 @@ namespace PortfolioMmo.Server
             _loading[id] = session;
             if (!loading)
             {
-                _queue.Enqueue(new LoadJob(this, id));
+                _queue.Enqueue(new LoadJob(this, id) { Owner = session });
             }
         }
 
@@ -225,6 +225,33 @@ namespace PortfolioMmo.Server
         public void LogOut(Session session)
         {
             Remove(session);
+            ForgetAccount(session);
+        }
+
+        /// <summary>
+        /// 이 연결의 요청을 처리하다 예외가 났다(39): 반쯤 적용된 상태일 수 있으므로 사본을 넣지 않고(바뀜 표시도 버림) 개체를 월드에서 바로 빼고,
+        /// KICK_REASON_SERVER_ERROR로 끊는다. 다시 들어오면 마지막으로 큐에 넣은 상태다.
+        /// </summary>
+        public void Fail(Session session)
+        {
+            if (session.Player is Player player)
+            {
+                session.Player = null;
+                _entities.Remove(player);
+                _grid.Remove(player);
+            }
+
+            if (!session.IsClosing)
+            {
+                session.Send(new Packet { Kicked = new Kicked { Reason = KickReason.ServerError } });
+                session.Close();
+            }
+
+            ForgetAccount(session);
+        }
+
+        private void ForgetAccount(Session session)
+        {
             if ((session.LoginId != null) && _accounts.TryGetValue(session.LoginId, out Session? current) && (current == session))
             {
                 _accounts.Remove(session.LoginId);
@@ -308,6 +335,7 @@ namespace PortfolioMmo.Server
 
             public ListJob(Session session, string loginId)
             {
+                Owner = session;
                 _session = session;
                 _loginId = loginId;
             }
@@ -341,6 +369,7 @@ namespace PortfolioMmo.Server
 
             public CreateJob(Session session, string name, CharacterClass characterClass, CharacterSnapshot start)
             {
+                Owner = session;
                 _session = session;
                 _loginId = session.LoginId!;
                 _name = name;

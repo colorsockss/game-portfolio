@@ -140,6 +140,7 @@ namespace PortfolioMmo.Server
         /// 연결에서 받은 패킷 하나를 처리한다(입력 차례). 요청을 처리하는 함수가 결과(Outcome)를 돌려주고, 무엇을 보내고 끊을지는 여기서 정한다:
         /// 실패는 ActionFailed, 되돌림은 PositionReset, 잘못된 패킷(세션의 상태에 맞지 않거나 클라이언트가 보낼 수 없는 패킷)은 끊기다.
         /// 받기 전에 빈도 제한의 토큰을 쓰고, 없으면 버리거나(버리는 일이 이어지면) 끊는다. 죽은 동안과 기절한 동안의 요청은 한 자리(Blocked)에서 막는다.
+        /// 처리하다 예외가 나면 그 연결만 KICK_REASON_SERVER_ERROR로 끊고 다른 연결의 틱은 이어진다(39).
         /// </summary>
         public void Receive(Session session, Packet packet)
         {
@@ -148,6 +149,38 @@ namespace PortfolioMmo.Server
                 return;
             }
 
+            try
+            {
+                ReceiveHook?.Invoke(packet);
+                Handle(session, packet);
+            }
+            catch (Exception exception)
+            {
+                Fail(session, exception);
+            }
+        }
+
+        /// <summary>
+        /// 시험이 요청의 처리 안에서 예외를 내는 자리(39). 서버에서는 비어 있다.
+        /// </summary>
+        internal Action<Packet>? ReceiveHook { get; set; }
+
+        /// <summary>
+        /// 시험이 입력 밖의 차례에서 예외를 내는 자리(39). 서버에서는 비어 있다.
+        /// </summary>
+        internal Action? StepHook { get; set; }
+
+        /// <summary>
+        /// 요청 하나의 예외(39): 로그를 남기고 그 연결의 캐릭터를 사본 없이 빼며 KICK_REASON_SERVER_ERROR로 끊는다.
+        /// </summary>
+        private void Fail(Session session, Exception exception)
+        {
+            Console.Error.WriteLine($"A request from {session.LoginId ?? "(not logged in)"} failed; kicking it: {exception}");
+            _login.Fail(session);
+        }
+
+        private void Handle(Session session, Packet packet)
+        {
             switch (session.Limiter.Take(Tick, _rateLimits))
             {
                 case RateLimiter.Verdict.Drop:
@@ -347,8 +380,9 @@ namespace PortfolioMmo.Server
         public void Step(uint elapsedTicks = 1, TickProfile? profile = null)
         {
             long started = Stopwatch.GetTimestamp();
-            // 저장 스레드에서 돌아온 결과(목록, 만들기, 캐릭터 읽기)를 입력 차례에 반영한다(38).
-            _queue.CompleteFinished();
+            // 저장 스레드에서 돌아온 결과(목록, 만들기, 캐릭터 읽기)를 입력 차례에 반영한다(38). 반영하다 난 예외는 그 일을 부른 연결만 끊는다(39).
+            _queue.CompleteFinished(OnJobFailed);
+            StepHook?.Invoke();
             _growth.Rewarded.Clear();
             _scheduler.Step(Tick, this);
             long scheduled = Stopwatch.GetTimestamp();
@@ -493,14 +527,47 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 접속한 모두의 사본을 한 묶음으로 넣고 큐가 빌 때까지 기다린다(내려갈 때). 기다리는 한도와 쓰기가 실패했을 때의 규칙은 39가 정한다.
+        /// 내려갈 때(39): 접속한 모두의 사본을 한 묶음으로 넣고 큐를 다 쓸 때까지 한도(기본 10초)만큼 기다린다. 넘으면 쓰지 못한 묶음의 수를 로그에 남기고 false다.
         /// </summary>
-        public void SaveAll()
+        public bool SaveAll(TimeSpan? limit = null)
         {
             _save.SaveAll();
-            if (!_queue.WaitIdle(TimeSpan.FromSeconds(30)))
+            return WaitForSaves(limit ?? ShutdownSaveLimit);
+        }
+
+        /// <summary>
+        /// 내려갈 때 저장 스레드의 큐를 기다리는 한도. 유닛의 TimeoutStopSec(30초)보다 짧다.
+        /// </summary>
+        public static readonly TimeSpan ShutdownSaveLimit = TimeSpan.FromSeconds(10);
+
+        /// <summary>
+        /// 새 사본을 넣지 않고 이미 큐에 든 일만 한도 안에서 마저 쓴다(틱의 예외 뒤. 39). 넘으면 쓰지 못한 묶음의 수를 로그에 남기고 false다.
+        /// </summary>
+        public bool WaitForSaves(TimeSpan limit)
+        {
+            if (_queue.WaitIdle(limit))
             {
-                Console.Error.WriteLine($"Shutting down with {_queue.Pending} save job(s) still queued.");
+                return true;
+            }
+
+            Console.Error.WriteLine($"Stopping with {_queue.PendingWrites} save batch(es) not written after {limit.TotalSeconds:0} s.");
+            return false;
+        }
+
+        /// <summary>
+        /// 저장 스레드의 쓰기가 실패했다(39). 서버는 새 사본을 만들지 않고 끝난다.
+        /// </summary>
+        public bool SaveFailed => _queue.WriteFailed;
+
+        private void OnJobFailed(StoreJob job, Exception exception)
+        {
+            if (job.Owner is Session session)
+            {
+                Fail(session, exception);
+            }
+            else
+            {
+                Console.Error.WriteLine($"Completing {job.GetType().Name} failed: {exception}");
             }
         }
 
@@ -510,7 +577,7 @@ namespace PortfolioMmo.Server
         internal void CompleteSaves()
         {
             _queue.WaitIdle(TimeSpan.FromSeconds(10));
-            _queue.CompleteFinished();
+            _queue.CompleteFinished(OnJobFailed);
         }
 
         /// <summary>

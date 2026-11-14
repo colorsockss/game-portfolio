@@ -50,11 +50,11 @@ namespace PortfolioMmo.Server
 
             bool dev = Array.IndexOf(args, "--dev") >= 0;
             var server = new GameServer(new IPEndPoint(IPAddress.Any, port), new World(maxPlayers, spawnHalfExtent, new Random(), store, data, dev));
-            Task running = server.RunAsync(cancellation.Token);
+            Task<int> running = server.RunAsync(cancellation.Token);
             Console.WriteLine($"Listening on port {server.Port} (max players {maxPlayers}, data {data.Hash:x16}{(dev ? ", dev commands on" : string.Empty)})");
-            await running;
-            Console.WriteLine("Stopped");
-            return 0;
+            int code = await running;
+            Console.WriteLine(code == 0 ? "Stopped" : $"Stopped after an error (exit code {code})");
+            return code;
         }
 
         /// <summary>

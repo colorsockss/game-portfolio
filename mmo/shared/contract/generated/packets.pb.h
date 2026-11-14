@@ -793,6 +793,7 @@ enum KickReason : int {
   KICK_REASON_MALFORMED_PACKET = 3,
   KICK_REASON_IDLE_TIMEOUT = 4,
   KICK_REASON_RATE_LIMITED = 5,
+  KICK_REASON_SERVER_ERROR = 6,
   KickReason_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   KickReason_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -803,11 +804,11 @@ extern const uint32_t KickReason_internal_data_[];
 inline constexpr KickReason KickReason_MIN =
     static_cast<KickReason>(0);
 inline constexpr KickReason KickReason_MAX =
-    static_cast<KickReason>(5);
+    static_cast<KickReason>(6);
 [[nodiscard]] inline bool KickReason_IsValid(int value) {
-  return 0 <= value && value <= 5;
+  return 0 <= value && value <= 6;
 }
-inline constexpr int KickReason_ARRAYSIZE = 5 + 1;
+inline constexpr int KickReason_ARRAYSIZE = 6 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 KickReason_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(KickReason) {
@@ -822,7 +823,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& KickReason_Name(KickReason value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<KickReason_descriptor, 0, 5>(
+  return ::google::protobuf::internal::NameOfDenseEnum<KickReason_descriptor, 0, 6>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool KickReason_Parse(

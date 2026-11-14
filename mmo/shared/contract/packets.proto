@@ -161,6 +161,8 @@ enum KickReason {
   KICK_REASON_IDLE_TIMEOUT = 4;
   // 요청을 너무 자주 보냈다(Constants의 빈도 제한. 버리는 일이 이어진 시간이 끊는 시간을 넘음).
   KICK_REASON_RATE_LIMITED = 5;
+  // 서버가 이 연결의 요청을 처리하다 오류가 났다(39). 그 캐릭터는 마지막으로 저장 큐에 넣은 상태로 돌아간다.
+  KICK_REASON_SERVER_ERROR = 6;
 }
 
 // 클라이언트 → 서버. 개발 명령 글 한 줄(앞의 /는 있어도 없어도 됨). --dev로 띄운 서버만 실행하고, 아니면 ActionFailed(INVALID_COMMAND, CHAT)로
