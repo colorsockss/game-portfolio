@@ -211,12 +211,24 @@ int32 UMmoCreateEffectAssetsCommandlet::Main(const FString& Params)
 		// 짧게 오르는 두 음.
 		return FMath::Sin(UE_DOUBLE_TWO_PI * (T < 0.05 ? 880.0 : 1320.0) * T) * Envelope(FMath::Fmod(T, 0.05), 0.003, 30.0) * 0.35;
 	}), Effects, nullptr, false);
+	USoundWave* EnchantSuccess = CreateSound(TEXT("S_UiEnchantSuccess"), Synth(0.5, [](double T)
+	{
+		// 오르는 세 음의 반짝임.
+		const double Notes[] = { 659.25, 987.77, 1318.5 };
+		const int32 Index = FMath::Min(2, static_cast<int32>(T / 0.1));
+		return FMath::Sin(UE_DOUBLE_TWO_PI * Notes[Index] * T) * Envelope(T - Index * 0.1, 0.005, Index == 2 ? 6.0 : 20.0) * 0.4;
+	}), Effects, nullptr, false);
+	USoundWave* EnchantFailure = CreateSound(TEXT("S_UiEnchantFailure"), Synth(0.6, [](double T)
+	{
+		// 내려가는 낮은 미끄럼.
+		return FMath::Sin(UE_DOUBLE_TWO_PI * (300.0 * T - 150.0 * T * T)) * Envelope(T, 0.01, 4.0) * 0.45;
+	}), Effects, nullptr, false);
 	// 구역의 종류(ZoneKind): 1 마을, 2 사냥터, 3 채집지, 4 보스 자리.
 	USoundWave* Town = CreateSound(TEXT("M_Town"), Pad({ 261.63, 329.63, 392.0 }, false), Music, nullptr, true);
 	USoundWave* Hunting = CreateSound(TEXT("M_Hunting"), Pad({ 220.0, 261.63, 329.63 }, false), Music, nullptr, true);
 	USoundWave* Gathering = CreateSound(TEXT("M_Gathering"), Pad({ 174.61, 220.0, 261.63 }, false), Music, nullptr, true);
 	USoundWave* Boss = CreateSound(TEXT("M_Boss"), Pad({ 146.83, 174.61, 220.0 }, true), Music, nullptr, true);
-	if (!Hit || !Skill || !Revive || !LevelUp || !PickUp || !Step || !Click || !Window || !Town || !Hunting || !Gathering || !Boss)
+	if (!Hit || !Skill || !Revive || !LevelUp || !PickUp || !EnchantSuccess || !EnchantFailure || !Step || !Click || !Window || !Town || !Hunting || !Gathering || !Boss)
 	{
 		return 1;
 	}
@@ -292,5 +304,7 @@ int32 UMmoCreateEffectAssetsCommandlet::Main(const FString& Params)
 	Add(EMmoCue::LevelUp, 0, 0, Burst, nullptr);
 	Add(EMmoCue::UiLevelUp, 0, 0, nullptr, LevelUp);
 	Add(EMmoCue::UiPickUp, 0, 0, nullptr, PickUp);
+	Add(EMmoCue::UiEnchantSuccess, 0, 0, nullptr, EnchantSuccess);
+	Add(EMmoCue::UiEnchantFailure, 0, 0, nullptr, EnchantFailure);
 	return SaveSimple(Cues) ? 0 : 1;
 }

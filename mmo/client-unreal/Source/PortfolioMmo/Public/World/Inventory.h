@@ -88,6 +88,15 @@ namespace MmoWorld
 		/** Unequip(장비 칸(EquipSlot 값)의 장비를 벗기. 34)을 만든다. */
 		portfolio::mmo::Packet Unequip(uint32_t EquipSlot);
 
+		/** Enchant(주문서 칸으로 장비를 강화하기. 35)를 만든다. */
+		portfolio::mmo::Packet Enchant(portfolio::mmo::ItemPlace Place, uint32_t Slot, uint32_t ScrollSlot);
+
+		/** 지금 수치의 장비를 한 단계 올리는 성공 확률(0–1). 더 올릴 수 없으면 nullopt. 1보다 작으면 실패할 때 장비가 사라지는 단계다. */
+		static std::optional<double> NextEnchantChance(const MmoData::FGameData& Data, uint32_t Enchant);
+
+		/** 지난번에 꺼낸 뒤로 온 강화의 결과(EnchantResult). */
+		std::vector<portfolio::mmo::EnchantResult> TakeEnchantResults();
+
 		/** 마지막으로 매긴 요청 번호. */
 		uint32_t RequestId() const { return NextRequest; }
 
@@ -109,6 +118,7 @@ namespace MmoWorld
 		std::set<uint32_t> Waiting;
 		std::vector<FItemGain> Gains;
 		std::vector<FRequestFailure> Failures;
+		std::vector<portfolio::mmo::EnchantResult> EnchantResults;
 
 		void Put(const portfolio::mmo::ItemSlot& Slot);
 	};

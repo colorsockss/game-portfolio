@@ -26,8 +26,9 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<uint, EffectsRow> _effects = new Dictionary<uint, EffectsRow>();
         private readonly Dictionary<uint, ItemsRow> _items = new Dictionary<uint, ItemsRow>();
         private readonly Dictionary<uint, DropGroupsRow> _dropGroups = new Dictionary<uint, DropGroupsRow>();
+        private readonly Dictionary<uint, EnchantsRow> _enchants = new Dictionary<uint, EnchantsRow>();
 
-        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null, DropGroups? dropGroups = null)
+        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null, DropGroups? dropGroups = null, Enchants? enchants = null)
         {
             Hash = hash;
             Constants = constants;
@@ -66,6 +67,11 @@ namespace PortfolioMmo.Server
             foreach (DropGroupsRow row in (dropGroups ?? new DropGroups()).Rows)
             {
                 _dropGroups.Add(row.Id, row);
+            }
+
+            foreach (EnchantsRow row in (enchants ?? new Enchants()).Rows)
+            {
+                _enchants.Add(row.Id, row);
             }
         }
 
@@ -183,6 +189,14 @@ namespace PortfolioMmo.Server
         public uint GoldItemId { get; }
 
         /// <summary>
+        /// 강화 단계(+1–+9)의 줄(35). 없으면 null(더 올릴 수 없음).
+        /// </summary>
+        public EnchantsRow? Enchant(uint level)
+        {
+            return _enchants.GetValueOrDefault(level);
+        }
+
+        /// <summary>
         /// 드롭 묶음(33). 없으면 null.
         /// </summary>
         public DropGroupsRow? DropGroup(uint id)
@@ -212,7 +226,8 @@ namespace PortfolioMmo.Server
                 Skills.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Skills.bytes"))),
                 Effects.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Effects.bytes"))),
                 Items.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Items.bytes"))),
-                DropGroups.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "DropGroups.bytes"))));
+                DropGroups.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "DropGroups.bytes"))),
+                Enchants.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Enchants.bytes"))));
         }
 
         /// <summary>

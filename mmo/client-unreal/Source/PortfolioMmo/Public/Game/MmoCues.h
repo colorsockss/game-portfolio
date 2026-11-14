@@ -38,6 +38,10 @@ enum class EMmoCue : uint8
 	UiLevelUp,
 	/** 바닥 아이템을 주움(UI의 소리. 까닭이 줍기인 얻음 사건). 33. */
 	UiPickUp,
+	/** 강화에 성공함(UI의 소리. 35). */
+	UiEnchantSuccess,
+	/** 강화에 실패해 장비가 사라짐(UI의 소리. 35). */
+	UiEnchantFailure,
 };
 
 /** 연출 표의 줄 하나: (때, 개체 종류, 키) → 이펙트와 소리. 둘 다 비어도 된다. */

@@ -50,6 +50,9 @@ public:
 	/** 인벤토리 칸(bEquipment면 입은 장비의 칸. 34)의 아이템 상세 창을 연다(32). */
 	void ShowItemDetail(uint32 Slot, bool bEquipment = false);
 
+	/** 강화 주문서(그 아이템 번호)로 강화 창을 연다(35). */
+	void ShowEnchant(uint32 ScrollItemId);
+
 	/** 캐릭터 창을 열고 닫는다(HUD의 캐릭터 버튼과 C 키. 31). 게임 중이고 죽어 있지 않을 때만 연다. */
 	void ToggleCharacter();
 

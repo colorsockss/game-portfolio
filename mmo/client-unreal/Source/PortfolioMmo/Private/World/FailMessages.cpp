@@ -29,6 +29,7 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_NOT_YOURS: return "fail.notYours";
 		case portfolio::mmo::FAIL_REASON_LEVEL_TOO_LOW: return "fail.levelTooLow";
 		case portfolio::mmo::FAIL_REASON_WRONG_CLASS: return "fail.wrongClass";
+		case portfolio::mmo::FAIL_REASON_MAX_ENCHANT: return "fail.maxEnchant";
 		default: return "fail.other";
 		}
 	}

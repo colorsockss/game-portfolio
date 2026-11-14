@@ -1,0 +1,19 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message EnchantsRow {
+  // 강화 단계(+1–+9). 이 단계로 올릴 때의 줄이다
+  uint32 id = 1;
+  // 이 단계로 올릴 때의 성공 확률(0–1). 안전 수치(+3)까지는 1이고, 실패하면 장비가 사라진다
+  double chance = 2;
+  // 이 단계의 장비 능력치 = Items의 능력치 × 이 비율(소수는 버림). +0은 Items의 값 그대로
+  double stat_rate = 3;
+}
+
+message Enchants {
+  repeated EnchantsRow rows = 1;
+}

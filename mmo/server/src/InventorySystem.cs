@@ -71,12 +71,14 @@ namespace PortfolioMmo.Server
         private readonly ProgressSystem _progress;
         private readonly MovementSystem _movement;
         private readonly StatSystem _stats;
+        private readonly Random _random;
         private readonly (int X, int Z) _respawn;
 
-        public InventorySystem(GameData data, ProgressSystem progress, MovementSystem movement, StatSystem stats)
+        public InventorySystem(GameData data, ProgressSystem progress, MovementSystem movement, StatSystem stats, Random random)
         {
             _data = data;
             _stats = stats;
+            _random = random;
             _progress = progress;
             _movement = movement;
             ZonesRow town = data.Zones.Rows.First(zone => zone.Kind == ZoneKind.Town);
@@ -328,6 +330,55 @@ namespace PortfolioMmo.Server
             player.Bag.Changed.Add((int)empty.Index);
             player.Bag.ChangedEquipment.Add(index);
             EquipmentChanged(player);
+            return FailReason.None;
+        }
+
+        /// <summary>
+        /// Enchant(입력 차례): 대상이 장비인지, 주문서 칸이 강화 주문서인지, +9보다 낮은지를 보고(어긋나면 아무것도 빼지 않음), 주문서 하나를 빼고
+        /// 다음 단계의 확률(100%면 굴리지 않음)로 성공하면 수치를 올리고 실패하면 장비를 지운다. 결과는 본인에게 EnchantResult로 간다.
+        /// </summary>
+        public FailReason Enchant(Player player, Enchant request)
+        {
+            ItemSlot[] place = request.Place == ItemPlace.Equipment ? player.Bag.Equipment : player.Bag.Slots;
+            if ((request.Slot >= place.Length) || (place[request.Slot].ItemId == 0) || (request.ScrollSlot >= player.Bag.Slots.Length)
+                || (player.Bag.Slots[request.ScrollSlot].ItemId == 0))
+            {
+                return FailReason.NoItem;
+            }
+
+            ItemSlot target = place[request.Slot];
+            if ((_data.Item(target.ItemId)!.Kind != ItemKind.Equipment) || (_data.Item(player.Bag.Slots[request.ScrollSlot].ItemId)!.Use != ItemUse.Enchant))
+            {
+                return FailReason.UnusableItem;
+            }
+
+            if (_data.Enchant(target.Enchant + 1) is not EnchantsRow next)
+            {
+                return FailReason.MaxEnchant;
+            }
+
+            Remove(player, (int)request.ScrollSlot, 1);
+            bool success = (next.Chance >= 1.0) || (_random.NextDouble() < next.Chance);
+            if (success)
+            {
+                target.Enchant++;
+            }
+            else
+            {
+                (target.ItemId, target.Count, target.Enchant) = (0u, 0u, 0u);
+            }
+
+            if (request.Place == ItemPlace.Equipment)
+            {
+                player.Bag.ChangedEquipment.Add((int)request.Slot);
+                EquipmentChanged(player);
+            }
+            else
+            {
+                player.Bag.Changed.Add((int)request.Slot);
+            }
+
+            player.Session.Send(new Packet { EnchantResult = new EnchantResult { Success = success, Enchant = target.Enchant } });
             return FailReason.None;
         }
 

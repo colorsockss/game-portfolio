@@ -64,7 +64,7 @@ namespace PortfolioMmo.Server
             _spawn.PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
             _growth = new GrowthSystem(_entities, stats, data);
-            _inventory = new InventorySystem(data, _progress, _movement, stats);
+            _inventory = new InventorySystem(data, _progress, _movement, stats, random);
             _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, random);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
             _combat.Deaths = _deaths;
@@ -206,6 +206,9 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.Unequip when player != null:
                     Respond(player, packet.Unequip.RequestId, _inventory.Unequip(player, packet.Unequip));
                     break;
+                case Packet.BodyOneofCase.Enchant when player != null:
+                    Respond(player, packet.Enchant.RequestId, _inventory.Enchant(player, packet.Enchant));
+                    break;
                 case Packet.BodyOneofCase.AttackStart when player != null:
                     Answer(player, _combat.Start(player, packet.AttackStart), RequestKind.Attack);
                     break;
@@ -251,6 +254,7 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.DropItem => packet.DropItem.RequestId,
                 Packet.BodyOneofCase.Equip => packet.Equip.RequestId,
                 Packet.BodyOneofCase.Unequip => packet.Unequip.RequestId,
+                Packet.BodyOneofCase.Enchant => packet.Enchant.RequestId,
                 _ => null,
             };
         }

@@ -62,6 +62,8 @@ message Packet {
     DropItem drop_item = 307;
     Equip equip = 308;
     Unequip unequip = 309;
+    Enchant enchant = 310;
+    EnchantResult enchant_result = 311;
   }
 }
 
@@ -510,6 +512,21 @@ message Unequip {
   uint32 request_id = 2;
 }
 
+// 클라이언트 → 서버. 강화 주문서(scroll_slot의 인벤토리 칸)로 장비(place와 slot)를 강화한다. 답은 RequestResult(주문서를 썼는지)와
+// 같은 틱의 EnchantResult(성공과 새 수치)다.
+message Enchant {
+  ItemPlace place = 1;
+  uint32 slot = 2;
+  uint32 scroll_slot = 3;
+  uint32 request_id = 4;
+}
+
+// 서버 → 본인. 강화의 결과. 성공이면 새 수치이고, 실패면 장비가 사라졌다(바뀐 칸은 InventoryChanged가 싣는다).
+message EnchantResult {
+  bool success = 1;
+  uint32 enchant = 2;
+}
+
 // 서버 → 본인. 요청 번호가 있는 요청(인벤토리를 바꾸는 요청)의 답. result가 NONE이면 성공이고, 바뀐 내용은 InventoryChanged 같은 다른 패킷이 싣는다.
 message RequestResult {
   uint32 request_id = 1;
@@ -569,6 +586,8 @@ enum FailReason {
   FAIL_REASON_LEVEL_TOO_LOW = 21;
   // 다른 직업의 장비다(34).
   FAIL_REASON_WRONG_CLASS = 22;
+  // 이미 가장 높은 강화 수치(+9)다(35).
+  FAIL_REASON_MAX_ENCHANT = 23;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.

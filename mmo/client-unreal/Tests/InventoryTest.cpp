@@ -153,8 +153,34 @@ namespace
 	}
 }
 
+namespace
+{
+	/** 강화(35): 다음 단계의 확률, 깨질 수 있는 단계(1보다 작음), 더 올릴 수 없음. EnchantResult는 사건으로 쌓인다. */
+	void EnchantChancesComeFromTheTable()
+	{
+		MmoData::FGameData Data;
+		for (uint32_t Level = 1; Level <= 9; ++Level)
+		{
+			portfolio::mmo::data::EnchantsRow* Row = Data.Enchants.add_rows();
+			Row->set_id(Level);
+			Row->set_chance(Level <= 3 ? 1.0 : 0.5);
+		}
+		Expect(*MmoWorld::FInventory::NextEnchantChance(Data, 2) == 1.0, "+3 is safe");
+		Expect(*MmoWorld::FInventory::NextEnchantChance(Data, 3) == 0.5, "+4 can break");
+		Expect(!MmoWorld::FInventory::NextEnchantChance(Data, 9), "+9 cannot go higher");
+		MmoWorld::FInventory Inventory;
+		portfolio::mmo::Packet Result;
+		Result.mutable_enchant_result()->set_success(true);
+		Result.mutable_enchant_result()->set_enchant(4);
+		Inventory.Apply(Result);
+		const std::vector<portfolio::mmo::EnchantResult> Results = Inventory.TakeEnchantResults();
+		Expect(Results.size() == 1 && Results[0].enchant() == 4 && Inventory.TakeEnchantResults().empty(), "an enchant result is taken once");
+	}
+}
+
 int main()
 {
+	EnchantChancesComeFromTheTable();
 	EquipmentChecksAndCompares();
 	SlotsAndRoomFollowTheServer();
 	RequestsWaitForTheirResult();

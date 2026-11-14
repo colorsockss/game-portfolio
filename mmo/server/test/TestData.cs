@@ -50,8 +50,26 @@ namespace PortfolioMmo.Server.Tests
                 new ItemsRow { Id = 1003, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 3, Slot = EquipSlot.Helmet, Level = 1, Defense = 3 },
                 new ItemsRow { Id = 1004, NameKey = "item.test", Kind = ItemKind.Equipment, Grade = ItemGrade.Common, Family = 4, Slot = EquipSlot.Armor, Level = 2, Defense = 6, MaxHp = 20 },
                 new ItemsRow { Id = 4001, NameKey = "item.test", Kind = ItemKind.Gold, Grade = ItemGrade.Common, Stackable = true },
+                new ItemsRow { Id = 2006, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Uncommon, Stackable = true, Use = ItemUse.Enchant },
             },
         };
+
+        /// <summary>
+        /// 시험용 강화 단계(35): +1–+3과 +5–+9는 늘 성공하고 +4는 늘 실패한다(결과를 씨앗과 상관없이 정함). 비율은 단계마다 0.1씩 오른다.
+        /// </summary>
+        public static Enchants Enchants
+        {
+            get
+            {
+                var table = new Enchants();
+                for (uint level = 1; level <= 9; level++)
+                {
+                    table.Rows.Add(new EnchantsRow { Id = level, Chance = level == 4 ? 0.0 : 1.0, StatRate = 1.0 + (0.1 * level) });
+                }
+
+                return table;
+            }
+        }
 
         /// <summary>
         /// 시험용 드롭 묶음(33): 1은 재료 3001 둘과 골드 10을 늘 떨어뜨린다.
@@ -277,7 +295,7 @@ namespace PortfolioMmo.Server.Tests
             table.Rows.Add(zones);
             return new GameData(
                 Hash, constants ?? Constants(size), table, grid, classes ?? Classes, levels ?? Levels,
-                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups);
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants);
         }
 
         /// <summary>

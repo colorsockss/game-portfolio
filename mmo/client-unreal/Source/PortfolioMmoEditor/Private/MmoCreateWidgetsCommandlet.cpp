@@ -35,6 +35,7 @@
 #include "UI/MmoDeathWidget.h"
 #include "UI/MmoHudWidget.h"
 #include "UI/MmoInventoryWidget.h"
+#include "UI/MmoEnchantWidget.h"
 #include "UI/MmoItemDetailWidget.h"
 #include "UI/MmoItemSlotWidget.h"
 #include "UI/MmoIcons.h"
@@ -641,6 +642,27 @@ namespace
 		return Builder.Save() ? Builder.GeneratedClass() : nullptr;
 	}
 
+	/** 강화 창(35): 제목, 대상 장비의 목록 위젯, 글(주문서 수, 다음 단계와 확률, 위험), 결과, 강화하기·닫기. */
+	bool CreateEnchant(UClass* ItemSlotClass)
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Enchant, UMmoEnchantWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 6 + Style.Gap * 2, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("enchant.title"), Style.TitleSize), Style.Section);
+		UTileView* Targets = Builder.Add<UTileView>(TEXT("Targets"), true);
+		Targets->SetEntryWidth(Style.ItemSlot);
+		Targets->SetEntryHeight(Style.ItemSlot);
+		FindFProperty<FClassProperty>(UListViewBase::StaticClass(), TEXT("EntryWidgetClass"))->SetObjectPropertyValue_InContainer(Targets, ItemSlotClass);
+		USizeBox* TargetSize = Builder.Add<USizeBox>(TEXT("TargetSize"));
+		TargetSize->SetHeightOverride(Style.ItemSlot * 2);
+		TargetSize->SetContent(Targets);
+		AddWithGap(*Column, TargetSize);
+		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.BodySize, true));
+		AddWithGap(*Column, Builder.Text(TEXT("ResultText"), FText::GetEmpty(), Style.BodySize, true, Style.Positive), Style.Section);
+		AddWithGap(*Column, Builder.Button(TEXT("GoButton"), TEXT("enchant.go")));
+		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
+		return Builder.Save();
+	}
+
 	/** 인벤토리 창(32): 제목, 칸의 목록 위젯(한 줄에 6칸, 보이는 줄만 만듦), 골드, 닫기. */
 	bool CreateInventory(UClass* ItemSlotClass)
 	{
@@ -685,6 +707,7 @@ namespace
 		Desc->SetAutoWrapText(true);
 		AddWithGap(*Column, Desc, Style.Section);
 		AddWithGap(*Column, Builder.Button(TEXT("EquipButton"), TEXT("detail.equip")));
+		AddWithGap(*Column, Builder.Button(TEXT("EnchantButton"), TEXT("detail.enchant")));
 		AddWithGap(*Column, Builder.Button(TEXT("UseButton"), TEXT("detail.use")));
 		AddWithGap(*Column, Builder.Button(TEXT("QuickslotButton"), TEXT("detail.quickslot")));
 		AddWithGap(*Column, Builder.Button(TEXT("DropButton"), TEXT("detail.drop")));
@@ -817,7 +840,7 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	UClass* Joystick = CreateJoystick();
 	UClass* ItemSlot = CreateItemSlot();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateItemDetail() && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateItemDetail() && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 

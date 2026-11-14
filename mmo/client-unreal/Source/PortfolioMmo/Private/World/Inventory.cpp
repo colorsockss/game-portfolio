@@ -57,6 +57,9 @@ namespace MmoWorld
 				Gains.push_back({ Gain.reason(), Gain.has_item() ? Gain.item().item_id() : 0, Gain.has_item() ? Gain.item().count() : 0, Gain.has_gold() ? Gain.gold() : 0 });
 			}
 			break;
+		case portfolio::mmo::Packet::kEnchantResult:
+			EnchantResults.push_back(Packet.enchant_result());
+			break;
 		case portfolio::mmo::Packet::kRequestResult:
 			Waiting.erase(Packet.request_result().request_id());
 			if (Packet.request_result().result() != portfolio::mmo::FAIL_REASON_NONE)
@@ -161,6 +164,28 @@ namespace MmoWorld
 		Packet.mutable_unequip()->set_request_id(++NextRequest);
 		Waiting.insert(NextRequest);
 		return Packet;
+	}
+
+	portfolio::mmo::Packet FInventory::Enchant(portfolio::mmo::ItemPlace Place, uint32_t Slot, uint32_t ScrollSlot)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_enchant()->set_place(Place);
+		Packet.mutable_enchant()->set_slot(Slot);
+		Packet.mutable_enchant()->set_scroll_slot(ScrollSlot);
+		Packet.mutable_enchant()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
+	std::optional<double> FInventory::NextEnchantChance(const MmoData::FGameData& Data, uint32_t Enchant)
+	{
+		const portfolio::mmo::data::EnchantsRow* Next = Data.Enchant(Enchant + 1);
+		return Next ? std::optional<double>(Next->chance()) : std::nullopt;
+	}
+
+	std::vector<portfolio::mmo::EnchantResult> FInventory::TakeEnchantResults()
+	{
+		return std::exchange(EnchantResults, {});
 	}
 
 	portfolio::mmo::Packet FInventory::PickUp(uint32_t EntityId)

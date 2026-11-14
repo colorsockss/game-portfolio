@@ -59,7 +59,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 입은 장비의 능력치를 더한다(34). 강화의 몫은 35가 더한다.
+        /// 입은 장비의 능력치를 더한다(34). 강화한 장비는 Enchants의 비율을 곱한다(35).
         /// </summary>
         private Stats WithEquipment(Stats stats, Player player)
         {
@@ -67,7 +67,10 @@ namespace PortfolioMmo.Server
             {
                 if ((worn.ItemId != 0) && (_data.Item(worn.ItemId) is ItemsRow item))
                 {
-                    stats = new Stats(stats.MaxHp + item.MaxHp, stats.MaxMp + item.MaxMp, stats.Attack + item.Attack, stats.Defense + item.Defense);
+                    // 강화한 장비는 Items의 능력치에 그 단계의 비율을 곱한다(소수는 버림. 35).
+                    double rate = (worn.Enchant > 0) && (_data.Enchant(worn.Enchant) is EnchantsRow step) ? step.StatRate : 1.0;
+                    uint Scaled(uint value) => (uint)Math.Floor(value * rate);
+                    stats = new Stats(stats.MaxHp + Scaled(item.MaxHp), stats.MaxMp + Scaled(item.MaxMp), stats.Attack + Scaled(item.Attack), stats.Defense + Scaled(item.Defense));
                 }
             }
 

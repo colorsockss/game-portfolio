@@ -41,6 +41,9 @@ private:
 	UFUNCTION()
 	void HandleEquipClicked();
 
+	UFUNCTION()
+	void HandleEnchantClicked();
+
 	/** DropItem을 보내고 답을 기다린다. */
 	void SendDrop(uint32 Count);
 
@@ -69,6 +72,10 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> EquipButton;
+
+	/** 강화 주문서의 강화 버튼(35). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> EnchantButton;
 
 	/** 장비의 능력치 줄(입은 것과의 비교). */
 	UPROPERTY(meta = (BindWidget))

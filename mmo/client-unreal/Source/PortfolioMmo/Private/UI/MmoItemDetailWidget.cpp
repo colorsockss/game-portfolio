@@ -36,6 +36,7 @@ void UMmoItemDetailWidget::NativeOnInitialized()
 	QuickslotButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleQuickslotClicked);
 	DropButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleDropClicked);
 	EquipButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleEquipClicked);
+	EnchantButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleEnchantClicked);
 	CloseButton->OnClicked.AddDynamic(this, &UMmoItemDetailWidget::HandleCloseClicked);
 }
 
@@ -78,6 +79,7 @@ void UMmoItemDetailWidget::SetUp(uint32 InSlotIndex, bool bInEquipment)
 	UseButton->SetVisibility(bUsable ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	QuickslotButton->SetVisibility(!bEquipment && IsPotion(*Item) ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	DropButton->SetVisibility(bEquipment ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
+	EnchantButton->SetVisibility(Item->use() == portfolio::mmo::data::ITEM_USE_ENCHANT ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 
 	// 장비(34): 능력치 줄(입지 않은 것은 입은 것과의 비교), 입기·벗기, 입을 수 없는 까닭.
 	const bool bGear = Item->kind() == portfolio::mmo::data::ITEM_KIND_EQUIPMENT;
@@ -200,6 +202,11 @@ void UMmoItemDetailWidget::HandleEquipClicked()
 	Session->Send(bEquipment ? Session->Inventory().Unequip(SlotIndex + 1) : Session->Inventory().Equip(SlotIndex));
 	PendingRequest = Session->Inventory().RequestId();
 	EquipButton->SetWaiting(true);
+}
+
+void UMmoItemDetailWidget::HandleEnchantClicked()
+{
+	GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowEnchant(ItemId);
 }
 
 void UMmoItemDetailWidget::HandleCloseClicked()

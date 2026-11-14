@@ -18,6 +18,7 @@
 #include "UI/MmoButtonWidget.h"
 #include "UI/MmoConfirmWidget.h"
 #include "UI/MmoItemDetailWidget.h"
+#include "UI/MmoEnchantWidget.h"
 #include "UI/MmoNoticeWidget.h"
 #include "UI/MmoQuantityWidget.h"
 #include "UI/MmoTextBlock.h"
@@ -60,6 +61,8 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::Inventory);
 		case EScreen::ItemDetail:
 			return MmoUiPaths::ClassOf(MmoUiPaths::ItemDetail);
+		case EScreen::Enchant:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Enchant);
 		}
 		checkNoEntry();
 		return {};
@@ -289,6 +292,7 @@ void UMmoUiManager::ReturnToCharacterSelect()
 	Close(EScreen::Character);
 	Close(EScreen::Inventory);
 	Close(EScreen::ItemDetail);
+	Close(EScreen::Enchant);
 	Close(EScreen::Hud);
 	Open(EScreen::CharacterSelect);
 }
@@ -368,6 +372,7 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		Close(EScreen::Character);
 		Close(EScreen::Inventory);
 		Close(EScreen::ItemDetail);
+		Close(EScreen::Enchant);
 		Close(EScreen::Confirm);
 		Close(EScreen::Quantity);
 		Open(EScreen::Death);
@@ -408,6 +413,15 @@ void UMmoUiManager::ShowItemDetail(uint32 Slot, bool bEquipment)
 	Open(EScreen::ItemDetail, [Slot, bEquipment](UUserWidget& Widget)
 	{
 		CastChecked<UMmoItemDetailWidget>(&Widget)->SetUp(Slot, bEquipment);
+	});
+}
+
+void UMmoUiManager::ShowEnchant(uint32 ScrollItemId)
+{
+	Close(EScreen::ItemDetail);
+	Open(EScreen::Enchant, [ScrollItemId](UUserWidget& Widget)
+	{
+		CastChecked<UMmoEnchantWidget>(&Widget)->SetUp(ScrollItemId);
 	});
 }
 
@@ -460,6 +474,7 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Close(EScreen::Character);
 	Close(EScreen::Inventory);
 	Close(EScreen::ItemDetail);
+	Close(EScreen::Enchant);
 	Close(EScreen::Hud);
 	Close(EScreen::CharacterCreate);
 	Close(EScreen::CharacterSelect);

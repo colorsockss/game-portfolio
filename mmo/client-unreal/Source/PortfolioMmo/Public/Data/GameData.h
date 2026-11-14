@@ -41,6 +41,9 @@ namespace MmoData
 		/** 아이템(32: 이름의 키, 종류, 등급, 겹침, 쓰는 종류와 값, 쿨다운). */
 		portfolio::mmo::data::Items Items;
 
+		/** 강화 단계(+1–+9)의 성공 확률과 능력치 비율(35). */
+		portfolio::mmo::data::Enchants Enchants;
+
 		/** 직업과 레벨마다의 필요 경험치와 기본 능력치(31: 경험치 바의 비율). */
 		portfolio::mmo::data::Levels Levels;
 
@@ -58,6 +61,9 @@ namespace MmoData
 
 		/** 직업의 줄. 없으면 nullptr. */
 		const portfolio::mmo::data::ClassesRow* Class(uint32_t Id) const;
+
+		/** 강화 단계의 줄. 없으면 nullptr(더 올릴 수 없음). */
+		const portfolio::mmo::data::EnchantsRow* Enchant(uint32_t Level) const;
 
 		/** 아이템의 줄. 없으면 nullptr. */
 		const portfolio::mmo::data::ItemsRow* Item(uint32_t Id) const;

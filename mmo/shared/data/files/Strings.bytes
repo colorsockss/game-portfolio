@@ -644,3 +644,32 @@ F
 fail.levelTooLow레벨이 모자랍니다.Your level is too low.
 P
 fail.wrongClass!다른 직업의 장비입니다.That is for another class.
+0
+item.enchant강화 주문서Enchant Scroll
+�
+item.desc.2006]장비를 한 단계 강화합니다. +3 위에서는 실패하면 장비가 사라집니다.KEnchants a piece of equipment by one step. Above +3, a failure destroys it.
+!
+detail.enchant강화Enchant
+ 
+enchant.title강화Enchant
+Q
+enchant.pick!강화할 장비를 고르세요.Pick the equipment to enchant.
+0
+enchant.scrolls주문서 {0}개{0} scrolls
+G
+enchant.next+{0} → +{1}  성공 {2}%+{0} → +{1}  {2}% success
+Z
+enchant.risk'실패하면 장비가 사라집니다.!A failure destroys the equipment.
+O
+enchant.max더 강화할 수 없습니다.It cannot be enchanted further.
+#
+
+enchant.go강화하기Enchant
+s
+enchant.question:실패하면 {0}이(가) 사라집니다. 강화할까요?#A failure destroys {0}. Enchant it?
+N
+enchant.success"강화에 성공했습니다: +{0}Enchant succeeded: +{0}
+s
+enchant.failure1강화에 실패해 장비가 사라졌습니다.-The enchant failed and the equipment is gone.
+S
+fail.maxEnchant더 강화할 수 없습니다.It cannot be enchanted further.

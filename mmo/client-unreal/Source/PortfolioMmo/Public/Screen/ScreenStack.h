@@ -26,6 +26,8 @@ namespace MmoScreen
 		Inventory,
 		/** 아이템 상세 창(32). */
 		ItemDetail,
+		/** 강화 창(35). */
+		Enchant,
 	};
 
 	/** 화면이 올라가는 층. 아래에서 위로 그린다. */
