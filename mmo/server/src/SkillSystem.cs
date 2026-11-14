@@ -144,7 +144,8 @@ namespace PortfolioMmo.Server
 
         /// <summary>
         /// 대상의 확인: 대상에게 쓰는 스킬은 대상이 있고 살아 있고 받은 개체인지, CanAttack, 복귀 중이 아닌지, 사거리, 선(사거리 안인데 막혔으면 막힘).
-        /// 그 자리에서 쓰는 스킬은 보지 않고 시전자에게 쓴다(회복과 강화의 파티원은 42). 직선 발사체의 스킬은 보지 않고 실려 온 번호를 그대로 둔다.
+        /// 그 자리에서 쓰는 스킬은 시전자에게 쓰되, 회복과 강화는 대상이 같은 파티의 살아 있는 파티원(받은 개체)이면 그 파티원에게 쓰고 사거리와 선을 본다(42).
+        /// 직선 발사체의 스킬은 보지 않고 실려 온 번호를 그대로 둔다.
         /// </summary>
         private FailReason CheckTarget(Player player, SkillsRow skill, uint requested, out uint targetId)
         {
@@ -157,6 +158,14 @@ namespace PortfolioMmo.Server
 
             if (!TargetsOther(skill))
             {
+                if ((skill.Kind is SkillKind.Heal or SkillKind.Buff) && (requested != player.Id) && (_entities.Find(requested) is Player { Dead: false } member)
+                    && PartySystem.SameParty(player, member) && player.Visible.Contains(member))
+                {
+                    FailReason reach = Reach(player, member, skill);
+                    targetId = reach == FailReason.None ? member.Id : player.Id;
+                    return reach;
+                }
+
                 return FailReason.None;
             }
 
@@ -171,6 +180,20 @@ namespace PortfolioMmo.Server
                 return FailReason.InvalidTarget;
             }
 
+            FailReason reason = Reach(player, target, skill);
+            if (reason == FailReason.None)
+            {
+                targetId = target.Id;
+            }
+
+            return reason;
+        }
+
+        /// <summary>
+        /// 스킬의 사거리 안이고("사거리 밖") 선이 트였는가("막힘").
+        /// </summary>
+        private FailReason Reach(Player player, Creature target, SkillsRow skill)
+        {
             long dx = (long)target.X - player.X;
             long dz = (long)target.Z - player.Z;
             long range = (long)Math.Round(skill.Range * Units.PerMeter);
@@ -179,13 +202,7 @@ namespace PortfolioMmo.Server
                 return FailReason.OutOfRange;
             }
 
-            if (!_field.HasLine(player.X, player.Z, target.X, target.Z))
-            {
-                return FailReason.Blocked;
-            }
-
-            targetId = target.Id;
-            return FailReason.None;
+            return _field.HasLine(player.X, player.Z, target.X, target.Z) ? FailReason.None : FailReason.Blocked;
         }
 
         /// <summary>
@@ -312,15 +329,25 @@ namespace PortfolioMmo.Server
                 case SkillKind.AreaDamage:
                     Area(caster, skill, targetId, tick);
                     break;
+                // 회복과 강화의 받는 쪽(42): 시전자나 파티원. 그 사이에 파티원이 죽었거나 월드에서 빠졌으면 아무것도 하지 않는다.
                 case SkillKind.Buff:
-                    AddEffect(skill, caster, tick);
+                    if (Recipient(caster, targetId) is Creature buffed)
+                    {
+                        AddEffect(skill, buffed, tick);
+                    }
+
                     break;
                 case SkillKind.Heal:
-                    caster.Restore((uint)Math.Floor(caster.Stats.Attack * skill.Coefficient), 0);
+                    Recipient(caster, targetId)?.Restore((uint)Math.Floor(caster.Stats.Attack * skill.Coefficient), 0);
                     break;
                 default:
                     throw new InvalidOperationException($"Skill {skill.Id} has unknown kind {skill.Kind}.");
             }
+        }
+
+        private Creature? Recipient(Creature caster, uint targetId)
+        {
+            return targetId == caster.Id ? caster : _entities.Find(targetId) is Creature { Dead: false } other ? other : null;
         }
 
         /// <summary>

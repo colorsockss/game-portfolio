@@ -78,6 +78,11 @@ namespace PortfolioMmo.Server
 
         internal int NextChatTick { get; set; }
 
+        /// <summary>
+        /// 파티 번호(42). 없으면 0이다. PartySystem만 바꾼다.
+        /// </summary>
+        internal uint PartyId { get; set; }
+
         public NameColor NameColor { get; private set; }
 
         public uint WeaponItemId { get; private set; }

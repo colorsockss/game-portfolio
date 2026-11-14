@@ -83,6 +83,11 @@ namespace PortfolioMmo.Server
         public System.Action<Player, CharacterSnapshot, bool>? Entered { get; set; }
 
         /// <summary>
+        /// 연결이 캐릭터에서 떨어지기 직전(끊김, 로그아웃, LeaveWorld, 재로그인, 예외. 월드에서 빼기 전). 파티(42)가 그 캐릭터를 뺀다.
+        /// </summary>
+        public System.Action<Player>? Leaving { get; set; }
+
+        /// <summary>
         /// 로그인을 처리한다. 프로토콜 버전 → 데이터 해시 → ID 형식 → 동접 상한 순으로 보고, 실패하면 LoginResult를 보내고 끊는다. 같은 계정이 이미 로그인해 있으면 예전 연결을 끊는다.
         /// 성공하면 캐릭터 목록을 보낸다.
         /// </summary>
@@ -236,6 +241,7 @@ namespace PortfolioMmo.Server
         {
             if (session.Player is Player player)
             {
+                Leaving?.Invoke(player);
                 session.Player = null;
                 _entities.Remove(player);
                 _grid.Remove(player);
@@ -438,6 +444,7 @@ namespace PortfolioMmo.Server
                 return;
             }
 
+            Leaving?.Invoke(player);
             session.Player = null;
             _entities.Remove(player);
             _grid.Remove(player);

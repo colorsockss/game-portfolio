@@ -5,10 +5,15 @@
 #include "Engine/LocalPlayer.h"
 #include "UI/MmoUiManager.h"
 
-void UMmoConfirmWidget::SetUp(const FText& Message, TFunction<void()> InOnYes)
+void UMmoConfirmWidget::SetUp(const FText& Message, TFunction<void()> InOnYes, TFunction<void()> InOnNo, const TCHAR* YesKey, const TCHAR* NoKey)
 {
 	MessageText->SetText(Message);
 	OnYes = MoveTemp(InOnYes);
+	OnNo = MoveTemp(InOnNo);
+	YesButton->LabelKey = YesKey;
+	YesButton->RefreshText();
+	NoButton->LabelKey = NoKey;
+	NoButton->RefreshText();
 }
 
 void UMmoConfirmWidget::NativeOnInitialized()
@@ -31,5 +36,10 @@ void UMmoConfirmWidget::HandleYesClicked()
 
 void UMmoConfirmWidget::HandleNoClicked()
 {
+	TFunction<void()> Action = MoveTemp(OnNo);
 	GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->Close(MmoScreen::EScreen::Confirm);
+	if (Action)
+	{
+		Action();
+	}
 }

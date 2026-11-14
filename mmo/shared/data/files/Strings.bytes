@@ -879,3 +879,36 @@ chat.world전체World
 	chat.send	보내기Send
 $
 target.whisper	귓속말Whisper
+X
+fail.notLeader"파티장만 할 수 있습니다."Only the party leader can do that.
+D
+fail.partyFull파티가 가득 찼습니다.The party is full.
+J
+fail.alreadyInParty이미 파티에 있습니다.Already in a party.
+`
+fail.invitePending%다른 초대를 받는 중입니다.#They already have a pending invite.
+=
+fail.noInvite초대가 없습니다.There is no invite.
+N
+fail.inviteDeclined초대를 거절했습니다.The invite was declined.
+
+party.title파티Party
+
+party.button파티Party
+%
+party.invite파티 초대Invite
+U
+party.invited'{0}님이 파티에 초대했습니다.{0} invited you to a party.
+
+party.accept수락Accept
+ 
+party.decline거절Decline
+
+party.leave	떠나기Leave
+ 
+
+party.kick내보내기Kick
+-
+party.leader{0} (파티장){0} (Leader)
+?
+party.empty파티가 없습니다.You are not in a party.

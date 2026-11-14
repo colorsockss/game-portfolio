@@ -17,10 +17,11 @@ namespace MmoWorld
 		}
 	}
 
-	bool FInteraction::CanPickUp(const portfolio::mmo::EntityEnter& Item, uint32_t SelfId, double ServerTick)
+	bool FInteraction::CanPickUp(const portfolio::mmo::EntityEnter& Item, uint32_t SelfId, double ServerTick, uint32_t PartyId)
 	{
 		return Item.owner_case() == portfolio::mmo::EntityEnter::OWNER_NOT_SET
 			|| (Item.owner_case() == portfolio::mmo::EntityEnter::kOwnerPlayerId && Item.owner_player_id() == SelfId)
+			|| (Item.owner_case() == portfolio::mmo::EntityEnter::kOwnerPartyId && PartyId != 0 && Item.owner_party_id() == PartyId)
 			|| ServerTick >= Item.owner_only_end_tick();
 	}
 

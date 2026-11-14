@@ -15,8 +15,8 @@ class UMmoConfirmWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	/** 물을 글과 예를 눌렀을 때 할 일. 열 때마다 바꾼다. */
-	void SetUp(const FText& Message, TFunction<void()> InOnYes);
+	/** 물을 글, 예와 아니요를 눌렀을 때 할 일, 두 버튼의 글(Strings의 키). 열 때마다 바꾼다. */
+	void SetUp(const FText& Message, TFunction<void()> InOnYes, TFunction<void()> InOnNo, const TCHAR* YesKey, const TCHAR* NoKey);
 
 protected:
 	virtual void NativeOnInitialized() override;
@@ -38,4 +38,5 @@ private:
 	TObjectPtr<UMmoButtonWidget> NoButton;
 
 	TFunction<void()> OnYes;
+	TFunction<void()> OnNo;
 };

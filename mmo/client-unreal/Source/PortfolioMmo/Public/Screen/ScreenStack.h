@@ -36,6 +36,8 @@ namespace MmoScreen
 		Storage,
 		/** 전체 지도(76). */
 		Map,
+		/** 파티 창(42). */
+		Party,
 	};
 
 	/** 화면이 올라가는 층. 아래에서 위로 그린다. */

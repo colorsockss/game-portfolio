@@ -64,6 +64,14 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 두 칸이 서로의 둘레 3×3칸 안인가(파티의 경험치 42).
+        /// </summary>
+        public static bool Near(long a, long b)
+        {
+            return (Math.Abs((int)(a >> 32) - (int)(b >> 32)) <= 1) && (Math.Abs((int)a - (int)b) <= 1);
+        }
+
+        /// <summary>
         /// 칸 둘레 3×3칸에 플레이어가 있는가(몬스터의 배회. 재우는 판단은 56).
         /// </summary>
         public bool HasPlayerAround(long cell)

@@ -25,5 +25,13 @@ namespace PortfolioMmo.Server
         {
             return new Outcome(Kinds.Failed, reason);
         }
+
+        /// <summary>
+        /// 이유가 NONE이면 성공, 아니면 그 이유의 실패(FailReason으로 답하는 시스템의 결과를 ActionFailed로 보낼 때).
+        /// </summary>
+        public static Outcome From(FailReason reason)
+        {
+            return reason == FailReason.None ? Done : Fail(reason);
+        }
     }
 }

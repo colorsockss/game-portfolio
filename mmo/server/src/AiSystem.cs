@@ -17,6 +17,7 @@ namespace PortfolioMmo.Server
         private readonly Grid _grid;
         private readonly FieldMap _field;
         private readonly Scheduler _scheduler;
+        private readonly PartySystem _party;
         private readonly Random _random;
         private readonly PathFinder _paths;
         private readonly List<Monster> _monsters = new List<Monster>();
@@ -34,12 +35,13 @@ namespace PortfolioMmo.Server
         private readonly uint _pauseMinTicks;
         private readonly uint _pauseMaxTicks;
 
-        public AiSystem(EntityTable entities, Grid grid, FieldMap field, Scheduler scheduler, GameData data, Random random)
+        public AiSystem(EntityTable entities, Grid grid, FieldMap field, Scheduler scheduler, GameData data, Random random, PartySystem party)
         {
             _entities = entities;
             _grid = grid;
             _field = field;
             _scheduler = scheduler;
+            _party = party;
             _random = random;
             _paths = new PathFinder(field);
             Constants constants = data.Constants;
@@ -114,7 +116,7 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            uint? targetId = monster.Damage.Pick(id => Selectable(monster, id));
+            uint? targetId = monster.Damage.Pick(id => Selectable(monster, id), _party.SideOf);
             if (targetId == null)
             {
                 if (monster.Damage.Count > 0)

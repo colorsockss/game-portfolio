@@ -9,6 +9,7 @@
 #include "World/ChatLog.h"
 #include "World/CombatState.h"
 #include "World/Inventory.h"
+#include "World/Party.h"
 #include "World/SkillBook.h"
 #include "World/WorldState.h"
 
@@ -75,6 +76,10 @@ public:
 	/** 채팅 기록(41). ChatReceived를 받으면 줄이 들고, 시스템 줄은 알림 패킷을 받은 쪽이 넣는다. 로그아웃하거나 끊기면 비운다. */
 	MmoWorld::FChatLog& Chat() { return ChatLog; }
 
+	/** 내 파티와 받은 초대(42). 파티의 요청(PartyInvite 등)은 화면이 만들어 Send로 보낸다. 로그아웃하거나 끊기면 비운다(서버도 파티에서 뺌). */
+	const MmoWorld::FParty& Party() const { return PartyState; }
+	MmoWorld::FParty& Party() { return PartyState; }
+
 	/** 배운 스킬과 퀵슬롯(36). 퀵슬롯을 바꾸는 SetQuickslot은 여기서 만들어 Send로 보내고, 서버의 Quickslots가 오면 바뀐다. */
 	const MmoWorld::FSkillBook& Skills() const { return SkillBook; }
 	MmoWorld::FSkillBook& Skills() { return SkillBook; }
@@ -121,6 +126,7 @@ private:
 	MmoWorld::FInventory StorageState{ true };
 	MmoWorld::FSkillBook SkillBook;
 	MmoWorld::FChatLog ChatLog;
+	MmoWorld::FParty PartyState;
 	bool bLoggingOut = false;
 	portfolio::mmo::CharacterList CharacterList;
 	/** 시작할 때 한 번 읽은 기획 데이터. 읽지 못하면 해시가 0이라 서버가 DATA_MISMATCH로 거절한다. */

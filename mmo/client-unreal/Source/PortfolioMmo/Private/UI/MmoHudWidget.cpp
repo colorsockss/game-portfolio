@@ -50,6 +50,11 @@ int32 UMmoHudWidget::QuickslotCount()
 	return portfolio::mmo::CONSTANT_QUICKSLOT_COUNT;
 }
 
+int32 UMmoHudWidget::PartySlotCount()
+{
+	return portfolio::mmo::CONSTANT_MAX_PARTY_SIZE - 1;
+}
+
 void UMmoHudWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -64,6 +69,27 @@ void UMmoHudWidget::NativeOnInitialized()
 		}
 	});
 	TargetButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleTargetClicked);
+	PartyInviteButton->OnClickedNative.AddWeakLambda(this, [this]
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_party_invite()->set_target_id(ShownTarget);
+		GetGameInstance()->GetSubsystem<UMmoSession>()->Send(Packet);
+	});
+	PartyButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->TogglePartyWindow(); });
+	for (int32 Index = 0; Index < PartySlotCount(); ++Index)
+	{
+		UWidget* Slot = WidgetTree->FindWidget(*FString::Printf(TEXT("PartyMember%dBox"), Index));
+		UMmoButtonWidget* Name = WidgetTree->FindWidget<UMmoButtonWidget>(*FString::Printf(TEXT("PartyMember%d"), Index));
+		UProgressBar* Hp = WidgetTree->FindWidget<UProgressBar>(*FString::Printf(TEXT("PartyMember%dHpBar"), Index));
+		if (!Slot || !Name || !Hp)
+		{
+			break;
+		}
+		Name->OnClickedNative.AddWeakLambda(this, [this, Index] { TargetPartyMember(Index); });
+		PartySlots.Add(Slot);
+		PartyNames.Add(Name);
+		PartyHpBars.Add(Hp);
+	}
 	WhisperButton->OnClickedNative.AddWeakLambda(this, [this]
 	{
 		const auto& Entities = GetGameInstance()->GetSubsystem<UMmoSession>()->World().Entities();
@@ -208,6 +234,56 @@ void UMmoHudWidget::HandleAttackClicked()
 	}
 }
 
+void UMmoHudWidget::ShowParty()
+{
+	const UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const MmoWorld::FParty& Party = Session->Party();
+	if (Party.Revision() == ShownParty)
+	{
+		return;
+	}
+	ShownParty = Party.Revision();
+	PartyShown.Reset();
+	for (const MmoWorld::FPartyMember& Member : Party.Members())
+	{
+		if (Member.Id != Session->World().SelfId())
+		{
+			PartyShown.Add(Member.Id);
+		}
+	}
+	for (int32 Index = 0; Index < PartySlots.Num(); ++Index)
+	{
+		const MmoWorld::FPartyMember* Member = nullptr;
+		if (PartyShown.IsValidIndex(Index))
+		{
+			for (const MmoWorld::FPartyMember& Candidate : Party.Members())
+			{
+				Member = Candidate.Id == PartyShown[Index] ? &Candidate : Member;
+			}
+		}
+		PartySlots[Index]->SetVisibility(Member ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed);
+		if (Member)
+		{
+			PartyNames[Index]->SetLabel(FText::FromString(UTF8_TO_TCHAR(Member->Name.c_str())));
+			// 체력은 1초마다의 PartyMemberVitals다(아직 받지 못했으면 가득).
+			PartyHpBars[Index]->SetPercent(Member->bVitals && Member->MaxHp > 0 ? static_cast<float>(Member->Hp) / Member->MaxHp : 1.0f);
+		}
+	}
+}
+
+void UMmoHudWidget::TargetPartyMember(int32 Index)
+{
+	// 시야 안의 파티원만 대상으로 삼는다(회복과 강화를 쓰기 쉽게. 42).
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	if (PartyShown.IsValidIndex(Index) && Session->Party().IsTargetable(Session->World(), PartyShown[Index]))
+	{
+		if (const std::optional<portfolio::mmo::Packet> Stop = Session->Combat().SetTarget(PartyShown[Index]))
+		{
+			Session->Send(*Stop);
+		}
+	}
+}
+
 void UMmoHudWidget::HandleTargetClicked()
 {
 	if (AMmoPlayerController* Controller = GetOwningPlayer<AMmoPlayerController>())
@@ -308,6 +384,11 @@ void UMmoHudWidget::ShowTarget()
 		const bool bOtherPlayer = Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER && Found->first != Session->World().SelfId();
 		WhisperButton->SetVisibility(bOtherPlayer ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	}
+	// 초대 버튼은 파티가 바뀌어도 맞게 프레임마다 정한다(42).
+	const MmoWorld::FParty& Party = Session->Party();
+	const bool bCanInvite = Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER && Found->first != Session->World().SelfId() && !Party.Contains(Found->first)
+		&& (Party.Id() == 0 || Party.LeaderId() == Session->World().SelfId());
+	PartyInviteButton->SetVisibility(bCanInvite ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	ShowBar(*TargetHpBar, *TargetHpText, Info.hp(), Info.max_hp(), ShownTargetHp);
 }
 
@@ -407,6 +488,8 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	}
 	ShowMinimap(Now);
 	ShowInteract();
+	ShowParty();
+	GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->UpdateInvite();
 	ShowStats(InDeltaTime);
 	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀). 요청 번호가 있는 요청의 실패와 얻은 것(32)도 같다.
 	UMmoUiManager* Ui = GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>();
@@ -518,7 +601,7 @@ void UMmoHudWidget::ShowMinimap(double Now)
 	}
 	const FVector Location = Self->GetActorLocation();
 	const std::vector<MmoWorld::FMapPoint> Points = MmoWorld::FMapView::Points(*Field, Session->Data(), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location),
-		MmoCoordinates::ToYaw(Self->GetActorRotation()));
+		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()));
 	const double Span = MinimapMeters / Field->GridSize();
 	const double MinU = Points[0].U - Span / 2;
 	const double MinV = Points[0].V - Span / 2;

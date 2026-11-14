@@ -32,6 +32,7 @@ namespace MmoUiPaths
 	inline const TCHAR* const Notice = TEXT("/Game/UI/WBP_Notice");
 	inline const TCHAR* const NameTag = TEXT("/Game/UI/WBP_NameTag");
 	inline const TCHAR* const Chat = TEXT("/Game/UI/WBP_Chat");
+	inline const TCHAR* const Party = TEXT("/Game/UI/WBP_Party");
 
 	/** 패키지 경로 → 그 위젯 블루프린트가 만든 클래스(…/WBP_X.WBP_X_C). */
 	inline FSoftClassPath ClassOf(const TCHAR* Package)

@@ -116,6 +116,7 @@ namespace
 		MmoWorld::FSkillBook Skills;
 		MmoWorld::FCooldowns Cooldowns;
 		std::set<uint32_t> Excluded;
+		uint32_t PartyId = 0;
 		uint32_t Target = 0;
 		bool bAttacking = false;
 		bool bAwaiting = false;
@@ -201,7 +202,7 @@ namespace
 			World.Apply(Enter, 0);
 		}
 
-		void Loot(uint32_t Id, int32_t XMeters, uint32_t ItemId, uint32_t Owner = 0, bool bDropped = false)
+		void Loot(uint32_t Id, int32_t XMeters, uint32_t ItemId, uint32_t Owner = 0, bool bDropped = false, uint32_t OwnerParty = 0)
 		{
 			Packet Enter;
 			portfolio::mmo::EntityEnter* Entity = Enter.mutable_entities_enter()->add_entities();
@@ -214,6 +215,11 @@ namespace
 			if (Owner != 0)
 			{
 				Entity->set_owner_player_id(Owner);
+				Entity->set_owner_only_end_tick(200);
+			}
+			if (OwnerParty != 0)
+			{
+				Entity->set_owner_party_id(OwnerParty);
 				Entity->set_owner_only_end_tick(200);
 			}
 			World.Apply(Enter, 0);
@@ -246,7 +252,7 @@ namespace
 
 		FAutoDecision Decide(double ServerTick = 100)
 		{
-			return MmoWorld::FAutoHunt::Decide({ World, Game, Field, Inventory, Skills, Cooldowns, Self, { 0, 0 }, Target, bAttacking, bAwaiting, 0, ServerTick, Excluded });
+			return MmoWorld::FAutoHunt::Decide({ World, Game, Field, Inventory, Skills, Cooldowns, Self, { 0, 0 }, Target, bAttacking, bAwaiting, 0, ServerTick, Excluded, PartyId });
 		}
 	};
 
@@ -395,6 +401,16 @@ namespace
 		Expect((Scene.Decide() == FAutoDecision{ EAutoAction::PickUp, 15 }), "gold always fits");
 	}
 
+	/** 주인이 내 파티인 드롭은 주인만 줍는 시간 안에도 줍고, 다른 파티의 것은 두고 간다(42). */
+	void PartyLootIsMine()
+	{
+		FScene Scene;
+		Scene.Loot(10, 3, 3001, 0, false, 7);
+		Expect(Scene.Decide() == FAutoDecision{ EAutoAction::Wait }, "another party's loot is left");
+		Scene.PartyId = 7;
+		Expect((Scene.Decide() == FAutoDecision{ EAutoAction::PickUp, 10 }), "my party's loot is picked at once");
+	}
+
 	/** 후보에서 빼기: "공격할 수 없는 대상"의 실패와 같은 이유의 시전 취소는 그때의 대상을 빼고 다른 이유는 빼지 않는다. 10초가 지나면 돌아온다.
 	 * 3초 동안 가까워지지 못하면 빼되, 기다리기 동안은 세지 않는다. */
 	void ExclusionsFollowFailuresAndStalls()
@@ -438,6 +454,7 @@ int main()
 	HealingComesFirstWhenLow();
 	BusyStatesWait();
 	LootFollowsOwnersAndRoom();
+	PartyLootIsMine();
 	ExclusionsFollowFailuresAndStalls();
 	if (Failures > 0)
 	{

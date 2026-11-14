@@ -59,6 +59,11 @@ namespace PortfolioMmo.Server
         /// 바닥 아이템(주인)이 사라지는 틱(33). 세대 번호는 그 바닥 아이템의 것이다(번호를 다시 쓴 새 아이템을 지우지 않게).
         /// </summary>
         GroundItemExpire = 10,
+
+        /// <summary>
+        /// 초대받은 플레이어(주인)가 받은 파티 초대의 만료(42). 세대 번호는 그 초대의 것이다(답했거나 지운 초대의 예약은 버림).
+        /// </summary>
+        PartyInviteExpire = 11,
     }
 
     /// <summary>

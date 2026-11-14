@@ -213,7 +213,7 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 				Name += TEXT(" ") + MmoText::Format(this, TEXT("detail.count"), { FString::FromInt(Info.count()) }).ToString();
 			}
 			FLinearColor Color = Item ? UMmoItemSlotWidget::GradeColor(Item->grade()) : FLinearColor::White;
-			Color.A = MmoWorld::FInteraction::CanPickUp(Info, World.SelfId(), World.Clock().Now(FPlatformTime::Seconds())) ? 1.0f : 0.45f;
+			Color.A = MmoWorld::FInteraction::CanPickUp(Info, World.SelfId(), World.Clock().Now(FPlatformTime::Seconds()), Session->Party().Id()) ? 1.0f : 0.45f;
 			Tag.SetName(Name, Color);
 		}
 		else

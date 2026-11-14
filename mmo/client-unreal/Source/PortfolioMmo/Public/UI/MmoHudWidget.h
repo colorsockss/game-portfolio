@@ -31,7 +31,7 @@ namespace MmoWorld
  * 게임 중의 HUD(WBP_Hud의 기반). 내 체력·마나 바(지금/최대), 걸린 효과와 전투 상태의 글자 아이콘과 남은 시간, 내 대상의 정보(이름과 레벨,
  * 체력 바), 퀵슬롯(쿨다운 가림, PC는 키 표의 키 표시)과 내 진행 바(시전), 터치 기기의 가상 조이스틱과 공격·대상 고르기·상호작용 버튼,
  * 메뉴 버튼(가방, 캐릭터, 스킬, 퀘스트, 설정. 설정 말고는 그 창을 만드는 항목 32, 31, 36, 50이 잇기 전까지 누를 수 없음),
- * 내 캐릭터가 있는 구역(이름, 권장 레벨, 안전 지대)과 채팅창(41)을 보인다. 경험치 바(31) 등은 그 항목이 더한다.
+ * 내 캐릭터가 있는 구역(이름, 권장 레벨, 안전 지대), 채팅창(41), 파티원 칸과 파티 버튼(42)을 보인다. 경험치 바(31) 등은 그 항목이 더한다.
  */
 UCLASS(Abstract)
 class UMmoHudWidget : public UUserWidget
@@ -41,6 +41,9 @@ class UMmoHudWidget : public UUserWidget
 public:
 	/** 퀵슬롯의 칸 수(packets.proto의 CONSTANT_QUICKSLOT_COUNT). 위젯 생성기가 칸을 이만큼 만든다. */
 	static PORTFOLIOMMO_API int32 QuickslotCount();
+
+	/** 파티원 칸의 수(나를 뺀 최대 인원). 위젯 생성기가 칸을 이만큼 만든다. */
+	static PORTFOLIOMMO_API int32 PartySlotCount();
 
 	/** 미니맵 그림의 한 변(픽셀)과 보이는 둘레(m). */
 	static constexpr float MinimapSize = 180.0f;
@@ -91,6 +94,9 @@ private:
 
 	UFUNCTION()
 	void HandleTargetClicked();
+
+	/** 파티원 칸 하나를 눌렀다. */
+	void TargetPartyMember(int32 Index);
 
 	/** 바 하나에 지금 값과 최대값을 보인다. 값이 바뀌었을 때만 고친다. */
 	static void ShowBar(UProgressBar& Bar, UTextBlock& Text, uint32 Value, uint32 Max, uint64& Shown);
@@ -149,6 +155,32 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoChatWidget> ChatBox;
+
+	/** 대상이 다른 플레이어이고 내가 초대할 수 있으면(파티가 없거나 파티장, 그 플레이어가 내 파티원이 아님) 보이는 파티 초대 버튼(42). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> PartyInviteButton;
+
+	/** 파티 창을 여는 버튼(42). 파티가 없어도 보인다. */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> PartyButton;
+
+	/** 파티원 칸(이름 PartyMember<n>Box, 버튼 PartyMember<n>, 체력 바 PartyMember<n>HpBar로 찾음). 나를 뺀 파티원을 들어온 차례로 보이고,
+	 * 버튼(라벨이 이름)을 누르면 그 파티원이 시야 안일 때만 대상이 된다. */
+	UPROPERTY()
+	TArray<TObjectPtr<UWidget>> PartySlots;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UMmoButtonWidget>> PartyNames;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UProgressBar>> PartyHpBars;
+
+	/** 칸마다 보인 파티원의 개체 번호. */
+	TArray<uint32> PartyShown;
+	uint64 ShownParty = MAX_uint64;
+
+	/** 파티가 바뀌었으면 파티원 칸을 다시 채운다. */
+	void ShowParty();
 
 	/** 미니맵(76): 내 자리를 가운데에 둔 둘레 60 m. 북쪽이 위로 고정이고 내 방향은 화살표가 돈다. 누르면 전체 지도를 연다. */
 	UPROPERTY(meta = (BindWidget))

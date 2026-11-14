@@ -48,23 +48,25 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            uint owner = (monster.Damage.Killer() is uint side) && (_entities.Find(side) is Player) ? side : 0;
-            uint ownerEnd = owner != 0 ? tick + _ownerOnlyTicks : 0;
+            // 잡은 편이 파티면 그 파티가, 플레이어면 아직 월드에 있을 때 그 플레이어가 주인이다(42).
+            uint ownerParty = monster.Killer is ulong side ? PartySystem.PartyOfSide(side) : 0;
+            uint ownerPlayer = (monster.Killer is ulong solo) && (ownerParty == 0) && (_entities.Find((uint)solo) is Player) ? (uint)solo : 0;
+            var owner = new Owner(ownerPlayer, ownerParty, (ownerPlayer != 0) || (ownerParty != 0) ? tick + _ownerOnlyTicks : 0);
             if ((group.GoldMax > 0) && (_random.NextDouble() < group.GoldChance))
             {
-                Drop(monster, GoldItemId(), (uint)_random.Next((int)group.GoldMin, (int)group.GoldMax + 1), owner, ownerEnd, tick);
+                Drop(monster, GoldItemId(), (uint)_random.Next((int)group.GoldMin, (int)group.GoldMax + 1), owner, tick);
             }
 
             for (int index = 0; index < group.Items.Count; index++)
             {
                 if (_random.NextDouble() < group.Chances[index])
                 {
-                    Drop(monster, group.Items[index], (uint)_random.Next((int)group.MinCounts[index], (int)group.MaxCounts[index] + 1), owner, ownerEnd, tick);
+                    Drop(monster, group.Items[index], (uint)_random.Next((int)group.MinCounts[index], (int)group.MaxCounts[index] + 1), owner, tick);
                 }
             }
         }
 
-        private void Drop(Monster monster, uint itemId, uint count, uint owner, uint ownerEnd, uint tick)
+        private void Drop(Monster monster, uint itemId, uint count, Owner owner, uint tick)
         {
             if (count == 0)
             {
@@ -81,13 +83,13 @@ namespace PortfolioMmo.Server
                 (x, z) = (monster.X, monster.Z);
             }
 
-            Place(itemId, count, 0, x, z, owner, ownerEnd, false, tick);
+            Place(itemId, count, 0, x, z, owner, false, tick);
         }
 
-        private void Place(uint itemId, uint count, uint enchant, int x, int z, uint owner, uint ownerEnd, bool droppedByPlayer, uint tick)
+        private void Place(uint itemId, uint count, uint enchant, int x, int z, Owner owner, bool droppedByPlayer, uint tick)
         {
             ulong generation = _scheduler.NewGeneration();
-            var item = new GroundItem(_entities.NextGroundItemId(tick), x, z, itemId, count, enchant, owner, ownerEnd, droppedByPlayer, generation);
+            var item = new GroundItem(_entities.NextGroundItemId(tick), x, z, itemId, count, enchant, owner.Player, owner.Party, owner.EndTick, droppedByPlayer, generation);
             _entities.Add(item);
             _grid.Add(item);
             _scheduler.Add(tick + _lifetimeTicks, ScheduledKind.GroundItemExpire, item.Id, 0, 0, generation);
@@ -116,7 +118,7 @@ namespace PortfolioMmo.Server
                 return FailReason.Blocked;
             }
 
-            if (!item.CanPickUp(player.Id, tick))
+            if (!item.CanPickUp(player, tick))
             {
                 return FailReason.NotYours;
             }
@@ -139,8 +141,8 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// DropItem(입력 차례): 칸의 아이템을 count개(1 이상, 가진 수 이하) 빼고 플레이어의 자리에 주인 없는 바닥 아이템으로 놓는다(강화 수치 그대로).
-        /// 안전 지대에서도 된다. 파티원만 10초 줍는 것은 42가 더한다.
+        /// DropItem(입력 차례): 칸의 아이템을 count개(1 이상, 가진 수 이하) 빼고 플레이어의 자리에 바닥 아이템으로 놓는다(강화 수치 그대로).
+        /// 안전 지대에서도 된다. 파티가 있으면 주인을 그 파티로 두어 주인만 줍는 시간 동안 본인과 파티원만 줍고(42), 없으면 주인 없이 바로 누구나 줍는다.
         /// </summary>
         public FailReason Drop(Player player, DropItem request, uint tick)
         {
@@ -161,7 +163,7 @@ namespace PortfolioMmo.Server
             // 인벤토리에서 빼기 → 사본을 큐에 넣기 → 바닥 개체 놓기(38). 내놓은 쪽의 사본이 주운 쪽의 사본보다 먼저 큐에 들어가 아이템이 두 곳에 저장되지 않는다.
             _inventory.Remove(player, (int)request.Slot, request.Count);
             _save.SaveNow(player);
-            Place(itemId, request.Count, enchant, player.X, player.Z, 0, 0, true, tick);
+            Place(itemId, request.Count, enchant, player.X, player.Z, new Owner(0, player.PartyId, player.PartyId != 0 ? tick + _ownerOnlyTicks : 0), true, tick);
             return FailReason.None;
         }
 
@@ -189,5 +191,10 @@ namespace PortfolioMmo.Server
         {
             return _data.GoldItemId;
         }
+
+        /// <summary>
+        /// 바닥 아이템의 주인(플레이어나 파티 둘 중 하나, 없으면 둘 다 0)과 주인만 줍는 시간이 끝나는 틱.
+        /// </summary>
+        private readonly record struct Owner(uint Player, uint Party, uint EndTick);
     }
 }

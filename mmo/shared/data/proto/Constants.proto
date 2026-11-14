@@ -74,4 +74,8 @@ message Constants {
   uint32 chat_max_bytes = 34;
   // 플레이어가 1초 안에 보낼 수 있는 채팅 수(41). 넘으면 "너무 자주 보냄"이다
   uint32 chat_per_second = 35;
+  // 파티 경험치 보너스(%, 42). 경험치를 받는 파티원이 한 명 늘 때마다 합에 더한다(2명 +10%, 5명 +40%)
+  uint32 party_exp_bonus_percent = 36;
+  // 파티 초대가 답을 기다리는 시간(ms, 42). 지나면 초대가 사라진다
+  uint32 party_invite_ms = 37;
 }

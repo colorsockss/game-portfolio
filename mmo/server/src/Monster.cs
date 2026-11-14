@@ -115,9 +115,9 @@ namespace PortfolioMmo.Server
         internal ulong LifeGeneration { get; set; }
 
         /// <summary>
-        /// 죽는 순간 피해 표에서 합이 가장 큰 편(잡은 편). 경험치(31)와 드롭의 주인(33)이 쓴다. 표가 비었으면 null.
+        /// 죽는 순간 피해 표에서 합이 가장 큰 편(잡은 편. 그 순간의 파티, 없으면 플레이어. PartySystem.SideOf). 경험치(31)와 드롭의 주인(33)이 쓴다. 표가 비었으면 null.
         /// </summary>
-        public uint? Killer { get; internal set; }
+        public ulong? Killer { get; internal set; }
 
         protected override void Fill(EntityEnter enter)
         {

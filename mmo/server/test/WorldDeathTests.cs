@@ -115,7 +115,7 @@ namespace PortfolioMmo.Server.Tests
                 died = monster.Dead ? tick : 0;
             }
 
-            Assert.Equal(knight.Player!.Id, monster.Killer);
+            Assert.Equal((ulong)knight.Player!.Id, monster.Killer);
             Session late = Join(world, "hero_02");
             world.Step();
             world.Place(late.Player!, Center(3), Center(0));

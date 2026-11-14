@@ -52,9 +52,9 @@ namespace MmoWorld
 
 		/**
 		 * 내가 지금 이 바닥 아이템을 주울 수 있는가(33): 주인이 없거나 나이거나, 주인만 줍는 시간이 끝나는 틱이 어림한 서버 틱보다 앞이다(서버의
-		 * GroundItem.CanPickUp과 같음). 이름표의 흐림, 상호작용 버튼, 자동 사냥(40)이 함께 쓴다. 내 파티가 주인인 경우는 42가 더한다.
+		 * GroundItem.CanPickUp과 같음). 이름표의 흐림, 상호작용 버튼, 자동 사냥(40)이 함께 쓴다. 주인이 내 파티(PartyId, 없으면 0)여도 줍는다(42).
 		 */
-		static bool CanPickUp(const portfolio::mmo::EntityEnter& Item, uint32_t SelfId, double ServerTick);
+		static bool CanPickUp(const portfolio::mmo::EntityEnter& Item, uint32_t SelfId, double ServerTick, uint32_t PartyId = 0);
 
 		/**
 		 * (X, Z)에서 고르는 거리(m) 안의 가장 가까운 상호작용할 수 있는 개체(내 개체 제외). 거리가 같으면 번호가 작은 것이다. 없으면 nullopt.

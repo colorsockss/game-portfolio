@@ -1,5 +1,7 @@
 #include "World/CombatState.h"
 
+#include "World/Party.h"
+
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -342,7 +344,7 @@ namespace MmoWorld
 		return portfolio::mmo::FAIL_REASON_NONE;
 	}
 
-	FSkillStep FCombatState::UpdateSkill(const FWorldState& World, const FFieldMap& Field, const MmoData::FGameData& Data, int32_t X, int32_t Z)
+	FSkillStep FCombatState::UpdateSkill(const FWorldState& World, const FFieldMap& Field, const MmoData::FGameData& Data, int32_t X, int32_t Z, const FParty* Party)
 	{
 		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Pending);
 		if (!Skill)
@@ -352,6 +354,16 @@ namespace MmoWorld
 		}
 		if (!TargetsOther(*Skill))
 		{
+			// 대상이 시야 안의 파티원이면 회복과 강화는 그 파티원에게 쓰는 스킬이라, 사거리 밖이거나 선이 막혔으면 다가간다(42).
+			const bool bSupport = Skill->kind() == portfolio::mmo::data::SKILL_KIND_HEAL || Skill->kind() == portfolio::mmo::data::SKILL_KIND_BUFF;
+			if (bSupport && Party && TargetId != World.SelfId() && Party->IsTargetable(World, TargetId))
+			{
+				const FEntity& Member = World.Entities().at(TargetId);
+				if (!CanStrikeFrom(Field, X, Z, Member, Skill->range()))
+				{
+					return { FSkillStep::EKind::Approach, { Member.X, Member.Z } };
+				}
+			}
 			return { FSkillStep::EKind::Fire };
 		}
 

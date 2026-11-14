@@ -106,13 +106,13 @@ namespace PortfolioMmo.Server.Tests
             {
                 Skill(101, 1, SkillKind.SingleDamage, 2, SkillCenter.Target),
                 Skill(102, 1, SkillKind.Debuff, 2, SkillCenter.Target, coefficient: 0, effect: 1),
-                Skill(103, 1, SkillKind.Buff, 0, SkillCenter.Self, coefficient: 0, effect: 3, hitDelayMs: 0),
+                Skill(103, 1, SkillKind.Buff, 8, SkillCenter.Self, coefficient: 0, effect: 3, hitDelayMs: 0),
                 Skill(104, 1, SkillKind.AreaDamage, 0, SkillCenter.Self, radius: 4),
                 Skill(105, 1, SkillKind.SingleDamage, 2, SkillCenter.Target, effect: 2),
-                Skill(106, 1, SkillKind.Buff, 0, SkillCenter.Self, coefficient: 0, effect: 4, hitDelayMs: 0, level: 3),
+                Skill(106, 1, SkillKind.Buff, 8, SkillCenter.Self, coefficient: 0, effect: 4, hitDelayMs: 0, level: 3),
                 Skill(201, 2, SkillKind.SingleDamage, 12, SkillCenter.Target, effect: 2, projectileSpeed: 20),
                 Skill(202, 2, SkillKind.AreaDamage, 12, SkillCenter.Target, radius: 4, castMs: 1500),
-                Skill(203, 2, SkillKind.Heal, 0, SkillCenter.Self, coefficient: 2, castMs: 1000),
+                Skill(203, 2, SkillKind.Heal, 12, SkillCenter.Self, coefficient: 2, castMs: 1000),
                 Skill(204, 2, SkillKind.AreaDamage, 0, SkillCenter.Self, radius: 5, effect: 2),
                 Skill(205, 2, SkillKind.SingleDamage, 12, SkillCenter.Target, castMs: 2000),
             },
@@ -183,7 +183,7 @@ namespace PortfolioMmo.Server.Tests
                 FieldSize = fieldSize, CombatDurationMs = 5000, RegenPercent = 5, CombatRegenPercent = 1, CritChance = 0.05, CritMultiplier = 1.5, PlayerRadius = 0.34,
                 UnreachableMs = 5000, RepathDistance = 3, ReturnRangeMargin = 4, ReturnRegenPercent = 20, WanderPauseMinMs = 3000, WanderPauseMaxMs = 6000,
                 ReviveHpPercent = 30, DeadMonsterMs = 3000, InventorySlots = 60, StorageSlots = 3, DropLifetimeMs = 60000, OwnerOnlyMs = 10000, DropScatter = 1.5, InteractRange = 3, RateLimitTokens = 40, RateLimitRefillPerSecond = 30, RateLimitKickMs = 3000, RateLimitResetMs = 1000,
-                ChatMaxBytes = 180, ChatPerSecond = 2,
+                ChatMaxBytes = 180, ChatPerSecond = 2, PartyExpBonusPercent = 10, PartyInviteMs = 30000,
             };
         }
 

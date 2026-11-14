@@ -189,7 +189,7 @@ namespace PortfolioMmo.Data {
     public const int RangeFieldNumber = 6;
     private double range_;
     /// <summary>
-    /// 사거리(m). 중심이 자기인 스킬과 자기에게 쓰는 회복·강화는 보지 않는다
+    /// 사거리(m). 중심이 자기인 범위 스킬과 자기에게 쓰는 회복·강화는 보지 않는다(회복·강화를 파티원에게 쓸 때 본다. 42)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

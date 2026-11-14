@@ -108,20 +108,20 @@ namespace PortfolioMmo.Server.Tests
             var table = new DamageTable();
             table.Add(7, 0);
             table.Add(3, 0);
-            Assert.Equal(7u, table.Pick(_ => true));
-            Assert.Equal(7u, table.Killer());
+            Assert.Equal(7u, table.Pick(_ => true, Solo));
+            Assert.Equal(7ul, table.Killer(Solo));
 
             table.Add(3, 5);
-            Assert.Equal(3u, table.Pick(_ => true));
-            Assert.Equal(7u, table.Pick(id => id != 3));
-            Assert.Equal(3u, table.Killer());
+            Assert.Equal(3u, table.Pick(_ => true, Solo));
+            Assert.Equal(7u, table.Pick(id => id != 3, Solo));
+            Assert.Equal(3ul, table.Killer(Solo));
 
             table.Add(7, 5);
-            Assert.Equal(7u, table.Pick(_ => true));
-            Assert.Null(table.Pick(_ => false));
+            Assert.Equal(7u, table.Pick(_ => true, Solo));
+            Assert.Null(table.Pick(_ => false, Solo));
 
             table.RemoveWhere(id => id == 7);
-            Assert.Equal(3u, table.Killer());
+            Assert.Equal(3ul, table.Killer(Solo));
         }
 
         /// <summary>

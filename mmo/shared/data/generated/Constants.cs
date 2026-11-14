@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKYBwoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLSBwoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -45,11 +45,13 @@ namespace PortfolioMmo.Data {
             "eGNsdWRlX21zGB4gASgNEhoKEmF1dG9faHVudF9zdGFsbF9tcxgfIAEoDRIh",
             "ChlhdXRvX2h1bnRfbWFudWFsX3BhdXNlX21zGCAgASgNEhUKDXN0b3JhZ2Vf",
             "c2xvdHMYISABKA0SFgoOY2hhdF9tYXhfYnl0ZXMYIiABKA0SFwoPY2hhdF9w",
-            "ZXJfc2Vjb25kGCMgASgNQhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
+            "ZXJfc2Vjb25kGCMgASgNEh8KF3BhcnR5X2V4cF9ib251c19wZXJjZW50GCQg",
+            "ASgNEhcKD3BhcnR5X2ludml0ZV9tcxglIAEoDUIUqgIRUG9ydGZvbGlvTW1v",
+            "LkRhdGFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs" }, null, null, null, null)
           }));
     }
     #endregion
@@ -125,6 +127,8 @@ namespace PortfolioMmo.Data {
       storageSlots_ = other.storageSlots_;
       chatMaxBytes_ = other.chatMaxBytes_;
       chatPerSecond_ = other.chatPerSecond_;
+      partyExpBonusPercent_ = other.partyExpBonusPercent_;
+      partyInviteMs_ = other.partyInviteMs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -644,6 +648,36 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "party_exp_bonus_percent" field.</summary>
+    public const int PartyExpBonusPercentFieldNumber = 36;
+    private uint partyExpBonusPercent_;
+    /// <summary>
+    /// 파티 경험치 보너스(%, 42). 경험치를 받는 파티원이 한 명 늘 때마다 합에 더한다(2명 +10%, 5명 +40%)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PartyExpBonusPercent {
+      get { return partyExpBonusPercent_; }
+      set {
+        partyExpBonusPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "party_invite_ms" field.</summary>
+    public const int PartyInviteMsFieldNumber = 37;
+    private uint partyInviteMs_;
+    /// <summary>
+    /// 파티 초대가 답을 기다리는 시간(ms, 42). 지나면 초대가 사라진다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PartyInviteMs {
+      get { return partyInviteMs_; }
+      set {
+        partyInviteMs_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -693,6 +727,8 @@ namespace PortfolioMmo.Data {
       if (StorageSlots != other.StorageSlots) return false;
       if (ChatMaxBytes != other.ChatMaxBytes) return false;
       if (ChatPerSecond != other.ChatPerSecond) return false;
+      if (PartyExpBonusPercent != other.PartyExpBonusPercent) return false;
+      if (PartyInviteMs != other.PartyInviteMs) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -734,6 +770,8 @@ namespace PortfolioMmo.Data {
       if (StorageSlots != 0) hash ^= StorageSlots.GetHashCode();
       if (ChatMaxBytes != 0) hash ^= ChatMaxBytes.GetHashCode();
       if (ChatPerSecond != 0) hash ^= ChatPerSecond.GetHashCode();
+      if (PartyExpBonusPercent != 0) hash ^= PartyExpBonusPercent.GetHashCode();
+      if (PartyInviteMs != 0) hash ^= PartyInviteMs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -888,6 +926,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(152, 2);
         output.WriteUInt32(ChatPerSecond);
       }
+      if (PartyExpBonusPercent != 0) {
+        output.WriteRawTag(160, 2);
+        output.WriteUInt32(PartyExpBonusPercent);
+      }
+      if (PartyInviteMs != 0) {
+        output.WriteRawTag(168, 2);
+        output.WriteUInt32(PartyInviteMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1034,6 +1080,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(152, 2);
         output.WriteUInt32(ChatPerSecond);
       }
+      if (PartyExpBonusPercent != 0) {
+        output.WriteRawTag(160, 2);
+        output.WriteUInt32(PartyExpBonusPercent);
+      }
+      if (PartyInviteMs != 0) {
+        output.WriteRawTag(168, 2);
+        output.WriteUInt32(PartyInviteMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1145,6 +1199,12 @@ namespace PortfolioMmo.Data {
       }
       if (ChatPerSecond != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(ChatPerSecond);
+      }
+      if (PartyExpBonusPercent != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(PartyExpBonusPercent);
+      }
+      if (PartyInviteMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(PartyInviteMs);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1259,6 +1319,12 @@ namespace PortfolioMmo.Data {
       }
       if (other.ChatPerSecond != 0) {
         ChatPerSecond = other.ChatPerSecond;
+      }
+      if (other.PartyExpBonusPercent != 0) {
+        PartyExpBonusPercent = other.PartyExpBonusPercent;
+      }
+      if (other.PartyInviteMs != 0) {
+        PartyInviteMs = other.PartyInviteMs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1415,6 +1481,14 @@ namespace PortfolioMmo.Data {
             ChatPerSecond = input.ReadUInt32();
             break;
           }
+          case 288: {
+            PartyExpBonusPercent = input.ReadUInt32();
+            break;
+          }
+          case 296: {
+            PartyInviteMs = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -1568,6 +1642,14 @@ namespace PortfolioMmo.Data {
           }
           case 280: {
             ChatPerSecond = input.ReadUInt32();
+            break;
+          }
+          case 288: {
+            PartyExpBonusPercent = input.ReadUInt32();
+            break;
+          }
+          case 296: {
+            PartyInviteMs = input.ReadUInt32();
             break;
           }
         }

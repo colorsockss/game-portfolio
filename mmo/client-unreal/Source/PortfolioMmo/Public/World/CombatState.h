@@ -17,6 +17,8 @@
 
 namespace MmoWorld
 {
+	class FParty;
+
 	enum class ECombatEventKind : uint8_t
 	{
 		/** 공격 동작의 시작(AttackSwing, 또는 내 첫 공격의 예측). */
@@ -170,7 +172,7 @@ namespace MmoWorld
 		 * 누른 스킬을 (X, Z)에서 할 일: 그 자리에서 쓰는 스킬은 Fire. 대상에게 쓰는 스킬은 지금 자리에서 칠 수 있으면(사거리, 선, 몬스터면 안전 지대 밖)
 		 * Fire, 아니면 Approach. 대상이 없어지거나 죽었으면 그만두고 None이다. 직선 발사체의 스킬은 살아 있는 대상이 없으면 바로 Fire다.
 		 */
-		FSkillStep UpdateSkill(const FWorldState& World, const FFieldMap& Field, const MmoData::FGameData& Data, int32_t X, int32_t Z);
+		FSkillStep UpdateSkill(const FWorldState& World, const FFieldMap& Field, const MmoData::FGameData& Data, int32_t X, int32_t Z, const FParty* Party = nullptr);
 
 		/**
 		 * 누른 스킬을 보낸다: 시전 시간이 있으면 캐릭터를 세우고 밀린 위치를 먼저 보내며(Sender.Flush), 쥐고 있던 이동 입력을 놓을 때까지 무시한다.

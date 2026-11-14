@@ -71,7 +71,7 @@ namespace MmoWorld
 			{
 				const portfolio::mmo::EntityEnter& Info = Entity.Info;
 				if (Info.kind() != portfolio::mmo::ENTITY_KIND_GROUND_ITEM || Info.dropped_by_player() || In.Excluded.count(Id) > 0 || !InRange(In, Entity.X, Entity.Z)
-					|| !FInteraction::CanPickUp(Info, In.World.SelfId(), In.ServerTick))
+					|| !FInteraction::CanPickUp(Info, In.World.SelfId(), In.ServerTick, In.PartyId))
 				{
 					continue;
 				}

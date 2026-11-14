@@ -30,7 +30,8 @@ namespace MmoWorld
 		return { (X / Units::PerMeter - Min) / Size, (Min + Size - Z / Units::PerMeter) / Size };
 	}
 
-	std::vector<FMapPoint> FMapView::Points(const FFieldMap& Field, const MmoData::FGameData& Data, int32_t SelfX, int32_t SelfZ, uint32_t SelfYaw)
+	std::vector<FMapPoint> FMapView::Points(const FFieldMap& Field, const MmoData::FGameData& Data, int32_t SelfX, int32_t SelfZ, uint32_t SelfYaw,
+		const std::vector<std::pair<int32_t, int32_t>>& Members)
 	{
 		std::vector<FMapPoint> Result;
 		const auto [U, V] = ToMap(Field, SelfX, SelfZ);
@@ -40,6 +41,11 @@ namespace MmoWorld
 			// NPC의 자리(m)는 칸의 작은 모서리라 그 칸의 가운데에 그린다(서버의 Npc와 같음).
 			const auto [NpcU, NpcV] = ToMap(Field, Npc.x() * Units::PerMeter + Units::PerMeter / 2.0, Npc.z() * Units::PerMeter + Units::PerMeter / 2.0);
 			Result.push_back({ FMapPoint::EKind::Npc, NpcU, NpcV, static_cast<int32_t>(Npc.role()), 0 });
+		}
+		for (const auto& [X, Z] : Members)
+		{
+			const auto [MemberU, MemberV] = ToMap(Field, X, Z);
+			Result.push_back({ FMapPoint::EKind::Member, MemberU, MemberV, 0, 0 });
 		}
 		return Result;
 	}

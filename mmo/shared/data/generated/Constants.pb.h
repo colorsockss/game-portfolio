@@ -254,6 +254,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kStorageSlotsFieldNumber = 33,
     kChatMaxBytesFieldNumber = 34,
     kChatPerSecondFieldNumber = 35,
+    kPartyExpBonusPercentFieldNumber = 36,
+    kPartyInviteMsFieldNumber = 37,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -595,11 +597,31 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_chat_per_second(::uint32_t value);
 
   public:
+  // uint32 party_exp_bonus_percent = 36;
+  void clear_party_exp_bonus_percent() ;
+  [[nodiscard]] ::uint32_t party_exp_bonus_percent() const;
+  void set_party_exp_bonus_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_party_exp_bonus_percent() const;
+  void _internal_set_party_exp_bonus_percent(::uint32_t value);
+
+  public:
+  // uint32 party_invite_ms = 37;
+  void clear_party_invite_ms() ;
+  [[nodiscard]] ::uint32_t party_invite_ms() const;
+  void set_party_invite_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_party_invite_ms() const;
+  void _internal_set_party_invite_ms(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 34,
+      ::google::protobuf::internal::TcParseTable<5, 36,
                           0, 0,
                           7>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -662,6 +684,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t storage_slots_;
     ::uint32_t chat_max_bytes_;
     ::uint32_t chat_per_second_;
+    ::uint32_t party_exp_bonus_percent_;
+    ::uint32_t party_invite_ms_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1498,6 +1522,54 @@ inline ::uint32_t Constants::_internal_chat_per_second() const {
 inline void Constants::_internal_set_chat_per_second(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.chat_per_second_ = value;
+}
+
+// uint32 party_exp_bonus_percent = 36;
+inline void Constants::clear_party_exp_bonus_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.party_exp_bonus_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000004U);
+}
+inline ::uint32_t Constants::party_exp_bonus_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.party_exp_bonus_percent)
+  return _internal_party_exp_bonus_percent();
+}
+inline void Constants::set_party_exp_bonus_percent(::uint32_t value) {
+  _internal_set_party_exp_bonus_percent(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000004U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.party_exp_bonus_percent)
+}
+inline ::uint32_t Constants::_internal_party_exp_bonus_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.party_exp_bonus_percent_;
+}
+inline void Constants::_internal_set_party_exp_bonus_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.party_exp_bonus_percent_ = value;
+}
+
+// uint32 party_invite_ms = 37;
+inline void Constants::clear_party_invite_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.party_invite_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000008U);
+}
+inline ::uint32_t Constants::party_invite_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.party_invite_ms)
+  return _internal_party_invite_ms();
+}
+inline void Constants::set_party_invite_ms(::uint32_t value) {
+  _internal_set_party_invite_ms(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000008U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.party_invite_ms)
+}
+inline ::uint32_t Constants::_internal_party_invite_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.party_invite_ms_;
+}
+inline void Constants::_internal_set_party_invite_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.party_invite_ms_ = value;
 }
 
 #ifdef __GNUC__

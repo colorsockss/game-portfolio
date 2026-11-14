@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+#include "World/Party.h"
 #include "World/CombatState.h"
 #include "World/DevCommand.h"
 #include "World/Latency.h"
@@ -64,6 +65,7 @@ namespace
 		Result.Skills.mutable_rows(Result.Skills.rows_size() - 1)->set_projectile_speed(20);
 		Skill(202, portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE, portfolio::mmo::data::SKILL_CENTER_TARGET, 12, 1500);
 		Skill(205, portfolio::mmo::data::SKILL_KIND_SINGLE_DAMAGE, portfolio::mmo::data::SKILL_CENTER_TARGET, 12, 2000);
+		Skill(203, portfolio::mmo::data::SKILL_KIND_HEAL, portfolio::mmo::data::SKILL_CENTER_SELF, 12, 0);
 		portfolio::mmo::data::EffectsRow* Stun = Result.Effects.add_rows();
 		Stun->set_id(1);
 		Stun->set_kind(portfolio::mmo::data::EFFECT_KIND_STUN);
@@ -440,6 +442,29 @@ namespace
 		Expect(Scene.Combat.LineProjectiles().empty(), "the caster leaving removes its projectiles");
 	}
 
+	/** 사거리(12 m) 밖의 파티원에게 쓰는 회복은 다가간 뒤 보내고, 파티원이 아닌 대상(몬스터)을 잡은 채 쓰면 그 자리에서 보낸다(42). */
+	void HealsApproachPartyMembers()
+	{
+		const MmoWorld::FFieldMap Open = Field(64);
+		FScene Scene(5);
+		Scene.Apply(Enter(3, portfolio::mmo::ENTITY_KIND_PLAYER, 20 * M, 0));
+		MmoWorld::FParty Party;
+		Packet State;
+		State.mutable_party_state()->set_party_id(1);
+		State.mutable_party_state()->set_leader_id(Me);
+		State.mutable_party_state()->add_members()->set_id(Me);
+		State.mutable_party_state()->add_members()->set_id(3);
+		Party.Apply(State);
+		Scene.Combat.SetTarget(3);
+		Scene.Combat.PressSkill(203, Scene.World, Scene.GameData, 0);
+		const FSkillStep Far = Scene.Combat.UpdateSkill(Scene.World, Open, Scene.GameData, 0, 0, &Party);
+		Expect(Far.Kind == FSkillStep::EKind::Approach && Far.Goal.X == 20 * M, "a far party member is approached before the heal");
+		Expect(Scene.Combat.UpdateSkill(Scene.World, Open, Scene.GameData, 10 * M, 0, &Party).Kind == FSkillStep::EKind::Fire, "a member in range gets the heal");
+
+		Scene.Combat.SetTarget(Monster);
+		Expect(Scene.Combat.UpdateSkill(Scene.World, Open, Scene.GameData, 0, 0, &Party).Kind == FSkillStep::EKind::Fire, "a non-member target heals in place");
+	}
+
 	/**
 	 * 직선 발사체의 스킬은 대상 없이 바로 보내고, 살아 있는 대상이 있으면 사거리 밖이거나 선이 막혔을 때 다가간 뒤 보낸다. 보내기 직전에
 	 * 밀린 위치와 방향을 먼저 보내고(세우지는 않음), 대상은 살아 있을 때만 싣는다.
@@ -604,6 +629,7 @@ int main(int ArgumentCount, char** Arguments)
 	CastsStopAndIgnoreTheHeldMove();
 	LineProjectilesFollowTheirLaunch();
 	LineSkillsFireWithOrWithoutATarget();
+	HealsApproachPartyMembers();
 	FailuresBecomeNotices();
 	LeavingTheWorldStopsRequests();
 	DevCommandsCarryTheLine();

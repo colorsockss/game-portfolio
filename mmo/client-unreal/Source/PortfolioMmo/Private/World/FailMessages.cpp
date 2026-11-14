@@ -38,6 +38,12 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_TEXT_TOO_LONG: return "fail.textTooLong";
 		case portfolio::mmo::FAIL_REASON_CHAT_TOO_FAST: return "fail.chatTooFast";
 		case portfolio::mmo::FAIL_REASON_NO_PARTY: return "fail.noParty";
+		case portfolio::mmo::FAIL_REASON_NOT_LEADER: return "fail.notLeader";
+		case portfolio::mmo::FAIL_REASON_PARTY_FULL: return "fail.partyFull";
+		case portfolio::mmo::FAIL_REASON_ALREADY_IN_PARTY: return "fail.alreadyInParty";
+		case portfolio::mmo::FAIL_REASON_INVITE_PENDING: return "fail.invitePending";
+		case portfolio::mmo::FAIL_REASON_NO_INVITE: return "fail.noInvite";
+		case portfolio::mmo::FAIL_REASON_INVITE_DECLINED: return "fail.inviteDeclined";
 		default: return "fail.other";
 		}
 	}

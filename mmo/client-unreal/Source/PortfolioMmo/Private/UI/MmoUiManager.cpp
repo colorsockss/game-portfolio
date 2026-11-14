@@ -78,6 +78,8 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::Storage);
 		case EScreen::Map:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Map);
+		case EScreen::Party:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Party);
 		}
 		checkNoEntry();
 		return {};
@@ -277,12 +279,37 @@ void UMmoUiManager::ShowNotice(const FText& Message)
 	}));
 }
 
-void UMmoUiManager::Confirm(const FText& Message, TFunction<void()> OnYes)
+void UMmoUiManager::Confirm(const FText& Message, TFunction<void()> OnYes, TFunction<void()> OnNo, const TCHAR* YesKey, const TCHAR* NoKey)
 {
-	Open(EScreen::Confirm, [Message, OnYes = MoveTemp(OnYes)](UUserWidget& Widget)
+	bInvitePopup = false;
+	Open(EScreen::Confirm, [Message, OnYes = MoveTemp(OnYes), OnNo = MoveTemp(OnNo), YesKey, NoKey](UUserWidget& Widget)
 	{
-		CastChecked<UMmoConfirmWidget>(&Widget)->SetUp(Message, OnYes);
+		CastChecked<UMmoConfirmWidget>(&Widget)->SetUp(Message, OnYes, OnNo, YesKey, NoKey);
 	});
+}
+
+void UMmoUiManager::UpdateInvite()
+{
+	MmoWorld::FParty& Party = Session().Party();
+	Party.ExpireInvite(Session().World().Clock().Now(FPlatformTime::Seconds()));
+	// 답하지 않은 초대가 만료되면 팝업도 닫는다(42).
+	if (bInvitePopup && !Party.Invite())
+	{
+		bInvitePopup = false;
+		Close(EScreen::Confirm);
+	}
+}
+
+void UMmoUiManager::TogglePartyWindow()
+{
+	if (Stack.IsOpen(EScreen::Party))
+	{
+		Close(EScreen::Party);
+	}
+	else if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
+	{
+		Open(EScreen::Party);
+	}
 }
 
 void UMmoUiManager::Quantity(const FText& Title, int32 Max, TFunction<void(int32)> OnChosen)
@@ -335,6 +362,7 @@ void UMmoUiManager::ReturnToCharacterSelect()
 	Close(EScreen::Shop);
 	Close(EScreen::Storage);
 	Close(EScreen::Map);
+	Close(EScreen::Party);
 	Close(EScreen::Hud);
 	Open(EScreen::CharacterSelect);
 }
@@ -383,6 +411,20 @@ void UMmoUiManager::ApplyInputMode()
 
 void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 {
+	// 파티 초대(42): 초대한 사람의 이름과 수락·거절을 묻는다. 답하면 그 답을 보내고 받은 초대를 지운다.
+	if (Packet.body_case() == portfolio::mmo::Packet::kPartyInvited && Stack.IsOpen(EScreen::Hud))
+	{
+		const auto Answer = [this](bool bAccept)
+		{
+			portfolio::mmo::Packet Reply;
+			Reply.mutable_party_answer()->set_accept(bAccept);
+			Session().Send(Reply);
+			Session().Party().ClearInvite();
+		};
+		Confirm(MmoText::Format(GetLocalPlayer(), TEXT("party.invited"), { UTF8_TO_TCHAR(Packet.party_invited().inviter_name().c_str()) }),
+			[Answer] { Answer(true); }, [Answer] { Answer(false); }, TEXT("party.accept"), TEXT("party.decline"));
+		bInvitePopup = true;
+	}
 	// 창고를 열면(StorageOpen의 답) 창고 창을 연다(75).
 	if (Packet.body_case() == portfolio::mmo::Packet::kStorage && Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
 	{
@@ -437,6 +479,7 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		Close(EScreen::Shop);
 		Close(EScreen::Storage);
 		Close(EScreen::Map);
+		Close(EScreen::Party);
 		Close(EScreen::Confirm);
 		Close(EScreen::Quantity);
 		Open(EScreen::Death);
@@ -594,6 +637,7 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Close(EScreen::Shop);
 	Close(EScreen::Storage);
 	Close(EScreen::Map);
+	Close(EScreen::Party);
 	Close(EScreen::Hud);
 	Close(EScreen::CharacterCreate);
 	Close(EScreen::CharacterSelect);

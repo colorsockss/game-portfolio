@@ -49,11 +49,11 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
     {
       PROTOBUF_FIELD_OFFSET(Constants, _impl_._has_bits_),
       0, // no _extensions_
-      35, 248,  // max_field_number, fast_idx_mask
+      37, 248,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
       33554432,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      34,  // num_field_entries
+      36,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -187,7 +187,7 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
         PROTOBUF_FIELD_OFFSET(Constants, _impl_.auto_hunt_stall_ms_)}},
     }}, {{
       33, 0, 1,
-      65528, 31,
+      65504, 31,
       65535, 65535
     }}, {{
       // uint32 field_size = 1;
@@ -258,6 +258,10 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.chat_max_bytes_), _Internal::kHasBitsOffset + 32, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 chat_per_second = 35;
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.chat_per_second_), _Internal::kHasBitsOffset + 33, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 party_exp_bonus_percent = 36;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.party_exp_bonus_percent_), _Internal::kHasBitsOffset + 34, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 party_invite_ms = 37;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.party_invite_ms_), _Internal::kHasBitsOffset + 35, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -302,7 +306,9 @@ inline constexpr Constants::Impl_::Impl_(
         auto_hunt_manual_pause_ms_{0u},
         storage_slots_{0u},
         chat_max_bytes_{0u},
-        chat_per_second_{0u} {}
+        chat_per_second_{0u},
+        party_exp_bonus_percent_{0u},
+        party_invite_ms_{0u} {}
 
 template <typename>
 constexpr Constants::Constants(::_pbi::ConstantInitialized,
@@ -408,7 +414,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_._has_bits_),
-        37, // hasbit index offset
+        39, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.field_size_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.combat_duration_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.regen_percent_),
@@ -443,6 +449,8 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.storage_slots_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.chat_max_bytes_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.chat_per_second_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.party_exp_bonus_percent_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.party_invite_ms_),
         0,
         1,
         2,
@@ -477,6 +485,8 @@ const ::uint32_t
         31,
         32,
         33,
+        34,
+        35,
 };
 
 static const ::_pbi::MigrationSchema
@@ -489,7 +499,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\017Constants.proto\022\022portfolio.mmo.data\"\230\007"
+    "\n\017Constants.proto\022\022portfolio.mmo.data\"\322\007"
     "\n\tConstants\022\022\n\nfield_size\030\001 \001(\r\022\032\n\022comba"
     "t_duration_ms\030\002 \001(\r\022\025\n\rregen_percent\030\003 \001"
     "(\r\022\034\n\024combat_regen_percent\030\004 \001(\r\022\023\n\013crit"
@@ -513,13 +523,15 @@ const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_
     "tall_ms\030\037 \001(\r\022!\n\031auto_hunt_manual_pause_"
     "ms\030  \001(\r\022\025\n\rstorage_slots\030! \001(\r\022\026\n\016chat_"
     "max_bytes\030\" \001(\r\022\027\n\017chat_per_second\030# \001(\r"
-    "B\024\252\002\021PortfolioMmo.Datab\006proto3"
+    "\022\037\n\027party_exp_bonus_percent\030$ \001(\r\022\027\n\017par"
+    "ty_invite_ms\030% \001(\rB\024\252\002\021PortfolioMmo.Data"
+    "b\006proto3"
 };
 static ::absl::once_flag descriptor_table_Constants_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Constants_2eproto = {
     false,
     false,
-    990,
+    1048,
     descriptor_table_protodef_Constants_2eproto,
     "Constants.proto",
     &descriptor_table_Constants_2eproto_once,
@@ -567,9 +579,9 @@ inline void Constants::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, field_size_),
            0,
-           offsetof(Impl_, chat_per_second_) -
+           offsetof(Impl_, party_invite_ms_) -
                offsetof(Impl_, field_size_) +
-               sizeof(Impl_::chat_per_second_));
+               sizeof(Impl_::party_invite_ms_));
 }
 Constants::~Constants() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.Constants)
@@ -647,12 +659,12 @@ PROTOBUF_NOINLINE void Constants::Clear() {
                  sizeof(_impl_.storage_slots_));
   }
   cached_has_bits = this_._impl_._has_bits_[1];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
     ::memset(&this_._impl_.chat_max_bytes_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.chat_per_second_) -
+                 reinterpret_cast<char*>(&this_._impl_.party_invite_ms_) -
                  reinterpret_cast<char*>(&this_._impl_.chat_max_bytes_)) +
-                 sizeof(_impl_.chat_per_second_));
+                 sizeof(_impl_.party_invite_ms_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -984,6 +996,24 @@ PROTOBUF_NOINLINE void Constants::Clear() {
     }
   }
 
+  // uint32 party_exp_bonus_percent = 36;
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (this_._internal_party_exp_bonus_percent() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          36, this_._internal_party_exp_bonus_percent(), target);
+    }
+  }
+
+  // uint32 party_invite_ms = 37;
+  if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+    if (this_._internal_party_invite_ms() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          37, this_._internal_party_invite_ms(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -1231,7 +1261,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
     }
   }
   cached_has_bits = this_._impl_._has_bits_[1];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
     // uint32 chat_max_bytes = 34;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (this_._internal_chat_max_bytes() != 0) {
@@ -1244,6 +1274,20 @@ PROTOBUF_NOINLINE void Constants::Clear() {
       if (this_._internal_chat_per_second() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_chat_per_second());
+      }
+    }
+    // uint32 party_exp_bonus_percent = 36;
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (this_._internal_party_exp_bonus_percent() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_party_exp_bonus_percent());
+      }
+    }
+    // uint32 party_invite_ms = 37;
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      if (this_._internal_party_invite_ms() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_party_invite_ms());
       }
     }
   }
@@ -1433,7 +1477,7 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
     }
   }
   cached_has_bits = from._impl_._has_bits_[1];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (from._internal_chat_max_bytes() != 0) {
         _this->_impl_.chat_max_bytes_ = from._impl_.chat_max_bytes_;
@@ -1442,6 +1486,16 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
     if (CheckHasBit(cached_has_bits, 0x00000002U)) {
       if (from._internal_chat_per_second() != 0) {
         _this->_impl_.chat_per_second_ = from._impl_.chat_per_second_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (from._internal_party_exp_bonus_percent() != 0) {
+        _this->_impl_.party_exp_bonus_percent_ = from._impl_.party_exp_bonus_percent_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      if (from._internal_party_invite_ms() != 0) {
+        _this->_impl_.party_invite_ms_ = from._impl_.party_invite_ms_;
       }
     }
   }
@@ -1464,8 +1518,8 @@ void Constants::InternalSwap(Constants* PROTOBUF_RESTRICT PROTOBUF_NONNULL other
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   swap(_impl_._has_bits_[1], other->_impl_._has_bits_[1]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Constants, _impl_.chat_per_second_)
-      + sizeof(Constants::_impl_.chat_per_second_)
+      PROTOBUF_FIELD_OFFSET(Constants, _impl_.party_invite_ms_)
+      + sizeof(Constants::_impl_.party_invite_ms_)
       - PROTOBUF_FIELD_OFFSET(Constants, _impl_.field_size_)>(
           reinterpret_cast<char*>(&_impl_.field_size_),
           reinterpret_cast<char*>(&other->_impl_.field_size_));

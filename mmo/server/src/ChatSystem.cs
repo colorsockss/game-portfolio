@@ -14,20 +14,22 @@ namespace PortfolioMmo.Server
     {
         private readonly EntityTable _entities;
         private readonly Grid _grid;
+        private readonly PartySystem _party;
         private readonly int _maxBytes;
         private readonly int _perSecond;
         private readonly HashSet<Entity> _around = new HashSet<Entity>();
 
-        public ChatSystem(GameData data, EntityTable entities, Grid grid)
+        public ChatSystem(GameData data, EntityTable entities, Grid grid, PartySystem party)
         {
             _entities = entities;
             _grid = grid;
+            _party = party;
             _maxBytes = (int)data.Constants.ChatMaxBytes;
             _perSecond = (int)data.Constants.ChatPerSecond;
         }
 
         /// <summary>
-        /// Chat(입력 차례): 길이, 빈도, 받는 사람을 차례로 보고 보낸다. 모르는 채널은 잘못된 패킷이다. 빈 글은 아무것도 하지 않는다.
+        /// Chat(입력 차례): 길이, 파티 채팅의 파티, 빈도, 받는 사람을 차례로 보고 보낸다. 모르는 채널은 잘못된 패킷이다. 빈 글은 아무것도 하지 않는다.
         /// </summary>
         public Outcome Send(Player player, Chat chat, uint tick)
         {
@@ -44,6 +46,11 @@ namespace PortfolioMmo.Server
             if (Encoding.UTF8.GetByteCount(chat.Text) > _maxBytes)
             {
                 return Outcome.Fail(FailReason.TextTooLong);
+            }
+
+            if ((chat.Channel == ChatChannel.Party) && (player.PartyId == 0))
+            {
+                return Outcome.Fail(FailReason.NoParty);
             }
 
             if (!TakeChatTick(player, tick))
@@ -91,8 +98,13 @@ namespace PortfolioMmo.Server
 
                     break;
                 default:
-                    // 파티가 생기면(42) 파티원에게 보낸다.
-                    return Outcome.Fail(FailReason.NoParty);
+                    // 파티: 파티원 모두(보낸 본인 포함. 42).
+                    foreach (Player member in _party.Members(player.PartyId))
+                    {
+                        member.Session.Send(packet);
+                    }
+
+                    break;
             }
 
             return Outcome.Done;

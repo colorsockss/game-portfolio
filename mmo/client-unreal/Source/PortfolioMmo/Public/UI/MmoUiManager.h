@@ -81,8 +81,14 @@ public:
 	/** 알림 층에 잠깐 글을 띄운다. */
 	void ShowNotice(const FText& Message);
 
-	/** 예·아니요를 묻는 팝업. 예를 누르면 OnYes를 부른다. */
-	void Confirm(const FText& Message, TFunction<void()> OnYes);
+	/** 예·아니요를 묻는 팝업. 예를 누르면 OnYes를, 아니요를 누르면 OnNo(있으면)를 부른다. 버튼 글은 Strings의 키로 바꿀 수 있다(파티 초대의 수락·거절. 42). */
+	void Confirm(const FText& Message, TFunction<void()> OnYes, TFunction<void()> OnNo = nullptr, const TCHAR* YesKey = TEXT("common.yes"), const TCHAR* NoKey = TEXT("common.no"));
+
+	/** 받은 파티 초대의 만료를 보고, 만료됐으면 초대 팝업을 닫는다(HUD가 프레임마다 부름. 42). */
+	void UpdateInvite();
+
+	/** 파티 창을 열고 닫는다(HUD의 파티 버튼. 42). 여는 조건은 캐릭터 창과 같다. */
+	void TogglePartyWindow();
 
 	/** 1부터 Max까지의 수를 고르는 팝업(떨어뜨리기, 상점, 창고). 확인을 누르면 고른 수로 OnChosen을 부른다. */
 	void Quantity(const FText& Title, int32 Max, TFunction<void(int32)> OnChosen);
@@ -136,4 +142,7 @@ private:
 
 	/** 게임 종료로 로그아웃하는 중이다(닫히면 앱을 끝냄). */
 	bool bQuitting = false;
+
+	/** 열린 확인 팝업이 파티 초대의 것이다(만료되면 닫음. 42). */
+	bool bInvitePopup = false;
 };

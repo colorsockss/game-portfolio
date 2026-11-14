@@ -18,7 +18,7 @@ message SkillsRow {
   SkillKind kind = 4;
   // 계수. 피해는 공격력 × 계수의 공식, 회복은 시전자의 공격력 × 계수. 강화와 상태 이상만 건 스킬은 0
   double coefficient = 5;
-  // 사거리(m). 중심이 자기인 스킬과 자기에게 쓰는 회복·강화는 보지 않는다
+  // 사거리(m). 중심이 자기인 범위 스킬과 자기에게 쓰는 회복·강화는 보지 않는다(회복·강화를 파티원에게 쓸 때 본다. 42)
   double range = 6;
   // 범위(m). 범위 피해만 둔다
   optional double radius = 7;

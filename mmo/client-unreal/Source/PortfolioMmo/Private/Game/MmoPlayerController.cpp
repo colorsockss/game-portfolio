@@ -517,7 +517,7 @@ void AMmoPlayerController::UpdateSkillUse()
 	const FVector Location = Self->GetActorLocation();
 	const int32 X = MmoCoordinates::ToX(Location);
 	const int32 Z = MmoCoordinates::ToZ(Location);
-	const MmoWorld::FSkillStep Step = Net.Combat().UpdateSkill(Net.World(), *Field, Net.Data(), X, Z);
+	const MmoWorld::FSkillStep Step = Net.Combat().UpdateSkill(Net.World(), *Field, Net.Data(), X, Z, &Net.Party());
 	if (Step.Kind == MmoWorld::FSkillStep::EKind::Approach)
 	{
 		const double Moved = FMath::Sqrt(FMath::Square(static_cast<double>(Step.Goal.X) - EngagedGoal.X) + FMath::Square(static_cast<double>(Step.Goal.Z) - EngagedGoal.Z));
@@ -730,10 +730,10 @@ std::optional<MmoWorld::FInteractTarget> AMmoPlayerController::InteractCandidate
 	const MmoWorld::FWorldState& World = Session().World();
 	const double ServerTick = World.Clock().Now(FPlatformTime::Seconds());
 	return MmoWorld::FInteraction::Nearest(World, MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), Session().Data().Constants.interact_pick_range(),
-		[&World, ServerTick](const MmoWorld::FEntity& Entity)
+		[&World, ServerTick, PartyId = Session().Party().Id()](const MmoWorld::FEntity& Entity)
 		{
 			const MmoWorld::EInteractKind Kind = MmoWorld::FInteraction::KindOf(Entity);
-			return Kind == MmoWorld::EInteractKind::PickUp && !MmoWorld::FInteraction::CanPickUp(Entity.Info, World.SelfId(), ServerTick) ? MmoWorld::EInteractKind::None : Kind;
+			return Kind == MmoWorld::EInteractKind::PickUp && !MmoWorld::FInteraction::CanPickUp(Entity.Info, World.SelfId(), ServerTick, PartyId) ? MmoWorld::EInteractKind::None : Kind;
 		});
 }
 
@@ -1040,7 +1040,7 @@ void AMmoPlayerController::UpdateAutoHunt()
 	const MmoWorld::FPoint Here{ MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location) };
 	MmoWorld::FCombatState& Combat = Net.Combat();
 	const MmoWorld::FAutoHuntInput Input{ Net.World(), Net.Data(), *Field, Net.Inventory(), Net.Skills(), Combat.Cooldowns(), Here, AutoHunt.Origin(), Combat.Target(),
-		Combat.IsAttacking(), Combat.IsSkillBusy() || Net.Inventory().HasWaiting(), Now, Net.World().Clock().Now(Now), AutoHunt.Excluded(Now) };
+		Combat.IsAttacking(), Combat.IsSkillBusy() || Net.Inventory().HasWaiting(), Now, Net.World().Clock().Now(Now), AutoHunt.Excluded(Now), Net.Party().Id() };
 	const MmoWorld::FAutoDecision Decision = MmoWorld::FAutoHunt::Decide(Input);
 
 	const auto Target = Net.World().Entities().find(Decision.Id);

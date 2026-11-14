@@ -80,6 +80,13 @@ message Packet {
     // 400–499: 사회(채팅, 파티)
     Chat chat = 400;
     ChatReceived chat_received = 401;
+    PartyInvite party_invite = 402;
+    PartyInvited party_invited = 403;
+    PartyAnswer party_answer = 404;
+    PartyLeave party_leave = 405;
+    PartyKick party_kick = 406;
+    PartyState party_state = 407;
+    PartyMemberVitals party_member_vitals = 408;
   }
 }
 
@@ -98,6 +105,8 @@ enum ProtocolVersion {
 
 // 서버와 두 클라이언트가 함께 쓰는 수. Protobuf에는 상수가 없어서 enum 값으로 두고, C#과 C++이 여기서 생성된다.
 enum Constant {
+  // 값이 같은 상수가 있다(파티의 최대 인원과 연결 확인 간격이 5).
+  option allow_alias = true;
   CONSTANT_UNSPECIFIED = 0;
   // 1 m를 나눈 좌표 칸 수.
   CONSTANT_UNITS_PER_METER = 32;
@@ -117,6 +126,8 @@ enum Constant {
   CONSTANT_MAX_CHARACTERS = 4;
   // 퀵슬롯의 칸 수.
   CONSTANT_QUICKSLOT_COUNT = 8;
+  // 파티의 최대 인원(42).
+  CONSTANT_MAX_PARTY_SIZE = 5;
 }
 
 // ── 세션 ──
@@ -656,12 +667,64 @@ message ChatReceived {
   string text = 5;
 }
 
+// 클라이언트 → 서버. 시야 안의 플레이어를 파티에 초대한다(42. 파티가 없거나 파티장일 때). 통과하면 대상에게 PartyInvited가 가고, 실패는 ActionFailed(파티)다.
+message PartyInvite {
+  uint32 target_id = 1;
+}
+
+// 서버 → 초대받은 쪽. 파티 초대(42). expire_tick까지 답하지 않으면 서버가 지운다.
+message PartyInvited {
+  uint32 inviter_id = 1;
+  string inviter_name = 2;
+  uint32 expire_tick = 3;
+}
+
+// 클라이언트 → 서버. 받은 초대에 답한다(42). 거절하면 초대한 쪽에 ActionFailed(초대를 거절함, 파티)가 간다.
+message PartyAnswer {
+  bool accept = 1;
+}
+
+// 클라이언트 → 서버. 내 파티에서 떠난다(42).
+message PartyLeave {}
+
+// 클라이언트 → 서버. 파티장이 다른 파티원을 내보낸다(42).
+message PartyKick {
+  uint32 target_id = 1;
+}
+
+// 서버 → 파티원. 파티가 바뀌었다(42): 파티 번호, 파티장(늘 첫 파티원), 들어온 차례대로의 파티원. 파티가 없어졌거나 내가 빠졌으면 빈 것(번호 0, 빈 목록)이다.
+message PartyState {
+  uint32 party_id = 1;
+  uint32 leader_id = 2;
+  repeated PartyMember members = 3;
+}
+
+// 파티원 하나(개체 번호, 이름, 직업).
+message PartyMember {
+  uint32 id = 1;
+  string name = 2;
+  CharacterClass character_class = 3;
+}
+
+// 서버 → 파티원. 1초마다 파티원 모두의 체력과 위치(42). 시야 밖의 파티원도 싣는다.
+message PartyMemberVitals {
+  repeated PartyMemberVital members = 1;
+}
+
+message PartyMemberVital {
+  uint32 id = 1;
+  uint32 hp = 2;
+  uint32 max_hp = 3;
+  sint32 x = 4;
+  sint32 z = 5;
+}
+
 // 채팅의 채널(41). 시스템 줄은 서버가 보내는 글이 아니라 클라이언트가 알림 패킷을 받아 넣는 줄이라 여기에 없다.
 enum ChatChannel {
   CHAT_CHANNEL_UNSPECIFIED = 0;
   // 주변: 보낸 사람의 둘레 9개 시야 칸의 플레이어.
   CHAT_CHANNEL_NEARBY = 1;
-  // 파티: 파티원(42).
+  // 파티: 파티원 모두(보낸 본인 포함. 42).
   CHAT_CHANNEL_PARTY = 2;
   // 전체: 월드에 들어와 있는 모든 연결.
   CHAT_CHANNEL_WORLD = 3;
@@ -746,6 +809,18 @@ enum FailReason {
   FAIL_REASON_CHAT_TOO_FAST = 30;
   // 파티가 없는데 파티 채팅을 보냈다(41. 파티는 42).
   FAIL_REASON_NO_PARTY = 31;
+  // 파티장만 할 수 있다(초대, 내보내기. 42).
+  FAIL_REASON_NOT_LEADER = 32;
+  // 파티가 가득 찼다(CONSTANT_MAX_PARTY_SIZE. 42).
+  FAIL_REASON_PARTY_FULL = 33;
+  // 그 플레이어(초대의 대상이나 수락한 쪽)에게 이미 파티가 있다(42).
+  FAIL_REASON_ALREADY_IN_PARTY = 34;
+  // 대상이 답을 기다리는 다른 초대를 받는 중이다(42).
+  FAIL_REASON_INVITE_PENDING = 35;
+  // 답할 초대가 없다(만료됨, 초대한 쪽이 떠남. 42).
+  FAIL_REASON_NO_INVITE = 36;
+  // 초대받은 쪽이 거절했다(초대한 쪽에 보낸다. 42).
+  FAIL_REASON_INVITE_DECLINED = 37;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
@@ -760,6 +835,8 @@ enum RequestKind {
   REQUEST_KIND_QUICKSLOT = 5;
   // 창고 열기(75).
   REQUEST_KIND_STORAGE = 6;
+  // 파티의 초대, 답, 떠나기, 내보내기(42).
+  REQUEST_KIND_PARTY = 7;
 }
 
 // 클라이언트 → 서버. 대상을 기본 공격한다. 이미 공격 중이면 대상만 바꾼다. 다가가는 것은 클라이언트의 이동이다.

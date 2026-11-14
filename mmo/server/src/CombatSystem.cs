@@ -12,6 +12,7 @@ namespace PortfolioMmo.Server
     /// </summary>
     internal sealed class CombatSystem
     {
+        private readonly PartySystem _party;
         private readonly EntityTable _entities;
         private readonly FieldMap _field;
         private readonly Scheduler _scheduler;
@@ -41,11 +42,12 @@ namespace PortfolioMmo.Server
         /// </summary>
         public ProjectileSystem? Projectiles { get; set; }
 
-        public CombatSystem(EntityTable entities, FieldMap field, Scheduler scheduler, StatSystem stats, GameData data, TickEvents events, ProgressSystem progress)
+        public CombatSystem(EntityTable entities, FieldMap field, Scheduler scheduler, StatSystem stats, GameData data, TickEvents events, ProgressSystem progress, PartySystem party)
         {
             _entities = entities;
             _field = field;
             _scheduler = scheduler;
+            _party = party;
             _stats = stats;
             _data = data;
             _events = events;
@@ -255,7 +257,7 @@ namespace PortfolioMmo.Server
                 target.StrikeGeneration = _scheduler.NewGeneration();
                 if (target is Monster dead)
                 {
-                    dead.Killer = dead.Damage.Killer();
+                    dead.Killer = dead.Damage.Killer(_party.SideOf);
                 }
 
                 _events.Died(target, attacker);

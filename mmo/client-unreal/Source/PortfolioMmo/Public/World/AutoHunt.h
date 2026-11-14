@@ -65,6 +65,8 @@ namespace MmoWorld
 		double ServerTick = 0;
 		/** 후보에서 뺀 개체. */
 		const std::set<uint32_t>& Excluded;
+		/** 내 파티 번호(없으면 0). 주인이 내 파티인 드롭도 줍는다(42). */
+		uint32_t PartyId = 0;
 	};
 
 	class FAutoHunt

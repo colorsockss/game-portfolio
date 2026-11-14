@@ -47,6 +47,7 @@
 #include "UI/MmoLoginWidget.h"
 #include "UI/MmoNameTagWidget.h"
 #include "UI/MmoNoticeWidget.h"
+#include "UI/MmoPartyWidget.h"
 #include "UI/MmoQuantityWidget.h"
 #include "UI/MmoQuickslotBarWidget.h"
 #include "UI/MmoShopWidget.h"
@@ -142,6 +143,9 @@ namespace
 		float ChatLinesHeight = 180.0f;
 		float ChatToWidth = 110.0f;
 		float BubbleWidth = 240.0f;
+		/** HUD의 파티 칸이 왼쪽 위에서 내려오는 거리(구역 표시 아래)와 파티원 칸의 폭(42). */
+		float PartyTop = 190.0f;
+		float PartySlotWidth = 180.0f;
 	};
 
 	const FMmoStyle Style;
@@ -559,10 +563,31 @@ namespace
 		UTextBlock* TargetName = Builder.Text(TEXT("TargetNameText"), FText::GetEmpty(), Style.BodySize, true);
 		Target->AddChildToVerticalBox(TargetName)->SetHorizontalAlignment(HAlign_Center);
 		Target->AddChildToVerticalBox(Bar(Builder, TEXT("TargetHp"), Style.Hp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
-		// 대상이 다른 플레이어면 귓속말 버튼(41).
+		// 대상이 다른 플레이어면 귓속말 버튼(41)과 파티 초대 버튼(42). 보이는지는 UMmoHudWidget이 정한다.
 		UMmoButtonWidget* Whisper = Builder.Button(TEXT("WhisperButton"), TEXT("target.whisper"));
 		Whisper->SetVisibility(ESlateVisibility::Collapsed);
-		Target->AddChildToVerticalBox(Whisper)->SetHorizontalAlignment(HAlign_Center);
+		UMmoButtonWidget* PartyInvite = Builder.Button(TEXT("PartyInviteButton"), TEXT("party.invite"));
+		PartyInvite->SetVisibility(ESlateVisibility::Collapsed);
+		Target->AddChildToVerticalBox(Row(Builder, TEXT("TargetButtons"), { Whisper, PartyInvite }))->SetHorizontalAlignment(HAlign_Center);
+
+		// 왼쪽, 구역 표시 아래에 파티 버튼과 파티원 칸(42. 칸마다 이름 버튼과 작은 체력 바. 파티원이 없는 칸은 UMmoHudWidget이 감춤).
+		UVerticalBox* Party = Builder.Add<UVerticalBox>(TEXT("Party"));
+		Party->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		Corner(*Root, Party, ECorner::TopLeft, FVector2D(Style.HudMargin, Style.HudMargin + Style.PartyTop));
+		AddWithGap(*Party, Builder.Button(TEXT("PartyButton"), TEXT("party.button")));
+		Cast<UVerticalBoxSlot>(Party->GetChildAt(0)->Slot)->SetHorizontalAlignment(HAlign_Left);
+		for (int32 Index = 0; Index < UMmoHudWidget::PartySlotCount(); ++Index)
+		{
+			UVerticalBox* Member = Builder.Add<UVerticalBox>(*FString::Printf(TEXT("PartyMember%dBox"), Index));
+			Member->SetVisibility(ESlateVisibility::Collapsed);
+			USizeBox* MemberSize = Builder.Add<USizeBox>(*FString::Printf(TEXT("PartyMember%dSize"), Index));
+			MemberSize->SetWidthOverride(Style.PartySlotWidth);
+			MemberSize->SetContent(Builder.Button(*FString::Printf(TEXT("PartyMember%d"), Index), FText::GetEmpty()));
+			Member->AddChildToVerticalBox(MemberSize);
+			Member->AddChildToVerticalBox(Bar(Builder, *FString::Printf(TEXT("PartyMember%dHp"), Index), Style.Hp, Style.PartySlotWidth, Style.TagBarHeight, false))
+				->SetPadding(FMargin(0.0f, 2.0f, 0.0f, 0.0f));
+			AddWithGap(*Party, Member);
+		}
 
 		// 아래 가운데에 내 진행 바(시전. 진행 중일 때만 보임)와 퀵슬롯 8칸(칸마다 버튼 위에 쿨다운 가림). 칸은 UMmoHudWidget이 이름(Slot<n>)으로 찾는다.
 		UVerticalBox* Actions = Builder.Add<UVerticalBox>(TEXT("Actions"));
@@ -1037,6 +1062,30 @@ namespace
 		return Builder.Save();
 	}
 
+	/** 파티 창(42): 제목, 파티가 없을 때의 글, 최대 인원만큼의 줄(이름과 내보내기 버튼), 떠나기·닫기. */
+	bool CreateParty()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Party, UMmoPartyWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("party.title"), Style.TitleSize), Style.Section);
+		UMmoTextBlock* Empty = Builder.KeyText(TEXT("EmptyText"), TEXT("party.empty"), Style.BodySize, true);
+		Empty->SetVisibility(ESlateVisibility::Collapsed);
+		AddWithGap(*Column, Empty);
+		for (int32 Index = 0; Index < UMmoPartyWidget::MaxMembers(); ++Index)
+		{
+			UHorizontalBox* Line = Builder.Add<UHorizontalBox>(*FString::Printf(TEXT("Member%dRow"), Index));
+			Line->SetVisibility(ESlateVisibility::Collapsed);
+			UHorizontalBoxSlot* NameSlot = Line->AddChildToHorizontalBox(Builder.Text(*FString::Printf(TEXT("Member%dText"), Index), FText::GetEmpty(), Style.BodySize));
+			NameSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+			NameSlot->SetVerticalAlignment(VAlign_Center);
+			Line->AddChildToHorizontalBox(Builder.Button(*FString::Printf(TEXT("Member%dKick"), Index), TEXT("party.kick")));
+			AddWithGap(*Column, Line);
+		}
+		Column->AddChildToVerticalBox(Builder.Add<USizeBox>(TEXT("Spacer")))->SetPadding(FMargin(0.0f, Style.Section * 0.5f, 0.0f, 0.0f));
+		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), { Builder.Button(TEXT("LeaveButton"), TEXT("party.leave")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+		return Builder.Save();
+	}
+
 	/** 수량 입력: 제목, 고른 수, −10·−1·+1·+10·최대, 취소·확인. */
 	bool CreateQuantity()
 	{
@@ -1096,7 +1145,7 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	UClass* QuickslotBar = CreateQuickslotBar();
 	UClass* Chat = CreateChat();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && QuickslotBar && Chat && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick, Chat) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateStorage(ItemSlot) && CreateMap() && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+		&& CreateHud(Joystick, Chat) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateStorage(ItemSlot) && CreateMap() && CreateParty() && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 

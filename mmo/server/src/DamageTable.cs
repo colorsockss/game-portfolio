@@ -5,21 +5,13 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 몬스터 하나의 피해 표: 플레이어마다 준 피해의 합을 든 차례로 둔다. 줄의 차례가 "먼저 든 쪽"이다(인식된 틱이나 처음 때린 틱이
-    /// 이른 쪽, 같은 틱이면 먼저 든 줄). 합을 견주는 곳은 SideOf가 답한 편끼리 견준다.
+    /// 이른 쪽, 같은 틱이면 먼저 든 줄). 합을 견주는 곳은 부른 쪽이 넘긴 편(sideOf. 파티가 있으면 그 파티, 없으면 플레이어 자신. 42)끼리 견준다.
     /// </summary>
     internal sealed class DamageTable
     {
         private readonly List<(uint PlayerId, ulong Damage)> _rows = new List<(uint PlayerId, ulong Damage)>();
 
         public int Count => _rows.Count;
-
-        /// <summary>
-        /// 플레이어의 편. 파티가 없어 그 플레이어 자신이다. 42가 파티로 잇는다.
-        /// </summary>
-        public static uint SideOf(uint playerId)
-        {
-            return playerId;
-        }
 
         public bool Contains(uint playerId)
         {
@@ -58,15 +50,15 @@ namespace PortfolioMmo.Server
         /// 칠 대상: 합이 큰 편부터(합이 같으면 먼저 든 줄이 앞인 편), 그 편에서 고를 수 있는 줄 가운데 피해가 가장 큰 플레이어
         /// (같으면 먼저 든 줄). 건너뛰는 줄(selectable이 거짓)의 피해도 편의 합에 든다. 고를 줄이 없으면 null.
         /// </summary>
-        public uint? Pick(Predicate<uint> selectable)
+        public uint? Pick(Predicate<uint> selectable, Func<uint, ulong> sideOf)
         {
             uint? best = null;
             ulong bestSum = 0;
             int bestFirst = 0;
             for (int i = 0; i < _rows.Count; i++)
             {
-                uint side = SideOf(_rows[i].PlayerId);
-                if (FirstOf(side) != i)
+                ulong side = sideOf(_rows[i].PlayerId);
+                if (FirstOf(side, sideOf) != i)
                 {
                     continue;
                 }
@@ -76,7 +68,7 @@ namespace PortfolioMmo.Server
                 ulong sum = 0;
                 for (int j = i; j < _rows.Count; j++)
                 {
-                    if (SideOf(_rows[j].PlayerId) != side)
+                    if (sideOf(_rows[j].PlayerId) != side)
                     {
                         continue;
                     }
@@ -103,14 +95,14 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 잡은 편: 합이 가장 큰 편(같으면 먼저 든 줄이 앞인 편). 표가 비었으면 null. 경험치(31)와 드롭의 주인(33)이 쓴다.
         /// </summary>
-        public uint? Killer()
+        public ulong? Killer(Func<uint, ulong> sideOf)
         {
-            uint? best = null;
+            ulong? best = null;
             ulong bestSum = 0;
             for (int i = 0; i < _rows.Count; i++)
             {
-                uint side = SideOf(_rows[i].PlayerId);
-                if (FirstOf(side) != i)
+                ulong side = sideOf(_rows[i].PlayerId);
+                if (FirstOf(side, sideOf) != i)
                 {
                     continue;
                 }
@@ -118,7 +110,7 @@ namespace PortfolioMmo.Server
                 ulong sum = 0;
                 foreach ((uint playerId, ulong damage) in _rows)
                 {
-                    sum += SideOf(playerId) == side ? damage : 0;
+                    sum += sideOf(playerId) == side ? damage : 0;
                 }
 
                 if ((best == null) || (sum > bestSum))
@@ -131,9 +123,9 @@ namespace PortfolioMmo.Server
             return best;
         }
 
-        private int FirstOf(uint side)
+        private int FirstOf(ulong side, Func<uint, ulong> sideOf)
         {
-            return _rows.FindIndex(row => SideOf(row.PlayerId) == side);
+            return _rows.FindIndex(row => sideOf(row.PlayerId) == side);
         }
     }
 }

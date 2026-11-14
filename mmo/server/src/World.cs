@@ -33,6 +33,7 @@ namespace PortfolioMmo.Server
         private readonly ShopSystem _shop;
         private readonly StorageSystem _storage;
         private readonly ChatSystem _chat;
+        private readonly PartySystem _party;
         private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
@@ -50,13 +51,15 @@ namespace PortfolioMmo.Server
             _save = new SaveSystem(_queue, _entities);
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
             var stats = new StatSystem(data, random);
+            _party = new PartySystem(data, _entities, _scheduler);
             _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, _queue, data, field, _entities, _grid, _save, stats, () => Tick);
+            _login.Leaving = _party.Leaving;
             _vitals = new VitalsSystem(_entities, data);
-            _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random);
+            _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random, _party);
             _events = new TickEvents(_grid);
             _progress = new ProgressSystem(_entities, _scheduler, _events);
             _effects = new EffectSystem(_entities, _scheduler, _events, stats, _progress, data);
-            _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events, _progress);
+            _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events, _progress, _party);
             _projectiles = new ProjectileSystem(_entities, _grid, field, data, _events, _combat, _effects);
             _skills = new SkillSystem(_entities, _grid, field, _scheduler, data, _events, _combat, _effects, _progress, _projectiles);
             _combat.Skills = _skills;
@@ -65,7 +68,7 @@ namespace PortfolioMmo.Server
             _spawn = new SpawnSystem(data, field, _entities, _grid, _ai, _scheduler, random);
             _spawn.PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
-            _growth = new GrowthSystem(_entities, stats, data);
+            _growth = new GrowthSystem(_entities, stats, data, _party);
             _quickslots = new QuickslotSystem(data);
             _inventory = new InventorySystem(data, _progress, _movement, stats, _quickslots, random);
             _login.Entered = _inventory.Enter;
@@ -84,7 +87,7 @@ namespace PortfolioMmo.Server
 
             _shop = new ShopSystem(data, field, _inventory, shop);
             _storage = new StorageSystem(data, field, _inventory, keeper);
-            _chat = new ChatSystem(data, _entities, _grid);
+            _chat = new ChatSystem(data, _entities, _grid, _party);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
             _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
@@ -114,6 +117,8 @@ namespace PortfolioMmo.Server
         internal InventorySystem Inventory => _inventory;
 
         internal QuickslotSystem Quickslots => _quickslots;
+
+        internal PartySystem Party => _party;
 
         internal System.Collections.Generic.IEnumerable<GroundItem> GroundItems => System.Linq.Enumerable.OfType<GroundItem>(_entities.All);
 
@@ -293,6 +298,18 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.Chat when player != null:
                     Answer(player, _chat.Send(player, packet.Chat, Tick), RequestKind.Chat);
                     break;
+                case Packet.BodyOneofCase.PartyInvite when player != null:
+                    Answer(player, Outcome.From(_party.Invite(player, packet.PartyInvite.TargetId, Tick)), RequestKind.Party);
+                    break;
+                case Packet.BodyOneofCase.PartyAnswer when player != null:
+                    Answer(player, Outcome.From(_party.Answer(player, packet.PartyAnswer.Accept)), RequestKind.Party);
+                    break;
+                case Packet.BodyOneofCase.PartyLeave when player != null:
+                    Answer(player, Outcome.From(_party.Leave(player)), RequestKind.Party);
+                    break;
+                case Packet.BodyOneofCase.PartyKick when player != null:
+                    Answer(player, Outcome.From(_party.Kick(player, packet.PartyKick.TargetId)), RequestKind.Party);
+                    break;
                 case Packet.BodyOneofCase.AttackStop when player != null:
                     _combat.Stop(player);
                     break;
@@ -316,6 +333,7 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.UseSkill => RequestKind.Skill,
                 Packet.BodyOneofCase.Revive => RequestKind.Revive,
                 Packet.BodyOneofCase.StorageOpen => RequestKind.Storage,
+                Packet.BodyOneofCase.PartyInvite or Packet.BodyOneofCase.PartyAnswer or Packet.BodyOneofCase.PartyLeave or Packet.BodyOneofCase.PartyKick => RequestKind.Party,
                 _ => null,
             };
         }
@@ -422,6 +440,7 @@ namespace PortfolioMmo.Server
             _view.Step(Tick);
             _inventory.Flush(_entities.Players);
             _quickslots.Flush(_entities.Players);
+            _party.Step(Tick);
             // 사건은 같은 틱의 들어옴·나감·움직임 뒤에 간다.
             _events.Deliver();
             long viewed = Stopwatch.GetTimestamp();
@@ -502,6 +521,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.EffectEnd => _effects.IsEndCurrent(job),
                 ScheduledKind.Despawn => _deaths.IsDespawnCurrent(job),
                 ScheduledKind.GroundItemExpire => _loot.IsExpireCurrent(job),
+                ScheduledKind.PartyInviteExpire => _party.IsInviteCurrent(job),
                 ScheduledKind.Respawn => _spawn.PlacedAt(job.Owner) != null,
                 _ => throw UnknownKind(job.Kind),
             };
@@ -513,7 +533,8 @@ namespace PortfolioMmo.Server
             {
                 ScheduledKind.UnreachableEnd => false,
                 ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit or ScheduledKind.CastEnd => true,
-                ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd or ScheduledKind.GroundItemExpire => false,
+                ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd or ScheduledKind.GroundItemExpire
+                    or ScheduledKind.PartyInviteExpire => false,
                 _ => throw UnknownKind(kind),
             };
         }
@@ -542,6 +563,9 @@ namespace PortfolioMmo.Server
                     break;
                 case ScheduledKind.GroundItemExpire:
                     _loot.Expire(job, Tick);
+                    break;
+                case ScheduledKind.PartyInviteExpire:
+                    _party.ExpireInvite(job);
                     break;
                 default:
                     throw UnknownKind(job.Kind);
