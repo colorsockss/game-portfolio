@@ -53,6 +53,7 @@ void UMmoSettingsWidget::Changed()
 	Settings.ApplyMmo(GetWorld());
 	Settings.SaveSettings();
 	ShowSettingLabels();
+	ShowStatsLabel();
 }
 
 void UMmoSettingsWidget::ShowSettingLabels()

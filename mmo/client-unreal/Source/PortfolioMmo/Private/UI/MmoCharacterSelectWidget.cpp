@@ -44,7 +44,14 @@ void UMmoCharacterSelectWidget::NativeOnInitialized()
 	// 닫혀 있는 동안에도 목록이 바뀌면(만들기 화면에서 만듦) 다시 그린다. AddUObject는 이 위젯이 사라지면 저절로 건너뛴다.
 	Session().OnPacket.AddUObject(this, &UMmoCharacterSelectWidget::HandlePacket);
 	// 언어가 바뀌면 칸의 글(이름과 직업)을 다시 채운다.
-	Session().OnLanguageChanged.AddUObject(this, &UMmoCharacterSelectWidget::Refresh);
+	// 화면은 닫혀도 남아 있으므로 보이는 동안만 다시 채운다(닫힌 채 다시 채우면 월드 안에서 미리 보기와 그 카메라가 다시 선다).
+	Session().OnLanguageChanged.AddWeakLambda(this, [this]
+	{
+		if (GetParent() != nullptr)
+		{
+			Refresh();
+		}
+	});
 }
 
 void UMmoCharacterSelectWidget::NativeConstruct()
