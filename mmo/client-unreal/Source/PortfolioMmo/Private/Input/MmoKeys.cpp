@@ -37,6 +37,8 @@ namespace MmoKeys
 			{ EMmoAction::Quest, EKeys::L },
 			{ EMmoAction::Map, EKeys::M },
 			{ EMmoAction::Chat, EKeys::Enter },
+			{ EMmoAction::HideUi, EKeys::F9 },
+			{ EMmoAction::FreeCamera, EKeys::F10 },
 		};
 		return Table;
 	}

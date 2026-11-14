@@ -22,6 +22,7 @@ message Packet {
     EnterWorldResult enter_world_result = 10;
     LeaveWorld leave_world = 11;
     ActionFailed action_failed = 12;
+    DevCommand dev_command = 13;
 
     // 100–199: 월드(이동과 시야)
     Move move = 100;
@@ -143,6 +144,13 @@ enum KickReason {
   KICK_REASON_IDLE_TIMEOUT = 4;
   // 요청을 너무 자주 보냈다(Constants의 빈도 제한. 버리는 일이 이어진 시간이 끊는 시간을 넘음).
   KICK_REASON_RATE_LIMITED = 5;
+}
+
+// 클라이언트 → 서버. 개발 명령 글 한 줄(앞의 /는 있어도 없어도 됨). --dev로 띄운 서버만 실행하고, 아니면 ActionFailed(INVALID_COMMAND, CHAT)로
+// 답한다. 월드 안에서만 보내고(들어가기 전에 오면 끊음), 죽은 동안과 기절한 동안에도 실행한다. 명령: "tp x z"(m. 순간 이동),
+// "spawn 몬스터번호 [x z]"(m. 없으면 내 자리. 부른 몬스터는 다시 나오지 않음). 레벨·아이템·골드·성향은 그 항목(31, 32, 44)이 더한다.
+message DevCommand {
+  string line = 1;
 }
 
 // 클라이언트 → 서버. 연결이 살아 있음을 알린다. 로그인 전에도 보낼 수 있고, CONSTANT_PING_INTERVAL_SECONDS마다 보낸다.
@@ -434,6 +442,8 @@ enum FailReason {
   FAIL_REASON_STUNNED = 11;
   // 진행 중인 일이 중간에 취소됐다(ProgressCancelled만 싣는다).
   FAIL_REASON_CANCELLED = 12;
+  // 쓸 수 없는 명령(--dev가 아닌 서버의 DevCommand, 모르는 명령, 값이 맞지 않는 명령).
+  FAIL_REASON_INVALID_COMMAND = 13;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
@@ -442,6 +452,8 @@ enum RequestKind {
   REQUEST_KIND_ATTACK = 1;
   REQUEST_KIND_REVIVE = 2;
   REQUEST_KIND_SKILL = 3;
+  // 채팅창에서 보낸 것(개발 명령 68. 채팅 41도 이 값을 쓴다).
+  REQUEST_KIND_CHAT = 4;
 }
 
 // 클라이언트 → 서버. 대상을 기본 공격한다. 이미 공격 중이면 대상만 바꾼다. 다가가는 것은 클라이언트의 이동이다.

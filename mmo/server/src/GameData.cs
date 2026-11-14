@@ -120,6 +120,11 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// Monsters의 줄. 없으면 던진다(Spawns의 ref를 data-tool이 검사하므로 데이터가 맞으면 없을 수 없음).
         /// </summary>
+        public MonstersRow? FindMonster(uint id)
+        {
+            return _monsters.GetValueOrDefault(id);
+        }
+
         public MonstersRow Monster(uint id)
         {
             return _monsters.TryGetValue(id, out MonstersRow? row) ? row : throw new KeyNotFoundException($"Monsters has no row {id}.");

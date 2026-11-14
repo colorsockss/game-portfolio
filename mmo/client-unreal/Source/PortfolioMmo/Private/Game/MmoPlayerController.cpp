@@ -1,5 +1,7 @@
 #include "Game/MmoPlayerController.h"
 
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -30,6 +32,9 @@ namespace
 	constexpr float DefaultPitch = -60.0f;
 	constexpr float MinPitch = -80.0f;
 	constexpr float MaxPitch = -45.0f;
+	/** 자유 카메라가 이동 입력으로 움직이는 빠르기(언리얼 단위/초)와 휠 한 칸의 거리. */
+	constexpr float FreeCameraSpeed = 2000.0f;
+	constexpr float FreeCameraWheelStep = 300.0f;
 }
 
 AMmoPlayerController::AMmoPlayerController()
@@ -88,6 +93,15 @@ void AMmoPlayerController::SetupInputComponent()
 	Mapping->MapKey(AttackAction, MmoKeys::KeyOf(EMmoAction::Attack));
 	Mapping->MapKey(TargetAction, MmoKeys::KeyOf(EMmoAction::TargetNearest));
 	Mapping->MapKey(InteractAction, MmoKeys::KeyOf(EMmoAction::Interact));
+#if !UE_BUILD_SHIPPING
+	// 시연 영상의 UI 숨기기와 자유 카메라는 개발 빌드만 듣는다.
+	HideUiAction = NewObject<UInputAction>(this, TEXT("HideUi"));
+	HideUiAction->ValueType = EInputActionValueType::Boolean;
+	FreeCameraAction = NewObject<UInputAction>(this, TEXT("FreeCamera"));
+	FreeCameraAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(HideUiAction, MmoKeys::KeyOf(EMmoAction::HideUi));
+	Mapping->MapKey(FreeCameraAction, MmoKeys::KeyOf(EMmoAction::FreeCamera));
+#endif
 	for (int32 Index = 0; Index < 8; ++Index)
 	{
 		UInputAction* Action = NewObject<UInputAction>(this, *FString::Printf(TEXT("Slot%d"), Index));
@@ -114,6 +128,37 @@ void AMmoPlayerController::SetupInputComponent()
 	}
 	Enhanced->BindAction(TargetAction, ETriggerEvent::Started, this, &AMmoPlayerController::TargetNearest);
 	Enhanced->BindAction(InteractAction, ETriggerEvent::Started, this, &AMmoPlayerController::Interact);
+#if !UE_BUILD_SHIPPING
+	Enhanced->BindAction(HideUiAction, ETriggerEvent::Started, this, &AMmoPlayerController::ToggleHideUi);
+	Enhanced->BindAction(FreeCameraAction, ETriggerEvent::Started, this, &AMmoPlayerController::ToggleFreeCamera);
+#endif
+}
+
+void AMmoPlayerController::ToggleHideUi()
+{
+	GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleHidden();
+}
+
+void AMmoPlayerController::ToggleFreeCamera()
+{
+	if (FreeCamera)
+	{
+		SetViewTarget(GetPawn());
+		FreeCamera->Destroy();
+		FreeCamera = nullptr;
+		return;
+	}
+	if (!PlayerCameraManager)
+	{
+		return;
+	}
+	FActorSpawnParameters Spawn;
+	Spawn.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	FreeCamera = GetWorld()->SpawnActor<ACameraActor>(PlayerCameraManager->GetCameraLocation(), PlayerCameraManager->GetCameraRotation(), Spawn);
+	// 카메라 액터의 기본 화면비 고정을 풀어 창의 비율 그대로 그린다.
+	FreeCamera->GetCameraComponent()->SetConstraintAspectRatio(false);
+	FreeCamera->GetCameraComponent()->SetFieldOfView(PlayerCameraManager->GetFOVAngle());
+	SetViewTarget(FreeCamera);
 }
 
 bool AMmoPlayerController::InputKey(const FInputKeyEventArgs& Params)
@@ -615,6 +660,14 @@ void AMmoPlayerController::HandleMove(const FInputActionValue& Value)
 	APawn* Self = GetPawn();
 	// 카메라가 보는 쪽이 앞이다. 손으로 걸으면 따라가던 경로와 누른 스킬을 버린다.
 	const FVector2D Axis = Value.Get<FVector2D>();
+	if (FreeCamera)
+	{
+		// 자유 카메라는 보는 쪽(땅과 나란히)으로 옮기고 캐릭터는 세워 둔다.
+		const FRotationMatrix CameraFacing(FRotator(0.0, FreeCamera->GetActorRotation().Yaw, 0.0));
+		const FVector Step = CameraFacing.GetUnitAxis(EAxis::X) * Axis.Y + CameraFacing.GetUnitAxis(EAxis::Y) * Axis.X;
+		FreeCamera->AddActorWorldOffset(Step * FreeCameraSpeed * GetWorld()->GetDeltaSeconds());
+		return;
+	}
 	bMoveInput |= !Axis.IsNearlyZero();
 	// 시전 시간이 있는 스킬을 보낼 때 쥐고 있던 입력은 한 번 놓을 때까지 쓰지 않는다(그대로 걸으면 시전이 바로 취소됨).
 	if (!Self || bManualMoveBlocked || Session().World().SelfState().bDead || IsStunned() || !Session().Combat().AllowMove(!Axis.IsNearlyZero()))
@@ -641,12 +694,25 @@ void AMmoPlayerController::HandleLook(const FInputActionValue& Value)
 		return;
 	}
 	const FVector2D Delta = Value.Get<FVector2D>();
+	if (FreeCamera)
+	{
+		FRotator Rotation = FreeCamera->GetActorRotation();
+		Rotation.Yaw += Delta.X;
+		Rotation.Pitch = FMath::Clamp(Rotation.Pitch + Delta.Y, -89.0, 89.0);
+		FreeCamera->SetActorRotation(Rotation);
+		return;
+	}
 	AddYawInput(Delta.X);
 	AddPitchInput(-Delta.Y);
 }
 
 void AMmoPlayerController::HandleZoom(const FInputActionValue& Value)
 {
+	if (FreeCamera)
+	{
+		FreeCamera->AddActorWorldOffset(FreeCamera->GetActorForwardVector() * Value.Get<float>() * FreeCameraWheelStep);
+		return;
+	}
 	if (AMmoCharacter* Self = GetPawn<AMmoCharacter>())
 	{
 		Self->Zoom(Value.Get<float>() * WheelZoomStep);

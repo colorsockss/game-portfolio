@@ -6,6 +6,8 @@
 #include "Misc/CommandLine.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSettings.h"
+#include "HAL/IConsoleManager.h"
+#include "World/DevCommand.h"
 
 void UMmoSession::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -120,6 +122,24 @@ void UMmoSession::EnterWorld(uint64 CharacterId)
 	Packet.mutable_enter_world()->set_character_id(CharacterId);
 	Connection().Send(Packet);
 }
+
+#if !UE_BUILD_SHIPPING
+namespace
+{
+	/** 개발 빌드의 콘솔 명령: 글 한 줄을 DevCommand로 보낸다(채팅창 41 전). --dev 서버만 실행한다. 예: Mmo.Dev tp 100 -20 */
+	FAutoConsoleCommandWithWorldAndArgs GMmoDevCommand(
+		TEXT("Mmo.Dev"),
+		TEXT("Send a dev command line to a --dev server, e.g. 'Mmo.Dev tp 100 -20' or 'Mmo.Dev spawn 1'."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic([](const TArray<FString>& Args, UWorld* World)
+		{
+			UMmoSession* Session = World && World->GetGameInstance() ? World->GetGameInstance()->GetSubsystem<UMmoSession>() : nullptr;
+			if (Session && Session->World().InWorld())
+			{
+				Session->Send(MmoWorld::DevCommandPacket(TCHAR_TO_UTF8(*FString::Join(Args, TEXT(" ")))));
+			}
+		}));
+}
+#endif
 
 void UMmoSession::LeaveWorld()
 {

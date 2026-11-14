@@ -69,6 +69,15 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 개발 명령으로 부른 몬스터(68)의 번호. 다시 쓰지 않는다.
+        /// </summary>
+        public uint NextSummonId()
+        {
+            _placingOnly = false;
+            return _nextId++;
+        }
+
+        /// <summary>
         /// 새 바닥 아이템 번호. 사라진 지 GroundItemIdReuseTicks가 지난 번호가 있으면 그것을 다시 쓴다.
         /// </summary>
         public uint NextGroundItemId(uint tick)

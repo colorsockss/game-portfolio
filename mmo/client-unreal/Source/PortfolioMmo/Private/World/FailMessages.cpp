@@ -19,6 +19,7 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_BUSY: return "다른 일을 하는 중입니다";
 		case portfolio::mmo::FAIL_REASON_STUNNED: return "기절한 동안에는 할 수 없습니다";
 		case portfolio::mmo::FAIL_REASON_CANCELLED: return "취소되었습니다";
+		case portfolio::mmo::FAIL_REASON_INVALID_COMMAND: return "쓸 수 없는 명령입니다";
 		default: return "할 수 없습니다";
 		}
 	}

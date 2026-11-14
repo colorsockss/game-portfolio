@@ -383,6 +383,7 @@ namespace PortfolioMmo.Server.Tests
                 { "playing", new Packet { Move = new Move { Yaw = Units.YawSteps } } },
                 { "playing", new Packet { EntitiesLeave = new EntitiesLeave() } },
                 { "selecting", new Packet { AttackStart = new AttackStart { TargetId = 1 } } },
+                { "selecting", new Packet { DevCommand = new DevCommand { Line = "tp 0 0" } } },
                 { "playing", new Packet { AttackSwing = new AttackSwing { AttackerId = 1, TargetId = 2 } } },
                 { "playing", new Packet { UseSkill = new UseSkill { SkillId = 999 } } },
             };

@@ -35,11 +35,12 @@ namespace PortfolioMmo.Server
         private readonly SkillSystem _skills;
         private readonly ProjectileSystem _projectiles;
         private readonly RateLimiter.Limits _rateLimits;
+        private readonly DevSystem? _dev;
 
         /// <summary>
-        /// 빈 월드를 만든다.
+        /// 빈 월드를 만든다. dev면 개발 명령(DevCommand)을 실행한다(서버의 --dev).
         /// </summary>
-        public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store, GameData data)
+        public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store, GameData data, bool dev = false)
         {
             _save = new SaveSystem(store, _entities, SaveIntervalTicks);
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
@@ -63,6 +64,7 @@ namespace PortfolioMmo.Server
             _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
             _rateLimits = RateLimiter.Limits.From(data.Constants);
+            _dev = dev ? new DevSystem(data, field, _entities, _grid, _movement, _progress, _spawn) : null;
         }
 
         /// <summary>
@@ -163,6 +165,10 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.AttackStart when player != null:
                     Answer(player, _combat.Start(player, packet.AttackStart), RequestKind.Attack);
                     break;
+                // 개발 명령은 죽은 동안과 기절한 동안에도 실행한다(Blocked가 막지 않음). --dev가 아니면 끊지 않고 실패로 답한다.
+                case Packet.BodyOneofCase.DevCommand when player != null:
+                    Answer(player, _dev?.Run(player, packet.DevCommand.Line) ?? Outcome.Fail(FailReason.InvalidCommand), RequestKind.Chat);
+                    break;
                 case Packet.BodyOneofCase.AttackStop when player != null:
                     _combat.Stop(player);
                     break;
@@ -190,7 +196,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 죽은 동안과 기절한 동안 막는 요청의 이유. 둘 다 연결 확인, 나가기, 공격 멈춤(그만두는 것이라 받음)을 받고, 죽은 동안에는 부활도 받는다.
+        /// 죽은 동안과 기절한 동안 막는 요청의 이유. 둘 다 연결 확인, 나가기, 공격 멈춤(그만두는 것이라 받음), 개발 명령을 받고, 죽은 동안에는 부활도 받는다.
         /// Move는 MovementSystem이 되돌린다. 막지 않으면 None이다.
         /// </summary>
         private static FailReason Blocked(Player player, Packet.BodyOneofCase body)

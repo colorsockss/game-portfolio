@@ -190,6 +190,14 @@ void UMmoUiManager::Back()
 	}
 }
 
+void UMmoUiManager::ToggleHidden()
+{
+	if (Root)
+	{
+		Root->SetVisibility(Root->GetVisibility() == ESlateVisibility::Collapsed ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed);
+	}
+}
+
 void UMmoUiManager::ShowNotice(const FText& Message)
 {
 	if (Notice)

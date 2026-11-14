@@ -49,6 +49,10 @@ enum class EMmoAction : uint8
 	Map,
 	/** 채팅(41). */
 	Chat,
+	/** 개발 빌드만: UI 숨기기(시연 영상, 68). */
+	HideUi,
+	/** 개발 빌드만: 자유 카메라(시연 영상, 68). */
+	FreeCamera,
 };
 
 struct FMmoKeyRow

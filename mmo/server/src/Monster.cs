@@ -21,14 +21,20 @@ namespace PortfolioMmo.Server
     /// </summary>
     public sealed class PlacedPoint
     {
-        public PlacedPoint(uint id, int x, int z, SpawnsRow spawn, MonstersRow template)
+        public PlacedPoint(uint id, int x, int z, SpawnsRow spawn, MonstersRow template, bool summoned = false)
         {
             Id = id;
             X = x;
             Z = z;
             Spawn = spawn;
             Template = template;
+            Summoned = summoned;
         }
+
+        /// <summary>
+        /// 개발 명령으로 부른 몬스터의 자리(68). 죽으면 다시 나오지 않는다.
+        /// </summary>
+        public bool Summoned { get; }
 
         public uint Id { get; }
 

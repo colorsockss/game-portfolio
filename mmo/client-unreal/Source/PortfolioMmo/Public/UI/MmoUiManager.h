@@ -44,6 +44,9 @@ public:
 	/** 뒤로 가기(Esc, Android 뒤로 버튼). 닫을 창이 없고 게임 중이면 설정을 연다. */
 	void Back();
 
+	/** 개발 빌드의 UI 숨기기(68): 뿌리 위젯의 층(이름표, HUD, 창, 팝업, 알림)을 모두 감추거나 다시 보인다. */
+	void ToggleHidden();
+
 	/** 알림 층에 잠깐 글을 띄운다. */
 	void ShowNotice(const FText& Message);
 

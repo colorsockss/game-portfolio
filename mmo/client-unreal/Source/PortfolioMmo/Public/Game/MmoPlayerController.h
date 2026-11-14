@@ -14,6 +14,7 @@
 
 #include "MmoPlayerController.generated.h"
 
+class ACameraActor;
 class UInputAction;
 class UInputMappingContext;
 class UMmoSession;
@@ -28,6 +29,7 @@ struct FInputActionValue;
  * 상호작용(E와 HUD의 버튼. 10 m 안의 가장 가까운 것까지 걸어가 함), 뒤로 가기(Esc, Android 뒤로 버튼. 화면 관리자에 넘김)를 받고,
  * 프레임마다 캐릭터의 자리를 FMoveSender에 넘겨 보낼 때가 되면 Move를 보낸다. PositionReset이 오면 그 자리로 옮긴다.
  * 입력 액션과 매핑은 에셋 없이 키 표(MmoKeys)로 여기서 만든다. 글 상자에 초점이 있는 동안은 키보드 입력을 버린다.
+ * 개발 빌드에서는 시연 영상(69)을 찍는 UI 숨기기와 자유 카메라(키 표의 HideUi, FreeCamera)도 받는다.
  */
 UCLASS()
 class AMmoPlayerController : public APlayerController
@@ -94,6 +96,15 @@ private:
 
 	/** 상호작용의 일(줍기 33, 채집 47, 말하기 37이 넣음). 지금은 로그만 남긴다. */
 	void Act(const MmoWorld::FInteractTarget& Target);
+
+	/** 개발 빌드: UI의 층을 모두 감추거나 다시 보인다. */
+	void ToggleHideUi();
+
+	/**
+	 * 개발 빌드: 자유 카메라. 지금 카메라의 자리에 카메라 액터를 두고 보는 쪽을 그것으로 바꾼다. 켠 동안 이동 입력은 카메라를 옮기고
+	 * (캐릭터는 서 있음), 마우스 오른쪽 끌기는 카메라를 돌리고, 휠은 앞뒤로 옮긴다. 끄면 캐릭터의 카메라로 돌아온다.
+	 */
+	void ToggleFreeCamera();
 	/** 경로를 따라가는 중이면 다음 점 쪽을 이번 프레임의 이동 입력으로 넣는다. */
 	void FollowPath();
 
@@ -146,6 +157,14 @@ private:
 	TObjectPtr<UInputAction> TargetAction;
 	UPROPERTY()
 	TObjectPtr<UInputAction> InteractAction;
+	UPROPERTY()
+	TObjectPtr<UInputAction> HideUiAction;
+	UPROPERTY()
+	TObjectPtr<UInputAction> FreeCameraAction;
+
+	/** 자유 카메라를 켠 동안의 카메라 액터. 꺼져 있으면 nullptr. */
+	UPROPERTY()
+	TObjectPtr<ACameraActor> FreeCamera;
 	/** 퀵슬롯 칸마다의 키(1–8). */
 	UPROPERTY()
 	TArray<TObjectPtr<UInputAction>> SlotActions;

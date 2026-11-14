@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "World/CombatState.h"
+#include "World/DevCommand.h"
 #include "World/FailMessages.h"
 
 namespace
@@ -506,6 +507,14 @@ namespace
 		Expect(!Scene.World.InWorld(), "outside the world after leaving");
 	}
 
+	/** 개발 명령의 글 한 줄은 앞뒤 빈칸을 뺀 채 DevCommand로 나간다. */
+	void DevCommandsCarryTheLine()
+	{
+		const Packet Command = MmoWorld::DevCommandPacket("  tp 100 -20 ");
+		Expect(Command.has_dev_command() && Command.dev_command().line() == "tp 100 -20", "a dev command line is sent trimmed");
+		Expect(MmoWorld::DevCommandPacket("   ").dev_command().line().empty(), "a blank line is sent empty");
+	}
+
 	/** FailReason의 모든 값에 그 값만의 글이 있다(빠진 값은 일반적인 글로 떨어짐). */
 	void EveryFailReasonHasAMessage()
 	{
@@ -546,6 +555,7 @@ int main(int ArgumentCount, char** Arguments)
 	FailuresBecomeNotices();
 	LeavingTheWorldStopsRequests();
 	EveryFailReasonHasAMessage();
+	DevCommandsCarryTheLine();
 	if (Failures > 0)
 	{
 		return EXIT_FAILURE;
