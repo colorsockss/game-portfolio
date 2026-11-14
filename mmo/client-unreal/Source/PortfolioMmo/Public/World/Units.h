@@ -21,6 +21,13 @@ namespace MmoWorld::Units
 	/** 최대 이동 속도(m/s). 서버의 이동 검증과 같은 값이다. */
 	inline constexpr double MaxSpeedMetersPerSecond = portfolio::mmo::CONSTANT_MAX_SPEED_METERS_PER_SECOND;
 
+	/** 밀리초 → 틱 수(올림). 서버의 Units.TicksFromMilliseconds와 같은 규칙이다. */
+	inline uint32_t TicksFromMilliseconds(uint32_t Milliseconds)
+	{
+		constexpr uint64_t MillisecondsPerTick = 1000 / TicksPerSecond;
+		return static_cast<uint32_t>((Milliseconds + MillisecondsPerTick - 1) / MillisecondsPerTick);
+	}
+
 	/** 좌표 칸 → 미터. 보간한 소수 칸도 받는다. */
 	inline double ToMeters(double Cells)
 	{

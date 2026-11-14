@@ -76,7 +76,7 @@ namespace PortfolioMmo.Server.Tests
         {
             Constants constants = TestData.Constants(TestData.FieldSize);
             constants.CritChance = critChance;
-            var data = new GameData(TestData.Hash, constants, new Zones(), TestData.EmptyGrid(TestData.FieldSize), TestData.Classes, TestData.Levels, new Monsters(), new Spawns());
+            var data = new GameData(TestData.Hash, constants, new Zones(), TestData.EmptyGrid(TestData.FieldSize), TestData.Classes, TestData.Levels, new Monsters(), new Spawns(), TestData.Skills, TestData.Effects);
             return new StatSystem(data, new Random(seed));
         }
 

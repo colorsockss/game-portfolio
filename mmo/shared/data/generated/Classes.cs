@@ -24,17 +24,17 @@ namespace PortfolioMmo.Data {
     static ClassesReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1DbGFzc2VzLnByb3RvEhJwb3J0Zm9saW8ubW1vLmRhdGEilAEKCkNsYXNz",
+            "Cg1DbGFzc2VzLnByb3RvEhJwb3J0Zm9saW8ubW1vLmRhdGEiqQEKCkNsYXNz",
             "ZXNSb3cSCgoCaWQYASABKA0SFAoMYXR0YWNrX3JhbmdlGAIgASgBEhoKEmF0",
             "dGFja19pbnRlcnZhbF9tcxgDIAEoDRIUCgxoaXRfZGVsYXlfbXMYBCABKA0S",
-            "HQoQcHJvamVjdGlsZV9zcGVlZBgFIAEoAUgAiAEBQhMKEV9wcm9qZWN0aWxl",
-            "X3NwZWVkIjcKB0NsYXNzZXMSLAoEcm93cxgBIAMoCzIeLnBvcnRmb2xpby5t",
-            "bW8uZGF0YS5DbGFzc2VzUm93QhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJv",
-            "dG8z"));
+            "HQoQcHJvamVjdGlsZV9zcGVlZBgFIAEoAUgAiAEBEhMKC2ZpcnN0X3NraWxs",
+            "GAYgASgNQhMKEV9wcm9qZWN0aWxlX3NwZWVkIjcKB0NsYXNzZXMSLAoEcm93",
+            "cxgBIAMoCzIeLnBvcnRmb2xpby5tbW8uZGF0YS5DbGFzc2VzUm93QhSqAhFQ",
+            "b3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.ClassesRow), global::PortfolioMmo.Data.ClassesRow.Parser, new[]{ "Id", "AttackRange", "AttackIntervalMs", "HitDelayMs", "ProjectileSpeed" }, new[]{ "ProjectileSpeed" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.ClassesRow), global::PortfolioMmo.Data.ClassesRow.Parser, new[]{ "Id", "AttackRange", "AttackIntervalMs", "HitDelayMs", "ProjectileSpeed", "FirstSkill" }, new[]{ "ProjectileSpeed" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Classes), global::PortfolioMmo.Data.Classes.Parser, new[]{ "Rows" }, null, null, null, null)
           }));
     }
@@ -84,6 +84,7 @@ namespace PortfolioMmo.Data {
       attackIntervalMs_ = other.attackIntervalMs_;
       hitDelayMs_ = other.hitDelayMs_;
       projectileSpeed_ = other.projectileSpeed_;
+      firstSkill_ = other.firstSkill_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -183,6 +184,21 @@ namespace PortfolioMmo.Data {
       _hasBits0 &= ~1;
     }
 
+    /// <summary>Field number for the "first_skill" field.</summary>
+    public const int FirstSkillFieldNumber = 6;
+    private uint firstSkill_;
+    /// <summary>
+    /// 가지고 시작하는 첫 스킬(Skills의 줄)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint FirstSkill {
+      get { return firstSkill_; }
+      set {
+        firstSkill_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -203,6 +219,7 @@ namespace PortfolioMmo.Data {
       if (AttackIntervalMs != other.AttackIntervalMs) return false;
       if (HitDelayMs != other.HitDelayMs) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(ProjectileSpeed, other.ProjectileSpeed)) return false;
+      if (FirstSkill != other.FirstSkill) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -215,6 +232,7 @@ namespace PortfolioMmo.Data {
       if (AttackIntervalMs != 0) hash ^= AttackIntervalMs.GetHashCode();
       if (HitDelayMs != 0) hash ^= HitDelayMs.GetHashCode();
       if (HasProjectileSpeed) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(ProjectileSpeed);
+      if (FirstSkill != 0) hash ^= FirstSkill.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -253,6 +271,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(41);
         output.WriteDouble(ProjectileSpeed);
       }
+      if (FirstSkill != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(FirstSkill);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -283,6 +305,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(41);
         output.WriteDouble(ProjectileSpeed);
       }
+      if (FirstSkill != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(FirstSkill);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -307,6 +333,9 @@ namespace PortfolioMmo.Data {
       }
       if (HasProjectileSpeed) {
         size += 1 + 8;
+      }
+      if (FirstSkill != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FirstSkill);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -334,6 +363,9 @@ namespace PortfolioMmo.Data {
       }
       if (other.HasProjectileSpeed) {
         ProjectileSpeed = other.ProjectileSpeed;
+      }
+      if (other.FirstSkill != 0) {
+        FirstSkill = other.FirstSkill;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -374,6 +406,10 @@ namespace PortfolioMmo.Data {
             ProjectileSpeed = input.ReadDouble();
             break;
           }
+          case 48: {
+            FirstSkill = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -411,6 +447,10 @@ namespace PortfolioMmo.Data {
           }
           case 41: {
             ProjectileSpeed = input.ReadDouble();
+            break;
+          }
+          case 48: {
+            FirstSkill = input.ReadUInt32();
             break;
           }
         }

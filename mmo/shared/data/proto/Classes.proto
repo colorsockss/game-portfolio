@@ -16,6 +16,8 @@ message ClassesRow {
   uint32 hit_delay_ms = 4;
   // 기본 공격 발사체의 속도(m/s). 비우면 발사체 없이 타격한다(기사)
   optional double projectile_speed = 5;
+  // 가지고 시작하는 첫 스킬(Skills의 줄)
+  uint32 first_skill = 6;
 }
 
 message Classes {

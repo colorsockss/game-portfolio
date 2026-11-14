@@ -22,8 +22,10 @@ namespace PortfolioMmo.Server
 
         private readonly Dictionary<uint, MonstersRow> _monsters = new Dictionary<uint, MonstersRow>();
         private readonly Dictionary<(uint Class, uint Level), LevelsRow> _levels = new Dictionary<(uint Class, uint Level), LevelsRow>();
+        private readonly Dictionary<uint, SkillsRow> _skills = new Dictionary<uint, SkillsRow>();
+        private readonly Dictionary<uint, EffectsRow> _effects = new Dictionary<uint, EffectsRow>();
 
-        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns)
+        public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects)
         {
             Hash = hash;
             Constants = constants;
@@ -39,6 +41,17 @@ namespace PortfolioMmo.Server
             foreach (LevelsRow row in levels.Rows)
             {
                 _levels.Add((row.Class, row.Level), row);
+            }
+
+            Skills = skills;
+            foreach (SkillsRow row in skills.Rows)
+            {
+                _skills.Add(row.Id, row);
+            }
+
+            foreach (EffectsRow row in effects.Rows)
+            {
+                _effects.Add(row.Id, row);
             }
         }
 
@@ -107,6 +120,27 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 플레이어의 스킬(26).
+        /// </summary>
+        public Skills Skills { get; }
+
+        /// <summary>
+        /// 번호의 스킬. 없는 번호면 null(요청에 실려 온 번호라 끊을지는 부르는 쪽이 정함).
+        /// </summary>
+        public SkillsRow? Skill(uint id)
+        {
+            return _skills.GetValueOrDefault(id);
+        }
+
+        /// <summary>
+        /// 번호의 효과. 스킬이 가리키는 줄이라 데이터 검사(ref)가 있음을 보장한다.
+        /// </summary>
+        public EffectsRow Effect(uint id)
+        {
+            return _effects[id];
+        }
+
+        /// <summary>
         /// 실행 파일 옆의 데이터 폴더.
         /// </summary>
         public static string DefaultFolder => Path.Combine(AppContext.BaseDirectory, "data");
@@ -124,7 +158,9 @@ namespace PortfolioMmo.Server
                 Classes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Classes.bytes"))),
                 Levels.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Levels.bytes"))),
                 Monsters.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Monsters.bytes"))),
-                Spawns.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Spawns.bytes"))));
+                Spawns.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Spawns.bytes"))),
+                Skills.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Skills.bytes"))),
+                Effects.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Effects.bytes"))));
         }
 
         /// <summary>

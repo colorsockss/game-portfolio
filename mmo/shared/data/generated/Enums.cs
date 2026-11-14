@@ -29,11 +29,20 @@ namespace PortfolioMmo.Data {
             "Wk9ORV9LSU5EX0hVTlRJTkdfR1JPVU5EEAISHgoaWk9ORV9LSU5EX0dBVEhF",
             "UklOR19HUk9VTkQQAxIXChNaT05FX0tJTkRfQk9TU19BUkVBEAQqWwoLTW9u",
             "c3RlcktpbmQSHAoYTU9OU1RFUl9LSU5EX1VOU1BFQ0lGSUVEEAASFwoTTU9O",
-            "U1RFUl9LSU5EX05PUk1BTBABEhUKEU1PTlNURVJfS0lORF9CT1NTEAJCFKoC",
-            "EVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
+            "U1RFUl9LSU5EX05PUk1BTBABEhUKEU1PTlNURVJfS0lORF9CT1NTEAIqogEK",
+            "CVNraWxsS2luZBIaChZTS0lMTF9LSU5EX1VOU1BFQ0lGSUVEEAASHAoYU0tJ",
+            "TExfS0lORF9TSU5HTEVfREFNQUdFEAESGgoWU0tJTExfS0lORF9BUkVBX0RB",
+            "TUFHRRACEhMKD1NLSUxMX0tJTkRfQlVGRhADEhUKEVNLSUxMX0tJTkRfREVC",
+            "VUZGEAQSEwoPU0tJTExfS0lORF9IRUFMEAUqWwoLU2tpbGxDZW50ZXISHAoY",
+            "U0tJTExfQ0VOVEVSX1VOU1BFQ0lGSUVEEAASFwoTU0tJTExfQ0VOVEVSX1RB",
+            "UkdFVBABEhUKEVNLSUxMX0NFTlRFUl9TRUxGEAIqjAEKCkVmZmVjdEtpbmQS",
+            "GwoXRUZGRUNUX0tJTkRfVU5TUEVDSUZJRUQQABIUChBFRkZFQ1RfS0lORF9T",
+            "VFVOEAESFAoQRUZGRUNUX0tJTkRfU0xPVxACEhkKFUVGRkVDVF9LSU5EX0FU",
+            "VEFDS19VUBADEhoKFkVGRkVDVF9LSU5EX0RFRkVOU0VfVVAQBEIUqgIRUG9y",
+            "dGZvbGlvTW1vLkRhdGFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), }, null, null));
     }
     #endregion
 
@@ -75,6 +84,71 @@ namespace PortfolioMmo.Data {
     /// 필드 보스(43)
     /// </summary>
     [pbr::OriginalName("MONSTER_KIND_BOSS")] Boss = 2,
+  }
+
+  public enum SkillKind {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("SKILL_KIND_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 단일 피해
+    /// </summary>
+    [pbr::OriginalName("SKILL_KIND_SINGLE_DAMAGE")] SingleDamage = 1,
+    /// <summary>
+    /// 범위 피해
+    /// </summary>
+    [pbr::OriginalName("SKILL_KIND_AREA_DAMAGE")] AreaDamage = 2,
+    /// <summary>
+    /// 강화
+    /// </summary>
+    [pbr::OriginalName("SKILL_KIND_BUFF")] Buff = 3,
+    /// <summary>
+    /// 상태 이상
+    /// </summary>
+    [pbr::OriginalName("SKILL_KIND_DEBUFF")] Debuff = 4,
+    /// <summary>
+    /// 회복
+    /// </summary>
+    [pbr::OriginalName("SKILL_KIND_HEAL")] Heal = 5,
+  }
+
+  public enum SkillCenter {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("SKILL_CENTER_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 대상
+    /// </summary>
+    [pbr::OriginalName("SKILL_CENTER_TARGET")] Target = 1,
+    /// <summary>
+    /// 자기
+    /// </summary>
+    [pbr::OriginalName("SKILL_CENTER_SELF")] Self = 2,
+  }
+
+  public enum EffectKind {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("EFFECT_KIND_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 기절(아무 행동도 할 수 없음)
+    /// </summary>
+    [pbr::OriginalName("EFFECT_KIND_STUN")] Stun = 1,
+    /// <summary>
+    /// 감속(이동 속도를 값의 %만큼 줄임)
+    /// </summary>
+    [pbr::OriginalName("EFFECT_KIND_SLOW")] Slow = 2,
+    /// <summary>
+    /// 공격력 올림
+    /// </summary>
+    [pbr::OriginalName("EFFECT_KIND_ATTACK_UP")] AttackUp = 3,
+    /// <summary>
+    /// 방어력 올림
+    /// </summary>
+    [pbr::OriginalName("EFFECT_KIND_DEFENSE_UP")] DefenseUp = 4,
   }
 
   #endregion

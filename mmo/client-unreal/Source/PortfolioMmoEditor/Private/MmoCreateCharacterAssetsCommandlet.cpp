@@ -36,6 +36,9 @@ namespace
 		int32 Key;
 		/** 공격 동작(가져온 팩의 애니메이션 이름 끝). */
 		const TCHAR* Attack;
+		/** 스킬 동작과 시전 동작(같은 이름 끝). 시전이 없는 직업은 nullptr. */
+		const TCHAR* Skill;
+		const TCHAR* Cast;
 	};
 
 	/** 패키지에 에셋 하나를 새로 저장한다. 같은 이름의 파일이 있으면 지우고 만든다. */
@@ -216,9 +219,17 @@ namespace
 			Row.Attack = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_%s.%s_Anim_CharacterArmature_%s"), *Folder, *Source, Class.Attack, *Source, Class.Attack)));
 			Row.Hit = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_RecieveHit.%s_Anim_CharacterArmature_RecieveHit"), *Folder, *Source, *Source)));
 			Row.Death = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_Death.%s_Anim_CharacterArmature_Death"), *Folder, *Source, *Source)));
-			if (!Row.Mesh.LoadSynchronous() || !Row.Animation.LoadSynchronous() || !Row.Attack.LoadSynchronous() || !Row.Hit.LoadSynchronous() || !Row.Death.LoadSynchronous())
+			const auto Sequence = [&](const TCHAR* Name)
 			{
-				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the mesh, the anim blueprint or the attack/hit/death animation is missing."), *Folder);
+				return Name ? TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_%s.%s_Anim_CharacterArmature_%s"), *Folder, *Source, Name, *Source, Name)))
+							: TSoftObjectPtr<UAnimSequence>();
+			};
+			Row.Skill = Sequence(Class.Skill);
+			Row.Cast = Sequence(Class.Cast);
+			if (!Row.Mesh.LoadSynchronous() || !Row.Animation.LoadSynchronous() || !Row.Attack.LoadSynchronous() || !Row.Hit.LoadSynchronous() || !Row.Death.LoadSynchronous()
+				|| !Row.Skill.LoadSynchronous() || (Class.Cast && !Row.Cast.LoadSynchronous()))
+			{
+				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the mesh, the anim blueprint or the attack/hit/death/skill/cast animation is missing."), *Folder);
 				return false;
 			}
 		}
@@ -238,8 +249,8 @@ int32 UMmoCreateCharacterAssetsCommandlet::Main(const FString& Params)
 {
 	// 직업 → 폴더와 가져온 원본 이름(Quaternius RPG Characters의 Warrior, Wizard). import_characters.py의 폴더와 같다.
 	const FClassAnimations Classes[] = {
-		{ TEXT("/Game/Characters/Knight"), TEXT("Knight"), TEXT("Warrior"), UMmoEntityVisuals::KnightKey(), TEXT("Sword_Attack") },
-		{ TEXT("/Game/Characters/Mage"), TEXT("Mage"), TEXT("Wizard"), UMmoEntityVisuals::MageKey(), TEXT("Staff_Attack") },
+		{ TEXT("/Game/Characters/Knight"), TEXT("Knight"), TEXT("Warrior"), UMmoEntityVisuals::KnightKey(), TEXT("Sword_Attack"), TEXT("Sword_AttackFast"), nullptr },
+		{ TEXT("/Game/Characters/Mage"), TEXT("Mage"), TEXT("Wizard"), UMmoEntityVisuals::MageKey(), TEXT("Staff_Attack"), TEXT("Spell1"), TEXT("Spell2") },
 	};
 	bool bOk = true;
 	for (const FClassAnimations& Class : Classes)

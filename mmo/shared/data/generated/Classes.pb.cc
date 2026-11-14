@@ -51,11 +51,11 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
     {
       PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_._has_bits_),
       0, // no _extensions_
-      5, 56,  // max_field_number, fast_idx_mask
+      6, 56,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967264,  // skipmap
+      4294967232,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      5,  // num_field_entries
+      6,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -86,7 +86,10 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
       {::_pbi::TcParser::FastF64S1,
        {41, 3, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.projectile_speed_)}},
-      {::_pbi::TcParser::MiniParse, {}},
+      // uint32 first_skill = 6;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.first_skill_), 5>(),
+       {48, 5, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.first_skill_)}},
       {::_pbi::TcParser::MiniParse, {}},
     }}, {{
       65535, 65535
@@ -101,6 +104,8 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
       {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.hit_delay_ms_), _Internal::kHasBitsOffset + 4, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // optional double projectile_speed = 5;
       {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.projectile_speed_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      // uint32 first_skill = 6;
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.first_skill_), _Internal::kHasBitsOffset + 5, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -116,7 +121,8 @@ inline constexpr ClassesRow::Impl_::Impl_(
         id_{0u},
         attack_interval_ms_{0u},
         projectile_speed_{0},
-        hit_delay_ms_{0u} {}
+        hit_delay_ms_{0u},
+        first_skill_{0u} {}
 
 template <typename>
 constexpr ClassesRow::ClassesRow(::_pbi::ConstantInitialized,
@@ -372,17 +378,19 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_._has_bits_),
-        8, // hasbit index offset
+        9, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.attack_range_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.attack_interval_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.hit_delay_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.projectile_speed_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.first_skill_),
         1,
         0,
         2,
         4,
         3,
+        5,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Classes, _impl_._has_bits_),
         4, // hasbit index offset
@@ -393,7 +401,7 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::data::ClassesRow)},
-        {13, sizeof(::portfolio::mmo::data::Classes)},
+        {15, sizeof(::portfolio::mmo::data::Classes)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -402,19 +410,20 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Classes_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\rClasses.proto\022\022portfolio.mmo.data\"\224\001\n\n"
+    "\n\rClasses.proto\022\022portfolio.mmo.data\"\251\001\n\n"
     "ClassesRow\022\n\n\002id\030\001 \001(\r\022\024\n\014attack_range\030\002"
     " \001(\001\022\032\n\022attack_interval_ms\030\003 \001(\r\022\024\n\014hit_"
     "delay_ms\030\004 \001(\r\022\035\n\020projectile_speed\030\005 \001(\001"
-    "H\000\210\001\001B\023\n\021_projectile_speed\"7\n\007Classes\022,\n"
-    "\004rows\030\001 \003(\0132\036.portfolio.mmo.data.Classes"
-    "RowB\024\252\002\021PortfolioMmo.Datab\006proto3"
+    "H\000\210\001\001\022\023\n\013first_skill\030\006 \001(\rB\023\n\021_projectil"
+    "e_speed\"7\n\007Classes\022,\n\004rows\030\001 \003(\0132\036.portf"
+    "olio.mmo.data.ClassesRowB\024\252\002\021PortfolioMm"
+    "o.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Classes_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Classes_2eproto = {
     false,
     false,
-    273,
+    294,
     descriptor_table_protodef_Classes_2eproto,
     "Classes.proto",
     &descriptor_table_Classes_2eproto_once,
@@ -462,9 +471,9 @@ inline void ClassesRow::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, attack_range_),
            0,
-           offsetof(Impl_, hit_delay_ms_) -
+           offsetof(Impl_, first_skill_) -
                offsetof(Impl_, attack_range_) +
-               sizeof(Impl_::hit_delay_ms_));
+               sizeof(Impl_::first_skill_));
 }
 ClassesRow::~ClassesRow() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.ClassesRow)
@@ -513,12 +522,12 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000003fU)) {
     ::memset(&this_._impl_.attack_range_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.hit_delay_ms_) -
+                 reinterpret_cast<char*>(&this_._impl_.first_skill_) -
                  reinterpret_cast<char*>(&this_._impl_.attack_range_)) +
-                 sizeof(_impl_.hit_delay_ms_));
+                 sizeof(_impl_.first_skill_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -586,6 +595,15 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
         5, this_._internal_projectile_speed(), target);
   }
 
+  // uint32 first_skill = 6;
+  if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+    if (this_._internal_first_skill() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          6, this_._internal_first_skill(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -610,7 +628,7 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
   total_size += static_cast<bool>(0x00000008U & cached_has_bits) * 9;
-  if (BatchCheckHasBit(cached_has_bits, 0x00000017U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00000037U)) {
     // double attack_range = 2;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (::absl::bit_cast<::uint64_t>(this_._internal_attack_range()) != 0) {
@@ -638,6 +656,13 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
             this_._internal_hit_delay_ms());
       }
     }
+    // uint32 first_skill = 6;
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+      if (this_._internal_first_skill() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_first_skill());
+      }
+    }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
@@ -656,7 +681,7 @@ void ClassesRow::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000003fU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (::absl::bit_cast<::uint64_t>(from._internal_attack_range()) != 0) {
         _this->_impl_.attack_range_ = from._impl_.attack_range_;
@@ -680,6 +705,11 @@ void ClassesRow::MergeImpl(::google::protobuf::MessageLite& to_msg,
         _this->_impl_.hit_delay_ms_ = from._impl_.hit_delay_ms_;
       }
     }
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+      if (from._internal_first_skill() != 0) {
+        _this->_impl_.first_skill_ = from._impl_.first_skill_;
+      }
+    }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
@@ -699,8 +729,8 @@ void ClassesRow::InternalSwap(ClassesRow* PROTOBUF_RESTRICT PROTOBUF_NONNULL oth
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.hit_delay_ms_)
-      + sizeof(ClassesRow::_impl_.hit_delay_ms_)
+      PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.first_skill_)
+      + sizeof(ClassesRow::_impl_.first_skill_)
       - PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.attack_range_)>(
           reinterpret_cast<char*>(&_impl_.attack_range_),
           reinterpret_cast<char*>(&other->_impl_.attack_range_));

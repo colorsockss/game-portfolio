@@ -42,6 +42,14 @@ struct FMmoEntityVisual
 	/** 죽음(Died)에 트고 마지막 자세로 멈추는 동작. */
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr<UAnimSequence> Death;
+
+	/** 스킬 동작의 시작(SkillUsed)에 트는 동작. 비면 Attack을 튼다. */
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UAnimSequence> Skill;
+
+	/** 시전(Progress) 동안 되풀이하는 동작. 비면 시전 동작이 없다. */
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UAnimSequence> Cast;
 };
 
 /**

@@ -11,13 +11,18 @@ class UProgressBar;
 class UTextBlock;
 
 /**
- * 게임 중의 HUD(WBP_Hud의 기반). 내 체력·마나 바(지금/최대), 내 대상의 정보(이름과 레벨, 체력 바), 터치 기기의 가상 조이스틱과
- * 공격·대상 고르기 버튼, 내 캐릭터가 있는 구역(이름, 권장 레벨, 안전 지대)을 보인다. 경험치 바(31) 등은 그 항목이 더한다.
+ * 게임 중의 HUD(WBP_Hud의 기반). 내 체력·마나 바(지금/최대), 걸린 효과와 전투 상태의 글자 아이콘과 남은 시간, 내 대상의 정보(이름과 레벨,
+ * 체력 바), 퀵슬롯(쿨다운 가림, PC는 1–8의 키 표시)과 내 진행 바(시전), 터치 기기의 가상 조이스틱과 공격·대상 고르기 버튼,
+ * 내 캐릭터가 있는 구역(이름, 권장 레벨, 안전 지대)을 보인다. 경험치 바(31) 등은 그 항목이 더한다.
  */
 UCLASS(Abstract)
 class UMmoHudWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	/** 퀵슬롯의 칸 수(packets.proto의 CONSTANT_QUICKSLOT_COUNT). 위젯 생성기가 칸을 이만큼 만든다. */
+	static PORTFOLIOMMO_API int32 QuickslotCount();
 
 protected:
 	virtual void NativeOnInitialized() override;
@@ -30,6 +35,18 @@ private:
 
 	/** 대상의 정보를 보이거나(대상이 있으면) 감춘다. */
 	void ShowTarget();
+
+	/** 퀵슬롯의 스킬(직업이 바뀌면 이름과 키 표시)과 쿨다운 가림을 보인다. */
+	void ShowSlots(double ServerTick);
+
+	/** 내 진행 바를 보이거나(진행 중이면) 감춘다. */
+	void ShowProgress(double NowSeconds);
+
+	/** 걸린 효과와 전투 상태를 글자 아이콘과 남은 시간(초)으로 보인다. */
+	void ShowEffects(double ServerTick);
+
+	/** 퀵슬롯 칸을 눌렀다(PC의 1–8 키와 같은 일). */
+	void UseSlot(int32 Index);
 
 	UFUNCTION()
 	void HandleAttackClicked();
@@ -81,6 +98,31 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> TargetButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> EffectsText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UWidget> CastPanel;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UProgressBar> CastBar;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> CastText;
+
+	/** 퀵슬롯 칸의 버튼과 쿨다운 가림(이름 Slot<n>, Slot<n>Cooldown으로 찾음). */
+	UPROPERTY()
+	TArray<TObjectPtr<UMmoButtonWidget>> Slots;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UProgressBar>> SlotShades;
+
+	/** 칸마다의 스킬(0이면 빈 칸)과 그것을 정한 직업. */
+	TArray<uint32> SlotSkills;
+	uint32 SlotClass = MAX_uint32;
+	FString ShownEffects = TEXT("-");
+	uint32 ShownProgress = MAX_uint32;
 
 	/** 마지막으로 보인 (지금 값, 최대값). 처음에는 어떤 값과도 다르게 둔다. */
 	uint64 ShownHp = MAX_uint64;

@@ -64,6 +64,18 @@ private:
 	/** 부활한 액터에 잠깐 부활의 자리 표시를 보인다. */
 	void ShowRevive(const AActor& Actor);
 
+	/** 스킬 동작의 시작: 동작을 틀고, 범위 스킬은 중심에 범위의 원을, 나머지는 대상(그 자리에서 쓰면 시전자)에 이펙트의 자리 표시를 잠깐 둔다. */
+	void ShowSkill(const MmoWorld::FCombatEvent& Event, const MmoData::FGameData& Data);
+
+	/** 시전의 시작: 시전 동작을 되풀이하고 끝나는 틱을 둔다(그 틱이나 Interrupt에서 끊음). */
+	void StartCast(const MmoWorld::FCombatEvent& Event, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data);
+
+	/** 동작을 끊는다(시전의 끝, 취소, 내 스킬의 실패). */
+	void StopAction(uint32 Id);
+
+	/** 풀에서 감춰진 자리 표시를 꺼내(없으면 만듦) Seconds 동안 보인다. */
+	void Flash(TArray<TObjectPtr<AStaticMeshActor>>& Pool, TArray<double>& Until, const TCHAR* Shape, const FLinearColor& Color, const FVector& Location, const FVector& Scale, double Seconds);
+
 	/** 자리 표시 액터 하나(엔진의 기본 도형, 색은 커스텀 프리미티브 데이터). */
 	AStaticMeshActor* SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color);
 
@@ -91,6 +103,17 @@ private:
 	UPROPERTY()
 	TObjectPtr<AStaticMeshActor> ReviveMarker;
 	double ReviveMarkerUntil = 0.0;
+
+	/** 범위 스킬의 원과 스킬 이펙트의 자리 표시(27 전), 그리고 저마다 감출 때(초). */
+	UPROPERTY()
+	TArray<TObjectPtr<AStaticMeshActor>> AreaMarkers;
+	TArray<double> AreaUntil;
+	UPROPERTY()
+	TArray<TObjectPtr<AStaticMeshActor>> SkillMarkers;
+	TArray<double> SkillUntil;
+
+	/** 시전 동작을 트는 개체 → 시전이 끝나는 서버 틱. */
+	TMap<uint32, uint32> CastEnds;
 
 	FStreamableManager Streamable;
 };

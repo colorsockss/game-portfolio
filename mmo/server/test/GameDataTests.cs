@@ -102,6 +102,42 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 플레이어의 스킬 11줄(기사 여섯, 마법사 다섯. 소환은 95)의 차례와 종류가 설계의 표와 같고, 필요 레벨은 1, 5, 10, 14, 17, 20이다.
+        /// 시전 시간은 마법사의 대상 중심 범위 피해, 회복, 시전하는 단일 피해에만 있고 그 줄의 타격까지의 시간은 0이다. 거는 효과는 Effects의 줄이고,
+        /// Classes의 첫 스킬은 직업의 첫째 스킬이다.
+        /// </summary>
+        [Fact]
+        public void SkillsFollowTheClassTables()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            List<SkillsRow> knight = data.Skills.Rows.Where(skill => skill.Class == 1).OrderBy(skill => skill.Id).ToList();
+            List<SkillsRow> mage = data.Skills.Rows.Where(skill => skill.Class == 2).OrderBy(skill => skill.Id).ToList();
+            Assert.Equal(11, data.Skills.Rows.Count);
+            EffectKind? Effect(SkillsRow skill) => skill.HasEffect ? data.Effect(skill.Effect).Kind : null;
+            Assert.Equal(
+                new (SkillKind, SkillCenter, EffectKind?)[]
+                {
+                    (SkillKind.SingleDamage, SkillCenter.Target, null), (SkillKind.Debuff, SkillCenter.Target, EffectKind.Stun), (SkillKind.Buff, SkillCenter.Self, EffectKind.DefenseUp),
+                    (SkillKind.AreaDamage, SkillCenter.Self, null), (SkillKind.SingleDamage, SkillCenter.Target, EffectKind.Slow), (SkillKind.Buff, SkillCenter.Self, EffectKind.AttackUp),
+                },
+                knight.Select(skill => (skill.Kind, skill.Center, Effect(skill))));
+            Assert.Equal(
+                new (SkillKind, SkillCenter, EffectKind?)[]
+                {
+                    (SkillKind.SingleDamage, SkillCenter.Target, EffectKind.Slow), (SkillKind.AreaDamage, SkillCenter.Target, null), (SkillKind.Heal, SkillCenter.Self, null),
+                    (SkillKind.AreaDamage, SkillCenter.Self, EffectKind.Slow), (SkillKind.SingleDamage, SkillCenter.Target, null),
+                },
+                mage.Select(skill => (skill.Kind, skill.Center, Effect(skill))));
+            Assert.Equal(new uint[] { 1, 5, 10, 14, 17, 20 }, knight.Select(skill => skill.Level));
+            Assert.Equal(new uint[] { 1, 5, 10, 14, 17 }, mage.Select(skill => skill.Level));
+            Assert.Equal(new uint[] { 1500, 1000, 2000 }, data.Skills.Rows.Where(skill => skill.CastMs > 0).Select(skill => skill.CastMs));
+            Assert.Equal(new[] { mage[1], mage[2], mage[4] }, data.Skills.Rows.Where(skill => skill.CastMs > 0));
+            Assert.All(data.Skills.Rows.Where(skill => skill.CastMs > 0), skill => Assert.Equal(0u, skill.HitDelayMs));
+            Assert.True(mage[4].Coefficient > mage[0].Coefficient);
+            Assert.Equal((knight[0].Id, mage[0].Id), (data.Class(CharacterClass.Knight).FirstSkill, data.Class(CharacterClass.Mage).FirstSkill));
+        }
+
+        /// <summary>
         /// 해시 파일이 없거나 16진수 16자가 아니면 읽지 못한다. 테이블의 파일이 없어도 읽지 못한다.
         /// </summary>
         [Fact]

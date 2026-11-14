@@ -7,7 +7,8 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 기본 공격(틱의 넷째 차례). 공격 상태인 개체가 다음 공격 틱에 대상이 사거리 안이고 선이 트였으면 AttackSwing을 내고 타격을 예약하며,
-    /// 타격할 틱에 피해를 준다(Damaged, 체력이 0이면 Died). 사건은 TickEvents에 쌓아 시야 차례 뒤에 보낸다. 스킬은 26이 더한다.
+    /// 타격할 틱에 피해를 준다(Damaged, 체력이 0이면 Died). 사건은 TickEvents에 쌓아 시야 차례 뒤에 보낸다. 스킬의 일(시작, 결과, 시전의 끝)은
+    /// 같은 차례에서 SkillSystem에 넘기고, 피해는 이곳의 Hit을 함께 쓴다.
     /// </summary>
     internal sealed class CombatSystem
     {
@@ -17,6 +18,7 @@ namespace PortfolioMmo.Server
         private readonly StatSystem _stats;
         private readonly GameData _data;
         private readonly TickEvents _events;
+        private readonly ProgressSystem _progress;
         private readonly uint _combatTicks;
 
         /// <summary>
@@ -29,7 +31,12 @@ namespace PortfolioMmo.Server
         /// </summary>
         public DeathSystem? Deaths { get; set; }
 
-        public CombatSystem(EntityTable entities, FieldMap field, Scheduler scheduler, StatSystem stats, GameData data, TickEvents events)
+        /// <summary>
+        /// 스킬의 일을 하는 쪽. World가 만든 뒤에 잇는다(스킬이 이곳의 피해를 씀).
+        /// </summary>
+        public SkillSystem? Skills { get; set; }
+
+        public CombatSystem(EntityTable entities, FieldMap field, Scheduler scheduler, StatSystem stats, GameData data, TickEvents events, ProgressSystem progress)
         {
             _entities = entities;
             _field = field;
@@ -37,6 +44,7 @@ namespace PortfolioMmo.Server
             _stats = stats;
             _data = data;
             _events = events;
+            _progress = progress;
             _combatTicks = Units.TicksFromMilliseconds(data.Constants.CombatDurationMs);
         }
 
@@ -60,6 +68,12 @@ namespace PortfolioMmo.Server
         /// </summary>
         public void Start(Player player, AttackStart request)
         {
+            if (player.Stunned || (player.Progress != null))
+            {
+                player.Fail(player.Stunned ? FailReason.Stunned : FailReason.Busy, RequestKind.Attack);
+                return;
+            }
+
             Entity? found = _entities.Find(request.TargetId);
             if ((found == null) || !player.Visible.Contains(found) || (found is Creature { Dead: true }))
             {
@@ -82,7 +96,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 타격의 예약이 아직 걸려 있는가: 공격자가 그대로 있고 살아 있으며 타격의 세대 번호가 같다(죽거나 기절해 버리지 않음).
+        /// 타격(스킬의 시작과 결과도)의 예약이 아직 걸려 있는가: 공격자가 그대로 있고 살아 있으며 타격의 세대 번호가 같다(죽거나 기절해 버리지 않음).
         /// </summary>
         public bool IsStrikeCurrent(in ScheduledJob job)
         {
@@ -90,19 +104,36 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 전투 차례: 예약한 일이 넘긴 이 틱의 타격을 차례대로 적용하고, 공격 상태인 개체 가운데 다음 공격 틱이 된 것의 공격을 시작한다.
+        /// 전투 차례: 예약한 일이 넘긴 이 틱의 타격과 스킬의 일을 차례대로 하고, 공격 상태인 개체 가운데 다음 공격 틱이 된 것의 공격을 시작한다.
+        /// 기절했거나 진행 중인 일이 있는 개체의 기본 공격은 끄지 않고 쉰다. 앞의 일로 이 차례에 죽거나 기절한 공격자의 일은 다시 보고 버린다.
         /// </summary>
         public void Step(uint tick)
         {
             foreach (ScheduledJob job in _scheduler.CombatJobs)
             {
-                Strike(_entities.Find(job.Owner) as Creature, job.A, tick);
+                if (job.Kind == ScheduledKind.CastEnd)
+                {
+                    Skills!.FinishCast(job, tick);
+                }
+                else if (!IsStrikeCurrent(job))
+                {
+                    continue;
+                }
+                else if (job.Kind == ScheduledKind.Strike)
+                {
+                    Strike((Creature)_entities.Find(job.Owner)!, job.A, tick);
+                }
+                else
+                {
+                    Skills!.Run(job, tick);
+                }
             }
 
             _scheduler.CombatJobs.Clear();
             foreach (Entity entity in _entities.All)
             {
-                if ((entity is Creature { Dead: false } attacker) && (attacker.AttackTarget != 0) && (attacker.NextAttackTick <= tick))
+                if ((entity is Creature { Dead: false, Progress: null } attacker) && (attacker.AttackTarget != 0) && (attacker.NextAttackTick <= tick)
+                    && !attacker.Stunned)
                 {
                     TrySwing(attacker, tick);
                 }
@@ -166,27 +197,52 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 타격: 공격자가 살아 있고, 대상이 살아 있고 월드에 있으며 CanAttack이 참이고 복귀 중인 몬스터가 아니면 피해를 준다.
-        /// 사거리 밖으로 나간 대상과 공격을 멈춘 공격자의 타격도 맞는다.
+        /// 타격: 대상이 결과를 받을 수 있으면 계수 1의 피해를 준다. 사거리 밖으로 나간 대상과 공격을 멈춘 공격자의 타격도 맞는다.
         /// </summary>
-        private void Strike(Creature? attacker, uint targetId, uint tick)
+        private void Strike(Creature attacker, uint targetId, uint tick)
         {
-            if ((attacker == null) || attacker.Dead || (_entities.Find(targetId) is not Creature { Dead: false } target)
-                || !CanAttack(attacker, target) || IsReturning(target))
+            if (Hittable(attacker, targetId) is Creature target)
             {
-                return;
+                Hit(attacker, target, 1, tick);
             }
+        }
 
-            (uint damage, bool critical) = _stats.Damage(attacker, target, 1);
-            target.Hp -= Math.Min(damage, target.Hp);
-            target.CombatEndTick = tick + _combatTicks;
+        /// <summary>
+        /// 결과를 받을 수 있는 대상(살아 있고 월드에 있으며 CanAttack이 참이고 복귀 중인 몬스터가 아님). 아니면 null이다.
+        /// </summary>
+        public Creature? Hittable(Creature attacker, uint targetId)
+        {
+            return (_entities.Find(targetId) is Creature { Dead: false } target) && CanAttack(attacker, target) && !IsReturning(target) ? target : null;
+        }
+
+        /// <summary>
+        /// 공격자가 몬스터를 때린 것으로 친다: 플레이어를 그 몬스터의 피해 표에 더한다(피해 0인 상태 이상도. 비선공 몬스터도 표에 든 플레이어를
+        /// 쫓으며, 맞아서 시작하는 추적은 선과 상관없음).
+        /// </summary>
+        public static void Engage(Creature attacker, Creature target, uint damage)
+        {
             if ((attacker is Player player) && (target is Monster monster))
             {
-                // 비선공 몬스터도 표에 든 플레이어를 쫓는다(맞아서 시작하는 추적은 선과 상관없음).
                 monster.Damage.Add(player.Id, damage);
             }
+        }
 
+        /// <summary>
+        /// 피해: 공식의 피해를 빼고 맞은 쪽을 전투 상태로 두며 Damaged를 낸다. 피해로 취소되는 진행 중인 일을 취소하고, 체력이 0이면 죽인다.
+        /// 기본 공격과 스킬(26)이 함께 쓴다.
+        /// </summary>
+        public void Hit(Creature attacker, Creature target, double coefficient, uint tick)
+        {
+            (uint damage, bool critical) = _stats.Damage(attacker, target, coefficient);
+            target.Hp -= Math.Min(damage, target.Hp);
+            target.CombatEndTick = tick + _combatTicks;
+            Engage(attacker, target, damage);
             _events.Damaged(attacker, target, damage, critical);
+            if ((target.Progress is { } work) && ProgressSystem.CancelledByDamage(work.Kind))
+            {
+                _progress.Cancel(target, FailReason.Cancelled);
+            }
+
             if (target.Hp == 0)
             {
                 target.Dead = true;
@@ -202,7 +258,7 @@ namespace PortfolioMmo.Server
             }
         }
 
-        private static bool IsReturning(Creature target)
+        public static bool IsReturning(Creature target)
         {
             return target is Monster { State: MonsterState.Return };
         }

@@ -41,6 +41,12 @@ message Packet {
     Died died = 206;
     Revive revive = 207;
     Revived revived = 208;
+    UseSkill use_skill = 209;
+    SkillUsed skill_used = 210;
+    Progress progress = 211;
+    ProgressCancelled progress_cancelled = 212;
+    EffectApplied effect_applied = 213;
+    Cooldowns cooldowns = 214;
 
     // 300–399: 성장과 아이템
     SelfStats self_stats = 300;
@@ -79,6 +85,8 @@ enum Constant {
   CONSTANT_IDLE_TIMEOUT_SECONDS = 15;
   // 계정 하나가 만들 수 있는 캐릭터 수.
   CONSTANT_MAX_CHARACTERS = 4;
+  // 퀵슬롯의 칸 수.
+  CONSTANT_QUICKSLOT_COUNT = 8;
 }
 
 // ── 세션 ──
@@ -406,6 +414,22 @@ enum FailReason {
   FAIL_REASON_DEAD = 3;
   // 살아 있는데 부활을 요청했다.
   FAIL_REASON_NOT_DEAD = 4;
+  // 배우지 않은 스킬(다른 직업의 스킬 포함).
+  FAIL_REASON_NOT_LEARNED = 5;
+  // 쿨다운이 끝나지 않았다.
+  FAIL_REASON_COOLDOWN = 6;
+  // 마나가 모자란다.
+  FAIL_REASON_NOT_ENOUGH_MP = 7;
+  // 대상이 사거리 밖이다.
+  FAIL_REASON_OUT_OF_RANGE = 8;
+  // 사거리 안이지만 대상까지의 선이 막혔다.
+  FAIL_REASON_BLOCKED = 9;
+  // 진행 중인 일(시전, 채집, 제작, 귀환)이 있다.
+  FAIL_REASON_BUSY = 10;
+  // 기절한 동안에는 할 수 없다.
+  FAIL_REASON_STUNNED = 11;
+  // 진행 중인 일이 중간에 취소됐다(ProgressCancelled만 싣는다).
+  FAIL_REASON_CANCELLED = 12;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
@@ -413,6 +437,7 @@ enum RequestKind {
   REQUEST_KIND_UNSPECIFIED = 0;
   REQUEST_KIND_ATTACK = 1;
   REQUEST_KIND_REVIVE = 2;
+  REQUEST_KIND_SKILL = 3;
 }
 
 // 클라이언트 → 서버. 대상을 기본 공격한다. 이미 공격 중이면 대상만 바꾼다. 다가가는 것은 클라이언트의 이동이다.
@@ -454,4 +479,49 @@ message Revived {
   uint32 id = 1;
   uint32 hp = 2;
   uint32 max_hp = 3;
+}
+
+// 클라이언트 → 서버. 스킬을 쓴다. target_id는 대상(0이면 대상 없음). 중심이 자기인 스킬과 자기에게 쓰는 회복·강화는 대상을 보지 않는다.
+// force_attack은 강제 공격 표시이고 값을 보는 규칙은 44가 넣는다. 방향은 싣지 않는다.
+message UseSkill {
+  uint32 skill_id = 1;
+  uint32 target_id = 2;
+  bool force_attack = 3;
+}
+
+// 서버 → 클라이언트. 스킬 동작의 시작(시전 시간이 있으면 발동). 결과는 타격까지의 시간 뒤에 따로 온다. 받는 연결과 번호 0의 규칙은 AttackSwing과 같고,
+// 대상이 없거나 자기에게 쓴 스킬은 target_id가 시전자다.
+message SkillUsed {
+  uint32 caster_id = 1;
+  uint32 skill_id = 2;
+  uint32 target_id = 3;
+}
+
+// 서버 → 클라이언트. 진행 중인 일의 시작. id는 종류에 따른 테이블의 번호(시전은 Skills, 채집은 GatherNodes, 제작은 Recipes, 귀환은 Items)다.
+// 그 개체를 받은 연결과 본인에게 간다. 끝은 따로 알리지 않는다(end_tick이 지나면 끝남).
+message Progress {
+  uint32 id = 1;
+  ProgressState state = 2;
+}
+
+// 서버 → 클라이언트. 진행 중인 일이 끝나지 못했다. reason은 중간에 취소되면 CANCELLED, 끝나는 틱의 확인에서 걸리면 요청 때와 같은 이유다.
+message ProgressCancelled {
+  uint32 id = 1;
+  FailReason reason = 2;
+}
+
+// 서버 → 클라이언트. 효과가 붙었다(같은 효과는 끝나는 틱만 새로 됨). 그 개체를 받은 연결과 본인에게 간다. 떨어지는 것은 알리지 않는다.
+message EffectApplied {
+  uint32 id = 1;
+  EffectState effect = 2;
+}
+
+// 서버 → 본인. 스킬마다 쿨다운이 끝나는 틱. 월드에 들어올 때(EnterWorldResult 뒤) 전체를, 그 뒤에는 바뀐 것만 보낸다.
+message Cooldowns {
+  repeated Cooldown entries = 1;
+}
+
+message Cooldown {
+  uint32 skill_id = 1;
+  uint32 end_tick = 2;
 }

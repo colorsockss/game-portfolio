@@ -28,6 +28,32 @@ namespace PortfolioMmo.Server
         /// 놓인 점(주인)에 몬스터가 다시 나오는 틱(25). 놓인 점의 리스폰은 한 번만 걸리므로 세대 번호를 쓰지 않는다.
         /// </summary>
         Respawn = 4,
+
+        /// <summary>
+        /// 시전 시간이 없는 스킬(A)의 시작(26). 입력 차례에 그 틱으로 넣어 같은 틱의 전투 차례가 SkillUsed를 낸다. 주인은 시전자, B는 대상이고
+        /// 세대 번호는 시전자의 StrikeGeneration이다(그 사이에 죽거나 기절하면 버림).
+        /// </summary>
+        SkillStart = 5,
+
+        /// <summary>
+        /// 스킬(A)의 결과가 대상(B)에 적용되는 틱(26). 세대 번호는 시전자의 StrikeGeneration이고 전투 차례로 넘긴다.
+        /// </summary>
+        SkillHit = 6,
+
+        /// <summary>
+        /// 시전(진행 중인 일)의 끝(26). 세대 번호는 진행 중인 일의 것이고 전투 차례로 넘긴다.
+        /// </summary>
+        CastEnd = 7,
+
+        /// <summary>
+        /// 시전이 아닌 진행 중인 일(귀환 32, 채집 47, 제작 48)의 끝. 세대 번호는 진행 중인 일의 것이다.
+        /// </summary>
+        ProgressEnd = 8,
+
+        /// <summary>
+        /// 개체(주인)에 붙은 효과(A)의 끝(26). 세대 번호는 붙은 효과의 것이다.
+        /// </summary>
+        EffectEnd = 9,
     }
 
     /// <summary>

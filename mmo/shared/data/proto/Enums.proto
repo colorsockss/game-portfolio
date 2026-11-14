@@ -26,3 +26,40 @@ enum MonsterKind {
   // 필드 보스(43)
   MONSTER_KIND_BOSS = 2;
 }
+
+enum SkillKind {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  SKILL_KIND_UNSPECIFIED = 0;
+  // 단일 피해
+  SKILL_KIND_SINGLE_DAMAGE = 1;
+  // 범위 피해
+  SKILL_KIND_AREA_DAMAGE = 2;
+  // 강화
+  SKILL_KIND_BUFF = 3;
+  // 상태 이상
+  SKILL_KIND_DEBUFF = 4;
+  // 회복
+  SKILL_KIND_HEAL = 5;
+}
+
+enum SkillCenter {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  SKILL_CENTER_UNSPECIFIED = 0;
+  // 대상
+  SKILL_CENTER_TARGET = 1;
+  // 자기
+  SKILL_CENTER_SELF = 2;
+}
+
+enum EffectKind {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  EFFECT_KIND_UNSPECIFIED = 0;
+  // 기절(아무 행동도 할 수 없음)
+  EFFECT_KIND_STUN = 1;
+  // 감속(이동 속도를 값의 %만큼 줄임)
+  EFFECT_KIND_SLOW = 2;
+  // 공격력 올림
+  EFFECT_KIND_ATTACK_UP = 3;
+  // 방어력 올림
+  EFFECT_KIND_DEFENSE_UP = 4;
+}

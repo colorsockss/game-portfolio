@@ -8,6 +8,7 @@
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 #include "Game/MmoEntitySubsystem.h"
+#include "HAL/PlatformTime.h"
 #include "Net/MmoSession.h"
 #include "UI/MmoNameTagWidget.h"
 #include "UI/MmoUiPaths.h"
@@ -167,6 +168,23 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 			}
 		}
 		Tag.SetHp(Hp);
+		// 상태 이상은 효과 목록에서, 진행 바는 진행 중인 일에서 그린다(끝나는 틱이 지난 것은 월드가 이미 뺐다).
+		FString Status;
+		for (const portfolio::mmo::EffectState& Effect : Info.effects())
+		{
+			const portfolio::mmo::data::EffectsRow* Row = Session->Data().Effect(Effect.effect_id());
+			if (Row && Row->kind() == portfolio::mmo::data::EFFECT_KIND_STUN)
+			{
+				Status += TEXT("[기절]");
+			}
+			else if (Row && Row->kind() == portfolio::mmo::data::EFFECT_KIND_SLOW)
+			{
+				Status += TEXT("[감속]");
+			}
+		}
+		Tag.SetStatus(Status);
+		const std::optional<double> Progress = World.ProgressRatio(Entity, Session->Data(), FPlatformTime::Seconds());
+		Tag.SetProgress(Progress ? static_cast<float>(*Progress) : -1.0f);
 		Cast<UCanvasPanelSlot>(Tag.Slot)->SetPosition(Position);
 		Shown.Add(Id);
 	}

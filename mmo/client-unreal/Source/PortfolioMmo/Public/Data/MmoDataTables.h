@@ -8,8 +8,10 @@
 #undef check
 #include "Classes.pb.h"
 #include "Constants.pb.h"
+#include "Effects.pb.h"
 #include "MapGrid.pb.h"
 #include "Monsters.pb.h"
+#include "Skills.pb.h"
 #include "Zones.pb.h"
 #pragma pop_macro("check")
 #pragma pop_macro("verify")

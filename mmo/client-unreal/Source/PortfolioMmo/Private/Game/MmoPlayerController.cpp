@@ -8,6 +8,8 @@
 #include "Game/MmoCharacter.h"
 #include "Game/MmoCoordinates.h"
 #include "Game/MmoEntityActor.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "HAL/PlatformTime.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
@@ -80,6 +82,14 @@ void AMmoPlayerController::SetupInputComponent()
 	// 키는 backlog 89가 한 곳으로 모은다.
 	Mapping->MapKey(AttackAction, EKeys::F);
 	Mapping->MapKey(TargetAction, EKeys::Tab);
+	const FKey SlotKeys[] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight };
+	for (const FKey& Key : SlotKeys)
+	{
+		UInputAction* Action = NewObject<UInputAction>(this, *FString::Printf(TEXT("Slot%d"), SlotActions.Num()));
+		Action->ValueType = EInputActionValueType::Boolean;
+		Mapping->MapKey(Action, Key);
+		SlotActions.Add(Action);
+	}
 
 	if (UEnhancedInputLocalPlayerSubsystem* Input = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -93,6 +103,10 @@ void AMmoPlayerController::SetupInputComponent()
 	Enhanced->BindAction(BackAction, ETriggerEvent::Started, this, &AMmoPlayerController::HandleBack);
 	Enhanced->BindAction(ClickAction, ETriggerEvent::Started, this, &AMmoPlayerController::HandleClick);
 	Enhanced->BindAction(AttackAction, ETriggerEvent::Started, this, &AMmoPlayerController::AttackOrTargetNearest);
+	for (int32 Index = 0; Index < SlotActions.Num(); ++Index)
+	{
+		Enhanced->BindActionValueLambda(SlotActions[Index], ETriggerEvent::Started, [this, Index](const FInputActionValue&) { UseQuickslot(Index); });
+	}
 	Enhanced->BindAction(TargetAction, ETriggerEvent::Started, this, &AMmoPlayerController::TargetNearest);
 }
 
@@ -129,9 +143,22 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 {
 	// 회전 입력은 Super::PlayerTick 안에서 적용되고 액터 틱 끝에 지워지므로, 그 앞에서 넣어야 한다.
 	UpdateTouchCamera();
-	UpdateEngagement();
+	if (Session().Combat().PendingSkill() != 0)
+	{
+		UpdateSkillUse();
+	}
+	else
+	{
+		UpdateEngagement();
+	}
 	FollowPath();
 	Super::PlayerTick(DeltaTime);
+	// 이번 프레임에 이동 입력이 없었으면 시전 때 쥐고 있던 입력을 놓은 것이다.
+	if (!bMoveInput)
+	{
+		Session().Combat().AllowMove(false);
+	}
+	bMoveInput = false;
 
 	const APawn* Self = GetPawn();
 	UMmoConnection* Connection = GetGameInstance()->GetSubsystem<UMmoConnection>();
@@ -161,10 +188,29 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 		return;
 	}
 
+	// 내게 걸린 감속은 최대 속도에 반영해 서버의 이동 예산과 맞춘다(되돌려지지 않게).
+	if (UCharacterMovementComponent* Movement = GetPawn<ACharacter>() ? GetPawn<ACharacter>()->GetCharacterMovement() : nullptr)
+	{
+		const uint32 Slow = Session().World().SelfEffect(Session().Data(), portfolio::mmo::data::EFFECT_KIND_SLOW, FPlatformTime::Seconds()).value_or(0);
+		Movement->MaxWalkSpeed = MmoWorld::Units::MaxSpeedMetersPerSecond * 100.0 * (100 - FMath::Min<uint32>(Slow, 100)) / 100.0;
+	}
+
 	// 개발용: -MmoAttack이면 걷기가 끝난 뒤 대상이 없을 때마다 가장 가까운 적에게 공격하러 간다(키 입력 없이 전투를 확인).
 	if (PathFollower.IsDone() && !bEngaged && Session().Combat().Target() == 0 && FParse::Param(FCommandLine::Get(), TEXT("MmoAttack")))
 	{
 		AttackOrTargetNearest();
+	}
+
+	// 개발용: 대상이 있으면 2초마다 퀵슬롯을 차례대로 누른다(키 입력 없이 스킬을 확인). -MmoSkills=N이면 N번 칸만 누른다.
+	static double NextSkillSeconds = 0;
+	static int32 NextSlot = 0;
+	int32 OnlySlot = 0;
+	const bool bOnly = FParse::Value(FCommandLine::Get(), TEXT("MmoSkills="), OnlySlot);
+	if (Session().Combat().Target() != 0 && (bOnly || FParse::Param(FCommandLine::Get(), TEXT("MmoSkills"))) && FPlatformTime::Seconds() >= NextSkillSeconds)
+	{
+		NextSkillSeconds = FPlatformTime::Seconds() + 2.0;
+		UseQuickslot(bOnly ? OnlySlot - 1 : NextSlot);
+		NextSlot = (NextSlot + 1) % MmoWorld::FCombatState::Quickslots(Session().Data(), Session().World().SelfEntity()->Info.character_class()).size();
 	}
 
 	const FVector Location = Self->GetActorLocation();
@@ -214,7 +260,7 @@ bool AMmoPlayerController::WalkTo(const FVector& Ground)
 void AMmoPlayerController::FollowPath()
 {
 	APawn* Self = GetPawn();
-	if (!Self || PathFollower.IsDone())
+	if (!Self || PathFollower.IsDone() || IsStunned())
 	{
 		return;
 	}
@@ -236,9 +282,84 @@ UMmoSession& AMmoPlayerController::Session() const
 	return *GetGameInstance()->GetSubsystem<UMmoSession>();
 }
 
+bool AMmoPlayerController::IsStunned() const
+{
+	return Session().World().SelfEffect(Session().Data(), portfolio::mmo::data::EFFECT_KIND_STUN, FPlatformTime::Seconds()).has_value();
+}
+
+void AMmoPlayerController::UseQuickslot(int32 Index)
+{
+	const MmoWorld::FEntity* Me = Session().World().SelfEntity();
+	if (bManualMoveBlocked || !Me)
+	{
+		return;
+	}
+	const std::vector<uint32_t> Skills = MmoWorld::FCombatState::Quickslots(Session().Data(), Me->Info.character_class());
+	if (Index < 0 || Index >= static_cast<int32>(Skills.size()))
+	{
+		return;
+	}
+	// 실패의 글(쿨다운, 마나 부족 등)을 알림으로 띄우는 것은 28이다.
+	const portfolio::mmo::FailReason Reason = Session().Combat().PressSkill(Skills[Index], Session().World(), Session().Data(), FPlatformTime::Seconds());
+	if (Reason != portfolio::mmo::FAIL_REASON_NONE)
+	{
+		UE_LOG(LogMmoNet, Display, TEXT("Skill %u is not ready: %s"), Skills[Index], UTF8_TO_TCHAR(portfolio::mmo::FailReason_Name(Reason).c_str()));
+		return;
+	}
+	EngagedGoal = { MIN_int32, MIN_int32 };
+}
+
+void AMmoPlayerController::UpdateSkillUse()
+{
+	UMmoSession& Net = Session();
+	ACharacter* Self = GetPawn<ACharacter>();
+	const MmoWorld::FFieldMap* Field = Net.Field();
+	if (!Self || !Field || IsStunned())
+	{
+		Net.Combat().CancelSkill();
+		return;
+	}
+
+	const FVector Location = Self->GetActorLocation();
+	const int32 X = MmoCoordinates::ToX(Location);
+	const int32 Z = MmoCoordinates::ToZ(Location);
+	const MmoWorld::FSkillStep Step = Net.Combat().UpdateSkill(Net.World(), *Field, Net.Data(), X, Z);
+	if (Step.Kind == MmoWorld::FSkillStep::EKind::Approach)
+	{
+		const double Moved = FMath::Sqrt(FMath::Square(static_cast<double>(Step.Goal.X) - EngagedGoal.X) + FMath::Square(static_cast<double>(Step.Goal.Z) - EngagedGoal.Z));
+		if (PathFollower.IsDone() || Moved > MmoWorld::Units::PerMeter)
+		{
+			EngagedGoal = Step.Goal;
+			if (!WalkTo(MmoCoordinates::ToWorld(Step.Goal.X, Step.Goal.Z)))
+			{
+				Net.Combat().CancelSkill();
+			}
+		}
+		return;
+	}
+	if (Step.Kind != MmoWorld::FSkillStep::EKind::Fire)
+	{
+		return;
+	}
+
+	PathFollower.Start({});
+	const MmoWorld::FSkillFire Fire = Net.Combat().FireSkill(Net.World(), Net.Data(), MoveSender, X, Z, MmoCoordinates::ToYaw(Self->GetActorRotation()), FPlatformTime::Seconds());
+	if (Fire.bStop)
+	{
+		// 시전은 세운 자리에서 해야 다음 Move가 시전을 취소하지 않는다. 공격하러 가던 길도 버린다.
+		bEngaged = false;
+		Self->GetCharacterMovement()->StopMovementImmediately();
+	}
+	for (const portfolio::mmo::Packet& Packet : Fire.Packets)
+	{
+		Net.Send(Packet);
+	}
+}
+
 void AMmoPlayerController::SelectTarget(uint32 Id)
 {
 	bEngaged = false;
+	Session().Combat().CancelSkill();
 	if (const std::optional<portfolio::mmo::Packet> Stop = Session().Combat().SetTarget(Id))
 	{
 		Session().Send(*Stop);
@@ -305,7 +426,7 @@ void AMmoPlayerController::UpdateEngagement()
 	if (MmoWorld::FCombatState::CanStrikeFrom(*Field, X, Z, Goal, Attack->RangeMeters))
 	{
 		PathFollower.Start({});
-		if (!Combat.IsAttacking())
+		if (!Combat.IsAttacking() && !IsStunned())
 		{
 			// 밀린 위치를 먼저 보내 서버가 지금 자리에서 사거리와 선을 보게 한다.
 			portfolio::mmo::Packet Move;
@@ -363,6 +484,11 @@ void AMmoPlayerController::HandleClick()
 
 	// 땅은 평지(높이 0)라 커서 광선과 땅의 평면이 만나는 곳이다. 맵의 것(건물 등)을 눌러도 그 뒤의 땅이다. 대상은 그대로다.
 	bEngaged = false;
+	if (IsStunned())
+	{
+		return;
+	}
+	Session().Combat().CancelSkill();
 	FVector Origin, Direction;
 	if (!DeprojectMousePositionToWorld(Origin, Direction) || Direction.Z >= -KINDA_SMALL_NUMBER)
 	{
@@ -379,16 +505,19 @@ void AMmoPlayerController::HandleBack()
 void AMmoPlayerController::HandleMove(const FInputActionValue& Value)
 {
 	APawn* Self = GetPawn();
-	if (!Self || bManualMoveBlocked || Session().World().SelfState().bDead)
+	// 카메라가 보는 쪽이 앞이다. 손으로 걸으면 따라가던 경로와 누른 스킬을 버린다.
+	const FVector2D Axis = Value.Get<FVector2D>();
+	bMoveInput |= !Axis.IsNearlyZero();
+	// 시전 시간이 있는 스킬을 보낼 때 쥐고 있던 입력은 한 번 놓을 때까지 쓰지 않는다(그대로 걸으면 시전이 바로 취소됨).
+	if (!Self || bManualMoveBlocked || Session().World().SelfState().bDead || IsStunned() || !Session().Combat().AllowMove(!Axis.IsNearlyZero()))
 	{
 		return;
 	}
-	// 카메라가 보는 쪽이 앞이다. 손으로 걸으면 따라가던 경로를 버린다.
-	const FVector2D Axis = Value.Get<FVector2D>();
 	if (!Axis.IsNearlyZero())
 	{
 		PathFollower.Start({});
 		bEngaged = false;
+		Session().Combat().CancelSkill();
 	}
 	const FRotationMatrix Facing(FRotator(0.0, GetControlRotation().Yaw, 0.0));
 	Self->AddMovementInput(Facing.GetUnitAxis(EAxis::X), Axis.Y);

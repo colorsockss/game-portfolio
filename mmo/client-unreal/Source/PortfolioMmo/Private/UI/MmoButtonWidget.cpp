@@ -68,4 +68,5 @@ FReply UMmoButtonWidget::NativeOnPreviewMouseButtonDown(const FGeometry& Geometr
 void UMmoButtonWidget::HandleClicked()
 {
 	OnClicked.Broadcast();
+	OnClickedNative.Broadcast();
 }

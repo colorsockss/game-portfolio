@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using PortfolioMmo.Contract;
+using PortfolioMmo.Data;
 
 namespace PortfolioMmo.Server
 {
@@ -7,6 +9,11 @@ namespace PortfolioMmo.Server
     /// 능력치 넷. 플레이어는 레벨의 기본값(Levels) + 장비와 강화(34, 35) + 효과(26)이고, 몬스터는 Monsters의 줄(23)이다.
     /// </summary>
     public readonly record struct Stats(uint MaxHp, uint MaxMp, uint Attack, uint Defense);
+
+    /// <summary>
+    /// 개체에 붙은 효과 하나(26). Generation은 끝의 예약의 세대 번호다(같은 효과를 다시 걸면 새 번호로 옛 끝을 버림).
+    /// </summary>
+    internal readonly record struct AppliedEffect(EffectsRow Row, uint EndTick, ulong Generation);
 
     /// <summary>
     /// 체력이 있어 싸우는 개체(플레이어, 몬스터). 걸린 효과와 진행 중인 일(26)은 그 항목이 더한다.
@@ -62,6 +69,31 @@ namespace PortfolioMmo.Server
         /// </summary>
         internal bool VitalsChanged { get; set; }
 
+        /// <summary>
+        /// 붙은 효과(26). 같은 효과는 한 번만 들고, 죽으면 비운다. 몇 개뿐이라 목록을 훑는다.
+        /// </summary>
+        internal List<AppliedEffect> Effects { get; } = new List<AppliedEffect>();
+
+        /// <summary>
+        /// 진행 중인 일(시전, 채집, 제작, 귀환). 없으면 null.
+        /// </summary>
+        internal ProgressWork? Progress { get; set; }
+
+        /// <summary>
+        /// 마지막으로 스킬을 쓴 대상(서버가 아는 내 대상, 26). 기본 공격의 대상은 AttackTarget이다.
+        /// </summary>
+        internal uint LastSkillTarget { get; set; }
+
+        /// <summary>
+        /// 기절해 있다: 움직이지도, 치지도, 스킬을 쓰지도 못한다.
+        /// </summary>
+        public bool Stunned => EffectValue(EffectKind.Stun, out _);
+
+        /// <summary>
+        /// 이동 속도를 줄이는 비율(%, 0–100). 감속이 없으면 0.
+        /// </summary>
+        public uint SlowPercent => EffectValue(EffectKind.Slow, out uint value) ? Math.Min(value, 100) : 0;
+
         public bool InCombat(uint tick)
         {
             return tick < CombatEndTick;
@@ -93,6 +125,25 @@ namespace PortfolioMmo.Server
             VitalsChanged |= Hp != before;
         }
 
+        /// <summary>
+        /// 그 종류의 효과가 붙었는지와 값(여럿이면 가장 큰 값).
+        /// </summary>
+        internal bool EffectValue(EffectKind kind, out uint value)
+        {
+            bool found = false;
+            value = 0;
+            foreach (AppliedEffect effect in Effects)
+            {
+                if (effect.Row.Kind == kind)
+                {
+                    found = true;
+                    value = Math.Max(value, effect.Row.Value);
+                }
+            }
+
+            return found;
+        }
+
         public double Get(AbilityType type)
         {
             return type switch
@@ -108,6 +159,15 @@ namespace PortfolioMmo.Server
             enter.Hp = Hp;
             enter.MaxHp = MaxHp;
             enter.Dead = Dead;
+            foreach (AppliedEffect effect in Effects)
+            {
+                enter.Effects.Add(new EffectState { EffectId = effect.Row.Id, EndTick = effect.EndTick });
+            }
+
+            if (Progress != null)
+            {
+                enter.Progress = Progress.State();
+            }
         }
     }
 }

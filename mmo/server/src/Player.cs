@@ -80,6 +80,11 @@ namespace PortfolioMmo.Server
         internal bool StatsChanged { get; set; }
 
         /// <summary>
+        /// 스킬마다 쿨다운이 끝나는 틱(쓸 때 지금 틱과 견줌). 죽어도 남고 저장하지 않는다.
+        /// </summary>
+        private readonly Dictionary<uint, uint> _cooldowns = new Dictionary<uint, uint>();
+
+        /// <summary>
         /// 지난 틱까지 이 플레이어에게 보였던 개체.
         /// </summary>
         internal HashSet<Entity> Visible { get; set; } = new HashSet<Entity>();
@@ -103,6 +108,39 @@ namespace PortfolioMmo.Server
             NameColor = nameColor;
             WeaponItemId = weaponItemId;
             StateChanged = true;
+        }
+
+        /// <summary>
+        /// 스킬의 쿨다운이 끝나는 틱. 쓴 적이 없으면 0.
+        /// </summary>
+        public uint CooldownEnd(uint skillId)
+        {
+            return _cooldowns.GetValueOrDefault(skillId);
+        }
+
+        /// <summary>
+        /// 쿨다운이 끝나는 틱을 두고 바뀐 것을 본인에게 Cooldowns로 보낸다.
+        /// </summary>
+        internal void SetCooldown(uint skillId, uint endTick)
+        {
+            _cooldowns[skillId] = endTick;
+            var cooldowns = new Cooldowns();
+            cooldowns.Entries.Add(new Cooldown { SkillId = skillId, EndTick = endTick });
+            Session.Send(new Packet { Cooldowns = cooldowns });
+        }
+
+        /// <summary>
+        /// 주어진 스킬들의 쿨다운 전체를 본인에게 보낸다(월드에 들어올 때, EnterWorldResult 뒤).
+        /// </summary>
+        internal void SendCooldowns(IEnumerable<uint> skillIds)
+        {
+            var cooldowns = new Cooldowns();
+            foreach (uint skillId in skillIds)
+            {
+                cooldowns.Entries.Add(new Cooldown { SkillId = skillId, EndTick = CooldownEnd(skillId) });
+            }
+
+            Session.Send(new Packet { Cooldowns = cooldowns });
         }
 
         /// <summary>

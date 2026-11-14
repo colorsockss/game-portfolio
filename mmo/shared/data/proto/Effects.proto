@@ -1,0 +1,23 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+import "Enums.proto";
+
+message EffectsRow {
+  // 효과의 번호(EffectState.effect_id)
+  uint32 id = 1;
+  // 종류
+  EffectKind kind = 2;
+  // 값. 감속은 줄이는 비율(%), 공격력·방어력 올림은 더하는 값, 기절은 쓰지 않음(0)
+  uint32 value = 3;
+  // 지속 시간(ms)
+  uint32 duration_ms = 4;
+}
+
+message Effects {
+  repeated EffectsRow rows = 1;
+}

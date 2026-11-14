@@ -284,6 +284,55 @@ namespace
 		Expect(Combat.Projectiles().empty(), "a projectile whose target left disappears");
 	}
 
+	/**
+	 * 발사체는 화면이 개체를 그리는 자리에서 나가고 그쪽으로 간다: 내 공격은 들어올 때의 자리가 아니라 화면이 넣은 내 캐릭터의 자리에서 나가고,
+	 * 나를 노린 발사체는 그 자리로 온다. 다른 개체는 서버 틱보다 2틱 늦게 보간한 자리다.
+	 */
+	void ProjectilesStartWhereTheShooterIsDrawn()
+	{
+		const MmoData::FGameData Info = Data();
+		MmoWorld::FWorldState World;
+		FCombatState Combat;
+		Apply(World, Combat, Info, Entered(1));
+		Apply(World, Combat, Info, Enter(1, portfolio::mmo::ENTITY_KIND_PLAYER, 0, 0));
+		Apply(World, Combat, Info, Enter(5, portfolio::mmo::ENTITY_KIND_MONSTER, 960, 0, 2));
+		World.SetSelfPosition(640, 0, 64);
+		Apply(World, Combat, Info, Swing(1, 5), 10.0);
+		Combat.UpdateProjectiles(World, 10.3);
+		Expect(Combat.Projectiles().size() == 1 && Combat.Projectiles()[0].X == 640, "my projectile leaves from where my character is drawn");
+
+		FCombatState Archer;
+		Apply(World, Archer, Info, Swing(5, 1), 20.0);
+		Archer.UpdateProjectiles(World, 20.3);
+		Archer.UpdateProjectiles(World, 20.4);
+		// 15 m/s로 0.1 s면 1.5 m(48칸)를 내 캐릭터 쪽(-x)으로 간다.
+		Expect(Archer.Projectiles().size() == 1 && std::abs(Archer.Projectiles()[0].X - (960 - 48)) < 1e-6, "a projectile at me flies toward my drawn position");
+		World.SetSelfPosition(940, 0, 64);
+		Archer.UpdateProjectiles(World, 20.5);
+		Expect(Archer.Projectiles().empty(), "it hits when it reaches where I am drawn now");
+
+		// 다른 개체: 틱 10에 x = 0, 틱 12에 x = 64를 받았고 지금 서버 틱이 13이면 틱 11의 자리(32)에서 나간다.
+		MmoWorld::FWorldState Others;
+		FCombatState Watcher;
+		// 들어온 때(틱 0)를 내 시간 29.5초로 두어 시계가 틱 10을 30초로 본다.
+		Apply(Others, Watcher, Info, Entered(1), 29.5);
+		Apply(Others, Watcher, Info, Enter(1, portfolio::mmo::ENTITY_KIND_PLAYER, 0, 640));
+		Apply(Others, Watcher, Info, Enter(5, portfolio::mmo::ENTITY_KIND_MONSTER, 0, 0, 2));
+		portfolio::mmo::Packet Moves;
+		Moves.mutable_entity_moves()->set_tick(10);
+		portfolio::mmo::EntityMove* First = Moves.mutable_entity_moves()->add_entities();
+		First->set_id(5);
+		Apply(Others, Watcher, Info, Moves, 30.0);
+		Moves.mutable_entity_moves()->set_tick(12);
+		Moves.mutable_entity_moves()->mutable_entities(0)->set_x(64);
+		Apply(Others, Watcher, Info, Moves, 30.1);
+		// 나가는 때(받은 때 + 300 ms)가 30.15초다. 0.0001초 뒤에 옮겨 나간 자리를 본다.
+		Apply(Others, Watcher, Info, Swing(5, 1), 29.85);
+		Watcher.UpdateProjectiles(Others, 30.1501);
+		Expect(Watcher.Projectiles().size() == 1 && Watcher.Projectiles()[0].bLaunched && std::abs(Watcher.Projectiles()[0].X - 32) < 0.1,
+			"another entity's projectile leaves from its interpolated position");
+	}
+
 	/** 다가가기: 벽 너머의 대상에게 길을 따라 걷다가 사거리 안이고 선이 트인 첫 자리에서 멈춘다. 안전 지대 안에서 밖의 몬스터를 치러 갈 때는
 	 * 사거리 안이어도 안전 지대 밖으로 나간 뒤에 멈춘다. */
 	void ApproachStopsWhereTheStrikeIsAllowed()
@@ -393,6 +442,7 @@ int main()
 	TargetsAreReleasedOnDeathAndLeave();
 	TheFirstSwingIsPredictedOnce();
 	ProjectilesLaunchAfterTheHitDelay();
+	ProjectilesStartWhereTheShooterIsDrawn();
 	ApproachStopsWhereTheStrikeIsAllowed();
 	MyDeathStopsRequestsUntilRevived();
 	if (Failures > 0)

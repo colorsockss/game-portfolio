@@ -41,11 +41,23 @@ namespace MmoData
 		/** 몬스터(이름의 키, 레벨, 선공인지, 기본 공격). id가 EntityEnter.template_id다. */
 		portfolio::mmo::data::Monsters Monsters;
 
+		/** 플레이어의 스킬(직업 × 100 + 차례. 종류, 사거리, 범위, 쿨다운, 시전 시간, 마나, 거는 효과). */
+		portfolio::mmo::data::Skills Skills;
+
+		/** 효과(종류, 값, 지속 시간). id가 EffectState.effect_id다. */
+		portfolio::mmo::data::Effects Effects;
+
 		/** 직업의 줄. 없으면 nullptr. */
 		const portfolio::mmo::data::ClassesRow* Class(uint32_t Id) const;
 
 		/** 몬스터의 줄. 없으면 nullptr. */
 		const portfolio::mmo::data::MonstersRow* Monster(uint32_t Id) const;
+
+		/** 스킬의 줄. 없으면 nullptr. */
+		const portfolio::mmo::data::SkillsRow* Skill(uint32_t Id) const;
+
+		/** 효과의 줄. 없으면 nullptr. */
+		const portfolio::mmo::data::EffectsRow* Effect(uint32_t Id) const;
 	};
 
 	/** 데이터 해시 파일의 내용(16진수 16자, 끝의 줄바꿈은 무시)을 수로 읽는다. 형식이 틀리면 nullopt. */

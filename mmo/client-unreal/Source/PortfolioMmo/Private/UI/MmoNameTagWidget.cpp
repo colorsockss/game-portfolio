@@ -27,3 +27,25 @@ void UMmoNameTagWidget::SetHp(float Ratio)
 	HpBar->SetVisibility(Ratio < 0.0f ? ESlateVisibility::Hidden : ESlateVisibility::HitTestInvisible);
 	HpBar->SetPercent(FMath::Max(Ratio, 0.0f));
 }
+
+void UMmoNameTagWidget::SetStatus(const FString& Status)
+{
+	if (Status == ShownStatus)
+	{
+		return;
+	}
+	ShownStatus = Status;
+	StatusText->SetText(FText::FromString(Status));
+	StatusText->SetVisibility(Status.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+}
+
+void UMmoNameTagWidget::SetProgress(float Ratio)
+{
+	if (Ratio == ShownProgress)
+	{
+		return;
+	}
+	ShownProgress = Ratio;
+	ProgressBar->SetVisibility(Ratio < 0.0f ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
+	ProgressBar->SetPercent(FMath::Max(Ratio, 0.0f));
+}

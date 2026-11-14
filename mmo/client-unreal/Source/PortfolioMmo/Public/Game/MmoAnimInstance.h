@@ -26,8 +26,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Mmo")
 	float Speed = 0.0f;
 
-	/** 동작 하나를 한 번 튼다. 트는 중인 동작은 끊는다. */
-	void PlayAction(UAnimSequenceBase* Sequence);
+	/** 동작 하나를 한 번 튼다(bLoop면 StopAction까지 되풀이. 시전). 트는 중인 동작은 끊는다. */
+	void PlayAction(UAnimSequenceBase* Sequence, bool bLoop = false);
+
+	/** 트는 동작을 끊고 이동 동작으로 돌아간다(시전의 끝과 취소). 쓰러진 자세는 건드리지 않는다. */
+	void StopAction();
 
 	/** 쓰러지는 동작을 틀고 마지막 자세로 멈춘다. bAlreadyDown이면 처음부터 쓰러진 자세다(죽은 채 시야에 들어옴). */
 	void PlayDeath(UAnimSequenceBase* Sequence, bool bAlreadyDown);

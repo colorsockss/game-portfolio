@@ -1,14 +1,18 @@
 #pragma once
 
-// 내 대상과 기본 공격, 화면이 꺼내 갈 전투 사건, 따라가는 발사체(엔진 없는 코드). Unity 클라이언트가 같은 구조를 C#으로 옮긴다.
-// 서버의 패킷은 FWorldState에 먼저 반영(체력, 죽음)한 뒤 여기에 넘긴다. 보낼 요청(AttackStart, AttackStop)은 함수가 돌려주고 부르는 쪽이 보낸다.
+// 내 대상과 기본 공격, 스킬 쓰기와 쿨다운, 화면이 꺼내 갈 전투 사건, 따라가는 발사체(엔진 없는 코드). Unity 클라이언트가 같은 구조를 C#으로 옮긴다.
+// 서버의 패킷은 FWorldState에 먼저 반영(체력, 죽음, 효과, 진행 중인 일)한 뒤 여기에 넘긴다. 보낼 요청(AttackStart, AttackStop, UseSkill)은
+// 함수가 돌려주고 부르는 쪽이 보낸다.
 #include <cstdint>
 #include <optional>
 #include <vector>
 
 #include "Data/GameData.h"
 #include "Protocol/MmoPackets.h"
+#include "World/Cooldowns.h"
 #include "World/FieldMap.h"
+#include "World/MoveSender.h"
+#include "World/PathFinder.h"
 #include "World/WorldState.h"
 
 namespace MmoWorld
@@ -23,6 +27,12 @@ namespace MmoWorld
 		Death,
 		/** 부활(Revived). 체력과 죽음 표시는 이미 개체에 반영했다. */
 		Revive,
+		/** 스킬 동작의 시작(SkillUsed, 또는 내 스킬의 예측). Skill이 스킬이고 Attacker가 시전자다. */
+		Skill,
+		/** 진행 중인 일의 시작(Progress). Target이 그 개체, Skill이 종류에 따른 번호(시전은 Skills)다. 끝나는 틱이 지나면 화면이 끝낸다. */
+		ProgressStart,
+		/** 진행 중인 일이나 내 스킬의 예측이 끊김(ProgressCancelled, 기다리던 스킬의 실패). Target이 그 개체다. */
+		Interrupt,
 	};
 
 	/** 화면이 받은 순서대로 그릴 사건. 공격자 번호 0은 받지 않은 개체다(개체를 찾지 않고 대상 쪽만 그린다). */
@@ -35,6 +45,23 @@ namespace MmoWorld
 		bool bCritical = false;
 		/** 내가 주거나 받은 것(피해 숫자는 이것만 띄운다). */
 		bool bMine = false;
+		/** Skill, ProgressStart의 번호. */
+		uint32_t Skill = 0;
+	};
+
+	/** 누른 스킬을 지금 할 일. Approach면 Goal(대상의 자리)까지 걷고, Fire면 FireSkill로 보낸다. */
+	struct FSkillStep
+	{
+		enum class EKind : uint8_t { None, Approach, Fire };
+		EKind Kind = EKind::None;
+		FPoint Goal;
+	};
+
+	/** 스킬을 보낼 때의 패킷(차례대로 보냄). bStop이면 보내기 전에 걷던 경로를 버리고 캐릭터를 세운다(시전 시간이 있는 스킬). */
+	struct FSkillFire
+	{
+		bool bStop = false;
+		std::vector<portfolio::mmo::Packet> Packets;
 	};
 
 	/** 대상을 따라가는 발사체 하나(마법사의 기본 공격, 원거리 몬스터). 좌표는 패킷의 단위다. */
@@ -82,10 +109,49 @@ namespace MmoWorld
 		/** 지난번에 꺼낸 뒤로 쌓인 사건(받은 순서). */
 		std::vector<FCombatEvent> TakeEvents();
 
-		/** 발사체를 NowSeconds까지 옮긴다: 나갈 때가 된 것은 공격자의 자리에서 나가고, 나간 것은 대상의 지금 자리 쪽으로 간다. 닿거나 대상이 없으면 지운다. */
+		/**
+		 * 발사체를 NowSeconds까지 옮긴다: 나갈 때가 된 것은 화면이 공격자를 그리는 자리(FWorldState::DrawnPose)에서 나가고, 나간 것은 대상을 그리는
+		 * 자리 쪽으로 간다. 닿거나 대상이 없으면 지운다.
+		 */
 		void UpdateProjectiles(const FWorldState& World, double NowSeconds);
 
 		const std::vector<FProjectile>& Projectiles() const { return Flying; }
+
+		/** 퀵슬롯의 스킬(앞 칸부터, 최대 CONSTANT_QUICKSLOT_COUNT). 임시: 스킬 배우기(36) 전에는 그 직업의 스킬을 모두 번호 차례로 둔다. */
+		static std::vector<uint32_t> Quickslots(const MmoData::FGameData& Data, uint32_t CharacterClass);
+
+		/** 대상에게 쓰는 스킬인가(단일 피해, 상태 이상, 대상 중심의 범위 피해). 아니면 그 자리에서 쓴다(대상이 있어도 다가가지 않음). */
+		static bool TargetsOther(const portfolio::mmo::data::SkillsRow& Skill);
+
+		/**
+		 * 퀵슬롯의 스킬을 누른다: 죽음, 기절, 진행 중, 쿨다운, 마나, 대상(대상에게 쓰는 스킬)을 먼저 보고, 통과하면 그 스킬을 기다리게 둔다
+		 * (UpdateSkill이 이어 감). 어긋나면 그 이유이고 아무것도 보내지 않는다.
+		 */
+		portfolio::mmo::FailReason PressSkill(uint32_t SkillId, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds);
+
+		/** 누른 스킬이 기다리는가(다가가는 중 포함). */
+		uint32_t PendingSkill() const { return Pending; }
+
+		/** 누른 스킬을 그만둔다(손 이동 입력, 대상을 바꿈). */
+		void CancelSkill() { Pending = 0; }
+
+		/**
+		 * 누른 스킬을 (X, Z)에서 할 일: 그 자리에서 쓰는 스킬은 Fire. 대상에게 쓰는 스킬은 지금 자리에서 칠 수 있으면(사거리, 선, 몬스터면 안전 지대 밖)
+		 * Fire, 아니면 Approach. 대상이 없어지거나 죽었으면 그만두고 None이다.
+		 */
+		FSkillStep UpdateSkill(const FWorldState& World, const FFieldMap& Field, const MmoData::FGameData& Data, int32_t X, int32_t Z);
+
+		/**
+		 * 누른 스킬을 보낸다: 시전 시간이 있으면 캐릭터를 세우고 밀린 위치를 먼저 보내며(Sender.Flush), 쥐고 있던 이동 입력을 놓을 때까지 무시한다.
+		 * 시전 시간이 없으면 쿨다운을 미리 돌린다. 내 동작(시전이면 ProgressStart, 아니면 Skill)을 미리 쌓고 답을 기다린다.
+		 */
+		FSkillFire FireSkill(const FWorldState& World, const MmoData::FGameData& Data, FMoveSender& Sender, int32_t X, int32_t Z, uint32_t Yaw, double NowSeconds);
+
+		/** 이번 프레임의 이동 입력을 써도 되는가. 시전 시간이 있는 스킬을 보낼 때 쥐고 있던 입력은 한 번 없어질 때까지 막는다. */
+		bool AllowMove(bool bHasInput);
+
+		/** 내 스킬의 쿨다운. */
+		const FCooldowns& Cooldowns() const { return SkillCooldowns; }
 
 		/** 월드를 떠날 때 비운다. */
 		void Reset();
@@ -114,6 +180,12 @@ namespace MmoWorld
 		/** 내가 죽어 있다(Died부터 Revived까지). */
 		bool bSelfDead = false;
 		uint32_t Self = 0;
+		/** 누른 스킬(0이면 없음)과, 보내고 답(SkillUsed, Progress, 실패)을 기다리는 스킬. */
+		uint32_t Pending = 0;
+		uint32_t Awaiting = 0;
+		/** 시전 시간이 있는 스킬을 보낼 때 쥐고 있던 이동 입력을 놓을 때까지 막는다. */
+		bool bHoldMove = false;
+		FCooldowns SkillCooldowns;
 		std::vector<FCombatEvent> Events;
 		std::vector<FProjectile> Flying;
 	};

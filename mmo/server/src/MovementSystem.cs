@@ -50,8 +50,8 @@ namespace PortfolioMmo.Server
             long deltaZ = (long)move.Z - player.Z;
             double distance = Math.Sqrt((deltaX * deltaX) + (deltaZ * deltaZ));
             // 선 검사는 좌표가 필드 안이고 거리가 짧은 것을 본 뒤에 한다(패킷의 아무 좌표로 긴 선을 세지 않게).
-            // 죽은 동안의 Move는 모두 되돌린다(25).
-            if (player.Dead || !_field.Contains(move.X, move.Z) || (distance > player.MoveBudget)
+            // 죽은 동안과 기절한 동안의 Move는 모두 되돌린다(25, 26).
+            if (player.Dead || player.Stunned || !_field.Contains(move.X, move.Z) || (distance > player.MoveBudget)
                 || !_field.CanWalkLine(player.X, player.Z, move.X, move.Z, Walker.Player))
             {
                 Reset(player);
@@ -81,13 +81,14 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 다음 틱까지 지날 틱 수만큼 이동 거리를 채운다.
+        /// 다음 틱까지 지날 틱 수만큼 이동 거리를 채운다. 감속(26)은 차오르는 거리와 쌓아 둘 수 있는 거리를 그 비율만큼 줄인다.
         /// </summary>
         public void Step(uint elapsedTicks)
         {
             foreach (Player player in _entities.Players)
             {
-                player.MoveBudget = Math.Min(player.MoveBudget + (BudgetPerTick * elapsedTicks), MaxBudget);
+                double speed = (100 - player.SlowPercent) / 100.0;
+                player.MoveBudget = Math.Min(player.MoveBudget + (BudgetPerTick * speed * elapsedTicks), MaxBudget * speed);
             }
         }
     }

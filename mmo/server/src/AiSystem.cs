@@ -68,7 +68,8 @@ namespace PortfolioMmo.Server
             bool regenerate = _second.Due(tick);
             foreach (Monster monster in _monsters)
             {
-                if (!monster.Dead)
+                // 기절한 몬스터는 움직이지도 치지도 않는다(공격 상태는 남고 CombatSystem이 쉬게 함).
+                if (!monster.Dead && !monster.Stunned)
                 {
                     Think(monster, tick, elapsedTicks, regenerate);
                 }
@@ -92,7 +93,7 @@ namespace PortfolioMmo.Server
         {
             // 월드에서 빠진 플레이어는 표에서 뺀다(플레이어의 번호는 다시 쓰지 않음). 죽은 플레이어는 25가 뺀다.
             monster.Damage.RemoveWhere(id => _entities.Find(id) is not Player);
-            double step = monster.Template.Speed * Units.PerMeter / Units.TicksPerSecond * elapsedTicks;
+            double step = monster.Template.Speed * (100 - monster.SlowPercent) / 100 * Units.PerMeter / Units.TicksPerSecond * elapsedTicks;
             // 공격 상태는 아래의 공격 갈래에서만 켠다(치는 것은 CombatSystem).
             monster.AttackTarget = 0;
             if (monster.State == MonsterState.Return)

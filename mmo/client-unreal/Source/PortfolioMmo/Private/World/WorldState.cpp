@@ -1,5 +1,6 @@
 #include "World/WorldState.h"
 
+#include <algorithm>
 #include <cmath>
 #include <utility>
 
@@ -177,6 +178,9 @@ namespace MmoWorld
 			{
 				Found->second.Info.set_dead(true);
 				Found->second.Info.set_hp(0);
+				// 죽을 때 떼이는 효과와 취소되는 일은 따로 오지 않는다.
+				Found->second.Info.clear_effects();
+				Found->second.Info.clear_progress();
 			}
 			Mine.bDead |= Packet.died().id() == Self;
 			break;
@@ -188,6 +192,27 @@ namespace MmoWorld
 				Found->second.Info.set_max_hp(Packet.revived().max_hp());
 			}
 			Mine.bDead &= Packet.revived().id() != Self;
+			break;
+		case portfolio::mmo::Packet::kEffectApplied:
+			if (const auto Found = Visible.find(Packet.effect_applied().id()); Found != Visible.end())
+			{
+				const portfolio::mmo::EffectState& Effect = Packet.effect_applied().effect();
+				auto& Effects = *Found->second.Info.mutable_effects();
+				const auto Same = std::find_if(Effects.begin(), Effects.end(), [&](const portfolio::mmo::EffectState& Each) { return Each.effect_id() == Effect.effect_id(); });
+				*(Same != Effects.end() ? &*Same : Effects.Add()) = Effect;
+			}
+			break;
+		case portfolio::mmo::Packet::kProgress:
+			if (const auto Found = Visible.find(Packet.progress().id()); Found != Visible.end())
+			{
+				*Found->second.Info.mutable_progress() = Packet.progress().state();
+			}
+			break;
+		case portfolio::mmo::Packet::kProgressCancelled:
+			if (const auto Found = Visible.find(Packet.progress_cancelled().id()); Found != Visible.end())
+			{
+				Found->second.Info.clear_progress();
+			}
 			break;
 		case portfolio::mmo::Packet::kSelfVitals:
 			Mine.Hp = Packet.self_vitals().hp();
@@ -229,6 +254,76 @@ namespace MmoWorld
 	{
 		const auto Found = Visible.find(Self);
 		return Found == Visible.end() ? nullptr : &Found->second;
+	}
+
+	void FWorldState::SetSelfPosition(int32_t X, int32_t Z, uint32_t Yaw)
+	{
+		if (const auto Found = Visible.find(Self); Found != Visible.end())
+		{
+			Found->second.X = X;
+			Found->second.Z = Z;
+			Found->second.Yaw = Yaw;
+		}
+	}
+
+	FPose FWorldState::DrawnPose(const FEntity& Entity, double NowSeconds) const
+	{
+		if (Entity.Id == Self || Entity.Track.History().empty())
+		{
+			return { static_cast<double>(Entity.X), static_cast<double>(Entity.Z), static_cast<double>(Entity.Yaw) };
+		}
+		return Entity.Track.Sample(RenderTick(NowSeconds));
+	}
+
+	void FWorldState::Expire(double NowSeconds)
+	{
+		const double Tick = ServerClock.Now(NowSeconds);
+		for (auto& [Id, Entity] : Visible)
+		{
+			auto& Effects = *Entity.Info.mutable_effects();
+			Effects.erase(std::remove_if(Effects.begin(), Effects.end(), [Tick](const portfolio::mmo::EffectState& Effect) { return Effect.end_tick() <= Tick; }), Effects.end());
+			if (Entity.Info.has_progress() && Entity.Info.progress().end_tick() <= Tick)
+			{
+				Entity.Info.clear_progress();
+			}
+		}
+	}
+
+	std::optional<uint32_t> FWorldState::SelfEffect(const MmoData::FGameData& Data, portfolio::mmo::data::EffectKind Kind, double NowSeconds) const
+	{
+		const FEntity* Me = SelfEntity();
+		if (!Me)
+		{
+			return std::nullopt;
+		}
+
+		const double Tick = ServerClock.Now(NowSeconds);
+		std::optional<uint32_t> Value;
+		for (const portfolio::mmo::EffectState& Effect : Me->Info.effects())
+		{
+			const portfolio::mmo::data::EffectsRow* Row = Data.Effect(Effect.effect_id());
+			if (Row && Row->kind() == Kind && Tick < Effect.end_tick())
+			{
+				Value = std::max(Value.value_or(0), Row->value());
+			}
+		}
+		return Value;
+	}
+
+	std::optional<double> FWorldState::ProgressRatio(const FEntity& Entity, const MmoData::FGameData& Data, double NowSeconds) const
+	{
+		if (!Entity.Info.has_progress() || Entity.Info.progress().kind() != portfolio::mmo::PROGRESS_KIND_CAST)
+		{
+			return std::nullopt;
+		}
+
+		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Entity.Info.progress().id());
+		const double Length = Skill ? Units::TicksFromMilliseconds(Skill->cast_ms()) : 0;
+		if (Length <= 0)
+		{
+			return std::nullopt;
+		}
+		return std::clamp(1.0 - (Entity.Info.progress().end_tick() - ServerClock.Now(NowSeconds)) / Length, 0.0, 1.0);
 	}
 
 	std::vector<uint32_t> FWorldState::TakeLeft()

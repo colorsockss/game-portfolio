@@ -77,6 +77,13 @@ namespace PortfolioMmo.Contract.Tests
                 new Packet { Revive = new Revive() },
                 new Packet { Revived = new Revived { Id = 7, Hp = 45, MaxHp = 150 } },
                 new Packet { ActionFailed = new ActionFailed { Reason = FailReason.NotDead, Request = RequestKind.Revive } },
+                new Packet { UseSkill = new UseSkill { SkillId = 205, TargetId = 1234, ForceAttack = true } },
+                new Packet { SkillUsed = new SkillUsed { CasterId = 7, SkillId = 205, TargetId = 1234 } },
+                new Packet { Progress = new Progress { Id = 7, State = new ProgressState { Kind = ProgressKind.Cast, Id = 205, EndTick = 4000 } } },
+                new Packet { ProgressCancelled = new ProgressCancelled { Id = 7, Reason = FailReason.Cancelled } },
+                new Packet { EffectApplied = new EffectApplied { Id = 1234, Effect = new EffectState { EffectId = 2, EndTick = 4060 } } },
+                new Packet { Cooldowns = new Cooldowns { Entries = { new Cooldown { SkillId = 101, EndTick = 4020 }, new Cooldown { SkillId = 102 } } } },
+                new Packet { ActionFailed = new ActionFailed { Reason = FailReason.Blocked, Request = RequestKind.Skill } },
             };
 
             using var stream = new MemoryStream();

@@ -30,7 +30,7 @@ namespace PortfolioMmo.Server.Tests
         /// 벽이 없는 600 m 필드와 원점에 부활 지점을 둔 마을 하나의 데이터. 새 캐릭터가 원점에서 시작한다.
         /// 구역과 벽의 규칙은 FieldMapTests가 FieldMap으로 직접 보고, 벽에 막히는 월드는 WithMap으로 만든다.
         /// </summary>
-        public static readonly GameData Data = new GameData(Hash, Constants(FieldSize), new Zones { Rows = { Town(0, 0) } }, EmptyGrid(FieldSize), Classes, Levels, new Monsters(), new Spawns());
+        public static readonly GameData Data = new GameData(Hash, Constants(FieldSize), new Zones { Rows = { Town(0, 0) } }, EmptyGrid(FieldSize), Classes, Levels, new Monsters(), new Spawns(), Skills, Effects);
 
         /// <summary>
         /// 시험용 직업 둘(기사 근접, 마법사 발사체).
@@ -41,6 +41,65 @@ namespace PortfolioMmo.Server.Tests
             {
                 new ClassesRow { Id = 1, AttackRange = 2, AttackIntervalMs = 1000, HitDelayMs = 300 },
                 new ClassesRow { Id = 2, AttackRange = 12, AttackIntervalMs = 1200, HitDelayMs = 300, ProjectileSpeed = 20 },
+            },
+        };
+
+        /// <summary>
+        /// 시험용 스킬(실제 데이터의 차례와 종류. 계수는 1이나 2이고 쿨다운은 1초, 마나는 10, 타격까지의 시간은 300 ms다).
+        /// 기사: 101 단일, 102 기절, 103 방어력 올림, 104 자기 중심 범위(4 m), 105 감속을 거는 단일, 106 공격력 올림.
+        /// 마법사: 201 감속을 거는 단일(12 m), 202 대상 중심 범위(4 m, 시전 1.5초), 203 회복(계수 2, 시전 1초), 204 감속을 거는 자기 중심 범위(5 m),
+        /// 205 시전하는 단일(시전 2초).
+        /// </summary>
+        public static Skills Skills => new Skills
+        {
+            Rows =
+            {
+                Skill(101, 1, SkillKind.SingleDamage, 2, SkillCenter.Target),
+                Skill(102, 1, SkillKind.Debuff, 2, SkillCenter.Target, coefficient: 0, effect: 1),
+                Skill(103, 1, SkillKind.Buff, 0, SkillCenter.Self, coefficient: 0, effect: 3, hitDelayMs: 0),
+                Skill(104, 1, SkillKind.AreaDamage, 0, SkillCenter.Self, radius: 4),
+                Skill(105, 1, SkillKind.SingleDamage, 2, SkillCenter.Target, effect: 2),
+                Skill(106, 1, SkillKind.Buff, 0, SkillCenter.Self, coefficient: 0, effect: 4, hitDelayMs: 0),
+                Skill(201, 2, SkillKind.SingleDamage, 12, SkillCenter.Target, effect: 2),
+                Skill(202, 2, SkillKind.AreaDamage, 12, SkillCenter.Target, radius: 4, castMs: 1500),
+                Skill(203, 2, SkillKind.Heal, 0, SkillCenter.Self, coefficient: 2, castMs: 1000),
+                Skill(204, 2, SkillKind.AreaDamage, 0, SkillCenter.Self, radius: 5, effect: 2),
+                Skill(205, 2, SkillKind.SingleDamage, 12, SkillCenter.Target, castMs: 2000),
+            },
+        };
+
+        public static SkillsRow Skill(
+            uint id, uint characterClass, SkillKind kind, double range, SkillCenter center, double coefficient = 1, double radius = 0, uint castMs = 0, uint effect = 0, uint hitDelayMs = 300)
+        {
+            var row = new SkillsRow
+            {
+                Id = id, NameKey = $"skill.{id}", Class = characterClass, Kind = kind, Coefficient = coefficient, Range = range, Center = center, CooldownMs = 1000,
+                CastMs = castMs, HitDelayMs = castMs > 0 ? 0 : hitDelayMs, Mp = 10, Level = 1,
+            };
+            if (radius > 0)
+            {
+                row.Radius = radius;
+            }
+
+            if (effect > 0)
+            {
+                row.Effect = effect;
+            }
+
+            return row;
+        }
+
+        /// <summary>
+        /// 시험용 효과: 1 기절 2초, 2 감속 50% 3초, 3 방어력 +5 10초, 4 공격력 +5 10초.
+        /// </summary>
+        public static Effects Effects => new Effects
+        {
+            Rows =
+            {
+                new EffectsRow { Id = 1, Kind = EffectKind.Stun, DurationMs = 2000 },
+                new EffectsRow { Id = 2, Kind = EffectKind.Slow, Value = 50, DurationMs = 3000 },
+                new EffectsRow { Id = 3, Kind = EffectKind.DefenseUp, Value = 5, DurationMs = 10000 },
+                new EffectsRow { Id = 4, Kind = EffectKind.AttackUp, Value = 5, DurationMs = 10000 },
             },
         };
 
@@ -134,7 +193,7 @@ namespace PortfolioMmo.Server.Tests
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             var table = new Zones { Rows = { Town(respawnX, respawnZ) } };
             table.Rows.Add(zones);
-            return new GameData(Hash, Constants(size), table, grid, Classes, Levels, new Monsters(), new Spawns());
+            return new GameData(Hash, Constants(size), table, grid, Classes, Levels, new Monsters(), new Spawns(), Skills, Effects);
         }
 
         /// <summary>
@@ -166,7 +225,7 @@ namespace PortfolioMmo.Server.Tests
             table.Rows.Add(zones);
             return new GameData(
                 Hash, constants ?? Constants(size), table, grid, classes ?? Classes, Levels,
-                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } });
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects);
         }
 
         /// <summary>

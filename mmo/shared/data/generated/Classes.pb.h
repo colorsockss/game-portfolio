@@ -233,6 +233,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
     kAttackIntervalMsFieldNumber = 3,
     kProjectileSpeedFieldNumber = 5,
     kHitDelayMsFieldNumber = 4,
+    kFirstSkillFieldNumber = 6,
   };
   // double attack_range = 2;
   void clear_attack_range() ;
@@ -285,11 +286,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
   void _internal_set_hit_delay_ms(::uint32_t value);
 
   public:
+  // uint32 first_skill = 6;
+  void clear_first_skill() ;
+  [[nodiscard]] ::uint32_t first_skill() const;
+  void set_first_skill(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_first_skill() const;
+  void _internal_set_first_skill(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.ClassesRow)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<3, 5,
+      ::google::protobuf::internal::TcParseTable<3, 6,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -323,6 +334,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
     ::uint32_t attack_interval_ms_;
     double projectile_speed_;
     ::uint32_t hit_delay_ms_;
+    ::uint32_t first_skill_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -678,6 +690,30 @@ inline double ClassesRow::_internal_projectile_speed() const {
 inline void ClassesRow::_internal_set_projectile_speed(double value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.projectile_speed_ = value;
+}
+
+// uint32 first_skill = 6;
+inline void ClassesRow::clear_first_skill() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.first_skill_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000020U);
+}
+inline ::uint32_t ClassesRow::first_skill() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.first_skill)
+  return _internal_first_skill();
+}
+inline void ClassesRow::set_first_skill(::uint32_t value) {
+  _internal_set_first_skill(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000020U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.first_skill)
+}
+inline ::uint32_t ClassesRow::_internal_first_skill() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.first_skill_;
+}
+inline void ClassesRow::_internal_set_first_skill(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.first_skill_ = value;
 }
 
 // -------------------------------------------------------------------

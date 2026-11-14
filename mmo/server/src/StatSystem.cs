@@ -37,14 +37,30 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 능력치 = 그 직업과 레벨의 Levels 줄. 장비와 강화(34, 35), 효과(26)의 몫은 그 항목이 여기에 더한다.
-        /// 본인에게는 이 틱의 VitalsSystem이 SelfStats를 보낸다.
+        /// 능력치 = 기본값(플레이어는 그 직업과 레벨의 Levels 줄, 몬스터는 Monsters의 줄) + 효과(공격력·방어력 올림의 값). 장비와 강화(34, 35)의 몫은
+        /// 그 항목이 더한다. 플레이어 본인에게는 이 틱의 VitalsSystem이 SelfStats를 보낸다.
         /// </summary>
-        public void Recalculate(Player player)
+        public void Recalculate(Creature creature)
         {
-            LevelsRow row = _data.Level(player.Class, player.Level);
-            player.SetStats(new Stats(row.MaxHp, row.MaxMp, row.Attack, row.Defense));
-            player.StatsChanged = true;
+            Stats stats = creature switch
+            {
+                Player player => Of(_data.Level(player.Class, player.Level)),
+                Monster monster => new Stats(monster.Template.MaxHp, 0, monster.Template.Attack, monster.Template.Defense),
+                _ => throw new ArgumentException($"{creature.Kind} has no stats.", nameof(creature)),
+            };
+
+            creature.EffectValue(EffectKind.AttackUp, out uint attack);
+            creature.EffectValue(EffectKind.DefenseUp, out uint defense);
+            creature.SetStats(stats with { Attack = stats.Attack + attack, Defense = stats.Defense + defense });
+            if (creature is Player changed)
+            {
+                changed.StatsChanged = true;
+            }
+        }
+
+        private static Stats Of(LevelsRow row)
+        {
+            return new Stats(row.MaxHp, row.MaxMp, row.Attack, row.Defense);
         }
 
         /// <summary>

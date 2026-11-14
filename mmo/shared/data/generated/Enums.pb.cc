@@ -32,7 +32,7 @@ namespace data {
 }  // namespace mmo
 }  // namespace portfolio
 static const ::_pb::EnumDescriptor* PROTOBUF_NONNULL
-    file_level_enum_descriptors_Enums_2eproto[2];
+    file_level_enum_descriptors_Enums_2eproto[5];
 static constexpr const ::_pb::ServiceDescriptor* PROTOBUF_NONNULL* PROTOBUF_NULLABLE
     file_level_service_descriptors_Enums_2eproto = nullptr;
 const ::uint32_t TableStruct_Enums_2eproto::offsets[1] = {};
@@ -47,14 +47,24 @@ const char descriptor_table_protodef_Enums_2eproto[] ABSL_ATTRIBUTE_SECTION_VARI
     "ZONE_KIND_GATHERING_GROUND\020\003\022\027\n\023ZONE_KIN"
     "D_BOSS_AREA\020\004*[\n\013MonsterKind\022\034\n\030MONSTER_"
     "KIND_UNSPECIFIED\020\000\022\027\n\023MONSTER_KIND_NORMA"
-    "L\020\001\022\025\n\021MONSTER_KIND_BOSS\020\002B\024\252\002\021Portfolio"
-    "Mmo.Datab\006proto3"
+    "L\020\001\022\025\n\021MONSTER_KIND_BOSS\020\002*\242\001\n\tSkillKind"
+    "\022\032\n\026SKILL_KIND_UNSPECIFIED\020\000\022\034\n\030SKILL_KI"
+    "ND_SINGLE_DAMAGE\020\001\022\032\n\026SKILL_KIND_AREA_DA"
+    "MAGE\020\002\022\023\n\017SKILL_KIND_BUFF\020\003\022\025\n\021SKILL_KIN"
+    "D_DEBUFF\020\004\022\023\n\017SKILL_KIND_HEAL\020\005*[\n\013Skill"
+    "Center\022\034\n\030SKILL_CENTER_UNSPECIFIED\020\000\022\027\n\023"
+    "SKILL_CENTER_TARGET\020\001\022\025\n\021SKILL_CENTER_SE"
+    "LF\020\002*\214\001\n\nEffectKind\022\033\n\027EFFECT_KIND_UNSPE"
+    "CIFIED\020\000\022\024\n\020EFFECT_KIND_STUN\020\001\022\024\n\020EFFECT"
+    "_KIND_SLOW\020\002\022\031\n\025EFFECT_KIND_ATTACK_UP\020\003\022"
+    "\032\n\026EFFECT_KIND_DEFENSE_UP\020\004B\024\252\002\021Portfoli"
+    "oMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Enums_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Enums_2eproto = {
     false,
     false,
-    296,
+    697,
     descriptor_table_protodef_Enums_2eproto,
     "Enums.proto",
     &descriptor_table_Enums_2eproto_once,
@@ -84,6 +94,27 @@ MonsterKind_descriptor() {
 }
 PROTOBUF_CONSTINIT const uint32_t MonsterKind_internal_data_[] = {
     196608u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+SkillKind_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[2];
+}
+PROTOBUF_CONSTINIT const uint32_t SkillKind_internal_data_[] = {
+    393216u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+SkillCenter_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[3];
+}
+PROTOBUF_CONSTINIT const uint32_t SkillCenter_internal_data_[] = {
+    196608u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+EffectKind_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[4];
+}
+PROTOBUF_CONSTINIT const uint32_t EffectKind_internal_data_[] = {
+    327680u, 0u, };
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace data
 }  // namespace mmo

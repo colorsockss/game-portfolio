@@ -1,5 +1,6 @@
 #include "World/CombatState.h"
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <utility>
@@ -105,6 +106,7 @@ namespace MmoWorld
 				bAttacking = false;
 				bPredicted = false;
 				TargetId = 0;
+				Pending = 0;
 			}
 			else if (Packet.died().id() == TargetId)
 			{
@@ -125,12 +127,51 @@ namespace MmoWorld
 			}
 			break;
 		case portfolio::mmo::Packet::kActionFailed:
-			// 다른 요청의 실패는 공격을 건드리지 않는다.
+			// 다른 요청의 실패는 공격도 스킬도 건드리지 않는다.
 			if (Packet.action_failed().request() == portfolio::mmo::REQUEST_KIND_ATTACK)
 			{
 				bAttacking = false;
 				bPredicted = false;
 			}
+			else if (Packet.action_failed().request() == portfolio::mmo::REQUEST_KIND_SKILL && Awaiting != 0)
+			{
+				SkillCooldowns.Revert();
+				Events.push_back({ ECombatEventKind::Interrupt, 0, Me, 0, false, true });
+				Awaiting = 0;
+			}
+			break;
+		case portfolio::mmo::Packet::kSkillUsed:
+		{
+			const portfolio::mmo::SkillUsed& Used = Packet.skill_used();
+			// 미리 시작한 내 스킬의 답이면 동작을 다시 시작하지 않는다.
+			if (Awaiting != 0 && Used.caster_id() == Me && Used.skill_id() == Awaiting)
+			{
+				Awaiting = 0;
+			}
+			else
+			{
+				Events.push_back({ ECombatEventKind::Skill, Used.caster_id(), Used.target_id(), 0, false, Used.caster_id() == Me || Used.target_id() == Me, Used.skill_id() });
+			}
+			break;
+		}
+		case portfolio::mmo::Packet::kProgress:
+		{
+			const portfolio::mmo::Progress& Progress = Packet.progress();
+			if (Awaiting != 0 && Progress.id() == Me && Progress.state().kind() == portfolio::mmo::PROGRESS_KIND_CAST && Progress.state().id() == Awaiting)
+			{
+				Awaiting = 0;
+			}
+			else
+			{
+				Events.push_back({ ECombatEventKind::ProgressStart, 0, Progress.id(), 0, false, Progress.id() == Me, Progress.state().id() });
+			}
+			break;
+		}
+		case portfolio::mmo::Packet::kProgressCancelled:
+			Events.push_back({ ECombatEventKind::Interrupt, 0, Packet.progress_cancelled().id(), 0, false, Packet.progress_cancelled().id() == Me });
+			break;
+		case portfolio::mmo::Packet::kCooldowns:
+			SkillCooldowns.Apply(Packet.cooldowns());
 			break;
 		default:
 			break;
@@ -170,14 +211,17 @@ namespace MmoWorld
 				{
 					return true;
 				}
+				// 화면이 공격자를 그리는 자리에서 나간다(나는 내 캐릭터의 자리, 남은 보간한 자리).
+				const FPose From = World.DrawnPose(Attacker->second, Projectile.LaunchSeconds);
 				Projectile.bLaunched = true;
-				Projectile.X = Attacker->second.X;
-				Projectile.Z = Attacker->second.Z;
+				Projectile.X = From.X;
+				Projectile.Z = From.Z;
 				Projectile.LastSeconds = Projectile.LaunchSeconds;
 			}
 
-			const double DX = Target->second.X - Projectile.X;
-			const double DZ = Target->second.Z - Projectile.Z;
+			const FPose To = World.DrawnPose(Target->second, NowSeconds);
+			const double DX = To.X - Projectile.X;
+			const double DZ = To.Z - Projectile.Z;
 			const double Distance = std::sqrt(DX * DX + DZ * DZ);
 			const double Step = Projectile.Speed * (NowSeconds - Projectile.LastSeconds);
 			Projectile.LastSeconds = NowSeconds;
@@ -197,8 +241,149 @@ namespace MmoWorld
 		bAttacking = false;
 		bPredicted = false;
 		bSelfDead = false;
+		Pending = 0;
+		Awaiting = 0;
+		bHoldMove = false;
+		SkillCooldowns.Reset();
 		Events.clear();
 		Flying.clear();
+	}
+
+	std::vector<uint32_t> FCombatState::Quickslots(const MmoData::FGameData& Data, uint32_t CharacterClass)
+	{
+		std::vector<uint32_t> Result;
+		for (const portfolio::mmo::data::SkillsRow& Row : Data.Skills.rows())
+		{
+			if (Row.class_() == CharacterClass)
+			{
+				Result.push_back(Row.id());
+			}
+		}
+		std::sort(Result.begin(), Result.end());
+		Result.resize(std::min<size_t>(Result.size(), portfolio::mmo::CONSTANT_QUICKSLOT_COUNT));
+		return Result;
+	}
+
+	bool FCombatState::TargetsOther(const portfolio::mmo::data::SkillsRow& Skill)
+	{
+		return Skill.kind() == portfolio::mmo::data::SKILL_KIND_SINGLE_DAMAGE || Skill.kind() == portfolio::mmo::data::SKILL_KIND_DEBUFF
+			|| (Skill.kind() == portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE && Skill.center() == portfolio::mmo::data::SKILL_CENTER_TARGET);
+	}
+
+	portfolio::mmo::FailReason FCombatState::PressSkill(uint32_t SkillId, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds)
+	{
+		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(SkillId);
+		const FEntity* Me = World.SelfEntity();
+		if (!Skill || !Me || World.SelfState().bDead)
+		{
+			return portfolio::mmo::FAIL_REASON_DEAD;
+		}
+		if (World.SelfEffect(Data, portfolio::mmo::data::EFFECT_KIND_STUN, NowSeconds))
+		{
+			return portfolio::mmo::FAIL_REASON_STUNNED;
+		}
+		if (Me->Info.has_progress() || Awaiting != 0)
+		{
+			return portfolio::mmo::FAIL_REASON_BUSY;
+		}
+		if (!SkillCooldowns.IsReady(SkillId, World.Clock().Now(NowSeconds)))
+		{
+			return portfolio::mmo::FAIL_REASON_COOLDOWN;
+		}
+		if (World.SelfState().Mp < Skill->mp())
+		{
+			return portfolio::mmo::FAIL_REASON_NOT_ENOUGH_MP;
+		}
+		if (TargetsOther(*Skill))
+		{
+			const auto Target = World.Entities().find(TargetId);
+			if (Target == World.Entities().end() || Target->second.Info.dead())
+			{
+				return portfolio::mmo::FAIL_REASON_NO_TARGET;
+			}
+		}
+
+		Pending = SkillId;
+		return portfolio::mmo::FAIL_REASON_NONE;
+	}
+
+	FSkillStep FCombatState::UpdateSkill(const FWorldState& World, const FFieldMap& Field, const MmoData::FGameData& Data, int32_t X, int32_t Z)
+	{
+		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Pending);
+		if (!Skill)
+		{
+			Pending = 0;
+			return {};
+		}
+		if (!TargetsOther(*Skill))
+		{
+			return { FSkillStep::EKind::Fire };
+		}
+
+		const auto Target = World.Entities().find(TargetId);
+		if (Target == World.Entities().end() || Target->second.Info.dead())
+		{
+			Pending = 0;
+			return {};
+		}
+		if (CanStrikeFrom(Field, X, Z, Target->second, Skill->range()))
+		{
+			return { FSkillStep::EKind::Fire };
+		}
+		return { FSkillStep::EKind::Approach, { Target->second.X, Target->second.Z } };
+	}
+
+	FSkillFire FCombatState::FireSkill(const FWorldState& World, const MmoData::FGameData& Data, FMoveSender& Sender, int32_t X, int32_t Z, uint32_t Yaw, double NowSeconds)
+	{
+		FSkillFire Fire;
+		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Pending);
+		if (!Skill)
+		{
+			return Fire;
+		}
+
+		if (Skill->cast_ms() > 0)
+		{
+			Fire.bStop = true;
+			bHoldMove = true;
+			portfolio::mmo::Packet Move;
+			if (Sender.Flush(X, Z, Yaw, World.Ack(), *Move.mutable_move()))
+			{
+				Fire.Packets.push_back(Move);
+			}
+		}
+		else
+		{
+			SkillCooldowns.Predict(Skill->id(), static_cast<uint32_t>(std::max(0.0, std::floor(World.Clock().Now(NowSeconds)))), Skill->cooldown_ms());
+		}
+
+		// 그 자리에서 쓰는 스킬도 대상을 싣는다(파티원에게 쓰는 회복과 강화는 42). 자기 중심의 범위 피해는 대상이 없다.
+		const uint32_t Target = TargetsOther(*Skill) || Skill->kind() != portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE ? TargetId : 0;
+		portfolio::mmo::Packet Use;
+		Use.mutable_use_skill()->set_skill_id(Skill->id());
+		Use.mutable_use_skill()->set_target_id(Target);
+		Fire.Packets.push_back(Use);
+		// 시전은 시전 동작(Progress와 같은 사건)을, 나머지는 스킬 동작을 미리 시작한다.
+		if (Skill->cast_ms() > 0)
+		{
+			Events.push_back({ ECombatEventKind::ProgressStart, 0, World.SelfId(), 0, false, true, Skill->id() });
+		}
+		else
+		{
+			Events.push_back({ ECombatEventKind::Skill, World.SelfId(), Target != 0 ? Target : World.SelfId(), 0, false, true, Skill->id() });
+		}
+		Awaiting = Skill->id();
+		Pending = 0;
+		return Fire;
+	}
+
+	bool FCombatState::AllowMove(bool bHasInput)
+	{
+		if (bHoldMove && !bHasInput)
+		{
+			bHoldMove = false;
+		}
+		return !bHoldMove;
 	}
 
 	uint32_t FCombatState::NearestEnemy(const FWorldState& World, int32_t X, int32_t Z)

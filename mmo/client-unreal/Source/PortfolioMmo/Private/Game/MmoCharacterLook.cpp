@@ -32,11 +32,19 @@ namespace MmoCharacterLook
 		}
 	}
 
-	void PlayAction(USkeletalMeshComponent& Mesh, UAnimSequenceBase* Sequence)
+	void PlayAction(USkeletalMeshComponent& Mesh, UAnimSequenceBase* Sequence, bool bLoop)
 	{
 		if (UMmoAnimInstance* Instance = Cast<UMmoAnimInstance>(Mesh.GetAnimInstance()))
 		{
-			Instance->PlayAction(Sequence);
+			Instance->PlayAction(Sequence, bLoop);
+		}
+	}
+
+	void StopAction(USkeletalMeshComponent& Mesh)
+	{
+		if (UMmoAnimInstance* Instance = Cast<UMmoAnimInstance>(Mesh.GetAnimInstance()))
+		{
+			Instance->StopAction();
 		}
 	}
 

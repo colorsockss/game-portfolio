@@ -156,6 +156,7 @@ namespace PortfolioMmo.Server
             {
                 EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.Ok, SelfId = player.Id, Tick = tick },
             });
+            player.SendCooldowns(_data.Skills.Rows.Where(skill => skill.Class == (uint)player.Class).Select(skill => skill.Id));
         }
 
         /// <summary>

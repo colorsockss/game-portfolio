@@ -30,6 +30,9 @@ namespace PortfolioMmo.Server
         private readonly TickEvents _events;
         private readonly SpawnSystem _spawn;
         private readonly DeathSystem _deaths;
+        private readonly ProgressSystem _progress;
+        private readonly EffectSystem _effects;
+        private readonly SkillSystem _skills;
 
         /// <summary>
         /// 빈 월드를 만든다.
@@ -43,12 +46,16 @@ namespace PortfolioMmo.Server
             _vitals = new VitalsSystem(_entities, data);
             _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random);
             _events = new TickEvents(_grid);
-            _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events);
+            _progress = new ProgressSystem(_entities, _scheduler, _events);
+            _effects = new EffectSystem(_entities, _scheduler, _events, stats, _progress, data);
+            _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events, _progress);
+            _skills = new SkillSystem(_entities, _grid, field, _scheduler, data, _events, _combat, _effects, _progress);
+            _combat.Skills = _skills;
             // 놓인 점의 번호는 플레이어보다 먼저 받는다.
             _spawn = new SpawnSystem(data, field, _entities, _grid, _ai, _scheduler, random);
             _spawn.PlaceAll();
             _movement = new MovementSystem(_entities, _grid, field);
-            _deaths = new DeathSystem(_entities, _grid, _scheduler, _movement, _events, data);
+            _deaths = new DeathSystem(_entities, _grid, _scheduler, _movement, _events, _effects, _progress, data);
             _combat.Deaths = _deaths;
             _view = new ViewSystem(_entities, _grid);
         }
@@ -62,6 +69,13 @@ namespace PortfolioMmo.Server
         /// 몬스터들(테스트와 부하 측정이 본다).
         /// </summary>
         internal IReadOnlyList<Monster> Monsters => _ai.Monsters;
+
+        /// <summary>
+        /// 진행 중인 일과 효과(테스트가 시험용 종류를 시작하거나 플레이어에 효과를 붙임).
+        /// </summary>
+        internal ProgressSystem Progress => _progress;
+
+        internal EffectSystem Effects => _effects;
 
         /// <summary>
         /// 개체를 옮긴다(테스트가 플레이어를 둠).
@@ -115,10 +129,21 @@ namespace PortfolioMmo.Server
                         Kick(session, KickReason.MalformedPacket);
                     }
 
+                    _progress.Moved(player);
                     break;
                 // 죽은 동안에는 Ping, LeaveWorld, Revive, AttackStop(할 일 없음)만 받고, Move는 되돌리며(MovementSystem), 나머지는 실패로 답한다.
                 case Packet.BodyOneofCase.AttackStart when player is { Dead: true }:
                     player.Fail(FailReason.Dead, RequestKind.Attack);
+                    break;
+                case Packet.BodyOneofCase.UseSkill when player is { Dead: true }:
+                    player.Fail(FailReason.Dead, RequestKind.Skill);
+                    break;
+                case Packet.BodyOneofCase.UseSkill when player != null:
+                    if (!_skills.Use(player, packet.UseSkill, Tick))
+                    {
+                        Kick(session, KickReason.MalformedPacket);
+                    }
+
                     break;
                 case Packet.BodyOneofCase.Revive when player != null:
                     _deaths.Revive(player);
@@ -247,7 +272,9 @@ namespace PortfolioMmo.Server
             return job.Kind switch
             {
                 ScheduledKind.UnreachableEnd => _ai.IsUnreachableCurrent(job),
-                ScheduledKind.Strike => _combat.IsStrikeCurrent(job),
+                ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit => _combat.IsStrikeCurrent(job),
+                ScheduledKind.CastEnd or ScheduledKind.ProgressEnd => _progress.IsCurrent(job),
+                ScheduledKind.EffectEnd => _effects.IsEndCurrent(job),
                 ScheduledKind.Despawn => _deaths.IsDespawnCurrent(job),
                 ScheduledKind.Respawn => _spawn.PlacedAt(job.Owner) != null,
                 _ => throw UnknownKind(job.Kind),
@@ -259,8 +286,8 @@ namespace PortfolioMmo.Server
             return kind switch
             {
                 ScheduledKind.UnreachableEnd => false,
-                ScheduledKind.Strike => true,
-                ScheduledKind.Despawn or ScheduledKind.Respawn => false,
+                ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit or ScheduledKind.CastEnd => true,
+                ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd => false,
                 _ => throw UnknownKind(kind),
             };
         }
@@ -277,6 +304,12 @@ namespace PortfolioMmo.Server
                     break;
                 case ScheduledKind.Respawn:
                     _spawn.Respawn(_spawn.PlacedAt(job.Owner)!);
+                    break;
+                case ScheduledKind.ProgressEnd:
+                    _progress.End(job);
+                    break;
+                case ScheduledKind.EffectEnd:
+                    _effects.End(job);
                     break;
                 default:
                     throw UnknownKind(job.Kind);

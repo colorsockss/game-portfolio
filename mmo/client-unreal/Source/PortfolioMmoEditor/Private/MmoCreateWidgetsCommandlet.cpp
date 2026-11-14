@@ -70,6 +70,10 @@ namespace
 		FLinearColor Hp{ 0.75f, 0.12f, 0.10f, 1.0f };
 		FLinearColor Mp{ 0.15f, 0.35f, 0.85f, 1.0f };
 		FLinearColor BarBack{ 0.0f, 0.0f, 0.0f, 0.6f };
+		/** 진행 바(시전 등)의 채움, 상태 이상과 효과의 글자 아이콘, 퀵슬롯의 쿨다운 가림. */
+		FLinearColor Cast{ 0.95f, 0.75f, 0.2f, 1.0f };
+		FLinearColor Status{ 1.0f, 0.6f, 0.3f, 1.0f };
+		FLinearColor CooldownShade{ 0.0f, 0.0f, 0.0f, 0.65f };
 		/** 고른 버튼(캐릭터 칸, 직업)의 배경 곱. */
 		FLinearColor Selected{ 1.0f, 0.78f, 0.3f, 1.0f };
 
@@ -102,6 +106,8 @@ namespace
 		/** 이름표의 체력 바 크기. */
 		float TagBarWidth = 80.0f;
 		float TagBarHeight = 6.0f;
+		/** 퀵슬롯 한 칸의 폭. */
+		float SlotWidth = 80.0f;
 		float NoticeTop = 80.0f;
 	};
 
@@ -256,6 +262,8 @@ namespace
 		BottomRight,
 		/** 위 가운데(대상 정보). */
 		TopCenter,
+		/** 아래 가운데(퀵슬롯과 진행 바). */
+		BottomCenter,
 	};
 
 	/**
@@ -265,12 +273,13 @@ namespace
 	UCanvasPanelSlot* Corner(UCanvasPanel& Canvas, UWidget* Widget, ECorner Where, FVector2D Offset = FVector2D(Style.HudMargin, Style.HudMargin))
 	{
 		const bool bRight = Where == ECorner::TopRight || Where == ECorner::BottomRight;
-		const bool bBottom = Where == ECorner::BottomLeft || Where == ECorner::BottomRight;
-		const float Horizontal = Where == ECorner::TopCenter ? 0.5f : (bRight ? 1.0f : 0.0f);
+		const bool bBottom = Where == ECorner::BottomLeft || Where == ECorner::BottomRight || Where == ECorner::BottomCenter;
+		const bool bCenter = Where == ECorner::TopCenter || Where == ECorner::BottomCenter;
+		const float Horizontal = bCenter ? 0.5f : (bRight ? 1.0f : 0.0f);
 		UCanvasPanelSlot* Slot = Canvas.AddChildToCanvas(Widget);
 		Slot->SetAnchors(FAnchors(Horizontal, bBottom ? 1.0f : 0.0f));
 		Slot->SetAlignment(FVector2D(Horizontal, bBottom ? 1.0 : 0.0));
-		Slot->SetPosition(FVector2D(Where == ECorner::TopCenter ? 0.0 : (bRight ? -Offset.X : Offset.X), bBottom ? -Offset.Y : Offset.Y));
+		Slot->SetPosition(FVector2D(bCenter ? 0.0 : (bRight ? -Offset.X : Offset.X), bBottom ? -Offset.Y : Offset.Y));
 		Slot->SetAutoSize(true);
 		return Slot;
 	}
@@ -431,6 +440,8 @@ namespace
 		UTextBlock* SafeZoneText = Builder.Text(TEXT("SafeZoneText"), LOCTEXT("SafeZone", "안전 지대"), Style.SmallSize, true, Style.Positive);
 		SafeZoneText->SetVisibility(ESlateVisibility::Collapsed);
 		Zone->AddChildToVerticalBox(SafeZoneText);
+		// 걸린 효과와 전투 상태의 글자 아이콘과 남은 시간(아이콘 표는 73).
+		Zone->AddChildToVerticalBox(Builder.Text(TEXT("EffectsText"), FText::GetEmpty(), Style.SmallSize, true, Style.Status));
 
 		// 위 가운데에 내 대상의 정보(이름과 레벨, 체력 바). 대상이 없으면 UMmoHudWidget이 감춘다.
 		UVerticalBox* Target = Builder.Add<UVerticalBox>(TEXT("TargetPanel"), true);
@@ -439,6 +450,38 @@ namespace
 		UTextBlock* TargetName = Builder.Text(TEXT("TargetNameText"), FText::GetEmpty(), Style.BodySize, true);
 		Target->AddChildToVerticalBox(TargetName)->SetHorizontalAlignment(HAlign_Center);
 		Target->AddChildToVerticalBox(Bar(Builder, TEXT("TargetHp"), Style.Hp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
+
+		// 아래 가운데에 내 진행 바(시전. 진행 중일 때만 보임)와 퀵슬롯 8칸(칸마다 버튼 위에 쿨다운 가림). 칸은 UMmoHudWidget이 이름(Slot<n>)으로 찾는다.
+		UVerticalBox* Actions = Builder.Add<UVerticalBox>(TEXT("Actions"));
+		Corner(*Root, Actions, ECorner::BottomCenter);
+		UVerticalBox* CastPanel = Builder.Add<UVerticalBox>(TEXT("CastPanel"), true);
+		CastPanel->SetVisibility(ESlateVisibility::Collapsed);
+		CastPanel->AddChildToVerticalBox(Bar(Builder, TEXT("Cast"), Style.Cast));
+		Actions->AddChildToVerticalBox(CastPanel)->SetHorizontalAlignment(HAlign_Center);
+		UHorizontalBox* Slots = Builder.Add<UHorizontalBox>(TEXT("Slots"));
+		Actions->AddChildToVerticalBox(Slots)->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, 0.0f));
+		for (int32 Index = 0; Index < UMmoHudWidget::QuickslotCount(); ++Index)
+		{
+			USizeBox* Size = Builder.Add<USizeBox>(*FString::Printf(TEXT("Slot%dSize"), Index));
+			Size->SetWidthOverride(Style.SlotWidth);
+			UOverlay* Stack = Builder.Add<UOverlay>(*FString::Printf(TEXT("Slot%dStack"), Index));
+			Size->SetContent(Stack);
+			UOverlaySlot* ButtonSlot = Stack->AddChildToOverlay(Builder.Button(*FString::Printf(TEXT("Slot%d"), Index), FText::GetEmpty()));
+			ButtonSlot->SetHorizontalAlignment(HAlign_Fill);
+			UProgressBar* Shade = Builder.Add<UProgressBar>(*FString::Printf(TEXT("Slot%dCooldown"), Index));
+			FProgressBarStyle ShadeStyle = Shade->GetWidgetStyle();
+			ShadeStyle.BackgroundImage = FSlateNoResource();
+			ShadeStyle.FillImage = FSlateRoundedBoxBrush(FLinearColor::White, Style.ButtonRadius);
+			Shade->SetWidgetStyle(ShadeStyle);
+			Shade->SetFillColorAndOpacity(Style.CooldownShade);
+			Shade->SetBarFillType(EProgressBarFillType::BottomToTop);
+			Shade->SetPercent(0.0f);
+			Shade->SetVisibility(ESlateVisibility::HitTestInvisible);
+			UOverlaySlot* ShadeSlot = Stack->AddChildToOverlay(Shade);
+			ShadeSlot->SetHorizontalAlignment(HAlign_Fill);
+			ShadeSlot->SetVerticalAlignment(VAlign_Fill);
+			Slots->AddChildToHorizontalBox(Size)->SetPadding(FMargin(Index == 0 ? 0.0f : Style.Gap * 0.5f, 0.0f, 0.0f, 0.0f));
+		}
 
 		// 오른쪽 아래에 터치 기기에서만 보이는 공격 버튼과 대상 고르기 버튼.
 		Corner(*Root, Row(Builder, TEXT("TouchButtons"), {
@@ -480,8 +523,13 @@ namespace
 		UVerticalBox* Column = Builder.Add<UVerticalBox>(TEXT("Column"));
 		Column->SetVisibility(ESlateVisibility::HitTestInvisible);
 		Builder.SetRoot(Column);
+		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), Style.SmallSize, true, Style.Status);
+		Status->SetVisibility(ESlateVisibility::Collapsed);
+		Column->AddChildToVerticalBox(Status)->SetHorizontalAlignment(HAlign_Center);
 		Column->AddChildToVerticalBox(Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.SmallSize, true))->SetHorizontalAlignment(HAlign_Center);
 		Column->AddChildToVerticalBox(Bar(Builder, TEXT("Hp"), Style.Hp, Style.TagBarWidth, Style.TagBarHeight, false))->SetHorizontalAlignment(HAlign_Center);
+		// 진행 바는 진행 중일 때만 보인다(UMmoNameTagWidget이 첫 프레임에 감춤).
+		Column->AddChildToVerticalBox(Bar(Builder, TEXT("Progress"), Style.Cast, Style.TagBarWidth, Style.TagBarHeight, false))->SetHorizontalAlignment(HAlign_Center);
 		return Builder.Save();
 	}
 

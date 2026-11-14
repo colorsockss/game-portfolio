@@ -26,6 +26,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnButtonClickedEvent OnClicked;
 
+	/** OnClicked와 같은 신호의 C++ 델리게이트. 람다로 묶어 버튼마다 값(퀵슬롯의 칸)을 함께 넘길 때 쓴다. */
+	FSimpleMulticastDelegate OnClickedNative;
+
 	void SetLabel(const FText& InLabel);
 	void SetKeyHint(const FText& InKeyHint);
 

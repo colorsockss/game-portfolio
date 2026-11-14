@@ -5,11 +5,19 @@
 
 const FName UMmoAnimInstance::SlotName(TEXT("DefaultSlot"));
 
-void UMmoAnimInstance::PlayAction(UAnimSequenceBase* Sequence)
+void UMmoAnimInstance::PlayAction(UAnimSequenceBase* Sequence, bool bLoop)
 {
-	if (Sequence)
+	if (Sequence && !DeathMontage)
 	{
-		PlaySlotAnimationAsDynamicMontage(Sequence, SlotName, 0.1f, 0.15f);
+		PlaySlotAnimationAsDynamicMontage(Sequence, SlotName, 0.1f, 0.15f, 1.0f, bLoop ? MAX_int32 : 1);
+	}
+}
+
+void UMmoAnimInstance::StopAction()
+{
+	if (!DeathMontage)
+	{
+		StopSlotAnimation(0.15f, SlotName);
 	}
 }
 

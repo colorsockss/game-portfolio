@@ -25,7 +25,10 @@ namespace MmoCharacterLook
 	void SetSpeed(USkeletalMeshComponent& Mesh, double Speed);
 
 	/** 공격·피격 같은 동작을 한 번 튼다. 모습을 아직 입히지 않았으면(자리 표시) 아무것도 하지 않는다. */
-	void PlayAction(USkeletalMeshComponent& Mesh, UAnimSequenceBase* Sequence);
+	void PlayAction(USkeletalMeshComponent& Mesh, UAnimSequenceBase* Sequence, bool bLoop = false);
+
+	/** 트는 동작을 끊는다(시전의 끝과 취소). */
+	void StopAction(USkeletalMeshComponent& Mesh);
 
 	/**
 	 * 쓰러뜨리거나(bDead) 일으킨다. 모습을 입혔으면 죽음 동작을 마지막 자세로 멈추고(bInstant면 처음부터 그 자세), 자리 표시면 원기둥을 눕힌다.

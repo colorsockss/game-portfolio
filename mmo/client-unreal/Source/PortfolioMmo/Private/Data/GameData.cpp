@@ -53,6 +53,30 @@ namespace MmoData
 		return nullptr;
 	}
 
+	const portfolio::mmo::data::SkillsRow* FGameData::Skill(uint32_t Id) const
+	{
+		for (const portfolio::mmo::data::SkillsRow& Row : Skills.rows())
+		{
+			if (Row.id() == Id)
+			{
+				return &Row;
+			}
+		}
+		return nullptr;
+	}
+
+	const portfolio::mmo::data::EffectsRow* FGameData::Effect(uint32_t Id) const
+	{
+		for (const portfolio::mmo::data::EffectsRow& Row : Effects.rows())
+		{
+			if (Row.id() == Id)
+			{
+				return &Row;
+			}
+		}
+		return nullptr;
+	}
+
 	std::optional<FGameData> Load(const FFileReader& Read)
 	{
 		const std::optional<std::string> HashText = Read(HashFile);
@@ -69,8 +93,11 @@ namespace MmoData
 		const std::optional<std::string> Grid = Read("MapGrid.bytes");
 		const std::optional<std::string> Classes = Read("Classes.bytes");
 		const std::optional<std::string> Monsters = Read("Monsters.bytes");
-		if (!Constants || !Zones || !Grid || !Classes || !Monsters || !Data.Constants.ParseFromString(*Constants) || !Data.Zones.ParseFromString(*Zones)
-			|| !Data.Grid.ParseFromString(*Grid) || !Data.Classes.ParseFromString(*Classes) || !Data.Monsters.ParseFromString(*Monsters))
+		const std::optional<std::string> Skills = Read("Skills.bytes");
+		const std::optional<std::string> Effects = Read("Effects.bytes");
+		if (!Constants || !Zones || !Grid || !Classes || !Monsters || !Skills || !Effects || !Data.Constants.ParseFromString(*Constants)
+			|| !Data.Zones.ParseFromString(*Zones) || !Data.Grid.ParseFromString(*Grid) || !Data.Classes.ParseFromString(*Classes)
+			|| !Data.Monsters.ParseFromString(*Monsters) || !Data.Skills.ParseFromString(*Skills) || !Data.Effects.ParseFromString(*Effects))
 		{
 			return std::nullopt;
 		}

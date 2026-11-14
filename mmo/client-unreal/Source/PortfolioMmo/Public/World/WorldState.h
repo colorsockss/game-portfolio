@@ -2,10 +2,12 @@
 
 // UE 타입 없이 표준 C++과 protobuf만 쓴다(Protocol/과 같다). Unity 클라이언트가 같은 구조를 C#으로 옮긴다.
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#include "Data/GameData.h"
 #include "Protocol/MmoPackets.h"
 
 namespace MmoWorld
@@ -86,6 +88,8 @@ namespace MmoWorld
 		/**
 		 * 들어올 때 받은 EntityEnter(종류, 이름, 직업, 템플릿 번호, 체력, 표시 상태 등 종류마다의 필드). 표시 상태는 EntityState가 고친다.
 		 * 위치와 방향은 들어올 때의 값이고, 지금 위치는 위의 X, Z, Yaw다. 필드를 따로 옮겨 두지 않고 패킷의 정의 하나를 쓴다.
+		 * 걸린 효과(effects)와 진행 중인 일(progress)도 여기에 두고 EffectApplied, Progress, ProgressCancelled, Died가 고치며,
+		 * 끝나는 틱이 지난 것은 Expire가 뺀다.
 		 */
 		portfolio::mmo::EntityEnter Info;
 		/** 받은 자리의 기록. 화면은 Sample(RenderTick)로 그린다. */
@@ -145,6 +149,24 @@ namespace MmoWorld
 		const std::unordered_map<uint32_t, FEntity>& Entities() const { return Visible; }
 
 		const FServerClock& Clock() const { return ServerClock; }
+
+		/** 끝나는 틱이 지난 효과와 진행 중인 일을 패킷 없이 뺀다(어림한 서버 틱으로). 화면이 프레임마다 부른다. */
+		void Expire(double NowSeconds);
+
+		/** 내게 걸린 그 종류의 효과의 값(여럿이면 큰 값). 없거나 끝나는 틱이 지났으면 nullopt. 기절은 값이 0이라 있는지만 본다. */
+		std::optional<uint32_t> SelfEffect(const MmoData::FGameData& Data, portfolio::mmo::data::EffectKind Kind, double NowSeconds) const;
+
+		/** 개체의 진행 중인 일이 지난 비율(0–1). 진행 중인 일이 없거나 길이를 모르는 종류면 nullopt. 시전의 길이는 Skills의 시전 시간이다. */
+		std::optional<double> ProgressRatio(const FEntity& Entity, const MmoData::FGameData& Data, double NowSeconds) const;
+
+		/**
+		 * 내 캐릭터의 지금 자리와 방향(패킷 단위). 내 캐릭터는 이동 컴포넌트가 옮기고 서버는 내 움직임을 나에게 알리지 않으므로,
+		 * 화면이 프레임마다 넣는다. 넣지 않으면 내 개체는 들어올 때(또는 마지막 PositionReset)의 자리에 머문다.
+		 */
+		void SetSelfPosition(int32_t X, int32_t Z, uint32_t Yaw);
+
+		/** 개체를 화면에 그리는 자리: 나는 SetSelfPosition의 자리, 다른 개체는 RenderTick의 보간한 자리(기록이 없으면 받은 자리). */
+		FPose DrawnPose(const FEntity& Entity, double NowSeconds) const;
 
 		/** 다른 개체를 그릴 틱. FEntityTrack::Sample에 넘긴다. */
 		double RenderTick(double NowSeconds) const { return ServerClock.Now(NowSeconds) - InterpolationDelayTicks; }

@@ -54,8 +54,42 @@ namespace PortfolioMmo.Server
 
         public void Revived(Creature revived)
         {
-            var packet = new Packet { Revived = new Revived { Id = revived.Id, Hp = revived.Hp, MaxHp = revived.MaxHp } };
-            _events.Add(new Event(revived, null, packet, packet));
+            Self(revived, new Packet { Revived = new Revived { Id = revived.Id, Hp = revived.Hp, MaxHp = revived.MaxHp } });
+        }
+
+        /// <summary>
+        /// 스킬 동작의 시작. 대상이 없거나 자기에게 쓴 스킬은 target이 시전자다.
+        /// </summary>
+        public void SkillUsed(Creature caster, uint skillId, Entity target)
+        {
+            _events.Add(new Event(
+                target,
+                caster,
+                new Packet { SkillUsed = new SkillUsed { CasterId = caster.Id, SkillId = skillId, TargetId = target.Id } },
+                new Packet { SkillUsed = new SkillUsed { SkillId = skillId, TargetId = target.Id } }));
+        }
+
+        public void Progress(Creature creature)
+        {
+            Self(creature, new Packet { Progress = new Progress { Id = creature.Id, State = creature.Progress!.State() } });
+        }
+
+        public void ProgressCancelled(Creature creature, FailReason reason)
+        {
+            Self(creature, new Packet { ProgressCancelled = new ProgressCancelled { Id = creature.Id, Reason = reason } });
+        }
+
+        public void EffectApplied(Creature creature, uint effectId, uint endTick)
+        {
+            Self(creature, new Packet { EffectApplied = new EffectApplied { Id = creature.Id, Effect = new EffectState { EffectId = effectId, EndTick = endTick } } });
+        }
+
+        /// <summary>
+        /// 행위자가 없는 사건(그 개체를 받은 연결과 본인에게 같은 패킷).
+        /// </summary>
+        private void Self(Entity target, Packet packet)
+        {
+            _events.Add(new Event(target, null, packet, packet));
         }
 
         /// <summary>

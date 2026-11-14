@@ -7,7 +7,7 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 죽음과 부활(25). 전투 차례의 끝에서 그 틱에 죽은 개체를 정리하고(죽은 플레이어를 피해 표에서 뺌, 죽은 몬스터의 사라짐과 리스폰을 예약),
-    /// Revive를 받으면 마을의 부활 지점에서 일으킨다. 효과·진행 중인 일(26)과 선공 표시(44)를 떼는 것은 그 항목이 Died에 잇는다.
+    /// Revive를 받으면 마을의 부활 지점에서 일으킨다. 효과를 떼고(알리지 않음) 진행 중인 일을 취소한다(26). 선공 표시(44)는 그 항목이 Died에 잇는다.
     /// 쿨다운과 성향은 남긴다. 사망 페널티는 45다.
     /// </summary>
     internal sealed class DeathSystem
@@ -17,17 +17,21 @@ namespace PortfolioMmo.Server
         private readonly Scheduler _scheduler;
         private readonly MovementSystem _movement;
         private readonly TickEvents _events;
+        private readonly EffectSystem _effects;
+        private readonly ProgressSystem _progress;
         private readonly uint _deadMonsterTicks;
         private readonly uint _reviveHpPercent;
         private readonly (int X, int Z) _respawn;
 
-        public DeathSystem(EntityTable entities, Grid grid, Scheduler scheduler, MovementSystem movement, TickEvents events, GameData data)
+        public DeathSystem(EntityTable entities, Grid grid, Scheduler scheduler, MovementSystem movement, TickEvents events, EffectSystem effects, ProgressSystem progress, GameData data)
         {
             _entities = entities;
             _grid = grid;
             _scheduler = scheduler;
             _movement = movement;
             _events = events;
+            _effects = effects;
+            _progress = progress;
             _deadMonsterTicks = Units.TicksFromMilliseconds(data.Constants.DeadMonsterMs);
             _reviveHpPercent = data.Constants.ReviveHpPercent;
             ZonesRow town = data.Zones.Rows.First(zone => zone.Kind == ZoneKind.Town);
@@ -39,6 +43,8 @@ namespace PortfolioMmo.Server
         /// </summary>
         public void Died(Creature dead, uint tick)
         {
+            _effects.Clear(dead);
+            _progress.Cancel(dead, FailReason.Cancelled);
             switch (dead)
             {
                 case Player player:

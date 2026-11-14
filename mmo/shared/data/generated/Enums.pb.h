@@ -45,8 +45,14 @@ extern const ::google::protobuf::internal::DescriptorTable descriptor_table_Enum
 namespace portfolio {
 namespace mmo {
 namespace data {
+enum EffectKind : int;
+extern const uint32_t EffectKind_internal_data_[];
 enum MonsterKind : int;
 extern const uint32_t MonsterKind_internal_data_[];
+enum SkillCenter : int;
+extern const uint32_t SkillCenter_internal_data_[];
+enum SkillKind : int;
+extern const uint32_t SkillKind_internal_data_[];
 enum ZoneKind : int;
 extern const uint32_t ZoneKind_internal_data_[];
 }  // namespace data
@@ -55,8 +61,17 @@ extern const uint32_t ZoneKind_internal_data_[];
 namespace google {
 namespace protobuf {
 template <>
+internal::EnumTraitsT<::portfolio::mmo::data::EffectKind_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::EffectKind>;
+template <>
 internal::EnumTraitsT<::portfolio::mmo::data::MonsterKind_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::MonsterKind>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::SkillCenter_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::SkillCenter>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::SkillKind_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::SkillKind>;
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::ZoneKind_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::ZoneKind>;
@@ -150,6 +165,134 @@ template <>
   return ::google::protobuf::internal::ParseNamedEnum<MonsterKind>(MonsterKind_descriptor(), name,
                                            value);
 }
+enum SkillKind : int {
+  SKILL_KIND_UNSPECIFIED = 0,
+  SKILL_KIND_SINGLE_DAMAGE = 1,
+  SKILL_KIND_AREA_DAMAGE = 2,
+  SKILL_KIND_BUFF = 3,
+  SKILL_KIND_DEBUFF = 4,
+  SKILL_KIND_HEAL = 5,
+  SkillKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  SkillKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t SkillKind_internal_data_[];
+inline constexpr SkillKind SkillKind_MIN =
+    static_cast<SkillKind>(0);
+inline constexpr SkillKind SkillKind_MAX =
+    static_cast<SkillKind>(5);
+[[nodiscard]] inline bool SkillKind_IsValid(int value) {
+  return 0 <= value && value <= 5;
+}
+inline constexpr int SkillKind_ARRAYSIZE = 5 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+SkillKind_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(SkillKind) {
+  return SkillKind_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& SkillKind_Name(T value) {
+  static_assert(::std::is_same<T, SkillKind>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to SkillKind_Name().");
+  return SkillKind_Name(static_cast<SkillKind>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& SkillKind_Name(SkillKind value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<SkillKind_descriptor, 0, 5>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool SkillKind_Parse(
+    ::absl::string_view name, SkillKind* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<SkillKind>(SkillKind_descriptor(), name,
+                                           value);
+}
+enum SkillCenter : int {
+  SKILL_CENTER_UNSPECIFIED = 0,
+  SKILL_CENTER_TARGET = 1,
+  SKILL_CENTER_SELF = 2,
+  SkillCenter_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  SkillCenter_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t SkillCenter_internal_data_[];
+inline constexpr SkillCenter SkillCenter_MIN =
+    static_cast<SkillCenter>(0);
+inline constexpr SkillCenter SkillCenter_MAX =
+    static_cast<SkillCenter>(2);
+[[nodiscard]] inline bool SkillCenter_IsValid(int value) {
+  return 0 <= value && value <= 2;
+}
+inline constexpr int SkillCenter_ARRAYSIZE = 2 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+SkillCenter_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(SkillCenter) {
+  return SkillCenter_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& SkillCenter_Name(T value) {
+  static_assert(::std::is_same<T, SkillCenter>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to SkillCenter_Name().");
+  return SkillCenter_Name(static_cast<SkillCenter>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& SkillCenter_Name(SkillCenter value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<SkillCenter_descriptor, 0, 2>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool SkillCenter_Parse(
+    ::absl::string_view name, SkillCenter* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<SkillCenter>(SkillCenter_descriptor(), name,
+                                           value);
+}
+enum EffectKind : int {
+  EFFECT_KIND_UNSPECIFIED = 0,
+  EFFECT_KIND_STUN = 1,
+  EFFECT_KIND_SLOW = 2,
+  EFFECT_KIND_ATTACK_UP = 3,
+  EFFECT_KIND_DEFENSE_UP = 4,
+  EffectKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  EffectKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t EffectKind_internal_data_[];
+inline constexpr EffectKind EffectKind_MIN =
+    static_cast<EffectKind>(0);
+inline constexpr EffectKind EffectKind_MAX =
+    static_cast<EffectKind>(4);
+[[nodiscard]] inline bool EffectKind_IsValid(int value) {
+  return 0 <= value && value <= 4;
+}
+inline constexpr int EffectKind_ARRAYSIZE = 4 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+EffectKind_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(EffectKind) {
+  return EffectKind_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& EffectKind_Name(T value) {
+  static_assert(::std::is_same<T, EffectKind>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to EffectKind_Name().");
+  return EffectKind_Name(static_cast<EffectKind>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& EffectKind_Name(EffectKind value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<EffectKind_descriptor, 0, 4>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool EffectKind_Parse(
+    ::absl::string_view name, EffectKind* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<EffectKind>(EffectKind_descriptor(), name,
+                                           value);
+}
 using ::google::protobuf::internal::generated_enum::AbslParseFlag;
 using ::google::protobuf::internal::generated_enum::AbslUnparseFlag;
 
@@ -193,6 +336,24 @@ struct is_proto_enum<::portfolio::mmo::data::MonsterKind> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::MonsterKind>() {
   return ::portfolio::mmo::data::MonsterKind_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::SkillKind> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::SkillKind>() {
+  return ::portfolio::mmo::data::SkillKind_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::SkillCenter> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::SkillCenter>() {
+  return ::portfolio::mmo::data::SkillCenter_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::EffectKind> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::EffectKind>() {
+  return ::portfolio::mmo::data::EffectKind_descriptor();
 }
 
 }  // namespace protobuf

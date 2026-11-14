@@ -44,6 +44,7 @@ namespace PortfolioMmo.Server.Tests
 
             new Packet { EnterWorld = new EnterWorld { CharacterId = created.Id } }.WriteDelimitedTo(stream);
             Assert.Equal(EnterWorldResultCode.Ok, (await ReadAsync(stream))!.EnterWorldResult.Result);
+            Assert.Equal(6, (await ReadAsync(stream))!.Cooldowns.Entries.Count);
             Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(stream))!.SelfStats.MaxHp);
             Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(stream))!.SelfVitals.Hp);
             Assert.Equal("Arthur", (await ReadAsync(stream))!.EntitiesEnter.Entities[0].Name);
