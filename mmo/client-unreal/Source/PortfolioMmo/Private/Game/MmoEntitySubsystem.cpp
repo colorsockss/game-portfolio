@@ -546,11 +546,12 @@ void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::
 		return;
 	}
 
-	MmoCharacterLook::ShowPlaceholder(*Mesh, *Placeholder, Visuals->Placeholder);
+	const FMmoPlaceholder* Look = Visuals->PlaceholderOf(Info.kind());
+	MmoCharacterLook::ShowPlaceholder(*Mesh, *Placeholder, Look ? Look->Mesh.Get() : nullptr, Visuals->PlaceholderMaterial, Look ? Look->Color : FLinearColor::White);
 	ShowDeadIfDead(Id, *Mesh, *Placeholder, nullptr);
 	if (!Row)
 	{
-		// shortcut: 표에 줄이 없는 템플릿은 원기둥으로 남는다. 템플릿마다의 자리 표시는 backlog 73이 만든다.
+		// 표에 줄이 없는 템플릿은 종류의 자리 표시로 남는다(그림은 91이 줄을 더함).
 		return;
 	}
 

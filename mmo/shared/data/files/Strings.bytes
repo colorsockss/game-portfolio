@@ -233,8 +233,8 @@ $
 skill.knight.guard수호Guard
 &
 skill.knight.whirl	회오리Whirl
-'
-skill.knight.hamstring절단Sever
+(
+skill.knight.hamstring절단Hobble
 !
 skill.knight.fury분노Fury
 "
@@ -246,4 +246,4 @@ $
 !
 skill.mage.frost냉기Frost
 "
-skill.mage.pyro	화염구Fire
+skill.mage.pyro	화염구Pyro

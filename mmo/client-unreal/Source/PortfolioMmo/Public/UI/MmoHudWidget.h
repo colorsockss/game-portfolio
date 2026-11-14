@@ -6,6 +6,7 @@
 #include "MmoHudWidget.generated.h"
 
 class UMmoButtonWidget;
+class UMmoIcons;
 class UMmoJoystickWidget;
 class UProgressBar;
 class UTextBlock;
@@ -161,6 +162,10 @@ private:
 	/** 칸마다의 스킬(0이면 빈 칸)과 그것을 정한 직업. */
 	TArray<uint32> SlotSkills;
 	uint32 SlotClass = MAX_uint32;
+
+	/** 아이콘 표(73). 처음 퀵슬롯을 채울 때 읽는다. */
+	UPROPERTY()
+	TObjectPtr<UMmoIcons> Icons;
 	FString ShownEffects = TEXT("-");
 	uint32 ShownProgress = MAX_uint32;
 	/** 마지막으로 보인 상호작용의 종류(MmoWorld::EInteractKind). 처음에는 어떤 종류와도 다르게 둔다. */

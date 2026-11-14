@@ -10,6 +10,7 @@
 #include "Game/MmoPlayerController.h"
 #include "Input/MmoKeys.h"
 #include "UI/MmoButtonWidget.h"
+#include "UI/MmoIcons.h"
 #include "GameFramework/Pawn.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSession.h"
@@ -87,13 +88,18 @@ void UMmoHudWidget::ShowSlots(double ServerTick)
 	if (Class != SlotClass)
 	{
 		SlotClass = Class;
+		if (!Icons)
+		{
+			Icons = LoadObject<UMmoIcons>(nullptr, UMmoIcons::Path);
+		}
 		const std::vector<uint32_t> Skills = MmoWorld::FCombatState::Quickslots(Session->Data(), Class);
 		SlotSkills.Init(0, Slots.Num());
 		for (int32 Index = 0; Index < Slots.Num(); ++Index)
 		{
 			const portfolio::mmo::data::SkillsRow* Skill = Index < static_cast<int32>(Skills.size()) ? Session->Data().Skill(Skills[Index]) : nullptr;
 			SlotSkills[Index] = Skill ? Skill->id() : 0;
-			Slots[Index]->SetLabel(Skill ? MmoText::Get(this, UTF8_TO_TCHAR(Skill->name_key().c_str())) : FText::GetEmpty());
+			Slots[Index]->SetIcon(Skill && Icons ? Icons->Load(EMmoIconKind::Skill, Skill->id()) : nullptr,
+				Skill ? MmoText::Get(this, UTF8_TO_TCHAR(Skill->name_key().c_str())) : FText::GetEmpty());
 			// 키 표시는 PC만(크기와 규칙은 93).
 			Slots[Index]->SetKeyHint(MmoKeys::Hint(MmoKeys::Slot(Index)));
 		}

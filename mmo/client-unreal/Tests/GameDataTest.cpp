@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
+#include <set>
 #include <sstream>
 
 #include "Data/GameData.h"
@@ -110,6 +111,26 @@ namespace
 			}
 		}
 		ExpectKey("fail.other");
+
+		// 글자 아이콘(73): 아이콘 표에 줄이 없는 스킬은 이름의 첫 글자로 그리므로, 한 직업의 스킬은 두 언어 모두 첫 글자가 다르다.
+		auto FirstLetter = [](const std::string& Text)
+		{
+			const unsigned char Lead = Text.empty() ? 0 : static_cast<unsigned char>(Text[0]);
+			return Text.substr(0, Lead < 0x80 ? 1 : Lead < 0xE0 ? 2 : Lead < 0xF0 ? 3 : 4);
+		};
+		for (const MmoData::ELanguage Language : { MmoData::ELanguage::Korean, MmoData::ELanguage::English })
+		{
+			Strings.SetLanguage(Language);
+			std::set<std::pair<uint32_t, std::string>> Letters;
+			for (const auto& Row : Data->Skills.rows())
+			{
+				if (!Letters.insert({ Row.class_(), FirstLetter(Strings.Get(Row.name_key())) }).second)
+				{
+					std::printf("FAIL: skill %u starts with the same letter as another skill of its class\n", Row.id());
+					++Failures;
+				}
+			}
+		}
 	}
 
 	/** 고른 언어의 열을 답하고, {0}·{1}을 채우며(없는 번호와 숫자가 아닌 중괄호는 그대로), 없는 키는 키 그대로다. */

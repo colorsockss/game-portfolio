@@ -2,6 +2,7 @@
 
 #include "UI/MmoText.h"
 
+#include "Components/Image.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "Engine/World.h"
@@ -44,6 +45,21 @@ void UMmoButtonWidget::SetWaiting(bool bWaiting)
 void UMmoButtonWidget::SetSelected(bool bSelected)
 {
 	Button->SetBackgroundColor(bSelected ? SelectedTint : FLinearColor::White);
+}
+
+void UMmoButtonWidget::SetIcon(UTexture2D* Texture, const FText& Name)
+{
+	IconImage->SetVisibility(Texture ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	if (Texture)
+	{
+		IconImage->SetBrushFromTexture(Texture);
+		SetLabel(FText::GetEmpty());
+		return;
+	}
+	FSlateFontInfo Font = LabelText->GetFont();
+	Font.Size = IconLetterSize;
+	LabelText->SetFont(Font);
+	SetLabel(FText::FromString(Name.ToString().Left(1)));
 }
 
 void UMmoButtonWidget::NativePreConstruct()

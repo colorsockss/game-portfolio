@@ -8,9 +8,11 @@
 
 namespace MmoCharacterLook
 {
-	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* PlaceholderMesh)
+	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* Shape, UMaterialInterface* Material, const FLinearColor& Color)
 	{
-		Placeholder.SetStaticMesh(PlaceholderMesh);
+		Placeholder.SetStaticMesh(Shape);
+		Placeholder.SetMaterial(0, Material);
+		Placeholder.SetCustomPrimitiveDataVector4(0, FVector4(Color.R, Color.G, Color.B, 1.0));
 		Placeholder.SetVisibility(true);
 		Mesh.SetVisibility(false);
 	}

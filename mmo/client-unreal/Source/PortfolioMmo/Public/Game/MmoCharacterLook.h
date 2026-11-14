@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 
 class UAnimSequenceBase;
+class UMaterialInterface;
 class UMmoAnimInstance;
 class USkeletalMesh;
 class USkeletalMeshComponent;
@@ -15,8 +16,8 @@ class UStaticMeshComponent;
  */
 namespace MmoCharacterLook
 {
-	/** 자리 표시(단순한 메시)를 보이고 스켈레탈 메시를 감춘다. 불러오는 동안과 표에 줄이 없는 개체가 이렇게 보인다. */
-	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* PlaceholderMesh);
+	/** 자리 표시(종류마다의 도형과 색)를 보이고 스켈레탈 메시를 감춘다. 불러오는 동안과 표에 줄이 없는 개체가 이렇게 보인다. */
+	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* Shape, UMaterialInterface* Material, const FLinearColor& Color);
 
 	/** 불러온 메시와 애니메이션 블루프린트를 입히고 자리 표시를 감춘다. */
 	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, TSubclassOf<UMmoAnimInstance> Animation);
@@ -31,7 +32,7 @@ namespace MmoCharacterLook
 	void StopAction(USkeletalMeshComponent& Mesh);
 
 	/**
-	 * 쓰러뜨리거나(bDead) 일으킨다. 모습을 입혔으면 죽음 동작을 마지막 자세로 멈추고(bInstant면 처음부터 그 자세), 자리 표시면 원기둥을 눕힌다.
+	 * 쓰러뜨리거나(bDead) 일으킨다. 모습을 입혔으면 죽음 동작을 마지막 자세로 멈추고(bInstant면 처음부터 그 자세), 자리 표시면 도형을 눕힌다.
 	 * Death가 nullptr이면 자리 표시만 다룬다.
 	 */
 	void SetDead(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UAnimSequenceBase* Death, bool bDead, bool bInstant);

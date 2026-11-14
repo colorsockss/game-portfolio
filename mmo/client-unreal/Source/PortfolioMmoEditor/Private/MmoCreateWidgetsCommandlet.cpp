@@ -25,12 +25,14 @@
 #include "Engine/Texture2D.h"
 #include "HAL/FileManager.h"
 #include "Kismet2/KismetEditorUtilities.h"
+#include "UObject/SavePackage.h"
 #include "UI/MmoButtonWidget.h"
 #include "UI/MmoCharacterCreateWidget.h"
 #include "UI/MmoCharacterSelectWidget.h"
 #include "UI/MmoConfirmWidget.h"
 #include "UI/MmoDeathWidget.h"
 #include "UI/MmoHudWidget.h"
+#include "UI/MmoIcons.h"
 #include "UI/MmoJoystickWidget.h"
 #include "UI/MmoLoginWidget.h"
 #include "UI/MmoNameTagWidget.h"
@@ -193,6 +195,7 @@ namespace
 			Result->MinHeightTouch = Style.ButtonHeightTouch;
 			Result->MinHeightPointer = Style.ButtonHeightPointer;
 			Result->SelectedTint = Style.Selected;
+			Result->IconLetterSize = Style.TitleSize;
 			return Result;
 		}
 
@@ -351,12 +354,17 @@ namespace
 		Button->SetStyle(ButtonStyle);
 		Size->SetContent(Button);
 
-		// 글은 가운데, 키 표시는 오른쪽 위 구석.
+		// 아이콘의 그림은 칸을 채우고(SetIcon 전에는 감춤), 글은 가운데, 키 표시는 오른쪽 위 구석.
 		UOverlay* Stack = Builder.Add<UOverlay>(TEXT("Stack"));
 		UButtonSlot* StackSlot = Cast<UButtonSlot>(Button->AddChild(Stack));
 		StackSlot->SetPadding(Style.ButtonPadding);
 		StackSlot->SetHorizontalAlignment(HAlign_Fill);
 		StackSlot->SetVerticalAlignment(VAlign_Fill);
+		UImage* Icon = Builder.Add<UImage>(TEXT("IconImage"), true);
+		Icon->SetVisibility(ESlateVisibility::Collapsed);
+		UOverlaySlot* IconSlot = Stack->AddChildToOverlay(Icon);
+		IconSlot->SetHorizontalAlignment(HAlign_Fill);
+		IconSlot->SetVerticalAlignment(VAlign_Fill);
 		UTextBlock* Label = Builder.Text(TEXT("LabelText"), FText::GetEmpty(), Style.BodySize, true, Style.ButtonText);
 		Label->SetShadowOffset(FVector2D::ZeroVector);
 		UOverlaySlot* LabelSlot = Stack->AddChildToOverlay(Label);
@@ -676,12 +684,34 @@ UMmoCreateWidgetsCommandlet::UMmoCreateWidgetsCommandlet()
 	LogToConsole = true;
 }
 
+namespace
+{
+	/** 아이콘 표(73). 지금은 줄이 없어 모두 글자 아이콘이고, 그림이 생기면(91) 여기에 줄을 더한다. */
+	bool CreateIcons()
+	{
+		const FString PackageName = FPackageName::ObjectPathToPackageName(FString(UMmoIcons::Path));
+		const FString Filename = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
+		IFileManager::Get().Delete(*Filename, false, true, true);
+		UPackage* Package = CreatePackage(*PackageName);
+		UMmoIcons* Icons = NewObject<UMmoIcons>(Package, *FPackageName::GetShortName(PackageName), RF_Public | RF_Standalone);
+		FAssetRegistryModule::AssetCreated(Icons);
+		FSavePackageArgs Args;
+		Args.TopLevelFlags = RF_Public | RF_Standalone;
+		if (!UPackage::SavePackage(Package, Icons, *Filename, Args))
+		{
+			UE_LOG(LogMmoCreateWidgets, Error, TEXT("Could not save %s."), *Filename);
+			return false;
+		}
+		return true;
+	}
+}
+
 int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 {
 	FWidgetBlueprintBuilder::ButtonClass = CreateButton();
 	UClass* Joystick = CreateJoystick();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateConfirm() && CreateQuantity() && CreateDeath();
+		&& CreateHud(Joystick) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 

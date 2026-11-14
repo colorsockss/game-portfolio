@@ -17,6 +17,7 @@
 #include "HAL/FileManager.h"
 #include "K2Node_VariableGet.h"
 #include "Kismet2/KismetEditorUtilities.h"
+#include "Materials/MaterialInterface.h"
 #include "Misc/FeedbackContext.h"
 #include "Modules/ModuleManager.h"
 #include "UObject/SavePackage.h"
@@ -239,11 +240,24 @@ namespace
 		IFileManager::Get().Delete(*Filename, false, true, true);
 		UPackage* Package = CreatePackage(*PackageName);
 		UMmoEntityVisuals* Visuals = NewObject<UMmoEntityVisuals>(Package, *FPackageName::GetShortName(PackageName), RF_Public | RF_Standalone);
-		Visuals->Placeholder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
-		if (!Visuals->Placeholder)
+		// 종류마다의 자리 표시(73): 서는 개체는 원기둥, 채집물은 원뿔, 바닥 아이템은 상자이고 색으로 종류를 가른다.
+		Visuals->PlaceholderMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Materials/M_Placeholder.M_Placeholder"));
+		const struct { int32 Kind; const TCHAR* Shape; FLinearColor Color; } Placeholders[] = {
+			{ UMmoEntityVisuals::PlayerKind(), TEXT("Cylinder"), FLinearColor(0.25f, 0.5f, 1.0f) },
+			{ UMmoEntityVisuals::MonsterKind(), TEXT("Cylinder"), FLinearColor(0.9f, 0.25f, 0.2f) },
+			{ UMmoEntityVisuals::NpcKind(), TEXT("Cylinder"), FLinearColor(0.3f, 0.8f, 0.35f) },
+			{ UMmoEntityVisuals::GatherNodeKind(), TEXT("Cone"), FLinearColor(0.6f, 0.45f, 0.25f) },
+			{ UMmoEntityVisuals::GroundItemKind(), TEXT("Cube"), FLinearColor(1.0f, 0.85f, 0.2f) },
+		};
+		for (const auto& Placeholder : Placeholders)
 		{
-			UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("The engine cylinder is missing."));
-			return false;
+			UStaticMesh* Shape = LoadObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("/Engine/BasicShapes/%s.%s"), Placeholder.Shape, Placeholder.Shape));
+			if (!Shape || !Visuals->PlaceholderMaterial)
+			{
+				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("The engine shape %s or /Game/Materials/M_Placeholder is missing."), Placeholder.Shape);
+				return false;
+			}
+			Visuals->Placeholders.Add({ Placeholder.Kind, Shape, Placeholder.Color });
 		}
 
 		for (const FClassAnimations& Class : Classes)

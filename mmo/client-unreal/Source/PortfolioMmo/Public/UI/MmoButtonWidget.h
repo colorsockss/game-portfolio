@@ -6,7 +6,9 @@
 
 #include "MmoButtonWidget.generated.h"
 
+class UImage;
 class USizeBox;
+class UTexture2D;
 class UTextBlock;
 
 /**
@@ -14,6 +16,7 @@ class UTextBlock;
  *   - 최소 높이: 터치 기기에서는 손가락으로 누를 크기(MinHeightTouch), PC에서는 마우스의 크기(MinHeightPointer).
  *   - 키 표시: PC에서 단축키를 오른쪽 위에 붙일 자리(KeyHint. 비면 감춤. 키는 backlog 89의 키 표가 붙임).
  *   - 기다림: 요청의 답을 기다리는 동안 누를 수 없게 한다(SetWaiting).
+ *   - 아이콘(SetIcon): 퀵슬롯처럼 아이콘을 보이는 버튼. 그림이 없으면 이름의 첫 글자를 크게 쓴 글자 아이콘이다(73).
  *   - 터치 기기에서만 보임(bTouchOnly): 공격·상호작용·대상 고르기·강제 공격 버튼처럼 PC에는 키가 있는 버튼.
  * 누른 손가락은 터치 나눔(MmoScreen::FTouchOwners)에서 버튼의 것이 되어 카메라로 가지 않는다. OnClicked는 UButton과 같은 신호다.
  */
@@ -38,6 +41,9 @@ public:
 	/** 고른 것(캐릭터 칸, 직업)을 SelectedTint로 보인다. */
 	void SetSelected(bool bSelected);
 
+	/** 그림(아이콘 표의 줄)을 보이고, 없으면 Name의 첫 글자를 IconLetterSize로 쓴다. Name이 비면 빈 칸이다. */
+	void SetIcon(UTexture2D* Texture, const FText& Name);
+
 	UPROPERTY(EditAnywhere)
 	FText Label;
 
@@ -53,6 +59,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	bool bTouchOnly = false;
+
+	/** 글자 아이콘의 글자 크기(스타일 표). */
+	UPROPERTY(EditAnywhere)
+	int32 IconLetterSize = 24;
 
 	UPROPERTY(EditAnywhere)
 	float MinHeightTouch = 0.0f;
@@ -87,4 +97,8 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> KeyText;
+
+	/** 아이콘의 그림. SetIcon 전에는 감춰져 있다. */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> IconImage;
 };
