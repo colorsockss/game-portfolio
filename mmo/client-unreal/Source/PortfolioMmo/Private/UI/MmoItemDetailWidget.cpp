@@ -152,6 +152,19 @@ void UMmoItemDetailWidget::NativeTick(const FGeometry& MyGeometry, float InDelta
 void UMmoItemDetailWidget::HandleUseClicked()
 {
 	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	// 펫이 있는 채로 다른 펫의 아이템을 쓰면 묻는다(96).
+	const portfolio::mmo::data::ItemsRow* Item = Session->Data().Item(ItemId);
+	const MmoWorld::FSelfState& Self = Session->World().SelfState();
+	if (Item && Item->use() == portfolio::mmo::data::ITEM_USE_GET_PET && Self.PetId != 0 && Self.PetId != Item->use_value() && !bConfirmedPet)
+	{
+		const portfolio::mmo::data::PetsRow* Owned = Session->Data().Pet(Self.PetId);
+		const portfolio::mmo::data::PetsRow* Next = Session->Data().Pet(Item->use_value());
+		GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->Confirm(MmoText::Format(this, TEXT("pet.replace"), {
+			Owned ? MmoText::Get(this, UTF8_TO_TCHAR(Owned->name_key().c_str())).ToString() : FString(),
+			Next ? MmoText::Get(this, UTF8_TO_TCHAR(Next->name_key().c_str())).ToString() : FString() }),
+			[this] { bConfirmedPet = true; HandleUseClicked(); bConfirmedPet = false; });
+		return;
+	}
 	Session->Send(Session->Inventory().UseItem(SlotIndex));
 	PendingRequest = Session->Inventory().RequestId();
 	UseButton->SetWaiting(true);

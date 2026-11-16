@@ -67,10 +67,14 @@ namespace MmoWorld
 		{
 			uint32_t Best = 0;
 			double BestDistance = std::numeric_limits<double>::max();
+			// 펫이 나와 있으면 내 자리에서 펫의 줍는 거리 안의 것은 펫에게 맡긴다(96).
+			const portfolio::mmo::data::PetsRow* Pet = In.World.SelfState().bPetOut ? In.Data.Pet(In.World.SelfState().PetId) : nullptr;
+			const double PetRange = Pet ? Pet->pick_range() * Units::PerMeter : -1;
 			for (const auto& [Id, Entity] : In.World.Entities())
 			{
 				const portfolio::mmo::EntityEnter& Info = Entity.Info;
 				if (Info.kind() != portfolio::mmo::ENTITY_KIND_GROUND_ITEM || Info.dropped_by_player() || In.Excluded.count(Id) > 0 || !InRange(In, Entity.X, Entity.Z)
+					|| Distance(In.Self.X, In.Self.Z, Entity.X, Entity.Z) <= PetRange
 					|| !FInteraction::CanPickUp(Info, In.World.SelfId(), In.ServerTick, In.PartyId))
 				{
 					continue;

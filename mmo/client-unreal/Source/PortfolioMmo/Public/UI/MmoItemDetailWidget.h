@@ -33,6 +33,9 @@ private:
 	UFUNCTION()
 	void HandleUseClicked();
 
+	/** 펫을 바꾸는 확인 팝업에서 예를 눌러 쓰는 중이다(96). */
+	bool bConfirmedPet = false;
+
 
 	UFUNCTION()
 	void HandleDropClicked();

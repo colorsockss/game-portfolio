@@ -112,6 +112,9 @@ namespace MmoWorld
 		uint32_t AggressorEndTick = 0;
 		/** 내 성향(Karma. 44). 0보다 낮으면 무법자다. */
 		int32_t Karma = 0;
+		/** 내 펫(96. PetState): 가진 펫(Pets의 줄, 없으면 0)과 나와 있는지. */
+		uint32_t PetId = 0;
+		bool bPetOut = false;
 		/** 마지막 사망 페널티(45. 잃은 경험치와 떨어뜨린 것). 내가 부활하면 지운다. */
 		std::optional<portfolio::mmo::DeathPenalty> Penalty;
 		/** 지금 레벨에서 쌓은 경험치(ExpGained). 내 레벨은 내 개체의 Info.level()이다. */

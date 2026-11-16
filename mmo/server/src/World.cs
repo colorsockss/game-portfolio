@@ -82,6 +82,7 @@ namespace PortfolioMmo.Server
             _login.Entered = (player, state, revived) =>
             {
                 _inventory.Enter(player, state, revived);
+                player.SendPet();
                 _pk.Entered(player);
                 _bosses.Entered(player);
             };
@@ -130,6 +131,7 @@ namespace PortfolioMmo.Server
             {
                 _inventory.SendWhole(player);
                 _quickslots.SendWhole(player);
+                player.SendPet();
                 _pk.Entered(player);
                 _bosses.Entered(player);
             };
@@ -374,6 +376,19 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.PartyKick when player != null:
                     Answer(player, Outcome.From(_party.Kick(player, packet.PartyKick.TargetId)), RequestKind.Party);
                     break;
+                case Packet.BodyOneofCase.SetPetOut when player != null:
+                    // 펫 부르기와 넣기(96). 가진 펫이 없으면 실패, 그대로면 아무것도 하지 않는다.
+                    if (player.PetId == 0)
+                    {
+                        player.Fail(FailReason.NoPet, RequestKind.Pet);
+                    }
+                    else if (player.SetPet(player.PetId, packet.SetPetOut.Out))
+                    {
+                        player.DirtyFast = true;
+                        player.SendPet();
+                    }
+
+                    break;
                 case Packet.BodyOneofCase.AttackStop when player != null:
                     _combat.Stop(player);
                     break;
@@ -506,6 +521,7 @@ namespace PortfolioMmo.Server
 
             long combat = Stopwatch.GetTimestamp();
             _vitals.Step(Tick);
+            _loot.PetStep(_entities.Players, Tick);
             long vitals = Stopwatch.GetTimestamp();
             _view.Step(Tick);
             _inventory.Flush(_entities.Players);

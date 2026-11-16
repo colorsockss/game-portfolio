@@ -49,6 +49,7 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(2, (await ReadAsync(stream))!.Inventory.Slots.Count);
             Assert.Equal(new uint[] { 101 }, (await ReadAsync(stream))!.LearnedSkills.Skills);
             Assert.Equal(8, (await ReadAsync(stream))!.Quickslots.Slots.Count);
+            Assert.Equal(0u, (await ReadAsync(stream))!.PetState.PetId);
             Assert.Equal(0, (await ReadAsync(stream))!.Karma.Karma_);
             Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(stream))!.SelfStats.MaxHp);
             Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(stream))!.SelfVitals.Hp);

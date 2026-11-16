@@ -70,6 +70,7 @@ namespace
 		Expect(Data->Class(2) && Data->Class(2)->has_projectile_speed() && !Data->Class(1)->has_projectile_speed(), "only the mage shoots projectiles");
 		Expect(Data->Monsters.rows_size() == 12 && Data->Monster(6) && Data->Monster(6)->aggressive() && !Data->Monster(13), "twelve monster rows by id");
 		Expect(Data->Monster(12) && Data->Monster(12)->kind() == portfolio::mmo::data::MONSTER_KIND_SUMMON, "the twelfth row is the summon");
+		Expect(Data->Pets.rows_size() == 2 && Data->Pet(2) && Data->Pet(2)->pick_range() == 6, "two pets with their pick ranges");
 		Expect(Data->Monster(10) && Data->Monster(10)->kind() == portfolio::mmo::data::MONSTER_KIND_BOSS && Data->Monster(10)->has_skill(), "the tenth is the boss with its area attack");
 		Expect(Data->Monster(11) && Data->Monster(11)->kind() == portfolio::mmo::data::MONSTER_KIND_GUARD && Data->Npc(3) && Data->Npc(3)->role() == portfolio::mmo::data::NPC_ROLE_GUARD,
 			"the eleventh row holds the guards' numbers and the guards are NPCs");

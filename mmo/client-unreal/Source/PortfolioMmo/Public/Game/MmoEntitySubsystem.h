@@ -5,6 +5,7 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "World/BossWatch.h"
 #include "World/CombatState.h"
+#include "World/PathFinder.h"
 
 #include "MmoEntitySubsystem.generated.h"
 
@@ -69,6 +70,12 @@ private:
 
 	/** 발사체(되풀이하는 이펙트)와 대상의 원, 때가 된 스킬의 맞는 연출을 그린다. */
 	void DrawCombat(const MmoWorld::FWorldState& World, MmoWorld::FCombatState& Combat);
+
+	/**
+	 * 펫(96): 나와 있는 펫이 0이 아닌 플레이어마다 자리 표시(펫마다 색이 다른 작은 구)를 두고 MmoWorld::NextPetPosition의 자리에 놓는다. 내 펫은 줍는 거리 안의
+	 * 주울 수 있는 드롭 쪽을 향한다. 그래픽 품질 낮음에서는 남의 펫을 그리지 않는다. 충돌이 없어 누를 수 없다.
+	 */
+	void DrawPets(const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick, float DeltaTime);
 
 	/** 보스의 예고된 범위(43): 바깥 원과, 피해를 주는 틱까지 차오르는 안쪽 원. 끝난 예고는 감춘다. */
 	void DrawWarnings(MmoWorld::FBossWatch& Watch, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick);
@@ -174,6 +181,11 @@ private:
 
 	UPROPERTY()
 	TArray<TObjectPtr<AStaticMeshActor>> WarningFills;
+
+	/** 주인 → 펫의 자리 표시와 그린 자리(96). */
+	UPROPERTY()
+	TMap<uint32, TObjectPtr<AStaticMeshActor>> PetActors;
+	TMap<uint32, MmoWorld::FPoint> PetPoints;
 
 	/** 범위 스킬의 원(바닥 표시)과 저마다 감출 때(초). */
 	UPROPERTY()

@@ -213,6 +213,7 @@ namespace PortfolioMmo.Server
             }
 
             var player = new Player(_entities.NextPlayerId(), character, session, position) { Exp = state.Exp, Karma = state.Alignment, DirtySlow = moved };
+            player.SetPet(_data.Pet(state.Pet) != null ? state.Pet : 0, state.PetOut);
             player.SetDisplayState(_data.HasLevel(character.Class, state.Level) ? state.Level : 1, player.NameColor, 0);
             _stats.Enter(player);
             _entities.Add(player);

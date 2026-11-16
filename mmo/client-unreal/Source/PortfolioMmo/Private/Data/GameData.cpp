@@ -53,6 +53,18 @@ namespace MmoData
 		return nullptr;
 	}
 
+	const portfolio::mmo::data::PetsRow* FGameData::Pet(uint32_t Id) const
+	{
+		for (const portfolio::mmo::data::PetsRow& Row : Pets.rows())
+		{
+			if (Row.id() == Id)
+			{
+				return &Row;
+			}
+		}
+		return nullptr;
+	}
+
 	const portfolio::mmo::data::NpcsRow* FGameData::Npc(uint32_t Id) const
 	{
 		for (const portfolio::mmo::data::NpcsRow& Row : Npcs.rows())
@@ -161,9 +173,10 @@ namespace MmoData
 		const std::optional<std::string> Enchants = Read("Enchants.bytes");
 		const std::optional<std::string> Npcs = Read("Npcs.bytes");
 		const std::optional<std::string> Shops = Read("Shops.bytes");
+		const std::optional<std::string> Pets = Read("Pets.bytes");
 		if (!Constants || !Zones || !Grid || !Classes || !Monsters || !Skills || !Effects || !Strings || !Data.Strings.ParseFromString(*Strings)
 			|| !Levels || !Data.Levels.ParseFromString(*Levels) || !Items || !Data.Items.ParseFromString(*Items) || !Enchants || !Data.Enchants.ParseFromString(*Enchants)
-			|| !Npcs || !Data.Npcs.ParseFromString(*Npcs) || !Shops || !Data.Shops.ParseFromString(*Shops)
+			|| !Npcs || !Data.Npcs.ParseFromString(*Npcs) || !Shops || !Data.Shops.ParseFromString(*Shops) || !Pets || !Data.Pets.ParseFromString(*Pets)
 			|| !Data.Constants.ParseFromString(*Constants)
 			|| !Data.Zones.ParseFromString(*Zones) || !Data.Grid.ParseFromString(*Grid) || !Data.Classes.ParseFromString(*Classes)
 			|| !Data.Monsters.ParseFromString(*Monsters) || !Data.Skills.ParseFromString(*Skills) || !Data.Effects.ParseFromString(*Effects))

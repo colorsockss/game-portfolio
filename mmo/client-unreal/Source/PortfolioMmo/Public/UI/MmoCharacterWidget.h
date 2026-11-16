@@ -38,6 +38,13 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> CloseButton;
 
+	/** 가진 펫과 부르기·넣기(96). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> PetText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> PetButton;
+
 	/** 마지막으로 채운 값(레벨, 경험치, 능력치 넷, 언어). 같으면 다시 채우지 않는다. */
 	TArray<uint32> Shown;
 };

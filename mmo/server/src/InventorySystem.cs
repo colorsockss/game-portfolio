@@ -307,8 +307,20 @@ namespace PortfolioMmo.Server
                     }
 
                     return learn;
+                case ItemUse.GetPet when _data.Pet(item.UseValue) != null:
+                    // 이미 가진 펫이면 빼지 않는다. 아니면 하나를 빼고 그 펫을 가진 채 부른다(96).
+                    if (player.PetId == item.UseValue)
+                    {
+                        return FailReason.AlreadyHavePet;
+                    }
+
+                    Remove(player, index, 1);
+                    player.SetPet(item.UseValue, true);
+                    player.DirtyFast = true;
+                    player.SendPet();
+                    return FailReason.None;
                 default:
-                    // 강화(35는 따로 요청), 펫 얻기(96)는 그 항목이 잇는다.
+                    // 강화는 35가 따로 요청한다.
                     return FailReason.UnusableItem;
             }
         }

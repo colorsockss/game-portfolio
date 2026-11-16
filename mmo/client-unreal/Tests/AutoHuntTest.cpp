@@ -420,6 +420,20 @@ namespace
 		Expect((Scene.Decide() == FAutoDecision{ EAutoAction::PickUp, 14 }), "a held stackable fits a full bag");
 		Scene.Excluded = { 14 };
 		Expect((Scene.Decide() == FAutoDecision{ EAutoAction::PickUp, 15 }), "gold always fits");
+
+		// 펫(96)이 나와 있으면 펫의 줍는 거리(3 m) 안의 드롭으로는 걸어가지 않고 밖의 것은 걸어가 줍는다.
+		FScene Owner;
+		portfolio::mmo::data::PetsRow* Pet = Owner.Game.Pets.add_rows();
+		Pet->set_id(1);
+		Pet->set_pick_range(3);
+		Packet Out;
+		Out.mutable_pet_state()->set_pet_id(1);
+		Out.mutable_pet_state()->set_out(true);
+		Owner.World.Apply(Out, 0);
+		Owner.Loot(16, 2, 3001, Me);
+		Expect(Owner.Decide() == FAutoDecision{ EAutoAction::Wait }, "a drop within the pet's range is left to the pet");
+		Owner.Loot(17, 5, 3001, Me);
+		Expect((Owner.Decide() == FAutoDecision{ EAutoAction::PickUp, 17 }), "a drop beyond the pet's range is walked to");
 	}
 
 	/** 주인이 내 파티인 드롭은 주인만 줍는 시간 안에도 줍고, 다른 파티의 것은 두고 간다(42). */

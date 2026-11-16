@@ -49,11 +49,11 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
     {
       PROTOBUF_FIELD_OFFSET(Constants, _impl_._has_bits_),
       0, // no _extensions_
-      47, 248,  // max_field_number, fast_idx_mask
+      48, 248,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
       33554432,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      46,  // num_field_entries
+      47,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -190,7 +190,7 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
         PROTOBUF_FIELD_OFFSET(Constants, _impl_.auto_hunt_stall_ms_)}},
     }}, {{
       33, 0, 1,
-      32768, 31,
+      0, 31,
       65535, 65535
     }}, {{
       // uint32 field_size = 1;
@@ -280,11 +280,13 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       // uint32 outlaw_drop_inventory_percent = 44;
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.outlaw_drop_inventory_percent_), _Internal::kHasBitsOffset + 42, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 outlaw_drop_equipment_percent = 45;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.outlaw_drop_equipment_percent_), _Internal::kHasBitsOffset + 45, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.outlaw_drop_equipment_percent_), _Internal::kHasBitsOffset + 44, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // double summon_follow_distance = 46;
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.summon_follow_distance_), _Internal::kHasBitsOffset + 43, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
       // double summon_leash_distance = 47;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.summon_leash_distance_), _Internal::kHasBitsOffset + 44, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.summon_leash_distance_), _Internal::kHasBitsOffset + 46, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      // uint32 pet_pick_interval_ms = 48;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.pet_pick_interval_ms_), _Internal::kHasBitsOffset + 45, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -340,8 +342,9 @@ inline constexpr Constants::Impl_::Impl_(
         outlaw_death_exp_percent_{0u},
         outlaw_drop_inventory_percent_{0u},
         summon_follow_distance_{0},
-        summon_leash_distance_{0},
-        outlaw_drop_equipment_percent_{0u} {}
+        outlaw_drop_equipment_percent_{0u},
+        pet_pick_interval_ms_{0u},
+        summon_leash_distance_{0} {}
 
 template <typename>
 constexpr Constants::Constants(::_pbi::ConstantInitialized,
@@ -447,7 +450,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_._has_bits_),
-        49, // hasbit index offset
+        50, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.field_size_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.combat_duration_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.regen_percent_),
@@ -494,6 +497,7 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.outlaw_drop_equipment_percent_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.summon_follow_distance_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.summon_leash_distance_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.pet_pick_interval_ms_),
         0,
         1,
         2,
@@ -537,9 +541,10 @@ const ::uint32_t
         30,
         41,
         42,
-        45,
-        43,
         44,
+        43,
+        46,
+        45,
 };
 
 static const ::_pbi::MigrationSchema
@@ -552,7 +557,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\017Constants.proto\022\022portfolio.mmo.data\"\200\n"
+    "\n\017Constants.proto\022\022portfolio.mmo.data\"\236\n"
     "\n\tConstants\022\022\n\nfield_size\030\001 \001(\r\022\032\n\022comba"
     "t_duration_ms\030\002 \001(\r\022\025\n\rregen_percent\030\003 \001"
     "(\r\022\034\n\024combat_regen_percent\030\004 \001(\r\022\023\n\013crit"
@@ -585,13 +590,14 @@ const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_
     "tory_percent\030, \001(\r\022%\n\035outlaw_drop_equipm"
     "ent_percent\030- \001(\r\022\036\n\026summon_follow_dista"
     "nce\030. \001(\001\022\035\n\025summon_leash_distance\030/ \001(\001"
-    "B\024\252\002\021PortfolioMmo.Datab\006proto3"
+    "\022\034\n\024pet_pick_interval_ms\0300 \001(\rB\024\252\002\021Portf"
+    "olioMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Constants_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Constants_2eproto = {
     false,
     false,
-    1350,
+    1380,
     descriptor_table_protodef_Constants_2eproto,
     "Constants.proto",
     &descriptor_table_Constants_2eproto_once,
@@ -639,9 +645,9 @@ inline void Constants::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, field_size_),
            0,
-           offsetof(Impl_, outlaw_drop_equipment_percent_) -
+           offsetof(Impl_, summon_leash_distance_) -
                offsetof(Impl_, field_size_) +
-               sizeof(Impl_::outlaw_drop_equipment_percent_));
+               sizeof(Impl_::summon_leash_distance_));
 }
 Constants::~Constants() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.Constants)
@@ -726,12 +732,12 @@ PROTOBUF_NOINLINE void Constants::Clear() {
                  reinterpret_cast<char*>(&this_._impl_.storage_slots_)) +
                  sizeof(_impl_.karma_kill_penalty_));
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x00003f00U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00007f00U)) {
     ::memset(&this_._impl_.karma_monster_gain_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.outlaw_drop_equipment_percent_) -
+                 reinterpret_cast<char*>(&this_._impl_.summon_leash_distance_) -
                  reinterpret_cast<char*>(&this_._impl_.karma_monster_gain_)) +
-                 sizeof(_impl_.outlaw_drop_equipment_percent_));
+                 sizeof(_impl_.summon_leash_distance_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -1147,7 +1153,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // uint32 outlaw_drop_equipment_percent = 45;
-  if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00001000U)) {
     if (this_._internal_outlaw_drop_equipment_percent() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -1165,11 +1171,20 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // double summon_leash_distance = 47;
-  if (CheckHasBit(cached_has_bits, 0x00001000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00004000U)) {
     if (::absl::bit_cast<::uint64_t>(this_._internal_summon_leash_distance()) != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteDoubleToArray(
           47, this_._internal_summon_leash_distance(), target);
+    }
+  }
+
+  // uint32 pet_pick_interval_ms = 48;
+  if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+    if (this_._internal_pet_pick_interval_ms() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          48, this_._internal_pet_pick_interval_ms(), target);
     }
   }
 
@@ -1478,7 +1493,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
       }
     }
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x00003f00U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00007f00U)) {
     // uint32 karma_monster_gain = 41;
     if (CheckHasBit(cached_has_bits, 0x00000100U)) {
       if (this_._internal_karma_monster_gain() != 0) {
@@ -1506,17 +1521,24 @@ PROTOBUF_NOINLINE void Constants::Clear() {
         total_size += 10;
       }
     }
-    // double summon_leash_distance = 47;
-    if (CheckHasBit(cached_has_bits, 0x00001000U)) {
-      if (::absl::bit_cast<::uint64_t>(this_._internal_summon_leash_distance()) != 0) {
-        total_size += 10;
-      }
-    }
     // uint32 outlaw_drop_equipment_percent = 45;
-    if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00001000U)) {
       if (this_._internal_outlaw_drop_equipment_percent() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_outlaw_drop_equipment_percent());
+      }
+    }
+    // uint32 pet_pick_interval_ms = 48;
+    if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+      if (this_._internal_pet_pick_interval_ms() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_pet_pick_interval_ms());
+      }
+    }
+    // double summon_leash_distance = 47;
+    if (CheckHasBit(cached_has_bits, 0x00004000U)) {
+      if (::absl::bit_cast<::uint64_t>(this_._internal_summon_leash_distance()) != 0) {
+        total_size += 10;
       }
     }
   }
@@ -1748,7 +1770,7 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x00003f00U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x00007f00U)) {
     if (CheckHasBit(cached_has_bits, 0x00000100U)) {
       if (from._internal_karma_monster_gain() != 0) {
         _this->_impl_.karma_monster_gain_ = from._impl_.karma_monster_gain_;
@@ -1770,13 +1792,18 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
     if (CheckHasBit(cached_has_bits, 0x00001000U)) {
-      if (::absl::bit_cast<::uint64_t>(from._internal_summon_leash_distance()) != 0) {
-        _this->_impl_.summon_leash_distance_ = from._impl_.summon_leash_distance_;
+      if (from._internal_outlaw_drop_equipment_percent() != 0) {
+        _this->_impl_.outlaw_drop_equipment_percent_ = from._impl_.outlaw_drop_equipment_percent_;
       }
     }
     if (CheckHasBit(cached_has_bits, 0x00002000U)) {
-      if (from._internal_outlaw_drop_equipment_percent() != 0) {
-        _this->_impl_.outlaw_drop_equipment_percent_ = from._impl_.outlaw_drop_equipment_percent_;
+      if (from._internal_pet_pick_interval_ms() != 0) {
+        _this->_impl_.pet_pick_interval_ms_ = from._impl_.pet_pick_interval_ms_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00004000U)) {
+      if (::absl::bit_cast<::uint64_t>(from._internal_summon_leash_distance()) != 0) {
+        _this->_impl_.summon_leash_distance_ = from._impl_.summon_leash_distance_;
       }
     }
   }
@@ -1799,8 +1826,8 @@ void Constants::InternalSwap(Constants* PROTOBUF_RESTRICT PROTOBUF_NONNULL other
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   swap(_impl_._has_bits_[1], other->_impl_._has_bits_[1]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Constants, _impl_.outlaw_drop_equipment_percent_)
-      + sizeof(Constants::_impl_.outlaw_drop_equipment_percent_)
+      PROTOBUF_FIELD_OFFSET(Constants, _impl_.summon_leash_distance_)
+      + sizeof(Constants::_impl_.summon_leash_distance_)
       - PROTOBUF_FIELD_OFFSET(Constants, _impl_.field_size_)>(
           reinterpret_cast<char*>(&_impl_.field_size_),
           reinterpret_cast<char*>(&other->_impl_.field_size_));

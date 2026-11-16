@@ -102,6 +102,23 @@ namespace PortfolioMmo.Server
         public NameColor NameColor { get; private set; }
 
         /// <summary>
+        /// 가진 펫(Pets의 줄. 없으면 0)과 나와 있는지(96). 저장한다. SetPet만 바꾼다.
+        /// </summary>
+        public uint PetId { get; private set; }
+
+        public bool PetOut { get; private set; }
+
+        /// <summary>
+        /// 펫이 다음에 줍는 틱(96). 처음 값은 번호로 흩어 한 틱에 몰리지 않게 한다.
+        /// </summary>
+        internal uint NextPetPickTick { get; set; }
+
+        /// <summary>
+        /// 나와 있는 펫(EntityEnter와 EntityState에 싣는 값).
+        /// </summary>
+        public uint ShownPet => PetOut ? PetId : 0;
+
+        /// <summary>
         /// 성향(44). 0보다 낮으면 무법자다. 저장한다(characters의 alignment 열). PkSystem만 바꾼다.
         /// </summary>
         public int Karma { get; internal set; }
@@ -185,6 +202,30 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 펫을 바꾼다(96). 나와 있는 펫이 바뀌면 이 틱의 시야 차례에 받은 연결과 본인에게 EntityState가 간다. 바뀌었으면 true다.
+        /// </summary>
+        public bool SetPet(uint petId, bool petOut)
+        {
+            if ((petId == PetId) && (petOut == PetOut))
+            {
+                return false;
+            }
+
+            uint shown = ShownPet;
+            (PetId, PetOut) = (petId, petOut);
+            StateChanged |= shown != ShownPet;
+            return true;
+        }
+
+        /// <summary>
+        /// 내 펫을 본인에게 보낸다(들어올 때, 넘겨받을 때, 바뀔 때).
+        /// </summary>
+        internal void SendPet()
+        {
+            Session.Send(new Packet { PetState = new PetState { PetId = PetId, Out = PetOut } });
+        }
+
+        /// <summary>
         /// 스킬의 쿨다운이 끝나는 틱. 쓴 적이 없으면 0.
         /// </summary>
         public uint CooldownEnd(uint skillId)
@@ -249,11 +290,12 @@ namespace PortfolioMmo.Server
             enter.Level = Level;
             enter.NameColor = NameColor;
             enter.WeaponItemId = WeaponItemId;
+            enter.PetId = ShownPet;
         }
 
         internal override EntityState StateMessage()
         {
-            return new EntityState { Id = Id, NameColor = NameColor, WeaponItemId = WeaponItemId, Level = Level };
+            return new EntityState { Id = Id, NameColor = NameColor, WeaponItemId = WeaponItemId, Level = Level, PetId = ShownPet };
         }
     }
 }

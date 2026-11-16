@@ -86,14 +86,14 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 상점(37)은 8줄(1단계 체력·마나 물약, 귀환 주문서, 강화 주문서, 직업마다 둘째와 셋째 스킬의 책)이고, 사는 값이 파는 값보다 커서 사고팔아 골드가 늘지 않는다.
-        /// 상점 NPC와 창고 NPC(75)는 하나씩이고 마을 안에 선다. 첫째 펫(96)이 한 줄을 더하면 줄 수를 고친다.
+        /// 상점(37)은 9줄(1단계 체력·마나 물약, 귀환 주문서, 강화 주문서, 직업마다 둘째와 셋째 스킬의 책, 첫째 펫의 아이템 96)이고, 사는 값이 파는 값보다 커서 사고팔아 골드가 늘지 않는다.
+        /// 상점 NPC와 창고 NPC(75)는 하나씩이고 마을 안에 선다.
         /// </summary>
         [Fact]
         public void TheShopSellsTheStarterGoodsFromTheTownMerchant()
         {
             GameData data = GameData.Load(GameData.DefaultFolder);
-            Assert.Equal(new uint[] { 2001, 2003, 2005, 2006, 2102, 2103, 2202, 2203 }, data.Shops.Rows.Select(row => row.ItemId));
+            Assert.Equal(new uint[] { 2001, 2003, 2005, 2006, 2102, 2103, 2202, 2203, 2301 }, data.Shops.Rows.Select(row => row.ItemId));
             Assert.All(data.Shops.Rows, row => Assert.True(row.Price > data.Item(row.ItemId)!.SellPrice));
             ZonesRow town = data.Zones.Rows.Single(zone => zone.Kind == ZoneKind.Town);
             foreach (NpcRole role in new[] { NpcRole.Shop, NpcRole.Storage })

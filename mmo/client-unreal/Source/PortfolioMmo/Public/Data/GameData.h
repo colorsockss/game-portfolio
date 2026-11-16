@@ -49,6 +49,7 @@ namespace MmoData
 
 		/** 상점의 목록(37: 아이템, 사는 값. 줄의 차례가 창의 차례). 패킷으로 받지 않는다. */
 		portfolio::mmo::data::Shops Shops;
+		portfolio::mmo::data::Pets Pets;
 
 		/** 직업과 레벨마다의 필요 경험치와 기본 능력치(31: 경험치 바의 비율). */
 		portfolio::mmo::data::Levels Levels;
@@ -82,6 +83,9 @@ namespace MmoData
 
 		/** NPC의 줄. 없으면 nullptr. */
 		const portfolio::mmo::data::NpcsRow* Npc(uint32_t Id) const;
+
+		/** 펫의 줄(96). 없으면 nullptr. */
+		const portfolio::mmo::data::PetsRow* Pet(uint32_t Id) const;
 
 		/** 그 아이템의 상점 줄. 상점에 없으면 nullptr. */
 		const portfolio::mmo::data::ShopsRow* ShopItem(uint32_t ItemId) const;

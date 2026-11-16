@@ -30,7 +30,7 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<uint, ShopsRow> _shopItems = new Dictionary<uint, ShopsRow>();
 
         public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null, DropGroups? dropGroups = null, Enchants? enchants = null,
-            Npcs? npcs = null, Shops? shops = null)
+            Npcs? npcs = null, Shops? shops = null, Pets? pets = null)
         {
             Hash = hash;
             Constants = constants;
@@ -77,6 +77,7 @@ namespace PortfolioMmo.Server
             }
 
             Npcs = npcs ?? new Npcs();
+            Pets = pets ?? new Pets();
             Shops = shops ?? new Shops();
             foreach (ShopsRow row in Shops.Rows)
             {
@@ -93,6 +94,16 @@ namespace PortfolioMmo.Server
         /// 상점의 목록(37. 상점이 하나라 상점을 가리키는 열이 없음).
         /// </summary>
         public Shops Shops { get; }
+
+        /// <summary>
+        /// 펫(96). 몇 줄뿐이라 찾을 때 훑는다.
+        /// </summary>
+        public Pets Pets { get; }
+
+        public PetsRow? Pet(uint id)
+        {
+            return System.Linq.Enumerable.FirstOrDefault(Pets.Rows, row => row.Id == id);
+        }
 
         /// <summary>
         /// 그 아이템의 상점 줄. 상점에 없으면 null.
@@ -256,7 +267,8 @@ namespace PortfolioMmo.Server
                 DropGroups.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "DropGroups.bytes"))),
                 Enchants.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Enchants.bytes"))),
                 Npcs.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Npcs.bytes"))),
-                Shops.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Shops.bytes"))));
+                Shops.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Shops.bytes"))),
+                Pets.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Pets.bytes"))));
         }
 
         /// <summary>

@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKACgoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKeCgoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -53,11 +53,12 @@ namespace PortfolioMmo.Data {
             "ZW50GCsgASgNEiUKHW91dGxhd19kcm9wX2ludmVudG9yeV9wZXJjZW50GCwg",
             "ASgNEiUKHW91dGxhd19kcm9wX2VxdWlwbWVudF9wZXJjZW50GC0gASgNEh4K",
             "FnN1bW1vbl9mb2xsb3dfZGlzdGFuY2UYLiABKAESHQoVc3VtbW9uX2xlYXNo",
-            "X2Rpc3RhbmNlGC8gASgBQhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
+            "X2Rpc3RhbmNlGC8gASgBEhwKFHBldF9waWNrX2ludGVydmFsX21zGDAgASgN",
+            "QhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain", "DeathExpPercent", "OutlawDeathExpPercent", "OutlawDropInventoryPercent", "OutlawDropEquipmentPercent", "SummonFollowDistance", "SummonLeashDistance" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain", "DeathExpPercent", "OutlawDeathExpPercent", "OutlawDropInventoryPercent", "OutlawDropEquipmentPercent", "SummonFollowDistance", "SummonLeashDistance", "PetPickIntervalMs" }, null, null, null, null)
           }));
     }
     #endregion
@@ -145,6 +146,7 @@ namespace PortfolioMmo.Data {
       outlawDropEquipmentPercent_ = other.outlawDropEquipmentPercent_;
       summonFollowDistance_ = other.summonFollowDistance_;
       summonLeashDistance_ = other.summonLeashDistance_;
+      petPickIntervalMs_ = other.petPickIntervalMs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -844,6 +846,21 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "pet_pick_interval_ms" field.</summary>
+    public const int PetPickIntervalMsFieldNumber = 48;
+    private uint petPickIntervalMs_;
+    /// <summary>
+    /// 나와 있는 펫이 바닥 아이템을 하나 줍는 간격(ms, 96)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PetPickIntervalMs {
+      get { return petPickIntervalMs_; }
+      set {
+        petPickIntervalMs_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -905,6 +922,7 @@ namespace PortfolioMmo.Data {
       if (OutlawDropEquipmentPercent != other.OutlawDropEquipmentPercent) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SummonFollowDistance, other.SummonFollowDistance)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SummonLeashDistance, other.SummonLeashDistance)) return false;
+      if (PetPickIntervalMs != other.PetPickIntervalMs) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -958,6 +976,7 @@ namespace PortfolioMmo.Data {
       if (OutlawDropEquipmentPercent != 0) hash ^= OutlawDropEquipmentPercent.GetHashCode();
       if (SummonFollowDistance != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SummonFollowDistance);
       if (SummonLeashDistance != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SummonLeashDistance);
+      if (PetPickIntervalMs != 0) hash ^= PetPickIntervalMs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1160,6 +1179,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(249, 2);
         output.WriteDouble(SummonLeashDistance);
       }
+      if (PetPickIntervalMs != 0) {
+        output.WriteRawTag(128, 3);
+        output.WriteUInt32(PetPickIntervalMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1354,6 +1377,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(249, 2);
         output.WriteDouble(SummonLeashDistance);
       }
+      if (PetPickIntervalMs != 0) {
+        output.WriteRawTag(128, 3);
+        output.WriteUInt32(PetPickIntervalMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1501,6 +1528,9 @@ namespace PortfolioMmo.Data {
       }
       if (SummonLeashDistance != 0D) {
         size += 2 + 8;
+      }
+      if (PetPickIntervalMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(PetPickIntervalMs);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1651,6 +1681,9 @@ namespace PortfolioMmo.Data {
       }
       if (other.SummonLeashDistance != 0D) {
         SummonLeashDistance = other.SummonLeashDistance;
+      }
+      if (other.PetPickIntervalMs != 0) {
+        PetPickIntervalMs = other.PetPickIntervalMs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1855,6 +1888,10 @@ namespace PortfolioMmo.Data {
             SummonLeashDistance = input.ReadDouble();
             break;
           }
+          case 384: {
+            PetPickIntervalMs = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -2056,6 +2093,10 @@ namespace PortfolioMmo.Data {
           }
           case 377: {
             SummonLeashDistance = input.ReadDouble();
+            break;
+          }
+          case 384: {
+            PetPickIntervalMs = input.ReadUInt32();
             break;
           }
         }

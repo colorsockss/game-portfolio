@@ -23,11 +23,11 @@ namespace PortfolioMmo.Server
 
     /// <summary>
     /// 캐릭터의 저장할 상태(사본, 38). 틱 스레드가 그 틱에 복사해 만들고 바꾸지 않으므로 저장 스레드가 그대로 읽는다.
-    /// 성향은 44, 퀘스트 진행은 50, 펫은 96, 창고의 아이템은 75가 채우기 시작한다. 쿨다운, 효과, 선공 표시, 틱 번호, 요청 번호는 저장하지 않는다.
+    /// 성향(44), 펫(96. 가진 펫과 나와 있는지), 창고의 아이템(75)을 담고, 퀘스트 진행은 50이 채우기 시작한다. 쿨다운, 효과, 선공 표시, 틱 번호, 요청 번호는 저장하지 않는다.
     /// </summary>
     public sealed record CharacterSnapshot(
         long Id, SavedPosition Position, uint Level, uint Exp, uint Hp, uint Mp, ulong Gold, int Alignment,
-        IReadOnlyList<SavedItem> Items, IReadOnlyList<uint> Skills, IReadOnlyList<SavedQuickslot> Quickslots);
+        IReadOnlyList<SavedItem> Items, IReadOnlyList<uint> Skills, IReadOnlyList<SavedQuickslot> Quickslots, uint Pet = 0, bool PetOut = false);
 
     /// <summary>
     /// 저장한 캐릭터 하나. Id는 캐릭터 번호(개체 번호와 다르다)이고 LoginId는 그 캐릭터의 계정이다.
@@ -105,7 +105,7 @@ namespace PortfolioMmo.Server
                 progress INTEGER NOT NULL
             );";
 
-        private const string CharacterColumns = "id, login_id, name, class, x, z, yaw, level, exp, hp, mp, gold, alignment";
+        private const string CharacterColumns = "id, login_id, name, class, x, z, yaw, level, exp, hp, mp, gold, alignment, pet, pet_out";
 
         private readonly SqliteConnection _connection;
         private readonly SqliteCommand _list;
@@ -176,10 +176,11 @@ namespace PortfolioMmo.Server
                 ("$yaw", SqliteType.Integer), ("$level", SqliteType.Integer), ("$exp", SqliteType.Integer), ("$hp", SqliteType.Integer), ("$mp", SqliteType.Integer),
                 ("$gold", SqliteType.Integer), ("$alignment", SqliteType.Integer));
             _update = Command(
-                @"UPDATE characters SET x = $x, z = $z, yaw = $yaw, level = $level, exp = $exp, hp = $hp, mp = $mp, gold = $gold, alignment = $alignment
-                  WHERE id = $id",
+                @"UPDATE characters SET x = $x, z = $z, yaw = $yaw, level = $level, exp = $exp, hp = $hp, mp = $mp, gold = $gold, alignment = $alignment,
+                  pet = $pet, pet_out = $petOut WHERE id = $id",
                 ("$id", SqliteType.Integer), ("$x", SqliteType.Integer), ("$z", SqliteType.Integer), ("$yaw", SqliteType.Integer), ("$level", SqliteType.Integer),
-                ("$exp", SqliteType.Integer), ("$hp", SqliteType.Integer), ("$mp", SqliteType.Integer), ("$gold", SqliteType.Integer), ("$alignment", SqliteType.Integer));
+                ("$exp", SqliteType.Integer), ("$hp", SqliteType.Integer), ("$mp", SqliteType.Integer), ("$gold", SqliteType.Integer), ("$alignment", SqliteType.Integer),
+                ("$pet", SqliteType.Integer), ("$petOut", SqliteType.Integer));
             _deleteItems = Command("DELETE FROM items WHERE owner = $id", ("$id", SqliteType.Integer));
             _deleteSkills = Command("DELETE FROM skills WHERE owner = $id", ("$id", SqliteType.Integer));
             _deleteQuickslots = Command("DELETE FROM quickslots WHERE owner = $id", ("$id", SqliteType.Integer));
@@ -222,6 +223,8 @@ namespace PortfolioMmo.Server
             uint level, exp, hp, mp;
             ulong gold;
             int alignment;
+            uint pet;
+            bool petOut;
             using (SqliteDataReader reader = _load.ExecuteReader())
             {
                 if (!reader.Read())
@@ -236,6 +239,7 @@ namespace PortfolioMmo.Server
                 (level, exp, hp, mp) = ((uint)reader.GetInt64(7), (uint)reader.GetInt64(8), (uint)reader.GetInt64(9), (uint)reader.GetInt64(10));
                 gold = (ulong)reader.GetInt64(11);
                 alignment = reader.GetInt32(12);
+                (pet, petOut) = ((uint)reader.GetInt64(13), reader.GetInt64(14) != 0);
             }
 
             var items = new List<SavedItem>();
@@ -268,7 +272,7 @@ namespace PortfolioMmo.Server
                 }
             }
 
-            return new CharacterRecord(id, loginId, name, characterClass, new CharacterSnapshot(id, position, level, exp, hp, mp, gold, alignment, items, skills, quickslots));
+            return new CharacterRecord(id, loginId, name, characterClass, new CharacterSnapshot(id, position, level, exp, hp, mp, gold, alignment, items, skills, quickslots, pet, petOut));
         }
 
         /// <summary>
@@ -367,6 +371,11 @@ namespace PortfolioMmo.Server
             command.Parameters["$mp"].Value = state.Mp;
             command.Parameters["$gold"].Value = (long)state.Gold;
             command.Parameters["$alignment"].Value = state.Alignment;
+            if (command.Parameters.Contains("$pet"))
+            {
+                command.Parameters["$pet"].Value = state.Pet;
+                command.Parameters["$petOut"].Value = state.PetOut ? 1 : 0;
+            }
         }
 
         private void InsertChildren(SqliteTransaction transaction, CharacterSnapshot state)

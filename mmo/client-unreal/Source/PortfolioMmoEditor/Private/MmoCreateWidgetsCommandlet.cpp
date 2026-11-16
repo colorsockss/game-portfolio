@@ -1019,6 +1019,9 @@ namespace
 		AddWithGap(*Column, Builder.Text(TEXT("LevelText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("ExpText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
+		// 가진 펫과 부르기·넣기(96). 글은 기반 클래스가 채운다.
+		AddWithGap(*Column, Builder.Text(TEXT("PetText"), FText::GetEmpty(), Style.BodySize, true));
+		AddWithGap(*Column, Builder.Button(TEXT("PetButton"), FText::GetEmpty()), Style.Section);
 		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
 	}

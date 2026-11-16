@@ -185,6 +185,7 @@ namespace MmoWorld
 				const portfolio::mmo::EntityState& State = Packet.entity_state();
 				Found->second.Info.set_name_color(State.name_color());
 				Found->second.Info.set_weapon_item_id(State.weapon_item_id());
+				Found->second.Info.set_pet_id(State.pet_id());
 				if (State.level() > Found->second.Info.level())
 				{
 					Growth.push_back({ FGrowthEvent::EKind::LevelUp, State.id(), static_cast<int32_t>(State.level()), State.id() == Self });
@@ -252,6 +253,10 @@ namespace MmoWorld
 			break;
 		case portfolio::mmo::Packet::kKarma:
 			Mine.Karma = Packet.karma().karma();
+			break;
+		case portfolio::mmo::Packet::kPetState:
+			Mine.PetId = Packet.pet_state().pet_id();
+			Mine.bPetOut = Packet.pet_state().out();
 			break;
 		case portfolio::mmo::Packet::kDeathPenalty:
 			Mine.Penalty = Packet.death_penalty();

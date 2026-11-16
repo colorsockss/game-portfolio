@@ -961,3 +961,34 @@ M
 4
 
 hud.summon{0} {1}/{2}  {3}초{0} {1}/{2}  {3}s
+
+pet.cat	고양이Cat
+
+pet.owl	부엉이Owl
+(
+
+item.pet.1고양이 방울Cat Bell
++
+
+item.pet.2부엉이 깃털Owl Feather
+�
+item.desc.2301A고양이를 얻습니다. 3 m 안의 드롭을 주워 줍니다.+Gives a cat that picks up drops within 3 m.
+�
+item.desc.2302A부엉이를 얻습니다. 6 m 안의 드롭을 주워 줍니다.,Gives an owl that picks up drops within 6 m.
+4
+
+fail.noPet펫이 없습니다.You have no pet.
+N
+fail.alreadyHavePet이미 가진 펫입니다.You already have this pet.
+!
+character.pet펫 {0}Pet {0}
+%
+character.noPet
+펫 없음No pet
++
+character.petOut펫 부르기Call Pet
+*
+character.petIn
+펫 넣기Dismiss Pet
+]
+pet.replace,가진 펫({0})을 {1}(으)로 바꿀까요? Replace your pet ({0}) with {1}?

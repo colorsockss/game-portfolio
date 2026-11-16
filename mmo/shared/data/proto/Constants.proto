@@ -98,4 +98,6 @@ message Constants {
   double summon_follow_distance = 46;
   // 소환수가 주인에게서 떨어질 수 있는 거리(m, 95). 넘으면 대상을 버리고 주인의 자리로 옮긴다. 길을 찾는 범위도 주인 둘레 이 거리다
   double summon_leash_distance = 47;
+  // 나와 있는 펫이 바닥 아이템을 하나 줍는 간격(ms, 96)
+  uint32 pet_pick_interval_ms = 48;
 }

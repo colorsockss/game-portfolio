@@ -78,6 +78,8 @@ message Packet {
     StorageChanged storage_changed = 320;
     StorageDeposit storage_deposit = 321;
     StorageWithdraw storage_withdraw = 322;
+    PetState pet_state = 323;
+    SetPetOut set_pet_out = 324;
 
     // 400–499: 사회(채팅, 파티)
     Chat chat = 400;
@@ -366,6 +368,9 @@ message EntityEnter {
   // 소환수(95): 주인(플레이어 번호)과 사라지는 틱(남는 시간의 끝).
   uint32 summon_owner_id = 28;
   uint32 summon_end_tick = 29;
+
+  // 플레이어: 나와 있는 펫(Pets의 줄. 없으면 0. 96).
+  uint32 pet_id = 30;
 }
 
 // 개체의 종류. 필드 위의 것은 모두 같은 개체 번호 공간을 쓴다. 소환수(95)는 시야 칸으로 찾지 않고 주인에 딸려 보낸다.
@@ -410,13 +415,15 @@ enum ProgressKind {
   PROGRESS_KIND_RECALL = 4;
 }
 
-// 서버 → 클라이언트. 보이는 동안 바뀐 표시 상태(이름 색, 입은 무기, 레벨). 그 개체를 받은 연결과 본인에게 가고, 하나만 바뀌어도
-// 셋을 모두 싣는다. 죽음과 부활은 전투의 사건이, 효과와 진행 중인 일은 그 패킷이 알린다. 나와 있는 펫은 backlog 96이 더한다.
+// 서버 → 클라이언트. 보이는 동안 바뀐 표시 상태(이름 색, 입은 무기, 레벨, 나와 있는 펫). 그 개체를 받은 연결과 본인에게 가고, 하나만 바뀌어도
+// 넷을 모두 싣는다. 죽음과 부활은 전투의 사건이, 효과와 진행 중인 일은 그 패킷이 알린다.
 message EntityState {
   uint32 id = 1;
   NameColor name_color = 2;
   uint32 weapon_item_id = 3;
   uint32 level = 4;
+  // 나와 있는 펫(Pets의 줄. 없으면 0. 96).
+  uint32 pet_id = 5;
 }
 
 // 서버 → 클라이언트. 필드 전체에 가는 알림(43). 보스가 나오고 죽을 때 월드에 들어와 있는 모든 연결에, "보스가 나와 있음"은 월드에 들어오는 연결에만
@@ -752,6 +759,17 @@ message PartyMemberVital {
   sint32 z = 5;
 }
 
+// 서버 → 본인. 내 펫(96): 가진 펫(Pets의 줄. 없으면 0)과 나와 있는지. 월드에 들어올 때(인벤토리 뒤)와 바뀔 때 간다.
+message PetState {
+  uint32 pet_id = 1;
+  bool out = 2;
+}
+
+// 클라이언트 → 서버. 펫을 부르거나 넣는다(96. 요청 번호 없음). 가진 펫이 없으면 ActionFailed(펫이 없음)이고, 값이 그대로면 아무것도 하지 않는다.
+message SetPetOut {
+  bool out = 1;
+}
+
 // 서버 → 죽은 본인. 사망 페널티(45): 잃은 경험치와 떨어뜨린 아이템들(빼기 전의 칸 그대로: 있던 곳, 칸 번호, 아이템, 수량, 강화 수치).
 // 죽는 틱에 간다. 경험치와 칸의 바뀜은 ExpGained와 InventoryChanged가 따로 알린다.
 message DeathPenalty {
@@ -866,6 +884,10 @@ enum FailReason {
   FAIL_REASON_NO_INVITE = 36;
   // 초대받은 쪽이 거절했다(초대한 쪽에 보낸다. 42).
   FAIL_REASON_INVITE_DECLINED = 37;
+  // 가진 펫이 없다(96).
+  FAIL_REASON_NO_PET = 40;
+  // 이미 가진 펫의 아이템이다(96).
+  FAIL_REASON_ALREADY_HAVE_PET = 41;
   // 공격하는 쪽이나 대상인 플레이어가 PK를 할 수 있는 레벨(Constants.pkMinLevel) 미만이다(44).
   FAIL_REASON_PK_LEVEL_TOO_LOW = 38;
   // 대상이 같은 파티의 파티원이다(44).
@@ -886,6 +908,8 @@ enum RequestKind {
   REQUEST_KIND_STORAGE = 6;
   // 파티의 초대, 답, 떠나기, 내보내기(42).
   REQUEST_KIND_PARTY = 7;
+  // 펫 부르기와 넣기(96).
+  REQUEST_KIND_PET = 8;
 }
 
 // 클라이언트 → 서버. 대상을 기본 공격한다. 이미 공격 중이면 대상만 바꾼다. 다가가는 것은 클라이언트의 이동이다.

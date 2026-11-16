@@ -34,7 +34,7 @@ namespace PortfolioMmo.Server.Tests
 
         /// <summary>
         /// 시험용 아이템(32): 2001 체력 물약(50, 쿨다운 10초), 2002 상급 체력 물약(100, 같은 쿨다운), 2003 마나 물약(40), 2005 귀환 주문서(3초),
-        /// 3001 겹치는 재료, 4001 골드, 장비 1001 기사의 검(공격력 5), 1002 마법사의 지팡이(6), 1003 공용 투구(방어력 3), 1004 레벨 2의 갑옷(방어력 6, 최대 체력 20), 2006 강화 주문서, 스킬북 2102(기사 102), 2106(기사 106, 레벨 3), 2202(마법사 202). 상점에 파는 값은 2001이 5, 3001이 2이고 나머지는 없다. 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
+        /// 3001 겹치는 재료, 4001 골드, 장비 1001 기사의 검(공격력 5), 1002 마법사의 지팡이(6), 1003 공용 투구(방어력 3), 1004 레벨 2의 갑옷(방어력 6, 최대 체력 20), 2006 강화 주문서, 스킬북 2102(기사 102), 2106(기사 106, 레벨 3), 2202(마법사 202), 펫 아이템 2301(펫 1), 2302(펫 2. 96). 상점에 파는 값은 2001이 5, 3001이 2이고 나머지는 없다. 직업은 모두 체력 물약 3개와 마나 물약 2개로 시작한다.
         /// </summary>
         public static Items Items => new Items
         {
@@ -54,6 +54,8 @@ namespace PortfolioMmo.Server.Tests
                 new ItemsRow { Id = 2102, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.LearnSkill, UseValue = 102 },
                 new ItemsRow { Id = 2106, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.LearnSkill, UseValue = 106 },
                 new ItemsRow { Id = 2202, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Common, Stackable = true, Use = ItemUse.LearnSkill, UseValue = 202 },
+                new ItemsRow { Id = 2301, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Uncommon, Stackable = true, Use = ItemUse.GetPet, UseValue = 1 },
+                new ItemsRow { Id = 2302, NameKey = "item.test", Kind = ItemKind.Consumable, Grade = ItemGrade.Epic, Stackable = true, Use = ItemUse.GetPet, UseValue = 2 },
             },
         };
 
@@ -77,6 +79,14 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// 시험용 드롭 묶음(33): 1은 재료 3001 둘과 골드 10을 늘 떨어뜨린다.
         /// </summary>
+        /// <summary>
+        /// 시험용 펫(96): 1은 줍는 거리 3 m, 2는 6 m.
+        /// </summary>
+        public static Pets Pets => new Pets
+        {
+            Rows = { new PetsRow { Id = 1, NameKey = "pet.test", PickRange = 3 }, new PetsRow { Id = 2, NameKey = "pet.test", PickRange = 6 } },
+        };
+
         public static DropGroups DropGroups => new DropGroups
         {
             Rows = { new DropGroupsRow { Id = 1, Items = { 3001 }, Chances = { 1.0 }, MinCounts = { 2 }, MaxCounts = { 2 }, GoldChance = 1.0, GoldMin = 10, GoldMax = 10 } },
@@ -224,7 +234,7 @@ namespace PortfolioMmo.Server.Tests
                 ReviveHpPercent = 30, DeadMonsterMs = 3000, InventorySlots = 60, StorageSlots = 3, DropLifetimeMs = 60000, OwnerOnlyMs = 10000, DropScatter = 1.5, InteractRange = 3, RateLimitTokens = 40, RateLimitRefillPerSecond = 30, RateLimitKickMs = 3000, RateLimitResetMs = 1000,
                 ChatMaxBytes = 180, ChatPerSecond = 2, PartyExpBonusPercent = 10, PartyInviteMs = 30000,
                 SummonFollowDistance = 2, SummonLeashDistance = 20, AggressorMs = 30000, PkMinLevel = 10, KarmaKillPenalty = 100, KarmaMonsterGain = 5,
-                DeathExpPercent = 5, OutlawDeathExpPercent = 10, OutlawDropInventoryPercent = 50, OutlawDropEquipmentPercent = 10,
+                PetPickIntervalMs = 1000, DeathExpPercent = 5, OutlawDeathExpPercent = 10, OutlawDropInventoryPercent = 50, OutlawDropEquipmentPercent = 10,
             };
         }
 
@@ -362,7 +372,7 @@ namespace PortfolioMmo.Server.Tests
             table.Rows.Add(zones);
             return new GameData(
                 Hash, constants ?? Constants(size), table, grid, classes ?? Classes, levels ?? Levels,
-                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants, npcs, Shops);
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants, npcs, Shops, Pets);
         }
 
         /// <summary>

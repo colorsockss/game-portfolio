@@ -1,0 +1,19 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+message PetsRow {
+  // 펫의 번호(96. PetState와 EntityEnter의 펫)
+  uint32 id = 1;
+  // 이름(Strings의 키)
+  string name_key = 2;
+  // 줍는 거리(m). 주인의 자리에서 이 안의 바닥 아이템을 줍는다
+  double pick_range = 3;
+}
+
+message Pets {
+  repeated PetsRow rows = 1;
+}

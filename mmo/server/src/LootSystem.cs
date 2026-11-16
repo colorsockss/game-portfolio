@@ -25,6 +25,8 @@ namespace PortfolioMmo.Server
         private readonly uint _ownerOnlyTicks;
         private readonly long _interactRange;
         private readonly List<ItemSlot> _slots = new List<ItemSlot>();
+        private readonly List<Entity> _near = new List<Entity>();
+        private readonly uint _petTicks;
 
         public LootSystem(GameData data, EntityTable entities, Grid grid, FieldMap field, Scheduler scheduler, InventorySystem inventory, SaveSystem save, Random random)
         {
@@ -39,6 +41,7 @@ namespace PortfolioMmo.Server
             _lifetimeTicks = Units.TicksFromMilliseconds(data.Constants.DropLifetimeMs);
             _ownerOnlyTicks = Units.TicksFromMilliseconds(data.Constants.OwnerOnlyMs);
             _interactRange = (long)Math.Round(data.Constants.InteractRange * Units.PerMeter);
+            _petTicks = Math.Max(1, Units.TicksFromMilliseconds(data.Constants.PetPickIntervalMs));
         }
 
         /// <summary>
@@ -190,6 +193,59 @@ namespace PortfolioMmo.Server
 
             Remove(item, tick);
             return FailReason.None;
+        }
+
+        /// <summary>
+        /// 펫의 줍기(96. 회복 차례): 펫이 나와 있고 살아 있고 연결이 있는 플레이어마다 줍는 틱이 됐으면 한 번, 줍는 거리 안의 바닥 아이템을 가까운 순으로 보고
+        /// 주인 확인(주인, 주인만 줍는 시간), 선, 플레이어가 떨어뜨리지 않음, 인벤토리의 자리(골드는 늘)를 통과한 첫 하나를 줍기와 같은 경로로 넣는다(새로 얻은 것의 까닭은 줍기).
+        /// 끝나는 틱을 견주므로 틱이 건너뛰어도 한 번만 줍는다.
+        /// </summary>
+        public void PetStep(IEnumerable<Player> players, uint tick)
+        {
+            foreach (Player player in players)
+            {
+                if (player.NextPetPickTick == 0)
+                {
+                    player.NextPetPickTick = tick + (player.Id % _petTicks);
+                }
+
+                if (!player.PetOut || player.Dead || player.Session.IsDetached || (tick < player.NextPetPickTick) || (_data.Pet(player.PetId) is not PetsRow pet))
+                {
+                    continue;
+                }
+
+                player.NextPetPickTick = tick + _petTicks;
+                int range = (int)Math.Round(pet.PickRange * Units.PerMeter);
+                _grid.Query(player.X, player.Z, range, entity => entity is GroundItem { DroppedByPlayer: false }, _near);
+                _near.Sort((a, b) => DistanceSquared(player, a).CompareTo(DistanceSquared(player, b)));
+                foreach (Entity entity in _near)
+                {
+                    var item = (GroundItem)entity;
+                    if (!item.CanPickUp(player, tick) || !_field.HasLine(player.X, player.Z, item.X, item.Z))
+                    {
+                        continue;
+                    }
+
+                    if (item.ItemId == GoldItemId())
+                    {
+                        _inventory.AddGold(player, item.Count, GainReason.PickUp);
+                    }
+                    else if (_inventory.Add(player, item.ItemId, item.Count, GainReason.PickUp, item.Enchant) != FailReason.None)
+                    {
+                        continue;
+                    }
+
+                    Remove(item, tick);
+                    break;
+                }
+            }
+        }
+
+        private static long DistanceSquared(Entity a, Entity b)
+        {
+            long dx = (long)a.X - b.X;
+            long dz = (long)a.Z - b.Z;
+            return (dx * dx) + (dz * dz);
         }
 
         /// <summary>

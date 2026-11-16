@@ -22,6 +22,9 @@
 #include "HAL/PlatformTime.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSession.h"
+#include "Game/MmoGameUserSettings.h"
+#include "World/Interaction.h"
+#include "World/PetFollow.h"
 #include "World/Units.h"
 
 namespace
@@ -247,6 +250,73 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 	}
 	DrawCombat(World, Combat);
 	DrawWarnings(Session->Bosses(), World, Session->Data(), ServerTick);
+	DrawPets(World, Session->Data(), ServerTick, DeltaTime);
+}
+
+void UMmoEntitySubsystem::DrawPets(const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick, float DeltaTime)
+{
+	UMmoSession* Session = GetWorld()->GetGameInstance()->GetSubsystem<UMmoSession>();
+	const MmoWorld::FFieldMap* Field = Session->Field();
+	const bool bOthers = UMmoGameUserSettings::Get().QualityLevel() > 0;
+	TSet<uint32> Seen;
+	for (const auto& [Id, Entity] : World.Entities())
+	{
+		const uint32 PetId = Entity.Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER ? Entity.Info.pet_id() : 0;
+		const portfolio::mmo::data::PetsRow* Pet = Data.Pet(PetId);
+		const AActor* Owner = Actors.FindRef(Id);
+		if (!Pet || !Owner || !Field || (Id != World.SelfId() && !bOthers))
+		{
+			continue;
+		}
+
+		Seen.Add(Id);
+		const FVector OwnerLocation = Owner->GetActorLocation();
+		const MmoWorld::FPoint OwnerPoint{ MmoCoordinates::ToX(OwnerLocation), MmoCoordinates::ToZ(OwnerLocation) };
+		MmoWorld::FPetStep Step{ OwnerPoint.X, OwnerPoint.Z, MmoCoordinates::ToYaw(Owner->GetActorRotation()), PetPoints.FindRef(Id), DeltaTime, std::nullopt };
+		if (!PetPoints.Contains(Id))
+		{
+			Step.Last = OwnerPoint;
+		}
+		// 내 펫은 줍는 거리 안의 주울 수 있는 드롭(플레이어가 떨어뜨리지 않은 것) 쪽을 향한다. 줍는 것은 서버다.
+		if (Id == World.SelfId())
+		{
+			const double Range = Pet->pick_range() * MmoWorld::Units::PerMeter;
+			double Best = Range * Range;
+			for (const auto& [ItemId, Item] : World.Entities())
+			{
+				const double DX = static_cast<double>(Item.X) - OwnerPoint.X;
+				const double DZ = static_cast<double>(Item.Z) - OwnerPoint.Z;
+				if (Item.Info.kind() == portfolio::mmo::ENTITY_KIND_GROUND_ITEM && !Item.Info.dropped_by_player() && DX * DX + DZ * DZ <= Best
+					&& MmoWorld::FInteraction::CanPickUp(Item.Info, World.SelfId(), ServerTick, Session->Party().Id()))
+				{
+					Best = DX * DX + DZ * DZ;
+					Step.Lure = MmoWorld::FPoint{ Item.X, Item.Z };
+				}
+			}
+		}
+		const MmoWorld::FPoint Next = MmoWorld::NextPetPosition(*Field, Step);
+		PetPoints.Add(Id, Next);
+		AStaticMeshActor* Actor = PetActors.FindRef(Id);
+		if (!Actor)
+		{
+			Actor = SpawnMarker(TEXT("Sphere"), FVector(0.35), PetId == 1 ? FLinearColor(1.0f, 0.75f, 0.35f) : FLinearColor(0.85f, 0.9f, 1.0f));
+			PetActors.Add(Id, Actor);
+		}
+		Actor->SetActorHiddenInGame(false);
+		Actor->SetActorLocation(MmoCoordinates::ToWorld(Next.X, Next.Z) + FVector(0, 0, 25));
+	}
+	for (auto It = PetActors.CreateIterator(); It; ++It)
+	{
+		if (!Seen.Contains(It.Key()))
+		{
+			if (It.Value())
+			{
+				It.Value()->Destroy();
+			}
+			PetPoints.Remove(It.Key());
+			It.RemoveCurrent();
+		}
+	}
 }
 
 void UMmoEntitySubsystem::DrawWarnings(MmoWorld::FBossWatch& Watch, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick)
