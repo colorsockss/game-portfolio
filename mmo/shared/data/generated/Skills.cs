@@ -25,7 +25,7 @@ namespace PortfolioMmo.Data {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgxTa2lsbHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YRoLRW51bXMucHJv",
-            "dG8itgMKCVNraWxsc1JvdxIKCgJpZBgBIAEoDRIQCghuYW1lX2tleRgCIAEo",
+            "dG8ijAQKCVNraWxsc1JvdxIKCgJpZBgBIAEoDRIQCghuYW1lX2tleRgCIAEo",
             "CRISCgVjbGFzcxgDIAEoDUgAiAEBEisKBGtpbmQYBCABKA4yHS5wb3J0Zm9s",
             "aW8ubW1vLmRhdGEuU2tpbGxLaW5kEhMKC2NvZWZmaWNpZW50GAUgASgBEg0K",
             "BXJhbmdlGAYgASgBEhMKBnJhZGl1cxgHIAEoAUgBiAEBEi8KBmNlbnRlchgI",
@@ -33,14 +33,16 @@ namespace PortfolioMmo.Data {
             "ZG93bl9tcxgJIAEoDRIPCgdjYXN0X21zGAogASgNEhQKDGhpdF9kZWxheV9t",
             "cxgLIAEoDRIUCgd3YXJuX21zGAwgASgNSAKIAQESCgoCbXAYDSABKA0SDQoF",
             "bGV2ZWwYDiABKA0SHQoQcHJvamVjdGlsZV9zcGVlZBgPIAEoAUgDiAEBEhMK",
-            "BmVmZmVjdBgQIAEoDUgEiAEBQggKBl9jbGFzc0IJCgdfcmFkaXVzQgoKCF93",
-            "YXJuX21zQhMKEV9wcm9qZWN0aWxlX3NwZWVkQgkKB19lZmZlY3QiNQoGU2tp",
-            "bGxzEisKBHJvd3MYASADKAsyHS5wb3J0Zm9saW8ubW1vLmRhdGEuU2tpbGxz",
-            "Um93QhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
+            "BmVmZmVjdBgQIAEoDUgEiAEBEhsKDnN1bW1vbl9tb25zdGVyGBEgASgNSAWI",
+            "AQESFgoJc3VtbW9uX21zGBIgASgNSAaIAQFCCAoGX2NsYXNzQgkKB19yYWRp",
+            "dXNCCgoIX3dhcm5fbXNCEwoRX3Byb2plY3RpbGVfc3BlZWRCCQoHX2VmZmVj",
+            "dEIRCg9fc3VtbW9uX21vbnN0ZXJCDAoKX3N1bW1vbl9tcyI1CgZTa2lsbHMS",
+            "KwoEcm93cxgBIAMoCzIdLnBvcnRmb2xpby5tbW8uZGF0YS5Ta2lsbHNSb3dC",
+            "FKoCEVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::PortfolioMmo.Data.EnumsReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.SkillsRow), global::PortfolioMmo.Data.SkillsRow.Parser, new[]{ "Id", "NameKey", "Class", "Kind", "Coefficient", "Range", "Radius", "Center", "CooldownMs", "CastMs", "HitDelayMs", "WarnMs", "Mp", "Level", "ProjectileSpeed", "Effect" }, new[]{ "Class", "Radius", "WarnMs", "ProjectileSpeed", "Effect" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.SkillsRow), global::PortfolioMmo.Data.SkillsRow.Parser, new[]{ "Id", "NameKey", "Class", "Kind", "Coefficient", "Range", "Radius", "Center", "CooldownMs", "CastMs", "HitDelayMs", "WarnMs", "Mp", "Level", "ProjectileSpeed", "Effect", "SummonMonster", "SummonMs" }, new[]{ "Class", "Radius", "WarnMs", "ProjectileSpeed", "Effect", "SummonMonster", "SummonMs" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Skills), global::PortfolioMmo.Data.Skills.Parser, new[]{ "Rows" }, null, null, null, null)
           }));
     }
@@ -101,6 +103,8 @@ namespace PortfolioMmo.Data {
       level_ = other.level_;
       projectileSpeed_ = other.projectileSpeed_;
       effect_ = other.effect_;
+      summonMonster_ = other.summonMonster_;
+      summonMs_ = other.summonMs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -425,6 +429,66 @@ namespace PortfolioMmo.Data {
       _hasBits0 &= ~16;
     }
 
+    /// <summary>Field number for the "summon_monster" field.</summary>
+    public const int SummonMonsterFieldNumber = 17;
+    private readonly static uint SummonMonsterDefaultValue = 0;
+
+    private uint summonMonster_;
+    /// <summary>
+    /// 부르는 소환수(Monsters의 줄. 95)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint SummonMonster {
+      get { if ((_hasBits0 & 32) != 0) { return summonMonster_; } else { return SummonMonsterDefaultValue; } }
+      set {
+        _hasBits0 |= 32;
+        summonMonster_ = value;
+      }
+    }
+    /// <summary>Gets whether the "summon_monster" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasSummonMonster {
+      get { return (_hasBits0 & 32) != 0; }
+    }
+    /// <summary>Clears the value of the "summon_monster" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearSummonMonster() {
+      _hasBits0 &= ~32;
+    }
+
+    /// <summary>Field number for the "summon_ms" field.</summary>
+    public const int SummonMsFieldNumber = 18;
+    private readonly static uint SummonMsDefaultValue = 0;
+
+    private uint summonMs_;
+    /// <summary>
+    /// 소환수가 남는 시간(ms. 95)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint SummonMs {
+      get { if ((_hasBits0 & 64) != 0) { return summonMs_; } else { return SummonMsDefaultValue; } }
+      set {
+        _hasBits0 |= 64;
+        summonMs_ = value;
+      }
+    }
+    /// <summary>Gets whether the "summon_ms" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasSummonMs {
+      get { return (_hasBits0 & 64) != 0; }
+    }
+    /// <summary>Clears the value of the "summon_ms" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearSummonMs() {
+      _hasBits0 &= ~64;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -456,6 +520,8 @@ namespace PortfolioMmo.Data {
       if (Level != other.Level) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(ProjectileSpeed, other.ProjectileSpeed)) return false;
       if (Effect != other.Effect) return false;
+      if (SummonMonster != other.SummonMonster) return false;
+      if (SummonMs != other.SummonMs) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -479,6 +545,8 @@ namespace PortfolioMmo.Data {
       if (Level != 0) hash ^= Level.GetHashCode();
       if (HasProjectileSpeed) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(ProjectileSpeed);
       if (HasEffect) hash ^= Effect.GetHashCode();
+      if (HasSummonMonster) hash ^= SummonMonster.GetHashCode();
+      if (HasSummonMs) hash ^= SummonMs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -561,6 +629,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(128, 1);
         output.WriteUInt32(Effect);
       }
+      if (HasSummonMonster) {
+        output.WriteRawTag(136, 1);
+        output.WriteUInt32(SummonMonster);
+      }
+      if (HasSummonMs) {
+        output.WriteRawTag(144, 1);
+        output.WriteUInt32(SummonMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -635,6 +711,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(128, 1);
         output.WriteUInt32(Effect);
       }
+      if (HasSummonMonster) {
+        output.WriteRawTag(136, 1);
+        output.WriteUInt32(SummonMonster);
+      }
+      if (HasSummonMs) {
+        output.WriteRawTag(144, 1);
+        output.WriteUInt32(SummonMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -692,6 +776,12 @@ namespace PortfolioMmo.Data {
       }
       if (HasEffect) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(Effect);
+      }
+      if (HasSummonMonster) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(SummonMonster);
+      }
+      if (HasSummonMs) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(SummonMs);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -752,6 +842,12 @@ namespace PortfolioMmo.Data {
       }
       if (other.HasEffect) {
         Effect = other.Effect;
+      }
+      if (other.HasSummonMonster) {
+        SummonMonster = other.SummonMonster;
+      }
+      if (other.HasSummonMs) {
+        SummonMs = other.SummonMs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -836,6 +932,14 @@ namespace PortfolioMmo.Data {
             Effect = input.ReadUInt32();
             break;
           }
+          case 136: {
+            SummonMonster = input.ReadUInt32();
+            break;
+          }
+          case 144: {
+            SummonMs = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -917,6 +1021,14 @@ namespace PortfolioMmo.Data {
           }
           case 128: {
             Effect = input.ReadUInt32();
+            break;
+          }
+          case 136: {
+            SummonMonster = input.ReadUInt32();
+            break;
+          }
+          case 144: {
+            SummonMs = input.ReadUInt32();
             break;
           }
         }

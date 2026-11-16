@@ -947,3 +947,17 @@ _
 death.dropped떨어뜨린 것: {0}Dropped: {0}
 �
 select.otherInWorldf이 계정의 다른 캐릭터가 아직 월드에 남아 있습니다. 잠시 뒤에 들어가세요.KAnother character of this account is still in the world. Try again shortly.
+ 
+monster.spirit정령Spirit
+1
+skill.mage.spirit정령 소환Summon Spirit
+D
+item.book.206스킬북: 정령 소환Skill Book: Summon Spirit
+M
+item.desc.2206#정령 소환을(를) 배웁니다.Teaches Summon Spirit.
+%
+summon.owner
+{0}의 {1}	{0}'s {1}
+4
+
+hud.summon{0} {1}/{2}  {3}초{0} {1}/{2}  {3}s

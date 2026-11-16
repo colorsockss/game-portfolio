@@ -121,6 +121,7 @@ public:
 	static int32 NpcKind();
 	static int32 GatherNodeKind();
 	static int32 GroundItemKind();
+	static int32 SummonKind();
 	static int32 KnightKey();
 	static int32 MageKey();
 };

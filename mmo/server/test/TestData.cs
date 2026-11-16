@@ -98,7 +98,7 @@ namespace PortfolioMmo.Server.Tests
         /// 시험용 스킬(실제 데이터의 차례와 종류. 계수는 1이나 2이고 쿨다운은 1초, 마나는 10, 타격까지의 시간은 300 ms, 필요 레벨은 1(106만 3)이다). 201은 20 m/s(틱마다 1 m)의 직선 발사체다.
         /// 기사: 101 단일, 102 기절, 103 방어력 올림, 104 자기 중심 범위(4 m), 105 감속을 거는 단일, 106 공격력 올림.
         /// 마법사: 201 감속을 거는 단일(12 m), 202 대상 중심 범위(4 m, 시전 1.5초), 203 회복(계수 2, 시전 1초), 204 감속을 거는 자기 중심 범위(5 m),
-        /// 205 시전하는 단일(시전 2초).
+        /// 205 시전하는 단일(시전 2초), 206 소환(시전 없음, 소환수 5를 10초. 95).
         /// </summary>
         public static Skills Skills => new Skills
         {
@@ -115,9 +115,34 @@ namespace PortfolioMmo.Server.Tests
                 Skill(203, 2, SkillKind.Heal, 12, SkillCenter.Self, coefficient: 2, castMs: 1000),
                 Skill(204, 2, SkillKind.AreaDamage, 0, SkillCenter.Self, radius: 5, effect: 2),
                 Skill(205, 2, SkillKind.SingleDamage, 12, SkillCenter.Target, castMs: 2000),
+                SummonSpirit(),
                 BossSlam(),
             },
         };
+
+        /// <summary>
+        /// 마법사의 소환(95): 시전 없이 소환수(몬스터 5)를 10초(200틱) 부른다. 쿨다운은 1초다.
+        /// </summary>
+        public static SkillsRow SummonSpirit()
+        {
+            SkillsRow row = Skill(206, 2, SkillKind.Summon, 0, SkillCenter.Self, coefficient: 0, hitDelayMs: 0);
+            row.SummonMonster = 5;
+            row.SummonMs = 10000;
+            return row;
+        }
+
+        /// <summary>
+        /// 시험용 소환수(95): 체력 300, 공격력 30, 7 m/s, 사거리 2 m, 공격 간격 1초.
+        /// </summary>
+        public static MonstersRow Spirit()
+        {
+            MonstersRow row = Monster(5, aggressive: false);
+            row.Kind = MonsterKind.Summon;
+            row.MaxHp = 300;
+            row.Attack = 30;
+            row.Speed = 7;
+            return row;
+        }
 
         /// <summary>
         /// 보스의 범위 공격(43): 직업이 없고, 대상 중심 반지름 3 m, 사거리 12 m, 쿨다운 3초, 예고 1.5초(30틱).
@@ -198,7 +223,7 @@ namespace PortfolioMmo.Server.Tests
                 UnreachableMs = 5000, RepathDistance = 3, ReturnRangeMargin = 4, ReturnRegenPercent = 20, WanderPauseMinMs = 3000, WanderPauseMaxMs = 6000,
                 ReviveHpPercent = 30, DeadMonsterMs = 3000, InventorySlots = 60, StorageSlots = 3, DropLifetimeMs = 60000, OwnerOnlyMs = 10000, DropScatter = 1.5, InteractRange = 3, RateLimitTokens = 40, RateLimitRefillPerSecond = 30, RateLimitKickMs = 3000, RateLimitResetMs = 1000,
                 ChatMaxBytes = 180, ChatPerSecond = 2, PartyExpBonusPercent = 10, PartyInviteMs = 30000,
-                AggressorMs = 30000, PkMinLevel = 10, KarmaKillPenalty = 100, KarmaMonsterGain = 5,
+                SummonFollowDistance = 2, SummonLeashDistance = 20, AggressorMs = 30000, PkMinLevel = 10, KarmaKillPenalty = 100, KarmaMonsterGain = 5,
                 DeathExpPercent = 5, OutlawDeathExpPercent = 10, OutlawDropInventoryPercent = 50, OutlawDropEquipmentPercent = 10,
             };
         }

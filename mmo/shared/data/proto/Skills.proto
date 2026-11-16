@@ -40,6 +40,10 @@ message SkillsRow {
   optional double projectile_speed = 15;
   // 거는 효과(Effects의 줄)
   optional uint32 effect = 16;
+  // 부르는 소환수(Monsters의 줄. 95)
+  optional uint32 summon_monster = 17;
+  // 소환수가 남는 시간(ms. 95)
+  optional uint32 summon_ms = 18;
 }
 
 message Skills {

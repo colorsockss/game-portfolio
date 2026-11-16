@@ -334,10 +334,10 @@ message EntityEnter {
   NameColor name_color = 9;
   uint32 weapon_item_id = 10;
 
-  // 몬스터, NPC, 채집물: 템플릿 번호(Monsters, Npcs, GatherNodes의 줄).
+  // 몬스터, NPC, 채집물, 소환수: 템플릿 번호(Monsters, Npcs, GatherNodes, 소환수는 Monsters의 줄).
   uint32 template_id = 11;
 
-  // 플레이어와 몬스터: 체력과 최대 체력, 걸린 효과, 진행 중인 일, 죽었는지.
+  // 플레이어, 몬스터, 소환수: 체력과 최대 체력, 걸린 효과, 진행 중인 일, 죽었는지.
   uint32 hp = 12;
   uint32 max_hp = 13;
   repeated EffectState effects = 14;
@@ -362,9 +362,13 @@ message EntityEnter {
   }
   uint32 owner_only_end_tick = 26;
   bool dropped_by_player = 27;
+
+  // 소환수(95): 주인(플레이어 번호)과 사라지는 틱(남는 시간의 끝).
+  uint32 summon_owner_id = 28;
+  uint32 summon_end_tick = 29;
 }
 
-// 개체의 종류. 필드 위의 것은 모두 같은 개체 번호 공간과 시야를 쓴다. 소환수는 backlog 95가 더한다.
+// 개체의 종류. 필드 위의 것은 모두 같은 개체 번호 공간을 쓴다. 소환수(95)는 시야 칸으로 찾지 않고 주인에 딸려 보낸다.
 enum EntityKind {
   ENTITY_KIND_UNSPECIFIED = 0;
   ENTITY_KIND_PLAYER = 1;
@@ -372,6 +376,7 @@ enum EntityKind {
   ENTITY_KIND_NPC = 3;
   ENTITY_KIND_GATHER_NODE = 4;
   ENTITY_KIND_GROUND_ITEM = 5;
+  ENTITY_KIND_SUMMON = 6;
 }
 
 // 플레이어의 이름 색(성향과 선공 표시. backlog 44).

@@ -28,6 +28,10 @@ namespace MmoWorld
 		{
 			Stop = StopAttack();
 		}
+		else if (Id != TargetId && TargetId != 0 && MySummonId != 0)
+		{
+			Stop = StopPacket();
+		}
 		TargetId = Id;
 		return Stop;
 	}
@@ -48,10 +52,15 @@ namespace MmoWorld
 		return Packet;
 	}
 
-	bool FCombatState::MayAttack(const FWorldState& World, uint32_t Id)
+	bool FCombatState::MayAttack(const FWorldState& World, uint32_t Id, const FParty* Party)
 	{
 		const auto Target = World.Entities().find(Id);
-		if (bForceAttack || Target == World.Entities().end() || Target->second.Info.kind() != portfolio::mmo::ENTITY_KIND_PLAYER || Id == World.SelfId())
+		const bool bSummon = Target != World.Entities().end() && Target->second.Info.kind() == portfolio::mmo::ENTITY_KIND_SUMMON;
+		if (bSummon && (Target->second.Info.summon_owner_id() == World.SelfId() || (Party && Party->Contains(Target->second.Info.summon_owner_id()))))
+		{
+			return false;
+		}
+		if (bForceAttack || Target == World.Entities().end() || (Target->second.Info.kind() != portfolio::mmo::ENTITY_KIND_PLAYER && !bSummon) || Id == World.SelfId())
 		{
 			return true;
 		}
@@ -107,8 +116,10 @@ namespace MmoWorld
 		case portfolio::mmo::Packet::kDamaged:
 		{
 			const portfolio::mmo::Damaged& Damaged = Packet.damaged();
+			// 내 소환수가 주거나 받은 피해도 내 것이다(95).
+			const auto Mine = [this, Me](uint32_t Id) { return Id == Me || (Id != 0 && Id == MySummonId); };
 			Events.push_back({ ECombatEventKind::Damage, Damaged.attacker_id(), Damaged.target_id(), Damaged.damage(), Damaged.critical(),
-				Damaged.attacker_id() == Me || Damaged.target_id() == Me });
+				Mine(Damaged.attacker_id()) || Mine(Damaged.target_id()) });
 			break;
 		}
 		case portfolio::mmo::Packet::kDied:
@@ -134,10 +145,21 @@ namespace MmoWorld
 		case portfolio::mmo::Packet::kEntitiesEnter:
 			// 죽은 채 넘겨받은 내 개체(46): 부활할 때까지 요청을 만들지 않는다.
 			bSelfDead |= World.SelfState().bDead;
+			for (const portfolio::mmo::EntityEnter& Enter : Packet.entities_enter().entities())
+			{
+				if (Enter.kind() == portfolio::mmo::ENTITY_KIND_SUMMON && Enter.summon_owner_id() == Me)
+				{
+					MySummonId = Enter.id();
+				}
+			}
 			break;
 		case portfolio::mmo::Packet::kEntitiesLeave:
 			for (const uint32_t Id : Packet.entities_leave().ids())
 			{
+				if (Id == MySummonId)
+				{
+					MySummonId = 0;
+				}
 				if (Id == TargetId)
 				{
 					Release(Stop);
@@ -218,6 +240,11 @@ namespace MmoWorld
 	void FCombatState::Release(std::optional<portfolio::mmo::Packet>& Stop)
 	{
 		Stop = StopAttack();
+		// 내 소환수가 있으면 공격 중이 아니어도 소환수가 풀린 대상을 계속 치지 않게 한다(95).
+		if (!Stop && MySummonId != 0)
+		{
+			Stop = StopPacket();
+		}
 		TargetId = 0;
 	}
 
@@ -286,6 +313,7 @@ namespace MmoWorld
 		Awaiting = 0;
 		bHoldMove = false;
 		SkillCooldowns.Reset();
+		MySummonId = 0;
 		Events.clear();
 		Notices.clear();
 		Flying.clear();
@@ -511,7 +539,7 @@ namespace MmoWorld
 				return FAttack{ Row->attack_range(), Row->hit_delay_ms(), Row->has_projectile_speed() ? Row->projectile_speed() : 0 };
 			}
 		}
-		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER)
+		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER || Info.kind() == portfolio::mmo::ENTITY_KIND_SUMMON)
 		{
 			if (const portfolio::mmo::data::MonstersRow* Row = Data.Monster(Info.template_id()))
 			{

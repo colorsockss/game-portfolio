@@ -47,6 +47,7 @@ namespace PortfolioMmo.Server
                 Player player => WithEquipment(Of(_data.Level(player.Class, player.Level)), player),
                 Monster monster => new Stats(monster.Template.MaxHp, 0, monster.Template.Attack, monster.Template.Defense),
                 Guard guard => new Stats(0, 0, guard.Template.Attack, 0),
+                Summon summon => new Stats(summon.Template.MaxHp, 0, summon.Template.Attack, summon.Template.Defense),
                 _ => throw new ArgumentException($"{creature.Kind} has no stats.", nameof(creature)),
             };
 

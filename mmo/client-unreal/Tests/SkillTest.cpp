@@ -400,6 +400,57 @@ namespace
 		Expect(Hit.Packets.size() == 1 && Hit.Packets[0].use_skill().target_id() == Other && Hit.Packets[0].use_skill().force_attack(), "the skill carries the force flag");
 	}
 
+	/**
+	 * 소환수(95): 남의 소환수는 강제 공격을 켜야 치고, 내 소환수와 파티원의 소환수는 치지 않는다. 내 소환수가 있으면 공격 중이 아니어도 대상이 풀리거나 바뀔 때
+	 * AttackStop을 보내고, 내가 죽어서 풀린 때는 보내지 않는다. 내 소환수가 주거나 받은 피해는 내 것이다.
+	 */
+	void SummonsChangeTargetingAndStops()
+	{
+		FScene Scene;
+		const auto Summon = [&Scene](uint32_t Id, uint32_t Owner)
+		{
+			Packet Enter;
+			portfolio::mmo::EntityEnter* Entity = Enter.mutable_entities_enter()->add_entities();
+			Entity->set_id(Id);
+			Entity->set_kind(portfolio::mmo::ENTITY_KIND_SUMMON);
+			Entity->set_summon_owner_id(Owner);
+			Entity->set_hp(10);
+			Entity->set_max_hp(10);
+			Scene.Apply(Enter);
+		};
+		Scene.Apply(Enter(5, portfolio::mmo::ENTITY_KIND_PLAYER, 3 * M, 0));
+		Summon(7, Me);
+		Summon(8, 5);
+		Expect(!Scene.Combat.MayAttack(Scene.World, 7) && !Scene.Combat.TakeForceNotice(), "my own summon is never attacked");
+		Expect(!Scene.Combat.MayAttack(Scene.World, 8) && Scene.Combat.TakeForceNotice(), "another player's summon needs force");
+		MmoWorld::FParty Party;
+		Packet State;
+		State.mutable_party_state()->set_party_id(1);
+		State.mutable_party_state()->add_members()->set_id(Me);
+		State.mutable_party_state()->add_members()->set_id(5);
+		Party.Apply(State);
+		Scene.Combat.SetForceAttack(true);
+		Expect(Scene.Combat.MayAttack(Scene.World, 8) && !Scene.Combat.MayAttack(Scene.World, 8, &Party), "a party member's summon is never attacked");
+		Expect(Scene.World.MySummon() && Scene.World.MySummon()->Id == 7, "the model knows my summon");
+
+		Scene.Combat.SetTarget(Monster);
+		const std::optional<Packet> Stop = Scene.Combat.SetTarget(0);
+		Expect(Stop && Stop->has_attack_stop() && !Scene.Combat.IsAttacking(), "with a summon out releasing the target sends AttackStop");
+		Packet Hit;
+		Hit.mutable_damaged()->set_attacker_id(7);
+		Hit.mutable_damaged()->set_target_id(Monster);
+		Hit.mutable_damaged()->set_damage(4);
+		Scene.Apply(Hit);
+		const std::vector<MmoWorld::FCombatEvent> Events = Scene.Combat.TakeEvents();
+		Expect(!Events.empty() && Events.back().bMine, "my summon's damage is mine");
+
+		Scene.Combat.SetTarget(Monster);
+		Packet Died;
+		Died.mutable_died()->set_id(Me);
+		const std::optional<Packet> AfterDeath = Scene.Apply(Died);
+		Expect(!AfterDeath && Scene.Combat.Target() == 0, "my death releases the target without AttackStop");
+	}
+
 	/** 죽은 채 넘겨받은 내 개체(46): EntityEnter가 죽었다고 오면 내 상태가 죽음이 되고 사망 화면의 사건이 한 번 나며, 공격과 스킬을 보내지 않는다. */
 	void ADeadTakeOverStartsDead()
 	{
@@ -669,6 +720,7 @@ int main(int ArgumentCount, char** Arguments)
 	TargetSkillsApproachAndSelfSkillsFireInPlace();
 	PlayersNeedForceAttack();
 	ADeadTakeOverStartsDead();
+	SummonsChangeTargetingAndStops();
 	CastsStopAndIgnoreTheHeldMove();
 	LineProjectilesFollowTheirLaunch();
 	LineSkillsFireWithOrWithoutATarget();

@@ -22,6 +22,7 @@ namespace PortfolioMmo.Server
         private readonly PathFinder _paths;
         private readonly List<Monster> _monsters = new List<Monster>();
         private readonly List<Guard> _guards = new List<Guard>();
+        private readonly List<Summon> _summons = new List<Summon>();
         private readonly List<Entity> _query = new List<Entity>();
 
         /// <summary>
@@ -35,6 +36,13 @@ namespace PortfolioMmo.Server
         private readonly uint _returnRegenPercent;
         private readonly uint _pauseMinTicks;
         private readonly uint _pauseMaxTicks;
+        private readonly int _followDistance;
+        private readonly int _leashDistance;
+
+        /// <summary>
+        /// 소환수(95)가 대상을 버릴지 보는 CanAttack(주인, 대상). World가 만든 뒤에 잇는다.
+        /// </summary>
+        public CombatSystem? Combat { get; set; }
 
         /// <summary>
         /// 보스의 범위 공격(43). 추적·공격 상태에서 건다.
@@ -57,6 +65,8 @@ namespace PortfolioMmo.Server
             _returnRegenPercent = constants.ReturnRegenPercent;
             _pauseMinTicks = Units.TicksFromMilliseconds(constants.WanderPauseMinMs);
             _pauseMaxTicks = Units.TicksFromMilliseconds(constants.WanderPauseMaxMs);
+            _followDistance = ToUnits(constants.SummonFollowDistance);
+            _leashDistance = ToUnits(constants.SummonLeashDistance);
         }
 
         public IReadOnlyList<Monster> Monsters => _monsters;
@@ -79,6 +89,16 @@ namespace PortfolioMmo.Server
             _guards.Add(guard);
         }
 
+        public void Add(Summon summon)
+        {
+            _summons.Add(summon);
+        }
+
+        public void Remove(Summon summon)
+        {
+            _summons.Remove(summon);
+        }
+
         public void Step(uint tick, uint elapsedTicks)
         {
             bool regenerate = _second.Due(tick);
@@ -94,6 +114,14 @@ namespace PortfolioMmo.Server
             foreach (Guard guard in _guards)
             {
                 Think(guard, tick, elapsedTicks);
+            }
+
+            foreach (Summon summon in _summons)
+            {
+                if (!summon.Dead && !summon.Stunned)
+                {
+                    Think(summon, elapsedTicks);
+                }
             }
         }
 
@@ -112,8 +140,8 @@ namespace PortfolioMmo.Server
 
         private void Think(Monster monster, uint tick, uint elapsedTicks, bool regenerate)
         {
-            // 월드에서 빠진 플레이어는 표에서 뺀다(플레이어의 번호는 다시 쓰지 않음). 죽은 플레이어는 25가 뺀다.
-            monster.Damage.RemoveWhere(id => _entities.Find(id) is not Player);
+            // 월드에서 빠진 플레이어는 표에서 뺀다(플레이어의 번호는 다시 쓰지 않음). 죽은 플레이어는 25가, 소환수의 줄은 95가 옮기거나 뺀다.
+            monster.Damage.RemoveWhere(id => _entities.Find(id) is not (Player or Summon));
             double step = Step(monster, elapsedTicks);
             // 공격 상태는 아래의 공격 갈래에서만 켠다(치는 것은 CombatSystem).
             monster.AttackTarget = 0;
@@ -150,7 +178,7 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            var target = (Player)_entities.Find(targetId.Value)!;
+            var target = (Creature)_entities.Find(targetId.Value)!;
             monster.Wandering = false;
             int range = ToUnits(monster.Template.AttackRange);
             if ((DistanceSquared(monster.X, monster.Z, target.X, target.Z) <= Square(range)) && _field.HasLine(monster.X, monster.Z, target.X, target.Z))
@@ -165,7 +193,7 @@ namespace PortfolioMmo.Server
             }
 
             monster.State = MonsterState.Chase;
-            if (!Chase(monster, target, step, range))
+            if (!Chase(monster, target, step, range, ToUnits(monster.Template.ChaseLimit)))
             {
                 // 길이 없으면 그 대상을 5초 동안 건너뛴다.
                 MarkUnreachable(monster, target.Id, tick);
@@ -220,11 +248,74 @@ namespace PortfolioMmo.Server
             }
 
             guard.State = MonsterState.Chase;
-            if (!Chase(guard, target, step, range))
+            if (!Chase(guard, target, step, range, ToUnits(guard.Template.ChaseLimit)))
             {
                 StartReturn(guard);
                 Return(guard, step, false);
             }
+        }
+
+        /// <summary>
+        /// 소환수(95): 주인에게서 떨어질 수 있는 거리를 넘었으면 대상을 버리고 주인의 자리로 옮긴다. 대상이 죽었거나 빠졌거나 복귀 중인 몬스터이거나
+        /// CanAttack(주인, 대상)이 거짓이거나 주인에게서 그 거리 넘게 떨어졌으면 버린다. 대상이 있으면 몬스터의 추적처럼 쫓아(길은 주인 둘레 그 거리 안) 사거리 안이고
+        /// 선이 트이면 공격 상태로 서고, 길이 없으면 대상을 버린다. 대상이 없으면 주인과 따라가 서는 거리 넘게 떨어졌을 때 주인 쪽으로 걷고, 길이 없으면 주인의 자리로 옮긴다.
+        /// </summary>
+        private void Think(Summon summon, uint elapsedTicks)
+        {
+            double step = Step(summon, elapsedTicks);
+            summon.AttackTarget = 0;
+            Player owner = summon.Owner;
+            if (DistanceSquared(summon.X, summon.Z, owner.X, owner.Z) > Square(_leashDistance))
+            {
+                Recall(summon);
+                return;
+            }
+
+            if ((summon.Target != 0) && ((_entities.Find(summon.Target) is not Creature { Dead: false } target) || CombatSystem.IsReturning(target)
+                || !Combat!.CanAttack(owner, target) || (DistanceSquared(target.X, target.Z, owner.X, owner.Z) > Square(_leashDistance))))
+            {
+                summon.Target = 0;
+                summon.Path.Clear();
+            }
+
+            if (_entities.Find(summon.Target) is Creature victim)
+            {
+                int range = ToUnits(summon.Template.AttackRange);
+                if ((DistanceSquared(summon.X, summon.Z, victim.X, victim.Z) <= Square(range)) && _field.HasLine(summon.X, summon.Z, victim.X, victim.Z))
+                {
+                    summon.State = MonsterState.Attack;
+                    summon.AttackTarget = victim.Id;
+                    summon.Path.Clear();
+                    Face(summon, victim.X - summon.X, victim.Z - summon.Z);
+                    return;
+                }
+
+                summon.State = MonsterState.Chase;
+                if (Chase(summon, victim, step, range, _leashDistance))
+                {
+                    return;
+                }
+
+                // 주인 둘레에 길이 없는 대상은 버리고 따라가기로 돌아간다(피해 표와 복귀가 없음).
+                summon.Target = 0;
+            }
+
+            summon.State = MonsterState.Idle;
+            if ((DistanceSquared(summon.X, summon.Z, owner.X, owner.Z) > Square(_followDistance)) && !Chase(summon, owner, step, _followDistance, _leashDistance))
+            {
+                Recall(summon);
+            }
+        }
+
+        /// <summary>
+        /// 소환수를 주인의 자리로 옮긴다(순간 이동 표시).
+        /// </summary>
+        private void Recall(Summon summon)
+        {
+            summon.Target = 0;
+            summon.Path.Clear();
+            Place(summon, summon.Owner.X, summon.Owner.Z);
+            summon.Teleported = true;
         }
 
         /// <summary>
@@ -272,18 +363,18 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 칠 수 있는 대상: 살아 있고, 안전 지대 밖이고, "닿을 수 없음"이 아니다. 안전 지대 안의 플레이어는 표에서 지우지 않고 건너뛴다.
+        /// 칠 수 있는 대상(플레이어나 소환수. 95): 살아 있고, 안전 지대 밖이고, "닿을 수 없음"이 아니다. 안전 지대 안의 개체는 표에서 지우지 않고 건너뛴다.
         /// </summary>
-        private bool Selectable(Monster monster, uint playerId)
+        private bool Selectable(Monster monster, uint id)
         {
-            return (_entities.Find(playerId) is Player { Dead: false } player) && !_field.IsSafe(player.X, player.Z) && !monster.Unreachable.ContainsKey(playerId);
+            return (_entities.Find(id) is Creature { Dead: false } target and (Player or Summon)) && !_field.IsSafe(target.X, target.Z) && !monster.Unreachable.ContainsKey(id);
         }
 
         /// <summary>
-        /// 대상까지 걷는 선이 트였으면 곧게 사거리 조금 안까지, 막혔으면 놓인 점에서 추적 한계 안의 칸으로 찾은 길을 따라간다.
+        /// 대상까지 걷는 선이 트였으면 곧게 사거리 조금 안까지, 막혔으면 놓인 점(Home)에서 radius(1/32 m) 안의 칸으로 찾은 길을 따라간다.
         /// 대상이 길을 찾은 때의 자리에서 다시 찾는 거리를 넘게 옮기기 전에는 그 길을 쓴다. 길이 없으면 false다(몬스터는 대상을 건너뛰고 경비병은 복귀).
         /// </summary>
-        private bool Chase(AiCreature mob, Player target, double step, int range)
+        private bool Chase(AiCreature mob, Creature target, double step, int range, int radius)
         {
             if (_field.CanWalkLine(mob.X, mob.Z, target.X, target.Z, mob.WalkerKind))
             {
@@ -298,7 +389,7 @@ namespace PortfolioMmo.Server
                 || (DistanceSquared(target.X, target.Z, mob.PathGoal.X, mob.PathGoal.Z) > Square(_repathDistance));
             if (stale)
             {
-                if (!_paths.Find(mob.X, mob.Z, target.X, target.Z, mob.WalkerKind, mob.Home.X, mob.Home.Z, ToUnits(mob.Template.ChaseLimit), mob.Path))
+                if (!_paths.Find(mob.X, mob.Z, target.X, target.Z, mob.WalkerKind, mob.Home.X, mob.Home.Z, radius, mob.Path))
                 {
                     mob.Path.Clear();
                     return false;

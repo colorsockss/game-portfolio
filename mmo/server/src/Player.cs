@@ -90,6 +90,11 @@ namespace PortfolioMmo.Server
         internal int NextChatTick { get; set; }
 
         /// <summary>
+        /// 내 소환수(95). 없으면 null이다. SummonSystem만 바꾼다.
+        /// </summary>
+        internal Summon? Summon { get; set; }
+
+        /// <summary>
         /// 파티 번호(42). 없으면 0이다. PartySystem만 바꾼다.
         /// </summary>
         internal uint PartyId { get; set; }

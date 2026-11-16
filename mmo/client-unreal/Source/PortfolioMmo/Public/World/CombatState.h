@@ -117,15 +117,18 @@ namespace MmoWorld
 		void SetForceAttack(bool bOn) { bForceAttack = bOn; }
 
 		/**
-		 * 대상(Id)을 기본 공격하거나 그에게 피해·상태 이상 스킬을 써도 되는가(44): 플레이어면 강제 공격이 켜져 있어야 한다. 아니면 false이고
-		 * "강제 공격을 켜야 함" 알림을 쌓는다(TakeForceNotice). 몬스터와 모르는 개체는 늘 참이다.
+		 * 대상(Id)을 기본 공격하거나 그에게 피해·상태 이상 스킬을 써도 되는가(44): 플레이어와 남의 소환수(95)는 강제 공격이 켜져 있어야 한다. 아니면 false이고
+		 * "강제 공격을 켜야 함" 알림을 쌓는다(TakeForceNotice). 내 소환수와 파티원의 소환수는 늘 거짓이고(알림 없음), 몬스터와 모르는 개체는 늘 참이다.
 		 */
-		bool MayAttack(const FWorldState& World, uint32_t Id);
+		bool MayAttack(const FWorldState& World, uint32_t Id, const FParty* Party = nullptr);
 
 		/** 지난번에 꺼낸 뒤로 강제 공격이 꺼져 있어 플레이어를 치지 못한 적이 있다(HUD가 알림을 한 번 띄움). */
 		bool TakeForceNotice() { const bool bNotice = bForceNotice; bForceNotice = false; return bNotice; }
 
-		/** 대상을 고른다(0이면 푼다). 공격 중에 풀거나 다른 대상으로 바꾸면 공격을 끝내고 AttackStop을 돌려준다. */
+		/**
+		 * 대상을 고른다(0이면 푼다). 공격 중에 풀거나 다른 대상으로 바꾸면 공격을 끝내고 AttackStop을 돌려준다. 내 소환수(95)가 있으면 공격 중이 아니어도
+		 * 대상이 풀리거나 바뀔 때 AttackStop을 돌려준다(소환수가 풀린 대상을 계속 치지 않게).
+		 */
 		std::optional<portfolio::mmo::Packet> SetTarget(uint32_t Id);
 
 		/** 대상을 공격하기 시작한다(다가간 뒤, 밀린 위치를 보낸 뒤). 이미 공격 중이거나 내가 죽어 있으면 nullopt. 첫 공격이면 내 공격 동작을 미리 쌓는다. */
@@ -241,6 +244,8 @@ namespace MmoWorld
 		bool bHoldMove = false;
 		bool bForceAttack = false;
 		bool bForceNotice = false;
+		/** 내 소환수의 번호(95. 0이면 없음). 들어옴과 나감으로 맞춘다. */
+		uint32_t MySummonId = 0;
 		FCooldowns SkillCooldowns;
 		std::vector<FCombatEvent> Events;
 		std::vector<portfolio::mmo::FailReason> Notices;

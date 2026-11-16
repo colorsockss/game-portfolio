@@ -223,7 +223,7 @@ namespace PortfolioMmo.Data {
     public const int SpeedFieldNumber = 8;
     private double speed_;
     /// <summary>
-    /// 이동 속도(m/s). 플레이어의 최대 속도(6 m/s)를 넘지 않는다
+    /// 이동 속도(m/s). 플레이어의 최대 속도(6 m/s)를 넘지 않는다. 소환수(95)만 주인을 따라잡게 더 빠를 수 있다
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

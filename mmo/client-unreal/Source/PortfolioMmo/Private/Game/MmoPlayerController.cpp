@@ -571,7 +571,7 @@ void AMmoPlayerController::Engage()
 {
 	// 플레이어는 강제 공격을 켠 채일 때만 다가가 공격한다(44. 아니면 알림만).
 	MmoWorld::FCombatState& Combat = Session().Combat();
-	bEngaged = Combat.Target() != 0 && Combat.MayAttack(Session().World(), Combat.Target());
+	bEngaged = Combat.Target() != 0 && Combat.MayAttack(Session().World(), Combat.Target(), &Session().Party());
 	// 길은 다음 UpdateEngagement가 찾는다.
 	EngagedGoal = { MIN_int32, MIN_int32 };
 	PathFollower.Start({});
@@ -693,7 +693,8 @@ void AMmoPlayerController::PressAt(const FVector2D& ScreenPosition, bool bWalk)
 			InteractGoal = { MIN_int32, MIN_int32 };
 		}
 		else if (Found != Entities.end() && Picked->EntityId == Session().Combat().Target()
-			&& (Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER || Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER))
+			&& (Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER || Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER
+				|| Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_SUMMON))
 		{
 			Engage();
 		}

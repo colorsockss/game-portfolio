@@ -204,7 +204,7 @@ namespace PortfolioMmo.Server
             double length = Math.Sqrt((dx * dx) + (dz * dz));
             int centerX = (int)Math.Round((ax + bx) / 2);
             int centerZ = (int)Math.Round((az + bz) / 2);
-            _grid.Query(centerX, centerZ, (int)Math.Ceiling(length / 2) + _maxRadius + 1, entity => (entity is Monster) || (force && (entity is Player)), _query);
+            _grid.Query(centerX, centerZ, (int)Math.Ceiling(length / 2) + _maxRadius + 1, entity => (entity is Monster) || (force && (entity is Player or Summon)), _query);
             Creature? best = null;
             double bestT = 1;
             foreach (Entity entity in _query)
@@ -215,7 +215,7 @@ namespace PortfolioMmo.Server
                     continue;
                 }
 
-                double radius = target is Monster monster ? monster.Template.Radius * Units.PerMeter : _playerRadius;
+                double radius = target is AiCreature mob ? mob.Template.Radius * Units.PerMeter : _playerRadius;
                 double t = FirstTouch(ax, az, dx, dz, target.X, target.Z, radius);
                 if ((t >= 0) && ((best == null) || (t < bestT)))
                 {

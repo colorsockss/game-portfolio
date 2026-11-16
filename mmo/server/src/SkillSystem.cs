@@ -24,6 +24,11 @@ namespace PortfolioMmo.Server
         private readonly ProjectileSystem _projectiles;
         private readonly PkSystem _pk;
         private readonly uint _combatTicks;
+
+        /// <summary>
+        /// 소환 스킬(95)의 발동. World가 만든 뒤에 잇는다.
+        /// </summary>
+        public SummonSystem? Summons { get; set; }
         private readonly List<Entity> _query = new List<Entity>();
 
         public SkillSystem(
@@ -314,6 +319,7 @@ namespace PortfolioMmo.Server
                 if (SingleTarget(skill) && (target is Creature victim))
                 {
                     _pk.Attacked(caster, victim, tick);
+                    SummonSystem.Assist(caster, victim);
                 }
             }
 
@@ -371,6 +377,9 @@ namespace PortfolioMmo.Server
                 case SkillKind.Heal:
                     Recipient(caster, targetId)?.Restore((uint)Math.Floor(caster.Stats.Attack * skill.Coefficient), 0);
                     break;
+                case SkillKind.Summon when caster is Player owner:
+                    Summons!.Call(owner, skill, tick);
+                    break;
                 default:
                     throw new InvalidOperationException($"Skill {skill.Id} has unknown kind {skill.Kind}.");
             }
@@ -394,7 +403,7 @@ namespace PortfolioMmo.Server
             }
 
             int radius = (int)Math.Round(skill.Radius * Units.PerMeter);
-            _grid.Query(center.X, center.Z, radius, entity => (entity is Monster) || (force && (entity is Player)), _query);
+            _grid.Query(center.X, center.Z, radius, entity => (entity is Monster) || (force && (entity is Player or Summon)), _query);
             foreach (Entity entity in _query)
             {
                 var target = (Creature)entity;

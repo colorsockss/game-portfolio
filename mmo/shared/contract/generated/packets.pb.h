@@ -1142,6 +1142,7 @@ enum EntityKind : int {
   ENTITY_KIND_NPC = 3,
   ENTITY_KIND_GATHER_NODE = 4,
   ENTITY_KIND_GROUND_ITEM = 5,
+  ENTITY_KIND_SUMMON = 6,
   EntityKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   EntityKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -1152,11 +1153,11 @@ extern const uint32_t EntityKind_internal_data_[];
 inline constexpr EntityKind EntityKind_MIN =
     static_cast<EntityKind>(0);
 inline constexpr EntityKind EntityKind_MAX =
-    static_cast<EntityKind>(5);
+    static_cast<EntityKind>(6);
 [[nodiscard]] inline bool EntityKind_IsValid(int value) {
-  return 0 <= value && value <= 5;
+  return 0 <= value && value <= 6;
 }
-inline constexpr int EntityKind_ARRAYSIZE = 5 + 1;
+inline constexpr int EntityKind_ARRAYSIZE = 6 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 EntityKind_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(EntityKind) {
@@ -1171,7 +1172,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& EntityKind_Name(EntityKind value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<EntityKind_descriptor, 0, 5>(
+  return ::google::protobuf::internal::NameOfDenseEnum<EntityKind_descriptor, 0, 6>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool EntityKind_Parse(
@@ -18731,6 +18732,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityEnter final : public ::google
     kCountFieldNumber = 22,
     kEnchantFieldNumber = 23,
     kOwnerOnlyEndTickFieldNumber = 26,
+    kSummonOwnerIdFieldNumber = 28,
+    kSummonEndTickFieldNumber = 29,
     kOwnerPlayerIdFieldNumber = 24,
     kOwnerPartyIdFieldNumber = 25,
   };
@@ -19004,6 +19007,26 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityEnter final : public ::google
   void _internal_set_owner_only_end_tick(::uint32_t value);
 
   public:
+  // uint32 summon_owner_id = 28;
+  void clear_summon_owner_id() ;
+  [[nodiscard]] ::uint32_t summon_owner_id() const;
+  void set_summon_owner_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_summon_owner_id() const;
+  void _internal_set_summon_owner_id(::uint32_t value);
+
+  public:
+  // uint32 summon_end_tick = 29;
+  void clear_summon_end_tick() ;
+  [[nodiscard]] ::uint32_t summon_end_tick() const;
+  void set_summon_end_tick(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_summon_end_tick() const;
+  void _internal_set_summon_end_tick(::uint32_t value);
+
+  public:
   // uint32 owner_player_id = 24;
   [[nodiscard]] bool has_owner_player_id() const;
   void clear_owner_player_id() ;
@@ -19036,7 +19059,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityEnter final : public ::google
   [[nodiscard]] inline bool has_owner() const;
   inline void clear_has_owner();
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 27,
+      ::google::protobuf::internal::TcParseTable<5, 29,
                           2, 62,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -19090,6 +19113,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityEnter final : public ::google
     ::uint32_t count_;
     ::uint32_t enchant_;
     ::uint32_t owner_only_end_tick_;
+    ::uint32_t summon_owner_id_;
+    ::uint32_t summon_end_tick_;
     union OwnerUnion {
       constexpr OwnerUnion() : _constinit_{} {}
       ::google::protobuf::internal::ConstantInitialized _constinit_;
@@ -30038,6 +30063,54 @@ inline bool EntityEnter::_internal_dropped_by_player() const {
 inline void EntityEnter::_internal_set_dropped_by_player(bool value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.dropped_by_player_ = value;
+}
+
+// uint32 summon_owner_id = 28;
+inline void EntityEnter::clear_summon_owner_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_owner_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x02000000U);
+}
+inline ::uint32_t EntityEnter::summon_owner_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.summon_owner_id)
+  return _internal_summon_owner_id();
+}
+inline void EntityEnter::set_summon_owner_id(::uint32_t value) {
+  _internal_set_summon_owner_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x02000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.summon_owner_id)
+}
+inline ::uint32_t EntityEnter::_internal_summon_owner_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.summon_owner_id_;
+}
+inline void EntityEnter::_internal_set_summon_owner_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_owner_id_ = value;
+}
+
+// uint32 summon_end_tick = 29;
+inline void EntityEnter::clear_summon_end_tick() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_end_tick_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x04000000U);
+}
+inline ::uint32_t EntityEnter::summon_end_tick() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.summon_end_tick)
+  return _internal_summon_end_tick();
+}
+inline void EntityEnter::set_summon_end_tick(::uint32_t value) {
+  _internal_set_summon_end_tick(value);
+  SetHasBit(_impl_._has_bits_[0], 0x04000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.summon_end_tick)
+}
+inline ::uint32_t EntityEnter::_internal_summon_end_tick() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.summon_end_tick_;
+}
+inline void EntityEnter::_internal_set_summon_end_tick(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_end_tick_ = value;
 }
 
 inline bool EntityEnter::has_owner() const {

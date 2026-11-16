@@ -51,11 +51,11 @@ constexpr SkillsRow::ParseTableT_ SkillsRow::InternalGenerateParseTable_(const :
     {
       PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_._has_bits_),
       0, // no _extensions_
-      16, 120,  // max_field_number, fast_idx_mask
+      18, 248,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294901760,  // skipmap
+      4294705152,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      16,  // num_field_entries
+      18,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -65,10 +65,7 @@ constexpr SkillsRow::ParseTableT_ SkillsRow::InternalGenerateParseTable_(const :
       ::_pbi::TcParser::GetTable<::portfolio::mmo::data::SkillsRow>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      // optional uint32 effect = 16;
-      {::_pbi::TcParser::FastV32S2,
-       {384, 15, 0,
-        PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.effect_)}},
+      {::_pbi::TcParser::MiniParse, {}},
       // uint32 id = 1;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(SkillsRow, _impl_.id_), 1>(),
        {8, 1, 0,
@@ -129,6 +126,31 @@ constexpr SkillsRow::ParseTableT_ SkillsRow::InternalGenerateParseTable_(const :
       {::_pbi::TcParser::FastF64S1,
        {121, 14, 0,
         PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.projectile_speed_)}},
+      // optional uint32 effect = 16;
+      {::_pbi::TcParser::FastV32S2,
+       {384, 15, 0,
+        PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.effect_)}},
+      // optional uint32 summon_monster = 17;
+      {::_pbi::TcParser::FastV32S2,
+       {392, 16, 0,
+        PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.summon_monster_)}},
+      // optional uint32 summon_ms = 18;
+      {::_pbi::TcParser::FastV32S2,
+       {400, 17, 0,
+        PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.summon_ms_)}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
     }}, {{
       65535, 65535
     }}, {{
@@ -164,6 +186,10 @@ constexpr SkillsRow::ParseTableT_ SkillsRow::InternalGenerateParseTable_(const :
       {PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.projectile_speed_), _Internal::kHasBitsOffset + 14, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
       // optional uint32 effect = 16;
       {PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.effect_), _Internal::kHasBitsOffset + 15, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // optional uint32 summon_monster = 17;
+      {PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.summon_monster_), _Internal::kHasBitsOffset + 16, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // optional uint32 summon_ms = 18;
+      {PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.summon_ms_), _Internal::kHasBitsOffset + 17, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -195,7 +221,9 @@ inline constexpr SkillsRow::Impl_::Impl_(
         mp_{0u},
         level_{0u},
         projectile_speed_{0},
-        effect_{0u} {}
+        effect_{0u},
+        summon_monster_{0u},
+        summon_ms_{0u} {}
 
 template <typename>
 constexpr SkillsRow::SkillsRow(::_pbi::ConstantInitialized,
@@ -451,7 +479,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SkillsRow, _impl_._has_bits_),
-        19, // hasbit index offset
+        21, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SkillsRow, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SkillsRow, _impl_.name_key_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SkillsRow, _impl_.class__),
@@ -468,6 +496,8 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SkillsRow, _impl_.level_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SkillsRow, _impl_.projectile_speed_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SkillsRow, _impl_.effect_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SkillsRow, _impl_.summon_monster_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SkillsRow, _impl_.summon_ms_),
         1,
         0,
         2,
@@ -484,6 +514,8 @@ const ::uint32_t
         13,
         14,
         15,
+        16,
+        17,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Skills, _impl_._has_bits_),
         4, // hasbit index offset
@@ -494,7 +526,7 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::data::SkillsRow)},
-        {35, sizeof(::portfolio::mmo::data::Skills)},
+        {39, sizeof(::portfolio::mmo::data::Skills)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -504,7 +536,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 const char descriptor_table_protodef_Skills_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
     "\n\014Skills.proto\022\022portfolio.mmo.data\032\013Enum"
-    "s.proto\"\266\003\n\tSkillsRow\022\n\n\002id\030\001 \001(\r\022\020\n\010nam"
+    "s.proto\"\214\004\n\tSkillsRow\022\n\n\002id\030\001 \001(\r\022\020\n\010nam"
     "e_key\030\002 \001(\t\022\022\n\005class\030\003 \001(\rH\000\210\001\001\022+\n\004kind\030"
     "\004 \001(\0162\035.portfolio.mmo.data.SkillKind\022\023\n\013"
     "coefficient\030\005 \001(\001\022\r\n\005range\030\006 \001(\001\022\023\n\006radi"
@@ -513,11 +545,13 @@ const char descriptor_table_protodef_Skills_2eproto[] ABSL_ATTRIBUTE_SECTION_VAR
     "\001(\r\022\017\n\007cast_ms\030\n \001(\r\022\024\n\014hit_delay_ms\030\013 \001"
     "(\r\022\024\n\007warn_ms\030\014 \001(\rH\002\210\001\001\022\n\n\002mp\030\r \001(\r\022\r\n\005"
     "level\030\016 \001(\r\022\035\n\020projectile_speed\030\017 \001(\001H\003\210"
-    "\001\001\022\023\n\006effect\030\020 \001(\rH\004\210\001\001B\010\n\006_classB\t\n\007_ra"
-    "diusB\n\n\010_warn_msB\023\n\021_projectile_speedB\t\n"
-    "\007_effect\"5\n\006Skills\022+\n\004rows\030\001 \003(\0132\035.portf"
-    "olio.mmo.data.SkillsRowB\024\252\002\021PortfolioMmo"
-    ".Datab\006proto3"
+    "\001\001\022\023\n\006effect\030\020 \001(\rH\004\210\001\001\022\033\n\016summon_monste"
+    "r\030\021 \001(\rH\005\210\001\001\022\026\n\tsummon_ms\030\022 \001(\rH\006\210\001\001B\010\n\006"
+    "_classB\t\n\007_radiusB\n\n\010_warn_msB\023\n\021_projec"
+    "tile_speedB\t\n\007_effectB\021\n\017_summon_monster"
+    "B\014\n\n_summon_ms\"5\n\006Skills\022+\n\004rows\030\001 \003(\0132\035"
+    ".portfolio.mmo.data.SkillsRowB\024\252\002\021Portfo"
+    "lioMmo.Datab\006proto3"
 };
 static const ::_pbi::DescriptorTable* PROTOBUF_NONNULL const
     descriptor_table_Skills_2eproto_deps[1] = {
@@ -527,7 +561,7 @@ static ::absl::once_flag descriptor_table_Skills_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Skills_2eproto = {
     false,
     false,
-    573,
+    659,
     descriptor_table_protodef_Skills_2eproto,
     "Skills.proto",
     &descriptor_table_Skills_2eproto_once,
@@ -579,9 +613,9 @@ SkillsRow::SkillsRow(
                offsetof(Impl_, id_),
            reinterpret_cast<const char*>(&from._impl_) +
                offsetof(Impl_, id_),
-           offsetof(Impl_, effect_) -
+           offsetof(Impl_, summon_ms_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::effect_));
+               sizeof(Impl_::summon_ms_));
 
   // @@protoc_insertion_point(copy_constructor:portfolio.mmo.data.SkillsRow)
 }
@@ -595,9 +629,9 @@ inline void SkillsRow::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, id_),
            0,
-           offsetof(Impl_, effect_) -
+           offsetof(Impl_, summon_ms_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::effect_));
+               sizeof(Impl_::summon_ms_));
 }
 SkillsRow::~SkillsRow() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.SkillsRow)
@@ -663,6 +697,13 @@ PROTOBUF_NOINLINE void SkillsRow::Clear() {
                  reinterpret_cast<char*>(&this_._impl_.effect_) -
                  reinterpret_cast<char*>(&this_._impl_.cooldown_ms_)) +
                  sizeof(_impl_.effect_));
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x00030000U)) {
+    ::memset(&this_._impl_.summon_monster_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.summon_ms_) -
+                 reinterpret_cast<char*>(&this_._impl_.summon_monster_)) +
+                 sizeof(_impl_.summon_ms_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -822,6 +863,20 @@ PROTOBUF_NOINLINE void SkillsRow::Clear() {
         16, this_._internal_effect(), target);
   }
 
+  // optional uint32 summon_monster = 17;
+  if (CheckHasBit(cached_has_bits, 0x00010000U)) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        17, this_._internal_summon_monster(), target);
+  }
+
+  // optional uint32 summon_ms = 18;
+  if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        18, this_._internal_summon_ms(), target);
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -940,6 +995,18 @@ PROTOBUF_NOINLINE void SkillsRow::Clear() {
                                       this_._internal_effect());
     }
   }
+  if (BatchCheckHasBit(cached_has_bits, 0x00030000U)) {
+    // optional uint32 summon_monster = 17;
+    if (CheckHasBit(cached_has_bits, 0x00010000U)) {
+      total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                      this_._internal_summon_monster());
+    }
+    // optional uint32 summon_ms = 18;
+    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+      total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                      this_._internal_summon_ms());
+    }
+  }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
 }
@@ -1035,6 +1102,14 @@ void SkillsRow::MergeImpl(::google::protobuf::MessageLite& to_msg,
       _this->_impl_.effect_ = from._impl_.effect_;
     }
   }
+  if (BatchCheckHasBit(cached_has_bits, 0x00030000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00010000U)) {
+      _this->_impl_.summon_monster_ = from._impl_.summon_monster_;
+    }
+    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+      _this->_impl_.summon_ms_ = from._impl_.summon_ms_;
+    }
+  }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
@@ -1056,8 +1131,8 @@ void SkillsRow::InternalSwap(SkillsRow* PROTOBUF_RESTRICT PROTOBUF_NONNULL other
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.name_key_, &other->_impl_.name_key_, arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.effect_)
-      + sizeof(SkillsRow::_impl_.effect_)
+      PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.summon_ms_)
+      + sizeof(SkillsRow::_impl_.summon_ms_)
       - PROTOBUF_FIELD_OFFSET(SkillsRow, _impl_.id_)>(
           reinterpret_cast<char*>(&_impl_.id_),
           reinterpret_cast<char*>(&other->_impl_.id_));

@@ -37,6 +37,7 @@ namespace PortfolioMmo.Server
         private readonly BossSystem _bosses;
         private readonly PkSystem _pk;
         private readonly LingerSystem _lingering;
+        private readonly SummonSystem _summons;
         private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
@@ -57,7 +58,6 @@ namespace PortfolioMmo.Server
             _party = new PartySystem(data, _entities, _scheduler);
             _pk = new PkSystem(data, field, _scheduler);
             _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, _queue, data, field, _entities, _grid, _save, stats, _pk, () => Tick);
-            _login.Leaving = _party.Leaving;
             _vitals = new VitalsSystem(_entities, data);
             _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random, _party);
             _events = new TickEvents(_grid);
@@ -114,6 +114,16 @@ namespace PortfolioMmo.Server
             _combat.Deaths = _deaths;
             _deaths.Bosses = _bosses;
             _lingering = new LingerSystem(_entities, _grid, _scheduler, _progress, _save);
+            _summons = new SummonSystem(data, _entities, _grid, _scheduler, _ai);
+            _skills.Summons = _summons;
+            _ai.Combat = _combat;
+            _deaths.Summons = _summons;
+            // 연결이 캐릭터에서 떨어지면 파티에서 빼고 소환수를 바로 뺀다(42, 95).
+            _login.Leaving = player =>
+            {
+                _party.Leaving(player);
+                _summons.Dismiss(player, Tick);
+            };
             _login.Lingering = _lingering;
             _deaths.Lingering = _lingering;
             _login.Resumed = player =>
@@ -157,6 +167,11 @@ namespace PortfolioMmo.Server
         /// 월드에 남은 캐릭터(46. 테스트가 수를 봄).
         /// </summary>
         internal LingerSystem Lingering => _lingering;
+
+        /// <summary>
+        /// 월드의 소환수(95. 테스트가 봄).
+        /// </summary>
+        internal System.Collections.Generic.IEnumerable<Summon> Summons() => System.Linq.Enumerable.OfType<Summon>(_entities.All);
 
         /// <summary>
         /// 경비병들(44. 테스트가 상태와 자리를 봄).
@@ -254,6 +269,12 @@ namespace PortfolioMmo.Server
             bool selecting = (session.LoginId != null) && (player == null);
             if ((player != null) && RequestOf(packet.BodyCase) is RequestKind request && (Blocked(player, packet.BodyCase) is var blocked) && (blocked != FailReason.None))
             {
+                // 기절한 동안의 AttackStop도 소환수의 대상은 버린다(95).
+                if (packet.BodyCase == Packet.BodyOneofCase.AttackStop)
+                {
+                    SummonSystem.Release(player);
+                }
+
                 player.Fail(blocked, request);
                 return;
             }
@@ -574,6 +595,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.AreaHit => _bosses.IsAreaCurrent(job),
                 ScheduledKind.AggressorEnd => PkSystem.IsAggressorEndCurrent(_entities, job),
                 ScheduledKind.LingerEnd => _lingering.IsEndCurrent(job),
+                ScheduledKind.SummonEnd => _summons.IsEndCurrent(job),
                 ScheduledKind.Respawn => _spawn.PlacedAt(job.Owner) != null,
                 _ => throw UnknownKind(job.Kind),
             };
@@ -586,7 +608,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.UnreachableEnd => false,
                 ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit or ScheduledKind.CastEnd or ScheduledKind.AreaHit => true,
                 ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd or ScheduledKind.GroundItemExpire
-                    or ScheduledKind.PartyInviteExpire or ScheduledKind.AggressorEnd or ScheduledKind.LingerEnd => false,
+                    or ScheduledKind.PartyInviteExpire or ScheduledKind.AggressorEnd or ScheduledKind.LingerEnd or ScheduledKind.SummonEnd => false,
                 _ => throw UnknownKind(kind),
             };
         }
@@ -624,6 +646,9 @@ namespace PortfolioMmo.Server
                     break;
                 case ScheduledKind.LingerEnd:
                     _lingering.End(job, Tick);
+                    break;
+                case ScheduledKind.SummonEnd:
+                    _summons.End(job, Tick);
                     break;
                 default:
                     throw UnknownKind(job.Kind);

@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLBCQoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKACgoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -51,12 +51,13 @@ namespace PortfolioMmo.Data {
             "YWx0eRgoIAEoDRIaChJrYXJtYV9tb25zdGVyX2dhaW4YKSABKA0SGQoRZGVh",
             "dGhfZXhwX3BlcmNlbnQYKiABKA0SIAoYb3V0bGF3X2RlYXRoX2V4cF9wZXJj",
             "ZW50GCsgASgNEiUKHW91dGxhd19kcm9wX2ludmVudG9yeV9wZXJjZW50GCwg",
-            "ASgNEiUKHW91dGxhd19kcm9wX2VxdWlwbWVudF9wZXJjZW50GC0gASgNQhSq",
-            "AhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
+            "ASgNEiUKHW91dGxhd19kcm9wX2VxdWlwbWVudF9wZXJjZW50GC0gASgNEh4K",
+            "FnN1bW1vbl9mb2xsb3dfZGlzdGFuY2UYLiABKAESHQoVc3VtbW9uX2xlYXNo",
+            "X2Rpc3RhbmNlGC8gASgBQhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain", "DeathExpPercent", "OutlawDeathExpPercent", "OutlawDropInventoryPercent", "OutlawDropEquipmentPercent" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain", "DeathExpPercent", "OutlawDeathExpPercent", "OutlawDropInventoryPercent", "OutlawDropEquipmentPercent", "SummonFollowDistance", "SummonLeashDistance" }, null, null, null, null)
           }));
     }
     #endregion
@@ -142,6 +143,8 @@ namespace PortfolioMmo.Data {
       outlawDeathExpPercent_ = other.outlawDeathExpPercent_;
       outlawDropInventoryPercent_ = other.outlawDropInventoryPercent_;
       outlawDropEquipmentPercent_ = other.outlawDropEquipmentPercent_;
+      summonFollowDistance_ = other.summonFollowDistance_;
+      summonLeashDistance_ = other.summonLeashDistance_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -811,6 +814,36 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "summon_follow_distance" field.</summary>
+    public const int SummonFollowDistanceFieldNumber = 46;
+    private double summonFollowDistance_;
+    /// <summary>
+    /// 소환수가 주인을 따라가 서는 거리(m, 95). 대상이 없고 이보다 멀면 주인 쪽으로 걷는다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double SummonFollowDistance {
+      get { return summonFollowDistance_; }
+      set {
+        summonFollowDistance_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "summon_leash_distance" field.</summary>
+    public const int SummonLeashDistanceFieldNumber = 47;
+    private double summonLeashDistance_;
+    /// <summary>
+    /// 소환수가 주인에게서 떨어질 수 있는 거리(m, 95). 넘으면 대상을 버리고 주인의 자리로 옮긴다. 길을 찾는 범위도 주인 둘레 이 거리다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double SummonLeashDistance {
+      get { return summonLeashDistance_; }
+      set {
+        summonLeashDistance_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -870,6 +903,8 @@ namespace PortfolioMmo.Data {
       if (OutlawDeathExpPercent != other.OutlawDeathExpPercent) return false;
       if (OutlawDropInventoryPercent != other.OutlawDropInventoryPercent) return false;
       if (OutlawDropEquipmentPercent != other.OutlawDropEquipmentPercent) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SummonFollowDistance, other.SummonFollowDistance)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SummonLeashDistance, other.SummonLeashDistance)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -921,6 +956,8 @@ namespace PortfolioMmo.Data {
       if (OutlawDeathExpPercent != 0) hash ^= OutlawDeathExpPercent.GetHashCode();
       if (OutlawDropInventoryPercent != 0) hash ^= OutlawDropInventoryPercent.GetHashCode();
       if (OutlawDropEquipmentPercent != 0) hash ^= OutlawDropEquipmentPercent.GetHashCode();
+      if (SummonFollowDistance != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SummonFollowDistance);
+      if (SummonLeashDistance != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SummonLeashDistance);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1115,6 +1152,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(232, 2);
         output.WriteUInt32(OutlawDropEquipmentPercent);
       }
+      if (SummonFollowDistance != 0D) {
+        output.WriteRawTag(241, 2);
+        output.WriteDouble(SummonFollowDistance);
+      }
+      if (SummonLeashDistance != 0D) {
+        output.WriteRawTag(249, 2);
+        output.WriteDouble(SummonLeashDistance);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1301,6 +1346,14 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(232, 2);
         output.WriteUInt32(OutlawDropEquipmentPercent);
       }
+      if (SummonFollowDistance != 0D) {
+        output.WriteRawTag(241, 2);
+        output.WriteDouble(SummonFollowDistance);
+      }
+      if (SummonLeashDistance != 0D) {
+        output.WriteRawTag(249, 2);
+        output.WriteDouble(SummonLeashDistance);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1442,6 +1495,12 @@ namespace PortfolioMmo.Data {
       }
       if (OutlawDropEquipmentPercent != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(OutlawDropEquipmentPercent);
+      }
+      if (SummonFollowDistance != 0D) {
+        size += 2 + 8;
+      }
+      if (SummonLeashDistance != 0D) {
+        size += 2 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1586,6 +1645,12 @@ namespace PortfolioMmo.Data {
       }
       if (other.OutlawDropEquipmentPercent != 0) {
         OutlawDropEquipmentPercent = other.OutlawDropEquipmentPercent;
+      }
+      if (other.SummonFollowDistance != 0D) {
+        SummonFollowDistance = other.SummonFollowDistance;
+      }
+      if (other.SummonLeashDistance != 0D) {
+        SummonLeashDistance = other.SummonLeashDistance;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1782,6 +1847,14 @@ namespace PortfolioMmo.Data {
             OutlawDropEquipmentPercent = input.ReadUInt32();
             break;
           }
+          case 369: {
+            SummonFollowDistance = input.ReadDouble();
+            break;
+          }
+          case 377: {
+            SummonLeashDistance = input.ReadDouble();
+            break;
+          }
         }
       }
     #endif
@@ -1975,6 +2048,14 @@ namespace PortfolioMmo.Data {
           }
           case 360: {
             OutlawDropEquipmentPercent = input.ReadUInt32();
+            break;
+          }
+          case 369: {
+            SummonFollowDistance = input.ReadDouble();
+            break;
+          }
+          case 377: {
+            SummonLeashDistance = input.ReadDouble();
             break;
           }
         }

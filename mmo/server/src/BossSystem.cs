@@ -73,7 +73,7 @@ namespace PortfolioMmo.Server
         /// 추적·공격 상태의 몬스터(AI 차례): 범위 공격 스킬이 있고 쿨다운이 끝났고 대상이 사거리 안이고 선이 트였으면 건다. 중심은 지금 대상의 자리에 고정하고,
         /// 쿨다운을 걸고, 보스를 받은 연결에 AreaWarning을 보내고, 예고 시간 뒤의 피해를 예약한다.
         /// </summary>
-        public void TryArea(Monster monster, Player target, uint tick)
+        public void TryArea(Monster monster, Creature target, uint tick)
         {
             if (!monster.Template.HasSkill || (monster.AreaReadyTick > tick) || (_data.Skill(monster.Template.Skill) is not SkillsRow skill))
             {
@@ -123,13 +123,14 @@ namespace PortfolioMmo.Server
             SkillsRow skill = _data.Skill(boss.Template.Skill)!;
             int x = (int)job.A;
             int z = (int)job.B;
-            _grid.Query(x, z, (int)System.Math.Round(skill.Radius * Units.PerMeter), entity => entity is Player { Dead: false }, _query);
+            // 소환수(95)도 맞는다.
+            _grid.Query(x, z, (int)System.Math.Round(skill.Radius * Units.PerMeter), entity => entity is Player { Dead: false } or Summon { Dead: false }, _query);
             foreach (Entity entity in _query)
             {
-                var player = (Player)entity;
-                if (_field.HasLine(x, z, player.X, player.Z) && _combat.CanAttack(boss, player))
+                var target = (Creature)entity;
+                if (_field.HasLine(x, z, target.X, target.Z) && _combat.CanAttack(boss, target))
                 {
-                    _combat.Hit(boss, player, skill.Coefficient, tick);
+                    _combat.Hit(boss, target, skill.Coefficient, tick);
                 }
             }
         }

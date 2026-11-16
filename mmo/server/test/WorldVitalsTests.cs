@@ -30,7 +30,7 @@ namespace PortfolioMmo.Server.Tests
             knightPackets.RemoveRange(3, 3);
             Assert.Equal(new[] { Entered(1), exp, Cooldowns(101, 102, 103, 104, 105, 106), karma, SelfStats(TestData.KnightLevel1), SelfVitals(150, 50) }, knightPackets);
             Assert.Equal(
-                new[] { exp, Cooldowns(201, 202, 203, 204, 205), karma, SelfStats(TestData.MageLevel1), SelfVitals(100, 120) },
+                new[] { exp, Cooldowns(201, 202, 203, 204, 205, 206), karma, SelfStats(TestData.MageLevel1), SelfVitals(100, 120) },
                 TakeVitals(mage).Where(packet => packet.BodyCase is not (Packet.BodyOneofCase.Inventory or Packet.BodyOneofCase.LearnedSkills or Packet.BodyOneofCase.Quickslots)));
             Assert.Equal(TestData.MageLevel1, mage.Player!.Stats);
         }

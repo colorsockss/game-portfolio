@@ -66,7 +66,7 @@ namespace PortfolioMmo.Server
         /// 플레이어가 플레이어를 칠 수 있는가: 둘 다 PK 레벨 이상이고 같은 파티가 아니어야 한다. 대상이 일반 플레이어면 둘 다 안전 지대 밖이어야 하고,
         /// 대상이 선공 표시가 있거나 무법자면 안전 지대와 상관없다.
         /// </summary>
-        public FailReason PlayerFailure(Player attacker, Player target)
+        public FailReason PlayerFailure(Player attacker, Player target, (int X, int Z)? at = null)
         {
             if ((attacker == target) || (target.Dead))
             {
@@ -83,7 +83,9 @@ namespace PortfolioMmo.Server
                 return FailReason.PartyMember;
             }
 
-            if (IsNormal(target) && (_field.IsSafe(attacker.X, attacker.Z) || _field.IsSafe(target.X, target.Z)))
+            // 대상의 자리는 맞는 개체의 자리다(소환수면 소환수의 자리. 95).
+            (int x, int z) = at ?? (target.X, target.Z);
+            if (IsNormal(target) && (_field.IsSafe(attacker.X, attacker.Z) || _field.IsSafe(x, z)))
             {
                 return FailReason.InvalidTarget;
             }
@@ -98,7 +100,8 @@ namespace PortfolioMmo.Server
         /// </summary>
         public void Attacked(Creature attacker, Creature target, uint tick)
         {
-            if ((attacker is not Player player) || (target is not Player victim) || (player == victim) || !IsNormal(victim))
+            // 소환수가 치거나 맞으면 주인으로 본다(95).
+            if ((Responsible(attacker) is not Player player) || (Responsible(target) is not Player victim) || (player == victim) || !IsNormal(victim))
             {
                 return;
             }
@@ -127,7 +130,7 @@ namespace PortfolioMmo.Server
         /// </summary>
         public void Killed(Creature dead, Creature killer)
         {
-            if ((dead is Player victim) && (killer is Player player) && (player != victim) && IsNormal(victim))
+            if ((dead is Player victim) && (Responsible(killer) is Player player) && (player != victim) && IsNormal(victim))
             {
                 SetKarma(player, player.Karma - _killPenalty);
             }
@@ -178,6 +181,14 @@ namespace PortfolioMmo.Server
         {
             Refresh(player);
             player.Session.Send(new Packet { Karma = new Karma { Karma_ = player.Karma } });
+        }
+
+        /// <summary>
+        /// 책임지는 플레이어(95): 플레이어면 자기, 소환수면 주인, 아니면 null.
+        /// </summary>
+        public static Player? Responsible(Creature creature)
+        {
+            return creature as Player ?? (creature as Summon)?.Owner;
         }
 
         private static void Refresh(Player player)

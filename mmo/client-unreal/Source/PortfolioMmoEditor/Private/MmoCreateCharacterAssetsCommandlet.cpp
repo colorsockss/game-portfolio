@@ -240,7 +240,7 @@ namespace
 		IFileManager::Get().Delete(*Filename, false, true, true);
 		UPackage* Package = CreatePackage(*PackageName);
 		UMmoEntityVisuals* Visuals = NewObject<UMmoEntityVisuals>(Package, *FPackageName::GetShortName(PackageName), RF_Public | RF_Standalone);
-		// 종류마다의 자리 표시(73): 서는 개체는 원기둥, 채집물은 원뿔, 바닥 아이템은 상자이고 색으로 종류를 가른다.
+		// 종류마다의 자리 표시(73): 서는 개체는 원기둥, 채집물은 원뿔, 바닥 아이템은 상자, 소환수(95)는 구이고 색으로 종류를 가른다.
 		Visuals->PlaceholderMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Materials/M_Placeholder.M_Placeholder"));
 		const FVector Standing(0.6, 0.6, 1.8);
 		const struct { int32 Kind; const TCHAR* Shape; FLinearColor Color; FVector Scale; } Placeholders[] = {
@@ -249,6 +249,7 @@ namespace
 			{ UMmoEntityVisuals::NpcKind(), TEXT("Cylinder"), FLinearColor(0.3f, 0.8f, 0.35f), Standing },
 			{ UMmoEntityVisuals::GatherNodeKind(), TEXT("Cone"), FLinearColor(0.6f, 0.45f, 0.25f), FVector(1.0, 1.0, 1.2) },
 			{ UMmoEntityVisuals::GroundItemKind(), TEXT("Cube"), FLinearColor(1.0f, 0.85f, 0.2f), FVector(0.35, 0.35, 0.35) },
+			{ UMmoEntityVisuals::SummonKind(), TEXT("Sphere"), FLinearColor(0.65f, 0.35f, 0.95f), FVector(0.8, 0.8, 0.8) },
 		};
 		for (const auto& Placeholder : Placeholders)
 		{

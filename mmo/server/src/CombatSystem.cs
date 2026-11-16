@@ -77,11 +77,14 @@ namespace PortfolioMmo.Server
         /// </summary>
         public FailReason AttackFailure(Creature attacker, Creature target)
         {
-            return (attacker, target) switch
+            // 소환수가 치면 주인의 것으로 본다(95). 소환수가 맞으면 누구인지는 주인으로, 안전 지대의 자리는 소환수의 자리로 본다.
+            return (PkSystem.Responsible(attacker) ?? attacker, target) switch
             {
                 (Player player, Monster) => _field.IsSafe(player.X, player.Z) ? FailReason.InvalidTarget : FailReason.None,
                 (Monster, Player player) => _field.IsSafe(player.X, player.Z) ? FailReason.InvalidTarget : FailReason.None,
+                (Monster, Summon summon) => _field.IsSafe(summon.X, summon.Z) ? FailReason.InvalidTarget : FailReason.None,
                 (Player player, Player victim) => _pk.PlayerFailure(player, victim),
+                (Player player, Summon summon) => summon.Owner == player ? FailReason.InvalidTarget : _pk.PlayerFailure(player, summon.Owner, (summon.X, summon.Z)),
                 (Guard, Player player) => PkSystem.IsNormal(player) ? FailReason.InvalidTarget : FailReason.None,
                 _ => FailReason.InvalidTarget,
             };
@@ -123,6 +126,7 @@ namespace PortfolioMmo.Server
         public void Stop(Player player)
         {
             player.AttackTarget = 0;
+            SummonSystem.Release(player);
         }
 
         /// <summary>
@@ -215,8 +219,14 @@ namespace PortfolioMmo.Server
 
             _events.Swing(attacker, target);
             _pk.Attacked(attacker, target, tick);
+            SummonSystem.Assist(attacker, target);
             attacker.NextAttackTick = tick + attack.IntervalTicks;
             attacker.CombatEndTick = tick + _combatTicks;
+            // 소환수가 친 틱에 주인의 전투 상태도 새로 시작한다(95).
+            if (attacker is Summon summon)
+            {
+                summon.Owner.CombatEndTick = tick + _combatTicks;
+            }
             uint hitTick = tick + attack.HitDelayTicks;
             if (attack.ProjectileUnitsPerTick > 0)
             {
@@ -258,9 +268,10 @@ namespace PortfolioMmo.Server
         /// </summary>
         public static void Engage(Creature attacker, Creature target, uint damage)
         {
-            if ((attacker is Player player) && (target is Monster monster))
+            // 소환수의 피해는 소환수의 줄에 쌓인다(95. 편은 주인의 것).
+            if ((attacker is Player or Summon) && (target is Monster monster))
             {
-                monster.Damage.Add(player.Id, damage);
+                monster.Damage.Add(attacker.Id, damage);
             }
         }
 

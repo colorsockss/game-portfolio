@@ -154,6 +154,7 @@ enum MonsterKind : int {
   MONSTER_KIND_NORMAL = 1,
   MONSTER_KIND_BOSS = 2,
   MONSTER_KIND_GUARD = 3,
+  MONSTER_KIND_SUMMON = 4,
   MonsterKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   MonsterKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -164,11 +165,11 @@ extern const uint32_t MonsterKind_internal_data_[];
 inline constexpr MonsterKind MonsterKind_MIN =
     static_cast<MonsterKind>(0);
 inline constexpr MonsterKind MonsterKind_MAX =
-    static_cast<MonsterKind>(3);
+    static_cast<MonsterKind>(4);
 [[nodiscard]] inline bool MonsterKind_IsValid(int value) {
-  return 0 <= value && value <= 3;
+  return 0 <= value && value <= 4;
 }
-inline constexpr int MonsterKind_ARRAYSIZE = 3 + 1;
+inline constexpr int MonsterKind_ARRAYSIZE = 4 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 MonsterKind_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(MonsterKind) {
@@ -183,7 +184,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& MonsterKind_Name(MonsterKind value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<MonsterKind_descriptor, 0, 3>(
+  return ::google::protobuf::internal::NameOfDenseEnum<MonsterKind_descriptor, 0, 4>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool MonsterKind_Parse(
@@ -198,6 +199,7 @@ enum SkillKind : int {
   SKILL_KIND_BUFF = 3,
   SKILL_KIND_DEBUFF = 4,
   SKILL_KIND_HEAL = 5,
+  SKILL_KIND_SUMMON = 6,
   SkillKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   SkillKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -208,11 +210,11 @@ extern const uint32_t SkillKind_internal_data_[];
 inline constexpr SkillKind SkillKind_MIN =
     static_cast<SkillKind>(0);
 inline constexpr SkillKind SkillKind_MAX =
-    static_cast<SkillKind>(5);
+    static_cast<SkillKind>(6);
 [[nodiscard]] inline bool SkillKind_IsValid(int value) {
-  return 0 <= value && value <= 5;
+  return 0 <= value && value <= 6;
 }
-inline constexpr int SkillKind_ARRAYSIZE = 5 + 1;
+inline constexpr int SkillKind_ARRAYSIZE = 6 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 SkillKind_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(SkillKind) {
@@ -227,7 +229,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& SkillKind_Name(SkillKind value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<SkillKind_descriptor, 0, 5>(
+  return ::google::protobuf::internal::NameOfDenseEnum<SkillKind_descriptor, 0, 6>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool SkillKind_Parse(

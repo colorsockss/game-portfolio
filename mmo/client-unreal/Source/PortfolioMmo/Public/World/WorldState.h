@@ -159,6 +159,9 @@ namespace MmoWorld
 		/** 내 개체. 월드에 들어가기 전이거나 아직 EntitiesEnter를 받지 못했으면 nullptr. */
 		const FEntity* SelfEntity() const;
 
+		/** 내 소환수(95. 받은 개체 가운데 주인이 나인 소환수, 죽어서 빠지기를 기다리는 것도). 없으면 nullptr. */
+		const FEntity* MySummon() const;
+
 		/** 내 체력, 마나, 능력치. 다른 개체의 체력은 Entities()의 Info(hp, max_hp)에 있다. */
 		const FSelfState& SelfState() const { return Mine; }
 

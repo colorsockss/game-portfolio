@@ -79,6 +79,11 @@ namespace PortfolioMmo.Server
         /// 월드에 남은 캐릭터(주인)를 빼는 틱(46). 세대 번호는 플레이어의 LingerGeneration이다(넘겨받으면 버림). 꺼낼 때 늦춰졌으면 다시 예약한다.
         /// </summary>
         LingerEnd = 14,
+
+        /// <summary>
+        /// 소환수(주인)를 빼는 틱(95): 남는 시간의 끝이나 죽은 뒤 남는 시간의 끝. 세대 번호는 소환수의 LifeGeneration이다.
+        /// </summary>
+        SummonEnd = 15,
     }
 
     /// <summary>

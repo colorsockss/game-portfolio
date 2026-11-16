@@ -216,6 +216,14 @@ void UMmoHudWidget::ShowEffects(double ServerTick)
 	{
 		Add(*MmoText::Get(this, TEXT("hud.combat")).ToString(), Session->World().SelfState().CombatEndTick);
 	}
+	// 내 소환수(95)의 체력과 남은 시간.
+	if (const MmoWorld::FEntity* Summon = Session->World().MySummon(); Summon && !Summon->Info.dead())
+	{
+		const portfolio::mmo::data::MonstersRow* Row = Session->Data().Monster(Summon->Info.template_id());
+		Text += TEXT("[") + MmoText::Format(this, TEXT("hud.summon"), { Row ? MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString() : FString(),
+			FString::FromInt(Summon->Info.hp()), FString::FromInt(Summon->Info.max_hp()),
+			FString::Printf(TEXT("%.0f"), FMath::Max(0.0, (Summon->Info.summon_end_tick() - ServerTick) / MmoWorld::Units::TicksPerSecond)) }).ToString() + TEXT("] ");
+	}
 	// 선공 표시(44)도 효과 아이콘처럼 남은 시간과 함께 보인다.
 	if (ServerTick < Session->World().SelfState().AggressorEndTick)
 	{
@@ -400,7 +408,13 @@ void UMmoHudWidget::ShowTarget()
 		ShownTarget = Found->first;
 		ShownTargetHp = MAX_uint64;
 		FString Name = UTF8_TO_TCHAR(Info.name().c_str());
-		if (const portfolio::mmo::data::MonstersRow* Row = Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER ? Session->Data().Monster(Info.template_id()) : nullptr)
+		if (Info.kind() == portfolio::mmo::ENTITY_KIND_SUMMON)
+		{
+			// 소환수(95)는 이름만(레벨이 없음).
+			const portfolio::mmo::data::MonstersRow* Summon = Session->Data().Monster(Info.template_id());
+			Name = Summon ? MmoText::Get(this, UTF8_TO_TCHAR(Summon->name_key().c_str())).ToString() : FString();
+		}
+		else if (const portfolio::mmo::data::MonstersRow* Row = Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER ? Session->Data().Monster(Info.template_id()) : nullptr)
 		{
 			Name = MmoText::Format(this, TEXT("hud.level"), { MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString(), FString::FromInt(Row->level()) }).ToString();
 		}

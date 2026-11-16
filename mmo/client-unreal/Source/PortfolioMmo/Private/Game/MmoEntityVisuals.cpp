@@ -38,6 +38,11 @@ int32 UMmoEntityVisuals::GroundItemKind()
 	return portfolio::mmo::ENTITY_KIND_GROUND_ITEM;
 }
 
+int32 UMmoEntityVisuals::SummonKind()
+{
+	return portfolio::mmo::ENTITY_KIND_SUMMON;
+}
+
 int32 UMmoEntityVisuals::KnightKey()
 {
 	return portfolio::mmo::CHARACTER_CLASS_KNIGHT;

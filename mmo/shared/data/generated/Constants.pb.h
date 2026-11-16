@@ -263,6 +263,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kKarmaMonsterGainFieldNumber = 41,
     kOutlawDeathExpPercentFieldNumber = 43,
     kOutlawDropInventoryPercentFieldNumber = 44,
+    kSummonFollowDistanceFieldNumber = 46,
+    kSummonLeashDistanceFieldNumber = 47,
     kOutlawDropEquipmentPercentFieldNumber = 45,
   };
   // uint32 field_size = 1;
@@ -695,6 +697,26 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_outlaw_drop_inventory_percent(::uint32_t value);
 
   public:
+  // double summon_follow_distance = 46;
+  void clear_summon_follow_distance() ;
+  [[nodiscard]] double summon_follow_distance() const;
+  void set_summon_follow_distance(double value);
+
+  private:
+  double _internal_summon_follow_distance() const;
+  void _internal_set_summon_follow_distance(double value);
+
+  public:
+  // double summon_leash_distance = 47;
+  void clear_summon_leash_distance() ;
+  [[nodiscard]] double summon_leash_distance() const;
+  void set_summon_leash_distance(double value);
+
+  private:
+  double _internal_summon_leash_distance() const;
+  void _internal_set_summon_leash_distance(double value);
+
+  public:
   // uint32 outlaw_drop_equipment_percent = 45;
   void clear_outlaw_drop_equipment_percent() ;
   [[nodiscard]] ::uint32_t outlaw_drop_equipment_percent() const;
@@ -709,7 +731,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 44,
+      ::google::protobuf::internal::TcParseTable<5, 46,
                           0, 0,
                           7>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -781,6 +803,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t karma_monster_gain_;
     ::uint32_t outlaw_death_exp_percent_;
     ::uint32_t outlaw_drop_inventory_percent_;
+    double summon_follow_distance_;
+    double summon_leash_distance_;
     ::uint32_t outlaw_drop_equipment_percent_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -1840,7 +1864,7 @@ inline void Constants::_internal_set_outlaw_drop_inventory_percent(::uint32_t va
 inline void Constants::clear_outlaw_drop_equipment_percent() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.outlaw_drop_equipment_percent_ = 0u;
-  ClearHasBit(_impl_._has_bits_[1], 0x00000800U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00002000U);
 }
 inline ::uint32_t Constants::outlaw_drop_equipment_percent() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.outlaw_drop_equipment_percent)
@@ -1848,7 +1872,7 @@ inline ::uint32_t Constants::outlaw_drop_equipment_percent() const {
 }
 inline void Constants::set_outlaw_drop_equipment_percent(::uint32_t value) {
   _internal_set_outlaw_drop_equipment_percent(value);
-  SetHasBit(_impl_._has_bits_[1], 0x00000800U);
+  SetHasBit(_impl_._has_bits_[1], 0x00002000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.outlaw_drop_equipment_percent)
 }
 inline ::uint32_t Constants::_internal_outlaw_drop_equipment_percent() const {
@@ -1858,6 +1882,54 @@ inline ::uint32_t Constants::_internal_outlaw_drop_equipment_percent() const {
 inline void Constants::_internal_set_outlaw_drop_equipment_percent(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.outlaw_drop_equipment_percent_ = value;
+}
+
+// double summon_follow_distance = 46;
+inline void Constants::clear_summon_follow_distance() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_follow_distance_ = 0;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000800U);
+}
+inline double Constants::summon_follow_distance() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.summon_follow_distance)
+  return _internal_summon_follow_distance();
+}
+inline void Constants::set_summon_follow_distance(double value) {
+  _internal_set_summon_follow_distance(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000800U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.summon_follow_distance)
+}
+inline double Constants::_internal_summon_follow_distance() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.summon_follow_distance_;
+}
+inline void Constants::_internal_set_summon_follow_distance(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_follow_distance_ = value;
+}
+
+// double summon_leash_distance = 47;
+inline void Constants::clear_summon_leash_distance() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_leash_distance_ = 0;
+  ClearHasBit(_impl_._has_bits_[1], 0x00001000U);
+}
+inline double Constants::summon_leash_distance() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.summon_leash_distance)
+  return _internal_summon_leash_distance();
+}
+inline void Constants::set_summon_leash_distance(double value) {
+  _internal_set_summon_leash_distance(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00001000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.summon_leash_distance)
+}
+inline double Constants::_internal_summon_leash_distance() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.summon_leash_distance_;
+}
+inline void Constants::_internal_set_summon_leash_distance(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_leash_distance_ = value;
 }
 
 #ifdef __GNUC__

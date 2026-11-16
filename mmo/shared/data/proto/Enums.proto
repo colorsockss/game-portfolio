@@ -27,6 +27,8 @@ enum MonsterKind {
   MONSTER_KIND_BOSS = 2;
   // 경비병(44). Npcs의 줄이 가리키고 Spawns에 두지 않는다. 공격력, 사거리, 공격 간격, 타격까지의 시간, 이동 속도, 인식 범위, 추적 한계만 쓴다
   MONSTER_KIND_GUARD = 3;
+  // 소환수(95). 소환 스킬이 부르고 Spawns에 두지 않는다. 체력, 공격력, 방어력, 반지름, 사거리, 공격 간격, 타격까지의 시간, 이동 속도만 쓴다
+  MONSTER_KIND_SUMMON = 4;
 }
 
 enum SkillKind {
@@ -42,6 +44,8 @@ enum SkillKind {
   SKILL_KIND_DEBUFF = 4;
   // 회복
   SKILL_KIND_HEAL = 5;
+  // 소환(95). 그 자리에서 쓰고 summonMonster의 소환수를 summonMs 동안 부른다
+  SKILL_KIND_SUMMON = 6;
 }
 
 enum SkillCenter {

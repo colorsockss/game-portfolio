@@ -167,6 +167,16 @@ namespace MmoWorld
 			return Next != 0 ? FAutoDecision{ EAutoAction::SelectTarget, Next } : FAutoDecision{ EAutoAction::Wait };
 		}
 
+		// 소환(95)은 내 소환수가 없을 때 강화처럼 다가가기 전에 그 자리에서 쓴다.
+		const FEntity* Summoned = In.World.MySummon();
+		if (!Summoned || Summoned->Info.dead())
+		{
+			if (const SkillsRow* Summon = SkillOnBar(In, [](const SkillsRow& Skill) { return Skill.kind() == portfolio::mmo::data::SKILL_KIND_SUMMON; }))
+			{
+				return { EAutoAction::UseSkill, Summon->id() };
+			}
+		}
+
 		// 강화는 효과가 내게 없을 때 대상까지의 거리와 상관없이 다가가기 전에 그 자리에서 쓴다.
 		if (const SkillsRow* Buff = SkillOnBar(In, [&In](const SkillsRow& Skill)
 			{

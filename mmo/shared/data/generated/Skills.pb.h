@@ -245,6 +245,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillsRow final : public ::google::
     kLevelFieldNumber = 14,
     kProjectileSpeedFieldNumber = 15,
     kEffectFieldNumber = 16,
+    kSummonMonsterFieldNumber = 17,
+    kSummonMsFieldNumber = 18,
   };
   // string name_key = 2;
   void clear_name_key() ;
@@ -416,11 +418,33 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillsRow final : public ::google::
   void _internal_set_effect(::uint32_t value);
 
   public:
+  // optional uint32 summon_monster = 17;
+  [[nodiscard]] bool has_summon_monster() const;
+  void clear_summon_monster() ;
+  [[nodiscard]] ::uint32_t summon_monster() const;
+  void set_summon_monster(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_summon_monster() const;
+  void _internal_set_summon_monster(::uint32_t value);
+
+  public:
+  // optional uint32 summon_ms = 18;
+  [[nodiscard]] bool has_summon_ms() const;
+  void clear_summon_ms() ;
+  [[nodiscard]] ::uint32_t summon_ms() const;
+  void set_summon_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_summon_ms() const;
+  void _internal_set_summon_ms(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.SkillsRow)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<4, 16,
+      ::google::protobuf::internal::TcParseTable<5, 18,
                           0, 61,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -465,6 +489,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillsRow final : public ::google::
     ::uint32_t level_;
     double projectile_speed_;
     ::uint32_t effect_;
+    ::uint32_t summon_monster_;
+    ::uint32_t summon_ms_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1140,6 +1166,62 @@ inline ::uint32_t SkillsRow::_internal_effect() const {
 inline void SkillsRow::_internal_set_effect(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.effect_ = value;
+}
+
+// optional uint32 summon_monster = 17;
+inline bool SkillsRow::has_summon_monster() const {
+  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00010000U);
+  return value;
+}
+inline void SkillsRow::clear_summon_monster() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_monster_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00010000U);
+}
+inline ::uint32_t SkillsRow::summon_monster() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.SkillsRow.summon_monster)
+  return _internal_summon_monster();
+}
+inline void SkillsRow::set_summon_monster(::uint32_t value) {
+  _internal_set_summon_monster(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00010000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.SkillsRow.summon_monster)
+}
+inline ::uint32_t SkillsRow::_internal_summon_monster() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.summon_monster_;
+}
+inline void SkillsRow::_internal_set_summon_monster(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_monster_ = value;
+}
+
+// optional uint32 summon_ms = 18;
+inline bool SkillsRow::has_summon_ms() const {
+  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00020000U);
+  return value;
+}
+inline void SkillsRow::clear_summon_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00020000U);
+}
+inline ::uint32_t SkillsRow::summon_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.SkillsRow.summon_ms)
+  return _internal_summon_ms();
+}
+inline void SkillsRow::set_summon_ms(::uint32_t value) {
+  _internal_set_summon_ms(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00020000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.SkillsRow.summon_ms)
+}
+inline ::uint32_t SkillsRow::_internal_summon_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.summon_ms_;
+}
+inline void SkillsRow::_internal_set_summon_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.summon_ms_ = value;
 }
 
 // -------------------------------------------------------------------

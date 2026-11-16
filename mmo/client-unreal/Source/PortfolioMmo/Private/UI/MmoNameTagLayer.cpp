@@ -196,6 +196,16 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 				Row && Row->aggressive() ? AggressiveColor : FLinearColor::White);
 			Hp = Info.max_hp() > 0 ? static_cast<float>(Info.hp()) / Info.max_hp() : -1.0f;
 		}
+		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_SUMMON)
+		{
+			// 소환수(95): 주인의 이름과 소환수의 이름, 체력 바.
+			const portfolio::mmo::data::MonstersRow* Row = Session->Data().Monster(Info.template_id());
+			const FString Name = Row ? MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString() : FString();
+			const auto Owner = World.Entities().find(Info.summon_owner_id());
+			Tag.SetName(Owner == World.Entities().end() ? Name
+				: MmoText::Format(this, TEXT("summon.owner"), { UTF8_TO_TCHAR(Owner->second.Info.name().c_str()), Name }).ToString(), FLinearColor::White);
+			Hp = Info.max_hp() > 0 ? static_cast<float>(Info.hp()) / Info.max_hp() : -1.0f;
+		}
 		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_NPC)
 		{
 			// 이름과 역할(37). 경비병(44)은 말하는 NPC가 아니라 이름만 둔다.

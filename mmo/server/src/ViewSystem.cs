@@ -11,6 +11,7 @@ namespace PortfolioMmo.Server
     {
         private readonly EntityTable _entities;
         private readonly Grid _grid;
+        private readonly List<Entity> _summons = new List<Entity>();
 
         public ViewSystem(EntityTable entities, Grid grid)
         {
@@ -60,6 +61,23 @@ namespace PortfolioMmo.Server
             visible.Clear();
             _grid.CollectAround(observer.Cell, visible);
             visible.Remove(observer);
+            // 소환수(95)는 시야 칸으로 찾지 않고 주인에 딸려 보낸다(내 소환수는 늘).
+            visible.RemoveWhere(entity => entity is Summon);
+            _summons.Clear();
+            foreach (Entity entity in visible)
+            {
+                if (entity is Player { Summon: { } summon })
+                {
+                    _summons.Add(summon);
+                }
+            }
+
+            if (observer.Summon != null)
+            {
+                _summons.Add(observer.Summon);
+            }
+
+            visible.UnionWith(_summons);
 
             EntitiesLeave? leave = null;
             foreach (Entity other in observer.Visible)

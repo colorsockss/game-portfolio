@@ -65,8 +65,8 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 스킬북(36)은 직업마다 첫 스킬을 뺀 스킬의 책이고(9줄) 직업과 필요 레벨의 열을 비운다. 넷째와 다섯째 스킬의 책은 사냥터 2와 3의 몬스터의 묶음(4–9)마다,
-        /// 기사의 여섯째 스킬의 책은 사냥터 3의 묶음(7–9)마다 있고 그 밖의 묶음에는 없다. 둘째와 셋째 스킬의 책은 어느 묶음에도 없다(상점 37).
+        /// 스킬북(36)은 직업마다 첫 스킬을 뺀 스킬의 책이고(10줄) 직업과 필요 레벨의 열을 비운다. 넷째와 다섯째 스킬의 책은 사냥터 2와 3의 몬스터의 묶음(4–9)마다,
+        /// 여섯째 스킬의 책(기사, 마법사의 소환 95)은 사냥터 3의 묶음(7–9)마다 있고 그 밖의 묶음에는 없다. 둘째와 셋째 스킬의 책은 어느 묶음에도 없다(상점 37).
         /// </summary>
         [Fact]
         public void SkillBooksTeachTheLaterSkillsAndDropByZone()
@@ -80,7 +80,7 @@ namespace PortfolioMmo.Server.Tests
             for (uint group = 1; group <= 9; group++)
             {
                 uint[] dropped = data.DropGroup(group)!.Items.Where(id => data.Item(id)!.Use == ItemUse.LearnSkill).Select(id => data.Item(id)!.UseValue).Order().ToArray();
-                uint[] expected = group < 4 ? new uint[0] : group < 7 ? new uint[] { 104, 105, 204, 205 } : new uint[] { 104, 105, 106, 204, 205 };
+                uint[] expected = group < 4 ? new uint[0] : group < 7 ? new uint[] { 104, 105, 204, 205 } : new uint[] { 104, 105, 106, 204, 205, 206 };
                 Assert.Equal(expected, dropped);
             }
         }
@@ -148,7 +148,7 @@ namespace PortfolioMmo.Server.Tests
             SkillsRow slam = data.Skill(boss.Skill)!;
             Assert.Equal((SkillKind.AreaDamage, SkillCenter.Target, false, 1500u), (slam.Kind, slam.Center, slam.HasClass, slam.WarnMs));
             uint[] books = data.DropGroup(boss.DropGroup)!.Items.Where(id => data.Item(id)!.Use == ItemUse.LearnSkill).Select(id => data.Item(id)!.UseValue).Order().ToArray();
-            Assert.Equal(new uint[] { 104, 105, 106, 204, 205 }, books);
+            Assert.Equal(new uint[] { 104, 105, 106, 204, 205, 206 }, books);
         }
 
         /// <summary>
@@ -206,8 +206,8 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 플레이어의 스킬 11줄(기사 여섯, 마법사 다섯. 소환은 95)의 차례와 종류가 설계의 표와 같고, 필요 레벨은 1, 5, 10, 14, 17, 20이다.
-        /// 시전 시간은 마법사의 대상 중심 범위 피해, 회복, 시전하는 단일 피해에만 있고 그 줄의 타격까지의 시간은 0이다. 거는 효과는 Effects의 줄이고,
+        /// 플레이어의 스킬 12줄(직업마다 여섯)의 차례와 종류가 설계의 표와 같고, 필요 레벨은 1, 5, 10, 14, 17, 20이다. 마법사의 여섯째는 소환(95)이다.
+        /// 시전 시간은 마법사의 대상 중심 범위 피해, 회복, 시전하는 단일 피해, 소환에만 있고 그 줄의 타격까지의 시간은 0이다. 거는 효과는 Effects의 줄이고,
         /// Classes의 첫 스킬은 직업의 첫째 스킬이다.
         /// </summary>
         [Fact]
@@ -216,7 +216,7 @@ namespace PortfolioMmo.Server.Tests
             GameData data = GameData.Load(GameData.DefaultFolder);
             List<SkillsRow> knight = data.Skills.Rows.Where(skill => skill.Class == 1).OrderBy(skill => skill.Id).ToList();
             List<SkillsRow> mage = data.Skills.Rows.Where(skill => skill.Class == 2).OrderBy(skill => skill.Id).ToList();
-            Assert.Equal(11, data.Skills.Rows.Count(skill => skill.HasClass));
+            Assert.Equal(12, data.Skills.Rows.Count(skill => skill.HasClass));
             EffectKind? Effect(SkillsRow skill) => skill.HasEffect ? data.Effect(skill.Effect).Kind : null;
             Assert.Equal(
                 new (SkillKind, SkillCenter, EffectKind?)[]
@@ -229,13 +229,14 @@ namespace PortfolioMmo.Server.Tests
                 new (SkillKind, SkillCenter, EffectKind?)[]
                 {
                     (SkillKind.SingleDamage, SkillCenter.Target, EffectKind.Slow), (SkillKind.AreaDamage, SkillCenter.Target, null), (SkillKind.Heal, SkillCenter.Self, null),
-                    (SkillKind.AreaDamage, SkillCenter.Self, EffectKind.Slow), (SkillKind.SingleDamage, SkillCenter.Target, null),
+                    (SkillKind.AreaDamage, SkillCenter.Self, EffectKind.Slow), (SkillKind.SingleDamage, SkillCenter.Target, null), (SkillKind.Summon, SkillCenter.Self, null),
                 },
                 mage.Select(skill => (skill.Kind, skill.Center, Effect(skill))));
             Assert.Equal(new uint[] { 1, 5, 10, 14, 17, 20 }, knight.Select(skill => skill.Level));
-            Assert.Equal(new uint[] { 1, 5, 10, 14, 17 }, mage.Select(skill => skill.Level));
-            Assert.Equal(new uint[] { 1500, 1000, 2000 }, data.Skills.Rows.Where(skill => skill.CastMs > 0).Select(skill => skill.CastMs));
-            Assert.Equal(new[] { mage[1], mage[2], mage[4] }, data.Skills.Rows.Where(skill => skill.CastMs > 0));
+            Assert.Equal(new uint[] { 1, 5, 10, 14, 17, 20 }, mage.Select(skill => skill.Level));
+            Assert.Equal(new uint[] { 1500, 1000, 2000, 2000 }, data.Skills.Rows.Where(skill => skill.CastMs > 0).Select(skill => skill.CastMs));
+            Assert.Equal(new[] { mage[1], mage[2], mage[4], mage[5] }, data.Skills.Rows.Where(skill => skill.CastMs > 0));
+            Assert.Equal((MonsterKind.Summon, 180000u), (data.Monster(mage[5].SummonMonster).Kind, mage[5].SummonMs));
             Assert.All(data.Skills.Rows.Where(skill => skill.CastMs > 0), skill => Assert.Equal(0u, skill.HitDelayMs));
             Assert.True(mage[4].Coefficient > mage[0].Coefficient);
             Assert.Equal((knight[0].Id, mage[0].Id), (data.Class(CharacterClass.Knight).FirstSkill, data.Class(CharacterClass.Mage).FirstSkill));

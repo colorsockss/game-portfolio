@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace PortfolioMmo.Server
 {
     /// <summary>
-    /// 몬스터 하나의 피해 표: 플레이어마다 준 피해의 합을 든 차례로 둔다. 줄의 차례가 "먼저 든 쪽"이다(인식된 틱이나 처음 때린 틱이
+    /// 몬스터 하나의 피해 표: 때린 개체(플레이어나 소환수. 95)마다 준 피해의 합을 든 차례로 둔다(줄의 번호가 PlayerId이지만 소환수의 번호도 든다). 줄의 차례가 "먼저 든 쪽"이다(인식된 틱이나 처음 때린 틱이
     /// 이른 쪽, 같은 틱이면 먼저 든 줄). 합을 견주는 곳은 부른 쪽이 넘긴 편(sideOf. 파티가 있으면 그 파티, 없으면 플레이어 자신. 42)끼리 견준다.
     /// </summary>
     internal sealed class DamageTable
@@ -44,6 +44,30 @@ namespace PortfolioMmo.Server
         public void Clear()
         {
             _rows.Clear();
+        }
+
+        /// <summary>
+        /// 소환수의 줄을 주인의 줄로 옮긴다(95. 소환수가 죽거나 사라짐): 주인이 표에 없으면 소환수의 자리에 주인으로 들고, 있으면 합을 더해
+        /// 둘 가운데 먼저 든 쪽의 자리에 둔다. 소환수가 표에 없으면 아무것도 하지 않는다.
+        /// </summary>
+        public void Transfer(uint from, uint to)
+        {
+            int source = _rows.FindIndex(row => row.PlayerId == from);
+            if (source < 0)
+            {
+                return;
+            }
+
+            int target = _rows.FindIndex(row => row.PlayerId == to);
+            if (target < 0)
+            {
+                _rows[source] = (to, _rows[source].Damage);
+                return;
+            }
+
+            ulong sum = _rows[source].Damage + _rows[target].Damage;
+            _rows[Math.Min(source, target)] = (to, sum);
+            _rows.RemoveAt(Math.Max(source, target));
         }
 
         /// <summary>

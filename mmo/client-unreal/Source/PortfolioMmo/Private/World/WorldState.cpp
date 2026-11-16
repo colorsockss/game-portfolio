@@ -111,6 +111,18 @@ namespace MmoWorld
 		Growth.clear();
 	}
 
+	const FEntity* FWorldState::MySummon() const
+	{
+		for (const auto& [Id, Entity] : Visible)
+		{
+			if (Entity.Info.kind() == portfolio::mmo::ENTITY_KIND_SUMMON && Entity.Info.summon_owner_id() == Self && Self != 0)
+			{
+				return &Entity;
+			}
+		}
+		return nullptr;
+	}
+
 	void FWorldState::Apply(const portfolio::mmo::Packet& Packet, double NowSeconds)
 	{
 		switch (Packet.body_case())

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "World/AutoHunt.h"
+#include "World/CombatState.h"
 
 namespace
 {
@@ -72,6 +73,7 @@ namespace
 		Skill(103, portfolio::mmo::data::SKILL_KIND_BUFF, portfolio::mmo::data::SKILL_CENTER_SELF, 3, 0);
 		Skill(104, portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE, portfolio::mmo::data::SKILL_CENTER_SELF, 0, 4);
 		Skill(203, portfolio::mmo::data::SKILL_KIND_HEAL, portfolio::mmo::data::SKILL_CENTER_SELF, 0, 0);
+		Skill(206, portfolio::mmo::data::SKILL_KIND_SUMMON, portfolio::mmo::data::SKILL_CENTER_SELF, 0, 0);
 		for (const auto& [Id, Kind] : { std::pair<uint32_t, portfolio::mmo::data::EffectKind>{ 1, portfolio::mmo::data::EFFECT_KIND_STUN }, { 3, portfolio::mmo::data::EFFECT_KIND_DEFENSE_UP } })
 		{
 			portfolio::mmo::data::EffectsRow* Row = Result.Effects.add_rows();
@@ -312,6 +314,25 @@ namespace
 		Expect((Mage.Decide() == FAutoDecision{ EAutoAction::UseSkill, 101 }), "the next slot is used instead");
 		Mage.Bar({});
 		Expect(Mage.Decide() == FAutoDecision{ EAutoAction::Wait }, "skills not on the bar are not used");
+
+		// 소환(95)은 내 소환수가 없을 때 대상이 멀어도 다가가기 전에 쓰고, 소환수가 있으면 쓰지 않는다. 소환수는 가까운 몬스터가 아니다.
+		FScene Caller(2);
+		Caller.Monster(2, 20);
+		Caller.Target = 2;
+		Caller.Learn({ 206 });
+		Caller.Bar({ 206 });
+		Expect((Caller.Decide() == FAutoDecision{ EAutoAction::UseSkill, 206 }), "the summon is called before approaching");
+		Packet Summoned;
+		portfolio::mmo::EntityEnter* Spirit = Summoned.mutable_entities_enter()->add_entities();
+		Spirit->set_id(9);
+		Spirit->set_kind(portfolio::mmo::ENTITY_KIND_SUMMON);
+		Spirit->set_summon_owner_id(Caller.World.SelfId());
+		Spirit->set_x(M);
+		Spirit->set_hp(10);
+		Spirit->set_max_hp(10);
+		Caller.World.Apply(Summoned, 0);
+		Expect((Caller.Decide() == FAutoDecision{ EAutoAction::Approach, 2 }), "with a summon out it approaches");
+		Expect(MmoWorld::FCombatState::NearestEnemy(Caller.World, 0, 0) == 2, "a summon is not the nearest enemy");
 	}
 
 	/** 체력이 기준 아래면 회복 스킬이 먼저이고 쿨다운이면 물약, 회복 스킬이 없는 기사는 물약. 마나가 기준 아래면 마나 물약. 쓸 것이 없으면 사냥을 이어 간다.

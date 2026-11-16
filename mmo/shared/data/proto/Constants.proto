@@ -94,4 +94,8 @@ message Constants {
   uint32 outlaw_drop_inventory_percent = 44;
   // 무법자가 죽으면 입은 장비 가운데 하나를 떨어뜨릴 확률(%, 45). 인벤토리와 따로 굴린다
   uint32 outlaw_drop_equipment_percent = 45;
+  // 소환수가 주인을 따라가 서는 거리(m, 95). 대상이 없고 이보다 멀면 주인 쪽으로 걷는다
+  double summon_follow_distance = 46;
+  // 소환수가 주인에게서 떨어질 수 있는 거리(m, 95). 넘으면 대상을 버리고 주인의 자리로 옮긴다. 길을 찾는 범위도 주인 둘레 이 거리다
+  double summon_leash_distance = 47;
 }

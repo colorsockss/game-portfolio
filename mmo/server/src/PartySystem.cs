@@ -54,7 +54,10 @@ namespace PortfolioMmo.Server
         /// </summary>
         public ulong SideOf(uint playerId)
         {
-            return _entities.Find(playerId) is Player { PartyId: not 0 } player ? PartySideFlag | player.PartyId : playerId;
+            // 소환수(95)의 줄은 주인의 편이다.
+            Entity? found = _entities.Find(playerId);
+            Player? player = found is Summon summon ? summon.Owner : found as Player;
+            return player is { PartyId: not 0 } ? PartySideFlag | player.PartyId : player?.Id ?? playerId;
         }
 
         /// <summary>
