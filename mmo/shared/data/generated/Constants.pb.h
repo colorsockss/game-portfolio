@@ -250,6 +250,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kAutoHuntMpPercentFieldNumber = 29,
     kAutoHuntExcludeMsFieldNumber = 30,
     kAutoHuntStallMsFieldNumber = 31,
+    kDeathExpPercentFieldNumber = 42,
     kAutoHuntManualPauseMsFieldNumber = 32,
     kStorageSlotsFieldNumber = 33,
     kChatMaxBytesFieldNumber = 34,
@@ -260,6 +261,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kPkMinLevelFieldNumber = 39,
     kKarmaKillPenaltyFieldNumber = 40,
     kKarmaMonsterGainFieldNumber = 41,
+    kOutlawDeathExpPercentFieldNumber = 43,
+    kOutlawDropInventoryPercentFieldNumber = 44,
+    kOutlawDropEquipmentPercentFieldNumber = 45,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -561,6 +565,16 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_auto_hunt_stall_ms(::uint32_t value);
 
   public:
+  // uint32 death_exp_percent = 42;
+  void clear_death_exp_percent() ;
+  [[nodiscard]] ::uint32_t death_exp_percent() const;
+  void set_death_exp_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_death_exp_percent() const;
+  void _internal_set_death_exp_percent(::uint32_t value);
+
+  public:
   // uint32 auto_hunt_manual_pause_ms = 32;
   void clear_auto_hunt_manual_pause_ms() ;
   [[nodiscard]] ::uint32_t auto_hunt_manual_pause_ms() const;
@@ -661,11 +675,41 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_karma_monster_gain(::uint32_t value);
 
   public:
+  // uint32 outlaw_death_exp_percent = 43;
+  void clear_outlaw_death_exp_percent() ;
+  [[nodiscard]] ::uint32_t outlaw_death_exp_percent() const;
+  void set_outlaw_death_exp_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_outlaw_death_exp_percent() const;
+  void _internal_set_outlaw_death_exp_percent(::uint32_t value);
+
+  public:
+  // uint32 outlaw_drop_inventory_percent = 44;
+  void clear_outlaw_drop_inventory_percent() ;
+  [[nodiscard]] ::uint32_t outlaw_drop_inventory_percent() const;
+  void set_outlaw_drop_inventory_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_outlaw_drop_inventory_percent() const;
+  void _internal_set_outlaw_drop_inventory_percent(::uint32_t value);
+
+  public:
+  // uint32 outlaw_drop_equipment_percent = 45;
+  void clear_outlaw_drop_equipment_percent() ;
+  [[nodiscard]] ::uint32_t outlaw_drop_equipment_percent() const;
+  void set_outlaw_drop_equipment_percent(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_outlaw_drop_equipment_percent() const;
+  void _internal_set_outlaw_drop_equipment_percent(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 40,
+      ::google::protobuf::internal::TcParseTable<5, 44,
                           0, 0,
                           7>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -724,6 +768,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t auto_hunt_mp_percent_;
     ::uint32_t auto_hunt_exclude_ms_;
     ::uint32_t auto_hunt_stall_ms_;
+    ::uint32_t death_exp_percent_;
     ::uint32_t auto_hunt_manual_pause_ms_;
     ::uint32_t storage_slots_;
     ::uint32_t chat_max_bytes_;
@@ -734,6 +779,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t pk_min_level_;
     ::uint32_t karma_kill_penalty_;
     ::uint32_t karma_monster_gain_;
+    ::uint32_t outlaw_death_exp_percent_;
+    ::uint32_t outlaw_drop_inventory_percent_;
+    ::uint32_t outlaw_drop_equipment_percent_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1480,7 +1528,7 @@ inline void Constants::_internal_set_auto_hunt_stall_ms(::uint32_t value) {
 inline void Constants::clear_auto_hunt_manual_pause_ms() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.auto_hunt_manual_pause_ms_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x40000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x80000000U);
 }
 inline ::uint32_t Constants::auto_hunt_manual_pause_ms() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.auto_hunt_manual_pause_ms)
@@ -1488,7 +1536,7 @@ inline ::uint32_t Constants::auto_hunt_manual_pause_ms() const {
 }
 inline void Constants::set_auto_hunt_manual_pause_ms(::uint32_t value) {
   _internal_set_auto_hunt_manual_pause_ms(value);
-  SetHasBit(_impl_._has_bits_[0], 0x40000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x80000000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.auto_hunt_manual_pause_ms)
 }
 inline ::uint32_t Constants::_internal_auto_hunt_manual_pause_ms() const {
@@ -1504,7 +1552,7 @@ inline void Constants::_internal_set_auto_hunt_manual_pause_ms(::uint32_t value)
 inline void Constants::clear_storage_slots() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.storage_slots_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x80000000U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00000001U);
 }
 inline ::uint32_t Constants::storage_slots() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.storage_slots)
@@ -1512,7 +1560,7 @@ inline ::uint32_t Constants::storage_slots() const {
 }
 inline void Constants::set_storage_slots(::uint32_t value) {
   _internal_set_storage_slots(value);
-  SetHasBit(_impl_._has_bits_[0], 0x80000000U);
+  SetHasBit(_impl_._has_bits_[1], 0x00000001U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.storage_slots)
 }
 inline ::uint32_t Constants::_internal_storage_slots() const {
@@ -1528,7 +1576,7 @@ inline void Constants::_internal_set_storage_slots(::uint32_t value) {
 inline void Constants::clear_chat_max_bytes() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.chat_max_bytes_ = 0u;
-  ClearHasBit(_impl_._has_bits_[1], 0x00000001U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00000002U);
 }
 inline ::uint32_t Constants::chat_max_bytes() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.chat_max_bytes)
@@ -1536,7 +1584,7 @@ inline ::uint32_t Constants::chat_max_bytes() const {
 }
 inline void Constants::set_chat_max_bytes(::uint32_t value) {
   _internal_set_chat_max_bytes(value);
-  SetHasBit(_impl_._has_bits_[1], 0x00000001U);
+  SetHasBit(_impl_._has_bits_[1], 0x00000002U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.chat_max_bytes)
 }
 inline ::uint32_t Constants::_internal_chat_max_bytes() const {
@@ -1552,7 +1600,7 @@ inline void Constants::_internal_set_chat_max_bytes(::uint32_t value) {
 inline void Constants::clear_chat_per_second() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.chat_per_second_ = 0u;
-  ClearHasBit(_impl_._has_bits_[1], 0x00000002U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00000004U);
 }
 inline ::uint32_t Constants::chat_per_second() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.chat_per_second)
@@ -1560,7 +1608,7 @@ inline ::uint32_t Constants::chat_per_second() const {
 }
 inline void Constants::set_chat_per_second(::uint32_t value) {
   _internal_set_chat_per_second(value);
-  SetHasBit(_impl_._has_bits_[1], 0x00000002U);
+  SetHasBit(_impl_._has_bits_[1], 0x00000004U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.chat_per_second)
 }
 inline ::uint32_t Constants::_internal_chat_per_second() const {
@@ -1576,7 +1624,7 @@ inline void Constants::_internal_set_chat_per_second(::uint32_t value) {
 inline void Constants::clear_party_exp_bonus_percent() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.party_exp_bonus_percent_ = 0u;
-  ClearHasBit(_impl_._has_bits_[1], 0x00000004U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00000008U);
 }
 inline ::uint32_t Constants::party_exp_bonus_percent() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.party_exp_bonus_percent)
@@ -1584,7 +1632,7 @@ inline ::uint32_t Constants::party_exp_bonus_percent() const {
 }
 inline void Constants::set_party_exp_bonus_percent(::uint32_t value) {
   _internal_set_party_exp_bonus_percent(value);
-  SetHasBit(_impl_._has_bits_[1], 0x00000004U);
+  SetHasBit(_impl_._has_bits_[1], 0x00000008U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.party_exp_bonus_percent)
 }
 inline ::uint32_t Constants::_internal_party_exp_bonus_percent() const {
@@ -1600,7 +1648,7 @@ inline void Constants::_internal_set_party_exp_bonus_percent(::uint32_t value) {
 inline void Constants::clear_party_invite_ms() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.party_invite_ms_ = 0u;
-  ClearHasBit(_impl_._has_bits_[1], 0x00000008U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00000010U);
 }
 inline ::uint32_t Constants::party_invite_ms() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.party_invite_ms)
@@ -1608,7 +1656,7 @@ inline ::uint32_t Constants::party_invite_ms() const {
 }
 inline void Constants::set_party_invite_ms(::uint32_t value) {
   _internal_set_party_invite_ms(value);
-  SetHasBit(_impl_._has_bits_[1], 0x00000008U);
+  SetHasBit(_impl_._has_bits_[1], 0x00000010U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.party_invite_ms)
 }
 inline ::uint32_t Constants::_internal_party_invite_ms() const {
@@ -1624,7 +1672,7 @@ inline void Constants::_internal_set_party_invite_ms(::uint32_t value) {
 inline void Constants::clear_aggressor_ms() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.aggressor_ms_ = 0u;
-  ClearHasBit(_impl_._has_bits_[1], 0x00000010U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00000020U);
 }
 inline ::uint32_t Constants::aggressor_ms() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.aggressor_ms)
@@ -1632,7 +1680,7 @@ inline ::uint32_t Constants::aggressor_ms() const {
 }
 inline void Constants::set_aggressor_ms(::uint32_t value) {
   _internal_set_aggressor_ms(value);
-  SetHasBit(_impl_._has_bits_[1], 0x00000010U);
+  SetHasBit(_impl_._has_bits_[1], 0x00000020U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.aggressor_ms)
 }
 inline ::uint32_t Constants::_internal_aggressor_ms() const {
@@ -1648,7 +1696,7 @@ inline void Constants::_internal_set_aggressor_ms(::uint32_t value) {
 inline void Constants::clear_pk_min_level() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.pk_min_level_ = 0u;
-  ClearHasBit(_impl_._has_bits_[1], 0x00000020U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00000040U);
 }
 inline ::uint32_t Constants::pk_min_level() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.pk_min_level)
@@ -1656,7 +1704,7 @@ inline ::uint32_t Constants::pk_min_level() const {
 }
 inline void Constants::set_pk_min_level(::uint32_t value) {
   _internal_set_pk_min_level(value);
-  SetHasBit(_impl_._has_bits_[1], 0x00000020U);
+  SetHasBit(_impl_._has_bits_[1], 0x00000040U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.pk_min_level)
 }
 inline ::uint32_t Constants::_internal_pk_min_level() const {
@@ -1672,7 +1720,7 @@ inline void Constants::_internal_set_pk_min_level(::uint32_t value) {
 inline void Constants::clear_karma_kill_penalty() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.karma_kill_penalty_ = 0u;
-  ClearHasBit(_impl_._has_bits_[1], 0x00000040U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00000080U);
 }
 inline ::uint32_t Constants::karma_kill_penalty() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.karma_kill_penalty)
@@ -1680,7 +1728,7 @@ inline ::uint32_t Constants::karma_kill_penalty() const {
 }
 inline void Constants::set_karma_kill_penalty(::uint32_t value) {
   _internal_set_karma_kill_penalty(value);
-  SetHasBit(_impl_._has_bits_[1], 0x00000040U);
+  SetHasBit(_impl_._has_bits_[1], 0x00000080U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.karma_kill_penalty)
 }
 inline ::uint32_t Constants::_internal_karma_kill_penalty() const {
@@ -1696,7 +1744,7 @@ inline void Constants::_internal_set_karma_kill_penalty(::uint32_t value) {
 inline void Constants::clear_karma_monster_gain() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.karma_monster_gain_ = 0u;
-  ClearHasBit(_impl_._has_bits_[1], 0x00000080U);
+  ClearHasBit(_impl_._has_bits_[1], 0x00000100U);
 }
 inline ::uint32_t Constants::karma_monster_gain() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.karma_monster_gain)
@@ -1704,7 +1752,7 @@ inline ::uint32_t Constants::karma_monster_gain() const {
 }
 inline void Constants::set_karma_monster_gain(::uint32_t value) {
   _internal_set_karma_monster_gain(value);
-  SetHasBit(_impl_._has_bits_[1], 0x00000080U);
+  SetHasBit(_impl_._has_bits_[1], 0x00000100U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.karma_monster_gain)
 }
 inline ::uint32_t Constants::_internal_karma_monster_gain() const {
@@ -1714,6 +1762,102 @@ inline ::uint32_t Constants::_internal_karma_monster_gain() const {
 inline void Constants::_internal_set_karma_monster_gain(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.karma_monster_gain_ = value;
+}
+
+// uint32 death_exp_percent = 42;
+inline void Constants::clear_death_exp_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.death_exp_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x40000000U);
+}
+inline ::uint32_t Constants::death_exp_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.death_exp_percent)
+  return _internal_death_exp_percent();
+}
+inline void Constants::set_death_exp_percent(::uint32_t value) {
+  _internal_set_death_exp_percent(value);
+  SetHasBit(_impl_._has_bits_[0], 0x40000000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.death_exp_percent)
+}
+inline ::uint32_t Constants::_internal_death_exp_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.death_exp_percent_;
+}
+inline void Constants::_internal_set_death_exp_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.death_exp_percent_ = value;
+}
+
+// uint32 outlaw_death_exp_percent = 43;
+inline void Constants::clear_outlaw_death_exp_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.outlaw_death_exp_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000200U);
+}
+inline ::uint32_t Constants::outlaw_death_exp_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.outlaw_death_exp_percent)
+  return _internal_outlaw_death_exp_percent();
+}
+inline void Constants::set_outlaw_death_exp_percent(::uint32_t value) {
+  _internal_set_outlaw_death_exp_percent(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000200U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.outlaw_death_exp_percent)
+}
+inline ::uint32_t Constants::_internal_outlaw_death_exp_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.outlaw_death_exp_percent_;
+}
+inline void Constants::_internal_set_outlaw_death_exp_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.outlaw_death_exp_percent_ = value;
+}
+
+// uint32 outlaw_drop_inventory_percent = 44;
+inline void Constants::clear_outlaw_drop_inventory_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.outlaw_drop_inventory_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000400U);
+}
+inline ::uint32_t Constants::outlaw_drop_inventory_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.outlaw_drop_inventory_percent)
+  return _internal_outlaw_drop_inventory_percent();
+}
+inline void Constants::set_outlaw_drop_inventory_percent(::uint32_t value) {
+  _internal_set_outlaw_drop_inventory_percent(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000400U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.outlaw_drop_inventory_percent)
+}
+inline ::uint32_t Constants::_internal_outlaw_drop_inventory_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.outlaw_drop_inventory_percent_;
+}
+inline void Constants::_internal_set_outlaw_drop_inventory_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.outlaw_drop_inventory_percent_ = value;
+}
+
+// uint32 outlaw_drop_equipment_percent = 45;
+inline void Constants::clear_outlaw_drop_equipment_percent() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.outlaw_drop_equipment_percent_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000800U);
+}
+inline ::uint32_t Constants::outlaw_drop_equipment_percent() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.outlaw_drop_equipment_percent)
+  return _internal_outlaw_drop_equipment_percent();
+}
+inline void Constants::set_outlaw_drop_equipment_percent(::uint32_t value) {
+  _internal_set_outlaw_drop_equipment_percent(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000800U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.outlaw_drop_equipment_percent)
+}
+inline ::uint32_t Constants::_internal_outlaw_drop_equipment_percent() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.outlaw_drop_equipment_percent_;
+}
+inline void Constants::_internal_set_outlaw_drop_equipment_percent(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.outlaw_drop_equipment_percent_ = value;
 }
 
 #ifdef __GNUC__

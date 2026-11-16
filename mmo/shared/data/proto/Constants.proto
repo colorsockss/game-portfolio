@@ -86,4 +86,12 @@ message Constants {
   uint32 karma_kill_penalty = 40;
   // 몬스터를 잡아 경험치를 받을 때마다 성향이 오르는 값(44). 0을 넘지 않는다
   uint32 karma_monster_gain = 41;
+  // 일반과 선공 플레이어가 죽으면 잃는 경험치(지금 레벨에서 쌓은 것의 %. 내림, 45). 레벨은 내려가지 않는다
+  uint32 death_exp_percent = 42;
+  // 무법자가 죽으면 잃는 경험치(지금 레벨에서 쌓은 것의 %. 45)
+  uint32 outlaw_death_exp_percent = 43;
+  // 무법자가 죽으면 인벤토리의 차 있는 칸 하나를 통째로 떨어뜨릴 확률(%, 45). 창고는 뽑지 않는다
+  uint32 outlaw_drop_inventory_percent = 44;
+  // 무법자가 죽으면 입은 장비 가운데 하나를 떨어뜨릴 확률(%, 45). 인벤토리와 따로 굴린다
+  uint32 outlaw_drop_equipment_percent = 45;
 }

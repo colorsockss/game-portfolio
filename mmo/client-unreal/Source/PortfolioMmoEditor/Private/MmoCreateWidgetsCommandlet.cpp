@@ -746,6 +746,10 @@ namespace
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Death, UMmoDeathWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
 		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("death.title"), Style.TitleSize), Style.Section);
+		// 잃은 경험치와 떨어뜨린 것(45). 글은 기반 클래스가 채운다.
+		UTextBlock* Penalty = Builder.Text(TEXT("PenaltyText"), FText::GetEmpty(), Style.SmallSize, true);
+		Penalty->SetAutoWrapText(true);
+		AddWithGap(*Column, Penalty, Style.Section);
 		Column->AddChildToVerticalBox(Builder.Button(TEXT("ReviveButton"), TEXT("death.revive")));
 		return Builder.Save();
 	}

@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSK2CAoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLBCQoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -48,12 +48,15 @@ namespace PortfolioMmo.Data {
             "ZXJfc2Vjb25kGCMgASgNEh8KF3BhcnR5X2V4cF9ib251c19wZXJjZW50GCQg",
             "ASgNEhcKD3BhcnR5X2ludml0ZV9tcxglIAEoDRIUCgxhZ2dyZXNzb3JfbXMY",
             "JiABKA0SFAoMcGtfbWluX2xldmVsGCcgASgNEhoKEmthcm1hX2tpbGxfcGVu",
-            "YWx0eRgoIAEoDRIaChJrYXJtYV9tb25zdGVyX2dhaW4YKSABKA1CFKoCEVBv",
-            "cnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
+            "YWx0eRgoIAEoDRIaChJrYXJtYV9tb25zdGVyX2dhaW4YKSABKA0SGQoRZGVh",
+            "dGhfZXhwX3BlcmNlbnQYKiABKA0SIAoYb3V0bGF3X2RlYXRoX2V4cF9wZXJj",
+            "ZW50GCsgASgNEiUKHW91dGxhd19kcm9wX2ludmVudG9yeV9wZXJjZW50GCwg",
+            "ASgNEiUKHW91dGxhd19kcm9wX2VxdWlwbWVudF9wZXJjZW50GC0gASgNQhSq",
+            "AhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain", "DeathExpPercent", "OutlawDeathExpPercent", "OutlawDropInventoryPercent", "OutlawDropEquipmentPercent" }, null, null, null, null)
           }));
     }
     #endregion
@@ -135,6 +138,10 @@ namespace PortfolioMmo.Data {
       pkMinLevel_ = other.pkMinLevel_;
       karmaKillPenalty_ = other.karmaKillPenalty_;
       karmaMonsterGain_ = other.karmaMonsterGain_;
+      deathExpPercent_ = other.deathExpPercent_;
+      outlawDeathExpPercent_ = other.outlawDeathExpPercent_;
+      outlawDropInventoryPercent_ = other.outlawDropInventoryPercent_;
+      outlawDropEquipmentPercent_ = other.outlawDropEquipmentPercent_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -744,6 +751,66 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "death_exp_percent" field.</summary>
+    public const int DeathExpPercentFieldNumber = 42;
+    private uint deathExpPercent_;
+    /// <summary>
+    /// 일반과 선공 플레이어가 죽으면 잃는 경험치(지금 레벨에서 쌓은 것의 %. 내림, 45). 레벨은 내려가지 않는다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint DeathExpPercent {
+      get { return deathExpPercent_; }
+      set {
+        deathExpPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "outlaw_death_exp_percent" field.</summary>
+    public const int OutlawDeathExpPercentFieldNumber = 43;
+    private uint outlawDeathExpPercent_;
+    /// <summary>
+    /// 무법자가 죽으면 잃는 경험치(지금 레벨에서 쌓은 것의 %. 45)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint OutlawDeathExpPercent {
+      get { return outlawDeathExpPercent_; }
+      set {
+        outlawDeathExpPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "outlaw_drop_inventory_percent" field.</summary>
+    public const int OutlawDropInventoryPercentFieldNumber = 44;
+    private uint outlawDropInventoryPercent_;
+    /// <summary>
+    /// 무법자가 죽으면 인벤토리의 차 있는 칸 하나를 통째로 떨어뜨릴 확률(%, 45). 창고는 뽑지 않는다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint OutlawDropInventoryPercent {
+      get { return outlawDropInventoryPercent_; }
+      set {
+        outlawDropInventoryPercent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "outlaw_drop_equipment_percent" field.</summary>
+    public const int OutlawDropEquipmentPercentFieldNumber = 45;
+    private uint outlawDropEquipmentPercent_;
+    /// <summary>
+    /// 무법자가 죽으면 입은 장비 가운데 하나를 떨어뜨릴 확률(%, 45). 인벤토리와 따로 굴린다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint OutlawDropEquipmentPercent {
+      get { return outlawDropEquipmentPercent_; }
+      set {
+        outlawDropEquipmentPercent_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -799,6 +866,10 @@ namespace PortfolioMmo.Data {
       if (PkMinLevel != other.PkMinLevel) return false;
       if (KarmaKillPenalty != other.KarmaKillPenalty) return false;
       if (KarmaMonsterGain != other.KarmaMonsterGain) return false;
+      if (DeathExpPercent != other.DeathExpPercent) return false;
+      if (OutlawDeathExpPercent != other.OutlawDeathExpPercent) return false;
+      if (OutlawDropInventoryPercent != other.OutlawDropInventoryPercent) return false;
+      if (OutlawDropEquipmentPercent != other.OutlawDropEquipmentPercent) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -846,6 +917,10 @@ namespace PortfolioMmo.Data {
       if (PkMinLevel != 0) hash ^= PkMinLevel.GetHashCode();
       if (KarmaKillPenalty != 0) hash ^= KarmaKillPenalty.GetHashCode();
       if (KarmaMonsterGain != 0) hash ^= KarmaMonsterGain.GetHashCode();
+      if (DeathExpPercent != 0) hash ^= DeathExpPercent.GetHashCode();
+      if (OutlawDeathExpPercent != 0) hash ^= OutlawDeathExpPercent.GetHashCode();
+      if (OutlawDropInventoryPercent != 0) hash ^= OutlawDropInventoryPercent.GetHashCode();
+      if (OutlawDropEquipmentPercent != 0) hash ^= OutlawDropEquipmentPercent.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1024,6 +1099,22 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(200, 2);
         output.WriteUInt32(KarmaMonsterGain);
       }
+      if (DeathExpPercent != 0) {
+        output.WriteRawTag(208, 2);
+        output.WriteUInt32(DeathExpPercent);
+      }
+      if (OutlawDeathExpPercent != 0) {
+        output.WriteRawTag(216, 2);
+        output.WriteUInt32(OutlawDeathExpPercent);
+      }
+      if (OutlawDropInventoryPercent != 0) {
+        output.WriteRawTag(224, 2);
+        output.WriteUInt32(OutlawDropInventoryPercent);
+      }
+      if (OutlawDropEquipmentPercent != 0) {
+        output.WriteRawTag(232, 2);
+        output.WriteUInt32(OutlawDropEquipmentPercent);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1194,6 +1285,22 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(200, 2);
         output.WriteUInt32(KarmaMonsterGain);
       }
+      if (DeathExpPercent != 0) {
+        output.WriteRawTag(208, 2);
+        output.WriteUInt32(DeathExpPercent);
+      }
+      if (OutlawDeathExpPercent != 0) {
+        output.WriteRawTag(216, 2);
+        output.WriteUInt32(OutlawDeathExpPercent);
+      }
+      if (OutlawDropInventoryPercent != 0) {
+        output.WriteRawTag(224, 2);
+        output.WriteUInt32(OutlawDropInventoryPercent);
+      }
+      if (OutlawDropEquipmentPercent != 0) {
+        output.WriteRawTag(232, 2);
+        output.WriteUInt32(OutlawDropEquipmentPercent);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1323,6 +1430,18 @@ namespace PortfolioMmo.Data {
       }
       if (KarmaMonsterGain != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(KarmaMonsterGain);
+      }
+      if (DeathExpPercent != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(DeathExpPercent);
+      }
+      if (OutlawDeathExpPercent != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(OutlawDeathExpPercent);
+      }
+      if (OutlawDropInventoryPercent != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(OutlawDropInventoryPercent);
+      }
+      if (OutlawDropEquipmentPercent != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(OutlawDropEquipmentPercent);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1455,6 +1574,18 @@ namespace PortfolioMmo.Data {
       }
       if (other.KarmaMonsterGain != 0) {
         KarmaMonsterGain = other.KarmaMonsterGain;
+      }
+      if (other.DeathExpPercent != 0) {
+        DeathExpPercent = other.DeathExpPercent;
+      }
+      if (other.OutlawDeathExpPercent != 0) {
+        OutlawDeathExpPercent = other.OutlawDeathExpPercent;
+      }
+      if (other.OutlawDropInventoryPercent != 0) {
+        OutlawDropInventoryPercent = other.OutlawDropInventoryPercent;
+      }
+      if (other.OutlawDropEquipmentPercent != 0) {
+        OutlawDropEquipmentPercent = other.OutlawDropEquipmentPercent;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1635,6 +1766,22 @@ namespace PortfolioMmo.Data {
             KarmaMonsterGain = input.ReadUInt32();
             break;
           }
+          case 336: {
+            DeathExpPercent = input.ReadUInt32();
+            break;
+          }
+          case 344: {
+            OutlawDeathExpPercent = input.ReadUInt32();
+            break;
+          }
+          case 352: {
+            OutlawDropInventoryPercent = input.ReadUInt32();
+            break;
+          }
+          case 360: {
+            OutlawDropEquipmentPercent = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -1812,6 +1959,22 @@ namespace PortfolioMmo.Data {
           }
           case 328: {
             KarmaMonsterGain = input.ReadUInt32();
+            break;
+          }
+          case 336: {
+            DeathExpPercent = input.ReadUInt32();
+            break;
+          }
+          case 344: {
+            OutlawDeathExpPercent = input.ReadUInt32();
+            break;
+          }
+          case 352: {
+            OutlawDropInventoryPercent = input.ReadUInt32();
+            break;
+          }
+          case 360: {
+            OutlawDropEquipmentPercent = input.ReadUInt32();
             break;
           }
         }

@@ -199,6 +199,10 @@ namespace MmoWorld
 				Found->second.Info.set_max_hp(Packet.revived().max_hp());
 			}
 			Mine.bDead &= Packet.revived().id() != Self;
+			if (Packet.revived().id() == Self)
+			{
+				Mine.Penalty.reset();
+			}
 			break;
 		case portfolio::mmo::Packet::kEffectApplied:
 			if (const auto Found = Visible.find(Packet.effect_applied().id()); Found != Visible.end())
@@ -229,6 +233,9 @@ namespace MmoWorld
 			break;
 		case portfolio::mmo::Packet::kKarma:
 			Mine.Karma = Packet.karma().karma();
+			break;
+		case portfolio::mmo::Packet::kDeathPenalty:
+			Mine.Penalty = Packet.death_penalty();
 			break;
 		case portfolio::mmo::Packet::kExpGained:
 			Mine.Exp = Packet.exp_gained().exp();

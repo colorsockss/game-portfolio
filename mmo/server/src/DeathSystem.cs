@@ -8,8 +8,8 @@ namespace PortfolioMmo.Server
     /// <summary>
     /// 죽음과 부활(25). 전투 차례의 끝에서 그 틱에 죽은 개체를 정리하고(죽은 플레이어를 피해 표에서 뺌, 죽은 몬스터의 사라짐과 리스폰을 예약),
     /// 죽은 몬스터의 경험치를 GrowthSystem에 넘기며(31), Revive를 받으면 마을의 부활 지점(무법자는 무법자의 부활 지점. 44)에서 일으킨다. 효과를 떼고(알리지 않음)
-    /// 진행 중인 일을 취소하며(26) 선공 표시를 뗀다(44).
-    /// 쿨다운과 성향은 남긴다. 사망 페널티는 45다.
+    /// 진행 중인 일을 취소하며(26) 선공 표시를 뗀다(44). 죽은 플레이어에게는 누가 죽였든 사망 페널티(45)를 준다.
+    /// 쿨다운과 성향은 남긴다.
     /// </summary>
     internal sealed class DeathSystem
     {
@@ -24,6 +24,8 @@ namespace PortfolioMmo.Server
         private readonly PkSystem _pk;
         private readonly uint _deadMonsterTicks;
         private readonly uint _reviveHpPercent;
+        private readonly uint _expPercent;
+        private readonly uint _outlawExpPercent;
 
         /// <summary>
         /// 보스의 죽음 알림(43).
@@ -43,6 +45,8 @@ namespace PortfolioMmo.Server
             _loot = loot;
             _deadMonsterTicks = Units.TicksFromMilliseconds(data.Constants.DeadMonsterMs);
             _reviveHpPercent = data.Constants.ReviveHpPercent;
+            _expPercent = data.Constants.DeathExpPercent;
+            _outlawExpPercent = data.Constants.OutlawDeathExpPercent;
         }
 
         /// <summary>
@@ -55,6 +59,7 @@ namespace PortfolioMmo.Server
             switch (dead)
             {
                 case Player player:
+                    Penalize(player, tick);
                     _pk.Died(player);
                     // 몬스터는 표의 다른 대상을 고르거나, 고를 대상이 없으면 복귀한다.
                     foreach (Entity entity in _entities.All)
@@ -79,6 +84,22 @@ namespace PortfolioMmo.Server
                     }
                     break;
             }
+        }
+
+        /// <summary>
+        /// 사망 페널티(45): 경험치를 잃고(일반과 선공 5%, 무법자 10%), 무법자는 아이템도 떨어뜨린다. 무법자인지는 죽는 순간의 성향이다.
+        /// 잃은 것을 DeathPenalty로 본인에게 보낸다.
+        /// </summary>
+        private void Penalize(Player player, uint tick)
+        {
+            bool outlaw = PkSystem.IsOutlaw(player);
+            var penalty = new DeathPenalty { ExpLost = _growth.Lose(player, outlaw ? _outlawExpPercent : _expPercent) };
+            if (outlaw)
+            {
+                penalty.Items.Add(_loot.OutlawDied(player, tick));
+            }
+
+            player.Session.Send(new Packet { DeathPenalty = penalty });
         }
 
         /// <summary>

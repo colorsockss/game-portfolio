@@ -49,11 +49,11 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
     {
       PROTOBUF_FIELD_OFFSET(Constants, _impl_._has_bits_),
       0, // no _extensions_
-      41, 248,  // max_field_number, fast_idx_mask
+      45, 248,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
       33554432,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      40,  // num_field_entries
+      44,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -164,7 +164,10 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       {::_pbi::TcParser::FastF64S2,
        {457, 23, 0,
         PROTOBUF_FIELD_OFFSET(Constants, _impl_.drop_scatter_)}},
-      {::_pbi::TcParser::MiniParse, {}},
+      // uint32 death_exp_percent = 42;
+      {::_pbi::TcParser::FastV32S2,
+       {720, 30, 0,
+        PROTOBUF_FIELD_OFFSET(Constants, _impl_.death_exp_percent_)}},
       // double auto_hunt_range = 27;
       {::_pbi::TcParser::FastF64S2,
        {473, 26, 0,
@@ -187,7 +190,7 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
         PROTOBUF_FIELD_OFFSET(Constants, _impl_.auto_hunt_stall_ms_)}},
     }}, {{
       33, 0, 1,
-      65024, 31,
+      57344, 31,
       65535, 65535
     }}, {{
       // uint32 field_size = 1;
@@ -251,25 +254,33 @@ constexpr Constants::ParseTableT_ Constants::InternalGenerateParseTable_(const :
       // uint32 auto_hunt_stall_ms = 31;
       {PROTOBUF_FIELD_OFFSET(Constants, _impl_.auto_hunt_stall_ms_), _Internal::kHasBitsOffset + 29, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 auto_hunt_manual_pause_ms = 32;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.auto_hunt_manual_pause_ms_), _Internal::kHasBitsOffset + 30, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.auto_hunt_manual_pause_ms_), _Internal::kHasBitsOffset + 31, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 storage_slots = 33;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.storage_slots_), _Internal::kHasBitsOffset + 31, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.storage_slots_), _Internal::kHasBitsOffset + 32, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 chat_max_bytes = 34;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.chat_max_bytes_), _Internal::kHasBitsOffset + 32, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.chat_max_bytes_), _Internal::kHasBitsOffset + 33, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 chat_per_second = 35;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.chat_per_second_), _Internal::kHasBitsOffset + 33, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.chat_per_second_), _Internal::kHasBitsOffset + 34, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 party_exp_bonus_percent = 36;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.party_exp_bonus_percent_), _Internal::kHasBitsOffset + 34, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.party_exp_bonus_percent_), _Internal::kHasBitsOffset + 35, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 party_invite_ms = 37;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.party_invite_ms_), _Internal::kHasBitsOffset + 35, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.party_invite_ms_), _Internal::kHasBitsOffset + 36, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 aggressor_ms = 38;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.aggressor_ms_), _Internal::kHasBitsOffset + 36, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.aggressor_ms_), _Internal::kHasBitsOffset + 37, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 pk_min_level = 39;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.pk_min_level_), _Internal::kHasBitsOffset + 37, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.pk_min_level_), _Internal::kHasBitsOffset + 38, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 karma_kill_penalty = 40;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.karma_kill_penalty_), _Internal::kHasBitsOffset + 38, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.karma_kill_penalty_), _Internal::kHasBitsOffset + 39, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 karma_monster_gain = 41;
-      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.karma_monster_gain_), _Internal::kHasBitsOffset + 39, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.karma_monster_gain_), _Internal::kHasBitsOffset + 40, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 death_exp_percent = 42;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.death_exp_percent_), _Internal::kHasBitsOffset + 30, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 outlaw_death_exp_percent = 43;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.outlaw_death_exp_percent_), _Internal::kHasBitsOffset + 41, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 outlaw_drop_inventory_percent = 44;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.outlaw_drop_inventory_percent_), _Internal::kHasBitsOffset + 42, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 outlaw_drop_equipment_percent = 45;
+      {PROTOBUF_FIELD_OFFSET(Constants, _impl_.outlaw_drop_equipment_percent_), _Internal::kHasBitsOffset + 43, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -311,6 +322,7 @@ inline constexpr Constants::Impl_::Impl_(
         auto_hunt_mp_percent_{0u},
         auto_hunt_exclude_ms_{0u},
         auto_hunt_stall_ms_{0u},
+        death_exp_percent_{0u},
         auto_hunt_manual_pause_ms_{0u},
         storage_slots_{0u},
         chat_max_bytes_{0u},
@@ -320,7 +332,10 @@ inline constexpr Constants::Impl_::Impl_(
         aggressor_ms_{0u},
         pk_min_level_{0u},
         karma_kill_penalty_{0u},
-        karma_monster_gain_{0u} {}
+        karma_monster_gain_{0u},
+        outlaw_death_exp_percent_{0u},
+        outlaw_drop_inventory_percent_{0u},
+        outlaw_drop_equipment_percent_{0u} {}
 
 template <typename>
 constexpr Constants::Constants(::_pbi::ConstantInitialized,
@@ -426,7 +441,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_._has_bits_),
-        43, // hasbit index offset
+        47, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.field_size_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.combat_duration_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.regen_percent_),
@@ -467,6 +482,10 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.pk_min_level_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.karma_kill_penalty_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.karma_monster_gain_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.death_exp_percent_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.outlaw_death_exp_percent_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.outlaw_drop_inventory_percent_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Constants, _impl_.outlaw_drop_equipment_percent_),
         0,
         1,
         2,
@@ -497,7 +516,6 @@ const ::uint32_t
         27,
         28,
         29,
-        30,
         31,
         32,
         33,
@@ -507,6 +525,11 @@ const ::uint32_t
         37,
         38,
         39,
+        40,
+        30,
+        41,
+        42,
+        43,
 };
 
 static const ::_pbi::MigrationSchema
@@ -519,7 +542,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\017Constants.proto\022\022portfolio.mmo.data\"\266\010"
+    "\n\017Constants.proto\022\022portfolio.mmo.data\"\301\t"
     "\n\tConstants\022\022\n\nfield_size\030\001 \001(\r\022\032\n\022comba"
     "t_duration_ms\030\002 \001(\r\022\025\n\rregen_percent\030\003 \001"
     "(\r\022\034\n\024combat_regen_percent\030\004 \001(\r\022\023\n\013crit"
@@ -546,14 +569,18 @@ const char descriptor_table_protodef_Constants_2eproto[] ABSL_ATTRIBUTE_SECTION_
     "\022\037\n\027party_exp_bonus_percent\030$ \001(\r\022\027\n\017par"
     "ty_invite_ms\030% \001(\r\022\024\n\014aggressor_ms\030& \001(\r"
     "\022\024\n\014pk_min_level\030\' \001(\r\022\032\n\022karma_kill_pen"
-    "alty\030( \001(\r\022\032\n\022karma_monster_gain\030) \001(\rB\024"
-    "\252\002\021PortfolioMmo.Datab\006proto3"
+    "alty\030( \001(\r\022\032\n\022karma_monster_gain\030) \001(\r\022\031"
+    "\n\021death_exp_percent\030* \001(\r\022 \n\030outlaw_deat"
+    "h_exp_percent\030+ \001(\r\022%\n\035outlaw_drop_inven"
+    "tory_percent\030, \001(\r\022%\n\035outlaw_drop_equipm"
+    "ent_percent\030- \001(\rB\024\252\002\021PortfolioMmo.Datab"
+    "\006proto3"
 };
 static ::absl::once_flag descriptor_table_Constants_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Constants_2eproto = {
     false,
     false,
-    1148,
+    1287,
     descriptor_table_protodef_Constants_2eproto,
     "Constants.proto",
     &descriptor_table_Constants_2eproto_once,
@@ -601,9 +628,9 @@ inline void Constants::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, field_size_),
            0,
-           offsetof(Impl_, karma_monster_gain_) -
+           offsetof(Impl_, outlaw_drop_equipment_percent_) -
                offsetof(Impl_, field_size_) +
-               sizeof(Impl_::karma_monster_gain_));
+               sizeof(Impl_::outlaw_drop_equipment_percent_));
 }
 Constants::~Constants() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.Constants)
@@ -676,17 +703,24 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   if (BatchCheckHasBit(cached_has_bits, 0xff000000U)) {
     ::memset(&this_._impl_.owner_only_ms_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.storage_slots_) -
+                 reinterpret_cast<char*>(&this_._impl_.auto_hunt_manual_pause_ms_) -
                  reinterpret_cast<char*>(&this_._impl_.owner_only_ms_)) +
-                 sizeof(_impl_.storage_slots_));
+                 sizeof(_impl_.auto_hunt_manual_pause_ms_));
   }
   cached_has_bits = this_._impl_._has_bits_[1];
   if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
-    ::memset(&this_._impl_.chat_max_bytes_, 0,
+    ::memset(&this_._impl_.storage_slots_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.karma_monster_gain_) -
-                 reinterpret_cast<char*>(&this_._impl_.chat_max_bytes_)) +
-                 sizeof(_impl_.karma_monster_gain_));
+                 reinterpret_cast<char*>(&this_._impl_.karma_kill_penalty_) -
+                 reinterpret_cast<char*>(&this_._impl_.storage_slots_)) +
+                 sizeof(_impl_.karma_kill_penalty_));
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x00000f00U)) {
+    ::memset(&this_._impl_.karma_monster_gain_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.outlaw_drop_equipment_percent_) -
+                 reinterpret_cast<char*>(&this_._impl_.karma_monster_gain_)) +
+                 sizeof(_impl_.outlaw_drop_equipment_percent_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -982,7 +1016,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // uint32 auto_hunt_manual_pause_ms = 32;
-  if (CheckHasBit(cached_has_bits, 0x40000000U)) {
+  if (CheckHasBit(cached_has_bits, 0x80000000U)) {
     if (this_._internal_auto_hunt_manual_pause_ms() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -990,8 +1024,9 @@ PROTOBUF_NOINLINE void Constants::Clear() {
     }
   }
 
+  cached_has_bits = this_._impl_._has_bits_[1];
   // uint32 storage_slots = 33;
-  if (CheckHasBit(cached_has_bits, 0x80000000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
     if (this_._internal_storage_slots() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -999,9 +1034,8 @@ PROTOBUF_NOINLINE void Constants::Clear() {
     }
   }
 
-  cached_has_bits = this_._impl_._has_bits_[1];
   // uint32 chat_max_bytes = 34;
-  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
     if (this_._internal_chat_max_bytes() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -1010,7 +1044,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // uint32 chat_per_second = 35;
-  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
     if (this_._internal_chat_per_second() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -1019,7 +1053,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // uint32 party_exp_bonus_percent = 36;
-  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000008U)) {
     if (this_._internal_party_exp_bonus_percent() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -1028,7 +1062,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // uint32 party_invite_ms = 37;
-  if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000010U)) {
     if (this_._internal_party_invite_ms() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -1037,7 +1071,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // uint32 aggressor_ms = 38;
-  if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000020U)) {
     if (this_._internal_aggressor_ms() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -1046,7 +1080,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // uint32 pk_min_level = 39;
-  if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000040U)) {
     if (this_._internal_pk_min_level() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -1055,7 +1089,7 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // uint32 karma_kill_penalty = 40;
-  if (CheckHasBit(cached_has_bits, 0x00000040U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000080U)) {
     if (this_._internal_karma_kill_penalty() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -1064,11 +1098,49 @@ PROTOBUF_NOINLINE void Constants::Clear() {
   }
 
   // uint32 karma_monster_gain = 41;
-  if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000100U)) {
     if (this_._internal_karma_monster_gain() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
           41, this_._internal_karma_monster_gain(), target);
+    }
+  }
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 death_exp_percent = 42;
+  if (CheckHasBit(cached_has_bits, 0x40000000U)) {
+    if (this_._internal_death_exp_percent() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          42, this_._internal_death_exp_percent(), target);
+    }
+  }
+
+  cached_has_bits = this_._impl_._has_bits_[1];
+  // uint32 outlaw_death_exp_percent = 43;
+  if (CheckHasBit(cached_has_bits, 0x00000200U)) {
+    if (this_._internal_outlaw_death_exp_percent() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          43, this_._internal_outlaw_death_exp_percent(), target);
+    }
+  }
+
+  // uint32 outlaw_drop_inventory_percent = 44;
+  if (CheckHasBit(cached_has_bits, 0x00000400U)) {
+    if (this_._internal_outlaw_drop_inventory_percent() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          44, this_._internal_outlaw_drop_inventory_percent(), target);
+    }
+  }
+
+  // uint32 outlaw_drop_equipment_percent = 45;
+  if (CheckHasBit(cached_has_bits, 0x00000800U)) {
+    if (this_._internal_outlaw_drop_equipment_percent() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          45, this_._internal_outlaw_drop_equipment_percent(), target);
     }
   }
 
@@ -1303,77 +1375,107 @@ PROTOBUF_NOINLINE void Constants::Clear() {
                                         this_._internal_auto_hunt_stall_ms());
       }
     }
-    // uint32 auto_hunt_manual_pause_ms = 32;
+    // uint32 death_exp_percent = 42;
     if (CheckHasBit(cached_has_bits, 0x40000000U)) {
+      if (this_._internal_death_exp_percent() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_death_exp_percent());
+      }
+    }
+    // uint32 auto_hunt_manual_pause_ms = 32;
+    if (CheckHasBit(cached_has_bits, 0x80000000U)) {
       if (this_._internal_auto_hunt_manual_pause_ms() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_auto_hunt_manual_pause_ms());
       }
     }
+  }
+  cached_has_bits = this_._impl_._has_bits_[1];
+  if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     // uint32 storage_slots = 33;
-    if (CheckHasBit(cached_has_bits, 0x80000000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (this_._internal_storage_slots() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_storage_slots());
       }
     }
-  }
-  cached_has_bits = this_._impl_._has_bits_[1];
-  if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     // uint32 chat_max_bytes = 34;
-    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
       if (this_._internal_chat_max_bytes() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_chat_max_bytes());
       }
     }
     // uint32 chat_per_second = 35;
-    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
       if (this_._internal_chat_per_second() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_chat_per_second());
       }
     }
     // uint32 party_exp_bonus_percent = 36;
-    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
       if (this_._internal_party_exp_bonus_percent() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_party_exp_bonus_percent());
       }
     }
     // uint32 party_invite_ms = 37;
-    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
       if (this_._internal_party_invite_ms() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_party_invite_ms());
       }
     }
     // uint32 aggressor_ms = 38;
-    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
       if (this_._internal_aggressor_ms() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_aggressor_ms());
       }
     }
     // uint32 pk_min_level = 39;
-    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
       if (this_._internal_pk_min_level() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_pk_min_level());
       }
     }
     // uint32 karma_kill_penalty = 40;
-    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
       if (this_._internal_karma_kill_penalty() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_karma_kill_penalty());
       }
     }
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x00000f00U)) {
     // uint32 karma_monster_gain = 41;
-    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000100U)) {
       if (this_._internal_karma_monster_gain() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_karma_monster_gain());
+      }
+    }
+    // uint32 outlaw_death_exp_percent = 43;
+    if (CheckHasBit(cached_has_bits, 0x00000200U)) {
+      if (this_._internal_outlaw_death_exp_percent() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_outlaw_death_exp_percent());
+      }
+    }
+    // uint32 outlaw_drop_inventory_percent = 44;
+    if (CheckHasBit(cached_has_bits, 0x00000400U)) {
+      if (this_._internal_outlaw_drop_inventory_percent() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_outlaw_drop_inventory_percent());
+      }
+    }
+    // uint32 outlaw_drop_equipment_percent = 45;
+    if (CheckHasBit(cached_has_bits, 0x00000800U)) {
+      if (this_._internal_outlaw_drop_equipment_percent() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_outlaw_drop_equipment_percent());
       }
     }
   }
@@ -1552,56 +1654,78 @@ void Constants::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
     if (CheckHasBit(cached_has_bits, 0x40000000U)) {
-      if (from._internal_auto_hunt_manual_pause_ms() != 0) {
-        _this->_impl_.auto_hunt_manual_pause_ms_ = from._impl_.auto_hunt_manual_pause_ms_;
+      if (from._internal_death_exp_percent() != 0) {
+        _this->_impl_.death_exp_percent_ = from._impl_.death_exp_percent_;
       }
     }
     if (CheckHasBit(cached_has_bits, 0x80000000U)) {
-      if (from._internal_storage_slots() != 0) {
-        _this->_impl_.storage_slots_ = from._impl_.storage_slots_;
+      if (from._internal_auto_hunt_manual_pause_ms() != 0) {
+        _this->_impl_.auto_hunt_manual_pause_ms_ = from._impl_.auto_hunt_manual_pause_ms_;
       }
     }
   }
   cached_has_bits = from._impl_._has_bits_[1];
   if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (from._internal_storage_slots() != 0) {
+        _this->_impl_.storage_slots_ = from._impl_.storage_slots_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
       if (from._internal_chat_max_bytes() != 0) {
         _this->_impl_.chat_max_bytes_ = from._impl_.chat_max_bytes_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
       if (from._internal_chat_per_second() != 0) {
         _this->_impl_.chat_per_second_ = from._impl_.chat_per_second_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
       if (from._internal_party_exp_bonus_percent() != 0) {
         _this->_impl_.party_exp_bonus_percent_ = from._impl_.party_exp_bonus_percent_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
       if (from._internal_party_invite_ms() != 0) {
         _this->_impl_.party_invite_ms_ = from._impl_.party_invite_ms_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
       if (from._internal_aggressor_ms() != 0) {
         _this->_impl_.aggressor_ms_ = from._impl_.aggressor_ms_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
       if (from._internal_pk_min_level() != 0) {
         _this->_impl_.pk_min_level_ = from._impl_.pk_min_level_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
       if (from._internal_karma_kill_penalty() != 0) {
         _this->_impl_.karma_kill_penalty_ = from._impl_.karma_kill_penalty_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x00000f00U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000100U)) {
       if (from._internal_karma_monster_gain() != 0) {
         _this->_impl_.karma_monster_gain_ = from._impl_.karma_monster_gain_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000200U)) {
+      if (from._internal_outlaw_death_exp_percent() != 0) {
+        _this->_impl_.outlaw_death_exp_percent_ = from._impl_.outlaw_death_exp_percent_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000400U)) {
+      if (from._internal_outlaw_drop_inventory_percent() != 0) {
+        _this->_impl_.outlaw_drop_inventory_percent_ = from._impl_.outlaw_drop_inventory_percent_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000800U)) {
+      if (from._internal_outlaw_drop_equipment_percent() != 0) {
+        _this->_impl_.outlaw_drop_equipment_percent_ = from._impl_.outlaw_drop_equipment_percent_;
       }
     }
   }
@@ -1624,8 +1748,8 @@ void Constants::InternalSwap(Constants* PROTOBUF_RESTRICT PROTOBUF_NONNULL other
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   swap(_impl_._has_bits_[1], other->_impl_._has_bits_[1]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Constants, _impl_.karma_monster_gain_)
-      + sizeof(Constants::_impl_.karma_monster_gain_)
+      PROTOBUF_FIELD_OFFSET(Constants, _impl_.outlaw_drop_equipment_percent_)
+      + sizeof(Constants::_impl_.outlaw_drop_equipment_percent_)
       - PROTOBUF_FIELD_OFFSET(Constants, _impl_.field_size_)>(
           reinterpret_cast<char*>(&_impl_.field_size_),
           reinterpret_cast<char*>(&other->_impl_.field_size_));

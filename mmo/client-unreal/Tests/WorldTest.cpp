@@ -322,6 +322,26 @@ namespace
 		Expect(Self.MaxHp == 150 && Self.MaxMp == 50 && Self.Attack == 12 && Self.Defense == 10, "SelfStats fills the stats");
 		Expect(Self.Hp == 140 && Self.Mp == 20 && Self.CombatEndTick == 500 && Self.AggressorEndTick == 900, "SelfVitals fills hp, mp and end ticks");
 
+		// 성향(44)과 사망 페널티(45): 페널티는 내가 부활하면 지운다(남의 부활은 상관없음).
+		portfolio::mmo::Packet Karma;
+		Karma.mutable_karma()->set_karma(-30);
+		portfolio::mmo::Packet Penalty;
+		Penalty.mutable_death_penalty()->set_exp_lost(8);
+		Penalty.mutable_death_penalty()->add_items()->set_item_id(1001);
+		World.Apply(Karma, 0);
+		World.Apply(Penalty, 0);
+		Expect(Self.Karma == -30 && Self.Penalty && Self.Penalty->exp_lost() == 8 && Self.Penalty->items_size() == 1, "Karma and DeathPenalty are kept");
+		portfolio::mmo::Packet OtherRevived;
+		OtherRevived.mutable_revived()->set_id(2);
+		World.Apply(OtherRevived, 0);
+		portfolio::mmo::Packet Revived;
+		Revived.mutable_revived()->set_id(1);
+		Revived.mutable_revived()->set_hp(50);
+		Revived.mutable_revived()->set_max_hp(150);
+		Expect(Self.Penalty.has_value(), "another player's revive keeps my penalty");
+		World.Apply(Revived, 0);
+		Expect(!Self.Penalty, "my revive clears the penalty");
+
 		portfolio::mmo::Packet Others;
 		portfolio::mmo::EntityVital* Known = Others.mutable_entity_vitals()->add_entities();
 		Known->set_id(2);

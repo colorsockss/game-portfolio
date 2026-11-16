@@ -935,3 +935,7 @@ _
 (
 character.karma
 성향 {0}	Karma {0}
+:
+death.expLost잃은 경험치 {0}Experience lost {0}
+4
+death.dropped떨어뜨린 것: {0}Dropped: {0}

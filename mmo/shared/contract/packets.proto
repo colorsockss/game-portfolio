@@ -90,6 +90,7 @@ message Packet {
     PartyState party_state = 407;
     PartyMemberVitals party_member_vitals = 408;
     Karma karma = 409;
+    DeathPenalty death_penalty = 410;
   }
 }
 
@@ -741,6 +742,13 @@ message PartyMemberVital {
   uint32 max_hp = 3;
   sint32 x = 4;
   sint32 z = 5;
+}
+
+// 서버 → 죽은 본인. 사망 페널티(45): 잃은 경험치와 떨어뜨린 아이템들(빼기 전의 칸 그대로: 있던 곳, 칸 번호, 아이템, 수량, 강화 수치).
+// 죽는 틱에 간다. 경험치와 칸의 바뀜은 ExpGained와 InventoryChanged가 따로 알린다.
+message DeathPenalty {
+  uint32 exp_lost = 1;
+  repeated ItemSlot items = 2;
 }
 
 // 서버 → 클라이언트. 내 성향(44). 바뀐 틱에 본인에게만 가고, 월드에 들어올 때 EnterWorldResult 뒤에 한 번 간다. 0보다 낮으면 무법자다.

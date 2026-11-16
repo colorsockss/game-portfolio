@@ -99,6 +99,24 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 사망 페널티의 경험치(45): 지금 레벨에서 쌓은 경험치의 percent%(내림)를 뺀다. 레벨은 내려가지 않는다. 잃은 것이 있으면 본인에게 잃은 양을 음수로 실은
+        /// ExpGained를 보내고 60초 바뀜 표시를 세운다. 잃은 양을 낸다.
+        /// </summary>
+        public uint Lose(Player player, uint percent)
+        {
+            uint lost = (uint)((ulong)player.Exp * percent / 100);
+            if (lost == 0)
+            {
+                return 0;
+            }
+
+            player.Exp -= lost;
+            player.DirtySlow = true;
+            player.Session.Send(new Packet { ExpGained = new ExpGained { Amount = -(int)lost, Exp = player.Exp } });
+            return lost;
+        }
+
+        /// <summary>
         /// 레벨을 바꾼다(레벨 업과 개발 명령). 바뀌었으면 능력치를 다시 구하고 체력과 마나를 가득 채운다.
         /// </summary>
         public void SetLevel(Player player, uint level)

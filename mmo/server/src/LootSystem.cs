@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using PortfolioMmo.Contract;
 using PortfolioMmo.Data;
 
@@ -22,6 +24,7 @@ namespace PortfolioMmo.Server
         private readonly uint _lifetimeTicks;
         private readonly uint _ownerOnlyTicks;
         private readonly long _interactRange;
+        private readonly List<ItemSlot> _slots = new List<ItemSlot>();
 
         public LootSystem(GameData data, EntityTable entities, Grid grid, FieldMap field, Scheduler scheduler, InventorySystem inventory, SaveSystem save, Random random)
         {
@@ -73,17 +76,66 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            // 흩는 거리 안의 무작위 점. 막혔거나 죽은 자리에서 선이 막혔으면 죽은 자리(벽 안이나 너머에 떨어져 줍지 못하는 일이 없게).
+            (int x, int z) = Scatter(monster);
+            Place(itemId, count, 0, x, z, owner, false, tick);
+        }
+
+        /// <summary>
+        /// 흩는 거리 안의 무작위 점. 막혔거나 죽은 자리에서 선이 막혔으면 죽은 자리(벽 안이나 너머에 떨어져 줍지 못하는 일이 없게).
+        /// </summary>
+        private (int X, int Z) Scatter(Entity dead)
+        {
             double angle = _random.NextDouble() * Math.PI * 2;
             double distance = Math.Sqrt(_random.NextDouble()) * _data.Constants.DropScatter * Units.PerMeter;
-            int x = monster.X + (int)Math.Round(Math.Cos(angle) * distance);
-            int z = monster.Z + (int)Math.Round(Math.Sin(angle) * distance);
-            if (!_field.CanWalk(x, z, Walker.Player) || !_field.HasLine(monster.X, monster.Z, x, z))
+            int x = dead.X + (int)Math.Round(Math.Cos(angle) * distance);
+            int z = dead.Z + (int)Math.Round(Math.Sin(angle) * distance);
+            return _field.CanWalk(x, z, Walker.Player) && _field.HasLine(dead.X, dead.Z, x, z) ? (x, z) : (dead.X, dead.Z);
+        }
+
+        /// <summary>
+        /// 무법자가 죽었다(죽은 차례. 45): 인벤토리(차 있는 칸 하나를 통째로)와 입은 장비(하나)를 따로 굴려 떨어뜨린다. 창고는 뽑지 않는다.
+        /// 칸에서 빼기 → 사본을 큐에 넣기 → 죽은 자리 둘레에 바닥 아이템 놓기(38)이고, 바닥 아이템은 주인이 없고 "플레이어가 떨어뜨림"이 아니다.
+        /// 떨어뜨린 칸(빼기 전의 값)을 낸다.
+        /// </summary>
+        public List<ItemSlot> OutlawDied(Player player, uint tick)
+        {
+            var dropped = new List<ItemSlot>();
+            Constants constants = _data.Constants;
+            if (_random.NextDouble() * 100 < constants.OutlawDropInventoryPercent)
             {
-                (x, z) = (monster.X, monster.Z);
+                _slots.Clear();
+                _slots.AddRange(player.Bag.Slots.Where(slot => slot.ItemId != 0));
+                if (_slots.Count > 0)
+                {
+                    ItemSlot slot = _slots[_random.Next(_slots.Count)];
+                    dropped.Add(slot.Clone());
+                    _inventory.Remove(player, (int)slot.Index, slot.Count);
+                }
             }
 
-            Place(itemId, count, 0, x, z, owner, false, tick);
+            if (_random.NextDouble() * 100 < constants.OutlawDropEquipmentPercent)
+            {
+                _slots.Clear();
+                _slots.AddRange(player.Bag.Equipment.Where(slot => slot.ItemId != 0));
+                if (_slots.Count > 0)
+                {
+                    ItemSlot worn = _slots[_random.Next(_slots.Count)];
+                    dropped.Add(worn.Clone());
+                    _inventory.RemoveWorn(player, (int)worn.Index);
+                }
+            }
+
+            if (dropped.Count > 0)
+            {
+                _save.SaveNow(player);
+                foreach (ItemSlot item in dropped)
+                {
+                    (int x, int z) = Scatter(player);
+                    Place(item.ItemId, item.Count, item.Enchant, x, z, default, false, tick);
+                }
+            }
+
+            return dropped;
         }
 
         private void Place(uint itemId, uint count, uint enchant, int x, int z, Owner owner, bool droppedByPlayer, uint tick)

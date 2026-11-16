@@ -161,6 +161,8 @@ PROTOBUF_CONSTINIT ::google::protobuf::internal::ReflectionData
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::PartyMemberVital
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::DeathPenalty
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::Karma
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::RequestResult
@@ -310,7 +312,7 @@ constexpr auto UseSkill::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[76],
+      &file_reflection_data[77],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1193,7 +1195,7 @@ constexpr auto SkillUsed::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[77],
+      &file_reflection_data[78],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -1965,7 +1967,7 @@ constexpr auto Revived::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[75],
+      &file_reflection_data[76],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -2089,7 +2091,7 @@ constexpr auto Revive::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[74],
+      &file_reflection_data[75],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -2236,7 +2238,7 @@ constexpr auto RequestResult::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[67],
+      &file_reflection_data[68],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -2566,7 +2568,7 @@ constexpr auto ProjectileLaunched::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[83],
+      &file_reflection_data[84],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -2706,7 +2708,7 @@ constexpr auto ProjectileEnded::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[84],
+      &file_reflection_data[85],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -3008,7 +3010,7 @@ constexpr auto ProgressCancelled::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[79],
+      &file_reflection_data[80],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -5742,7 +5744,7 @@ constexpr auto Karma::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[66],
+      &file_reflection_data[67],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -8204,7 +8206,7 @@ constexpr auto Died::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[73],
+      &file_reflection_data[74],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -8520,7 +8522,7 @@ constexpr auto Damaged::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[72],
+      &file_reflection_data[73],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -8967,7 +8969,7 @@ constexpr auto Cooldown::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[82],
+      &file_reflection_data[83],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -9790,7 +9792,7 @@ constexpr auto AttackSwing::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[71],
+      &file_reflection_data[72],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -9914,7 +9916,7 @@ constexpr auto AttackStop::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[70],
+      &file_reflection_data[71],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -10054,7 +10056,7 @@ constexpr auto AttackStart::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[69],
+      &file_reflection_data[70],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -10225,7 +10227,7 @@ constexpr auto AreaWarning::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[85],
+      &file_reflection_data[86],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -10372,7 +10374,7 @@ constexpr auto ActionFailed::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[68],
+      &file_reflection_data[69],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -11128,7 +11130,7 @@ constexpr auto Progress::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[78],
+      &file_reflection_data[79],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -12567,7 +12569,7 @@ constexpr auto EffectApplied::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[80],
+      &file_reflection_data[81],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -12614,6 +12616,163 @@ const ::_pbi::ClassData* EffectApplied_get_class_data() {
   return EffectApplied_globals_.GetClassData();
 #else
   return EffectApplied_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class DeathPenalty::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<DeathPenalty>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(DeathPenalty, _impl_._has_bits_);
+};
+
+constexpr DeathPenalty::ParseTableT_ DeathPenalty::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(DeathPenalty, _impl_._has_bits_),
+      0, // no _extensions_
+      2, 8,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967292,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      2,  // num_field_entries
+      1,  // num_aux_entries
+      offsetof(ParseTableT_, aux_entries),
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::DeathPenalty>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // repeated .portfolio.mmo.ItemSlot items = 2;
+      {::_pbi::TcParser::FastMtR1,
+       {18, 0, 0,
+        PROTOBUF_FIELD_OFFSET(DeathPenalty, _impl_.items_)}},
+      // uint32 exp_lost = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(DeathPenalty, _impl_.exp_lost_), 1>(),
+       {8, 1, 0,
+        PROTOBUF_FIELD_OFFSET(DeathPenalty, _impl_.exp_lost_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint32 exp_lost = 1;
+      {PROTOBUF_FIELD_OFFSET(DeathPenalty, _impl_.exp_lost_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // repeated .portfolio.mmo.ItemSlot items = 2;
+      {PROTOBUF_FIELD_OFFSET(DeathPenalty, _impl_.items_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+    }},
+    {{
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::ItemSlot>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::ItemSlot_globals_},
+        #endif
+    }},
+    {{
+    }},
+  };
+}
+
+
+inline constexpr DeathPenalty::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : items_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::DeathPenalty,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DeathPenalty, _impl_.items_)>()
+         }
+        ,
+        exp_lost_{0u} {}
+
+template <typename>
+constexpr DeathPenalty::DeathPenalty(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL DeathPenalty::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) DeathPenalty(arena);
+}
+constexpr auto DeathPenalty::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::CopyInit(sizeof(DeathPenalty), alignof(DeathPenalty));
+}
+constexpr auto DeathPenalty::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &DeathPenalty::MergeImpl,
+          Super_::GetNewImpl<DeathPenalty>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &DeathPenalty::SharedDtor,
+          Super_::GetClearImpl<DeathPenalty>(), &DeathPenalty::ByteSizeLong,
+              &DeathPenalty::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(DeathPenalty, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[66],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct DeathPenaltyGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr DeathPenaltyGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 DeathPenalty_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(DeathPenalty::InternalGenerateClassData_(
+            _default, &DeathPenalty_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<DeathPenalty>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~DeathPenaltyGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) DeathPenalty _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<DeathPenalty>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(DeathPenaltyGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST DeathPenaltyGlobalsTypeInternal DeathPenalty_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* DeathPenalty_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return DeathPenalty_globals_.GetClassData();
+#else
+  return DeathPenalty_class_data_.base();
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 }
 }  // namespace
@@ -12717,7 +12876,7 @@ constexpr auto Cooldowns::InternalGenerateClassData_(
           false,
       },
 #ifdef PROTOBUF_MESSAGE_GLOBALS
-      &file_reflection_data[81],
+      &file_reflection_data[82],
 #else   // !PROTOBUF_MESSAGE_GLOBALS
       &::_pbi::kDescriptorMethods,
       &descriptor_table_packets_2eproto,
@@ -13254,12 +13413,12 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       PROTOBUF_FIELD_OFFSET(Packet,
                             _impl_._cached_size_),  // no hasbits
       0, // no _extensions_
-      409, 0,  // max_field_number, fast_idx_mask
+      410, 0,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
       4294950912,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      72,  // num_field_entries
-      72,  // num_aux_entries
+      73,  // num_field_entries
+      73,  // num_aux_entries
       offsetof(ParseTableT_, aux_entries),
       class_data,
       nullptr,  // post_loop_handler
@@ -13291,7 +13450,7 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       65535, 62,
       65535, 62,
       255, 62,
-      65532, 70,
+      65528, 70,
       65535, 65535
     }}, {{
       // .portfolio.mmo.Login login = 1;
@@ -13438,6 +13597,8 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.party_member_vitals_), _Internal::kOneofCaseOffset + 0, 70, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.Karma karma = 409;
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.karma_), _Internal::kOneofCaseOffset + 0, 71, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.DeathPenalty death_penalty = 410;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.death_penalty_), _Internal::kOneofCaseOffset + 0, 72, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
     }},
     {{
         #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -13800,6 +13961,11 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
         #else
         {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::Karma_globals_},
         #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::DeathPenalty>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::DeathPenalty_globals_},
+        #endif
     }},
     {{
     }},
@@ -13916,6 +14082,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x004, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_._oneof_case_[0]),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
@@ -14519,6 +14686,13 @@ const ::uint32_t
         3,
         4,
         0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DeathPenalty, _impl_._has_bits_),
+        5, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DeathPenalty, _impl_.exp_lost_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DeathPenalty, _impl_.items_),
+        1,
+        0,
+        0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Karma, _impl_._has_bits_),
         4, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Karma, _impl_.karma_),
@@ -14673,91 +14847,92 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::Packet)},
-        {75, sizeof(::portfolio::mmo::Login)},
-        {84, sizeof(::portfolio::mmo::LoginResult)},
-        {89, sizeof(::portfolio::mmo::Kicked)},
-        {94, sizeof(::portfolio::mmo::DevCommand)},
-        {99, sizeof(::portfolio::mmo::Ping)},
-        {100, sizeof(::portfolio::mmo::CharacterSummary)},
-        {113, sizeof(::portfolio::mmo::CharacterList)},
-        {118, sizeof(::portfolio::mmo::CreateCharacter)},
-        {125, sizeof(::portfolio::mmo::CreateCharacterResult)},
-        {130, sizeof(::portfolio::mmo::EnterWorld)},
-        {135, sizeof(::portfolio::mmo::EnterWorldResult)},
-        {146, sizeof(::portfolio::mmo::Logout)},
-        {147, sizeof(::portfolio::mmo::LeaveWorld)},
-        {148, sizeof(::portfolio::mmo::Pong)},
-        {153, sizeof(::portfolio::mmo::Move)},
-        {164, sizeof(::portfolio::mmo::PositionReset)},
-        {173, sizeof(::portfolio::mmo::EntitiesEnter)},
-        {178, sizeof(::portfolio::mmo::EntityEnter)},
-        {237, sizeof(::portfolio::mmo::EffectState)},
-        {244, sizeof(::portfolio::mmo::ProgressState)},
-        {253, sizeof(::portfolio::mmo::EntityState)},
-        {264, sizeof(::portfolio::mmo::FieldNotice)},
-        {275, sizeof(::portfolio::mmo::EntitiesLeave)},
-        {280, sizeof(::portfolio::mmo::EntityMoves)},
-        {287, sizeof(::portfolio::mmo::EntityMove)},
-        {300, sizeof(::portfolio::mmo::SelfVitals)},
-        {311, sizeof(::portfolio::mmo::EntityVitals)},
-        {316, sizeof(::portfolio::mmo::EntityVital)},
-        {325, sizeof(::portfolio::mmo::SelfStats)},
-        {336, sizeof(::portfolio::mmo::ExpGained)},
-        {343, sizeof(::portfolio::mmo::ItemSlot)},
-        {356, sizeof(::portfolio::mmo::Inventory)},
-        {363, sizeof(::portfolio::mmo::ItemAmount)},
-        {370, sizeof(::portfolio::mmo::Gain)},
-        {381, sizeof(::portfolio::mmo::InventoryChanged)},
-        {390, sizeof(::portfolio::mmo::UseItem)},
-        {397, sizeof(::portfolio::mmo::PickUp)},
-        {404, sizeof(::portfolio::mmo::DropItem)},
-        {413, sizeof(::portfolio::mmo::Equip)},
-        {420, sizeof(::portfolio::mmo::Unequip)},
-        {427, sizeof(::portfolio::mmo::Enchant)},
-        {438, sizeof(::portfolio::mmo::EnchantResult)},
-        {445, sizeof(::portfolio::mmo::LearnedSkills)},
-        {450, sizeof(::portfolio::mmo::SkillLearned)},
-        {455, sizeof(::portfolio::mmo::Quickslot)},
-        {462, sizeof(::portfolio::mmo::SetQuickslot)},
-        {469, sizeof(::portfolio::mmo::Quickslots)},
-        {474, sizeof(::portfolio::mmo::Buy)},
-        {483, sizeof(::portfolio::mmo::Sell)},
-        {492, sizeof(::portfolio::mmo::StorageOpen)},
-        {493, sizeof(::portfolio::mmo::Storage)},
-        {498, sizeof(::portfolio::mmo::StorageChanged)},
-        {503, sizeof(::portfolio::mmo::StorageDeposit)},
-        {512, sizeof(::portfolio::mmo::StorageWithdraw)},
-        {521, sizeof(::portfolio::mmo::Chat)},
-        {530, sizeof(::portfolio::mmo::ChatReceived)},
-        {543, sizeof(::portfolio::mmo::PartyInvite)},
-        {548, sizeof(::portfolio::mmo::PartyInvited)},
-        {557, sizeof(::portfolio::mmo::PartyAnswer)},
-        {562, sizeof(::portfolio::mmo::PartyLeave)},
-        {563, sizeof(::portfolio::mmo::PartyKick)},
-        {568, sizeof(::portfolio::mmo::PartyState)},
-        {577, sizeof(::portfolio::mmo::PartyMember)},
-        {586, sizeof(::portfolio::mmo::PartyMemberVitals)},
-        {591, sizeof(::portfolio::mmo::PartyMemberVital)},
-        {604, sizeof(::portfolio::mmo::Karma)},
-        {609, sizeof(::portfolio::mmo::RequestResult)},
-        {616, sizeof(::portfolio::mmo::ActionFailed)},
-        {623, sizeof(::portfolio::mmo::AttackStart)},
-        {628, sizeof(::portfolio::mmo::AttackStop)},
-        {629, sizeof(::portfolio::mmo::AttackSwing)},
-        {636, sizeof(::portfolio::mmo::Damaged)},
-        {649, sizeof(::portfolio::mmo::Died)},
-        {656, sizeof(::portfolio::mmo::Revive)},
-        {657, sizeof(::portfolio::mmo::Revived)},
-        {666, sizeof(::portfolio::mmo::UseSkill)},
-        {675, sizeof(::portfolio::mmo::SkillUsed)},
-        {684, sizeof(::portfolio::mmo::Progress)},
-        {691, sizeof(::portfolio::mmo::ProgressCancelled)},
-        {698, sizeof(::portfolio::mmo::EffectApplied)},
-        {705, sizeof(::portfolio::mmo::Cooldowns)},
-        {710, sizeof(::portfolio::mmo::Cooldown)},
-        {719, sizeof(::portfolio::mmo::ProjectileLaunched)},
-        {736, sizeof(::portfolio::mmo::ProjectileEnded)},
-        {741, sizeof(::portfolio::mmo::AreaWarning)},
+        {76, sizeof(::portfolio::mmo::Login)},
+        {85, sizeof(::portfolio::mmo::LoginResult)},
+        {90, sizeof(::portfolio::mmo::Kicked)},
+        {95, sizeof(::portfolio::mmo::DevCommand)},
+        {100, sizeof(::portfolio::mmo::Ping)},
+        {101, sizeof(::portfolio::mmo::CharacterSummary)},
+        {114, sizeof(::portfolio::mmo::CharacterList)},
+        {119, sizeof(::portfolio::mmo::CreateCharacter)},
+        {126, sizeof(::portfolio::mmo::CreateCharacterResult)},
+        {131, sizeof(::portfolio::mmo::EnterWorld)},
+        {136, sizeof(::portfolio::mmo::EnterWorldResult)},
+        {147, sizeof(::portfolio::mmo::Logout)},
+        {148, sizeof(::portfolio::mmo::LeaveWorld)},
+        {149, sizeof(::portfolio::mmo::Pong)},
+        {154, sizeof(::portfolio::mmo::Move)},
+        {165, sizeof(::portfolio::mmo::PositionReset)},
+        {174, sizeof(::portfolio::mmo::EntitiesEnter)},
+        {179, sizeof(::portfolio::mmo::EntityEnter)},
+        {238, sizeof(::portfolio::mmo::EffectState)},
+        {245, sizeof(::portfolio::mmo::ProgressState)},
+        {254, sizeof(::portfolio::mmo::EntityState)},
+        {265, sizeof(::portfolio::mmo::FieldNotice)},
+        {276, sizeof(::portfolio::mmo::EntitiesLeave)},
+        {281, sizeof(::portfolio::mmo::EntityMoves)},
+        {288, sizeof(::portfolio::mmo::EntityMove)},
+        {301, sizeof(::portfolio::mmo::SelfVitals)},
+        {312, sizeof(::portfolio::mmo::EntityVitals)},
+        {317, sizeof(::portfolio::mmo::EntityVital)},
+        {326, sizeof(::portfolio::mmo::SelfStats)},
+        {337, sizeof(::portfolio::mmo::ExpGained)},
+        {344, sizeof(::portfolio::mmo::ItemSlot)},
+        {357, sizeof(::portfolio::mmo::Inventory)},
+        {364, sizeof(::portfolio::mmo::ItemAmount)},
+        {371, sizeof(::portfolio::mmo::Gain)},
+        {382, sizeof(::portfolio::mmo::InventoryChanged)},
+        {391, sizeof(::portfolio::mmo::UseItem)},
+        {398, sizeof(::portfolio::mmo::PickUp)},
+        {405, sizeof(::portfolio::mmo::DropItem)},
+        {414, sizeof(::portfolio::mmo::Equip)},
+        {421, sizeof(::portfolio::mmo::Unequip)},
+        {428, sizeof(::portfolio::mmo::Enchant)},
+        {439, sizeof(::portfolio::mmo::EnchantResult)},
+        {446, sizeof(::portfolio::mmo::LearnedSkills)},
+        {451, sizeof(::portfolio::mmo::SkillLearned)},
+        {456, sizeof(::portfolio::mmo::Quickslot)},
+        {463, sizeof(::portfolio::mmo::SetQuickslot)},
+        {470, sizeof(::portfolio::mmo::Quickslots)},
+        {475, sizeof(::portfolio::mmo::Buy)},
+        {484, sizeof(::portfolio::mmo::Sell)},
+        {493, sizeof(::portfolio::mmo::StorageOpen)},
+        {494, sizeof(::portfolio::mmo::Storage)},
+        {499, sizeof(::portfolio::mmo::StorageChanged)},
+        {504, sizeof(::portfolio::mmo::StorageDeposit)},
+        {513, sizeof(::portfolio::mmo::StorageWithdraw)},
+        {522, sizeof(::portfolio::mmo::Chat)},
+        {531, sizeof(::portfolio::mmo::ChatReceived)},
+        {544, sizeof(::portfolio::mmo::PartyInvite)},
+        {549, sizeof(::portfolio::mmo::PartyInvited)},
+        {558, sizeof(::portfolio::mmo::PartyAnswer)},
+        {563, sizeof(::portfolio::mmo::PartyLeave)},
+        {564, sizeof(::portfolio::mmo::PartyKick)},
+        {569, sizeof(::portfolio::mmo::PartyState)},
+        {578, sizeof(::portfolio::mmo::PartyMember)},
+        {587, sizeof(::portfolio::mmo::PartyMemberVitals)},
+        {592, sizeof(::portfolio::mmo::PartyMemberVital)},
+        {605, sizeof(::portfolio::mmo::DeathPenalty)},
+        {612, sizeof(::portfolio::mmo::Karma)},
+        {617, sizeof(::portfolio::mmo::RequestResult)},
+        {624, sizeof(::portfolio::mmo::ActionFailed)},
+        {631, sizeof(::portfolio::mmo::AttackStart)},
+        {636, sizeof(::portfolio::mmo::AttackStop)},
+        {637, sizeof(::portfolio::mmo::AttackSwing)},
+        {644, sizeof(::portfolio::mmo::Damaged)},
+        {657, sizeof(::portfolio::mmo::Died)},
+        {664, sizeof(::portfolio::mmo::Revive)},
+        {665, sizeof(::portfolio::mmo::Revived)},
+        {674, sizeof(::portfolio::mmo::UseSkill)},
+        {683, sizeof(::portfolio::mmo::SkillUsed)},
+        {692, sizeof(::portfolio::mmo::Progress)},
+        {699, sizeof(::portfolio::mmo::ProgressCancelled)},
+        {706, sizeof(::portfolio::mmo::EffectApplied)},
+        {713, sizeof(::portfolio::mmo::Cooldowns)},
+        {718, sizeof(::portfolio::mmo::Cooldown)},
+        {727, sizeof(::portfolio::mmo::ProjectileLaunched)},
+        {744, sizeof(::portfolio::mmo::ProjectileEnded)},
+        {749, sizeof(::portfolio::mmo::AreaWarning)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -14827,6 +15002,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
         &::portfolio::mmo::PartyMember_globals_,
         &::portfolio::mmo::PartyMemberVitals_globals_,
         &::portfolio::mmo::PartyMemberVital_globals_,
+        &::portfolio::mmo::DeathPenalty_globals_,
         &::portfolio::mmo::Karma_globals_,
         &::portfolio::mmo::RequestResult_globals_,
         &::portfolio::mmo::ActionFailed_globals_,
@@ -14850,7 +15026,7 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\rpackets.proto\022\rportfolio.mmo\"\324\034\n\006Packe"
+    "\n\rpackets.proto\022\rportfolio.mmo\"\213\035\n\006Packe"
     "t\022%\n\005login\030\001 \001(\0132\024.portfolio.mmo.LoginH\000"
     "\0222\n\014login_result\030\002 \001(\0132\032.portfolio.mmo.L"
     "oginResultH\000\022\'\n\006kicked\030\003 \001(\0132\025.portfolio"
@@ -14942,263 +15118,267 @@ const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     ".portfolio.mmo.PartyStateH\000\022@\n\023party_mem"
     "ber_vitals\030\230\003 \001(\0132 .portfolio.mmo.PartyM"
     "emberVitalsH\000\022&\n\005karma\030\231\003 \001(\0132\024.portfoli"
-    "o.mmo.KarmaH\000B\006\n\004body\"f\n\005Login\0228\n\020protoc"
-    "ol_version\030\001 \001(\0162\036.portfolio.mmo.Protoco"
-    "lVersion\022\020\n\010login_id\030\002 \001(\t\022\021\n\tdata_hash\030"
-    "\003 \001(\006\"I\n\013LoginResult\022.\n\006result\030\001 \001(\0162\036.p"
-    "ortfolio.mmo.LoginResultCodeJ\004\010\002\020\003J\004\010\003\020\004"
-    "\"3\n\006Kicked\022)\n\006reason\030\001 \001(\0162\031.portfolio.m"
-    "mo.KickReason\"\032\n\nDevCommand\022\014\n\004line\030\001 \001("
-    "\t\"\006\n\004Ping\"\213\001\n\020CharacterSummary\022\n\n\002id\030\001 \001"
-    "(\004\022\014\n\004name\030\002 \001(\t\0226\n\017character_class\030\003 \001("
-    "\0162\035.portfolio.mmo.CharacterClass\022\r\n\005leve"
-    "l\030\004 \001(\r\022\026\n\016weapon_item_id\030\005 \001(\r\"D\n\rChara"
-    "cterList\0223\n\ncharacters\030\001 \003(\0132\037.portfolio"
-    ".mmo.CharacterSummary\"W\n\017CreateCharacter"
-    "\022\014\n\004name\030\001 \001(\t\0226\n\017character_class\030\002 \001(\0162"
-    "\035.portfolio.mmo.CharacterClass\"Q\n\025Create"
-    "CharacterResult\0228\n\006result\030\001 \001(\0162(.portfo"
-    "lio.mmo.CreateCharacterResultCode\"\"\n\nEnt"
-    "erWorld\022\024\n\014character_id\030\001 \001(\004\"w\n\020EnterWo"
-    "rldResult\0223\n\006result\030\001 \001(\0162#.portfolio.mm"
-    "o.EnterWorldResultCode\022\017\n\007self_id\030\002 \001(\r\022"
-    "\014\n\004tick\030\003 \001(\r\022\017\n\007revived\030\004 \001(\010\"\010\n\006Logout"
-    "\"\014\n\nLeaveWorld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r\"6\n\004"
-    "Move\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003yaw\030\003 \001(\r\022"
-    "\013\n\003ack\030\004 \001(\r\"2\n\rPositionReset\022\t\n\001x\030\001 \001(\021"
-    "\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEntitiesEnte"
-    "r\022,\n\010entities\030\001 \003(\0132\032.portfolio.mmo.Enti"
-    "tyEnter\"\204\005\n\013EntityEnter\022\n\n\002id\030\001 \001(\r\022\t\n\001x"
-    "\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\'\n\004kind\030\007"
-    " \001(\0162\031.portfolio.mmo.EntityKind\022\014\n\004name\030"
-    "\005 \001(\t\0226\n\017character_class\030\006 \001(\0162\035.portfol"
-    "io.mmo.CharacterClass\022\r\n\005level\030\010 \001(\r\022,\n\n"
-    "name_color\030\t \001(\0162\030.portfolio.mmo.NameCol"
-    "or\022\026\n\016weapon_item_id\030\n \001(\r\022\023\n\013template_i"
-    "d\030\013 \001(\r\022\n\n\002hp\030\014 \001(\r\022\016\n\006max_hp\030\r \001(\r\022+\n\007e"
-    "ffects\030\016 \003(\0132\032.portfolio.mmo.EffectState"
-    "\022.\n\010progress\030\017 \001(\0132\034.portfolio.mmo.Progr"
-    "essState\022\014\n\004dead\030\020 \001(\010\022\r\n\005speed\030\021 \001(\r\022\020\n"
-    "\010move_yaw\030\022 \001(\r\022\016\n\006next_x\030\023 \001(\021\022\016\n\006next_"
-    "z\030\024 \001(\021\022\017\n\007item_id\030\025 \001(\r\022\r\n\005count\030\026 \001(\r\022"
-    "\017\n\007enchant\030\027 \001(\r\022\031\n\017owner_player_id\030\030 \001("
-    "\rH\000\022\030\n\016owner_party_id\030\031 \001(\rH\000\022\033\n\023owner_o"
-    "nly_end_tick\030\032 \001(\r\022\031\n\021dropped_by_player\030"
-    "\033 \001(\010B\007\n\005owner\"2\n\013EffectState\022\021\n\teffect_"
-    "id\030\001 \001(\r\022\020\n\010end_tick\030\002 \001(\r\"X\n\rProgressSt"
-    "ate\022)\n\004kind\030\001 \001(\0162\033.portfolio.mmo.Progre"
-    "ssKind\022\n\n\002id\030\002 \001(\r\022\020\n\010end_tick\030\003 \001(\r\"n\n\013"
-    "EntityState\022\n\n\002id\030\001 \001(\r\022,\n\nname_color\030\002 "
-    "\001(\0162\030.portfolio.mmo.NameColor\022\026\n\016weapon_"
-    "item_id\030\003 \001(\r\022\r\n\005level\030\004 \001(\r\"f\n\013FieldNot"
-    "ice\022,\n\004kind\030\001 \001(\0162\036.portfolio.mmo.FieldN"
-    "oticeKind\022\023\n\013template_id\030\002 \001(\r\022\t\n\001x\030\003 \001("
-    "\021\022\t\n\001z\030\004 \001(\021\"\034\n\rEntitiesLeave\022\013\n\003ids\030\001 \003"
-    "(\r\"H\n\013EntityMoves\022\014\n\004tick\030\001 \001(\r\022+\n\010entit"
-    "ies\030\002 \003(\0132\031.portfolio.mmo.EntityMove\"M\n\n"
-    "EntityMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003"
-    " \001(\021\022\013\n\003yaw\030\004 \001(\r\022\020\n\010teleport\030\005 \001(\010\"Y\n\nS"
-    "elfVitals\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002 \001(\r\022\027\n\017com"
-    "bat_end_tick\030\003 \001(\r\022\032\n\022aggressor_end_tick"
-    "\030\004 \001(\r\"<\n\014EntityVitals\022,\n\010entities\030\001 \003(\013"
-    "2\032.portfolio.mmo.EntityVital\"5\n\013EntityVi"
-    "tal\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 "
-    "\001(\r\"L\n\tSelfStats\022\016\n\006max_hp\030\001 \001(\r\022\016\n\006max_"
-    "mp\030\002 \001(\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007defense\030\004 \001("
-    "\r\"(\n\tExpGained\022\016\n\006amount\030\001 \001(\021\022\013\n\003exp\030\002 "
-    "\001(\r\"s\n\010ItemSlot\022\'\n\005place\030\001 \001(\0162\030.portfol"
-    "io.mmo.ItemPlace\022\r\n\005index\030\002 \001(\r\022\017\n\007item_"
-    "id\030\003 \001(\r\022\r\n\005count\030\004 \001(\r\022\017\n\007enchant\030\005 \001(\r"
-    "\"A\n\tInventory\022&\n\005slots\030\001 \003(\0132\027.portfolio"
-    ".mmo.ItemSlot\022\014\n\004gold\030\002 \001(\004\",\n\nItemAmoun"
-    "t\022\017\n\007item_id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\"t\n\004Gai"
-    "n\022)\n\006reason\030\001 \001(\0162\031.portfolio.mmo.GainRe"
-    "ason\022)\n\004item\030\002 \001(\0132\031.portfolio.mmo.ItemA"
-    "mountH\000\022\016\n\004gold\030\003 \001(\004H\000B\006\n\004what\"l\n\020Inven"
-    "toryChanged\022&\n\005slots\030\001 \003(\0132\027.portfolio.m"
-    "mo.ItemSlot\022\014\n\004gold\030\002 \001(\004\022\"\n\005gains\030\003 \003(\013"
-    "2\023.portfolio.mmo.Gain\"+\n\007UseItem\022\014\n\004slot"
-    "\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"/\n\006PickUp\022\021\n\t"
-    "entity_id\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\";\n\010D"
-    "ropItem\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\n"
-    "request_id\030\003 \001(\r\")\n\005Equip\022\014\n\004slot\030\001 \001(\r\022"
-    "\022\n\nrequest_id\030\002 \001(\r\"1\n\007Unequip\022\022\n\nequip_"
-    "slot\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"i\n\007Enchan"
-    "t\022\'\n\005place\030\001 \001(\0162\030.portfolio.mmo.ItemPla"
-    "ce\022\014\n\004slot\030\002 \001(\r\022\023\n\013scroll_slot\030\003 \001(\r\022\022\n"
-    "\nrequest_id\030\004 \001(\r\"1\n\rEnchantResult\022\017\n\007su"
-    "ccess\030\001 \001(\010\022\017\n\007enchant\030\002 \001(\r\"\037\n\rLearnedS"
-    "kills\022\016\n\006skills\030\001 \003(\r\"\035\n\014SkillLearned\022\r\n"
-    "\005skill\030\001 \001(\r\"C\n\tQuickslot\022*\n\004kind\030\001 \001(\0162"
-    "\034.portfolio.mmo.QuickslotKind\022\n\n\002id\030\002 \001("
-    "\r\"E\n\014SetQuickslot\022\r\n\005index\030\001 \001(\r\022&\n\004slot"
-    "\030\002 \001(\0132\030.portfolio.mmo.Quickslot\"5\n\nQuic"
-    "kslots\022\'\n\005slots\030\001 \003(\0132\030.portfolio.mmo.Qu"
-    "ickslot\"9\n\003Buy\022\017\n\007item_id\030\001 \001(\r\022\r\n\005count"
-    "\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"7\n\004Sell\022\014\n\004sl"
-    "ot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 "
-    "\001(\r\"\r\n\013StorageOpen\"1\n\007Storage\022&\n\005slots\030\001"
-    " \003(\0132\027.portfolio.mmo.ItemSlot\"8\n\016Storage"
-    "Changed\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.I"
-    "temSlot\"A\n\016StorageDeposit\022\014\n\004slot\030\001 \001(\r\022"
-    "\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"B\n\017St"
-    "orageWithdraw\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001"
-    "(\r\022\022\n\nrequest_id\030\003 \001(\r\"M\n\004Chat\022+\n\007channe"
-    "l\030\001 \001(\0162\032.portfolio.mmo.ChatChannel\022\n\n\002t"
-    "o\030\002 \001(\t\022\014\n\004text\030\003 \001(\t\"}\n\014ChatReceived\022+\n"
-    "\007channel\030\001 \001(\0162\032.portfolio.mmo.ChatChann"
-    "el\022\021\n\tsender_id\030\002 \001(\r\022\023\n\013sender_name\030\003 \001"
-    "(\t\022\n\n\002to\030\004 \001(\t\022\014\n\004text\030\005 \001(\t\" \n\013PartyInv"
-    "ite\022\021\n\ttarget_id\030\001 \001(\r\"M\n\014PartyInvited\022\022"
-    "\n\ninviter_id\030\001 \001(\r\022\024\n\014inviter_name\030\002 \001(\t"
-    "\022\023\n\013expire_tick\030\003 \001(\r\"\035\n\013PartyAnswer\022\016\n\006"
-    "accept\030\001 \001(\010\"\014\n\nPartyLeave\"\036\n\tPartyKick\022"
-    "\021\n\ttarget_id\030\001 \001(\r\"^\n\nPartyState\022\020\n\010part"
-    "y_id\030\001 \001(\r\022\021\n\tleader_id\030\002 \001(\r\022+\n\007members"
-    "\030\003 \003(\0132\032.portfolio.mmo.PartyMember\"_\n\013Pa"
-    "rtyMember\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\0226\n\017c"
-    "haracter_class\030\003 \001(\0162\035.portfolio.mmo.Cha"
-    "racterClass\"E\n\021PartyMemberVitals\0220\n\007memb"
-    "ers\030\001 \003(\0132\037.portfolio.mmo.PartyMemberVit"
-    "al\"P\n\020PartyMemberVital\022\n\n\002id\030\001 \001(\r\022\n\n\002hp"
-    "\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\022\t\n\001x\030\004 \001(\021\022\t\n\001z\030\005"
-    " \001(\021\"\026\n\005Karma\022\r\n\005karma\030\001 \001(\021\"N\n\rRequestR"
-    "esult\022\022\n\nrequest_id\030\001 \001(\r\022)\n\006result\030\002 \001("
-    "\0162\031.portfolio.mmo.FailReason\"f\n\014ActionFa"
-    "iled\022)\n\006reason\030\001 \001(\0162\031.portfolio.mmo.Fai"
-    "lReason\022+\n\007request\030\002 \001(\0162\032.portfolio.mmo"
-    ".RequestKind\" \n\013AttackStart\022\021\n\ttarget_id"
-    "\030\001 \001(\r\"\014\n\nAttackStop\"5\n\013AttackSwing\022\023\n\013a"
-    "ttacker_id\030\001 \001(\r\022\021\n\ttarget_id\030\002 \001(\r\"_\n\007D"
-    "amaged\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\ttarget_id"
-    "\030\002 \001(\r\022\016\n\006damage\030\003 \001(\r\022\n\n\002hp\030\004 \001(\r\022\020\n\010cr"
-    "itical\030\005 \001(\010\"%\n\004Died\022\n\n\002id\030\001 \001(\r\022\021\n\tkill"
-    "er_id\030\002 \001(\r\"\010\n\006Revive\"1\n\007Revived\022\n\n\002id\030\001"
-    " \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"E\n\010UseS"
-    "kill\022\020\n\010skill_id\030\001 \001(\r\022\021\n\ttarget_id\030\002 \001("
-    "\r\022\024\n\014force_attack\030\003 \001(\010\"C\n\tSkillUsed\022\021\n\t"
-    "caster_id\030\001 \001(\r\022\020\n\010skill_id\030\002 \001(\r\022\021\n\ttar"
-    "get_id\030\003 \001(\r\"C\n\010Progress\022\n\n\002id\030\001 \001(\r\022+\n\005"
-    "state\030\002 \001(\0132\034.portfolio.mmo.ProgressStat"
-    "e\"J\n\021ProgressCancelled\022\n\n\002id\030\001 \001(\r\022)\n\006re"
-    "ason\030\002 \001(\0162\031.portfolio.mmo.FailReason\"G\n"
-    "\rEffectApplied\022\n\n\002id\030\001 \001(\r\022*\n\006effect\030\002 \001"
-    "(\0132\032.portfolio.mmo.EffectState\"5\n\tCooldo"
-    "wns\022(\n\007entries\030\001 \003(\0132\027.portfolio.mmo.Coo"
-    "ldown\">\n\010Cooldown\022\020\n\010skill_id\030\001 \001(\r\022\020\n\010e"
-    "nd_tick\030\002 \001(\r\022\016\n\006potion\030\003 \001(\r\"s\n\022Project"
-    "ileLaunched\022\n\n\002id\030\001 \001(\r\022\021\n\tcaster_id\030\002 \001"
-    "(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\014\n\004tick\030\005 \001(\r\022\013"
-    "\n\003yaw\030\006 \001(\r\022\r\n\005speed\030\007 \001(\r\"\035\n\017Projectile"
-    "Ended\022\n\n\002id\030\001 \001(\r\"Z\n\013AreaWarning\022\021\n\tcast"
-    "er_id\030\001 \001(\r\022\020\n\010skill_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021"
-    "\022\t\n\001z\030\004 \001(\021\022\020\n\010hit_tick\030\005 \001(\r*Q\n\017Protoco"
-    "lVersion\022 \n\034PROTOCOL_VERSION_UNSPECIFIED"
-    "\020\000\022\034\n\030PROTOCOL_VERSION_CURRENT\020\002*\355\002\n\010Con"
-    "stant\022\030\n\024CONSTANT_UNSPECIFIED\020\000\022\034\n\030CONST"
-    "ANT_UNITS_PER_METER\020 \022$\n\037CONSTANT_MAP_HA"
-    "LF_EXTENT_METERS\020\200\010\022\027\n\022CONSTANT_YAW_STEP"
-    "S\020\200\002\022\035\n\031CONSTANT_TICKS_PER_SECOND\020\024\022(\n$C"
-    "ONSTANT_MAX_SPEED_METERS_PER_SECOND\020\006\022\"\n"
-    "\036CONSTANT_PING_INTERVAL_SECONDS\020\005\022!\n\035CON"
-    "STANT_IDLE_TIMEOUT_SECONDS\020\017\022\033\n\027CONSTANT"
-    "_MAX_CHARACTERS\020\004\022\034\n\030CONSTANT_QUICKSLOT_"
-    "COUNT\020\010\022\033\n\027CONSTANT_MAX_PARTY_SIZE\020\005\032\002\020\001"
-    "*\303\001\n\017LoginResultCode\022\030\n\024LOGIN_RESULT_COD"
-    "E_OK\020\000\022&\n\"LOGIN_RESULT_CODE_INVALID_LOGI"
-    "N_ID\020\001\022&\n\"LOGIN_RESULT_CODE_VERSION_MISM"
-    "ATCH\020\002\022!\n\035LOGIN_RESULT_CODE_SERVER_FULL\020"
-    "\003\022#\n\037LOGIN_RESULT_CODE_DATA_MISMATCH\020\004*\347"
-    "\001\n\nKickReason\022\033\n\027KICK_REASON_UNSPECIFIED"
-    "\020\000\022\037\n\033KICK_REASON_DUPLICATE_LOGIN\020\001\022\037\n\033K"
-    "ICK_REASON_SERVER_SHUTDOWN\020\002\022 \n\034KICK_REA"
-    "SON_MALFORMED_PACKET\020\003\022\034\n\030KICK_REASON_ID"
-    "LE_TIMEOUT\020\004\022\034\n\030KICK_REASON_RATE_LIMITED"
-    "\020\005\022\034\n\030KICK_REASON_SERVER_ERROR\020\006*g\n\016Char"
-    "acterClass\022\037\n\033CHARACTER_CLASS_UNSPECIFIE"
-    "D\020\000\022\032\n\026CHARACTER_CLASS_KNIGHT\020\001\022\030\n\024CHARA"
-    "CTER_CLASS_MAGE\020\002*\367\001\n\031CreateCharacterRes"
-    "ultCode\022#\n\037CREATE_CHARACTER_RESULT_CODE_"
-    "OK\020\000\022-\n)CREATE_CHARACTER_RESULT_CODE_INV"
-    "ALID_NAME\020\001\022+\n\'CREATE_CHARACTER_RESULT_C"
-    "ODE_NAME_TAKEN\020\002\022)\n%CREATE_CHARACTER_RES"
-    "ULT_CODE_TOO_MANY\020\003\022.\n*CREATE_CHARACTER_"
-    "RESULT_CODE_INVALID_CLASS\020\004*e\n\024EnterWorl"
-    "dResultCode\022\036\n\032ENTER_WORLD_RESULT_CODE_O"
-    "K\020\000\022-\n)ENTER_WORLD_RESULT_CODE_NO_SUCH_C"
-    "HARACTER\020\001*\251\001\n\nEntityKind\022\033\n\027ENTITY_KIND"
-    "_UNSPECIFIED\020\000\022\026\n\022ENTITY_KIND_PLAYER\020\001\022\027"
-    "\n\023ENTITY_KIND_MONSTER\020\002\022\023\n\017ENTITY_KIND_N"
-    "PC\020\003\022\033\n\027ENTITY_KIND_GATHER_NODE\020\004\022\033\n\027ENT"
-    "ITY_KIND_GROUND_ITEM\020\005*S\n\tNameColor\022\025\n\021N"
-    "AME_COLOR_NORMAL\020\000\022\030\n\024NAME_COLOR_AGGRESS"
-    "OR\020\001\022\025\n\021NAME_COLOR_OUTLAW\020\002*\213\001\n\014Progress"
-    "Kind\022\026\n\022PROGRESS_KIND_NONE\020\000\022\026\n\022PROGRESS"
-    "_KIND_CAST\020\001\022\030\n\024PROGRESS_KIND_GATHER\020\002\022\027"
-    "\n\023PROGRESS_KIND_CRAFT\020\003\022\030\n\024PROGRESS_KIND"
-    "_RECALL\020\004*\236\001\n\017FieldNoticeKind\022!\n\035FIELD_N"
-    "OTICE_KIND_UNSPECIFIED\020\000\022#\n\037FIELD_NOTICE"
-    "_KIND_BOSS_APPEARED\020\001\022\037\n\033FIELD_NOTICE_KI"
-    "ND_BOSS_DIED\020\002\022\"\n\036FIELD_NOTICE_KIND_BOSS"
-    "_PRESENT\020\003*W\n\tItemPlace\022\030\n\024ITEM_PLACE_IN"
-    "VENTORY\020\000\022\030\n\024ITEM_PLACE_EQUIPMENT\020\001\022\026\n\022I"
-    "TEM_PLACE_STORAGE\020\002*t\n\nGainReason\022\033\n\027GAI"
-    "N_REASON_UNSPECIFIED\020\000\022\033\n\027GAIN_REASON_DE"
-    "V_COMMAND\020\001\022\027\n\023GAIN_REASON_PICK_UP\020\002\022\023\n\017"
-    "GAIN_REASON_BUY\020\003*\\\n\rQuickslotKind\022\030\n\024QU"
-    "ICKSLOT_KIND_EMPTY\020\000\022\030\n\024QUICKSLOT_KIND_S"
-    "KILL\020\001\022\027\n\023QUICKSLOT_KIND_ITEM\020\002*\216\001\n\013Chat"
-    "Channel\022\034\n\030CHAT_CHANNEL_UNSPECIFIED\020\000\022\027\n"
-    "\023CHAT_CHANNEL_NEARBY\020\001\022\026\n\022CHAT_CHANNEL_P"
-    "ARTY\020\002\022\026\n\022CHAT_CHANNEL_WORLD\020\003\022\030\n\024CHAT_C"
-    "HANNEL_WHISPER\020\004*\214\t\n\nFailReason\022\024\n\020FAIL_"
-    "REASON_NONE\020\000\022\031\n\025FAIL_REASON_NO_TARGET\020\001"
-    "\022\036\n\032FAIL_REASON_INVALID_TARGET\020\002\022\024\n\020FAIL"
-    "_REASON_DEAD\020\003\022\030\n\024FAIL_REASON_NOT_DEAD\020\004"
-    "\022\033\n\027FAIL_REASON_NOT_LEARNED\020\005\022\030\n\024FAIL_RE"
-    "ASON_COOLDOWN\020\006\022\035\n\031FAIL_REASON_NOT_ENOUG"
-    "H_MP\020\007\022\034\n\030FAIL_REASON_OUT_OF_RANGE\020\010\022\027\n\023"
-    "FAIL_REASON_BLOCKED\020\t\022\024\n\020FAIL_REASON_BUS"
-    "Y\020\n\022\027\n\023FAIL_REASON_STUNNED\020\013\022\031\n\025FAIL_REA"
-    "SON_CANCELLED\020\014\022\037\n\033FAIL_REASON_INVALID_C"
-    "OMMAND\020\r\022\036\n\032FAIL_REASON_INVENTORY_FULL\020\016"
-    "\022\027\n\023FAIL_REASON_NO_ITEM\020\017\022\035\n\031FAIL_REASON"
-    "_UNUSABLE_ITEM\020\020\022\031\n\025FAIL_REASON_IN_COMBA"
-    "T\020\021\022\030\n\024FAIL_REASON_TOO_FAST\020\022\022\034\n\030FAIL_RE"
-    "ASON_ALREADY_GONE\020\023\022\031\n\025FAIL_REASON_NOT_Y"
-    "OURS\020\024\022\035\n\031FAIL_REASON_LEVEL_TOO_LOW\020\025\022\033\n"
-    "\027FAIL_REASON_WRONG_CLASS\020\026\022\033\n\027FAIL_REASO"
-    "N_MAX_ENCHANT\020\027\022\037\n\033FAIL_REASON_ALREADY_L"
-    "EARNED\020\030\022\037\n\033FAIL_REASON_NOT_ENOUGH_GOLD\020"
-    "\031\022\032\n\026FAIL_REASON_UNSELLABLE\020\032\022\034\n\030FAIL_RE"
-    "ASON_STORAGE_FULL\020\033\022\034\n\030FAIL_REASON_NO_RE"
-    "CIPIENT\020\034\022\035\n\031FAIL_REASON_TEXT_TOO_LONG\020\035"
-    "\022\035\n\031FAIL_REASON_CHAT_TOO_FAST\020\036\022\030\n\024FAIL_"
-    "REASON_NO_PARTY\020\037\022\032\n\026FAIL_REASON_NOT_LEA"
-    "DER\020 \022\032\n\026FAIL_REASON_PARTY_FULL\020!\022 \n\034FAI"
-    "L_REASON_ALREADY_IN_PARTY\020\"\022\036\n\032FAIL_REAS"
-    "ON_INVITE_PENDING\020#\022\031\n\025FAIL_REASON_NO_IN"
-    "VITE\020$\022\037\n\033FAIL_REASON_INVITE_DECLINED\020%\022"
-    " \n\034FAIL_REASON_PK_LEVEL_TOO_LOW\020&\022\034\n\030FAI"
-    "L_REASON_PARTY_MEMBER\020\'*\332\001\n\013RequestKind\022"
-    "\034\n\030REQUEST_KIND_UNSPECIFIED\020\000\022\027\n\023REQUEST"
-    "_KIND_ATTACK\020\001\022\027\n\023REQUEST_KIND_REVIVE\020\002\022"
-    "\026\n\022REQUEST_KIND_SKILL\020\003\022\025\n\021REQUEST_KIND_"
-    "CHAT\020\004\022\032\n\026REQUEST_KIND_QUICKSLOT\020\005\022\030\n\024RE"
-    "QUEST_KIND_STORAGE\020\006\022\026\n\022REQUEST_KIND_PAR"
-    "TY\020\007B\030\252\002\025PortfolioMmo.Contractb\006proto3"
+    "o.mmo.KarmaH\000\0225\n\rdeath_penalty\030\232\003 \001(\0132\033."
+    "portfolio.mmo.DeathPenaltyH\000B\006\n\004body\"f\n\005"
+    "Login\0228\n\020protocol_version\030\001 \001(\0162\036.portfo"
+    "lio.mmo.ProtocolVersion\022\020\n\010login_id\030\002 \001("
+    "\t\022\021\n\tdata_hash\030\003 \001(\006\"I\n\013LoginResult\022.\n\006r"
+    "esult\030\001 \001(\0162\036.portfolio.mmo.LoginResultC"
+    "odeJ\004\010\002\020\003J\004\010\003\020\004\"3\n\006Kicked\022)\n\006reason\030\001 \001("
+    "\0162\031.portfolio.mmo.KickReason\"\032\n\nDevComma"
+    "nd\022\014\n\004line\030\001 \001(\t\"\006\n\004Ping\"\213\001\n\020CharacterSu"
+    "mmary\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\0226\n\017chara"
+    "cter_class\030\003 \001(\0162\035.portfolio.mmo.Charact"
+    "erClass\022\r\n\005level\030\004 \001(\r\022\026\n\016weapon_item_id"
+    "\030\005 \001(\r\"D\n\rCharacterList\0223\n\ncharacters\030\001 "
+    "\003(\0132\037.portfolio.mmo.CharacterSummary\"W\n\017"
+    "CreateCharacter\022\014\n\004name\030\001 \001(\t\0226\n\017charact"
+    "er_class\030\002 \001(\0162\035.portfolio.mmo.Character"
+    "Class\"Q\n\025CreateCharacterResult\0228\n\006result"
+    "\030\001 \001(\0162(.portfolio.mmo.CreateCharacterRe"
+    "sultCode\"\"\n\nEnterWorld\022\024\n\014character_id\030\001"
+    " \001(\004\"w\n\020EnterWorldResult\0223\n\006result\030\001 \001(\016"
+    "2#.portfolio.mmo.EnterWorldResultCode\022\017\n"
+    "\007self_id\030\002 \001(\r\022\014\n\004tick\030\003 \001(\r\022\017\n\007revived\030"
+    "\004 \001(\010\"\010\n\006Logout\"\014\n\nLeaveWorld\"\024\n\004Pong\022\014\n"
+    "\004tick\030\001 \001(\r\"6\n\004Move\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001("
+    "\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack\030\004 \001(\r\"2\n\rPositionR"
+    "eset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030\003 \001(\r\""
+    "=\n\rEntitiesEnter\022,\n\010entities\030\001 \003(\0132\032.por"
+    "tfolio.mmo.EntityEnter\"\204\005\n\013EntityEnter\022\n"
+    "\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030"
+    "\004 \001(\r\022\'\n\004kind\030\007 \001(\0162\031.portfolio.mmo.Enti"
+    "tyKind\022\014\n\004name\030\005 \001(\t\0226\n\017character_class\030"
+    "\006 \001(\0162\035.portfolio.mmo.CharacterClass\022\r\n\005"
+    "level\030\010 \001(\r\022,\n\nname_color\030\t \001(\0162\030.portfo"
+    "lio.mmo.NameColor\022\026\n\016weapon_item_id\030\n \001("
+    "\r\022\023\n\013template_id\030\013 \001(\r\022\n\n\002hp\030\014 \001(\r\022\016\n\006ma"
+    "x_hp\030\r \001(\r\022+\n\007effects\030\016 \003(\0132\032.portfolio."
+    "mmo.EffectState\022.\n\010progress\030\017 \001(\0132\034.port"
+    "folio.mmo.ProgressState\022\014\n\004dead\030\020 \001(\010\022\r\n"
+    "\005speed\030\021 \001(\r\022\020\n\010move_yaw\030\022 \001(\r\022\016\n\006next_x"
+    "\030\023 \001(\021\022\016\n\006next_z\030\024 \001(\021\022\017\n\007item_id\030\025 \001(\r\022"
+    "\r\n\005count\030\026 \001(\r\022\017\n\007enchant\030\027 \001(\r\022\031\n\017owner"
+    "_player_id\030\030 \001(\rH\000\022\030\n\016owner_party_id\030\031 \001"
+    "(\rH\000\022\033\n\023owner_only_end_tick\030\032 \001(\r\022\031\n\021dro"
+    "pped_by_player\030\033 \001(\010B\007\n\005owner\"2\n\013EffectS"
+    "tate\022\021\n\teffect_id\030\001 \001(\r\022\020\n\010end_tick\030\002 \001("
+    "\r\"X\n\rProgressState\022)\n\004kind\030\001 \001(\0162\033.portf"
+    "olio.mmo.ProgressKind\022\n\n\002id\030\002 \001(\r\022\020\n\010end"
+    "_tick\030\003 \001(\r\"n\n\013EntityState\022\n\n\002id\030\001 \001(\r\022,"
+    "\n\nname_color\030\002 \001(\0162\030.portfolio.mmo.NameC"
+    "olor\022\026\n\016weapon_item_id\030\003 \001(\r\022\r\n\005level\030\004 "
+    "\001(\r\"f\n\013FieldNotice\022,\n\004kind\030\001 \001(\0162\036.portf"
+    "olio.mmo.FieldNoticeKind\022\023\n\013template_id\030"
+    "\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\"\034\n\rEntitiesL"
+    "eave\022\013\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n\004tick"
+    "\030\001 \001(\r\022+\n\010entities\030\002 \003(\0132\031.portfolio.mmo"
+    ".EntityMove\"M\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022\t\n"
+    "\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\020\n\010tele"
+    "port\030\005 \001(\010\"Y\n\nSelfVitals\022\n\n\002hp\030\001 \001(\r\022\n\n\002"
+    "mp\030\002 \001(\r\022\027\n\017combat_end_tick\030\003 \001(\r\022\032\n\022agg"
+    "ressor_end_tick\030\004 \001(\r\"<\n\014EntityVitals\022,\n"
+    "\010entities\030\001 \003(\0132\032.portfolio.mmo.EntityVi"
+    "tal\"5\n\013EntityVital\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001"
+    "(\r\022\016\n\006max_hp\030\003 \001(\r\"L\n\tSelfStats\022\016\n\006max_h"
+    "p\030\001 \001(\r\022\016\n\006max_mp\030\002 \001(\r\022\016\n\006attack\030\003 \001(\r\022"
+    "\017\n\007defense\030\004 \001(\r\"(\n\tExpGained\022\016\n\006amount\030"
+    "\001 \001(\021\022\013\n\003exp\030\002 \001(\r\"s\n\010ItemSlot\022\'\n\005place\030"
+    "\001 \001(\0162\030.portfolio.mmo.ItemPlace\022\r\n\005index"
+    "\030\002 \001(\r\022\017\n\007item_id\030\003 \001(\r\022\r\n\005count\030\004 \001(\r\022\017"
+    "\n\007enchant\030\005 \001(\r\"A\n\tInventory\022&\n\005slots\030\001 "
+    "\003(\0132\027.portfolio.mmo.ItemSlot\022\014\n\004gold\030\002 \001"
+    "(\004\",\n\nItemAmount\022\017\n\007item_id\030\001 \001(\r\022\r\n\005cou"
+    "nt\030\002 \001(\r\"t\n\004Gain\022)\n\006reason\030\001 \001(\0162\031.portf"
+    "olio.mmo.GainReason\022)\n\004item\030\002 \001(\0132\031.port"
+    "folio.mmo.ItemAmountH\000\022\016\n\004gold\030\003 \001(\004H\000B\006"
+    "\n\004what\"l\n\020InventoryChanged\022&\n\005slots\030\001 \003("
+    "\0132\027.portfolio.mmo.ItemSlot\022\014\n\004gold\030\002 \001(\004"
+    "\022\"\n\005gains\030\003 \003(\0132\023.portfolio.mmo.Gain\"+\n\007"
+    "UseItem\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001("
+    "\r\"/\n\006PickUp\022\021\n\tentity_id\030\001 \001(\r\022\022\n\nreques"
+    "t_id\030\002 \001(\r\";\n\010DropItem\022\014\n\004slot\030\001 \001(\r\022\r\n\005"
+    "count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\")\n\005Equip"
+    "\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"1\n\007Un"
+    "equip\022\022\n\nequip_slot\030\001 \001(\r\022\022\n\nrequest_id\030"
+    "\002 \001(\r\"i\n\007Enchant\022\'\n\005place\030\001 \001(\0162\030.portfo"
+    "lio.mmo.ItemPlace\022\014\n\004slot\030\002 \001(\r\022\023\n\013scrol"
+    "l_slot\030\003 \001(\r\022\022\n\nrequest_id\030\004 \001(\r\"1\n\rEnch"
+    "antResult\022\017\n\007success\030\001 \001(\010\022\017\n\007enchant\030\002 "
+    "\001(\r\"\037\n\rLearnedSkills\022\016\n\006skills\030\001 \003(\r\"\035\n\014"
+    "SkillLearned\022\r\n\005skill\030\001 \001(\r\"C\n\tQuickslot"
+    "\022*\n\004kind\030\001 \001(\0162\034.portfolio.mmo.Quickslot"
+    "Kind\022\n\n\002id\030\002 \001(\r\"E\n\014SetQuickslot\022\r\n\005inde"
+    "x\030\001 \001(\r\022&\n\004slot\030\002 \001(\0132\030.portfolio.mmo.Qu"
+    "ickslot\"5\n\nQuickslots\022\'\n\005slots\030\001 \003(\0132\030.p"
+    "ortfolio.mmo.Quickslot\"9\n\003Buy\022\017\n\007item_id"
+    "\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001("
+    "\r\"7\n\004Sell\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022"
+    "\n\nrequest_id\030\003 \001(\r\"\r\n\013StorageOpen\"1\n\007Sto"
+    "rage\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.Item"
+    "Slot\"8\n\016StorageChanged\022&\n\005slots\030\001 \003(\0132\027."
+    "portfolio.mmo.ItemSlot\"A\n\016StorageDeposit"
+    "\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest"
+    "_id\030\003 \001(\r\"B\n\017StorageWithdraw\022\014\n\004slot\030\001 \001"
+    "(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"M\n"
+    "\004Chat\022+\n\007channel\030\001 \001(\0162\032.portfolio.mmo.C"
+    "hatChannel\022\n\n\002to\030\002 \001(\t\022\014\n\004text\030\003 \001(\t\"}\n\014"
+    "ChatReceived\022+\n\007channel\030\001 \001(\0162\032.portfoli"
+    "o.mmo.ChatChannel\022\021\n\tsender_id\030\002 \001(\r\022\023\n\013"
+    "sender_name\030\003 \001(\t\022\n\n\002to\030\004 \001(\t\022\014\n\004text\030\005 "
+    "\001(\t\" \n\013PartyInvite\022\021\n\ttarget_id\030\001 \001(\r\"M\n"
+    "\014PartyInvited\022\022\n\ninviter_id\030\001 \001(\r\022\024\n\014inv"
+    "iter_name\030\002 \001(\t\022\023\n\013expire_tick\030\003 \001(\r\"\035\n\013"
+    "PartyAnswer\022\016\n\006accept\030\001 \001(\010\"\014\n\nPartyLeav"
+    "e\"\036\n\tPartyKick\022\021\n\ttarget_id\030\001 \001(\r\"^\n\nPar"
+    "tyState\022\020\n\010party_id\030\001 \001(\r\022\021\n\tleader_id\030\002"
+    " \001(\r\022+\n\007members\030\003 \003(\0132\032.portfolio.mmo.Pa"
+    "rtyMember\"_\n\013PartyMember\022\n\n\002id\030\001 \001(\r\022\014\n\004"
+    "name\030\002 \001(\t\0226\n\017character_class\030\003 \001(\0162\035.po"
+    "rtfolio.mmo.CharacterClass\"E\n\021PartyMembe"
+    "rVitals\0220\n\007members\030\001 \003(\0132\037.portfolio.mmo"
+    ".PartyMemberVital\"P\n\020PartyMemberVital\022\n\n"
+    "\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\022\t\n"
+    "\001x\030\004 \001(\021\022\t\n\001z\030\005 \001(\021\"H\n\014DeathPenalty\022\020\n\010e"
+    "xp_lost\030\001 \001(\r\022&\n\005items\030\002 \003(\0132\027.portfolio"
+    ".mmo.ItemSlot\"\026\n\005Karma\022\r\n\005karma\030\001 \001(\021\"N\n"
+    "\rRequestResult\022\022\n\nrequest_id\030\001 \001(\r\022)\n\006re"
+    "sult\030\002 \001(\0162\031.portfolio.mmo.FailReason\"f\n"
+    "\014ActionFailed\022)\n\006reason\030\001 \001(\0162\031.portfoli"
+    "o.mmo.FailReason\022+\n\007request\030\002 \001(\0162\032.port"
+    "folio.mmo.RequestKind\" \n\013AttackStart\022\021\n\t"
+    "target_id\030\001 \001(\r\"\014\n\nAttackStop\"5\n\013AttackS"
+    "wing\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\ttarget_id\030\002"
+    " \001(\r\"_\n\007Damaged\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\t"
+    "target_id\030\002 \001(\r\022\016\n\006damage\030\003 \001(\r\022\n\n\002hp\030\004 "
+    "\001(\r\022\020\n\010critical\030\005 \001(\010\"%\n\004Died\022\n\n\002id\030\001 \001("
+    "\r\022\021\n\tkiller_id\030\002 \001(\r\"\010\n\006Revive\"1\n\007Revive"
+    "d\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001("
+    "\r\"E\n\010UseSkill\022\020\n\010skill_id\030\001 \001(\r\022\021\n\ttarge"
+    "t_id\030\002 \001(\r\022\024\n\014force_attack\030\003 \001(\010\"C\n\tSkil"
+    "lUsed\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill_id\030\002 \001"
+    "(\r\022\021\n\ttarget_id\030\003 \001(\r\"C\n\010Progress\022\n\n\002id\030"
+    "\001 \001(\r\022+\n\005state\030\002 \001(\0132\034.portfolio.mmo.Pro"
+    "gressState\"J\n\021ProgressCancelled\022\n\n\002id\030\001 "
+    "\001(\r\022)\n\006reason\030\002 \001(\0162\031.portfolio.mmo.Fail"
+    "Reason\"G\n\rEffectApplied\022\n\n\002id\030\001 \001(\r\022*\n\006e"
+    "ffect\030\002 \001(\0132\032.portfolio.mmo.EffectState\""
+    "5\n\tCooldowns\022(\n\007entries\030\001 \003(\0132\027.portfoli"
+    "o.mmo.Cooldown\">\n\010Cooldown\022\020\n\010skill_id\030\001"
+    " \001(\r\022\020\n\010end_tick\030\002 \001(\r\022\016\n\006potion\030\003 \001(\r\"s"
+    "\n\022ProjectileLaunched\022\n\n\002id\030\001 \001(\r\022\021\n\tcast"
+    "er_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\014\n\004tic"
+    "k\030\005 \001(\r\022\013\n\003yaw\030\006 \001(\r\022\r\n\005speed\030\007 \001(\r\"\035\n\017P"
+    "rojectileEnded\022\n\n\002id\030\001 \001(\r\"Z\n\013AreaWarnin"
+    "g\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill_id\030\002 \001(\r\022\t"
+    "\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\020\n\010hit_tick\030\005 \001(\r*Q"
+    "\n\017ProtocolVersion\022 \n\034PROTOCOL_VERSION_UN"
+    "SPECIFIED\020\000\022\034\n\030PROTOCOL_VERSION_CURRENT\020"
+    "\002*\355\002\n\010Constant\022\030\n\024CONSTANT_UNSPECIFIED\020\000"
+    "\022\034\n\030CONSTANT_UNITS_PER_METER\020 \022$\n\037CONSTA"
+    "NT_MAP_HALF_EXTENT_METERS\020\200\010\022\027\n\022CONSTANT"
+    "_YAW_STEPS\020\200\002\022\035\n\031CONSTANT_TICKS_PER_SECO"
+    "ND\020\024\022(\n$CONSTANT_MAX_SPEED_METERS_PER_SE"
+    "COND\020\006\022\"\n\036CONSTANT_PING_INTERVAL_SECONDS"
+    "\020\005\022!\n\035CONSTANT_IDLE_TIMEOUT_SECONDS\020\017\022\033\n"
+    "\027CONSTANT_MAX_CHARACTERS\020\004\022\034\n\030CONSTANT_Q"
+    "UICKSLOT_COUNT\020\010\022\033\n\027CONSTANT_MAX_PARTY_S"
+    "IZE\020\005\032\002\020\001*\303\001\n\017LoginResultCode\022\030\n\024LOGIN_R"
+    "ESULT_CODE_OK\020\000\022&\n\"LOGIN_RESULT_CODE_INV"
+    "ALID_LOGIN_ID\020\001\022&\n\"LOGIN_RESULT_CODE_VER"
+    "SION_MISMATCH\020\002\022!\n\035LOGIN_RESULT_CODE_SER"
+    "VER_FULL\020\003\022#\n\037LOGIN_RESULT_CODE_DATA_MIS"
+    "MATCH\020\004*\347\001\n\nKickReason\022\033\n\027KICK_REASON_UN"
+    "SPECIFIED\020\000\022\037\n\033KICK_REASON_DUPLICATE_LOG"
+    "IN\020\001\022\037\n\033KICK_REASON_SERVER_SHUTDOWN\020\002\022 \n"
+    "\034KICK_REASON_MALFORMED_PACKET\020\003\022\034\n\030KICK_"
+    "REASON_IDLE_TIMEOUT\020\004\022\034\n\030KICK_REASON_RAT"
+    "E_LIMITED\020\005\022\034\n\030KICK_REASON_SERVER_ERROR\020"
+    "\006*g\n\016CharacterClass\022\037\n\033CHARACTER_CLASS_U"
+    "NSPECIFIED\020\000\022\032\n\026CHARACTER_CLASS_KNIGHT\020\001"
+    "\022\030\n\024CHARACTER_CLASS_MAGE\020\002*\367\001\n\031CreateCha"
+    "racterResultCode\022#\n\037CREATE_CHARACTER_RES"
+    "ULT_CODE_OK\020\000\022-\n)CREATE_CHARACTER_RESULT"
+    "_CODE_INVALID_NAME\020\001\022+\n\'CREATE_CHARACTER"
+    "_RESULT_CODE_NAME_TAKEN\020\002\022)\n%CREATE_CHAR"
+    "ACTER_RESULT_CODE_TOO_MANY\020\003\022.\n*CREATE_C"
+    "HARACTER_RESULT_CODE_INVALID_CLASS\020\004*e\n\024"
+    "EnterWorldResultCode\022\036\n\032ENTER_WORLD_RESU"
+    "LT_CODE_OK\020\000\022-\n)ENTER_WORLD_RESULT_CODE_"
+    "NO_SUCH_CHARACTER\020\001*\251\001\n\nEntityKind\022\033\n\027EN"
+    "TITY_KIND_UNSPECIFIED\020\000\022\026\n\022ENTITY_KIND_P"
+    "LAYER\020\001\022\027\n\023ENTITY_KIND_MONSTER\020\002\022\023\n\017ENTI"
+    "TY_KIND_NPC\020\003\022\033\n\027ENTITY_KIND_GATHER_NODE"
+    "\020\004\022\033\n\027ENTITY_KIND_GROUND_ITEM\020\005*S\n\tNameC"
+    "olor\022\025\n\021NAME_COLOR_NORMAL\020\000\022\030\n\024NAME_COLO"
+    "R_AGGRESSOR\020\001\022\025\n\021NAME_COLOR_OUTLAW\020\002*\213\001\n"
+    "\014ProgressKind\022\026\n\022PROGRESS_KIND_NONE\020\000\022\026\n"
+    "\022PROGRESS_KIND_CAST\020\001\022\030\n\024PROGRESS_KIND_G"
+    "ATHER\020\002\022\027\n\023PROGRESS_KIND_CRAFT\020\003\022\030\n\024PROG"
+    "RESS_KIND_RECALL\020\004*\236\001\n\017FieldNoticeKind\022!"
+    "\n\035FIELD_NOTICE_KIND_UNSPECIFIED\020\000\022#\n\037FIE"
+    "LD_NOTICE_KIND_BOSS_APPEARED\020\001\022\037\n\033FIELD_"
+    "NOTICE_KIND_BOSS_DIED\020\002\022\"\n\036FIELD_NOTICE_"
+    "KIND_BOSS_PRESENT\020\003*W\n\tItemPlace\022\030\n\024ITEM"
+    "_PLACE_INVENTORY\020\000\022\030\n\024ITEM_PLACE_EQUIPME"
+    "NT\020\001\022\026\n\022ITEM_PLACE_STORAGE\020\002*t\n\nGainReas"
+    "on\022\033\n\027GAIN_REASON_UNSPECIFIED\020\000\022\033\n\027GAIN_"
+    "REASON_DEV_COMMAND\020\001\022\027\n\023GAIN_REASON_PICK"
+    "_UP\020\002\022\023\n\017GAIN_REASON_BUY\020\003*\\\n\rQuickslotK"
+    "ind\022\030\n\024QUICKSLOT_KIND_EMPTY\020\000\022\030\n\024QUICKSL"
+    "OT_KIND_SKILL\020\001\022\027\n\023QUICKSLOT_KIND_ITEM\020\002"
+    "*\216\001\n\013ChatChannel\022\034\n\030CHAT_CHANNEL_UNSPECI"
+    "FIED\020\000\022\027\n\023CHAT_CHANNEL_NEARBY\020\001\022\026\n\022CHAT_"
+    "CHANNEL_PARTY\020\002\022\026\n\022CHAT_CHANNEL_WORLD\020\003\022"
+    "\030\n\024CHAT_CHANNEL_WHISPER\020\004*\214\t\n\nFailReason"
+    "\022\024\n\020FAIL_REASON_NONE\020\000\022\031\n\025FAIL_REASON_NO"
+    "_TARGET\020\001\022\036\n\032FAIL_REASON_INVALID_TARGET\020"
+    "\002\022\024\n\020FAIL_REASON_DEAD\020\003\022\030\n\024FAIL_REASON_N"
+    "OT_DEAD\020\004\022\033\n\027FAIL_REASON_NOT_LEARNED\020\005\022\030"
+    "\n\024FAIL_REASON_COOLDOWN\020\006\022\035\n\031FAIL_REASON_"
+    "NOT_ENOUGH_MP\020\007\022\034\n\030FAIL_REASON_OUT_OF_RA"
+    "NGE\020\010\022\027\n\023FAIL_REASON_BLOCKED\020\t\022\024\n\020FAIL_R"
+    "EASON_BUSY\020\n\022\027\n\023FAIL_REASON_STUNNED\020\013\022\031\n"
+    "\025FAIL_REASON_CANCELLED\020\014\022\037\n\033FAIL_REASON_"
+    "INVALID_COMMAND\020\r\022\036\n\032FAIL_REASON_INVENTO"
+    "RY_FULL\020\016\022\027\n\023FAIL_REASON_NO_ITEM\020\017\022\035\n\031FA"
+    "IL_REASON_UNUSABLE_ITEM\020\020\022\031\n\025FAIL_REASON"
+    "_IN_COMBAT\020\021\022\030\n\024FAIL_REASON_TOO_FAST\020\022\022\034"
+    "\n\030FAIL_REASON_ALREADY_GONE\020\023\022\031\n\025FAIL_REA"
+    "SON_NOT_YOURS\020\024\022\035\n\031FAIL_REASON_LEVEL_TOO"
+    "_LOW\020\025\022\033\n\027FAIL_REASON_WRONG_CLASS\020\026\022\033\n\027F"
+    "AIL_REASON_MAX_ENCHANT\020\027\022\037\n\033FAIL_REASON_"
+    "ALREADY_LEARNED\020\030\022\037\n\033FAIL_REASON_NOT_ENO"
+    "UGH_GOLD\020\031\022\032\n\026FAIL_REASON_UNSELLABLE\020\032\022\034"
+    "\n\030FAIL_REASON_STORAGE_FULL\020\033\022\034\n\030FAIL_REA"
+    "SON_NO_RECIPIENT\020\034\022\035\n\031FAIL_REASON_TEXT_T"
+    "OO_LONG\020\035\022\035\n\031FAIL_REASON_CHAT_TOO_FAST\020\036"
+    "\022\030\n\024FAIL_REASON_NO_PARTY\020\037\022\032\n\026FAIL_REASO"
+    "N_NOT_LEADER\020 \022\032\n\026FAIL_REASON_PARTY_FULL"
+    "\020!\022 \n\034FAIL_REASON_ALREADY_IN_PARTY\020\"\022\036\n\032"
+    "FAIL_REASON_INVITE_PENDING\020#\022\031\n\025FAIL_REA"
+    "SON_NO_INVITE\020$\022\037\n\033FAIL_REASON_INVITE_DE"
+    "CLINED\020%\022 \n\034FAIL_REASON_PK_LEVEL_TOO_LOW"
+    "\020&\022\034\n\030FAIL_REASON_PARTY_MEMBER\020\'*\332\001\n\013Req"
+    "uestKind\022\034\n\030REQUEST_KIND_UNSPECIFIED\020\000\022\027"
+    "\n\023REQUEST_KIND_ATTACK\020\001\022\027\n\023REQUEST_KIND_"
+    "REVIVE\020\002\022\026\n\022REQUEST_KIND_SKILL\020\003\022\025\n\021REQU"
+    "EST_KIND_CHAT\020\004\022\032\n\026REQUEST_KIND_QUICKSLO"
+    "T\020\005\022\030\n\024REQUEST_KIND_STORAGE\020\006\022\026\n\022REQUEST"
+    "_KIND_PARTY\020\007B\030\252\002\025PortfolioMmo.Contractb"
+    "\006proto3"
 };
 static ::absl::once_flag descriptor_table_packets_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_packets_2eproto = {
     false,
     false,
-    13478,
+    13607,
     descriptor_table_protodef_packets_2eproto,
     "packets.proto",
     &descriptor_table_packets_2eproto_once,
     nullptr,
     0,
-    86,
+    87,
     schemas,
     file_message_globals,
     TableStruct_packets_2eproto::offsets,
@@ -16264,6 +16444,19 @@ void Packet::set_allocated_karma(::portfolio::mmo::Karma* PROTOBUF_NULLABLE karm
   }
   // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.karma)
 }
+void Packet::set_allocated_death_penalty(::portfolio::mmo::DeathPenalty* PROTOBUF_NULLABLE death_penalty) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (death_penalty) {
+    ::google::protobuf::Arena* submessage_arena = death_penalty->GetArena();
+    if (message_arena != submessage_arena) {
+      death_penalty = ::google::protobuf::internal::GetOwnedMessage(message_arena, death_penalty, submessage_arena);
+    }
+    set_has_death_penalty();
+    _impl_.body_.death_penalty_ = death_penalty;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.death_penalty)
+}
 Packet::Packet(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
 #if defined(PROTOBUF_CUSTOM_VTABLE)
     : Super_(arena, Packet_get_class_data()) {
@@ -16512,6 +16705,9 @@ Packet::Packet(
         break;
       case kKarma:
         _impl_.body_.karma_ = Super_::CopyConstruct(arena, *from._impl_.body_.karma_);
+        break;
+      case kDeathPenalty:
+        _impl_.body_.death_penalty_ = Super_::CopyConstruct(arena, *from._impl_.body_.death_penalty_);
         break;
   }
 
@@ -17123,6 +17319,14 @@ void Packet::clear_body() {
       }
       break;
     }
+    case kDeathPenalty: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.death_penalty_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.death_penalty_);
+      }
+      break;
+    }
     case BODY_NOT_SET: {
       break;
     }
@@ -17618,6 +17822,12 @@ PROTOBUF_NOINLINE void Packet::Clear() {
           stream);
       break;
     }
+    case kDeathPenalty: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          410, *this_._impl_.body_.death_penalty_, this_._impl_.body_.death_penalty_->GetCachedSize(), target,
+          stream);
+      break;
+    }
     default:
       break;
   }
@@ -18073,6 +18283,12 @@ PROTOBUF_NOINLINE void Packet::Clear() {
     case kKarma: {
       total_size += 2 +
                     ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.karma_);
+      break;
+    }
+    // .portfolio.mmo.DeathPenalty death_penalty = 410;
+    case kDeathPenalty: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.death_penalty_);
       break;
     }
     case BODY_NOT_SET: {
@@ -18681,6 +18897,14 @@ void Packet::MergeImpl(::google::protobuf::MessageLite& to_msg,
           _this->_impl_.body_.karma_ = Super_::CopyConstruct(arena, *from._impl_.body_.karma_);
         } else {
           _this->_impl_.body_.karma_->MergeFrom(*from._impl_.body_.karma_);
+        }
+        break;
+      }
+      case kDeathPenalty: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.death_penalty_ = Super_::CopyConstruct(arena, *from._impl_.body_.death_penalty_);
+        } else {
+          _this->_impl_.body_.death_penalty_->MergeFrom(*from._impl_.body_.death_penalty_);
         }
         break;
       }
@@ -34145,6 +34369,249 @@ void PartyMemberVital::InternalSwap(PartyMemberVital* PROTOBUF_RESTRICT PROTOBUF
 }
 
 ::google::protobuf::Metadata PartyMemberVital::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+DeathPenalty::DeathPenalty(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, DeathPenalty_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.DeathPenalty)
+}
+PROTOBUF_NDEBUG_INLINE DeathPenalty::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+    [[maybe_unused]] const ::portfolio::mmo::DeathPenalty& from_msg)
+      : _has_bits_{from._has_bits_},
+        items_ {
+          visibility, ::_pbi::InternalMetadataOffset::Build<
+              ::portfolio::mmo::DeathPenalty,
+              PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DeathPenalty, _impl_.items_)>()
+          , arena, from.items_
+        }
+     {}
+
+DeathPenalty::DeathPenalty(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena,
+    const DeathPenalty& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, DeathPenalty_get_class_data()) {
+
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  DeathPenalty* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  _impl_.exp_lost_ = from._impl_.exp_lost_;
+
+  // @@protoc_insertion_point(copy_constructor:portfolio.mmo.DeathPenalty)
+}
+PROTOBUF_NDEBUG_INLINE DeathPenalty::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+      : items_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::DeathPenalty,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::DeathPenalty, _impl_.items_)>()
+         }
+     {}
+
+inline void DeathPenalty::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.exp_lost_ = {};
+}
+DeathPenalty::~DeathPenalty() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.DeathPenalty)
+  SharedDtor(*this);
+}
+inline void DeathPenalty::SharedDtor(MessageLite& self) {
+  DeathPenalty& this_ = static_cast<DeathPenalty&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull DeathPenalty_class_data_ =
+        DeathPenalty::InternalGenerateClassData_(DeathPenalty_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+DeathPenalty::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&DeathPenalty_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(DeathPenalty_class_data_.tc_table);
+  return DeathPenalty_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+DeathPenalty::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&DeathPenalty_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&DeathPenalty_globals_));
+  return DeathPenalty_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const DeathPenalty::ParseTableT_
+    DeathPenalty::_table_ =
+        DeathPenalty::InternalGenerateParseTable_(DeathPenalty_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void DeathPenalty::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.DeathPenalty)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    _impl_.items_.Clear();
+  }
+  this_._impl_.exp_lost_ = 0u;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL DeathPenalty::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const DeathPenalty& this_ = static_cast<const DeathPenalty&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL DeathPenalty::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const DeathPenalty& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.DeathPenalty)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 exp_lost = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_exp_lost() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          1, this_._internal_exp_lost(), target);
+    }
+  }
+
+  // repeated .portfolio.mmo.ItemSlot items = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    for (unsigned i = 0, n = static_cast<unsigned>(
+                             this_._internal_items_size());
+         i < n; i++) {
+      const auto& repfield = this_._internal_items().Get(i);
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          2, repfield, repfield.GetCachedSize(), target,
+          stream);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.DeathPenalty)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t DeathPenalty::ByteSizeLong(const MessageLite& base) {
+  const DeathPenalty& this_ = static_cast<const DeathPenalty&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t DeathPenalty::ByteSizeLong() const {
+  const DeathPenalty& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.DeathPenalty)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    // repeated .portfolio.mmo.ItemSlot items = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      total_size += 1UL * this_._internal_items_size();
+      for (const auto& msg : this_._internal_items()) {
+        total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+      }
+    }
+    // uint32 exp_lost = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_exp_lost() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_exp_lost());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void DeathPenalty::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<DeathPenalty*>(&to_msg);
+  auto& from = static_cast<const DeathPenalty&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  ::google::protobuf::Arena* arena = _this->GetArena();
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.DeathPenalty)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      _this->_internal_mutable_items()->InternalMergeFromWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), arena,
+          from._internal_items());
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_exp_lost() != 0) {
+        _this->_impl_.exp_lost_ = from._impl_.exp_lost_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void DeathPenalty::CopyFrom(const DeathPenalty& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.DeathPenalty)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void DeathPenalty::InternalSwap(DeathPenalty* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _impl_.items_.InternalSwap(&other->_impl_.items_);
+  swap(_impl_.exp_lost_, other->_impl_.exp_lost_);
+}
+
+::google::protobuf::Metadata DeathPenalty::GetMetadata() const {
   return Super_::GetMetadataImpl(GetClassData()->full());
 }
 // ===================================================================

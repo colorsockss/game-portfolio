@@ -202,6 +202,14 @@ extern const ::google::protobuf::internal::ClassDataFull Damaged_class_data_;
 #else
 extern const DamagedGlobalsTypeInternal Damaged_globals_;
 #endif  // PROTOBUF_MESSAGE_GLOBALS
+class DeathPenalty;
+struct DeathPenaltyGlobalsTypeInternal;
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+extern DeathPenaltyGlobalsTypeInternal DeathPenalty_globals_;
+extern const ::google::protobuf::internal::ClassDataFull DeathPenalty_class_data_;
+#else
+extern const DeathPenaltyGlobalsTypeInternal DeathPenalty_globals_;
+#endif  // PROTOBUF_MESSAGE_GLOBALS
 class DevCommand;
 struct DevCommandGlobalsTypeInternal;
 #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -1653,7 +1661,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED UseSkill final : public ::google::p
   [[nodiscard]] static const UseSkill& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<UseSkill>(&UseSkill_globals_);
   }
-  static constexpr int kIndexInFileMessages = 76;
+  static constexpr int kIndexInFileMessages = 77;
   friend void swap(UseSkill& a, UseSkill& b) { a.Swap(&b); }
   inline void Swap(UseSkill* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -2892,7 +2900,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SkillUsed final : public ::google::
   [[nodiscard]] static const SkillUsed& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<SkillUsed>(&SkillUsed_globals_);
   }
-  static constexpr int kIndexInFileMessages = 77;
+  static constexpr int kIndexInFileMessages = 78;
   friend void swap(SkillUsed& a, SkillUsed& b) { a.Swap(&b); }
   inline void Swap(SkillUsed* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -4017,7 +4025,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Revived final : public ::google::pr
   [[nodiscard]] static const Revived& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Revived>(&Revived_globals_);
   }
-  static constexpr int kIndexInFileMessages = 75;
+  static constexpr int kIndexInFileMessages = 76;
   friend void swap(Revived& a, Revived& b) { a.Swap(&b); }
   inline void Swap(Revived* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -4241,7 +4249,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Revive final : public ::google::pro
   [[nodiscard]] static const Revive& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Revive>(&Revive_globals_);
   }
-  static constexpr int kIndexInFileMessages = 74;
+  static constexpr int kIndexInFileMessages = 75;
   friend void swap(Revive& a, Revive& b) { a.Swap(&b); }
   inline void Swap(Revive* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -4380,7 +4388,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED RequestResult final : public ::goog
   [[nodiscard]] static const RequestResult& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<RequestResult>(&RequestResult_globals_);
   }
-  static constexpr int kIndexInFileMessages = 67;
+  static constexpr int kIndexInFileMessages = 68;
   friend void swap(RequestResult& a, RequestResult& b) { a.Swap(&b); }
   inline void Swap(RequestResult* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -4806,7 +4814,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProjectileLaunched final : public :
   [[nodiscard]] static const ProjectileLaunched& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ProjectileLaunched>(&ProjectileLaunched_globals_);
   }
-  static constexpr int kIndexInFileMessages = 83;
+  static constexpr int kIndexInFileMessages = 84;
   friend void swap(ProjectileLaunched& a, ProjectileLaunched& b) { a.Swap(&b); }
   inline void Swap(ProjectileLaunched* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -5079,7 +5087,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProjectileEnded final : public ::go
   [[nodiscard]] static const ProjectileEnded& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ProjectileEnded>(&ProjectileEnded_globals_);
   }
-  static constexpr int kIndexInFileMessages = 84;
+  static constexpr int kIndexInFileMessages = 85;
   friend void swap(ProjectileEnded& a, ProjectileEnded& b) { a.Swap(&b); }
   inline void Swap(ProjectileEnded* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -5505,7 +5513,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ProgressCancelled final : public ::
   [[nodiscard]] static const ProgressCancelled& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ProgressCancelled>(&ProgressCancelled_globals_);
   }
-  static constexpr int kIndexInFileMessages = 79;
+  static constexpr int kIndexInFileMessages = 80;
   friend void swap(ProgressCancelled& a, ProgressCancelled& b) { a.Swap(&b); }
   inline void Swap(ProgressCancelled* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -9301,7 +9309,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Karma final : public ::google::prot
   [[nodiscard]] static const Karma& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Karma>(&Karma_globals_);
   }
-  static constexpr int kIndexInFileMessages = 66;
+  static constexpr int kIndexInFileMessages = 67;
   friend void swap(Karma& a, Karma& b) { a.Swap(&b); }
   inline void Swap(Karma* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -12875,7 +12883,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Died final : public ::google::proto
   [[nodiscard]] static const Died& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Died>(&Died_globals_);
   }
-  static constexpr int kIndexInFileMessages = 73;
+  static constexpr int kIndexInFileMessages = 74;
   friend void swap(Died& a, Died& b) { a.Swap(&b); }
   inline void Swap(Died* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -13294,7 +13302,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Damaged final : public ::google::pr
   [[nodiscard]] static const Damaged& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Damaged>(&Damaged_globals_);
   }
-  static constexpr int kIndexInFileMessages = 72;
+  static constexpr int kIndexInFileMessages = 73;
   friend void swap(Damaged& a, Damaged& b) { a.Swap(&b); }
   inline void Swap(Damaged* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -13962,7 +13970,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldown final : public ::google::p
   [[nodiscard]] static const Cooldown& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Cooldown>(&Cooldown_globals_);
   }
-  static constexpr int kIndexInFileMessages = 82;
+  static constexpr int kIndexInFileMessages = 83;
   friend void swap(Cooldown& a, Cooldown& b) { a.Swap(&b); }
   inline void Swap(Cooldown* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -15165,7 +15173,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackSwing final : public ::google
   [[nodiscard]] static const AttackSwing& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackSwing>(&AttackSwing_globals_);
   }
-  static constexpr int kIndexInFileMessages = 71;
+  static constexpr int kIndexInFileMessages = 72;
   friend void swap(AttackSwing& a, AttackSwing& b) { a.Swap(&b); }
   inline void Swap(AttackSwing* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -15377,7 +15385,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackStop final : public ::google:
   [[nodiscard]] static const AttackStop& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackStop>(&AttackStop_globals_);
   }
-  static constexpr int kIndexInFileMessages = 70;
+  static constexpr int kIndexInFileMessages = 71;
   friend void swap(AttackStop& a, AttackStop& b) { a.Swap(&b); }
   inline void Swap(AttackStop* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -15516,7 +15524,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AttackStart final : public ::google
   [[nodiscard]] static const AttackStart& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AttackStart>(&AttackStart_globals_);
   }
-  static constexpr int kIndexInFileMessages = 69;
+  static constexpr int kIndexInFileMessages = 70;
   friend void swap(AttackStart& a, AttackStart& b) { a.Swap(&b); }
   inline void Swap(AttackStart* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -15717,7 +15725,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED AreaWarning final : public ::google
   [[nodiscard]] static const AreaWarning& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<AreaWarning>(&AreaWarning_globals_);
   }
-  static constexpr int kIndexInFileMessages = 85;
+  static constexpr int kIndexInFileMessages = 86;
   friend void swap(AreaWarning& a, AreaWarning& b) { a.Swap(&b); }
   inline void Swap(AreaWarning* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -15966,7 +15974,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ActionFailed final : public ::googl
   [[nodiscard]] static const ActionFailed& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<ActionFailed>(&ActionFailed_globals_);
   }
-  static constexpr int kIndexInFileMessages = 68;
+  static constexpr int kIndexInFileMessages = 69;
   friend void swap(ActionFailed& a, ActionFailed& b) { a.Swap(&b); }
   inline void Swap(ActionFailed* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -17030,7 +17038,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Progress final : public ::google::p
   [[nodiscard]] static const Progress& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Progress>(&Progress_globals_);
   }
-  static constexpr int kIndexInFileMessages = 78;
+  static constexpr int kIndexInFileMessages = 79;
   friend void swap(Progress& a, Progress& b) { a.Swap(&b); }
   inline void Swap(Progress* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -19153,7 +19161,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EffectApplied final : public ::goog
   [[nodiscard]] static const EffectApplied& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<EffectApplied>(&EffectApplied_globals_);
   }
-  static constexpr int kIndexInFileMessages = 80;
+  static constexpr int kIndexInFileMessages = 81;
   friend void swap(EffectApplied& a, EffectApplied& b) { a.Swap(&b); }
   inline void Swap(EffectApplied* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -19313,6 +19321,229 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EffectApplied final : public ::goog
 };
 // -------------------------------------------------------------------
 
+class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED DeathPenalty final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:portfolio.mmo.DeathPenalty) */ {
+  using Super_ = ::google::protobuf::Message;
+
+ public:
+  inline DeathPenalty() : DeathPenalty(nullptr) {}
+  ~DeathPenalty() PROTOBUF_FINAL;
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+  void operator delete(DeathPenalty* PROTOBUF_NONNULL msg, ::std::destroying_delete_t) {
+    SharedDtor(*msg);
+    ::google::protobuf::internal::SizedDelete(msg, sizeof(DeathPenalty));
+  }
+#endif
+
+  template <typename = void>
+  explicit constexpr DeathPenalty(::google::protobuf::internal::ConstantInitialized,
+                           const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+                               class_data);
+
+  inline DeathPenalty(const DeathPenalty& from) : DeathPenalty(nullptr, from) {}
+  inline DeathPenalty(DeathPenalty&& from) noexcept : DeathPenalty(nullptr, ::std::move(from)) {}
+  inline DeathPenalty& operator=(const DeathPenalty& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline DeathPenalty& operator=(DeathPenalty&& from) noexcept {
+    if (this == &from) return *this;
+    if (::google::protobuf::internal::CanMoveWithInternalSwap(GetArena(), from.GetArena())) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  [[nodiscard]] inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  [[nodiscard]] inline ::google::protobuf::UnknownFieldSet* PROTOBUF_NONNULL
+  mutable_unknown_fields() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL descriptor() {
+    return GetDescriptor();
+  }
+  [[nodiscard]] static const ::google::protobuf::Descriptor* PROTOBUF_NONNULL
+  GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  [[nodiscard]] static const ::google::protobuf::Reflection* PROTOBUF_NONNULL GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  [[nodiscard]] static const DeathPenalty& default_instance() {
+    return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<DeathPenalty>(&DeathPenalty_globals_);
+  }
+  static constexpr int kIndexInFileMessages = 66;
+  friend void swap(DeathPenalty& a, DeathPenalty& b) { a.Swap(&b); }
+  inline void Swap(DeathPenalty* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    if (::google::protobuf::internal::CanUseInternalSwap(GetArena(), other->GetArena())) {
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(DeathPenalty* PROTOBUF_NONNULL other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  [[nodiscard]] DeathPenalty* PROTOBUF_NONNULL
+  New(::google::protobuf::Arena* PROTOBUF_NULLABLE arena = nullptr) const {
+    return Super_::DefaultConstruct<DeathPenalty>(arena);
+  }
+  using Super_::CopyFrom;
+  void CopyFrom(const DeathPenalty& from);
+  using Super_::MergeFrom;
+  void MergeFrom(const DeathPenalty& from) { DeathPenalty::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(::google::protobuf::MessageLite& to_msg,
+                        const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  [[nodiscard]] bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  [[nodiscard]] static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  [[nodiscard]] static ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      const ::google::protobuf::MessageLite& msg, ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream);
+
+  public:
+  [[nodiscard]] ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] ::size_t ByteSizeLong() const final;
+  [[nodiscard]] ::uint8_t* PROTOBUF_NONNULL _InternalSerialize(
+      ::uint8_t* PROTOBUF_NONNULL target,
+      ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  [[nodiscard]] int GetCachedSize() const {
+    return _impl_._cached_size_.Get();
+  }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static void SharedDtor(MessageLite& self);
+  void InternalSwap(DeathPenalty* PROTOBUF_NONNULL other);
+ private:
+  static ::absl::string_view FullMessageName() { return "portfolio.mmo.DeathPenalty"; }
+
+  explicit DeathPenalty(::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  DeathPenalty(::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const DeathPenalty& from);
+  DeathPenalty(
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, DeathPenalty&& from) noexcept
+      : DeathPenalty(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL GetClassData() const PROTOBUF_FINAL;
+  static void* PROTOBUF_NONNULL PlacementNew_(
+      const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+      ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+  static constexpr auto InternalNewImpl_();
+
+ public:
+  static constexpr auto InternalGenerateClassData_(
+      const MessageLite& prototype,
+      const ::google::protobuf::internal::TcParseTableBase* PROTOBUF_NULLABLE tc_table = nullptr);
+
+  [[nodiscard]] ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kItemsFieldNumber = 2,
+    kExpLostFieldNumber = 1,
+  };
+  // repeated .portfolio.mmo.ItemSlot items = 2;
+  [[nodiscard]] int items_size() const;
+  private:
+  int _internal_items_size() const;
+
+  public:
+  void clear_items() ;
+  [[nodiscard]] const ::portfolio::mmo::ItemSlot& items(int index) const;
+  [[nodiscard]] ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL mutable_items(int index);
+  ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL add_items();
+  [[nodiscard]] const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>&
+  items() const;
+  [[nodiscard]] ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL
+  mutable_items();
+
+  private:
+  const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>& _internal_items() const;
+  ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL _internal_mutable_items();
+
+  public:
+  // uint32 exp_lost = 1;
+  void clear_exp_lost() ;
+  [[nodiscard]] ::uint32_t exp_lost() const;
+  void set_exp_lost(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_exp_lost() const;
+  void _internal_set_exp_lost(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:portfolio.mmo.DeathPenalty)
+ private:
+  class _Internal;
+  using ParseTableT_ =
+      ::google::protobuf::internal::TcParseTable<1, 2,
+                          1, 0,
+                          2>;
+  static constexpr ParseTableT_ InternalGenerateParseTable_(
+      const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
+  friend class ::google::protobuf::internal::TcParser;
+  #ifndef PROTOBUF_MESSAGE_GLOBALS
+  static const ParseTableT_ _table_;
+  #endif
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  friend ::google::protobuf::internal::PrivateAccess;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                                    ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena);
+    inline explicit Impl_(
+        ::google::protobuf::internal::InternalVisibility visibility,
+        ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const Impl_& from,
+        const DeathPenalty& from_msg);
+    ::google::protobuf::internal::HasBits<1> _has_bits_;
+    ::google::protobuf::internal::CachedSize _cached_size_;
+    ::google::protobuf::RepeatedPtrField< ::portfolio::mmo::ItemSlot > items_;
+    ::uint32_t exp_lost_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_packets_2eproto;
+};
+// -------------------------------------------------------------------
+
 class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldowns final : public ::google::protobuf::Message
 /* @@protoc_insertion_point(class_definition:portfolio.mmo.Cooldowns) */ {
   using Super_ = ::google::protobuf::Message;
@@ -19371,7 +19602,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Cooldowns final : public ::google::
   [[nodiscard]] static const Cooldowns& default_instance() {
     return *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<Cooldowns>(&Cooldowns_globals_);
   }
-  static constexpr int kIndexInFileMessages = 81;
+  static constexpr int kIndexInFileMessages = 82;
   friend void swap(Cooldowns& a, Cooldowns& b) { a.Swap(&b); }
   inline void Swap(Cooldowns* PROTOBUF_NONNULL other) {
     if (other == this) return;
@@ -20322,6 +20553,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kPartyState = 407,
     kPartyMemberVitals = 408,
     kKarma = 409,
+    kDeathPenalty = 410,
     BODY_NOT_SET = 0,
   };
   static constexpr int kIndexInFileMessages = 0;
@@ -20486,6 +20718,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
     kPartyStateFieldNumber = 407,
     kPartyMemberVitalsFieldNumber = 408,
     kKarmaFieldNumber = 409,
+    kDeathPenaltyFieldNumber = 410,
   };
   // .portfolio.mmo.Login login = 1;
   [[nodiscard]] bool has_login() const;
@@ -21855,6 +22088,25 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   ::portfolio::mmo::Karma* PROTOBUF_NONNULL _internal_mutable_karma();
 
   public:
+  // .portfolio.mmo.DeathPenalty death_penalty = 410;
+  [[nodiscard]] bool has_death_penalty() const;
+  private:
+  bool _internal_has_death_penalty() const;
+
+  public:
+  void clear_death_penalty() ;
+  [[nodiscard]] const ::portfolio::mmo::DeathPenalty& death_penalty() const;
+  [[nodiscard]] ::portfolio::mmo::DeathPenalty* PROTOBUF_NULLABLE release_death_penalty();
+  ::portfolio::mmo::DeathPenalty* PROTOBUF_NONNULL mutable_death_penalty();
+  void set_allocated_death_penalty(::portfolio::mmo::DeathPenalty* PROTOBUF_NULLABLE value);
+  void unsafe_arena_set_allocated_death_penalty(::portfolio::mmo::DeathPenalty* PROTOBUF_NULLABLE value);
+  ::portfolio::mmo::DeathPenalty* PROTOBUF_NULLABLE unsafe_arena_release_death_penalty();
+
+  private:
+  const ::portfolio::mmo::DeathPenalty& _internal_death_penalty() const;
+  ::portfolio::mmo::DeathPenalty* PROTOBUF_NONNULL _internal_mutable_death_penalty();
+
+  public:
   void clear_body();
   BodyCase body_case() const;
   // @@protoc_insertion_point(class_scope:portfolio.mmo.Packet)
@@ -21932,11 +22184,12 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
   void set_has_party_state();
   void set_has_party_member_vitals();
   void set_has_karma();
+  void set_has_death_penalty();
   [[nodiscard]] inline bool has_body() const;
   inline void clear_has_body();
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<0, 72,
-                          72, 0,
+      ::google::protobuf::internal::TcParseTable<0, 73,
+                          73, 0,
                           38>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
       const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
@@ -22037,6 +22290,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Packet final : public ::google::pro
       ::google::protobuf::Message* PROTOBUF_NULLABLE party_state_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE party_member_vitals_;
       ::google::protobuf::Message* PROTOBUF_NULLABLE karma_;
+      ::google::protobuf::Message* PROTOBUF_NULLABLE death_penalty_;
     } body_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::uint32_t _oneof_case_[1];
@@ -27894,6 +28148,87 @@ inline ::portfolio::mmo::Karma* PROTOBUF_NONNULL Packet::mutable_karma()
   return _msg;
 }
 
+// .portfolio.mmo.DeathPenalty death_penalty = 410;
+inline bool Packet::has_death_penalty() const {
+  return body_case() == kDeathPenalty;
+}
+inline bool Packet::_internal_has_death_penalty() const {
+  return body_case() == kDeathPenalty;
+}
+inline void Packet::set_has_death_penalty() {
+  _impl_._oneof_case_[0] = kDeathPenalty;
+}
+inline void Packet::clear_death_penalty() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (body_case() == kDeathPenalty) {
+    if (GetArena() == nullptr) {
+      delete _impl_.body_.death_penalty_;
+    } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+      ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.death_penalty_);
+    }
+    clear_has_body();
+  }
+}
+inline ::portfolio::mmo::DeathPenalty* PROTOBUF_NULLABLE Packet::release_death_penalty() {
+  // @@protoc_insertion_point(field_release:portfolio.mmo.Packet.death_penalty)
+  if (body_case() == kDeathPenalty) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::DeathPenalty*>(_impl_.body_.death_penalty_);
+    if (GetArena() != nullptr) {
+      temp = ::google::protobuf::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.body_.death_penalty_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::portfolio::mmo::DeathPenalty& Packet::_internal_death_penalty() const {
+  return body_case() == kDeathPenalty ? static_cast<const ::portfolio::mmo::DeathPenalty&>(*reinterpret_cast<::portfolio::mmo::DeathPenalty*>(_impl_.body_.death_penalty_))
+                     : *::google::protobuf::internal::MessageGlobalsBase::ToDefaultInstance<::portfolio::mmo::DeathPenalty>(&::portfolio::mmo::DeathPenalty_globals_);
+}
+inline const ::portfolio::mmo::DeathPenalty& Packet::death_penalty() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Packet.death_penalty)
+  return _internal_death_penalty();
+}
+inline ::portfolio::mmo::DeathPenalty* PROTOBUF_NULLABLE Packet::unsafe_arena_release_death_penalty() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:portfolio.mmo.Packet.death_penalty)
+  if (body_case() == kDeathPenalty) {
+    clear_has_body();
+    auto* temp = reinterpret_cast<::portfolio::mmo::DeathPenalty*>(_impl_.body_.death_penalty_);
+    _impl_.body_.death_penalty_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Packet::unsafe_arena_set_allocated_death_penalty(
+    ::portfolio::mmo::DeathPenalty* PROTOBUF_NULLABLE value) {
+  // We rely on the oneof clear method to free the earlier contents
+  // of this oneof. We can directly use the pointer we're given to
+  // set the new value.
+  clear_body();
+  if (value) {
+    set_has_death_penalty();
+    _impl_.body_.death_penalty_ = reinterpret_cast<::google::protobuf::Message*>(value);
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:portfolio.mmo.Packet.death_penalty)
+}
+inline ::portfolio::mmo::DeathPenalty* PROTOBUF_NONNULL Packet::_internal_mutable_death_penalty() {
+  if (body_case() != kDeathPenalty) {
+    clear_body();
+    set_has_death_penalty();
+    _impl_.body_.death_penalty_ = reinterpret_cast<::google::protobuf::Message*>(Super_::DefaultConstruct<::portfolio::mmo::DeathPenalty>(GetArena()));
+  }
+  return reinterpret_cast<::portfolio::mmo::DeathPenalty*>(_impl_.body_.death_penalty_);
+}
+inline ::portfolio::mmo::DeathPenalty* PROTOBUF_NONNULL Packet::mutable_death_penalty()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::portfolio::mmo::DeathPenalty* _msg = _internal_mutable_death_penalty();
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.Packet.death_penalty)
+  return _msg;
+}
+
 inline bool Packet::has_body() const {
   return body_case() != BODY_NOT_SET;
 }
@@ -33428,6 +33763,89 @@ inline ::int32_t PartyMemberVital::_internal_z() const {
 inline void PartyMemberVital::_internal_set_z(::int32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.z_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// DeathPenalty
+
+// uint32 exp_lost = 1;
+inline void DeathPenalty::clear_exp_lost() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.exp_lost_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t DeathPenalty::exp_lost() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.DeathPenalty.exp_lost)
+  return _internal_exp_lost();
+}
+inline void DeathPenalty::set_exp_lost(::uint32_t value) {
+  _internal_set_exp_lost(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.DeathPenalty.exp_lost)
+}
+inline ::uint32_t DeathPenalty::_internal_exp_lost() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.exp_lost_;
+}
+inline void DeathPenalty::_internal_set_exp_lost(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.exp_lost_ = value;
+}
+
+// repeated .portfolio.mmo.ItemSlot items = 2;
+inline int DeathPenalty::_internal_items_size() const {
+  return _internal_items().size();
+}
+inline int DeathPenalty::items_size() const {
+  return _internal_items_size();
+}
+inline void DeathPenalty::clear_items() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.items_.Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+}
+inline const ::portfolio::mmo::ItemSlot& DeathPenalty::items(int index) const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.DeathPenalty.items)
+  return _internal_items().Get(index);
+}
+inline ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL DeathPenalty::mutable_items(int index)
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable:portfolio.mmo.DeathPenalty.items)
+  return _internal_mutable_items()->Mutable(index);
+}
+inline ::portfolio::mmo::ItemSlot* PROTOBUF_NONNULL DeathPenalty::add_items()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::portfolio::mmo::ItemSlot* _add =
+      _internal_mutable_items()->InternalAddWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), GetArena());
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_add:portfolio.mmo.DeathPenalty.items)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>& DeathPenalty::items() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:portfolio.mmo.DeathPenalty.items)
+  return _internal_items();
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL
+DeathPenalty::mutable_items() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  // @@protoc_insertion_point(field_mutable_list:portfolio.mmo.DeathPenalty.items)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_items();
+}
+inline const ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>&
+DeathPenalty::_internal_items() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.items_;
+}
+inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::ItemSlot>* PROTOBUF_NONNULL
+DeathPenalty::_internal_mutable_items() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.items_;
 }
 
 // -------------------------------------------------------------------

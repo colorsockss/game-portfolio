@@ -441,6 +441,17 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 입은 장비가 바뀌었다: 능력치를 다시 구하고(본인에게 SelfStats), 무기가 바뀌었으면 표시 상태(EntityState)를 바꾼다. 방어구는 모습을 바꾸지 않는다.
         /// </summary>
+        /// <summary>
+        /// 입은 장비 하나를 없앤다(무법자의 사망 페널티 45): 칸을 비우고 능력치를 다시 구하며, 무기였으면 겉모습의 바뀜이 EntityState로 간다.
+        /// </summary>
+        public void RemoveWorn(Player player, int index)
+        {
+            ItemSlot worn = player.Bag.Equipment[index];
+            (worn.ItemId, worn.Count, worn.Enchant) = (0u, 0u, 0u);
+            player.Bag.ChangedEquipment.Add(index);
+            EquipmentChanged(player);
+        }
+
         private void EquipmentChanged(Player player)
         {
             _stats.Recalculate(player);
