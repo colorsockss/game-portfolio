@@ -82,10 +82,7 @@ namespace PortfolioMmo.Server
             }
 
             player.Progress = null;
-            foreach ((int index, uint count) in Removal(player, recipe))
-            {
-                _inventory.Remove(player, index, count);
-            }
+            _inventory.RemovePlan(player, Removal(player, recipe));
 
             player.Bag.Gold -= recipe.Gold;
             player.Bag.GoldChanged = true;
@@ -120,12 +117,9 @@ namespace PortfolioMmo.Server
                 return FailReason.NotEnoughGold;
             }
 
-            Dictionary<int, uint> removal = Removal(player, recipe);
-            bool Emptied(ItemSlot slot) => (slot.ItemId == 0) || (removal.GetValueOrDefault((int)slot.Index) == slot.Count);
-            bool room = recipe.Kind == RecipeKind.Item
-                ? player.Bag.Slots.Any(slot => ((slot.ItemId == recipe.ItemId) && !Emptied(slot)) || Emptied(slot))
-                : player.Bag.Slots.Any(Emptied);
-            return room ? FailReason.None : FailReason.InventoryFull;
+            // 장비는 어느 등급이 나와도 빈 칸 하나라 일반 등급으로 묻는다.
+            uint result = recipe.Kind == RecipeKind.Item ? recipe.ItemId : _data.Equipment(recipe.Family, ItemGrade.Common)!.Id;
+            return _inventory.HasRoomAfter(player, Removal(player, recipe), result, recipe.Kind == RecipeKind.Item ? recipe.Count : 1) ? FailReason.None : FailReason.InventoryFull;
         }
 
         /// <summary>
@@ -147,28 +141,11 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 재료를 뺄 계획: 칸 번호 → 그 칸에서 뺄 수. 재료마다 칸의 차례로 필요한 만큼 뺀다(재료가 있는지는 부르는 쪽이 먼저 봄).
+        /// 재료를 뺄 계획(InventorySystem.Removal): 재료마다 칸의 차례로 필요한 만큼.
         /// </summary>
         private static Dictionary<int, uint> Removal(Player player, RecipesRow recipe)
         {
-            var plan = new Dictionary<int, uint>();
-            for (int i = 0; i < recipe.Materials.Count; i++)
-            {
-                uint left = recipe.MaterialCounts[i];
-                foreach (ItemSlot slot in player.Bag.Slots.Where(slot => slot.ItemId == recipe.Materials[i]))
-                {
-                    if (left == 0)
-                    {
-                        break;
-                    }
-
-                    uint take = Math.Min(left, slot.Count);
-                    plan[(int)slot.Index] = take;
-                    left -= take;
-                }
-            }
-
-            return plan;
+            return InventorySystem.Removal(player, recipe.Materials.Zip(recipe.MaterialCounts));
         }
     }
 }

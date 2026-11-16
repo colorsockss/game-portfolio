@@ -612,7 +612,7 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 쌓인 패킷 가운데 체력·마나·능력치·쿨다운·경험치·인벤토리·배운 스킬·퀵슬롯·성향·펫의 알림만 꺼낸다(나머지도 비움).
+        /// 쌓인 패킷 가운데 체력·마나·능력치·쿨다운·경험치·인벤토리·배운 스킬·퀵슬롯·성향·펫·퀘스트의 알림만 꺼낸다(나머지도 비움).
         /// </summary>
         private static List<Packet> TakeVitals(Session session)
         {
@@ -625,7 +625,7 @@ namespace PortfolioMmo.Server.Tests
         {
             return packet.BodyCase is Packet.BodyOneofCase.SelfVitals or Packet.BodyOneofCase.SelfStats or Packet.BodyOneofCase.EntityVitals or Packet.BodyOneofCase.Cooldowns
                 or Packet.BodyOneofCase.ExpGained or Packet.BodyOneofCase.Inventory or Packet.BodyOneofCase.InventoryChanged or Packet.BodyOneofCase.LearnedSkills
-                or Packet.BodyOneofCase.SkillLearned or Packet.BodyOneofCase.Quickslots or Packet.BodyOneofCase.Karma or Packet.BodyOneofCase.PetState;
+                or Packet.BodyOneofCase.SkillLearned or Packet.BodyOneofCase.Quickslots or Packet.BodyOneofCase.Karma or Packet.BodyOneofCase.PetState or Packet.BodyOneofCase.QuestState;
         }
 
         /// <summary>

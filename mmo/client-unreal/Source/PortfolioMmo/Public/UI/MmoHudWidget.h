@@ -185,6 +185,9 @@ private:
 	/** 시야 안의 보스가 있으면 보스 체력 바를 보인다(43). */
 	void ShowBoss();
 
+	/** 받은 퀘스트의 진행 줄을 바뀌었을 때만 다시 채운다(50). */
+	void ShowQuest();
+
 	/** 보스 체력 바(위 가운데, 대상 정보 아래. 43). */
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidget> BossPanel;
@@ -259,6 +262,15 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> QuestButton;
+
+	/** 받은 퀘스트의 조건과 진행 한 줄(50. 받은 것이 없으면 감춤). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> QuestText;
+
+	uint32 ShownQuest = MAX_uint32;
+	uint32 ShownQuestInventory = MAX_uint32;
+	uint32 ShownQuestLevel = MAX_uint32;
+	uint32 ShownQuestLanguage = MAX_uint32;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> SettingsButton;

@@ -77,6 +77,8 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::Shop);
 		case EScreen::Craft:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Craft);
+		case EScreen::Quest:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Quest);
 		case EScreen::Storage:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Storage);
 		case EScreen::Map:
@@ -394,6 +396,7 @@ void UMmoUiManager::ReturnToCharacterSelect()
 	Close(EScreen::Skills);
 	Close(EScreen::Shop);
 	Close(EScreen::Craft);
+	Close(EScreen::Quest);
 	Close(EScreen::Storage);
 	Close(EScreen::Map);
 	Close(EScreen::Party);
@@ -535,6 +538,7 @@ void UMmoUiManager::ShowDeath()
 		Close(EScreen::Skills);
 		Close(EScreen::Shop);
 		Close(EScreen::Craft);
+		Close(EScreen::Quest);
 		Close(EScreen::Storage);
 		Close(EScreen::Map);
 		Close(EScreen::Party);
@@ -583,6 +587,26 @@ void UMmoUiManager::ShowShop()
 	if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
 	{
 		Open(EScreen::Shop);
+	}
+}
+
+void UMmoUiManager::ShowQuest()
+{
+	if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
+	{
+		Open(EScreen::Quest);
+	}
+}
+
+void UMmoUiManager::ToggleQuest()
+{
+	if (Stack.IsOpen(EScreen::Quest))
+	{
+		Close(EScreen::Quest);
+	}
+	else
+	{
+		ShowQuest();
 	}
 }
 
@@ -698,6 +722,7 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Close(EScreen::Skills);
 	Close(EScreen::Shop);
 	Close(EScreen::Craft);
+	Close(EScreen::Quest);
 	Close(EScreen::Storage);
 	Close(EScreen::Map);
 	Close(EScreen::Party);

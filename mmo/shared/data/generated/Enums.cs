@@ -61,11 +61,14 @@ namespace PortfolioMmo.Data {
             "RklFRBAAEhQKEEdBVEhFUl9LSU5EX1dPT0QQARITCg9HQVRIRVJfS0lORF9P",
             "UkUQAhIUChBHQVRIRVJfS0lORF9IRVJCEAMqWgoKUmVjaXBlS2luZBIbChdS",
             "RUNJUEVfS0lORF9VTlNQRUNJRklFRBAAEhQKEFJFQ0lQRV9LSU5EX0lURU0Q",
-            "ARIZChVSRUNJUEVfS0lORF9FUVVJUE1FTlQQAkIUqgIRUG9ydGZvbGlvTW1v",
-            "LkRhdGFiBnByb3RvMw=="));
+            "ARIZChVSRUNJUEVfS0lORF9FUVVJUE1FTlQQAiqWAQoJUXVlc3RLaW5kEhoK",
+            "FlFVRVNUX0tJTkRfVU5TUEVDSUZJRUQQABITCg9RVUVTVF9LSU5EX0tJTEwQ",
+            "ARIWChJRVUVTVF9LSU5EX0NPTExFQ1QQAhIUChBRVUVTVF9LSU5EX0NSQUZU",
+            "EAMSFAoQUVVFU1RfS0lORF9MRVZFTBAEEhQKEFFVRVNUX0tJTkRfRVFVSVAQ",
+            "BUIUqgIRUG9ydGZvbGlvTW1vLkRhdGFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), typeof(global::PortfolioMmo.Data.ItemKind), typeof(global::PortfolioMmo.Data.ItemGrade), typeof(global::PortfolioMmo.Data.EquipSlot), typeof(global::PortfolioMmo.Data.ItemUse), typeof(global::PortfolioMmo.Data.NpcRole), typeof(global::PortfolioMmo.Data.GatherKind), typeof(global::PortfolioMmo.Data.RecipeKind), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), typeof(global::PortfolioMmo.Data.ItemKind), typeof(global::PortfolioMmo.Data.ItemGrade), typeof(global::PortfolioMmo.Data.EquipSlot), typeof(global::PortfolioMmo.Data.ItemUse), typeof(global::PortfolioMmo.Data.NpcRole), typeof(global::PortfolioMmo.Data.GatherKind), typeof(global::PortfolioMmo.Data.RecipeKind), typeof(global::PortfolioMmo.Data.QuestKind), }, null, null));
     }
     #endregion
 
@@ -353,6 +356,33 @@ namespace PortfolioMmo.Data {
     /// 장비의 종을 만들고 등급을 확률로 정함(48)
     /// </summary>
     [pbr::OriginalName("RECIPE_KIND_EQUIPMENT")] Equipment = 2,
+  }
+
+  public enum QuestKind {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("QUEST_KIND_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 몬스터 잡기(대상은 Monsters의 줄. 받은 뒤 경험치를 받은 것만 셈. 50)
+    /// </summary>
+    [pbr::OriginalName("QUEST_KIND_KILL")] Kill = 1,
+    /// <summary>
+    /// 재료 모으기(대상은 Items의 줄. 끝낼 때 가진 수를 보고 뺌)
+    /// </summary>
+    [pbr::OriginalName("QUEST_KIND_COLLECT")] Collect = 2,
+    /// <summary>
+    /// 제작하기(대상은 Recipes의 줄. 받은 뒤 만든 것만 셈)
+    /// </summary>
+    [pbr::OriginalName("QUEST_KIND_CRAFT")] Craft = 3,
+    /// <summary>
+    /// 레벨 달성(수가 레벨. 대상 없음)
+    /// </summary>
+    [pbr::OriginalName("QUEST_KIND_LEVEL")] Level = 4,
+    /// <summary>
+    /// 장비 입기(대상은 EquipSlot의 값. 그 칸에 무엇이든 입으면 채워짐)
+    /// </summary>
+    [pbr::OriginalName("QUEST_KIND_EQUIP")] Equip = 5,
   }
 
   #endregion

@@ -49,6 +49,10 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_NO_PET: return "fail.noPet";
 		case portfolio::mmo::FAIL_REASON_ALREADY_HAVE_PET: return "fail.alreadyHavePet";
 		case portfolio::mmo::FAIL_REASON_NOT_ENOUGH_MATERIALS: return "fail.notEnoughMaterials";
+		case portfolio::mmo::FAIL_REASON_QUEST_IN_PROGRESS: return "fail.questInProgress";
+		case portfolio::mmo::FAIL_REASON_NO_QUEST_ACCEPTED: return "fail.noQuestAccepted";
+		case portfolio::mmo::FAIL_REASON_NO_QUEST_LEFT: return "fail.noQuestLeft";
+		case portfolio::mmo::FAIL_REASON_QUEST_NOT_DONE: return "fail.questNotDone";
 		default: return "fail.other";
 		}
 	}

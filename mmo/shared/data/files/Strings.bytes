@@ -1074,3 +1074,112 @@ craft.gold골드 {0} / {1}Gold {0} / {1}
 craft.grades@등급: 일반 {0}% · 고급 {1}% · 희귀 {2}% · 영웅 {3}%=Grade: common {0}% · uncommon {1}% · rare {2}% · epic {3}%
 G
 craft.noRoom!가방에 자리가 없습니다.No room in your bag.
+,
+quest.slimes슬라임 사냥
+Slime Hunt
+�
+quest.slimes.descC마을 동쪽 사냥터의 슬라임을 다섯 마리 잡으세요.6Defeat five slimes in the hunting ground east of town.
+-
+quest.jelly끈적한 증거Sticky Proof
+�
+quest.jelly.descJ슬라임이 떨어뜨리는 끈적한 젤리를 세 개 모아 오세요.,Bring three sticky jellies that slimes drop.
+&
+quest.level5	첫걸음First Steps
+
+quest.level5.desc;레벨 5가 되세요. 보상으로 투구를 드립니다.-Reach level 5. A helmet awaits as the reward.
+7
+quest.helmet머리를 지키세요Guard Your Head
+_
+quest.helmet.desc(가방을 열어 투구를 입으세요. Open your bag and wear a helmet.
+2
+quest.mushrooms버섯 정리Mushroom Cleanup
+y
+quest.mushrooms.desc2사냥터의 버섯을 여덟 마리 잡으세요.-Defeat eight mushrooms in the hunting ground.
+/
+
+quest.pine나무꾼의 일Lumberjack Work
+�
+quest.pine.descJ마을 남쪽 채집지에서 소나무 원목을 다섯 개 모으세요.=Gather five pine logs in the gathering grounds south of town.
+/
+quest.mugwort약초 모으기Herb Picking
+
+quest.mugwort.desc3채집지에서 쑥 잎을 다섯 개 모으세요.4Gather five mugwort leaves in the gathering grounds.
+4
+quest.level10한 사람 몫Pulling Your Weight
+>
+quest.level10.desc레벨 10이 되세요.Reach level 10.
+?
+quest.hpPotion장인의 첫 작품An Artisan's First Work
+�
+quest.hpPotion.desc<장인 한결에게서 상급 체력 물약을 만드세요.7Craft greater health potions with Hangyeol the Artisan.
+6
+quest.mpPotion마나의 비결The Secret of Mana
+Y
+quest.mpPotion.desc%상급 마나 물약을 만드세요.Craft greater mana potions.
+3
+npc.questGiver안내인 다솜Dasom the Guide
+[
+fail.questInProgress(진행 중인 퀘스트가 있습니다.You already have a quest.
+M
+fail.noQuestAccepted!받은 퀘스트가 없습니다.You have no quest.
+J
+fail.noQuestLeft!남은 퀘스트가 없습니다.No quests are left.
+\
+fail.questNotDone+아직 조건을 채우지 않았습니다.The quest is not done yet.
+ 
+quest.title	퀘스트Quests
+
+quest.accept받기Accept
+%
+quest.complete	끝내기Complete
+
+
+quest.goal	목표로Go
+U
+quest.allDone$모든 퀘스트를 끝냈습니다.You have finished every quest.
+4
+
+quest.next다음 퀘스트: {0}Next quest: {0}
+*
+quest.progress{0} {1}/{2}{0} {1}/{2}
+$
+
+quest.kill
+{0} 잡기
+Defeat {0}
++
+quest.collect{0} 모으기Collect {0}
+'
+quest.craft{0} 만들기	Craft {0}
+
+quest.level레벨Level
+#
+quest.equip
+{0} 입기Wear {0}
+(
+quest.reward보상: {0}Reward: {0}
+(
+quest.rewardGold
+골드 {0}{0} gold
+)
+quest.rewardExp경험치 {0}{0} exp
+*
+quest.rewardItem
+{0} × {1}
+{0} × {1}
+
+quest.markAccept!!
+
+quest.markComplete??
+
+equipSlot.1무기Weapon
+
+equipSlot.2투구Helmet
+
+equipSlot.3갑옷Armor
+
+equipSlot.4장갑Gloves
+
+equipSlot.5신발Boots
+#
+equipSlot.6	장신구	Accessory

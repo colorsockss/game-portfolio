@@ -57,6 +57,15 @@ namespace MmoData
 		/** 제작법(48: 결과, 재료, 골드, 제작 시간, 필요 레벨, 장비의 등급 확률). 줄의 차례가 제작 창의 차례이고 id가 Progress의 번호다. */
 		portfolio::mmo::data::Recipes Recipes;
 
+		/** 몬스터와 채집물의 무리(23, 47). 퀘스트의 목표 자리(50)를 구한다. */
+		portfolio::mmo::data::Spawns Spawns;
+
+		/** 드롭 묶음(33). 모으기의 재료가 몬스터 부산물이면 그것을 떨어뜨리는 몬스터를 찾는다(50). */
+		portfolio::mmo::data::DropGroups DropGroups;
+
+		/** 퀘스트(50. 번호가 차례이고 1부터 이어짐). */
+		portfolio::mmo::data::Quests Quests;
+
 		/** 직업과 레벨마다의 필요 경험치와 기본 능력치(31: 경험치 바의 비율). */
 		portfolio::mmo::data::Levels Levels;
 
@@ -95,6 +104,9 @@ namespace MmoData
 
 		/** 채집물의 줄(47). 없으면 nullptr. */
 		const portfolio::mmo::data::GatherNodesRow* GatherNode(uint32_t Id) const;
+
+		/** 차례(1부터)의 퀘스트(50). 남은 것이 없으면 nullptr. */
+		const portfolio::mmo::data::QuestsRow* Quest(uint32_t Order) const;
 
 		/** 제작법의 줄(48). 없으면 nullptr. */
 		const portfolio::mmo::data::RecipesRow* Recipe(uint32_t Id) const;

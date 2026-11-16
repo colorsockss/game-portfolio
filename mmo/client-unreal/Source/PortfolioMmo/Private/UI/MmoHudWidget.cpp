@@ -1,6 +1,7 @@
 #include "UI/MmoHudWidget.h"
 
 #include "UI/MmoText.h"
+#include "UI/MmoQuestWidget.h"
 #include "UI/MmoMapDrawing.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
@@ -53,6 +54,16 @@ int32 UMmoHudWidget::QuickslotCount()
 int32 UMmoHudWidget::PartySlotCount()
 {
 	return portfolio::mmo::CONSTANT_MAX_PARTY_SIZE - 1;
+}
+
+namespace
+{
+	/** 퀘스트의 목표(50)를 지도 모델의 (X, Z)로. 없으면 nullopt. */
+	std::optional<std::pair<int32_t, int32_t>> QuestGoalOf(const UMmoSession& Session, const FVector& Location)
+	{
+		const std::optional<MmoWorld::FPoint> Goal = Session.QuestGoal(MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location));
+		return Goal ? std::optional<std::pair<int32_t, int32_t>>(std::make_pair(Goal->X, Goal->Z)) : std::nullopt;
+	}
 }
 
 void UMmoHudWidget::NativeOnInitialized()
@@ -109,7 +120,8 @@ void UMmoHudWidget::NativeOnInitialized()
 	CharacterButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleCharacter(); });
 	BagButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleInventory(); });
 	SkillsButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleSkills(); });
-	// 메뉴의 키 표시는 키 표의 키다(설정 창은 뒤로 가기의 키가 연다). 창이 아직 없는 버튼은 그 항목이 잇기 전까지 누를 수 없다.
+	QuestButton->OnClickedNative.AddWeakLambda(this, [this] { GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleQuest(); });
+	// 메뉴의 키 표시는 키 표의 키다(설정 창은 뒤로 가기의 키가 연다).
 	const TPair<UMmoButtonWidget*, EMmoAction> Menus[] = {
 		{ BagButton, EMmoAction::Bag }, { CharacterButton, EMmoAction::Character }, { SkillsButton, EMmoAction::Skills },
 		{ QuestButton, EMmoAction::Quest }, { SettingsButton, EMmoAction::Back },
@@ -117,7 +129,6 @@ void UMmoHudWidget::NativeOnInitialized()
 	for (const TPair<UMmoButtonWidget*, EMmoAction>& Menu : Menus)
 	{
 		Menu.Key->SetKeyHint(MmoKeys::Hint(Menu.Value));
-		Menu.Key->SetIsEnabled(Menu.Key != QuestButton);
 	}
 	for (int32 Index = 0; Index < QuickslotCount(); ++Index)
 	{
@@ -294,6 +305,25 @@ void UMmoHudWidget::ShowParty()
 			PartyHpBars[Index]->SetPercent(Member->bVitals && Member->MaxHp > 0 ? static_cast<float>(Member->Hp) / Member->MaxHp : 1.0f);
 		}
 	}
+}
+
+void UMmoHudWidget::ShowQuest()
+{
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const MmoWorld::FEntity* Me = Session->World().SelfEntity();
+	const uint32 Level = Me ? Me->Info.level() : 0;
+	if (Session->Quests().Version() == ShownQuest && Session->Inventory().Version() == ShownQuestInventory && Level == ShownQuestLevel
+		&& Session->Strings().Version() == ShownQuestLanguage)
+	{
+		return;
+	}
+	ShownQuest = Session->Quests().Version();
+	ShownQuestInventory = Session->Inventory().Version();
+	ShownQuestLevel = Level;
+	ShownQuestLanguage = Session->Strings().Version();
+	const FText Line = UMmoQuestWidget::ProgressLine(this, *Session);
+	QuestText->SetText(Line);
+	QuestText->SetVisibility(Line.IsEmpty() ? ESlateVisibility::Collapsed : ESlateVisibility::HitTestInvisible);
 }
 
 void UMmoHudWidget::ShowBoss()
@@ -542,6 +572,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	ShowInteract();
 	ShowParty();
 	ShowBoss();
+	ShowQuest();
 	GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->UpdateInvite();
 	ShowStats(InDeltaTime);
 	// 실패한 요청의 이유를 알림 층에 띄운다(93의 알림 틀). 요청 번호가 있는 요청의 실패와 얻은 것(32)도 같다.
@@ -668,7 +699,7 @@ void UMmoHudWidget::ShowMinimap(double Now)
 	}
 	const FVector Location = Self->GetActorLocation();
 	const std::vector<MmoWorld::FMapPoint> Points = MmoWorld::FMapView::Points(*Field, Session->Data(), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location),
-		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()), Session->Bosses().Positions());
+		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()), Session->Bosses().Positions(), QuestGoalOf(*Session, Location));
 	const double Span = MinimapMeters / Field->GridSize();
 	const double MinU = Points[0].U - Span / 2;
 	const double MinV = Points[0].V - Span / 2;

@@ -94,9 +94,12 @@ message Packet {
     Karma karma = 409;
     DeathPenalty death_penalty = 410;
 
-    // 500–599: 생활(채집 47, 제작 48)
+    // 500–599: 생활(채집 47, 제작 48, 퀘스트 50)
     Gather gather = 500;
     Craft craft = 501;
+    QuestAccept quest_accept = 502;
+    QuestComplete quest_complete = 503;
+    QuestState quest_state = 504;
   }
 }
 
@@ -542,7 +545,7 @@ message Inventory {
   uint64 gold = 2;
 }
 
-// 얻은 까닭. 퀘스트 보상(50)은 그 항목이 더한다.
+// 얻은 까닭.
 enum GainReason {
   GAIN_REASON_UNSPECIFIED = 0;
   GAIN_REASON_DEV_COMMAND = 1;
@@ -554,6 +557,8 @@ enum GainReason {
   GAIN_REASON_GATHER = 4;
   // 제작함(48).
   GAIN_REASON_CRAFT = 5;
+  // 퀘스트의 보상(50).
+  GAIN_REASON_QUEST_REWARD = 6;
 }
 
 message ItemAmount {
@@ -908,6 +913,14 @@ enum FailReason {
   FAIL_REASON_PARTY_MEMBER = 39;
   // 제작법의 재료가 모자란다(48).
   FAIL_REASON_NOT_ENOUGH_MATERIALS = 42;
+  // 진행 중인 퀘스트가 있어 다음 것을 받을 수 없다(50).
+  FAIL_REASON_QUEST_IN_PROGRESS = 43;
+  // 받은 퀘스트가 없어 끝낼 수 없다(50).
+  FAIL_REASON_NO_QUEST_ACCEPTED = 44;
+  // 남은 퀘스트가 없다(50).
+  FAIL_REASON_NO_QUEST_LEFT = 45;
+  // 퀘스트의 조건을 채우지 않았다(50).
+  FAIL_REASON_QUEST_NOT_DONE = 46;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 요청 번호가 없는 요청을 만드는 항목이 더한다(제작은 48).
@@ -1066,4 +1079,25 @@ message Gather {
 message Craft {
   uint32 recipe_id = 1;
   uint32 request_id = 2;
+}
+
+// 클라이언트 → 서버. 다음 차례의 퀘스트(Quests의 줄)를 받는다(50). 퀘스트 NPC가 하나라 NPC를 싣지 않고, 그 NPC까지 3 m 안이고 선이 트여야 한다.
+// 진행 중인 퀘스트가 없고 남은 것이 있어야 하며 RequestResult(같은 요청 번호)로 답한다. 받으면 센 수가 0이 되고 QuestState가 간다.
+message QuestAccept {
+  uint32 request_id = 1;
+}
+
+// 클라이언트 → 서버. 받은 퀘스트를 끝낸다(50). NPC 곁, 받은 퀘스트, 조건(잡기·제작은 센 수, 모으기·레벨·장비 입기는 지금 상태), 모으기의 재료를 뺀 뒤
+// 보상 아이템이 들어갈 자리를 보고 RequestResult로 답한다. 끝내면 재료를 빼고 보상(골드, 아이템, 경험치)을 넣으며(새로 얻은 것, 까닭 퀘스트 보상)
+// 끝낸 수가 하나 오르고 QuestState가 간다.
+message QuestComplete {
+  uint32 request_id = 1;
+}
+
+// 서버 → 본인. 퀘스트의 상태(50): 끝낸 퀘스트의 수(다음에 받을 차례는 그 수 + 1), 지금 퀘스트를 받았는지, 잡기·제작의 센 수.
+// 월드에 들어올 때(넘겨받기 포함), 받기, 센 수의 바뀜, 끝내기 때 보낸다.
+message QuestState {
+  uint32 completed = 1;
+  bool accepted = 2;
+  uint32 progress = 3;
 }

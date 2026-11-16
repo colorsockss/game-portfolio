@@ -7,3 +7,4 @@ npc.keeper (
 	npc.guard F0
 	npc.guard G0
 npc.crafter (
+npc.questGiver (

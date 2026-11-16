@@ -22,12 +22,18 @@ namespace PortfolioMmo.Server
     public readonly record struct SavedQuickslot(uint Slot, QuickslotKind Kind, uint Id);
 
     /// <summary>
+    /// 저장한 퀘스트의 상태(50): 끝낸 퀘스트의 수, 지금 퀘스트를 받았는지, 잡기·제작의 센 수. quests에 캐릭터마다 한 줄이고 줄이 없으면 처음 상태다.
+    /// </summary>
+    public readonly record struct SavedQuest(uint Completed, bool Accepted, uint Progress);
+
+    /// <summary>
     /// 캐릭터의 저장할 상태(사본, 38). 틱 스레드가 그 틱에 복사해 만들고 바꾸지 않으므로 저장 스레드가 그대로 읽는다.
     /// 성향(44), 펫(96. 가진 펫과 나와 있는지), 창고의 아이템(75)을 담고, 퀘스트 진행은 50이 채우기 시작한다. 쿨다운, 효과, 선공 표시, 틱 번호, 요청 번호는 저장하지 않는다.
     /// </summary>
     public sealed record CharacterSnapshot(
         long Id, SavedPosition Position, uint Level, uint Exp, uint Hp, uint Mp, ulong Gold, int Alignment,
-        IReadOnlyList<SavedItem> Items, IReadOnlyList<uint> Skills, IReadOnlyList<SavedQuickslot> Quickslots, uint Pet = 0, bool PetOut = false);
+        IReadOnlyList<SavedItem> Items, IReadOnlyList<uint> Skills, IReadOnlyList<SavedQuickslot> Quickslots, uint Pet = 0, bool PetOut = false,
+        SavedQuest Quest = default);
 
     /// <summary>
     /// 저장한 캐릭터 하나. Id는 캐릭터 번호(개체 번호와 다르다)이고 LoginId는 그 캐릭터의 계정이다.
@@ -113,6 +119,8 @@ namespace PortfolioMmo.Server
         private readonly SqliteCommand _loadItems;
         private readonly SqliteCommand _loadSkills;
         private readonly SqliteCommand _loadQuickslots;
+        private readonly SqliteCommand _loadQuest;
+        private readonly SqliteCommand _saveQuest;
         private readonly SqliteCommand _count;
         private readonly SqliteCommand _insert;
         private readonly SqliteCommand _update;
@@ -167,6 +175,11 @@ namespace PortfolioMmo.Server
             _loadItems = Command("SELECT place, slot, item_id, count, enchant FROM items WHERE owner = $id ORDER BY place, slot", ("$id", SqliteType.Integer));
             _loadSkills = Command("SELECT skill FROM skills WHERE owner = $id ORDER BY skill", ("$id", SqliteType.Integer));
             _loadQuickslots = Command("SELECT slot, kind, id FROM quickslots WHERE owner = $id ORDER BY slot", ("$id", SqliteType.Integer));
+            _loadQuest = Command("SELECT completed, accepted, progress FROM quests WHERE owner = $id", ("$id", SqliteType.Integer));
+            _saveQuest = Command(
+                @"INSERT INTO quests (owner, completed, accepted, progress) VALUES ($id, $completed, $accepted, $progress)
+                  ON CONFLICT (owner) DO UPDATE SET completed = excluded.completed, accepted = excluded.accepted, progress = excluded.progress",
+                ("$id", SqliteType.Integer), ("$completed", SqliteType.Integer), ("$accepted", SqliteType.Integer), ("$progress", SqliteType.Integer));
             _count = Command("SELECT COUNT(*) FROM characters WHERE login_id = $loginId", ("$loginId", SqliteType.Text));
             _insert = Command(
                 @"INSERT INTO characters (login_id, name, class, x, z, yaw, level, exp, hp, mp, gold, alignment, pet, pet_out)
@@ -272,7 +285,17 @@ namespace PortfolioMmo.Server
                 }
             }
 
-            return new CharacterRecord(id, loginId, name, characterClass, new CharacterSnapshot(id, position, level, exp, hp, mp, gold, alignment, items, skills, quickslots, pet, petOut));
+            SavedQuest quest = default;
+            _loadQuest.Parameters["$id"].Value = id;
+            using (SqliteDataReader reader = _loadQuest.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    quest = new SavedQuest((uint)reader.GetInt64(0), reader.GetInt64(1) != 0, (uint)reader.GetInt64(2));
+                }
+            }
+
+            return new CharacterRecord(id, loginId, name, characterClass, new CharacterSnapshot(id, position, level, exp, hp, mp, gold, alignment, items, skills, quickslots, pet, petOut, quest));
         }
 
         /// <summary>
@@ -306,7 +329,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 사본의 묶음을 한 트랜잭션으로 쓴다: characters의 줄을 고치고 items, skills, quickslots는 그 주인의 줄을 지우고 다시 넣는다(퀘스트는 50이 더함).
+        /// 사본의 묶음을 한 트랜잭션으로 쓴다: characters의 줄을 고치고 items, skills, quickslots는 그 주인의 줄을 지우고 다시 넣으며 quests는 그 주인의 줄을 넣거나 고친다.
         /// 같은 캐릭터가 여러 번 있으면 뒤의 것이 남고, 하나라도 실패하면 던지며 아무것도 남지 않는다.
         /// </summary>
         public void Write(IReadOnlyList<CharacterSnapshot> batch)
@@ -349,7 +372,7 @@ namespace PortfolioMmo.Server
         {
             foreach (SqliteCommand command in new[]
             {
-                _list, _load, _loadItems, _loadSkills, _loadQuickslots, _count, _insert, _update, _deleteItems, _deleteSkills, _deleteQuickslots, _insertItem, _insertSkill,
+                _list, _load, _loadItems, _loadSkills, _loadQuickslots, _loadQuest, _saveQuest, _count, _insert, _update, _deleteItems, _deleteSkills, _deleteQuickslots, _insertItem, _insertSkill,
                 _insertQuickslot,
             })
             {
@@ -391,6 +414,7 @@ namespace PortfolioMmo.Server
             _insertItem.Transaction = transaction;
             _insertSkill.Transaction = transaction;
             _insertQuickslot.Transaction = transaction;
+            _saveQuest.Transaction = transaction;
             foreach (SavedItem item in state.Items)
             {
                 _insertItem.Parameters["$id"].Value = state.Id;
@@ -417,6 +441,12 @@ namespace PortfolioMmo.Server
                 _insertQuickslot.Parameters["$value"].Value = quickslot.Id;
                 _insertQuickslot.ExecuteNonQuery();
             }
+
+            _saveQuest.Parameters["$id"].Value = state.Id;
+            _saveQuest.Parameters["$completed"].Value = state.Quest.Completed;
+            _saveQuest.Parameters["$accepted"].Value = state.Quest.Accepted ? 1 : 0;
+            _saveQuest.Parameters["$progress"].Value = state.Quest.Progress;
+            _saveQuest.ExecuteNonQuery();
         }
 
         private SqliteCommand Command(string sql, params (string Name, SqliteType Type)[] parameters)

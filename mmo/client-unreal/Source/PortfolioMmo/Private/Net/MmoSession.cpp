@@ -195,6 +195,13 @@ void UMmoSession::LeaveWorld()
 	SkillBook.Reset();
 	// 캐릭터 선택으로 가면 서버가 파티에서 뺀다(42).
 	PartyState.Reset();
+	QuestModel.Reset();
+}
+
+std::optional<MmoWorld::FPoint> UMmoSession::QuestGoal(int32 X, int32 Z) const
+{
+	const MmoWorld::FEntity* Me = WorldState.SelfEntity();
+	return QuestModel.Goal(GameData, InventoryState, Me ? Me->Info.level() : 0, { X, Z });
 }
 
 void UMmoSession::Send(const portfolio::mmo::Packet& Packet)
@@ -234,6 +241,7 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 	SkillBook.Apply(Packet);
 	ChatLog.Apply(Packet, WorldState);
 	PartyState.Apply(Packet);
+	QuestModel.Apply(Packet);
 	BossState.Apply(Packet, WorldState.Clock().Now(Now), ChatLog, GameData, StringTable);
 	if (const std::optional<portfolio::mmo::Packet> Stop = CombatState.Apply(Packet, WorldState, GameData, Now))
 	{
@@ -254,6 +262,7 @@ void UMmoSession::HandleClosed(const FString& InReason)
 	SkillBook.Reset();
 	ChatLog.Reset();
 	PartyState.Reset();
+	QuestModel.Reset();
 	BossState.Reset();
 	OnClosed.Broadcast(Reason);
 }

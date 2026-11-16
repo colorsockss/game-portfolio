@@ -1,0 +1,35 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+import "Enums.proto";
+
+message QuestsRow {
+  // 퀘스트의 번호이자 차례(50). 1부터 이어지고 이 차례로 하나씩 받는다
+  uint32 id = 1;
+  // 이름(Strings의 키)
+  string name_key = 2;
+  // 설명(Strings의 키)
+  string description_key = 3;
+  // 조건의 종류
+  QuestKind kind = 4;
+  // 조건의 대상: 잡기는 Monsters, 모으기는 Items, 제작은 Recipes의 줄, 장비 입기는 EquipSlot의 값(종류마다 가리키는 표가 달라 서버의 데이터 테스트가 봄)
+  optional uint32 target = 5;
+  // 수(잡기·모으기·제작의 수, 레벨 달성의 레벨, 장비 입기는 1)
+  uint32 count = 6;
+  // 보상 골드
+  uint32 reward_gold = 7;
+  // 보상 아이템. 없으면 비움
+  optional uint32 reward_item_id = 8;
+  // 보상 아이템의 수
+  uint32 reward_item_count = 9;
+  // 보상 경험치(GrowthSystem의 쌓기로 주어 레벨이 오를 수 있음)
+  uint32 reward_exp = 10;
+}
+
+message Quests {
+  repeated QuestsRow rows = 1;
+}

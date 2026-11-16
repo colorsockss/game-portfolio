@@ -355,7 +355,7 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// WithMonsters에 직업, 상수, 몬스터, 레벨, NPC를 바꾼 데이터. null이면 처음 값이다(NPC는 없음, 상점은 Shops).
         /// </summary>
-        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters, Levels? levels = null, Npcs? npcs = null, GatherNodes? gatherNodes = null, Recipes? recipes = null)
+        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters, Levels? levels = null, Npcs? npcs = null, GatherNodes? gatherNodes = null, Recipes? recipes = null, Quests? quests = null)
         {
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             int min = -(int)size / 2;
@@ -372,7 +372,7 @@ namespace PortfolioMmo.Server.Tests
             table.Rows.Add(zones);
             return new GameData(
                 Hash, constants ?? Constants(size), table, grid, classes ?? Classes, levels ?? Levels,
-                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants, npcs, Shops, Pets, gatherNodes ?? GatherNodes, recipes ?? Recipes);
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants, npcs, Shops, Pets, gatherNodes ?? GatherNodes, recipes ?? Recipes, quests ?? Quests);
         }
 
         /// <summary>
@@ -402,6 +402,22 @@ namespace PortfolioMmo.Server.Tests
         {
             return new SpawnsRow { Id = id, X = x, Z = z, GatherNodeId = nodeId, Count = count, ScatterRadius = scatter, RespawnMs = respawnMs };
         }
+
+        /// <summary>
+        /// 시험용 퀘스트(50): 1 몬스터 2를 둘 잡기(10골드, 2001 둘, 경험치 5), 2 재료 3001 셋 모으기(1001 하나), 3 제작법 1 하나, 4 레벨 2(7골드),
+        /// 5 투구 칸에 입기(경험치 1000).
+        /// </summary>
+        public static Quests Quests => new Quests
+        {
+            Rows =
+            {
+                new QuestsRow { Id = 1, NameKey = "quest.test", DescriptionKey = "quest.test", Kind = QuestKind.Kill, Target = 2, Count = 2, RewardGold = 10, RewardItemId = 2001, RewardItemCount = 2, RewardExp = 5 },
+                new QuestsRow { Id = 2, NameKey = "quest.test", DescriptionKey = "quest.test", Kind = QuestKind.Collect, Target = 3001, Count = 3, RewardItemId = 1001, RewardItemCount = 1 },
+                new QuestsRow { Id = 3, NameKey = "quest.test", DescriptionKey = "quest.test", Kind = QuestKind.Craft, Target = 1, Count = 1 },
+                new QuestsRow { Id = 4, NameKey = "quest.test", DescriptionKey = "quest.test", Kind = QuestKind.Level, Count = 2, RewardGold = 7 },
+                new QuestsRow { Id = 5, NameKey = "quest.test", DescriptionKey = "quest.test", Kind = QuestKind.Equip, Target = 2, Count = 1, RewardExp = 1000 },
+            },
+        };
 
         /// <summary>
         /// 시험용 제작법(48): 1은 재료 3001 셋과 50골드로 2002를 둘(2초, 레벨 1), 2는 레벨 2가 필요한 갑옷(종 4), 3은 재료 3001 둘로 투구(종 3, 늘 일반 등급, 2초, 레벨 1).

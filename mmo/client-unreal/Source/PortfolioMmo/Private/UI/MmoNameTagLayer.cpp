@@ -36,6 +36,8 @@ namespace
 	const FLinearColor CriticalColor(1.0f, 0.85f, 0.2f);
 	/** NPC의 이름 색(37). */
 	const FLinearColor NpcColor(0.55f, 0.9f, 0.6f);
+	/** 표시가 있는 퀘스트 NPC의 이름 색(50). */
+	const FLinearColor QuestMarkColor(1.0f, 0.9f, 0.2f);
 	/** 채집물의 이름 색(47). */
 	const FLinearColor GatherColor(0.95f, 0.8f, 0.55f);
 	/** 플레이어의 이름 색(44): 선공 표시는 보라색, 무법자는 빨간색. */
@@ -213,8 +215,20 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 			// 이름과 역할(37). 경비병(44)은 말하는 NPC가 아니라 이름만 둔다.
 			const portfolio::mmo::data::NpcsRow* Row = Session->Data().Npc(Info.template_id());
 			const FString Name = Row ? MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString() : FString();
-			Tag.SetName(!Row || Row->role() == portfolio::mmo::data::NPC_ROLE_GUARD ? Name : FString::Printf(TEXT("%s [%s]"), *Name, *MmoText::Get(this, RoleKey(Row->role())).ToString()),
-				NpcColor);
+			FString Label = !Row || Row->role() == portfolio::mmo::data::NPC_ROLE_GUARD ? Name : FString::Printf(TEXT("%s [%s]"), *Name, *MmoText::Get(this, RoleKey(Row->role())).ToString());
+			FLinearColor Color = NpcColor;
+			if (Row && Row->role() == portfolio::mmo::data::NPC_ROLE_QUEST)
+			{
+				// 퀘스트 NPC의 머리 위 표시(50): 받을 수 있으면 "!", 끝낼 수 있으면 "?"를 붙이고 노랗게 그린다.
+				const MmoWorld::FEntity* Me = World.SelfEntity();
+				const MmoWorld::EQuestMark Mark = Session->Quests().Mark(Session->Data(), Session->Inventory(), Me ? Me->Info.level() : 0);
+				if (Mark != MmoWorld::EQuestMark::None)
+				{
+					Label = FString::Printf(TEXT("%s %s"), *MmoText::Get(this, Mark == MmoWorld::EQuestMark::CanAccept ? TEXT("quest.markAccept") : TEXT("quest.markComplete")).ToString(), *Label);
+					Color = QuestMarkColor;
+				}
+			}
+			Tag.SetName(Label, Color);
 		}
 		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_GATHER_NODE)
 		{

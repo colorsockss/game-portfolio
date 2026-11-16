@@ -164,3 +164,18 @@ enum RecipeKind {
   // 장비의 종을 만들고 등급을 확률로 정함(48)
   RECIPE_KIND_EQUIPMENT = 2;
 }
+
+enum QuestKind {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  QUEST_KIND_UNSPECIFIED = 0;
+  // 몬스터 잡기(대상은 Monsters의 줄. 받은 뒤 경험치를 받은 것만 셈. 50)
+  QUEST_KIND_KILL = 1;
+  // 재료 모으기(대상은 Items의 줄. 끝낼 때 가진 수를 보고 뺌)
+  QUEST_KIND_COLLECT = 2;
+  // 제작하기(대상은 Recipes의 줄. 받은 뒤 만든 것만 셈)
+  QUEST_KIND_CRAFT = 3;
+  // 레벨 달성(수가 레벨. 대상 없음)
+  QUEST_KIND_LEVEL = 4;
+  // 장비 입기(대상은 EquipSlot의 값. 그 칸에 무엇이든 입으면 채워짐)
+  QUEST_KIND_EQUIP = 5;
+}

@@ -40,6 +40,8 @@ namespace MmoScreen
 		Party,
 		/** 제작 창(48). */
 		Craft,
+		/** 퀘스트 창(50). */
+		Quest,
 	};
 
 	/** 화면이 올라가는 층. 아래에서 위로 그린다. */

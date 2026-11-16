@@ -105,6 +105,12 @@ namespace MmoWorld
 		/** StorageWithdraw(창고 칸의 아이템을 Count개 찾기. 75)를 만든다. */
 		portfolio::mmo::Packet Withdraw(uint32_t StorageSlot, uint32_t Count);
 
+		/** QuestAccept(다음 퀘스트 받기. 50)를 만든다. 퀘스트 NPC가 하나라 NPC를 싣지 않는다. */
+		portfolio::mmo::Packet QuestAccept();
+
+		/** QuestComplete(받은 퀘스트 끝내기. 50)를 만든다. */
+		portfolio::mmo::Packet QuestComplete();
+
 		/** Craft(제작법으로 만들기 시작. 48)를 만든다. 제작 NPC가 하나라 NPC를 싣지 않는다. */
 		portfolio::mmo::Packet Craft(uint32_t RecipeId);
 

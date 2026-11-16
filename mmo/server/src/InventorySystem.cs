@@ -230,9 +230,54 @@ namespace PortfolioMmo.Server
         /// </summary>
         public bool HasRoom(Player player, uint itemId, uint count)
         {
+            return HasRoomAfter(player, new Dictionary<int, uint>(), itemId, count);
+        }
+
+        /// <summary>
+        /// removal(Removal의 계획)대로 뺀 뒤에 Add가 다 넣을 수 있는가. 다 비는 칸도 빈 칸이다. 빼고 넣는 일(제작 48, 퀘스트 50)이 시작과 끝에 같은 답을 받는다.
+        /// </summary>
+        public bool HasRoomAfter(Player player, IReadOnlyDictionary<int, uint> removal, uint itemId, uint count)
+        {
             ItemsRow item = _data.Item(itemId) ?? throw new ArgumentException($"Items has no row {itemId}.", nameof(itemId));
             ItemSlot[] slots = player.Bag.Slots;
-            return item.Stackable ? slots.Any(slot => (slot.ItemId == itemId) || (slot.ItemId == 0)) : slots.Count(slot => slot.ItemId == 0) >= count;
+            bool Emptied(ItemSlot slot) => (slot.ItemId == 0) || (removal.GetValueOrDefault((int)slot.Index) == slot.Count);
+            return item.Stackable ? slots.Any(slot => ((slot.ItemId == itemId) && !Emptied(slot)) || Emptied(slot)) : slots.Count(Emptied) >= count;
+        }
+
+        /// <summary>
+        /// 아이템들을 뺄 계획: 칸 번호 → 그 칸에서 뺄 수. 아이템마다 칸의 차례로 필요한 만큼 뺀다(가진 수는 부르는 쪽이 먼저 봄). RemovePlan이 이대로 뺀다.
+        /// </summary>
+        public static Dictionary<int, uint> Removal(Player player, IEnumerable<(uint ItemId, uint Count)> items)
+        {
+            var plan = new Dictionary<int, uint>();
+            foreach ((uint itemId, uint count) in items)
+            {
+                uint left = count;
+                foreach (ItemSlot slot in player.Bag.Slots.Where(slot => slot.ItemId == itemId))
+                {
+                    if (left == 0)
+                    {
+                        break;
+                    }
+
+                    uint take = Math.Min(left, slot.Count);
+                    plan[(int)slot.Index] = take;
+                    left -= take;
+                }
+            }
+
+            return plan;
+        }
+
+        /// <summary>
+        /// Removal의 계획대로 뺀다.
+        /// </summary>
+        public void RemovePlan(Player player, IReadOnlyDictionary<int, uint> removal)
+        {
+            foreach ((int index, uint count) in removal)
+            {
+                Remove(player, index, count);
+            }
         }
 
         /// <summary>

@@ -30,6 +30,9 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
+	/** 퀘스트의 목표 점(50)을 누르면 그곳까지 걷고 지도를 닫는다. */
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
 private:
 	UFUNCTION()
 	void HandleCloseClicked();

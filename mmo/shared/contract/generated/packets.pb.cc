@@ -211,6 +211,12 @@ PROTOBUF_CONSTINIT ::google::protobuf::internal::ReflectionData
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
         // ::portfolio::mmo::Craft
         {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::QuestAccept
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::QuestComplete
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
+        // ::portfolio::mmo::QuestState
+        {&::_pbi::kDescriptorMethods, &::descriptor_table_packets_2eproto, /* tracker*/ nullptr,},
 };
 }  // namespace
 #endif
@@ -2580,6 +2586,441 @@ const ::_pbi::ClassData* Quickslot_get_class_data() {
   return Quickslot_globals_.GetClassData();
 #else
   return Quickslot_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class QuestState::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<QuestState>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(QuestState, _impl_._has_bits_);
+};
+
+constexpr QuestState::ParseTableT_ QuestState::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(QuestState, _impl_._has_bits_),
+      0, // no _extensions_
+      3, 24,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967288,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      3,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::QuestState>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      {::_pbi::TcParser::MiniParse, {}},
+      // uint32 completed = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(QuestState, _impl_.completed_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(QuestState, _impl_.completed_)}},
+      // bool accepted = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(QuestState, _impl_.accepted_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(QuestState, _impl_.accepted_)}},
+      // uint32 progress = 3;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(QuestState, _impl_.progress_), 2>(),
+       {24, 2, 0,
+        PROTOBUF_FIELD_OFFSET(QuestState, _impl_.progress_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint32 completed = 1;
+      {PROTOBUF_FIELD_OFFSET(QuestState, _impl_.completed_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // bool accepted = 2;
+      {PROTOBUF_FIELD_OFFSET(QuestState, _impl_.accepted_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
+      // uint32 progress = 3;
+      {PROTOBUF_FIELD_OFFSET(QuestState, _impl_.progress_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr QuestState::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : completed_{0u},
+        accepted_{false},
+        progress_{0u} {}
+
+template <typename>
+constexpr QuestState::QuestState(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL QuestState::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) QuestState(arena);
+}
+constexpr auto QuestState::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(QuestState), alignof(QuestState));
+}
+constexpr auto QuestState::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &QuestState::MergeImpl,
+          Super_::GetNewImpl<QuestState>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &QuestState::SharedDtor,
+          Super_::GetClearImpl<QuestState>(), &QuestState::ByteSizeLong,
+              &QuestState::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(QuestState, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[93],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct QuestStateGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr QuestStateGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 QuestState_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(QuestState::InternalGenerateClassData_(
+            _default, &QuestState_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<QuestState>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~QuestStateGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) QuestState _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<QuestState>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(QuestStateGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST QuestStateGlobalsTypeInternal QuestState_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* QuestState_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return QuestState_globals_.GetClassData();
+#else
+  return QuestState_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class QuestComplete::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<QuestComplete>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(QuestComplete, _impl_._has_bits_);
+};
+
+constexpr QuestComplete::ParseTableT_ QuestComplete::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(QuestComplete, _impl_._has_bits_),
+      0, // no _extensions_
+      1, 0,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967294,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      1,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::QuestComplete>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // uint32 request_id = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(QuestComplete, _impl_.request_id_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(QuestComplete, _impl_.request_id_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint32 request_id = 1;
+      {PROTOBUF_FIELD_OFFSET(QuestComplete, _impl_.request_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr QuestComplete::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : request_id_{0u} {}
+
+template <typename>
+constexpr QuestComplete::QuestComplete(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL QuestComplete::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) QuestComplete(arena);
+}
+constexpr auto QuestComplete::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(QuestComplete), alignof(QuestComplete));
+}
+constexpr auto QuestComplete::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &QuestComplete::MergeImpl,
+          Super_::GetNewImpl<QuestComplete>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &QuestComplete::SharedDtor,
+          Super_::GetClearImpl<QuestComplete>(), &QuestComplete::ByteSizeLong,
+              &QuestComplete::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(QuestComplete, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[92],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct QuestCompleteGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr QuestCompleteGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 QuestComplete_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(QuestComplete::InternalGenerateClassData_(
+            _default, &QuestComplete_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<QuestComplete>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~QuestCompleteGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) QuestComplete _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<QuestComplete>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(QuestCompleteGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST QuestCompleteGlobalsTypeInternal QuestComplete_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* QuestComplete_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return QuestComplete_globals_.GetClassData();
+#else
+  return QuestComplete_class_data_.base();
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+}
+}  // namespace
+#endif  // PROTOBUF_CUSTOM_VTABLE
+class QuestAccept::_Internal {
+ public:
+  using HasBits = decltype(::std::declval<QuestAccept>()._impl_._has_bits_);
+  static constexpr ::int32_t kHasBitsOffset =
+      8 * PROTOBUF_FIELD_OFFSET(QuestAccept, _impl_._has_bits_);
+};
+
+constexpr QuestAccept::ParseTableT_ QuestAccept::InternalGenerateParseTable_(const ::_pbi::ClassData* class_data) {
+  return ParseTableT_{
+    {
+      PROTOBUF_FIELD_OFFSET(QuestAccept, _impl_._has_bits_),
+      0, // no _extensions_
+      1, 0,  // max_field_number, fast_idx_mask
+      offsetof(ParseTableT_, field_lookup_table),
+      4294967294,  // skipmap
+      offsetof(ParseTableT_, field_entries),
+      1,  // num_field_entries
+      0,  // num_aux_entries
+      offsetof(ParseTableT_, field_names),  // no aux_entries
+      class_data,
+      nullptr,  // post_loop_handler
+      ::_pbi::TcParser::MpUnknownFields,  // fallback
+      #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+      ::_pbi::TcParser::GetTable<::portfolio::mmo::QuestAccept>(),  // to_prefetch
+      #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+    }, {{
+      // uint32 request_id = 1;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(QuestAccept, _impl_.request_id_), 0>(),
+       {8, 0, 0,
+        PROTOBUF_FIELD_OFFSET(QuestAccept, _impl_.request_id_)}},
+    }}, {{
+      65535, 65535
+    }}, {{
+      // uint32 request_id = 1;
+      {PROTOBUF_FIELD_OFFSET(QuestAccept, _impl_.request_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+    }},
+    // no aux_entries
+    {{
+    }},
+  };
+}
+
+
+inline constexpr QuestAccept::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    ::_pbi::ConstantInitialized) noexcept
+      : request_id_{0u} {}
+
+template <typename>
+constexpr QuestAccept::QuestAccept(::_pbi::ConstantInitialized,
+                       const ::_pbi::ClassData* PROTOBUF_NONNULL class_data)
+    : Super_(
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          class_data
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          ),
+      _impl_(internal_visibility(), ::_pbi::ConstantInitialized()) {
+}
+inline void* PROTOBUF_NONNULL QuestAccept::PlacementNew_(
+    const void* PROTOBUF_NONNULL, void* PROTOBUF_NONNULL mem,
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena) {
+  return ::new (mem) QuestAccept(arena);
+}
+constexpr auto QuestAccept::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::ZeroInit(sizeof(QuestAccept), alignof(QuestAccept));
+}
+constexpr auto QuestAccept::InternalGenerateClassData_(
+    const MessageLite& prototype,
+    const ::google::protobuf::internal::TcParseTableBase* tc_table) {
+  return ::google::protobuf::internal::ClassDataFull{
+      ::google::protobuf::internal::ClassData{
+          &prototype,
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+          &_table_.header,
+#else
+          tc_table,
+#endif
+          nullptr,  // IsInitialized
+          &QuestAccept::MergeImpl,
+          Super_::GetNewImpl<QuestAccept>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+          &QuestAccept::SharedDtor,
+          Super_::GetClearImpl<QuestAccept>(), &QuestAccept::ByteSizeLong,
+              &QuestAccept::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          PROTOBUF_FIELD_OFFSET(QuestAccept, _impl_._cached_size_),
+          false,
+      },
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+      &file_reflection_data[91],
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+      &::_pbi::kDescriptorMethods,
+      &descriptor_table_packets_2eproto,
+      nullptr,  // tracker
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  };
+}
+struct QuestAcceptGlobalsTypeInternal : ::_pbi::MessageGlobalsBase {
+  constexpr QuestAcceptGlobalsTypeInternal()
+      :
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+        _default(::_pbi::ConstantInitialized{},
+                 QuestAccept_class_data_.base())
+#else   // !PROTOBUF_MESSAGE_GLOBALS
+        MessageGlobalsBase(QuestAccept::InternalGenerateClassData_(
+            _default, &QuestAccept_globals_._table.header)),
+        _default(::_pbi::ConstantInitialized{}, GetClassData()),
+        _table(::_pbi::PrivateAccess::GenerateParseTable<QuestAccept>(
+            GetClassData()))
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+  {
+  }
+  ~QuestAcceptGlobalsTypeInternal() {}
+  union {
+    alignas(::_pbi::kMaxMessageAlignment) QuestAccept _default;
+  };
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  decltype(::_pbi::PrivateAccess::GenerateParseTable<QuestAccept>(
+      ::std::declval<const ::_pbi::ClassData*>())) _table;
+#endif
+};
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+static_assert(PROTOBUF_FIELD_OFFSET(QuestAcceptGlobalsTypeInternal, _default) ==
+              ::_pbi::MessageGlobalsBase::OffsetToDefault());
+#endif  // PROTOBUF_MESSAGE_GLOBALS
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PROTOBUF_MESSAGE_GLOBALS_CONST QuestAcceptGlobalsTypeInternal QuestAccept_globals_
+        PROTOBUF_MESSAGE_GLOBALS_SECTION(.data.rel.ro);
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+namespace {
+const ::_pbi::ClassData* QuestAccept_get_class_data() {
+#ifdef PROTOBUF_MESSAGE_GLOBALS
+  return QuestAccept_globals_.GetClassData();
+#else
+  return QuestAccept_class_data_.base();
 #endif  // PROTOBUF_MESSAGE_GLOBALS
 }
 }  // namespace
@@ -14038,12 +14479,12 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       PROTOBUF_FIELD_OFFSET(Packet,
                             _impl_._cached_size_),  // no hasbits
       0, // no _extensions_
-      501, 0,  // max_field_number, fast_idx_mask
+      504, 0,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
       4294950912,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      77,  // num_field_entries
-      77,  // num_aux_entries
+      80,  // num_field_entries
+      80,  // num_aux_entries
       offsetof(ParseTableT_, aux_entries),
       class_data,
       nullptr,  // post_loop_handler
@@ -14061,7 +14502,7 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
     }}, {{
       100, 0, 1,
       65408, 14,
-      200, 0, 19,
+      200, 0, 20,
       0, 21,
       65532, 37,
       65535, 39,
@@ -14080,7 +14521,8 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       65535, 75,
       65535, 75,
       65535, 75,
-      53247, 75,
+      4095, 75,
+      65534, 79,
       65535, 65535
     }}, {{
       // .portfolio.mmo.Login login = 1;
@@ -14237,6 +14679,12 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.gather_), _Internal::kOneofCaseOffset + 0, 75, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
       // .portfolio.mmo.Craft craft = 501;
       {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.craft_), _Internal::kOneofCaseOffset + 0, 76, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.QuestAccept quest_accept = 502;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.quest_accept_), _Internal::kOneofCaseOffset + 0, 77, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.QuestComplete quest_complete = 503;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.quest_complete_), _Internal::kOneofCaseOffset + 0, 78, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
+      // .portfolio.mmo.QuestState quest_state = 504;
+      {PROTOBUF_FIELD_OFFSET(Packet, _impl_.body_.quest_state_), _Internal::kOneofCaseOffset + 0, 79, (0 | ::_fl::kFcOneof | ::_fl::kMessage | ::_fl::kTvTable)},
     }},
     {{
         #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -14624,6 +15072,21 @@ constexpr Packet::ParseTableT_ Packet::InternalGenerateParseTable_(const ::_pbi:
         #else
         {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::Craft_globals_},
         #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::QuestAccept>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::QuestAccept_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::QuestComplete>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::QuestComplete_globals_},
+        #endif
+        #ifndef PROTOBUF_MESSAGE_GLOBALS
+        {::_pbi::TcParser::GetTable<::portfolio::mmo::QuestState>()},
+        #else
+        {::_pbi::FieldAuxMessageGlobals(), &::portfolio::mmo::QuestState_globals_},
+        #endif
     }},
     {{
     }},
@@ -14740,6 +15203,9 @@ const ::uint32_t
         protodesc_cold) = {
         0x004, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_._oneof_case_[0]),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Packet, _impl_.body_),
@@ -15540,101 +16006,123 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Craft, _impl_.request_id_),
         0,
         1,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::QuestAccept, _impl_._has_bits_),
+        4, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::QuestAccept, _impl_.request_id_),
+        0,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::QuestComplete, _impl_._has_bits_),
+        4, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::QuestComplete, _impl_.request_id_),
+        0,
+        0x081, // bitmap
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::QuestState, _impl_._has_bits_),
+        6, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::QuestState, _impl_.completed_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::QuestState, _impl_.accepted_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::QuestState, _impl_.progress_),
+        0,
+        1,
+        2,
 };
 
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::Packet)},
-        {80, sizeof(::portfolio::mmo::Login)},
-        {89, sizeof(::portfolio::mmo::LoginResult)},
-        {96, sizeof(::portfolio::mmo::Kicked)},
-        {101, sizeof(::portfolio::mmo::DevCommand)},
-        {106, sizeof(::portfolio::mmo::Ping)},
-        {107, sizeof(::portfolio::mmo::CharacterSummary)},
-        {120, sizeof(::portfolio::mmo::CharacterList)},
-        {125, sizeof(::portfolio::mmo::CreateCharacter)},
-        {134, sizeof(::portfolio::mmo::CreateCharacterResult)},
-        {139, sizeof(::portfolio::mmo::EnterWorld)},
-        {144, sizeof(::portfolio::mmo::EnterWorldResult)},
-        {155, sizeof(::portfolio::mmo::Logout)},
-        {156, sizeof(::portfolio::mmo::LeaveWorld)},
-        {157, sizeof(::portfolio::mmo::Pong)},
-        {162, sizeof(::portfolio::mmo::Move)},
-        {173, sizeof(::portfolio::mmo::PositionReset)},
-        {182, sizeof(::portfolio::mmo::EntitiesEnter)},
-        {187, sizeof(::portfolio::mmo::EntityEnter)},
-        {252, sizeof(::portfolio::mmo::EffectState)},
-        {259, sizeof(::portfolio::mmo::ProgressState)},
-        {268, sizeof(::portfolio::mmo::EntityState)},
-        {281, sizeof(::portfolio::mmo::FieldNotice)},
-        {292, sizeof(::portfolio::mmo::EntitiesLeave)},
-        {297, sizeof(::portfolio::mmo::EntityMoves)},
-        {304, sizeof(::portfolio::mmo::EntityMove)},
-        {317, sizeof(::portfolio::mmo::SelfVitals)},
-        {328, sizeof(::portfolio::mmo::EntityVitals)},
-        {333, sizeof(::portfolio::mmo::EntityVital)},
-        {342, sizeof(::portfolio::mmo::SelfStats)},
-        {353, sizeof(::portfolio::mmo::ExpGained)},
-        {360, sizeof(::portfolio::mmo::ItemSlot)},
-        {373, sizeof(::portfolio::mmo::Inventory)},
-        {380, sizeof(::portfolio::mmo::ItemAmount)},
-        {387, sizeof(::portfolio::mmo::Gain)},
-        {398, sizeof(::portfolio::mmo::InventoryChanged)},
-        {407, sizeof(::portfolio::mmo::UseItem)},
-        {414, sizeof(::portfolio::mmo::PickUp)},
-        {421, sizeof(::portfolio::mmo::DropItem)},
-        {430, sizeof(::portfolio::mmo::Equip)},
-        {437, sizeof(::portfolio::mmo::Unequip)},
-        {444, sizeof(::portfolio::mmo::Enchant)},
-        {455, sizeof(::portfolio::mmo::EnchantResult)},
-        {462, sizeof(::portfolio::mmo::LearnedSkills)},
-        {467, sizeof(::portfolio::mmo::SkillLearned)},
-        {472, sizeof(::portfolio::mmo::Quickslot)},
-        {479, sizeof(::portfolio::mmo::SetQuickslot)},
-        {486, sizeof(::portfolio::mmo::Quickslots)},
-        {491, sizeof(::portfolio::mmo::Buy)},
-        {500, sizeof(::portfolio::mmo::Sell)},
-        {509, sizeof(::portfolio::mmo::StorageOpen)},
-        {510, sizeof(::portfolio::mmo::Storage)},
-        {515, sizeof(::portfolio::mmo::StorageChanged)},
-        {520, sizeof(::portfolio::mmo::StorageDeposit)},
-        {529, sizeof(::portfolio::mmo::StorageWithdraw)},
-        {538, sizeof(::portfolio::mmo::Chat)},
-        {547, sizeof(::portfolio::mmo::ChatReceived)},
-        {560, sizeof(::portfolio::mmo::PartyInvite)},
-        {565, sizeof(::portfolio::mmo::PartyInvited)},
-        {574, sizeof(::portfolio::mmo::PartyAnswer)},
-        {579, sizeof(::portfolio::mmo::PartyLeave)},
-        {580, sizeof(::portfolio::mmo::PartyKick)},
-        {585, sizeof(::portfolio::mmo::PartyState)},
-        {594, sizeof(::portfolio::mmo::PartyMember)},
-        {603, sizeof(::portfolio::mmo::PartyMemberVitals)},
-        {608, sizeof(::portfolio::mmo::PartyMemberVital)},
-        {621, sizeof(::portfolio::mmo::PetState)},
-        {628, sizeof(::portfolio::mmo::SetPetOut)},
-        {633, sizeof(::portfolio::mmo::DeathPenalty)},
-        {640, sizeof(::portfolio::mmo::Karma)},
-        {645, sizeof(::portfolio::mmo::RequestResult)},
-        {652, sizeof(::portfolio::mmo::ActionFailed)},
-        {659, sizeof(::portfolio::mmo::AttackStart)},
-        {664, sizeof(::portfolio::mmo::AttackStop)},
-        {665, sizeof(::portfolio::mmo::AttackSwing)},
-        {672, sizeof(::portfolio::mmo::Damaged)},
-        {685, sizeof(::portfolio::mmo::Died)},
-        {692, sizeof(::portfolio::mmo::Revive)},
-        {693, sizeof(::portfolio::mmo::Revived)},
-        {702, sizeof(::portfolio::mmo::UseSkill)},
-        {711, sizeof(::portfolio::mmo::SkillUsed)},
-        {720, sizeof(::portfolio::mmo::Progress)},
-        {727, sizeof(::portfolio::mmo::ProgressCancelled)},
-        {734, sizeof(::portfolio::mmo::EffectApplied)},
-        {741, sizeof(::portfolio::mmo::Cooldowns)},
-        {746, sizeof(::portfolio::mmo::Cooldown)},
-        {755, sizeof(::portfolio::mmo::ProjectileLaunched)},
-        {772, sizeof(::portfolio::mmo::ProjectileEnded)},
-        {777, sizeof(::portfolio::mmo::AreaWarning)},
-        {790, sizeof(::portfolio::mmo::Gather)},
-        {795, sizeof(::portfolio::mmo::Craft)},
+        {83, sizeof(::portfolio::mmo::Login)},
+        {92, sizeof(::portfolio::mmo::LoginResult)},
+        {99, sizeof(::portfolio::mmo::Kicked)},
+        {104, sizeof(::portfolio::mmo::DevCommand)},
+        {109, sizeof(::portfolio::mmo::Ping)},
+        {110, sizeof(::portfolio::mmo::CharacterSummary)},
+        {123, sizeof(::portfolio::mmo::CharacterList)},
+        {128, sizeof(::portfolio::mmo::CreateCharacter)},
+        {137, sizeof(::portfolio::mmo::CreateCharacterResult)},
+        {142, sizeof(::portfolio::mmo::EnterWorld)},
+        {147, sizeof(::portfolio::mmo::EnterWorldResult)},
+        {158, sizeof(::portfolio::mmo::Logout)},
+        {159, sizeof(::portfolio::mmo::LeaveWorld)},
+        {160, sizeof(::portfolio::mmo::Pong)},
+        {165, sizeof(::portfolio::mmo::Move)},
+        {176, sizeof(::portfolio::mmo::PositionReset)},
+        {185, sizeof(::portfolio::mmo::EntitiesEnter)},
+        {190, sizeof(::portfolio::mmo::EntityEnter)},
+        {255, sizeof(::portfolio::mmo::EffectState)},
+        {262, sizeof(::portfolio::mmo::ProgressState)},
+        {271, sizeof(::portfolio::mmo::EntityState)},
+        {284, sizeof(::portfolio::mmo::FieldNotice)},
+        {295, sizeof(::portfolio::mmo::EntitiesLeave)},
+        {300, sizeof(::portfolio::mmo::EntityMoves)},
+        {307, sizeof(::portfolio::mmo::EntityMove)},
+        {320, sizeof(::portfolio::mmo::SelfVitals)},
+        {331, sizeof(::portfolio::mmo::EntityVitals)},
+        {336, sizeof(::portfolio::mmo::EntityVital)},
+        {345, sizeof(::portfolio::mmo::SelfStats)},
+        {356, sizeof(::portfolio::mmo::ExpGained)},
+        {363, sizeof(::portfolio::mmo::ItemSlot)},
+        {376, sizeof(::portfolio::mmo::Inventory)},
+        {383, sizeof(::portfolio::mmo::ItemAmount)},
+        {390, sizeof(::portfolio::mmo::Gain)},
+        {401, sizeof(::portfolio::mmo::InventoryChanged)},
+        {410, sizeof(::portfolio::mmo::UseItem)},
+        {417, sizeof(::portfolio::mmo::PickUp)},
+        {424, sizeof(::portfolio::mmo::DropItem)},
+        {433, sizeof(::portfolio::mmo::Equip)},
+        {440, sizeof(::portfolio::mmo::Unequip)},
+        {447, sizeof(::portfolio::mmo::Enchant)},
+        {458, sizeof(::portfolio::mmo::EnchantResult)},
+        {465, sizeof(::portfolio::mmo::LearnedSkills)},
+        {470, sizeof(::portfolio::mmo::SkillLearned)},
+        {475, sizeof(::portfolio::mmo::Quickslot)},
+        {482, sizeof(::portfolio::mmo::SetQuickslot)},
+        {489, sizeof(::portfolio::mmo::Quickslots)},
+        {494, sizeof(::portfolio::mmo::Buy)},
+        {503, sizeof(::portfolio::mmo::Sell)},
+        {512, sizeof(::portfolio::mmo::StorageOpen)},
+        {513, sizeof(::portfolio::mmo::Storage)},
+        {518, sizeof(::portfolio::mmo::StorageChanged)},
+        {523, sizeof(::portfolio::mmo::StorageDeposit)},
+        {532, sizeof(::portfolio::mmo::StorageWithdraw)},
+        {541, sizeof(::portfolio::mmo::Chat)},
+        {550, sizeof(::portfolio::mmo::ChatReceived)},
+        {563, sizeof(::portfolio::mmo::PartyInvite)},
+        {568, sizeof(::portfolio::mmo::PartyInvited)},
+        {577, sizeof(::portfolio::mmo::PartyAnswer)},
+        {582, sizeof(::portfolio::mmo::PartyLeave)},
+        {583, sizeof(::portfolio::mmo::PartyKick)},
+        {588, sizeof(::portfolio::mmo::PartyState)},
+        {597, sizeof(::portfolio::mmo::PartyMember)},
+        {606, sizeof(::portfolio::mmo::PartyMemberVitals)},
+        {611, sizeof(::portfolio::mmo::PartyMemberVital)},
+        {624, sizeof(::portfolio::mmo::PetState)},
+        {631, sizeof(::portfolio::mmo::SetPetOut)},
+        {636, sizeof(::portfolio::mmo::DeathPenalty)},
+        {643, sizeof(::portfolio::mmo::Karma)},
+        {648, sizeof(::portfolio::mmo::RequestResult)},
+        {655, sizeof(::portfolio::mmo::ActionFailed)},
+        {662, sizeof(::portfolio::mmo::AttackStart)},
+        {667, sizeof(::portfolio::mmo::AttackStop)},
+        {668, sizeof(::portfolio::mmo::AttackSwing)},
+        {675, sizeof(::portfolio::mmo::Damaged)},
+        {688, sizeof(::portfolio::mmo::Died)},
+        {695, sizeof(::portfolio::mmo::Revive)},
+        {696, sizeof(::portfolio::mmo::Revived)},
+        {705, sizeof(::portfolio::mmo::UseSkill)},
+        {714, sizeof(::portfolio::mmo::SkillUsed)},
+        {723, sizeof(::portfolio::mmo::Progress)},
+        {730, sizeof(::portfolio::mmo::ProgressCancelled)},
+        {737, sizeof(::portfolio::mmo::EffectApplied)},
+        {744, sizeof(::portfolio::mmo::Cooldowns)},
+        {749, sizeof(::portfolio::mmo::Cooldown)},
+        {758, sizeof(::portfolio::mmo::ProjectileLaunched)},
+        {775, sizeof(::portfolio::mmo::ProjectileEnded)},
+        {780, sizeof(::portfolio::mmo::AreaWarning)},
+        {793, sizeof(::portfolio::mmo::Gather)},
+        {798, sizeof(::portfolio::mmo::Craft)},
+        {805, sizeof(::portfolio::mmo::QuestAccept)},
+        {810, sizeof(::portfolio::mmo::QuestComplete)},
+        {815, sizeof(::portfolio::mmo::QuestState)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -15729,10 +16217,13 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
         &::portfolio::mmo::AreaWarning_globals_,
         &::portfolio::mmo::Gather_globals_,
         &::portfolio::mmo::Craft_globals_,
+        &::portfolio::mmo::QuestAccept_globals_,
+        &::portfolio::mmo::QuestComplete_globals_,
+        &::portfolio::mmo::QuestState_globals_,
 };
 const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\rpackets.proto\022\rportfolio.mmo\"\276\036\n\006Packe"
+    "\n\rpackets.proto\022\rportfolio.mmo\"\337\037\n\006Packe"
     "t\022%\n\005login\030\001 \001(\0132\024.portfolio.mmo.LoginH\000"
     "\0222\n\014login_result\030\002 \001(\0132\032.portfolio.mmo.L"
     "oginResultH\000\022\'\n\006kicked\030\003 \001(\0132\025.portfolio"
@@ -15830,280 +16321,291 @@ const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "penalty\030\232\003 \001(\0132\033.portfolio.mmo.DeathPena"
     "ltyH\000\022(\n\006gather\030\364\003 \001(\0132\025.portfolio.mmo.G"
     "atherH\000\022&\n\005craft\030\365\003 \001(\0132\024.portfolio.mmo."
-    "CraftH\000B\006\n\004body\"f\n\005Login\0228\n\020protocol_ver"
-    "sion\030\001 \001(\0162\036.portfolio.mmo.ProtocolVersi"
-    "on\022\020\n\010login_id\030\002 \001(\t\022\021\n\tdata_hash\030\003 \001(\006\""
-    "a\n\013LoginResult\022.\n\006result\030\001 \001(\0162\036.portfol"
-    "io.mmo.LoginResultCode\022\026\n\016demo_available"
-    "\030\004 \001(\010J\004\010\002\020\003J\004\010\003\020\004\"3\n\006Kicked\022)\n\006reason\030\001"
-    " \001(\0162\031.portfolio.mmo.KickReason\"\032\n\nDevCo"
-    "mmand\022\014\n\004line\030\001 \001(\t\"\006\n\004Ping\"\213\001\n\020Characte"
-    "rSummary\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\0226\n\017ch"
-    "aracter_class\030\003 \001(\0162\035.portfolio.mmo.Char"
-    "acterClass\022\r\n\005level\030\004 \001(\r\022\026\n\016weapon_item"
-    "_id\030\005 \001(\r\"D\n\rCharacterList\0223\n\ncharacters"
-    "\030\001 \003(\0132\037.portfolio.mmo.CharacterSummary\""
-    "e\n\017CreateCharacter\022\014\n\004name\030\001 \001(\t\0226\n\017char"
-    "acter_class\030\002 \001(\0162\035.portfolio.mmo.Charac"
-    "terClass\022\014\n\004demo\030\003 \001(\010\"Q\n\025CreateCharacte"
-    "rResult\0228\n\006result\030\001 \001(\0162(.portfolio.mmo."
-    "CreateCharacterResultCode\"\"\n\nEnterWorld\022"
-    "\024\n\014character_id\030\001 \001(\004\"w\n\020EnterWorldResul"
-    "t\0223\n\006result\030\001 \001(\0162#.portfolio.mmo.EnterW"
-    "orldResultCode\022\017\n\007self_id\030\002 \001(\r\022\014\n\004tick\030"
-    "\003 \001(\r\022\017\n\007revived\030\004 \001(\010\"\010\n\006Logout\"\014\n\nLeav"
-    "eWorld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r\"6\n\004Move\022\t\n\001"
-    "x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack\030\004"
-    " \001(\r\"2\n\rPositionReset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002 "
-    "\001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEntitiesEnter\022,\n\010ent"
-    "ities\030\001 \003(\0132\032.portfolio.mmo.EntityEnter\""
-    "\306\005\n\013EntityEnter\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t"
-    "\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\'\n\004kind\030\007 \001(\0162\031.p"
-    "ortfolio.mmo.EntityKind\022\014\n\004name\030\005 \001(\t\0226\n"
-    "\017character_class\030\006 \001(\0162\035.portfolio.mmo.C"
-    "haracterClass\022\r\n\005level\030\010 \001(\r\022,\n\nname_col"
-    "or\030\t \001(\0162\030.portfolio.mmo.NameColor\022\026\n\016we"
-    "apon_item_id\030\n \001(\r\022\023\n\013template_id\030\013 \001(\r\022"
-    "\n\n\002hp\030\014 \001(\r\022\016\n\006max_hp\030\r \001(\r\022+\n\007effects\030\016"
-    " \003(\0132\032.portfolio.mmo.EffectState\022.\n\010prog"
-    "ress\030\017 \001(\0132\034.portfolio.mmo.ProgressState"
-    "\022\014\n\004dead\030\020 \001(\010\022\r\n\005speed\030\021 \001(\r\022\020\n\010move_ya"
-    "w\030\022 \001(\r\022\016\n\006next_x\030\023 \001(\021\022\016\n\006next_z\030\024 \001(\021\022"
-    "\017\n\007item_id\030\025 \001(\r\022\r\n\005count\030\026 \001(\r\022\017\n\007encha"
-    "nt\030\027 \001(\r\022\031\n\017owner_player_id\030\030 \001(\rH\000\022\030\n\016o"
-    "wner_party_id\030\031 \001(\rH\000\022\033\n\023owner_only_end_"
-    "tick\030\032 \001(\r\022\031\n\021dropped_by_player\030\033 \001(\010\022\027\n"
-    "\017summon_owner_id\030\034 \001(\r\022\027\n\017summon_end_tic"
-    "k\030\035 \001(\r\022\016\n\006pet_id\030\036 \001(\rB\007\n\005owner\"2\n\013Effe"
-    "ctState\022\021\n\teffect_id\030\001 \001(\r\022\020\n\010end_tick\030\002"
-    " \001(\r\"X\n\rProgressState\022)\n\004kind\030\001 \001(\0162\033.po"
-    "rtfolio.mmo.ProgressKind\022\n\n\002id\030\002 \001(\r\022\020\n\010"
-    "end_tick\030\003 \001(\r\"~\n\013EntityState\022\n\n\002id\030\001 \001("
-    "\r\022,\n\nname_color\030\002 \001(\0162\030.portfolio.mmo.Na"
-    "meColor\022\026\n\016weapon_item_id\030\003 \001(\r\022\r\n\005level"
-    "\030\004 \001(\r\022\016\n\006pet_id\030\005 \001(\r\"f\n\013FieldNotice\022,\n"
-    "\004kind\030\001 \001(\0162\036.portfolio.mmo.FieldNoticeK"
-    "ind\022\023\n\013template_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z"
-    "\030\004 \001(\021\"\034\n\rEntitiesLeave\022\013\n\003ids\030\001 \003(\r\"H\n\013"
-    "EntityMoves\022\014\n\004tick\030\001 \001(\r\022+\n\010entities\030\002 "
-    "\003(\0132\031.portfolio.mmo.EntityMove\"M\n\nEntity"
-    "Move\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013"
-    "\n\003yaw\030\004 \001(\r\022\020\n\010teleport\030\005 \001(\010\"Y\n\nSelfVit"
-    "als\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002 \001(\r\022\027\n\017combat_en"
-    "d_tick\030\003 \001(\r\022\032\n\022aggressor_end_tick\030\004 \001(\r"
-    "\"<\n\014EntityVitals\022,\n\010entities\030\001 \003(\0132\032.por"
-    "tfolio.mmo.EntityVital\"5\n\013EntityVital\022\n\n"
-    "\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"L\n"
-    "\tSelfStats\022\016\n\006max_hp\030\001 \001(\r\022\016\n\006max_mp\030\002 \001"
-    "(\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007defense\030\004 \001(\r\"(\n\tE"
-    "xpGained\022\016\n\006amount\030\001 \001(\021\022\013\n\003exp\030\002 \001(\r\"s\n"
-    "\010ItemSlot\022\'\n\005place\030\001 \001(\0162\030.portfolio.mmo"
-    ".ItemPlace\022\r\n\005index\030\002 \001(\r\022\017\n\007item_id\030\003 \001"
-    "(\r\022\r\n\005count\030\004 \001(\r\022\017\n\007enchant\030\005 \001(\r\"A\n\tIn"
-    "ventory\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.I"
-    "temSlot\022\014\n\004gold\030\002 \001(\004\",\n\nItemAmount\022\017\n\007i"
-    "tem_id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\"t\n\004Gain\022)\n\006r"
-    "eason\030\001 \001(\0162\031.portfolio.mmo.GainReason\022)"
-    "\n\004item\030\002 \001(\0132\031.portfolio.mmo.ItemAmountH"
-    "\000\022\016\n\004gold\030\003 \001(\004H\000B\006\n\004what\"l\n\020InventoryCh"
-    "anged\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.Ite"
-    "mSlot\022\014\n\004gold\030\002 \001(\004\022\"\n\005gains\030\003 \003(\0132\023.por"
-    "tfolio.mmo.Gain\"+\n\007UseItem\022\014\n\004slot\030\001 \001(\r"
-    "\022\022\n\nrequest_id\030\002 \001(\r\"/\n\006PickUp\022\021\n\tentity"
-    "_id\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\";\n\010DropIte"
-    "m\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nreques"
-    "t_id\030\003 \001(\r\")\n\005Equip\022\014\n\004slot\030\001 \001(\r\022\022\n\nreq"
-    "uest_id\030\002 \001(\r\"1\n\007Unequip\022\022\n\nequip_slot\030\001"
-    " \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"i\n\007Enchant\022\'\n\005p"
-    "lace\030\001 \001(\0162\030.portfolio.mmo.ItemPlace\022\014\n\004"
-    "slot\030\002 \001(\r\022\023\n\013scroll_slot\030\003 \001(\r\022\022\n\nreque"
-    "st_id\030\004 \001(\r\"1\n\rEnchantResult\022\017\n\007success\030"
-    "\001 \001(\010\022\017\n\007enchant\030\002 \001(\r\"\037\n\rLearnedSkills\022"
-    "\016\n\006skills\030\001 \003(\r\"\035\n\014SkillLearned\022\r\n\005skill"
-    "\030\001 \001(\r\"C\n\tQuickslot\022*\n\004kind\030\001 \001(\0162\034.port"
-    "folio.mmo.QuickslotKind\022\n\n\002id\030\002 \001(\r\"E\n\014S"
-    "etQuickslot\022\r\n\005index\030\001 \001(\r\022&\n\004slot\030\002 \001(\013"
-    "2\030.portfolio.mmo.Quickslot\"5\n\nQuickslots"
-    "\022\'\n\005slots\030\001 \003(\0132\030.portfolio.mmo.Quickslo"
-    "t\"9\n\003Buy\022\017\n\007item_id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r"
-    "\022\022\n\nrequest_id\030\003 \001(\r\"7\n\004Sell\022\014\n\004slot\030\001 \001"
-    "(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"\r\n"
-    "\013StorageOpen\"1\n\007Storage\022&\n\005slots\030\001 \003(\0132\027"
-    ".portfolio.mmo.ItemSlot\"8\n\016StorageChange"
-    "d\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.ItemSlo"
-    "t\"A\n\016StorageDeposit\022\014\n\004slot\030\001 \001(\r\022\r\n\005cou"
-    "nt\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"B\n\017StorageW"
-    "ithdraw\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\n"
-    "request_id\030\003 \001(\r\"M\n\004Chat\022+\n\007channel\030\001 \001("
-    "\0162\032.portfolio.mmo.ChatChannel\022\n\n\002to\030\002 \001("
-    "\t\022\014\n\004text\030\003 \001(\t\"}\n\014ChatReceived\022+\n\007chann"
-    "el\030\001 \001(\0162\032.portfolio.mmo.ChatChannel\022\021\n\t"
-    "sender_id\030\002 \001(\r\022\023\n\013sender_name\030\003 \001(\t\022\n\n\002"
-    "to\030\004 \001(\t\022\014\n\004text\030\005 \001(\t\" \n\013PartyInvite\022\021\n"
-    "\ttarget_id\030\001 \001(\r\"M\n\014PartyInvited\022\022\n\ninvi"
-    "ter_id\030\001 \001(\r\022\024\n\014inviter_name\030\002 \001(\t\022\023\n\013ex"
-    "pire_tick\030\003 \001(\r\"\035\n\013PartyAnswer\022\016\n\006accept"
-    "\030\001 \001(\010\"\014\n\nPartyLeave\"\036\n\tPartyKick\022\021\n\ttar"
-    "get_id\030\001 \001(\r\"^\n\nPartyState\022\020\n\010party_id\030\001"
-    " \001(\r\022\021\n\tleader_id\030\002 \001(\r\022+\n\007members\030\003 \003(\013"
-    "2\032.portfolio.mmo.PartyMember\"_\n\013PartyMem"
-    "ber\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\0226\n\017charact"
-    "er_class\030\003 \001(\0162\035.portfolio.mmo.Character"
-    "Class\"E\n\021PartyMemberVitals\0220\n\007members\030\001 "
-    "\003(\0132\037.portfolio.mmo.PartyMemberVital\"P\n\020"
-    "PartyMemberVital\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r"
-    "\022\016\n\006max_hp\030\003 \001(\r\022\t\n\001x\030\004 \001(\021\022\t\n\001z\030\005 \001(\021\"\'"
-    "\n\010PetState\022\016\n\006pet_id\030\001 \001(\r\022\013\n\003out\030\002 \001(\010\""
-    "\030\n\tSetPetOut\022\013\n\003out\030\001 \001(\010\"H\n\014DeathPenalt"
-    "y\022\020\n\010exp_lost\030\001 \001(\r\022&\n\005items\030\002 \003(\0132\027.por"
-    "tfolio.mmo.ItemSlot\"\026\n\005Karma\022\r\n\005karma\030\001 "
-    "\001(\021\"N\n\rRequestResult\022\022\n\nrequest_id\030\001 \001(\r"
-    "\022)\n\006result\030\002 \001(\0162\031.portfolio.mmo.FailRea"
-    "son\"f\n\014ActionFailed\022)\n\006reason\030\001 \001(\0162\031.po"
-    "rtfolio.mmo.FailReason\022+\n\007request\030\002 \001(\0162"
-    "\032.portfolio.mmo.RequestKind\" \n\013AttackSta"
-    "rt\022\021\n\ttarget_id\030\001 \001(\r\"\014\n\nAttackStop\"5\n\013A"
-    "ttackSwing\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\ttarge"
-    "t_id\030\002 \001(\r\"_\n\007Damaged\022\023\n\013attacker_id\030\001 \001"
-    "(\r\022\021\n\ttarget_id\030\002 \001(\r\022\016\n\006damage\030\003 \001(\r\022\n\n"
-    "\002hp\030\004 \001(\r\022\020\n\010critical\030\005 \001(\010\"%\n\004Died\022\n\n\002i"
-    "d\030\001 \001(\r\022\021\n\tkiller_id\030\002 \001(\r\"\010\n\006Revive\"1\n\007"
-    "Revived\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_h"
-    "p\030\003 \001(\r\"E\n\010UseSkill\022\020\n\010skill_id\030\001 \001(\r\022\021\n"
-    "\ttarget_id\030\002 \001(\r\022\024\n\014force_attack\030\003 \001(\010\"C"
-    "\n\tSkillUsed\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill_"
-    "id\030\002 \001(\r\022\021\n\ttarget_id\030\003 \001(\r\"C\n\010Progress\022"
-    "\n\n\002id\030\001 \001(\r\022+\n\005state\030\002 \001(\0132\034.portfolio.m"
-    "mo.ProgressState\"J\n\021ProgressCancelled\022\n\n"
-    "\002id\030\001 \001(\r\022)\n\006reason\030\002 \001(\0162\031.portfolio.mm"
-    "o.FailReason\"G\n\rEffectApplied\022\n\n\002id\030\001 \001("
-    "\r\022*\n\006effect\030\002 \001(\0132\032.portfolio.mmo.Effect"
-    "State\"5\n\tCooldowns\022(\n\007entries\030\001 \003(\0132\027.po"
-    "rtfolio.mmo.Cooldown\">\n\010Cooldown\022\020\n\010skil"
-    "l_id\030\001 \001(\r\022\020\n\010end_tick\030\002 \001(\r\022\016\n\006potion\030\003"
-    " \001(\r\"s\n\022ProjectileLaunched\022\n\n\002id\030\001 \001(\r\022\021"
-    "\n\tcaster_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022"
-    "\014\n\004tick\030\005 \001(\r\022\013\n\003yaw\030\006 \001(\r\022\r\n\005speed\030\007 \001("
-    "\r\"\035\n\017ProjectileEnded\022\n\n\002id\030\001 \001(\r\"Z\n\013Area"
-    "Warning\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill_id\030\002"
-    " \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\020\n\010hit_tick\030\005"
-    " \001(\r\"\033\n\006Gather\022\021\n\tentity_id\030\001 \001(\r\".\n\005Cra"
-    "ft\022\021\n\trecipe_id\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001("
-    "\r*Q\n\017ProtocolVersion\022 \n\034PROTOCOL_VERSION"
-    "_UNSPECIFIED\020\000\022\034\n\030PROTOCOL_VERSION_CURRE"
-    "NT\020\002*\355\002\n\010Constant\022\030\n\024CONSTANT_UNSPECIFIE"
-    "D\020\000\022\034\n\030CONSTANT_UNITS_PER_METER\020 \022$\n\037CON"
-    "STANT_MAP_HALF_EXTENT_METERS\020\200\010\022\027\n\022CONST"
-    "ANT_YAW_STEPS\020\200\002\022\035\n\031CONSTANT_TICKS_PER_S"
-    "ECOND\020\024\022(\n$CONSTANT_MAX_SPEED_METERS_PER"
-    "_SECOND\020\006\022\"\n\036CONSTANT_PING_INTERVAL_SECO"
-    "NDS\020\005\022!\n\035CONSTANT_IDLE_TIMEOUT_SECONDS\020\017"
-    "\022\033\n\027CONSTANT_MAX_CHARACTERS\020\004\022\034\n\030CONSTAN"
-    "T_QUICKSLOT_COUNT\020\010\022\033\n\027CONSTANT_MAX_PART"
-    "Y_SIZE\020\005\032\002\020\001*\303\001\n\017LoginResultCode\022\030\n\024LOGI"
-    "N_RESULT_CODE_OK\020\000\022&\n\"LOGIN_RESULT_CODE_"
-    "INVALID_LOGIN_ID\020\001\022&\n\"LOGIN_RESULT_CODE_"
-    "VERSION_MISMATCH\020\002\022!\n\035LOGIN_RESULT_CODE_"
-    "SERVER_FULL\020\003\022#\n\037LOGIN_RESULT_CODE_DATA_"
-    "MISMATCH\020\004*\347\001\n\nKickReason\022\033\n\027KICK_REASON"
-    "_UNSPECIFIED\020\000\022\037\n\033KICK_REASON_DUPLICATE_"
-    "LOGIN\020\001\022\037\n\033KICK_REASON_SERVER_SHUTDOWN\020\002"
-    "\022 \n\034KICK_REASON_MALFORMED_PACKET\020\003\022\034\n\030KI"
-    "CK_REASON_IDLE_TIMEOUT\020\004\022\034\n\030KICK_REASON_"
-    "RATE_LIMITED\020\005\022\034\n\030KICK_REASON_SERVER_ERR"
-    "OR\020\006*g\n\016CharacterClass\022\037\n\033CHARACTER_CLAS"
-    "S_UNSPECIFIED\020\000\022\032\n\026CHARACTER_CLASS_KNIGH"
-    "T\020\001\022\030\n\024CHARACTER_CLASS_MAGE\020\002*\252\002\n\031Create"
-    "CharacterResultCode\022#\n\037CREATE_CHARACTER_"
-    "RESULT_CODE_OK\020\000\022-\n)CREATE_CHARACTER_RES"
-    "ULT_CODE_INVALID_NAME\020\001\022+\n\'CREATE_CHARAC"
-    "TER_RESULT_CODE_NAME_TAKEN\020\002\022)\n%CREATE_C"
-    "HARACTER_RESULT_CODE_TOO_MANY\020\003\022.\n*CREAT"
-    "E_CHARACTER_RESULT_CODE_INVALID_CLASS\020\004\022"
-    "1\n-CREATE_CHARACTER_RESULT_CODE_DEMO_UNA"
-    "VAILABLE\020\005*\233\001\n\024EnterWorldResultCode\022\036\n\032E"
-    "NTER_WORLD_RESULT_CODE_OK\020\000\022-\n)ENTER_WOR"
-    "LD_RESULT_CODE_NO_SUCH_CHARACTER\020\001\0224\n0EN"
-    "TER_WORLD_RESULT_CODE_OTHER_CHARACTER_IN"
-    "_WORLD\020\002*\301\001\n\nEntityKind\022\033\n\027ENTITY_KIND_U"
-    "NSPECIFIED\020\000\022\026\n\022ENTITY_KIND_PLAYER\020\001\022\027\n\023"
-    "ENTITY_KIND_MONSTER\020\002\022\023\n\017ENTITY_KIND_NPC"
-    "\020\003\022\033\n\027ENTITY_KIND_GATHER_NODE\020\004\022\033\n\027ENTIT"
-    "Y_KIND_GROUND_ITEM\020\005\022\026\n\022ENTITY_KIND_SUMM"
-    "ON\020\006*S\n\tNameColor\022\025\n\021NAME_COLOR_NORMAL\020\000"
-    "\022\030\n\024NAME_COLOR_AGGRESSOR\020\001\022\025\n\021NAME_COLOR"
-    "_OUTLAW\020\002*\213\001\n\014ProgressKind\022\026\n\022PROGRESS_K"
-    "IND_NONE\020\000\022\026\n\022PROGRESS_KIND_CAST\020\001\022\030\n\024PR"
-    "OGRESS_KIND_GATHER\020\002\022\027\n\023PROGRESS_KIND_CR"
-    "AFT\020\003\022\030\n\024PROGRESS_KIND_RECALL\020\004*\236\001\n\017Fiel"
-    "dNoticeKind\022!\n\035FIELD_NOTICE_KIND_UNSPECI"
-    "FIED\020\000\022#\n\037FIELD_NOTICE_KIND_BOSS_APPEARE"
-    "D\020\001\022\037\n\033FIELD_NOTICE_KIND_BOSS_DIED\020\002\022\"\n\036"
-    "FIELD_NOTICE_KIND_BOSS_PRESENT\020\003*W\n\tItem"
-    "Place\022\030\n\024ITEM_PLACE_INVENTORY\020\000\022\030\n\024ITEM_"
-    "PLACE_EQUIPMENT\020\001\022\026\n\022ITEM_PLACE_STORAGE\020"
-    "\002*\243\001\n\nGainReason\022\033\n\027GAIN_REASON_UNSPECIF"
-    "IED\020\000\022\033\n\027GAIN_REASON_DEV_COMMAND\020\001\022\027\n\023GA"
-    "IN_REASON_PICK_UP\020\002\022\023\n\017GAIN_REASON_BUY\020\003"
-    "\022\026\n\022GAIN_REASON_GATHER\020\004\022\025\n\021GAIN_REASON_"
-    "CRAFT\020\005*\\\n\rQuickslotKind\022\030\n\024QUICKSLOT_KI"
-    "ND_EMPTY\020\000\022\030\n\024QUICKSLOT_KIND_SKILL\020\001\022\027\n\023"
-    "QUICKSLOT_KIND_ITEM\020\002*\216\001\n\013ChatChannel\022\034\n"
-    "\030CHAT_CHANNEL_UNSPECIFIED\020\000\022\027\n\023CHAT_CHAN"
-    "NEL_NEARBY\020\001\022\026\n\022CHAT_CHANNEL_PARTY\020\002\022\026\n\022"
-    "CHAT_CHANNEL_WORLD\020\003\022\030\n\024CHAT_CHANNEL_WHI"
-    "SPER\020\004*\354\t\n\nFailReason\022\024\n\020FAIL_REASON_NON"
-    "E\020\000\022\031\n\025FAIL_REASON_NO_TARGET\020\001\022\036\n\032FAIL_R"
-    "EASON_INVALID_TARGET\020\002\022\024\n\020FAIL_REASON_DE"
-    "AD\020\003\022\030\n\024FAIL_REASON_NOT_DEAD\020\004\022\033\n\027FAIL_R"
-    "EASON_NOT_LEARNED\020\005\022\030\n\024FAIL_REASON_COOLD"
-    "OWN\020\006\022\035\n\031FAIL_REASON_NOT_ENOUGH_MP\020\007\022\034\n\030"
-    "FAIL_REASON_OUT_OF_RANGE\020\010\022\027\n\023FAIL_REASO"
-    "N_BLOCKED\020\t\022\024\n\020FAIL_REASON_BUSY\020\n\022\027\n\023FAI"
-    "L_REASON_STUNNED\020\013\022\031\n\025FAIL_REASON_CANCEL"
-    "LED\020\014\022\037\n\033FAIL_REASON_INVALID_COMMAND\020\r\022\036"
-    "\n\032FAIL_REASON_INVENTORY_FULL\020\016\022\027\n\023FAIL_R"
-    "EASON_NO_ITEM\020\017\022\035\n\031FAIL_REASON_UNUSABLE_"
-    "ITEM\020\020\022\031\n\025FAIL_REASON_IN_COMBAT\020\021\022\030\n\024FAI"
-    "L_REASON_TOO_FAST\020\022\022\034\n\030FAIL_REASON_ALREA"
-    "DY_GONE\020\023\022\031\n\025FAIL_REASON_NOT_YOURS\020\024\022\035\n\031"
-    "FAIL_REASON_LEVEL_TOO_LOW\020\025\022\033\n\027FAIL_REAS"
-    "ON_WRONG_CLASS\020\026\022\033\n\027FAIL_REASON_MAX_ENCH"
-    "ANT\020\027\022\037\n\033FAIL_REASON_ALREADY_LEARNED\020\030\022\037"
-    "\n\033FAIL_REASON_NOT_ENOUGH_GOLD\020\031\022\032\n\026FAIL_"
-    "REASON_UNSELLABLE\020\032\022\034\n\030FAIL_REASON_STORA"
-    "GE_FULL\020\033\022\034\n\030FAIL_REASON_NO_RECIPIENT\020\034\022"
-    "\035\n\031FAIL_REASON_TEXT_TOO_LONG\020\035\022\035\n\031FAIL_R"
-    "EASON_CHAT_TOO_FAST\020\036\022\030\n\024FAIL_REASON_NO_"
-    "PARTY\020\037\022\032\n\026FAIL_REASON_NOT_LEADER\020 \022\032\n\026F"
-    "AIL_REASON_PARTY_FULL\020!\022 \n\034FAIL_REASON_A"
-    "LREADY_IN_PARTY\020\"\022\036\n\032FAIL_REASON_INVITE_"
-    "PENDING\020#\022\031\n\025FAIL_REASON_NO_INVITE\020$\022\037\n\033"
-    "FAIL_REASON_INVITE_DECLINED\020%\022\026\n\022FAIL_RE"
-    "ASON_NO_PET\020(\022 \n\034FAIL_REASON_ALREADY_HAV"
-    "E_PET\020)\022 \n\034FAIL_REASON_PK_LEVEL_TOO_LOW\020"
-    "&\022\034\n\030FAIL_REASON_PARTY_MEMBER\020\'\022$\n FAIL_"
-    "REASON_NOT_ENOUGH_MATERIALS\020**\211\002\n\013Reques"
-    "tKind\022\034\n\030REQUEST_KIND_UNSPECIFIED\020\000\022\027\n\023R"
-    "EQUEST_KIND_ATTACK\020\001\022\027\n\023REQUEST_KIND_REV"
-    "IVE\020\002\022\026\n\022REQUEST_KIND_SKILL\020\003\022\025\n\021REQUEST"
-    "_KIND_CHAT\020\004\022\032\n\026REQUEST_KIND_QUICKSLOT\020\005"
-    "\022\030\n\024REQUEST_KIND_STORAGE\020\006\022\026\n\022REQUEST_KI"
-    "ND_PARTY\020\007\022\024\n\020REQUEST_KIND_PET\020\010\022\027\n\023REQU"
-    "EST_KIND_GATHER\020\tB\030\252\002\025PortfolioMmo.Contr"
-    "actb\006proto3"
+    "CraftH\000\0223\n\014quest_accept\030\366\003 \001(\0132\032.portfol"
+    "io.mmo.QuestAcceptH\000\0227\n\016quest_complete\030\367"
+    "\003 \001(\0132\034.portfolio.mmo.QuestCompleteH\000\0221\n"
+    "\013quest_state\030\370\003 \001(\0132\031.portfolio.mmo.Ques"
+    "tStateH\000B\006\n\004body\"f\n\005Login\0228\n\020protocol_ve"
+    "rsion\030\001 \001(\0162\036.portfolio.mmo.ProtocolVers"
+    "ion\022\020\n\010login_id\030\002 \001(\t\022\021\n\tdata_hash\030\003 \001(\006"
+    "\"a\n\013LoginResult\022.\n\006result\030\001 \001(\0162\036.portfo"
+    "lio.mmo.LoginResultCode\022\026\n\016demo_availabl"
+    "e\030\004 \001(\010J\004\010\002\020\003J\004\010\003\020\004\"3\n\006Kicked\022)\n\006reason\030"
+    "\001 \001(\0162\031.portfolio.mmo.KickReason\"\032\n\nDevC"
+    "ommand\022\014\n\004line\030\001 \001(\t\"\006\n\004Ping\"\213\001\n\020Charact"
+    "erSummary\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\0226\n\017c"
+    "haracter_class\030\003 \001(\0162\035.portfolio.mmo.Cha"
+    "racterClass\022\r\n\005level\030\004 \001(\r\022\026\n\016weapon_ite"
+    "m_id\030\005 \001(\r\"D\n\rCharacterList\0223\n\ncharacter"
+    "s\030\001 \003(\0132\037.portfolio.mmo.CharacterSummary"
+    "\"e\n\017CreateCharacter\022\014\n\004name\030\001 \001(\t\0226\n\017cha"
+    "racter_class\030\002 \001(\0162\035.portfolio.mmo.Chara"
+    "cterClass\022\014\n\004demo\030\003 \001(\010\"Q\n\025CreateCharact"
+    "erResult\0228\n\006result\030\001 \001(\0162(.portfolio.mmo"
+    ".CreateCharacterResultCode\"\"\n\nEnterWorld"
+    "\022\024\n\014character_id\030\001 \001(\004\"w\n\020EnterWorldResu"
+    "lt\0223\n\006result\030\001 \001(\0162#.portfolio.mmo.Enter"
+    "WorldResultCode\022\017\n\007self_id\030\002 \001(\r\022\014\n\004tick"
+    "\030\003 \001(\r\022\017\n\007revived\030\004 \001(\010\"\010\n\006Logout\"\014\n\nLea"
+    "veWorld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r\"6\n\004Move\022\t\n"
+    "\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack\030"
+    "\004 \001(\r\"2\n\rPositionReset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002"
+    " \001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEntitiesEnter\022,\n\010en"
+    "tities\030\001 \003(\0132\032.portfolio.mmo.EntityEnter"
+    "\"\306\005\n\013EntityEnter\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022"
+    "\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\'\n\004kind\030\007 \001(\0162\031."
+    "portfolio.mmo.EntityKind\022\014\n\004name\030\005 \001(\t\0226"
+    "\n\017character_class\030\006 \001(\0162\035.portfolio.mmo."
+    "CharacterClass\022\r\n\005level\030\010 \001(\r\022,\n\nname_co"
+    "lor\030\t \001(\0162\030.portfolio.mmo.NameColor\022\026\n\016w"
+    "eapon_item_id\030\n \001(\r\022\023\n\013template_id\030\013 \001(\r"
+    "\022\n\n\002hp\030\014 \001(\r\022\016\n\006max_hp\030\r \001(\r\022+\n\007effects\030"
+    "\016 \003(\0132\032.portfolio.mmo.EffectState\022.\n\010pro"
+    "gress\030\017 \001(\0132\034.portfolio.mmo.ProgressStat"
+    "e\022\014\n\004dead\030\020 \001(\010\022\r\n\005speed\030\021 \001(\r\022\020\n\010move_y"
+    "aw\030\022 \001(\r\022\016\n\006next_x\030\023 \001(\021\022\016\n\006next_z\030\024 \001(\021"
+    "\022\017\n\007item_id\030\025 \001(\r\022\r\n\005count\030\026 \001(\r\022\017\n\007ench"
+    "ant\030\027 \001(\r\022\031\n\017owner_player_id\030\030 \001(\rH\000\022\030\n\016"
+    "owner_party_id\030\031 \001(\rH\000\022\033\n\023owner_only_end"
+    "_tick\030\032 \001(\r\022\031\n\021dropped_by_player\030\033 \001(\010\022\027"
+    "\n\017summon_owner_id\030\034 \001(\r\022\027\n\017summon_end_ti"
+    "ck\030\035 \001(\r\022\016\n\006pet_id\030\036 \001(\rB\007\n\005owner\"2\n\013Eff"
+    "ectState\022\021\n\teffect_id\030\001 \001(\r\022\020\n\010end_tick\030"
+    "\002 \001(\r\"X\n\rProgressState\022)\n\004kind\030\001 \001(\0162\033.p"
+    "ortfolio.mmo.ProgressKind\022\n\n\002id\030\002 \001(\r\022\020\n"
+    "\010end_tick\030\003 \001(\r\"~\n\013EntityState\022\n\n\002id\030\001 \001"
+    "(\r\022,\n\nname_color\030\002 \001(\0162\030.portfolio.mmo.N"
+    "ameColor\022\026\n\016weapon_item_id\030\003 \001(\r\022\r\n\005leve"
+    "l\030\004 \001(\r\022\016\n\006pet_id\030\005 \001(\r\"f\n\013FieldNotice\022,"
+    "\n\004kind\030\001 \001(\0162\036.portfolio.mmo.FieldNotice"
+    "Kind\022\023\n\013template_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001"
+    "z\030\004 \001(\021\"\034\n\rEntitiesLeave\022\013\n\003ids\030\001 \003(\r\"H\n"
+    "\013EntityMoves\022\014\n\004tick\030\001 \001(\r\022+\n\010entities\030\002"
+    " \003(\0132\031.portfolio.mmo.EntityMove\"M\n\nEntit"
+    "yMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022"
+    "\013\n\003yaw\030\004 \001(\r\022\020\n\010teleport\030\005 \001(\010\"Y\n\nSelfVi"
+    "tals\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002 \001(\r\022\027\n\017combat_e"
+    "nd_tick\030\003 \001(\r\022\032\n\022aggressor_end_tick\030\004 \001("
+    "\r\"<\n\014EntityVitals\022,\n\010entities\030\001 \003(\0132\032.po"
+    "rtfolio.mmo.EntityVital\"5\n\013EntityVital\022\n"
+    "\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"L"
+    "\n\tSelfStats\022\016\n\006max_hp\030\001 \001(\r\022\016\n\006max_mp\030\002 "
+    "\001(\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007defense\030\004 \001(\r\"(\n\t"
+    "ExpGained\022\016\n\006amount\030\001 \001(\021\022\013\n\003exp\030\002 \001(\r\"s"
+    "\n\010ItemSlot\022\'\n\005place\030\001 \001(\0162\030.portfolio.mm"
+    "o.ItemPlace\022\r\n\005index\030\002 \001(\r\022\017\n\007item_id\030\003 "
+    "\001(\r\022\r\n\005count\030\004 \001(\r\022\017\n\007enchant\030\005 \001(\r\"A\n\tI"
+    "nventory\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo."
+    "ItemSlot\022\014\n\004gold\030\002 \001(\004\",\n\nItemAmount\022\017\n\007"
+    "item_id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\"t\n\004Gain\022)\n\006"
+    "reason\030\001 \001(\0162\031.portfolio.mmo.GainReason\022"
+    ")\n\004item\030\002 \001(\0132\031.portfolio.mmo.ItemAmount"
+    "H\000\022\016\n\004gold\030\003 \001(\004H\000B\006\n\004what\"l\n\020InventoryC"
+    "hanged\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.It"
+    "emSlot\022\014\n\004gold\030\002 \001(\004\022\"\n\005gains\030\003 \003(\0132\023.po"
+    "rtfolio.mmo.Gain\"+\n\007UseItem\022\014\n\004slot\030\001 \001("
+    "\r\022\022\n\nrequest_id\030\002 \001(\r\"/\n\006PickUp\022\021\n\tentit"
+    "y_id\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\";\n\010DropIt"
+    "em\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nreque"
+    "st_id\030\003 \001(\r\")\n\005Equip\022\014\n\004slot\030\001 \001(\r\022\022\n\nre"
+    "quest_id\030\002 \001(\r\"1\n\007Unequip\022\022\n\nequip_slot\030"
+    "\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"i\n\007Enchant\022\'\n\005"
+    "place\030\001 \001(\0162\030.portfolio.mmo.ItemPlace\022\014\n"
+    "\004slot\030\002 \001(\r\022\023\n\013scroll_slot\030\003 \001(\r\022\022\n\nrequ"
+    "est_id\030\004 \001(\r\"1\n\rEnchantResult\022\017\n\007success"
+    "\030\001 \001(\010\022\017\n\007enchant\030\002 \001(\r\"\037\n\rLearnedSkills"
+    "\022\016\n\006skills\030\001 \003(\r\"\035\n\014SkillLearned\022\r\n\005skil"
+    "l\030\001 \001(\r\"C\n\tQuickslot\022*\n\004kind\030\001 \001(\0162\034.por"
+    "tfolio.mmo.QuickslotKind\022\n\n\002id\030\002 \001(\r\"E\n\014"
+    "SetQuickslot\022\r\n\005index\030\001 \001(\r\022&\n\004slot\030\002 \001("
+    "\0132\030.portfolio.mmo.Quickslot\"5\n\nQuickslot"
+    "s\022\'\n\005slots\030\001 \003(\0132\030.portfolio.mmo.Quicksl"
+    "ot\"9\n\003Buy\022\017\n\007item_id\030\001 \001(\r\022\r\n\005count\030\002 \001("
+    "\r\022\022\n\nrequest_id\030\003 \001(\r\"7\n\004Sell\022\014\n\004slot\030\001 "
+    "\001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"\r"
+    "\n\013StorageOpen\"1\n\007Storage\022&\n\005slots\030\001 \003(\0132"
+    "\027.portfolio.mmo.ItemSlot\"8\n\016StorageChang"
+    "ed\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.ItemSl"
+    "ot\"A\n\016StorageDeposit\022\014\n\004slot\030\001 \001(\r\022\r\n\005co"
+    "unt\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"B\n\017Storage"
+    "Withdraw\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n"
+    "\nrequest_id\030\003 \001(\r\"M\n\004Chat\022+\n\007channel\030\001 \001"
+    "(\0162\032.portfolio.mmo.ChatChannel\022\n\n\002to\030\002 \001"
+    "(\t\022\014\n\004text\030\003 \001(\t\"}\n\014ChatReceived\022+\n\007chan"
+    "nel\030\001 \001(\0162\032.portfolio.mmo.ChatChannel\022\021\n"
+    "\tsender_id\030\002 \001(\r\022\023\n\013sender_name\030\003 \001(\t\022\n\n"
+    "\002to\030\004 \001(\t\022\014\n\004text\030\005 \001(\t\" \n\013PartyInvite\022\021"
+    "\n\ttarget_id\030\001 \001(\r\"M\n\014PartyInvited\022\022\n\ninv"
+    "iter_id\030\001 \001(\r\022\024\n\014inviter_name\030\002 \001(\t\022\023\n\013e"
+    "xpire_tick\030\003 \001(\r\"\035\n\013PartyAnswer\022\016\n\006accep"
+    "t\030\001 \001(\010\"\014\n\nPartyLeave\"\036\n\tPartyKick\022\021\n\tta"
+    "rget_id\030\001 \001(\r\"^\n\nPartyState\022\020\n\010party_id\030"
+    "\001 \001(\r\022\021\n\tleader_id\030\002 \001(\r\022+\n\007members\030\003 \003("
+    "\0132\032.portfolio.mmo.PartyMember\"_\n\013PartyMe"
+    "mber\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\0226\n\017charac"
+    "ter_class\030\003 \001(\0162\035.portfolio.mmo.Characte"
+    "rClass\"E\n\021PartyMemberVitals\0220\n\007members\030\001"
+    " \003(\0132\037.portfolio.mmo.PartyMemberVital\"P\n"
+    "\020PartyMemberVital\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001("
+    "\r\022\016\n\006max_hp\030\003 \001(\r\022\t\n\001x\030\004 \001(\021\022\t\n\001z\030\005 \001(\021\""
+    "\'\n\010PetState\022\016\n\006pet_id\030\001 \001(\r\022\013\n\003out\030\002 \001(\010"
+    "\"\030\n\tSetPetOut\022\013\n\003out\030\001 \001(\010\"H\n\014DeathPenal"
+    "ty\022\020\n\010exp_lost\030\001 \001(\r\022&\n\005items\030\002 \003(\0132\027.po"
+    "rtfolio.mmo.ItemSlot\"\026\n\005Karma\022\r\n\005karma\030\001"
+    " \001(\021\"N\n\rRequestResult\022\022\n\nrequest_id\030\001 \001("
+    "\r\022)\n\006result\030\002 \001(\0162\031.portfolio.mmo.FailRe"
+    "ason\"f\n\014ActionFailed\022)\n\006reason\030\001 \001(\0162\031.p"
+    "ortfolio.mmo.FailReason\022+\n\007request\030\002 \001(\016"
+    "2\032.portfolio.mmo.RequestKind\" \n\013AttackSt"
+    "art\022\021\n\ttarget_id\030\001 \001(\r\"\014\n\nAttackStop\"5\n\013"
+    "AttackSwing\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\ttarg"
+    "et_id\030\002 \001(\r\"_\n\007Damaged\022\023\n\013attacker_id\030\001 "
+    "\001(\r\022\021\n\ttarget_id\030\002 \001(\r\022\016\n\006damage\030\003 \001(\r\022\n"
+    "\n\002hp\030\004 \001(\r\022\020\n\010critical\030\005 \001(\010\"%\n\004Died\022\n\n\002"
+    "id\030\001 \001(\r\022\021\n\tkiller_id\030\002 \001(\r\"\010\n\006Revive\"1\n"
+    "\007Revived\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_"
+    "hp\030\003 \001(\r\"E\n\010UseSkill\022\020\n\010skill_id\030\001 \001(\r\022\021"
+    "\n\ttarget_id\030\002 \001(\r\022\024\n\014force_attack\030\003 \001(\010\""
+    "C\n\tSkillUsed\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill"
+    "_id\030\002 \001(\r\022\021\n\ttarget_id\030\003 \001(\r\"C\n\010Progress"
+    "\022\n\n\002id\030\001 \001(\r\022+\n\005state\030\002 \001(\0132\034.portfolio."
+    "mmo.ProgressState\"J\n\021ProgressCancelled\022\n"
+    "\n\002id\030\001 \001(\r\022)\n\006reason\030\002 \001(\0162\031.portfolio.m"
+    "mo.FailReason\"G\n\rEffectApplied\022\n\n\002id\030\001 \001"
+    "(\r\022*\n\006effect\030\002 \001(\0132\032.portfolio.mmo.Effec"
+    "tState\"5\n\tCooldowns\022(\n\007entries\030\001 \003(\0132\027.p"
+    "ortfolio.mmo.Cooldown\">\n\010Cooldown\022\020\n\010ski"
+    "ll_id\030\001 \001(\r\022\020\n\010end_tick\030\002 \001(\r\022\016\n\006potion\030"
+    "\003 \001(\r\"s\n\022ProjectileLaunched\022\n\n\002id\030\001 \001(\r\022"
+    "\021\n\tcaster_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021"
+    "\022\014\n\004tick\030\005 \001(\r\022\013\n\003yaw\030\006 \001(\r\022\r\n\005speed\030\007 \001"
+    "(\r\"\035\n\017ProjectileEnded\022\n\n\002id\030\001 \001(\r\"Z\n\013Are"
+    "aWarning\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill_id\030"
+    "\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\020\n\010hit_tick\030"
+    "\005 \001(\r\"\033\n\006Gather\022\021\n\tentity_id\030\001 \001(\r\".\n\005Cr"
+    "aft\022\021\n\trecipe_id\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001"
+    "(\r\"!\n\013QuestAccept\022\022\n\nrequest_id\030\001 \001(\r\"#\n"
+    "\rQuestComplete\022\022\n\nrequest_id\030\001 \001(\r\"C\n\nQu"
+    "estState\022\021\n\tcompleted\030\001 \001(\r\022\020\n\010accepted\030"
+    "\002 \001(\010\022\020\n\010progress\030\003 \001(\r*Q\n\017ProtocolVersi"
+    "on\022 \n\034PROTOCOL_VERSION_UNSPECIFIED\020\000\022\034\n\030"
+    "PROTOCOL_VERSION_CURRENT\020\002*\355\002\n\010Constant\022"
+    "\030\n\024CONSTANT_UNSPECIFIED\020\000\022\034\n\030CONSTANT_UN"
+    "ITS_PER_METER\020 \022$\n\037CONSTANT_MAP_HALF_EXT"
+    "ENT_METERS\020\200\010\022\027\n\022CONSTANT_YAW_STEPS\020\200\002\022\035"
+    "\n\031CONSTANT_TICKS_PER_SECOND\020\024\022(\n$CONSTAN"
+    "T_MAX_SPEED_METERS_PER_SECOND\020\006\022\"\n\036CONST"
+    "ANT_PING_INTERVAL_SECONDS\020\005\022!\n\035CONSTANT_"
+    "IDLE_TIMEOUT_SECONDS\020\017\022\033\n\027CONSTANT_MAX_C"
+    "HARACTERS\020\004\022\034\n\030CONSTANT_QUICKSLOT_COUNT\020"
+    "\010\022\033\n\027CONSTANT_MAX_PARTY_SIZE\020\005\032\002\020\001*\303\001\n\017L"
+    "oginResultCode\022\030\n\024LOGIN_RESULT_CODE_OK\020\000"
+    "\022&\n\"LOGIN_RESULT_CODE_INVALID_LOGIN_ID\020\001"
+    "\022&\n\"LOGIN_RESULT_CODE_VERSION_MISMATCH\020\002"
+    "\022!\n\035LOGIN_RESULT_CODE_SERVER_FULL\020\003\022#\n\037L"
+    "OGIN_RESULT_CODE_DATA_MISMATCH\020\004*\347\001\n\nKic"
+    "kReason\022\033\n\027KICK_REASON_UNSPECIFIED\020\000\022\037\n\033"
+    "KICK_REASON_DUPLICATE_LOGIN\020\001\022\037\n\033KICK_RE"
+    "ASON_SERVER_SHUTDOWN\020\002\022 \n\034KICK_REASON_MA"
+    "LFORMED_PACKET\020\003\022\034\n\030KICK_REASON_IDLE_TIM"
+    "EOUT\020\004\022\034\n\030KICK_REASON_RATE_LIMITED\020\005\022\034\n\030"
+    "KICK_REASON_SERVER_ERROR\020\006*g\n\016CharacterC"
+    "lass\022\037\n\033CHARACTER_CLASS_UNSPECIFIED\020\000\022\032\n"
+    "\026CHARACTER_CLASS_KNIGHT\020\001\022\030\n\024CHARACTER_C"
+    "LASS_MAGE\020\002*\252\002\n\031CreateCharacterResultCod"
+    "e\022#\n\037CREATE_CHARACTER_RESULT_CODE_OK\020\000\022-"
+    "\n)CREATE_CHARACTER_RESULT_CODE_INVALID_N"
+    "AME\020\001\022+\n\'CREATE_CHARACTER_RESULT_CODE_NA"
+    "ME_TAKEN\020\002\022)\n%CREATE_CHARACTER_RESULT_CO"
+    "DE_TOO_MANY\020\003\022.\n*CREATE_CHARACTER_RESULT"
+    "_CODE_INVALID_CLASS\020\004\0221\n-CREATE_CHARACTE"
+    "R_RESULT_CODE_DEMO_UNAVAILABLE\020\005*\233\001\n\024Ent"
+    "erWorldResultCode\022\036\n\032ENTER_WORLD_RESULT_"
+    "CODE_OK\020\000\022-\n)ENTER_WORLD_RESULT_CODE_NO_"
+    "SUCH_CHARACTER\020\001\0224\n0ENTER_WORLD_RESULT_C"
+    "ODE_OTHER_CHARACTER_IN_WORLD\020\002*\301\001\n\nEntit"
+    "yKind\022\033\n\027ENTITY_KIND_UNSPECIFIED\020\000\022\026\n\022EN"
+    "TITY_KIND_PLAYER\020\001\022\027\n\023ENTITY_KIND_MONSTE"
+    "R\020\002\022\023\n\017ENTITY_KIND_NPC\020\003\022\033\n\027ENTITY_KIND_"
+    "GATHER_NODE\020\004\022\033\n\027ENTITY_KIND_GROUND_ITEM"
+    "\020\005\022\026\n\022ENTITY_KIND_SUMMON\020\006*S\n\tNameColor\022"
+    "\025\n\021NAME_COLOR_NORMAL\020\000\022\030\n\024NAME_COLOR_AGG"
+    "RESSOR\020\001\022\025\n\021NAME_COLOR_OUTLAW\020\002*\213\001\n\014Prog"
+    "ressKind\022\026\n\022PROGRESS_KIND_NONE\020\000\022\026\n\022PROG"
+    "RESS_KIND_CAST\020\001\022\030\n\024PROGRESS_KIND_GATHER"
+    "\020\002\022\027\n\023PROGRESS_KIND_CRAFT\020\003\022\030\n\024PROGRESS_"
+    "KIND_RECALL\020\004*\236\001\n\017FieldNoticeKind\022!\n\035FIE"
+    "LD_NOTICE_KIND_UNSPECIFIED\020\000\022#\n\037FIELD_NO"
+    "TICE_KIND_BOSS_APPEARED\020\001\022\037\n\033FIELD_NOTIC"
+    "E_KIND_BOSS_DIED\020\002\022\"\n\036FIELD_NOTICE_KIND_"
+    "BOSS_PRESENT\020\003*W\n\tItemPlace\022\030\n\024ITEM_PLAC"
+    "E_INVENTORY\020\000\022\030\n\024ITEM_PLACE_EQUIPMENT\020\001\022"
+    "\026\n\022ITEM_PLACE_STORAGE\020\002*\301\001\n\nGainReason\022\033"
+    "\n\027GAIN_REASON_UNSPECIFIED\020\000\022\033\n\027GAIN_REAS"
+    "ON_DEV_COMMAND\020\001\022\027\n\023GAIN_REASON_PICK_UP\020"
+    "\002\022\023\n\017GAIN_REASON_BUY\020\003\022\026\n\022GAIN_REASON_GA"
+    "THER\020\004\022\025\n\021GAIN_REASON_CRAFT\020\005\022\034\n\030GAIN_RE"
+    "ASON_QUEST_REWARD\020\006*\\\n\rQuickslotKind\022\030\n\024"
+    "QUICKSLOT_KIND_EMPTY\020\000\022\030\n\024QUICKSLOT_KIND"
+    "_SKILL\020\001\022\027\n\023QUICKSLOT_KIND_ITEM\020\002*\216\001\n\013Ch"
+    "atChannel\022\034\n\030CHAT_CHANNEL_UNSPECIFIED\020\000\022"
+    "\027\n\023CHAT_CHANNEL_NEARBY\020\001\022\026\n\022CHAT_CHANNEL"
+    "_PARTY\020\002\022\026\n\022CHAT_CHANNEL_WORLD\020\003\022\030\n\024CHAT"
+    "_CHANNEL_WHISPER\020\004*\361\n\n\nFailReason\022\024\n\020FAI"
+    "L_REASON_NONE\020\000\022\031\n\025FAIL_REASON_NO_TARGET"
+    "\020\001\022\036\n\032FAIL_REASON_INVALID_TARGET\020\002\022\024\n\020FA"
+    "IL_REASON_DEAD\020\003\022\030\n\024FAIL_REASON_NOT_DEAD"
+    "\020\004\022\033\n\027FAIL_REASON_NOT_LEARNED\020\005\022\030\n\024FAIL_"
+    "REASON_COOLDOWN\020\006\022\035\n\031FAIL_REASON_NOT_ENO"
+    "UGH_MP\020\007\022\034\n\030FAIL_REASON_OUT_OF_RANGE\020\010\022\027"
+    "\n\023FAIL_REASON_BLOCKED\020\t\022\024\n\020FAIL_REASON_B"
+    "USY\020\n\022\027\n\023FAIL_REASON_STUNNED\020\013\022\031\n\025FAIL_R"
+    "EASON_CANCELLED\020\014\022\037\n\033FAIL_REASON_INVALID"
+    "_COMMAND\020\r\022\036\n\032FAIL_REASON_INVENTORY_FULL"
+    "\020\016\022\027\n\023FAIL_REASON_NO_ITEM\020\017\022\035\n\031FAIL_REAS"
+    "ON_UNUSABLE_ITEM\020\020\022\031\n\025FAIL_REASON_IN_COM"
+    "BAT\020\021\022\030\n\024FAIL_REASON_TOO_FAST\020\022\022\034\n\030FAIL_"
+    "REASON_ALREADY_GONE\020\023\022\031\n\025FAIL_REASON_NOT"
+    "_YOURS\020\024\022\035\n\031FAIL_REASON_LEVEL_TOO_LOW\020\025\022"
+    "\033\n\027FAIL_REASON_WRONG_CLASS\020\026\022\033\n\027FAIL_REA"
+    "SON_MAX_ENCHANT\020\027\022\037\n\033FAIL_REASON_ALREADY"
+    "_LEARNED\020\030\022\037\n\033FAIL_REASON_NOT_ENOUGH_GOL"
+    "D\020\031\022\032\n\026FAIL_REASON_UNSELLABLE\020\032\022\034\n\030FAIL_"
+    "REASON_STORAGE_FULL\020\033\022\034\n\030FAIL_REASON_NO_"
+    "RECIPIENT\020\034\022\035\n\031FAIL_REASON_TEXT_TOO_LONG"
+    "\020\035\022\035\n\031FAIL_REASON_CHAT_TOO_FAST\020\036\022\030\n\024FAI"
+    "L_REASON_NO_PARTY\020\037\022\032\n\026FAIL_REASON_NOT_L"
+    "EADER\020 \022\032\n\026FAIL_REASON_PARTY_FULL\020!\022 \n\034F"
+    "AIL_REASON_ALREADY_IN_PARTY\020\"\022\036\n\032FAIL_RE"
+    "ASON_INVITE_PENDING\020#\022\031\n\025FAIL_REASON_NO_"
+    "INVITE\020$\022\037\n\033FAIL_REASON_INVITE_DECLINED\020"
+    "%\022\026\n\022FAIL_REASON_NO_PET\020(\022 \n\034FAIL_REASON"
+    "_ALREADY_HAVE_PET\020)\022 \n\034FAIL_REASON_PK_LE"
+    "VEL_TOO_LOW\020&\022\034\n\030FAIL_REASON_PARTY_MEMBE"
+    "R\020\'\022$\n FAIL_REASON_NOT_ENOUGH_MATERIALS\020"
+    "*\022!\n\035FAIL_REASON_QUEST_IN_PROGRESS\020+\022!\n\035"
+    "FAIL_REASON_NO_QUEST_ACCEPTED\020,\022\035\n\031FAIL_"
+    "REASON_NO_QUEST_LEFT\020-\022\036\n\032FAIL_REASON_QU"
+    "EST_NOT_DONE\020.*\211\002\n\013RequestKind\022\034\n\030REQUES"
+    "T_KIND_UNSPECIFIED\020\000\022\027\n\023REQUEST_KIND_ATT"
+    "ACK\020\001\022\027\n\023REQUEST_KIND_REVIVE\020\002\022\026\n\022REQUES"
+    "T_KIND_SKILL\020\003\022\025\n\021REQUEST_KIND_CHAT\020\004\022\032\n"
+    "\026REQUEST_KIND_QUICKSLOT\020\005\022\030\n\024REQUEST_KIN"
+    "D_STORAGE\020\006\022\026\n\022REQUEST_KIND_PARTY\020\007\022\024\n\020R"
+    "EQUEST_KIND_PET\020\010\022\027\n\023REQUEST_KIND_GATHER"
+    "\020\tB\030\252\002\025PortfolioMmo.Contractb\006proto3"
 };
 static ::absl::once_flag descriptor_table_packets_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_packets_2eproto = {
     false,
     false,
-    14371,
+    14836,
     descriptor_table_protodef_packets_2eproto,
     "packets.proto",
     &descriptor_table_packets_2eproto_once,
     nullptr,
     0,
-    91,
+    94,
     schemas,
     file_message_globals,
     TableStruct_packets_2eproto::offsets,
@@ -16202,7 +16704,7 @@ GainReason_descriptor() {
   return file_level_enum_descriptors_packets_2eproto[12];
 }
 PROTOBUF_CONSTINIT const uint32_t GainReason_internal_data_[] = {
-    393216u, 0u, };
+    458752u, 0u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 QuickslotKind_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
@@ -16223,7 +16725,7 @@ FailReason_descriptor() {
   return file_level_enum_descriptors_packets_2eproto[15];
 }
 PROTOBUF_CONSTINIT const uint32_t FailReason_internal_data_[] = {
-    2818048u, 0u, };
+    3080192u, 0u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 RequestKind_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
@@ -17234,6 +17736,45 @@ void Packet::set_allocated_craft(::portfolio::mmo::Craft* PROTOBUF_NULLABLE craf
   }
   // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.craft)
 }
+void Packet::set_allocated_quest_accept(::portfolio::mmo::QuestAccept* PROTOBUF_NULLABLE quest_accept) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (quest_accept) {
+    ::google::protobuf::Arena* submessage_arena = quest_accept->GetArena();
+    if (message_arena != submessage_arena) {
+      quest_accept = ::google::protobuf::internal::GetOwnedMessage(message_arena, quest_accept, submessage_arena);
+    }
+    set_has_quest_accept();
+    _impl_.body_.quest_accept_ = quest_accept;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.quest_accept)
+}
+void Packet::set_allocated_quest_complete(::portfolio::mmo::QuestComplete* PROTOBUF_NULLABLE quest_complete) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (quest_complete) {
+    ::google::protobuf::Arena* submessage_arena = quest_complete->GetArena();
+    if (message_arena != submessage_arena) {
+      quest_complete = ::google::protobuf::internal::GetOwnedMessage(message_arena, quest_complete, submessage_arena);
+    }
+    set_has_quest_complete();
+    _impl_.body_.quest_complete_ = quest_complete;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.quest_complete)
+}
+void Packet::set_allocated_quest_state(::portfolio::mmo::QuestState* PROTOBUF_NULLABLE quest_state) {
+  ::google::protobuf::Arena* message_arena = GetArena();
+  clear_body();
+  if (quest_state) {
+    ::google::protobuf::Arena* submessage_arena = quest_state->GetArena();
+    if (message_arena != submessage_arena) {
+      quest_state = ::google::protobuf::internal::GetOwnedMessage(message_arena, quest_state, submessage_arena);
+    }
+    set_has_quest_state();
+    _impl_.body_.quest_state_ = quest_state;
+  }
+  // @@protoc_insertion_point(field_set_allocated:portfolio.mmo.Packet.quest_state)
+}
 Packet::Packet(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
 #if defined(PROTOBUF_CUSTOM_VTABLE)
     : Super_(arena, Packet_get_class_data()) {
@@ -17497,6 +18038,15 @@ Packet::Packet(
         break;
       case kCraft:
         _impl_.body_.craft_ = Super_::CopyConstruct(arena, *from._impl_.body_.craft_);
+        break;
+      case kQuestAccept:
+        _impl_.body_.quest_accept_ = Super_::CopyConstruct(arena, *from._impl_.body_.quest_accept_);
+        break;
+      case kQuestComplete:
+        _impl_.body_.quest_complete_ = Super_::CopyConstruct(arena, *from._impl_.body_.quest_complete_);
+        break;
+      case kQuestState:
+        _impl_.body_.quest_state_ = Super_::CopyConstruct(arena, *from._impl_.body_.quest_state_);
         break;
   }
 
@@ -18148,6 +18698,30 @@ void Packet::clear_body() {
       }
       break;
     }
+    case kQuestAccept: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.quest_accept_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.quest_accept_);
+      }
+      break;
+    }
+    case kQuestComplete: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.quest_complete_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.quest_complete_);
+      }
+      break;
+    }
+    case kQuestState: {
+      if (GetArena() == nullptr) {
+        delete _impl_.body_.quest_state_;
+      } else if (::google::protobuf::internal::DebugHardenClearOneofMessageOnArena()) {
+        ::google::protobuf::internal::MaybePoisonAfterClear(_impl_.body_.quest_state_);
+      }
+      break;
+    }
     case BODY_NOT_SET: {
       break;
     }
@@ -18673,6 +19247,24 @@ PROTOBUF_NOINLINE void Packet::Clear() {
           stream);
       break;
     }
+    case kQuestAccept: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          502, *this_._impl_.body_.quest_accept_, this_._impl_.body_.quest_accept_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kQuestComplete: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          503, *this_._impl_.body_.quest_complete_, this_._impl_.body_.quest_complete_->GetCachedSize(), target,
+          stream);
+      break;
+    }
+    case kQuestState: {
+      target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+          504, *this_._impl_.body_.quest_state_, this_._impl_.body_.quest_state_->GetCachedSize(), target,
+          stream);
+      break;
+    }
     default:
       break;
   }
@@ -19158,6 +19750,24 @@ PROTOBUF_NOINLINE void Packet::Clear() {
     case kCraft: {
       total_size += 2 +
                     ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.craft_);
+      break;
+    }
+    // .portfolio.mmo.QuestAccept quest_accept = 502;
+    case kQuestAccept: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.quest_accept_);
+      break;
+    }
+    // .portfolio.mmo.QuestComplete quest_complete = 503;
+    case kQuestComplete: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.quest_complete_);
+      break;
+    }
+    // .portfolio.mmo.QuestState quest_state = 504;
+    case kQuestState: {
+      total_size += 2 +
+                    ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.body_.quest_state_);
       break;
     }
     case BODY_NOT_SET: {
@@ -19806,6 +20416,30 @@ void Packet::MergeImpl(::google::protobuf::MessageLite& to_msg,
           _this->_impl_.body_.craft_ = Super_::CopyConstruct(arena, *from._impl_.body_.craft_);
         } else {
           _this->_impl_.body_.craft_->MergeFrom(*from._impl_.body_.craft_);
+        }
+        break;
+      }
+      case kQuestAccept: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.quest_accept_ = Super_::CopyConstruct(arena, *from._impl_.body_.quest_accept_);
+        } else {
+          _this->_impl_.body_.quest_accept_->MergeFrom(*from._impl_.body_.quest_accept_);
+        }
+        break;
+      }
+      case kQuestComplete: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.quest_complete_ = Super_::CopyConstruct(arena, *from._impl_.body_.quest_complete_);
+        } else {
+          _this->_impl_.body_.quest_complete_->MergeFrom(*from._impl_.body_.quest_complete_);
+        }
+        break;
+      }
+      case kQuestState: {
+        if (oneof_needs_init) {
+          _this->_impl_.body_.quest_state_ = Super_::CopyConstruct(arena, *from._impl_.body_.quest_state_);
+        } else {
+          _this->_impl_.body_.quest_state_->MergeFrom(*from._impl_.body_.quest_state_);
         }
         break;
       }
@@ -40934,6 +41568,625 @@ void Craft::InternalSwap(Craft* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
 }
 
 ::google::protobuf::Metadata Craft::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+QuestAccept::QuestAccept(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, QuestAccept_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.QuestAccept)
+}
+QuestAccept::QuestAccept(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const QuestAccept& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, QuestAccept_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE QuestAccept::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void QuestAccept::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.request_id_ = {};
+}
+QuestAccept::~QuestAccept() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.QuestAccept)
+  SharedDtor(*this);
+}
+inline void QuestAccept::SharedDtor(MessageLite& self) {
+  QuestAccept& this_ = static_cast<QuestAccept&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull QuestAccept_class_data_ =
+        QuestAccept::InternalGenerateClassData_(QuestAccept_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+QuestAccept::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&QuestAccept_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(QuestAccept_class_data_.tc_table);
+  return QuestAccept_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+QuestAccept::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&QuestAccept_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&QuestAccept_globals_));
+  return QuestAccept_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const QuestAccept::ParseTableT_
+    QuestAccept::_table_ =
+        QuestAccept::InternalGenerateParseTable_(QuestAccept_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void QuestAccept::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.QuestAccept)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  this_._impl_.request_id_ = 0u;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL QuestAccept::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const QuestAccept& this_ = static_cast<const QuestAccept&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL QuestAccept::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const QuestAccept& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.QuestAccept)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 request_id = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_request_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          1, this_._internal_request_id(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.QuestAccept)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t QuestAccept::ByteSizeLong(const MessageLite& base) {
+  const QuestAccept& this_ = static_cast<const QuestAccept&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t QuestAccept::ByteSizeLong() const {
+  const QuestAccept& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.QuestAccept)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+   {
+    // uint32 request_id = 1;
+    cached_has_bits = this_._impl_._has_bits_[0];
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_request_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_request_id());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void QuestAccept::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<QuestAccept*>(&to_msg);
+  auto& from = static_cast<const QuestAccept&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.QuestAccept)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (from._internal_request_id() != 0) {
+      _this->_impl_.request_id_ = from._impl_.request_id_;
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void QuestAccept::CopyFrom(const QuestAccept& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.QuestAccept)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void QuestAccept::InternalSwap(QuestAccept* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  swap(_impl_.request_id_, other->_impl_.request_id_);
+}
+
+::google::protobuf::Metadata QuestAccept::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+QuestComplete::QuestComplete(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, QuestComplete_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.QuestComplete)
+}
+QuestComplete::QuestComplete(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const QuestComplete& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, QuestComplete_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE QuestComplete::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void QuestComplete::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.request_id_ = {};
+}
+QuestComplete::~QuestComplete() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.QuestComplete)
+  SharedDtor(*this);
+}
+inline void QuestComplete::SharedDtor(MessageLite& self) {
+  QuestComplete& this_ = static_cast<QuestComplete&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull QuestComplete_class_data_ =
+        QuestComplete::InternalGenerateClassData_(QuestComplete_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+QuestComplete::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&QuestComplete_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(QuestComplete_class_data_.tc_table);
+  return QuestComplete_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+QuestComplete::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&QuestComplete_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&QuestComplete_globals_));
+  return QuestComplete_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const QuestComplete::ParseTableT_
+    QuestComplete::_table_ =
+        QuestComplete::InternalGenerateParseTable_(QuestComplete_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void QuestComplete::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.QuestComplete)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  this_._impl_.request_id_ = 0u;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL QuestComplete::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const QuestComplete& this_ = static_cast<const QuestComplete&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL QuestComplete::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const QuestComplete& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.QuestComplete)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 request_id = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_request_id() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          1, this_._internal_request_id(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.QuestComplete)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t QuestComplete::ByteSizeLong(const MessageLite& base) {
+  const QuestComplete& this_ = static_cast<const QuestComplete&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t QuestComplete::ByteSizeLong() const {
+  const QuestComplete& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.QuestComplete)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+   {
+    // uint32 request_id = 1;
+    cached_has_bits = this_._impl_._has_bits_[0];
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_request_id() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_request_id());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void QuestComplete::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<QuestComplete*>(&to_msg);
+  auto& from = static_cast<const QuestComplete&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.QuestComplete)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (from._internal_request_id() != 0) {
+      _this->_impl_.request_id_ = from._impl_.request_id_;
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void QuestComplete::CopyFrom(const QuestComplete& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.QuestComplete)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void QuestComplete::InternalSwap(QuestComplete* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  swap(_impl_.request_id_, other->_impl_.request_id_);
+}
+
+::google::protobuf::Metadata QuestComplete::GetMetadata() const {
+  return Super_::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+QuestState::QuestState(::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, QuestState_get_class_data()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:portfolio.mmo.QuestState)
+}
+QuestState::QuestState(
+    ::google::protobuf::Arena* PROTOBUF_NULLABLE arena, const QuestState& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : Super_(arena, QuestState_get_class_data()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : Super_(arena),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+PROTOBUF_NDEBUG_INLINE QuestState::Impl_::Impl_(
+    [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
+    [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
+     {}
+
+inline void QuestState::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  ::memset(reinterpret_cast<char*>(&_impl_) +
+               offsetof(Impl_, completed_),
+           0,
+           offsetof(Impl_, progress_) -
+               offsetof(Impl_, completed_) +
+               sizeof(Impl_::progress_));
+}
+QuestState::~QuestState() {
+  // @@protoc_insertion_point(destructor:portfolio.mmo.QuestState)
+  SharedDtor(*this);
+}
+inline void QuestState::SharedDtor(MessageLite& self) {
+  QuestState& this_ = static_cast<QuestState&>(self);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const
+    ::google::protobuf::internal::ClassDataFull QuestState_class_data_ =
+        QuestState::InternalGenerateClassData_(QuestState_globals_._default);
+
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+QuestState::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&QuestState_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(QuestState_class_data_.tc_table);
+  return QuestState_class_data_.base();
+}
+#else
+PROTOBUF_ATTRIBUTE_WEAK const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL
+QuestState::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&QuestState_globals_);
+  ::google::protobuf::internal::PrefetchToLocalCache(
+      ::google::protobuf::internal::MessageGlobalsBase::ToParseTableBase(&QuestState_globals_));
+  return QuestState_globals_.GetClassData();
+}
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+#ifndef PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 const QuestState::ParseTableT_
+    QuestState::_table_ =
+        QuestState::InternalGenerateParseTable_(QuestState_class_data_.base());
+#endif  // !PROTOBUF_MESSAGE_GLOBALS
+PROTOBUF_NOINLINE void QuestState::Clear() {
+  auto& this_ [[maybe_unused]] = *this;
+  // @@protoc_insertion_point(message_clear_start:portfolio.mmo.QuestState)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    ::memset(&this_._impl_.completed_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.progress_) -
+                 reinterpret_cast<char*>(&this_._impl_.completed_)) +
+                 sizeof(_impl_.progress_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::uint8_t* PROTOBUF_NONNULL QuestState::_InternalSerialize(
+    const ::google::protobuf::MessageLite& base, ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) {
+  const QuestState& this_ = static_cast<const QuestState&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::uint8_t* PROTOBUF_NONNULL QuestState::_InternalSerialize(
+    ::uint8_t* PROTOBUF_NONNULL target,
+    ::google::protobuf::io::EpsCopyOutputStream* PROTOBUF_NONNULL stream) const {
+  const QuestState& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    this_.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(serialize_to_array_start:portfolio.mmo.QuestState)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = this_._impl_._has_bits_[0];
+  // uint32 completed = 1;
+  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (this_._internal_completed() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          1, this_._internal_completed(), target);
+    }
+  }
+
+  // bool accepted = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_accepted() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteBoolToArray(
+          2, this_._internal_accepted(), target);
+    }
+  }
+
+  // uint32 progress = 3;
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    if (this_._internal_progress() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          3, this_._internal_progress(), target);
+    }
+  }
+
+  if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:portfolio.mmo.QuestState)
+  return target;
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+::size_t QuestState::ByteSizeLong(const MessageLite& base) {
+  const QuestState& this_ = static_cast<const QuestState&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+::size_t QuestState::ByteSizeLong() const {
+  const QuestState& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  // @@protoc_insertion_point(message_byte_size_start:portfolio.mmo.QuestState)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits [[maybe_unused]] = 0;
+
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    // uint32 completed = 1;
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (this_._internal_completed() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_completed());
+      }
+    }
+    // bool accepted = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_accepted() != 0) {
+        total_size += 2;
+      }
+    }
+    // uint32 progress = 3;
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (this_._internal_progress() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_progress());
+      }
+    }
+  }
+  return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                             &this_._impl_._cached_size_);
+}
+
+void QuestState::MergeImpl(::google::protobuf::MessageLite& to_msg,
+                      const ::google::protobuf::MessageLite& from_msg) {
+   auto* const _this = static_cast<QuestState*>(&to_msg);
+  auto& from = static_cast<const QuestState&>(from_msg);
+  if constexpr (::_pbi::DebugHardenCheckHasBitConsistency()) {
+    from.CheckHasBitConsistency();
+  }
+  // @@protoc_insertion_point(class_specific_merge_from_start:portfolio.mmo.QuestState)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000007U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (from._internal_completed() != 0) {
+        _this->_impl_.completed_ = from._impl_.completed_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_accepted() != 0) {
+        _this->_impl_.accepted_ = from._impl_.accepted_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      if (from._internal_progress() != 0) {
+        _this->_impl_.progress_ = from._impl_.progress_;
+      }
+    }
+  }
+  _this->_impl_._has_bits_[0] |= cached_has_bits;
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+}
+
+void QuestState::CopyFrom(const QuestState& from) {
+  // @@protoc_insertion_point(class_specific_copy_from_start:portfolio.mmo.QuestState)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void QuestState::InternalSwap(QuestState* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
+  using ::std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(QuestState, _impl_.progress_)
+      + sizeof(QuestState::_impl_.progress_)
+      - PROTOBUF_FIELD_OFFSET(QuestState, _impl_.completed_)>(
+          reinterpret_cast<char*>(&_impl_.completed_),
+          reinterpret_cast<char*>(&other->_impl_.completed_));
+}
+
+::google::protobuf::Metadata QuestState::GetMetadata() const {
   return Super_::GetMetadataImpl(GetClassData()->full());
 }
 // @@protoc_insertion_point(namespace_scope)

@@ -105,6 +105,9 @@ void AMmoPlayerController::SetupInputComponent()
 	MapAction = NewObject<UInputAction>(this, TEXT("Map"));
 	MapAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(MapAction, MmoKeys::KeyOf(EMmoAction::Map));
+	QuestAction = NewObject<UInputAction>(this, TEXT("Quest"));
+	QuestAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(QuestAction, MmoKeys::KeyOf(EMmoAction::Quest));
 	AutoHuntAction = NewObject<UInputAction>(this, TEXT("AutoHunt"));
 	AutoHuntAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(AutoHuntAction, MmoKeys::KeyOf(EMmoAction::AutoHunt));
@@ -165,6 +168,7 @@ void AMmoPlayerController::SetupInputComponent()
 	});
 	Enhanced->BindActionValueLambda(AutoHuntAction, ETriggerEvent::Started, [this](const FInputActionValue&) { ToggleAutoHunt(); });
 	Enhanced->BindActionValueLambda(MapAction, ETriggerEvent::Started, [this](const FInputActionValue&) { GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleMap(); });
+	Enhanced->BindActionValueLambda(QuestAction, ETriggerEvent::Started, [this](const FInputActionValue&) { GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleQuest(); });
 	Enhanced->BindActionValueLambda(ChatAction, ETriggerEvent::Started, [this](const FInputActionValue&) { GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->FocusChat(); });
 	// 강제 공격은 Ctrl을 누르고 있는 동안 켜진다(모바일은 HUD의 켜고 끄는 버튼).
 	Enhanced->BindActionValueLambda(ForceAttackAction, ETriggerEvent::Started, [this](const FInputActionValue&) { Session().Combat().SetForceAttack(true); });
@@ -417,6 +421,27 @@ void AMmoPlayerController::InjectMove(const FVector2D& Axis)
 	{
 		Input->InjectInputForAction(MoveAction, FInputActionValue(Axis), {}, {});
 	}
+}
+
+bool AMmoPlayerController::WalkToQuestGoal()
+{
+	const APawn* Self = GetPawn();
+	// 퀘스트 창과 지도에서 누르므로 창이 막는 손 조작(bManualMoveBlocked)은 보지 않는다(경로는 창이 열려도 이어 걷는다).
+	if (!Self || Session().World().SelfState().bDead || IsStunned())
+	{
+		return false;
+	}
+	const FVector Location = Self->GetActorLocation();
+	const std::optional<MmoWorld::FPoint> Goal = Session().QuestGoal(MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location));
+	if (!Goal)
+	{
+		return false;
+	}
+	// 눌러서 이동(88)과 같다: 대상에게 가던 것과 상호작용을 그만두고 걷는다.
+	bEngaged = false;
+	Interaction.Cancel();
+	Session().Combat().CancelSkill();
+	return WalkTo(MmoCoordinates::ToWorld(Goal->X, Goal->Z));
 }
 
 bool AMmoPlayerController::WalkTo(const FVector& Ground)
@@ -842,6 +867,10 @@ void AMmoPlayerController::Act(const MmoWorld::FInteractTarget& Target)
 		if (Npc && Npc->role() == portfolio::mmo::data::NPC_ROLE_SHOP)
 		{
 			GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowShop();
+		}
+		else if (Npc && Npc->role() == portfolio::mmo::data::NPC_ROLE_QUEST)
+		{
+			GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ShowQuest();
 		}
 		else if (Npc && Npc->role() == portfolio::mmo::data::NPC_ROLE_CRAFT)
 		{

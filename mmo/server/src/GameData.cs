@@ -33,7 +33,7 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<(uint Family, ItemGrade Grade), ItemsRow> _equipment = new Dictionary<(uint Family, ItemGrade Grade), ItemsRow>();
 
         public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null, DropGroups? dropGroups = null, Enchants? enchants = null,
-            Npcs? npcs = null, Shops? shops = null, Pets? pets = null, GatherNodes? gatherNodes = null, Recipes? recipes = null)
+            Npcs? npcs = null, Shops? shops = null, Pets? pets = null, GatherNodes? gatherNodes = null, Recipes? recipes = null, Quests? quests = null)
         {
             Hash = hash;
             Constants = constants;
@@ -86,6 +86,7 @@ namespace PortfolioMmo.Server
                 _gatherNodes.Add(row.Id, row);
             }
 
+            Quests = quests ?? new Quests();
             Recipes = recipes ?? new Recipes();
             foreach (RecipesRow row in Recipes.Rows)
             {
@@ -125,6 +126,19 @@ namespace PortfolioMmo.Server
         public PetsRow? Pet(uint id)
         {
             return System.Linq.Enumerable.FirstOrDefault(Pets.Rows, row => row.Id == id);
+        }
+
+        /// <summary>
+        /// 퀘스트(50). 번호가 차례이고 1부터 이어진다(데이터 테스트가 봄).
+        /// </summary>
+        public Quests Quests { get; }
+
+        /// <summary>
+        /// 차례(1부터)의 퀘스트. 남은 것이 없으면 null.
+        /// </summary>
+        public QuestsRow? Quest(uint order)
+        {
+            return System.Linq.Enumerable.FirstOrDefault(Quests.Rows, row => row.Id == order);
         }
 
         /// <summary>
@@ -326,7 +340,8 @@ namespace PortfolioMmo.Server
                 Shops.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Shops.bytes"))),
                 Pets.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Pets.bytes"))),
                 GatherNodes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "GatherNodes.bytes"))),
-                Recipes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Recipes.bytes"))));
+                Recipes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Recipes.bytes"))),
+                Quests.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Quests.bytes"))));
         }
 
         /// <summary>

@@ -2085,5 +2085,7 @@
 <text x="268" y="302" fill="#164f96">N6</text>
 <circle cx="292.5" cy="303.5" r="3" fill="#1f6fd1" stroke="#000" stroke-width="0.5"/>
 <text x="296" y="306" fill="#164f96">N7</text>
+<circle cx="292.5" cy="315.5" r="3" fill="#1f6fd1" stroke="#000" stroke-width="0.5"/>
+<text x="296" y="318" fill="#164f96">N8</text>
 <text x="4" y="594" fill="#333">막힌 칸: 진회색 · 장식: 연두 · 부활 지점: 초록 · 무법자의 부활 지점: 빨강 · 스폰: 보라(무리 번호·몬스터)와 갈색(무리 번호·G채집물) · NPC: 파랑(N번호) · 1 m = 1</text>
 </svg>

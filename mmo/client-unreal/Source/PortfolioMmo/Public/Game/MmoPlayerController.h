@@ -54,6 +54,9 @@ public:
 	/** 땅의 자리(월드, 높이는 버림)까지 길을 찾아 걷기 시작한다. 길이 없으면 걷지 않고 false다. 걷던 경로는 바꾼다. */
 	bool WalkTo(const FVector& Ground);
 
+	/** 퀘스트의 목표(50. UMmoSession::QuestGoal)까지 길을 찾아 걷는다. 목표나 길이 없으면 걷지 않고 false다. 이동 입력이 들어오면 경로를 버린다(88과 같음). */
+	bool WalkToQuestGoal();
+
 	/** 공격 키(F)와 HUD의 공격 버튼: 대상이 없으면 가장 가까운 적을 대상으로 잡고, 대상에게 공격하러 간다. */
 	void AttackOrTargetNearest();
 
@@ -218,6 +221,10 @@ private:
 	/** 전체 지도(76). */
 	UPROPERTY()
 	TObjectPtr<UInputAction> MapAction;
+
+	/** 퀘스트 창(L. 50). */
+	UPROPERTY()
+	TObjectPtr<UInputAction> QuestAction;
 
 	/** 채팅 입력(41). */
 	UPROPERTY()

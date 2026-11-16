@@ -106,6 +106,11 @@ namespace PortfolioMmo.Server
         /// </summary>
         public uint PetId { get; private set; }
 
+        /// <summary>
+        /// 퀘스트(50): 끝낸 수(다음에 받을 차례는 이것 + 1), 지금 퀘스트를 받았는지, 잡기·제작의 센 수. QuestSystem만 바꾼다.
+        /// </summary>
+        internal SavedQuest Quest { get; set; }
+
         public bool PetOut { get; private set; }
 
         /// <summary>

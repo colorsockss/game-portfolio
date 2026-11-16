@@ -41,6 +41,7 @@ namespace PortfolioMmo.Server
         private readonly LootSystem _loot;
         private readonly GatherSystem _gather;
         private readonly CraftSystem _craft;
+        private readonly QuestSystem _quests;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
         private readonly SkillSystem _skills;
@@ -81,13 +82,6 @@ namespace PortfolioMmo.Server
             _growth = new GrowthSystem(_entities, stats, data, _party);
             _quickslots = new QuickslotSystem(data);
             _inventory = new InventorySystem(data, _progress, _movement, stats, _quickslots, _pk, random);
-            _login.Entered = (player, state, revived) =>
-            {
-                _inventory.Enter(player, state, revived);
-                player.SendPet();
-                _pk.Entered(player);
-                _bosses.Entered(player);
-            };
             _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, _save, random);
             // 채집물도 놓인 점의 번호를 플레이어보다 먼저 받는다(47).
             _gather = new GatherSystem(data, field, _entities, _grid, _scheduler, _progress, _inventory);
@@ -96,6 +90,7 @@ namespace PortfolioMmo.Server
             Npc? shop = null;
             Npc? keeper = null;
             Npc? crafter = null;
+            Npc? giver = null;
             foreach (NpcsRow row in data.Npcs.Rows)
             {
                 if (row.Role == NpcRole.Guard)
@@ -113,11 +108,22 @@ namespace PortfolioMmo.Server
                 shop = row.Role == NpcRole.Shop ? npc : shop;
                 keeper = row.Role == NpcRole.Storage ? npc : keeper;
                 crafter = row.Role == NpcRole.Craft ? npc : crafter;
+                giver = row.Role == NpcRole.Quest ? npc : giver;
             }
 
             _shop = new ShopSystem(data, field, _inventory, shop);
             _storage = new StorageSystem(data, field, _inventory, keeper);
             _craft = new CraftSystem(data, field, _progress, _inventory, crafter, random);
+            _quests = new QuestSystem(data, field, _inventory, _growth, giver);
+            _craft.Crafted = _quests.Crafted;
+            _login.Entered = (player, state, revived) =>
+            {
+                _inventory.Enter(player, state, revived);
+                _quests.Enter(player, state.Quest);
+                player.SendPet();
+                _pk.Entered(player);
+                _bosses.Entered(player);
+            };
             _chat = new ChatSystem(data, _entities, _grid, _party);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, _pk, data);
             _combat.Deaths = _deaths;
@@ -139,6 +145,7 @@ namespace PortfolioMmo.Server
             {
                 _inventory.SendWhole(player);
                 _quickslots.SendWhole(player);
+                QuestSystem.Send(player);
                 player.SendPet();
                 _pk.Entered(player);
                 _bosses.Entered(player);
@@ -342,6 +349,12 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.Gather when player != null:
                     Answer(player, Outcome.From(_gather.Start(player, packet.Gather, Tick)), RequestKind.Gather);
                     break;
+                case Packet.BodyOneofCase.QuestAccept when player != null:
+                    Respond(player, packet.QuestAccept.RequestId, _quests.Accept(player));
+                    break;
+                case Packet.BodyOneofCase.QuestComplete when player != null:
+                    Respond(player, packet.QuestComplete.RequestId, _quests.Complete(player));
+                    break;
                 case Packet.BodyOneofCase.Craft when player != null:
                     Respond(player, packet.Craft.RequestId, _craft.Start(player, packet.Craft, Tick));
                     break;
@@ -462,6 +475,8 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.StorageDeposit => packet.StorageDeposit.RequestId,
                 Packet.BodyOneofCase.StorageWithdraw => packet.StorageWithdraw.RequestId,
                 Packet.BodyOneofCase.Craft => packet.Craft.RequestId,
+                Packet.BodyOneofCase.QuestAccept => packet.QuestAccept.RequestId,
+                Packet.BodyOneofCase.QuestComplete => packet.QuestComplete.RequestId,
                 _ => null,
             };
         }
@@ -546,6 +561,8 @@ namespace PortfolioMmo.Server
             {
                 _pk.Rewarded(rewarded);
             }
+
+            _quests.Killed(_growth.Rewarded);
 
             long combat = Stopwatch.GetTimestamp();
             _vitals.Step(Tick);

@@ -11,6 +11,7 @@
 #include "World/CombatState.h"
 #include "World/Inventory.h"
 #include "World/Party.h"
+#include "World/QuestState.h"
 #include "World/SkillBook.h"
 #include "World/WorldState.h"
 
@@ -91,6 +92,12 @@ public:
 	const MmoWorld::FParty& Party() const { return PartyState; }
 	MmoWorld::FParty& Party() { return PartyState; }
 
+	/** 퀘스트의 상태(50). QuestState가 오면 바뀌고, 받기와 끝내기는 인벤토리의 요청 번호로 보낸다(FInventory::QuestAccept). 로그아웃하거나 끊기면 비운다. */
+	const MmoWorld::FQuestState& Quests() const { return QuestModel; }
+
+	/** 퀘스트의 목표 자리(50. 내 레벨과 인벤토리로 (X, Z)에서 가장 가까운 것). 없으면 nullopt. HUD, 지도, 퀘스트 창, 목표까지 걷기가 함께 쓴다. */
+	std::optional<MmoWorld::FPoint> QuestGoal(int32 X, int32 Z) const;
+
 	/** 배운 스킬과 퀵슬롯(36). 퀵슬롯을 바꾸는 SetQuickslot은 여기서 만들어 Send로 보내고, 서버의 Quickslots가 오면 바뀐다. */
 	const MmoWorld::FSkillBook& Skills() const { return SkillBook; }
 	MmoWorld::FSkillBook& Skills() { return SkillBook; }
@@ -140,6 +147,7 @@ private:
 	MmoWorld::FSkillBook SkillBook;
 	MmoWorld::FChatLog ChatLog;
 	MmoWorld::FParty PartyState;
+	MmoWorld::FQuestState QuestModel;
 	MmoWorld::FBossWatch BossState;
 	bool bLoggingOut = false;
 	portfolio::mmo::CharacterList CharacterList;

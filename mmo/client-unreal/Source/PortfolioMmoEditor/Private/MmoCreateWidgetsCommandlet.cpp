@@ -52,6 +52,7 @@
 #include "UI/MmoQuickslotBarWidget.h"
 #include "UI/MmoShopWidget.h"
 #include "UI/MmoCraftWidget.h"
+#include "UI/MmoQuestWidget.h"
 #include "UI/MmoStorageWidget.h"
 #include "UI/MmoMapWidget.h"
 #include "UI/MmoSkillsWidget.h"
@@ -559,6 +560,10 @@ namespace
 		Zone->AddChildToVerticalBox(SafeZoneText);
 		// 걸린 효과와 전투 상태의 글자 아이콘과 남은 시간(아이콘 표는 73).
 		Zone->AddChildToVerticalBox(Builder.Text(TEXT("EffectsText"), FText::GetEmpty(), Style.SmallSize, true, Style.Status));
+		// 받은 퀘스트의 진행 한 줄(50). 받은 것이 없으면 UMmoHudWidget이 감춘다.
+		UTextBlock* QuestText = Builder.Text(TEXT("QuestText"), FText::GetEmpty(), Style.SmallSize + 2, true);
+		QuestText->SetVisibility(ESlateVisibility::Collapsed);
+		Zone->AddChildToVerticalBox(QuestText)->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
 
 		// 위 가운데에 내 대상의 정보(이름과 레벨, 체력 바). 대상이 없으면 UMmoHudWidget이 감춘다.
 		UVerticalBox* Target = Builder.Add<UVerticalBox>(TEXT("TargetPanel"), true);
@@ -913,6 +918,24 @@ namespace
 		return Builder.Save();
 	}
 
+	/** 퀘스트 창(50): 제목, 이름, 설명, 조건과 진행, 보상, 목표로·받기·끝내기·닫기. */
+	bool CreateQuest()
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Quest, UMmoQuestWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 7, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("quest.title"), Style.TitleSize), Style.Section);
+		AddWithGap(*Column, Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.BodySize + 2, true));
+		UTextBlock* Description = Builder.Text(TEXT("DescriptionText"), FText::GetEmpty(), Style.BodySize, true);
+		Description->SetAutoWrapText(true);
+		AddWithGap(*Column, Description, Style.Section);
+		AddWithGap(*Column, Builder.Text(TEXT("ConditionText"), FText::GetEmpty(), Style.BodySize, true));
+		AddWithGap(*Column, Builder.Text(TEXT("RewardText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
+		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
+			Builder.Button(TEXT("GoalButton"), TEXT("quest.goal")), Builder.Button(TEXT("AcceptButton"), TEXT("quest.accept")),
+			Builder.Button(TEXT("CompleteButton"), TEXT("quest.complete")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+		return Builder.Save();
+	}
+
 	/** 제작 창(48): 제목, 제작법 목록(32의 아이템 칸, 한 줄 8칸), 결과, 필요 레벨, 재료 줄 셋, 골드, 등급의 확률, 자리 없음, 만들기와 닫기. */
 	bool CreateCraft(UClass* ItemSlotClass)
 	{
@@ -1205,7 +1228,7 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	UClass* QuickslotBar = CreateQuickslotBar();
 	UClass* Chat = CreateChat();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && QuickslotBar && Chat && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick, Chat) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateCraft(ItemSlot) && CreateStorage(ItemSlot) && CreateMap() && CreateParty() && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+		&& CreateHud(Joystick, Chat) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateCraft(ItemSlot) && CreateQuest() && CreateStorage(ItemSlot) && CreateMap() && CreateParty() && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 

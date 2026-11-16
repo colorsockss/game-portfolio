@@ -234,6 +234,22 @@ namespace MmoWorld
 		return Packet;
 	}
 
+	portfolio::mmo::Packet FInventory::QuestAccept()
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_quest_accept()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
+	portfolio::mmo::Packet FInventory::QuestComplete()
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_quest_complete()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
 	portfolio::mmo::Packet FInventory::Craft(uint32_t RecipeId)
 	{
 		portfolio::mmo::Packet Packet;

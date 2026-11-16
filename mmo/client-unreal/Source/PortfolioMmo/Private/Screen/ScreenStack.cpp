@@ -26,6 +26,7 @@ namespace MmoScreen
 			{ ELayer::Window, true, EInputMode::Window }, // Map
 			{ ELayer::Window, true, EInputMode::Window }, // Party
 			{ ELayer::Window, true, EInputMode::Window }, // Craft
+			{ ELayer::Window, true, EInputMode::Window }, // Quest
 		};
 		return Rules[static_cast<size_t>(Screen)];
 	}

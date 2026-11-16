@@ -32,7 +32,7 @@ namespace data {
 }  // namespace mmo
 }  // namespace portfolio
 static const ::_pb::EnumDescriptor* PROTOBUF_NONNULL
-    file_level_enum_descriptors_Enums_2eproto[12];
+    file_level_enum_descriptors_Enums_2eproto[13];
 static constexpr const ::_pb::ServiceDescriptor* PROTOBUF_NONNULL* PROTOBUF_NULLABLE
     file_level_service_descriptors_Enums_2eproto = nullptr;
 const ::uint32_t TableStruct_Enums_2eproto::offsets[1] = {};
@@ -83,14 +83,17 @@ const char descriptor_table_protodef_Enums_2eproto[] ABSL_ATTRIBUTE_SECTION_VARI
     "\n\017GATHER_KIND_ORE\020\002\022\024\n\020GATHER_KIND_HERB\020"
     "\003*Z\n\nRecipeKind\022\033\n\027RECIPE_KIND_UNSPECIFI"
     "ED\020\000\022\024\n\020RECIPE_KIND_ITEM\020\001\022\031\n\025RECIPE_KIN"
-    "D_EQUIPMENT\020\002B\024\252\002\021PortfolioMmo.Datab\006pro"
-    "to3"
+    "D_EQUIPMENT\020\002*\226\001\n\tQuestKind\022\032\n\026QUEST_KIN"
+    "D_UNSPECIFIED\020\000\022\023\n\017QUEST_KIND_KILL\020\001\022\026\n\022"
+    "QUEST_KIND_COLLECT\020\002\022\024\n\020QUEST_KIND_CRAFT"
+    "\020\003\022\024\n\020QUEST_KIND_LEVEL\020\004\022\024\n\020QUEST_KIND_E"
+    "QUIP\020\005B\024\252\002\021PortfolioMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Enums_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Enums_2eproto = {
     false,
     false,
-    1723,
+    1876,
     descriptor_table_protodef_Enums_2eproto,
     "Enums.proto",
     &descriptor_table_Enums_2eproto_once,
@@ -190,6 +193,13 @@ RecipeKind_descriptor() {
 }
 PROTOBUF_CONSTINIT const uint32_t RecipeKind_internal_data_[] = {
     196608u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+QuestKind_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[12];
+}
+PROTOBUF_CONSTINIT const uint32_t QuestKind_internal_data_[] = {
+    393216u, 0u, };
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace data
 }  // namespace mmo

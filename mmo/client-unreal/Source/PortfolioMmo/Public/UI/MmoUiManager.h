@@ -68,6 +68,12 @@ public:
 	/** 제작 창을 연다(제작 NPC에게 말함. 48). HUD가 떠 있고 죽지 않았을 때만. */
 	void ShowCraft();
 
+	/** 퀘스트 창을 연다(퀘스트 NPC에게 말함. 50). HUD가 떠 있고 죽지 않았을 때만. */
+	void ShowQuest();
+
+	/** 퀘스트 창을 열거나 닫는다(HUD의 퀘스트 버튼과 L 키. 50). */
+	void ToggleQuest();
+
 	/** 스킬 창을 열고 닫는다(HUD의 스킬 버튼과 K 키. 36). 여는 조건은 캐릭터 창과 같다. */
 	void ToggleSkills();
 

@@ -14,6 +14,17 @@
 #include "UI/MmoMapDrawing.h"
 #include "UI/MmoText.h"
 #include "UI/MmoUiManager.h"
+#include "Game/MmoPlayerController.h"
+
+namespace
+{
+	/** 퀘스트의 목표(50)를 지도 모델의 (X, Z)로. 없으면 nullopt. */
+	std::optional<std::pair<int32_t, int32_t>> GoalOf(const UMmoSession& Session, const FVector& Location)
+	{
+		const std::optional<MmoWorld::FPoint> Goal = Session.QuestGoal(MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location));
+		return Goal ? std::optional<std::pair<int32_t, int32_t>>(std::make_pair(Goal->X, Goal->Z)) : std::nullopt;
+	}
+}
 
 void UMmoMapWidget::NativeOnInitialized()
 {
@@ -72,13 +83,37 @@ void UMmoMapWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 	const FVector Location = Self->GetActorLocation();
 	const std::vector<MmoWorld::FMapPoint> Points = MmoWorld::FMapView::Points(*Field, Session->Data(), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location),
-		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()), Session->Bosses().Positions());
+		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()), Session->Bosses().Positions(), GoalOf(*Session, Location));
 	MmoMapDrawing::PlaceDots(*MapDots, Dots, Points, 0, 0, 1, MapSize);
 	SelfArrow->SetRenderTransformAngle(static_cast<float>(Points[0].YawDegrees));
 	if (UCanvasPanelSlot* Slot = Cast<UCanvasPanelSlot>(SelfArrow->Slot))
 	{
 		Slot->SetPosition(FVector2D(Points[0].U * MapSize, Points[0].V * MapSize));
 	}
+}
+
+FReply UMmoMapWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
+	const MmoWorld::FFieldMap* Field = Session->Field();
+	const APawn* Self = GetOwningPlayerPawn();
+	const std::optional<std::pair<int32_t, int32_t>> Goal = Self ? GoalOf(*Session, Self->GetActorLocation()) : std::nullopt;
+	if (Field && Goal)
+	{
+		// 지도 좌표의 목표 점에서 이 거리(지도 픽셀) 안을 누르면 목표를 누른 것이다.
+		constexpr double PickPixels = 18.0;
+		const auto [U, V] = MmoWorld::FMapView::ToMap(*Field, Goal->first, Goal->second);
+		const FVector2D Local = MapDots->GetCachedGeometry().AbsoluteToLocal(InMouseEvent.GetScreenSpacePosition());
+		if (FVector2D::Distance(Local, FVector2D(U * MapSize, V * MapSize)) <= PickPixels)
+		{
+			if (AMmoPlayerController* Controller = Cast<AMmoPlayerController>(GetOwningPlayer()); Controller && Controller->WalkToQuestGoal())
+			{
+				GetOwningLocalPlayer()->GetSubsystem<UMmoUiManager>()->Close(MmoScreen::EScreen::Map);
+			}
+			return FReply::Handled();
+		}
+	}
+	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 }
 
 void UMmoMapWidget::HandleCloseClicked()

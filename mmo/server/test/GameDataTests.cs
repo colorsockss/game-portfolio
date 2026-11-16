@@ -277,6 +277,49 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 퀘스트(50)는 10개이고 번호가 1부터 이어지며, 조건의 대상은 종류마다 있는 줄(잡기는 Monsters, 모으기는 Items, 제작은 Recipes, 장비 입기는 장비 칸)이고
+        /// 보상 아이템도 있는 줄이다. 사냥 → 장비 → 채집 → 제작의 차례로 처음 나오는 단계가 이어진다.
+        /// </summary>
+        [Fact]
+        public void QuestsFollowTheContentPlan()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            QuestsRow[] quests = data.Quests.Rows.ToArray();
+            Assert.Equal(Enumerable.Range(1, 10).Select(id => (uint)id), quests.Select(row => row.Id));
+            Assert.All(quests, row =>
+            {
+                switch (row.Kind)
+                {
+                    case QuestKind.Kill:
+                        Assert.NotNull(data.FindMonster(row.Target));
+                        break;
+                    case QuestKind.Collect:
+                        Assert.NotNull(data.Item(row.Target));
+                        break;
+                    case QuestKind.Craft:
+                        Assert.NotNull(data.Recipe(row.Target));
+                        break;
+                    case QuestKind.Equip:
+                        Assert.InRange(row.Target, 1u, 6u);
+                        break;
+                    default:
+                        Assert.Equal(QuestKind.Level, row.Kind);
+                        break;
+                }
+
+                Assert.True(!row.HasRewardItemId || ((data.Item(row.RewardItemId) != null) && (row.RewardItemCount > 0)));
+            });
+            // 채집 단계는 채집 재료를 모으는 퀘스트다(사냥 단계의 모으기는 몬스터 부산물).
+            var gathered = new HashSet<uint>(Enumerable.Range(1, 6).Select(id => data.GatherNode((uint)id).ItemId));
+            int First(Func<QuestsRow, bool> match) => Array.FindIndex(quests, row => match(row));
+            int hunt = First(row => row.Kind == QuestKind.Kill);
+            int gear = First(row => row.Kind == QuestKind.Equip);
+            int gather = First(row => (row.Kind == QuestKind.Collect) && gathered.Contains(row.Target));
+            int craft = First(row => row.Kind == QuestKind.Craft);
+            Assert.True((hunt >= 0) && (hunt < gear) && (gear < gather) && (gather < craft));
+        }
+
+        /// <summary>
         /// 플레이어의 스킬 12줄(직업마다 여섯)의 차례와 종류가 설계의 표와 같고, 필요 레벨은 1, 5, 10, 14, 17, 20이다. 마법사의 여섯째는 소환(95)이다.
         /// 시전 시간은 마법사의 대상 중심 범위 피해, 회복, 시전하는 단일 피해, 소환에만 있고 그 줄의 타격까지의 시간은 0이다. 거는 효과는 Effects의 줄이고,
         /// Classes의 첫 스킬은 직업의 첫째 스킬이다.
