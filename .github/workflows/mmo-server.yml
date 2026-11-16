@@ -29,6 +29,8 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
+      # 생성 파일 검사가 data-tool의 패키지를 쓴다(mmo CI와 같음).
+      - run: npm ci
       # 내보내기 전에 mmo CI와 같은 검사(생성 파일, 패킷, 서버)를 돌린다.
       - run: npm run test:mmo
       - uses: ./.github/actions/vps-ssh
