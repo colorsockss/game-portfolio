@@ -145,7 +145,7 @@ data/                기획 데이터 원본
 
 ### E. 배포
 
-- [ ] **10. 배포** `M2` — 서버는 idle server처럼 손으로 실행하는 CI 액션(`workflow_dispatch`)이 GitHub 러너에서 빌드해 VPS에 올립니다. 엔진이 필요 없어 빠르고 깨끗한 환경에서 빌드되며, 배포 키는 GitHub 시크릿에 둡니다. 클라이언트(Unity의 APK·Addressables, Unreal)는 로컬에서 빌드해 올리고, CI는 엔진 없는 검사만 합니다(2026-11-09 정함).
+- [x] **10. 배포** `M2` — 서버는 idle server처럼 손으로 실행하는 CI 액션(`workflow_dispatch`)이 GitHub 러너에서 빌드해 VPS에 올립니다. 엔진이 필요 없어 빠르고 깨끗한 환경에서 빌드되며, 배포 키는 GitHub 시크릿에 둡니다. 클라이언트(Unity의 APK·Addressables, Unreal)는 로컬에서 빌드해 올리고, CI는 엔진 없는 검사만 합니다(2026-11-09 정함).
   - 근거: 키우기를 CI에서 APK까지 내면 47분 52초가 걸렸습니다(2026-10-31, 비공개 저장소의 2 vCPU·메모리 약 7.9 GB 러너. IL2CPP 컴파일 18분 29초, Library 캐시 없는 프로젝트 열기 7분 52초). 공개 저장소의 4 vCPU 러너(메모리 약 16 GB, 2026-11-06 실행 42192688206)로 바뀐 뒤에도 저장소당 Actions 캐시 10 GB(키우기의 Library만 압축 약 2 GB)와 Unreal 엔진의 크기(수십 GB)가 한도입니다. 로컬은 Library가 이미 있어 프로젝트를 다시 열지 않습니다. 공개 저장소라 러너 비용은 어느 쪽이든 0원입니다.
   - 로컬 스크립트가 지킬 것: 작업 트리가 깨끗한 커밋에서만 빌드합니다(다른 세션이 같은 작업 트리를 씀). 빌드에 커밋 SHA를 남깁니다. 올리기 전에 엔진 없는 검사를 돌리고, `ProtocolVersion`과 데이터 해시(4가 더합니다)가 Live 서버와 맞는지 봅니다. main 체크아웃에서만 돌고(worktree에서는 Unity를 열지 않음), 에디터가 프로젝트를 열고 있으면 열린 에디터로 빌드합니다(배치 모드는 같은 프로젝트를 열 수 없음). 키스토어와 VPS 배포 키는 로컬에 둡니다.
   - 올리는 코드: 키우기의 `patch.mjs`는 키우기의 API 지문과 채널에 묶여 있습니다. 같은 방식(rsync, 이미 있는 이름은 건너뜀, 포인터는 임시 이름에 쓴 뒤 바꿈)을 쓰려면 일반적인 부분을 `tools/`로 옮깁니다.
@@ -153,6 +153,9 @@ data/                기획 데이터 원본
   - 한 것(2026-11-11): 서버 배포의 코드. Live 주소는 `mmo.dennou.cloud:7777`(키우기와 같은 VPS, TCP)로 정했습니다. `server/deploy/setup.sh`(VPS 준비, `Restart=always`, `TimeoutStopSec=30`), `server/deploy/deploy.sh`(릴리스 올리기, 바꾸기, 다시 시작, 바깥에서 `Ping`/`Pong` 확인, 최근 5개만 남기기), `.github/workflows/mmo-server.yml`(손으로 실행, 키우기의 비밀값을 함께 씀), `package.mjs`의 live 대상. 로컬 서버로 `check.mjs`와 Linux 빌드(`dotnet publish -r linux-x64 --self-contained`)를 확인했습니다.
   - 첫 배포(2026-11-11): DNS `mmo.dennou.cloud`(키우기와 같은 IP)를 더하고 VPS에서 `setup.sh`를 돌린 뒤(x86_64, ufw 꺼짐), `mmo server` 액션(실행 42860098754)이 `742a242`를 올렸습니다. 바깥(이 Mac)에서 `check.mjs`의 `Ping`/`Pong`과 Unreal 클라이언트의 로그인(`-MmoServer=mmo.dennou.cloud:7777`)을 확인했습니다. 새 워크플로 파일이 큰 푸시(파일 848개)와 함께 처음 올라갔을 때 GitHub이 등록하지 않아, 그 파일을 고친 커밋을 한 번 더 올려 등록했습니다.
   - 남은 것: 클라이언트를 올리는 로컬 스크립트의 규칙(깨끗한 작업 트리, 커밋 SHA, 엔진 없는 검사, `ProtocolVersion`과 데이터 해시 확인)은 클라이언트를 배포하게 될 때 합니다(Unity의 패치는 7이 맡고, Unreal의 패키징에는 M3의 첫 릴리스 때 넣습니다. 마일스톤 절). Live APK로 휴대폰에서 걷는 것은 15에서 봅니다. 서버 배포에 더할 것은 그것이 필요해지는 항목에서 합니다: 릴리스에 생성한 데이터 파일 싣기(4), 사냥하는 봇의 systemd 서비스(30), 시연 옵션(94).
+  - 한 것(2026-11-16): 서버 배포에 더할 것(4, 30, 94)은 그 항목들이 했고, 배포 액션에 `npm ci`와 xlsx의 LFS 받기를 더했습니다(빈 러너에서 검사가 실패하던 두 가지). 클라이언트는 `package.mjs --target live`가 패키징 전에 멈출 것을 봅니다: main 체크아웃인가, 작업 트리가 깨끗한가, `npm run test:mmo`, Live 서버가 이 빌드의 프로토콜 버전과 데이터 해시를 받는가(빈 ID로 `Login`을 보내 `INVALID_LOGIN_ID`가 오면 앞의 둘이 맞은 것이고 계정은 생기지 않음). 커밋 SHA는 모든 대상에서 패키지 명령줄의 `-MmoCommit=`에 남깁니다(더러우면 `-dirty`). 올리기는 GitHub Release(`mmo-android-b<번호>`, Latest 없음)에 손으로 합니다(MANUAL의 명령 표).
+    - 확인: Live 확인을 맞는 값, 다른 해시(`DATA_MISMATCH`), 다른 버전(`VERSION_MISMATCH`)으로 보냈고, 더러운 작업 트리에서 멈추는 것, 깨끗한 `e06581b8`에서 검사를 모두 지나 APK를 만들고 APK 안의 `UECommandLine.txt`에 `-MmoCommit`이 든 것을 봤습니다.
+    - 확인하지 못한 것: worktree에서 멈추는 것(코드만), 에디터가 프로젝트를 열고 있을 때의 패키징(설계에 적힌 "열린 에디터로 빌드"는 Unity의 배치 모드 제약이라 Unreal에는 넣지 않음), Unity의 패치(7).
 
 ### M2 함께 걷기
 
@@ -209,7 +212,10 @@ data/                기획 데이터 원본
   - **화면**: `UMmoSettings`(`UDeveloperSettings`)에 서버 호스트와 포트를 두어 `Config/DefaultGame.ini`에서 읽고, 명령줄의 `-MmoServer=`가 있으면 그것이 이깁니다. `Scripts/package.mjs`가 대상(로컬, Live)에 맞는 주소로 패키징하고 Mac 실행 파일의 심볼 지우기와 서명까지 합니다. Android는 Vulkan만 싣습니다(BlueStacks에서 OpenGL ES 렌더러가 에뮬레이터 드라이버 안에서 크래시가 남, 2026-11-10). 앱 아이콘과 이름을 넣고, 화면을 가로 방향으로 고정합니다.
   - **확인**: 실제 Android 기기에 APK를 넣어 Live 서버(10)에 로그인하고 걷습니다. 터치로 카메라를 돌리고 당기는 것(12)도 봅니다. BlueStacks에서도 뜨는지 봅니다. 기기를 세워도 화면이 가로로 남는지 봅니다. 기기에서 앱이 죽었을 때 로그를 꺼내는 방법을 MANUAL에 적고 한 번 꺼내 봅니다.
   - 한 것(2026-11-11): `UMmoSettings`, `Scripts/package.mjs`(대상의 주소를 패키지 명령줄로, Mac은 심볼 지우기와 서명까지), Android의 Vulkan만(엔진 기본 기기 프로필이 Vulkan을 꺼서 `DefaultDeviceProfiles.ini`에서 모든 기기에 켬), 엔진의 왼쪽 가상 조이스틱과 왼쪽 스틱 이동. 로컬 서버로 Mac `.app`과 BlueStacks의 APK가 로그인해 걷고, BlueStacks에서 조이스틱으로 걷고 화면 오른쪽을 끌어 카메라가 도는 것을 봤습니다. 이때 터치 카메라가 돌지 않던 두 버그(잡는 동안 커서를 감춰 터치 자리가 묶임, 회전 입력을 `Super::PlayerTick` 뒤에 넣어 지워짐)를 고쳤습니다.
-  - 남은 것: 실제 휴대폰에 Live APK(`package.mjs android --target live`, Live 서버는 10에서 올림)를 넣어 로그인하고 걷는 것, 두 손가락 당기기(adb로는 두 손가락을 넣을 수 없음), 앱 아이콘과 이름, 가로 방향 고정, 기기에서 죽었을 때 로그를 꺼내는 방법(MANUAL).
+  - 남은 것(2026-11-11): 실제 휴대폰에 Live APK(`package.mjs android --target live`, Live 서버는 10에서 올림)를 넣어 로그인하고 걷는 것, 두 손가락 당기기(adb로는 두 손가락을 넣을 수 없음), 앱 아이콘과 이름, 가로 방향 고정, 기기에서 죽었을 때 로그를 꺼내는 방법(MANUAL).
+  - 한 것(2026-11-16): 앱 이름 `mmo`(키우기의 `idle`처럼), 가로 화면 `SensorLandscape`를 `DefaultEngine.ini`에 적음(엔진 기본값이지만 정한 것이라), 앱 아이콘(`Build/Android/res/drawable*/icon.png` 36–192 px, 코드로 그린 칼 모양의 자리 표시. 91에서 바꿈), 기기에서 죽었을 때 로그를 꺼내는 방법(MANUAL의 Android). Live APK(`e06581b8`, 81 MB)를 BlueStacks에 넣어 홈 화면의 아이콘과 이름, 세로로 돌리라고 해도 가로로 남는 것(`user_rotation` 0·2·3에서 `ROTATION_90`), Live 서버에 로그인해 체험 기사(레벨 20)를 만들고 들어가 터치 기기의 조작 안내를 닫고 조이스틱으로 걷는 것, `adb shell am crash`로 죽인 앱의 Java 콜스택을 `adb logcat -b crash`로 꺼내는 것을 봤습니다.
+    - 찾은 것: 1920×1080에서 퀵슬롯의 8번째 칸이 오른쪽 아래 버튼 묶음(자동 사냥)과 겹칩니다. 묶음의 너비가 상호작용 버튼의 글(줍기, 말하기)에 따라 바뀌어 겹치는 정도도 바뀝니다. `am crash`로 죽인 뒤 BlueStacks에서 프로세스가 좀비로 남아 다시 띄우지 못해 BlueStacks를 다시 켰습니다.
+    - 남은 것: 실제 휴대폰에서 Live APK로 로그인해 걷는 것과 두 손가락 당기기, 네이티브(`libUnreal.so`) 크래시를 꺼내 심볼로 읽는 것(방법만 적음). Live에 확인용 계정 `bslivecheck`(캐릭터 `BsCheck`)이 남았습니다.
 
 - [x] **16. UI 방식과 화면 관리자** `M2` — 뒤의 모든 창이 올라갈 UI의 뼈대를 만듭니다. [설계: 화면](design.md#화면)
   - **서버**: 없음.
