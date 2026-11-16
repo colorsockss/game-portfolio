@@ -267,6 +267,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kOutlawDropEquipmentPercentFieldNumber = 45,
     kPetPickIntervalMsFieldNumber = 48,
     kSummonLeashDistanceFieldNumber = 47,
+    kViewMarginFieldNumber = 49,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -738,13 +739,23 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_summon_leash_distance(double value);
 
   public:
+  // double view_margin = 49;
+  void clear_view_margin() ;
+  [[nodiscard]] double view_margin() const;
+  void set_view_margin(double value);
+
+  private:
+  double _internal_view_margin() const;
+  void _internal_set_view_margin(double value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 47,
+      ::google::protobuf::internal::TcParseTable<5, 48,
                           0, 0,
-                          7>;
+                          9>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
       const ::google::protobuf::internal::ClassData* PROTOBUF_NONNULL class_data);
   friend class ::google::protobuf::internal::TcParser;
@@ -818,6 +829,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t outlaw_drop_equipment_percent_;
     ::uint32_t pet_pick_interval_ms_;
     double summon_leash_distance_;
+    double view_margin_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1966,6 +1978,30 @@ inline ::uint32_t Constants::_internal_pet_pick_interval_ms() const {
 inline void Constants::_internal_set_pet_pick_interval_ms(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.pet_pick_interval_ms_ = value;
+}
+
+// double view_margin = 49;
+inline void Constants::clear_view_margin() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.view_margin_ = 0;
+  ClearHasBit(_impl_._has_bits_[1], 0x00008000U);
+}
+inline double Constants::view_margin() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.view_margin)
+  return _internal_view_margin();
+}
+inline void Constants::set_view_margin(double value) {
+  _internal_set_view_margin(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00008000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.view_margin)
+}
+inline double Constants::_internal_view_margin() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.view_margin_;
+}
+inline void Constants::_internal_set_view_margin(double value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.view_margin_ = value;
 }
 
 #ifdef __GNUC__

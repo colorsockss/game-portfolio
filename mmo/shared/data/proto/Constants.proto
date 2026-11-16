@@ -100,4 +100,6 @@ message Constants {
   double summon_leash_distance = 47;
   // 나와 있는 펫이 바닥 아이템을 하나 줍는 간격(ms, 96)
   uint32 pet_pick_interval_ms = 48;
+  // 시야 경계의 여유(m, 78). 둘레 3×3 시야 칸을 벗어난 개체는 그 바깥 테두리에서 이만큼 넘게 멀어져야 나간다(들어오는 기준은 3×3칸 그대로)
+  double view_margin = 49;
 }

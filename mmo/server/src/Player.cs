@@ -204,6 +204,11 @@ namespace PortfolioMmo.Server
 
         internal HashSet<Entity> ViewEntered { get; } = new HashSet<Entity>();
 
+        /// <summary>
+        /// 시야 경계의 여유(78)에 있는 개체: 둘레 3×3 시야 칸을 벗어났지만 그 바깥 테두리에서 여유 안이라 아직 받은 것으로 두는 개체(Visible에도 듦).
+        /// </summary>
+        internal HashSet<Entity> ViewMargin { get; } = new HashSet<Entity>();
+
         internal EntityMoves? ViewMoves { get; set; }
 
         internal List<Entity>? ViewChanged { get; set; }

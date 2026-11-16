@@ -6,7 +6,7 @@ namespace PortfolioMmo.Server
     /// <summary>
     /// 시야(52). 보는 쪽은 플레이어이고 보이는 쪽은 모든 개체다. 연결이 받은 개체(Player.Visible)와 개체를 받은 연결(Entity.Watchers)을 함께 고친다.
     /// 시야 칸을 옮기지 않은 플레이어는 둘레 3×3 시야 칸에서 이 틱에 들고 난 개체(Grid의 목록)만 보고, 칸을 옮겼거나 막 들어온 플레이어만 둘레를 통째로 다시 본다.
-    /// 소환수(95)는 시야 칸으로 찾지 않고 주인에 딸려 들고 난다(내 소환수는 늘). 움직임과 표시 상태는 개체마다 받은 연결의 목록으로 모아, 연결마다
+    /// 소환수(95)는 시야 칸으로 찾지 않고 주인에 딸려 들고 난다(내 소환수는 늘). 3×3칸을 벗어난 개체는 바깥 테두리에서 여유(78)를 넘게 멀어져야 나간다. 움직임과 표시 상태는 개체마다 받은 연결의 목록으로 모아, 연결마다
     /// 나간 것 → 들어온 것 → 움직임 → 표시 상태의 차례로 보낸다.
     /// </summary>
     internal sealed class ViewSystem
@@ -22,11 +22,16 @@ namespace PortfolioMmo.Server
         private HashSet<Summon> _summonsNext = new HashSet<Summon>();
         private HashSet<Player> _observers = new HashSet<Player>();
         private HashSet<Player> _observersNext = new HashSet<Player>();
+        private readonly List<Summon> _deferred = new List<Summon>();
+        private readonly long _marginSquared;
 
-        public ViewSystem(EntityTable entities, Grid grid)
+        /// <param name="marginMeters">시야 경계의 여유(m, 78). 0이면 3×3칸을 벗어나는 틱에 나간다.</param>
+        public ViewSystem(EntityTable entities, Grid grid, double marginMeters = 0)
         {
             _entities = entities;
             _grid = grid;
+            long margin = (long)System.Math.Round(marginMeters * Units.PerMeter);
+            _marginSquared = margin * margin;
         }
 
         /// <summary>
@@ -64,6 +69,7 @@ namespace PortfolioMmo.Server
                     Update(observer);
                 }
 
+                CheckMargin(observer);
                 observer.ViewCell = observer.Cell;
             }
 
@@ -137,6 +143,7 @@ namespace PortfolioMmo.Server
                     }
 
                     player.Visible.Clear();
+                    player.ViewMargin.Clear();
                     player.ViewCell = long.MinValue;
                 }
             }
@@ -205,11 +212,33 @@ namespace PortfolioMmo.Server
                 }
             }
 
+            // 벗어난 개체는 여유(78) 안이면 남기고(소환수는 주인이 남으면 남음), 다시 둘레에 든 개체는 여유에서 뺀다.
+            _deferred.Clear();
             foreach (Entity entity in _leaving)
             {
-                Leave(observer, entity);
+                if (entity is Summon summon)
+                {
+                    _deferred.Add(summon);
+                }
+                else if (InWorld(entity) && WithinMargin(observer, entity))
+                {
+                    observer.ViewMargin.Add(entity);
+                }
+                else
+                {
+                    Leave(observer, entity);
+                }
             }
 
+            foreach (Summon summon in _deferred)
+            {
+                if ((summon.Owner != observer) && !observer.Visible.Contains(summon.Owner))
+                {
+                    Leave(observer, summon);
+                }
+            }
+
+            observer.ViewMargin.ExceptWith(next);
             if (observer.JustEntered)
             {
                 // 처음 받는 EntityEnter가 지금 표시 상태를 실으므로 이 틱의 EntityState는 보내지 않는다.
@@ -249,7 +278,8 @@ namespace PortfolioMmo.Server
                     continue;
                 }
 
-                bool shown = InWorld(entity) && Grid.Near(entity.Cell, observer.Cell);
+                bool inWorld = InWorld(entity);
+                bool shown = inWorld && Grid.Near(entity.Cell, observer.Cell);
                 if (shown && !observer.Visible.Contains(entity))
                 {
                     Enter(observer, entity);
@@ -258,12 +288,20 @@ namespace PortfolioMmo.Server
                         Enter(observer, summon);
                     }
                 }
-                else if (!shown && observer.Visible.Contains(entity))
+                else if (shown)
                 {
-                    Leave(observer, entity);
-                    if ((entity is Player { Summon: { } summon }) && observer.Visible.Contains(summon))
+                    // 여유에서 되돌아왔다: 아무것도 보내지 않는다(78).
+                    observer.ViewMargin.Remove(entity);
+                }
+                else if (observer.Visible.Contains(entity))
+                {
+                    if (inWorld && WithinMargin(observer, entity))
                     {
-                        Leave(observer, summon);
+                        observer.ViewMargin.Add(entity);
+                    }
+                    else
+                    {
+                        LeaveWithSummon(observer, entity);
                     }
                 }
             }
@@ -317,6 +355,49 @@ namespace PortfolioMmo.Server
             (_summons, _summonsNext) = (_summonsNext, _summons);
         }
 
+        /// <summary>
+        /// 여유(78)에 있는 개체를 본다: 월드에서 빠졌거나 3×3칸의 바깥 테두리에서 여유를 넘게 멀어졌으면 나가고, 둘레에 다시 들었으면 여유에서 뺀다.
+        /// 틱마다 거리를 재는 것은 여유의 개체뿐이다.
+        /// </summary>
+        private void CheckMargin(Player observer)
+        {
+            if (observer.ViewMargin.Count == 0)
+            {
+                return;
+            }
+
+            _leaving.Clear();
+            _leaving.AddRange(observer.ViewMargin);
+            foreach (Entity entity in _leaving)
+            {
+                if (!InWorld(entity) || !WithinMargin(observer, entity))
+                {
+                    LeaveWithSummon(observer, entity);
+                }
+                else if (Grid.Near(entity.Cell, observer.Cell))
+                {
+                    observer.ViewMargin.Remove(entity);
+                }
+            }
+        }
+
+        private bool WithinMargin(Player observer, Entity entity)
+        {
+            return (_marginSquared > 0) && (Grid.DistanceSquaredOutside(observer.Cell, entity.X, entity.Z) <= _marginSquared);
+        }
+
+        /// <summary>
+        /// 나가게 하고, 플레이어면 그 소환수도(내 것이 아니면) 함께 나가게 한다.
+        /// </summary>
+        private static void LeaveWithSummon(Player observer, Entity entity)
+        {
+            Leave(observer, entity);
+            if ((entity is Player { Summon: { } summon }) && (summon.Owner != observer) && observer.Visible.Contains(summon))
+            {
+                Leave(observer, summon);
+            }
+        }
+
         private void Enter(Player observer, Entity entity)
         {
             observer.Visible.Add(entity);
@@ -328,6 +409,7 @@ namespace PortfolioMmo.Server
         private static void Leave(Player observer, Entity entity)
         {
             observer.Visible.Remove(entity);
+            observer.ViewMargin.Remove(entity);
             entity.Watchers.Remove(observer);
             (observer.ViewLeave ??= new EntitiesLeave()).Ids.Add(entity.Id);
         }

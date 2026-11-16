@@ -109,6 +109,20 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// (x, z)가 칸 둘레 3×3칸의 바깥 테두리에서 떨어진 거리의 제곱(좌표 단위. 안이면 0). 시야 경계의 여유(78)가 쓴다.
+        /// </summary>
+        public static long DistanceSquaredOutside(long cell, int x, int z)
+        {
+            long minX = (long)((int)(cell >> 32) - 1) << CellShift;
+            long minZ = (long)((int)cell - 1) << CellShift;
+            long maxX = minX + (3L << CellShift);
+            long maxZ = minZ + (3L << CellShift);
+            long dx = Math.Max(0, Math.Max(minX - x, x - maxX));
+            long dz = Math.Max(0, Math.Max(minZ - z, z - maxZ));
+            return (dx * dx) + (dz * dz);
+        }
+
+        /// <summary>
         /// 두 칸이 서로의 둘레 3×3칸 안인가(파티의 경험치 42).
         /// </summary>
         public static bool Near(long a, long b)

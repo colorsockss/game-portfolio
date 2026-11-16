@@ -28,7 +28,7 @@ namespace PortfolioMmo.LoadTest
         /// <summary>
         /// 인자: --host(기본 127.0.0.1), --port(기본 7777), --bots(기본 1000), --seconds(측정 시간, 기본 30),
         /// --half-extent(봇이 걷는 정사각형의 반 너비, m, 기본 200), --data(Login에 실을 데이터 해시와 맵의 폴더, 기본 실행 파일 옆의 data/),
-        /// --hunt(사냥), --gather x,z(모일 점, m), --gather-radius(모이는 반지름, m, 기본 15), --prefix(로그인 ID의 앞, 기본 bot. 같은 서버에 두 무리를 붙일 때),
+        /// --hunt(사냥), --gather x,z(모일 점, m), --gather-radius(모이는 반지름, m, 기본 15), --edge(시야 칸의 경계선을 ±6 m로 오감. 78), --prefix(로그인 ID의 앞, 기본 bot. 같은 서버에 두 무리를 붙일 때),
         /// --demo-bots(앞에서부터 이만큼은 체험 캐릭터(94)로 만들어 기사와 마법사를 번갈아 사냥터 2와 3에서 사냥함. --demo 서버, 기본 0).
         /// --seconds 0이면 끝없이 돌고 끊기면 다시 붙는다(Live의 봇).
         /// 서버와 같은 생성물(mmo/shared/data/files/)을 써야 로그인이 된다.
@@ -47,7 +47,8 @@ namespace PortfolioMmo.LoadTest
             var behavior = new Behavior(
                 Array.IndexOf(args, "--hunt") >= 0,
                 Point(Option(args, "--gather", string.Empty)),
-                double.Parse(Option(args, "--gather-radius", "15"), System.Globalization.CultureInfo.InvariantCulture) * Units.PerMeter);
+                double.Parse(Option(args, "--gather-radius", "15"), System.Globalization.CultureInfo.InvariantCulture) * Units.PerMeter,
+                Array.IndexOf(args, "--edge") >= 0);
 
             var bots = new List<Bot>();
             for (int index = 0; index < botCount; index++)
@@ -133,7 +134,7 @@ namespace PortfolioMmo.LoadTest
     /// <summary>
     /// 봇의 행동: 사냥, 모일 점(좌표)과 반지름(좌표 단위).
     /// </summary>
-    internal readonly record struct Behavior(bool Hunt, (double X, double Z)? Gather, double GatherRadius);
+    internal readonly record struct Behavior(bool Hunt, (double X, double Z)? Gather, double GatherRadius, bool Edge = false);
 
     /// <summary>
     /// 로그인하고 걸어 다니는 봇 하나. 받기는 자기 작업에서, 걷기는 Program의 틱 루프에서 하므로 위치는 잠그고 고친다.
@@ -382,6 +383,14 @@ namespace PortfolioMmo.LoadTest
                 else if (here.Gather is (double gatherX, double gatherZ) && (Math.Pow(gatherX - _x, 2) + Math.Pow(gatherZ - _z, 2) > here.GatherRadius * here.GatherRadius))
                 {
                     _heading = Math.Atan2(gatherZ - _z, gatherX - _x);
+                }
+                else if (here.Edge)
+                {
+                    // 가장 가까운 시야 칸의 경계(x가 32 m의 배수인 선)를 ±6 m로 오간다(78의 측정).
+                    double cell = 32.0 * Units.PerMeter;
+                    double line = Math.Round(_x / cell) * cell;
+                    double swing = 6.0 * Units.PerMeter;
+                    _heading = _x > line + swing ? Math.PI : _x < line - swing ? 0 : (Math.Cos(_heading) >= 0 ? 0 : Math.PI);
                 }
 
                 double x = _x + (Math.Cos(_heading) * Stride);
