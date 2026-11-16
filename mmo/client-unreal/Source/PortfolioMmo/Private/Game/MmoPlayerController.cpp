@@ -799,10 +799,40 @@ void AMmoPlayerController::UpdateInteraction()
 void AMmoPlayerController::Act(const MmoWorld::FInteractTarget& Target)
 {
 	UE_LOG(LogMmoNet, Display, TEXT("Interact with %u (kind %d)"), Target.Id, static_cast<int32>(Target.Kind));
+	// 그 자리에 바로 서고(감속으로 미끄러지면 다음 Move가 시작한 자리를 벗어나 서버가 채집을 취소함), 선 자리를 행동보다 먼저 보낸다
+	// (다음 이동 틱을 기다리면 서버가 한 틱 전 자리로 거리를 보고 "사거리 밖"으로 답함). 둘 다 47에서 봄.
+	if (APawn* Self = GetPawn())
+	{
+		if (UPawnMovementComponent* Movement = Self->GetMovementComponent())
+		{
+			Movement->StopMovementImmediately();
+		}
+		const FVector Location = Self->GetActorLocation();
+		portfolio::mmo::Packet Move;
+		if (MoveSender.Flush(MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), MmoCoordinates::ToYaw(Self->GetActorRotation()), Session().World().Ack(), *Move.mutable_move()))
+		{
+			Session().Send(Move);
+		}
+	}
 	if (Target.Kind == MmoWorld::EInteractKind::PickUp)
 	{
 		// 실패(남의 것, 이미 없음, 가득)는 인벤토리 모델이 사건으로 쌓고 HUD가 띄운다.
 		Session().Send(Session().Inventory().PickUp(Target.Id));
+	}
+	else if (Target.Kind == MmoWorld::EInteractKind::Gather)
+	{
+		// 필요 레벨이 모자라면 보내지 않고 알린다(서버의 "레벨 부족"과 같은 글). 나머지 실패는 ActionFailed와 ProgressCancelled가 알린다(47).
+		const MmoWorld::FWorldState& World = Session().World();
+		const auto Found = World.Entities().find(Target.Id);
+		const MmoWorld::FEntity* Me = World.SelfEntity();
+		if (Found != World.Entities().end() && Me && !MmoWorld::FInteraction::CanGather(Found->second.Info, Session().Data(), Me->Info.level()))
+		{
+			Session().Combat().Notify(portfolio::mmo::FAIL_REASON_LEVEL_TOO_LOW);
+			return;
+		}
+		portfolio::mmo::Packet Gather;
+		Gather.mutable_gather()->set_entity_id(Target.Id);
+		Session().Send(Gather);
 	}
 	else if (Target.Kind == MmoWorld::EInteractKind::Talk)
 	{

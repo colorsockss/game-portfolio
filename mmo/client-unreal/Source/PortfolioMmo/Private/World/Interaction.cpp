@@ -12,6 +12,7 @@ namespace MmoWorld
 		switch (Entity.Info.kind())
 		{
 		case portfolio::mmo::ENTITY_KIND_GROUND_ITEM: return EInteractKind::PickUp;
+		case portfolio::mmo::ENTITY_KIND_GATHER_NODE: return EInteractKind::Gather;
 		case portfolio::mmo::ENTITY_KIND_NPC:
 		{
 			const portfolio::mmo::data::NpcsRow* Row = Data.Npc(Entity.Info.template_id());
@@ -27,6 +28,12 @@ namespace MmoWorld
 			|| (Item.owner_case() == portfolio::mmo::EntityEnter::kOwnerPlayerId && Item.owner_player_id() == SelfId)
 			|| (Item.owner_case() == portfolio::mmo::EntityEnter::kOwnerPartyId && PartyId != 0 && Item.owner_party_id() == PartyId)
 			|| ServerTick >= Item.owner_only_end_tick();
+	}
+
+	bool FInteraction::CanGather(const portfolio::mmo::EntityEnter& Node, const MmoData::FGameData& Data, uint32_t Level)
+	{
+		const portfolio::mmo::data::GatherNodesRow* Row = Data.GatherNode(Node.template_id());
+		return Row && Level >= Row->level();
 	}
 
 	std::optional<FInteractTarget> FInteraction::Nearest(const FWorldState& World, int32_t X, int32_t Z, double PickMeters, const FKindOf& Kind)

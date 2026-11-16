@@ -36,6 +36,8 @@ namespace
 	const FLinearColor CriticalColor(1.0f, 0.85f, 0.2f);
 	/** NPC의 이름 색(37). */
 	const FLinearColor NpcColor(0.55f, 0.9f, 0.6f);
+	/** 채집물의 이름 색(47). */
+	const FLinearColor GatherColor(0.95f, 0.8f, 0.55f);
 	/** 플레이어의 이름 색(44): 선공 표시는 보라색, 무법자는 빨간색. */
 	const FLinearColor AggressorColor(0.75f, 0.45f, 1.0f);
 	const FLinearColor OutlawColor(1.0f, 0.25f, 0.25f);
@@ -213,6 +215,16 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 			const FString Name = Row ? MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString() : FString();
 			Tag.SetName(!Row || Row->role() == portfolio::mmo::data::NPC_ROLE_GUARD ? Name : FString::Printf(TEXT("%s [%s]"), *Name, *MmoText::Get(this, RoleKey(Row->role())).ToString()),
 				NpcColor);
+		}
+		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_GATHER_NODE)
+		{
+			// 이름과 필요 레벨(47). 내 레벨이 모자라면 흐리게 그린다.
+			const portfolio::mmo::data::GatherNodesRow* Row = Session->Data().GatherNode(Info.template_id());
+			const MmoWorld::FEntity* Me = World.SelfEntity();
+			FLinearColor Color = GatherColor;
+			Color.A = Me && MmoWorld::FInteraction::CanGather(Info, Session->Data(), Me->Info.level()) ? 1.0f : 0.45f;
+			Tag.SetName(Row ? MmoText::Format(this, TEXT("hud.level"), { MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString(), FString::FromInt(Row->level()) }).ToString()
+				: FString(), Color);
 		}
 		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_GROUND_ITEM)
 		{

@@ -28,9 +28,10 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<uint, DropGroupsRow> _dropGroups = new Dictionary<uint, DropGroupsRow>();
         private readonly Dictionary<uint, EnchantsRow> _enchants = new Dictionary<uint, EnchantsRow>();
         private readonly Dictionary<uint, ShopsRow> _shopItems = new Dictionary<uint, ShopsRow>();
+        private readonly Dictionary<uint, GatherNodesRow> _gatherNodes = new Dictionary<uint, GatherNodesRow>();
 
         public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null, DropGroups? dropGroups = null, Enchants? enchants = null,
-            Npcs? npcs = null, Shops? shops = null, Pets? pets = null)
+            Npcs? npcs = null, Shops? shops = null, Pets? pets = null, GatherNodes? gatherNodes = null)
         {
             Hash = hash;
             Constants = constants;
@@ -78,6 +79,11 @@ namespace PortfolioMmo.Server
 
             Npcs = npcs ?? new Npcs();
             Pets = pets ?? new Pets();
+            foreach (GatherNodesRow row in (gatherNodes ?? new GatherNodes()).Rows)
+            {
+                _gatherNodes.Add(row.Id, row);
+            }
+
             Shops = shops ?? new Shops();
             foreach (ShopsRow row in Shops.Rows)
             {
@@ -103,6 +109,14 @@ namespace PortfolioMmo.Server
         public PetsRow? Pet(uint id)
         {
             return System.Linq.Enumerable.FirstOrDefault(Pets.Rows, row => row.Id == id);
+        }
+
+        /// <summary>
+        /// GatherNodes의 줄(47). 없으면 던진다(Spawns의 ref를 data-tool이 검사하므로 데이터가 맞으면 없을 수 없음).
+        /// </summary>
+        public GatherNodesRow GatherNode(uint id)
+        {
+            return _gatherNodes.TryGetValue(id, out GatherNodesRow? row) ? row : throw new KeyNotFoundException($"GatherNodes has no row {id}.");
         }
 
         /// <summary>
@@ -268,7 +282,8 @@ namespace PortfolioMmo.Server
                 Enchants.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Enchants.bytes"))),
                 Npcs.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Npcs.bytes"))),
                 Shops.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Shops.bytes"))),
-                Pets.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Pets.bytes"))));
+                Pets.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Pets.bytes"))),
+                GatherNodes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "GatherNodes.bytes"))));
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 
 // 상호작용(엔진 없는 코드). 받은 개체 가운데 고르는 거리(Constants.interact_pick_range) 안의 가장 가까운 "상호작용할 수 있는 것"을 후보로
 // 답하고, 고른 것까지 걸어가 실행 거리(Constants.interact_range) 안이고 선이 트인 곳에서 그 종류의 일을 하게 한다. 무엇이 상호작용할 수
-// 있는지(KindOf)는 그 기능의 항목이 더한다(바닥 아이템 33, NPC 37·48·50·75, 채집물 47). 지금은 바닥 아이템이 줍기, NPC가 말하기이고 나머지는 None이다.
+// 있는지(KindOf)는 그 기능의 항목이 더한다(바닥 아이템 33, NPC 37·48·50·75, 채집물 47). 바닥 아이템이 줍기, 채집물이 채집, NPC가 말하기이고 나머지는 None이다.
 // Unity 클라이언트가 같은 구조를 C#으로 옮긴다.
 #include <cstdint>
 #include <functional>
@@ -49,8 +49,8 @@ namespace MmoWorld
 		using FKindOf = std::function<EInteractKind(const FEntity&)>;
 
 		/**
-		 * 지금의 판단: 바닥 아이템은 줍기(주인은 보지 않음. 내 것만 고르려면 CanPickUp을 함께 쓴 FKindOf를 넘김), NPC는 말하기(역할이 경비병인 NPC는 None. 44),
-		 * 나머지는 None(47이 더함).
+		 * 지금의 판단: 바닥 아이템은 줍기(주인은 보지 않음. 내 것만 고르려면 CanPickUp을 함께 쓴 FKindOf를 넘김), 채집물은 채집(필요 레벨은 보지 않음. 47),
+		 * NPC는 말하기(역할이 경비병인 NPC는 None. 44), 나머지는 None.
 		 */
 		static EInteractKind KindOf(const FEntity& Entity, const MmoData::FGameData& Data);
 
@@ -59,6 +59,11 @@ namespace MmoWorld
 		 * GroundItem.CanPickUp과 같음). 이름표의 흐림, 상호작용 버튼, 자동 사냥(40)이 함께 쓴다. 주인이 내 파티(PartyId, 없으면 0)여도 줍는다(42).
 		 */
 		static bool CanPickUp(const portfolio::mmo::EntityEnter& Item, uint32_t SelfId, double ServerTick, uint32_t PartyId = 0);
+
+		/**
+		 * 내 레벨로 이 채집물을 채집할 수 있는가(47. GatherNodes의 필요 레벨). 모르는 채집물은 거짓이다. 화면이 보내기 전에 알리고 이름표를 흐리게 한다.
+		 */
+		static bool CanGather(const portfolio::mmo::EntityEnter& Node, const MmoData::FGameData& Data, uint32_t Level);
 
 		/**
 		 * (X, Z)에서 고르는 거리(m) 안의 가장 가까운 상호작용할 수 있는 개체(내 개체 제외). 거리가 같으면 번호가 작은 것이다. 없으면 nullopt.

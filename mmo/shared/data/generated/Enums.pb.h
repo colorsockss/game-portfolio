@@ -49,6 +49,8 @@ enum EffectKind : int;
 extern const uint32_t EffectKind_internal_data_[];
 enum EquipSlot : int;
 extern const uint32_t EquipSlot_internal_data_[];
+enum GatherKind : int;
+extern const uint32_t GatherKind_internal_data_[];
 enum ItemGrade : int;
 extern const uint32_t ItemGrade_internal_data_[];
 enum ItemKind : int;
@@ -76,6 +78,9 @@ internal::EnumTraitsT<::portfolio::mmo::data::EffectKind_internal_data_>
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::EquipSlot_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::EquipSlot>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::GatherKind_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::GatherKind>;
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::ItemGrade_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::ItemGrade>;
@@ -541,6 +546,48 @@ template <>
   return ::google::protobuf::internal::ParseNamedEnum<NpcRole>(NpcRole_descriptor(), name,
                                            value);
 }
+enum GatherKind : int {
+  GATHER_KIND_UNSPECIFIED = 0,
+  GATHER_KIND_WOOD = 1,
+  GATHER_KIND_ORE = 2,
+  GATHER_KIND_HERB = 3,
+  GatherKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  GatherKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t GatherKind_internal_data_[];
+inline constexpr GatherKind GatherKind_MIN =
+    static_cast<GatherKind>(0);
+inline constexpr GatherKind GatherKind_MAX =
+    static_cast<GatherKind>(3);
+[[nodiscard]] inline bool GatherKind_IsValid(int value) {
+  return 0 <= value && value <= 3;
+}
+inline constexpr int GatherKind_ARRAYSIZE = 3 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+GatherKind_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(GatherKind) {
+  return GatherKind_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& GatherKind_Name(T value) {
+  static_assert(::std::is_same<T, GatherKind>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to GatherKind_Name().");
+  return GatherKind_Name(static_cast<GatherKind>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& GatherKind_Name(GatherKind value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<GatherKind_descriptor, 0, 3>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool GatherKind_Parse(
+    ::absl::string_view name, GatherKind* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<GatherKind>(GatherKind_descriptor(), name,
+                                           value);
+}
 using ::google::protobuf::internal::generated_enum::AbslParseFlag;
 using ::google::protobuf::internal::generated_enum::AbslUnparseFlag;
 
@@ -632,6 +679,12 @@ struct is_proto_enum<::portfolio::mmo::data::NpcRole> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::NpcRole>() {
   return ::portfolio::mmo::data::NpcRole_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::GatherKind> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::GatherKind>() {
+  return ::portfolio::mmo::data::GatherKind_descriptor();
 }
 
 }  // namespace protobuf

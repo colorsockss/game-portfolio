@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PortfolioMmo.Contract;
 using PortfolioMmo.Data;
 
@@ -55,7 +56,8 @@ namespace PortfolioMmo.Server
         /// </summary>
         public void PlaceAll()
         {
-            foreach (SpawnsRow spawn in _data.Spawns.Rows)
+            // 채집물의 줄(47)은 GatherSystem이 놓는다.
+            foreach (SpawnsRow spawn in _data.Spawns.Rows.Where(row => row.HasMonsterId))
             {
                 MonstersRow template = _data.Monster(spawn.MonsterId);
                 // 무리의 자리(m)는 칸의 작은 모서리라 그 칸의 가운데에서 흩는다.
@@ -63,7 +65,7 @@ namespace PortfolioMmo.Server
                 int centerZ = (spawn.Z * Units.PerMeter) + (Units.PerMeter / 2);
                 for (uint i = 0; i < spawn.Count; i++)
                 {
-                    (int x, int z) = Scatter(centerX, centerZ, spawn.ScatterRadius * Units.PerMeter);
+                    (int x, int z) = Scatter(centerX, centerZ, spawn.ScatterRadius * Units.PerMeter, Walker.Monster);
                     var placed = new PlacedPoint(_entities.ReservePlacedId(), x, z, spawn, template);
                     _placed.Add(placed.Id, placed);
                     Respawn(placed);
@@ -106,9 +108,9 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 무리의 자리에서 반경 안이고 몬스터가 곧게 걸어갈 수 있는 무작위 점(원 안에 고르게).
+        /// 무리의 자리에서 반경 안이고 walker(몬스터, 채집물은 플레이어. 47)가 곧게 걸어갈 수 있는 무작위 점(원 안에 고르게).
         /// </summary>
-        private (int X, int Z) Scatter(int centerX, int centerZ, double radius)
+        internal (int X, int Z) Scatter(int centerX, int centerZ, double radius, Walker walker)
         {
             for (int i = 0; i < ScatterTries; i++)
             {
@@ -117,7 +119,7 @@ namespace PortfolioMmo.Server
                 double distance = Math.Max(0, radius - 1) * Math.Sqrt(_random.NextDouble());
                 int x = centerX + (int)Math.Round(Math.Sin(angle) * distance);
                 int z = centerZ + (int)Math.Round(Math.Cos(angle) * distance);
-                if (_field.CanWalkLine(centerX, centerZ, x, z, Walker.Monster))
+                if (_field.CanWalkLine(centerX, centerZ, x, z, walker))
                 {
                     return (x, z);
                 }

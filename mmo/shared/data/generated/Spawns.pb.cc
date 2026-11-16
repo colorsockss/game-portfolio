@@ -51,11 +51,11 @@ constexpr SpawnsRow::ParseTableT_ SpawnsRow::InternalGenerateParseTable_(const :
     {
       PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_._has_bits_),
       0, // no _extensions_
-      8, 56,  // max_field_number, fast_idx_mask
+      9, 120,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967040,  // skipmap
+      4294966784,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      8,  // num_field_entries
+      9,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -65,10 +65,7 @@ constexpr SpawnsRow::ParseTableT_ SpawnsRow::InternalGenerateParseTable_(const :
       ::_pbi::TcParser::GetTable<::portfolio::mmo::data::SpawnsRow>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      // double wander_radius = 8;
-      {::_pbi::TcParser::FastF64S1,
-       {65, 7, 0,
-        PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.wander_radius_)}},
+      {::_pbi::TcParser::MiniParse, {}},
       // uint32 id = 1;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(SpawnsRow, _impl_.id_), 0>(),
        {8, 0, 0,
@@ -81,7 +78,7 @@ constexpr SpawnsRow::ParseTableT_ SpawnsRow::InternalGenerateParseTable_(const :
       {::_pbi::TcParser::FastZ32S1,
        {24, 2, 0,
         PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.z_)}},
-      // uint32 monster_id = 4;
+      // optional uint32 monster_id = 4;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(SpawnsRow, _impl_.monster_id_), 3>(),
        {32, 3, 0,
         PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.monster_id_)}},
@@ -97,6 +94,20 @@ constexpr SpawnsRow::ParseTableT_ SpawnsRow::InternalGenerateParseTable_(const :
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(SpawnsRow, _impl_.respawn_ms_), 6>(),
        {56, 6, 0,
         PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.respawn_ms_)}},
+      // double wander_radius = 8;
+      {::_pbi::TcParser::FastF64S1,
+       {65, 7, 0,
+        PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.wander_radius_)}},
+      // optional uint32 gather_node_id = 9;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(SpawnsRow, _impl_.gather_node_id_), 8>(),
+       {72, 8, 0,
+        PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.gather_node_id_)}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
     }}, {{
       65535, 65535
     }}, {{
@@ -106,7 +117,7 @@ constexpr SpawnsRow::ParseTableT_ SpawnsRow::InternalGenerateParseTable_(const :
       {PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.x_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kSInt32)},
       // sint32 z = 3;
       {PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.z_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kSInt32)},
-      // uint32 monster_id = 4;
+      // optional uint32 monster_id = 4;
       {PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.monster_id_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 count = 5;
       {PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.count_), _Internal::kHasBitsOffset + 5, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
@@ -116,6 +127,8 @@ constexpr SpawnsRow::ParseTableT_ SpawnsRow::InternalGenerateParseTable_(const :
       {PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.respawn_ms_), _Internal::kHasBitsOffset + 6, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // double wander_radius = 8;
       {PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.wander_radius_), _Internal::kHasBitsOffset + 7, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      // optional uint32 gather_node_id = 9;
+      {PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.gather_node_id_), _Internal::kHasBitsOffset + 8, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -134,7 +147,8 @@ inline constexpr SpawnsRow::Impl_::Impl_(
         scatter_radius_{0},
         count_{0u},
         respawn_ms_{0u},
-        wander_radius_{0} {}
+        wander_radius_{0},
+        gather_node_id_{0u} {}
 
 template <typename>
 constexpr SpawnsRow::SpawnsRow(::_pbi::ConstantInitialized,
@@ -390,7 +404,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SpawnsRow, _impl_._has_bits_),
-        11, // hasbit index offset
+        12, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SpawnsRow, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SpawnsRow, _impl_.x_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SpawnsRow, _impl_.z_),
@@ -399,6 +413,7 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SpawnsRow, _impl_.scatter_radius_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SpawnsRow, _impl_.respawn_ms_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SpawnsRow, _impl_.wander_radius_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::SpawnsRow, _impl_.gather_node_id_),
         0,
         1,
         2,
@@ -407,6 +422,7 @@ const ::uint32_t
         4,
         6,
         7,
+        8,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Spawns, _impl_._has_bits_),
         4, // hasbit index offset
@@ -417,7 +433,7 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::data::SpawnsRow)},
-        {19, sizeof(::portfolio::mmo::data::Spawns)},
+        {21, sizeof(::portfolio::mmo::data::Spawns)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -426,19 +442,21 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Spawns_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\014Spawns.proto\022\022portfolio.mmo.data\"\223\001\n\tS"
+    "\n\014Spawns.proto\022\022portfolio.mmo.data\"\327\001\n\tS"
     "pawnsRow\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001"
-    "(\021\022\022\n\nmonster_id\030\004 \001(\r\022\r\n\005count\030\005 \001(\r\022\026\n"
-    "\016scatter_radius\030\006 \001(\001\022\022\n\nrespawn_ms\030\007 \001("
-    "\r\022\025\n\rwander_radius\030\010 \001(\001\"5\n\006Spawns\022+\n\004ro"
-    "ws\030\001 \003(\0132\035.portfolio.mmo.data.SpawnsRowB"
-    "\024\252\002\021PortfolioMmo.Datab\006proto3"
+    "(\021\022\027\n\nmonster_id\030\004 \001(\rH\000\210\001\001\022\r\n\005count\030\005 \001"
+    "(\r\022\026\n\016scatter_radius\030\006 \001(\001\022\022\n\nrespawn_ms"
+    "\030\007 \001(\r\022\025\n\rwander_radius\030\010 \001(\001\022\033\n\016gather_"
+    "node_id\030\t \001(\rH\001\210\001\001B\r\n\013_monster_idB\021\n\017_ga"
+    "ther_node_id\"5\n\006Spawns\022+\n\004rows\030\001 \003(\0132\035.p"
+    "ortfolio.mmo.data.SpawnsRowB\024\252\002\021Portfoli"
+    "oMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Spawns_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Spawns_2eproto = {
     false,
     false,
-    269,
+    337,
     descriptor_table_protodef_Spawns_2eproto,
     "Spawns.proto",
     &descriptor_table_Spawns_2eproto_once,
@@ -486,9 +504,9 @@ inline void SpawnsRow::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, id_),
            0,
-           offsetof(Impl_, wander_radius_) -
+           offsetof(Impl_, gather_node_id_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::wander_radius_));
+               sizeof(Impl_::gather_node_id_));
 }
 SpawnsRow::~SpawnsRow() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.SpawnsRow)
@@ -544,6 +562,7 @@ PROTOBUF_NOINLINE void SpawnsRow::Clear() {
                  reinterpret_cast<char*>(&this_._impl_.id_)) +
                  sizeof(_impl_.wander_radius_));
   }
+  this_._impl_.gather_node_id_ = 0u;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -594,13 +613,11 @@ PROTOBUF_NOINLINE void SpawnsRow::Clear() {
     }
   }
 
-  // uint32 monster_id = 4;
+  // optional uint32 monster_id = 4;
   if (CheckHasBit(cached_has_bits, 0x00000008U)) {
-    if (this_._internal_monster_id() != 0) {
-      target = stream->EnsureSpace(target);
-      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
-          4, this_._internal_monster_id(), target);
-    }
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        4, this_._internal_monster_id(), target);
   }
 
   // uint32 count = 5;
@@ -637,6 +654,13 @@ PROTOBUF_NOINLINE void SpawnsRow::Clear() {
       target = ::_pbi::WireFormatLite::WriteDoubleToArray(
           8, this_._internal_wander_radius(), target);
     }
+  }
+
+  // optional uint32 gather_node_id = 9;
+  if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        9, this_._internal_gather_node_id(), target);
   }
 
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
@@ -684,12 +708,10 @@ PROTOBUF_NOINLINE void SpawnsRow::Clear() {
             this_._internal_z());
       }
     }
-    // uint32 monster_id = 4;
+    // optional uint32 monster_id = 4;
     if (CheckHasBit(cached_has_bits, 0x00000008U)) {
-      if (this_._internal_monster_id() != 0) {
-        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
-            this_._internal_monster_id());
-      }
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+          this_._internal_monster_id());
     }
     // double scatter_radius = 6;
     if (CheckHasBit(cached_has_bits, 0x00000010U)) {
@@ -716,6 +738,13 @@ PROTOBUF_NOINLINE void SpawnsRow::Clear() {
       if (::absl::bit_cast<::uint64_t>(this_._internal_wander_radius()) != 0) {
         total_size += 9;
       }
+    }
+  }
+   {
+    // optional uint32 gather_node_id = 9;
+    if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+          this_._internal_gather_node_id());
     }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
@@ -752,9 +781,7 @@ void SpawnsRow::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
     if (CheckHasBit(cached_has_bits, 0x00000008U)) {
-      if (from._internal_monster_id() != 0) {
-        _this->_impl_.monster_id_ = from._impl_.monster_id_;
-      }
+      _this->_impl_.monster_id_ = from._impl_.monster_id_;
     }
     if (CheckHasBit(cached_has_bits, 0x00000010U)) {
       if (::absl::bit_cast<::uint64_t>(from._internal_scatter_radius()) != 0) {
@@ -777,6 +804,9 @@ void SpawnsRow::MergeImpl(::google::protobuf::MessageLite& to_msg,
       }
     }
   }
+  if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+    _this->_impl_.gather_node_id_ = from._impl_.gather_node_id_;
+  }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
@@ -795,8 +825,8 @@ void SpawnsRow::InternalSwap(SpawnsRow* PROTOBUF_RESTRICT PROTOBUF_NONNULL other
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.wander_radius_)
-      + sizeof(SpawnsRow::_impl_.wander_radius_)
+      PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.gather_node_id_)
+      + sizeof(SpawnsRow::_impl_.gather_node_id_)
       - PROTOBUF_FIELD_OFFSET(SpawnsRow, _impl_.id_)>(
           reinterpret_cast<char*>(&_impl_.id_),
           reinterpret_cast<char*>(&other->_impl_.id_));

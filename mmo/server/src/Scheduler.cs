@@ -84,6 +84,11 @@ namespace PortfolioMmo.Server
         /// 소환수(주인)를 빼는 틱(95): 남는 시간의 끝이나 죽은 뒤 남는 시간의 끝. 세대 번호는 소환수의 LifeGeneration이다.
         /// </summary>
         SummonEnd = 15,
+
+        /// <summary>
+        /// 횟수를 다 쓴 채집물이 다시 나오는 틱(47). 주인은 놓인 점의 번호이고, 그 번호의 채집물이 아직 없을 때만 놓는다.
+        /// </summary>
+        GatherRespawn = 16,
     }
 
     /// <summary>

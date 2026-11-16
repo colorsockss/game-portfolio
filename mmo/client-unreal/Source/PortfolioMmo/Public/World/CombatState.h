@@ -152,6 +152,9 @@ namespace MmoWorld
 		 */
 		std::vector<portfolio::mmo::FailReason> TakeNotices();
 
+		/** 보내기 전에 걸린 요청의 이유를 알림으로 쌓는다(필요 레벨이 모자란 채집물. 47). */
+		void Notify(portfolio::mmo::FailReason Reason) { Notices.push_back(Reason); }
+
 		/**
 		 * 발사체를 NowSeconds까지 옮긴다: 나갈 때가 된 것은 화면이 공격자를 그리는 자리(FWorldState::DrawnPose)에서 나가고, 나간 것은 대상을 그리는
 		 * 자리 쪽으로 간다. 닿거나 대상이 없으면 지운다.

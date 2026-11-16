@@ -355,7 +355,7 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// WithMonsters에 직업, 상수, 몬스터, 레벨, NPC를 바꾼 데이터. null이면 처음 값이다(NPC는 없음, 상점은 Shops).
         /// </summary>
-        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters, Levels? levels = null, Npcs? npcs = null)
+        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters, Levels? levels = null, Npcs? npcs = null, GatherNodes? gatherNodes = null)
         {
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             int min = -(int)size / 2;
@@ -372,7 +372,7 @@ namespace PortfolioMmo.Server.Tests
             table.Rows.Add(zones);
             return new GameData(
                 Hash, constants ?? Constants(size), table, grid, classes ?? Classes, levels ?? Levels,
-                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants, npcs, Shops, Pets);
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants, npcs, Shops, Pets, gatherNodes ?? GatherNodes);
         }
 
         /// <summary>
@@ -394,6 +394,26 @@ namespace PortfolioMmo.Server.Tests
         {
             return new SpawnsRow { Id = id, X = x, Z = z, MonsterId = monsterId, Count = count, ScatterRadius = scatter, RespawnMs = respawnMs, WanderRadius = wander };
         }
+
+        /// <summary>
+        /// 채집물의 무리 하나(47). 자리는 미터이고 흩는 반경의 처음 값은 0이다.
+        /// </summary>
+        public static SpawnsRow GatherSpawn(uint id, int x, int z, uint nodeId, uint count = 1, double scatter = 0, uint respawnMs = 30000)
+        {
+            return new SpawnsRow { Id = id, X = x, Z = z, GatherNodeId = nodeId, Count = count, ScatterRadius = scatter, RespawnMs = respawnMs };
+        }
+
+        /// <summary>
+        /// 시험용 채집물(47): 1은 재료 3001을 하나씩 주고 3초, 횟수 2, 레벨 1. 2는 레벨 5가 필요하다.
+        /// </summary>
+        public static GatherNodes GatherNodes => new GatherNodes
+        {
+            Rows =
+            {
+                new GatherNodesRow { Id = 1, NameKey = "gather.test", Kind = GatherKind.Wood, ItemId = 3001, Count = 1, GatherMs = 3000, Uses = 2, Level = 1 },
+                new GatherNodesRow { Id = 2, NameKey = "gather.test", Kind = GatherKind.Ore, ItemId = 3001, Count = 1, GatherMs = 3000, Uses = 2, Level = 5 },
+            },
+        };
 
         /// <summary>
         /// 한 변 size m의 빈 맵에 사각형(칸, 작은 모서리 포함·큰 모서리 제외)을 글자로 칠한다. 원점이 가운데다.

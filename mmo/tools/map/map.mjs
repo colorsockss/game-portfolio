@@ -120,9 +120,11 @@ export async function buildMap(source) {
       if (!open(x, z)) errors.push(`Zones ${zone.id}: the ${name} point (${x}, ${z}) is on a blocked cell or outside the field`);
     }
   }
-  // 스폰의 무리의 자리(m)는 막힌 칸 위가 아니어야 하고, 몬스터 무리는 안전 지대 밖이어야 한다(몬스터는 안전 지대를 걷지 않음).
+  // 스폰의 줄은 몬스터와 채집물(47) 중 하나만 놓는다. 무리의 자리(m)는 막힌 칸 위가 아니어야 하고(채집물도 같음),
+  // 몬스터 무리는 안전 지대 밖이어야 한다(몬스터는 안전 지대를 걷지 않음).
   for (const spawn of spawns) {
-    if (!open(spawn.x, spawn.z)) errors.push(`Spawns ${spawn.id}: the group point (${spawn.x}, ${spawn.z}) is on a blocked cell or outside the field`);
+    if ((spawn.monsterId == null) === (spawn.gatherNodeId == null)) errors.push(`Spawns ${spawn.id}: set exactly one of monsterId and gatherNodeId`);
+    else if (!open(spawn.x, spawn.z)) errors.push(`Spawns ${spawn.id}: the group point (${spawn.x}, ${spawn.z}) is on a blocked cell or outside the field`);
     else if (spawn.monsterId != null && safe(spawn.x, spawn.z)) errors.push(`Spawns ${spawn.id}: the monster group point (${spawn.x}, ${spawn.z}) is in a safe zone`);
   }
   // NPC의 자리(m)는 막힌 칸 위가 아니어야 한다(37). 뒤의 항목이 더하는 NPC(경비병 44, 제작 48, 퀘스트 50, 창고 75)도 같다.
@@ -238,12 +240,14 @@ function previewSvg({ size, min, objects, zones, town, spawns, npcs }) {
     parts.push(point(zone.respawnX, zone.respawnZ, '#2fbf4f'), point(zone.outlawRespawnX, zone.outlawRespawnZ, '#d0302f'));
   }
   for (const spawn of spawns) {
-    parts.push(point(spawn.x, spawn.z, '#8a3fd1'), `<text x="${spawn.x - min + 4}" y="${top - spawn.z + 2}" fill="#5a2590">${spawn.id}·${spawn.monsterId}</text>`);
+    // 몬스터는 보라(무리 번호·몬스터), 채집물은 갈색(무리 번호·G채집물).
+    const [color, label, what] = spawn.monsterId != null ? ['#8a3fd1', '#5a2590', spawn.monsterId] : ['#b07a2a', '#7a5014', `G${spawn.gatherNodeId}`];
+    parts.push(point(spawn.x, spawn.z, color), `<text x="${spawn.x - min + 4}" y="${top - spawn.z + 2}" fill="${label}">${spawn.id}·${what}</text>`);
   }
   for (const npc of npcs) {
     parts.push(point(npc.x, npc.z, '#1f6fd1'), `<text x="${npc.x - min + 4}" y="${top - npc.z + 2}" fill="#164f96">N${npc.id}</text>`);
   }
-  parts.push(`<text x="4" y="${size - 6}" fill="#333">막힌 칸: 진회색 · 장식: 연두 · 부활 지점: 초록 · 무법자의 부활 지점: 빨강 · 스폰: 보라(무리 번호·몬스터) · NPC: 파랑(N번호) · 1 m = 1</text>`, '</svg>', '');
+  parts.push(`<text x="4" y="${size - 6}" fill="#333">막힌 칸: 진회색 · 장식: 연두 · 부활 지점: 초록 · 무법자의 부활 지점: 빨강 · 스폰: 보라(무리 번호·몬스터)와 갈색(무리 번호·G채집물) · NPC: 파랑(N번호) · 1 m = 1</text>`, '</svg>', '');
   return parts.join('\n');
 }
 

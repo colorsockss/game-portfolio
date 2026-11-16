@@ -236,6 +236,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SpawnsRow final : public ::google::
     kCountFieldNumber = 5,
     kRespawnMsFieldNumber = 7,
     kWanderRadiusFieldNumber = 8,
+    kGatherNodeIdFieldNumber = 9,
   };
   // uint32 id = 1;
   void clear_id() ;
@@ -267,7 +268,8 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SpawnsRow final : public ::google::
   void _internal_set_z(::int32_t value);
 
   public:
-  // uint32 monster_id = 4;
+  // optional uint32 monster_id = 4;
+  [[nodiscard]] bool has_monster_id() const;
   void clear_monster_id() ;
   [[nodiscard]] ::uint32_t monster_id() const;
   void set_monster_id(::uint32_t value);
@@ -317,11 +319,22 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SpawnsRow final : public ::google::
   void _internal_set_wander_radius(double value);
 
   public:
+  // optional uint32 gather_node_id = 9;
+  [[nodiscard]] bool has_gather_node_id() const;
+  void clear_gather_node_id() ;
+  [[nodiscard]] ::uint32_t gather_node_id() const;
+  void set_gather_node_id(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_gather_node_id() const;
+  void _internal_set_gather_node_id(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.SpawnsRow)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<3, 8,
+      ::google::protobuf::internal::TcParseTable<4, 9,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -358,6 +371,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED SpawnsRow final : public ::google::
     ::uint32_t count_;
     ::uint32_t respawn_ms_;
     double wander_radius_;
+    ::uint32_t gather_node_id_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -663,7 +677,11 @@ inline void SpawnsRow::_internal_set_z(::int32_t value) {
   _impl_.z_ = value;
 }
 
-// uint32 monster_id = 4;
+// optional uint32 monster_id = 4;
+inline bool SpawnsRow::has_monster_id() const {
+  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00000008U);
+  return value;
+}
 inline void SpawnsRow::clear_monster_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.monster_id_ = 0u;
@@ -781,6 +799,34 @@ inline double SpawnsRow::_internal_wander_radius() const {
 inline void SpawnsRow::_internal_set_wander_radius(double value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.wander_radius_ = value;
+}
+
+// optional uint32 gather_node_id = 9;
+inline bool SpawnsRow::has_gather_node_id() const {
+  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00000100U);
+  return value;
+}
+inline void SpawnsRow::clear_gather_node_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.gather_node_id_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000100U);
+}
+inline ::uint32_t SpawnsRow::gather_node_id() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.SpawnsRow.gather_node_id)
+  return _internal_gather_node_id();
+}
+inline void SpawnsRow::set_gather_node_id(::uint32_t value) {
+  _internal_set_gather_node_id(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000100U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.SpawnsRow.gather_node_id)
+}
+inline ::uint32_t SpawnsRow::_internal_gather_node_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.gather_node_id_;
+}
+inline void SpawnsRow::_internal_set_gather_node_id(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.gather_node_id_ = value;
 }
 
 // -------------------------------------------------------------------

@@ -32,7 +32,7 @@ namespace data {
 }  // namespace mmo
 }  // namespace portfolio
 static const ::_pb::EnumDescriptor* PROTOBUF_NONNULL
-    file_level_enum_descriptors_Enums_2eproto[10];
+    file_level_enum_descriptors_Enums_2eproto[11];
 static constexpr const ::_pb::ServiceDescriptor* PROTOBUF_NONNULL* PROTOBUF_NULLABLE
     file_level_service_descriptors_Enums_2eproto = nullptr;
 const ::uint32_t TableStruct_Enums_2eproto::offsets[1] = {};
@@ -78,14 +78,16 @@ const char descriptor_table_protodef_Enums_2eproto[] ABSL_ATTRIBUTE_SECTION_VARI
     "pcRole\022\030\n\024NPC_ROLE_UNSPECIFIED\020\000\022\021\n\rNPC_"
     "ROLE_SHOP\020\001\022\024\n\020NPC_ROLE_STORAGE\020\002\022\022\n\016NPC"
     "_ROLE_CRAFT\020\003\022\022\n\016NPC_ROLE_QUEST\020\004\022\022\n\016NPC"
-    "_ROLE_GUARD\020\005B\024\252\002\021PortfolioMmo.Datab\006pro"
-    "to3"
+    "_ROLE_GUARD\020\005*j\n\nGatherKind\022\033\n\027GATHER_KI"
+    "ND_UNSPECIFIED\020\000\022\024\n\020GATHER_KIND_WOOD\020\001\022\023"
+    "\n\017GATHER_KIND_ORE\020\002\022\024\n\020GATHER_KIND_HERB\020"
+    "\003B\024\252\002\021PortfolioMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Enums_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Enums_2eproto = {
     false,
     false,
-    1523,
+    1631,
     descriptor_table_protodef_Enums_2eproto,
     "Enums.proto",
     &descriptor_table_Enums_2eproto_once,
@@ -171,6 +173,13 @@ NpcRole_descriptor() {
 }
 PROTOBUF_CONSTINIT const uint32_t NpcRole_internal_data_[] = {
     393216u, 0u, };
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+GatherKind_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Enums_2eproto);
+  return file_level_enum_descriptors_Enums_2eproto[10];
+}
+PROTOBUF_CONSTINIT const uint32_t GatherKind_internal_data_[] = {
+    262144u, 0u, };
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace data
 }  // namespace mmo

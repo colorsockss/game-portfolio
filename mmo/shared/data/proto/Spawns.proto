@@ -12,16 +12,18 @@ message SpawnsRow {
   sint32 x = 2;
   // 무리의 자리 z(m)
   sint32 z = 3;
-  // 놓는 몬스터. 채집물의 열은 47이 더한다
-  uint32 monster_id = 4;
+  // 놓는 몬스터. 채집물의 줄은 비운다(줄마다 이것과 gatherNodeId 중 하나만. 맵 툴이 검사)
+  optional uint32 monster_id = 4;
   // 무리의 수
   uint32 count = 5;
   // 흩는 반경(m). 무리의 자리에서 이 안이고 곧게 걸어갈 수 있는 점에 하나씩 놓는다
   double scatter_radius = 6;
-  // 죽은 틱부터 다시 나오기까지(ms. 25가 씀)
+  // 죽은 틱부터 다시 나오기까지(ms. 25가 씀). 채집물은 횟수를 다 쓴 틱부터(47)
   uint32 respawn_ms = 7;
   // 배회 반경(m). 놓인 점에서 이 안의 점으로 걷는다
   double wander_radius = 8;
+  // 놓는 채집물(47). 몬스터의 줄은 비운다
+  optional uint32 gather_node_id = 9;
 }
 
 message Spawns {

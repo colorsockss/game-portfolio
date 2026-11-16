@@ -1,0 +1,31 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+import "Enums.proto";
+
+message GatherNodesRow {
+  // 채집물의 번호(47. EntityEnter의 템플릿 번호, Progress의 번호)
+  uint32 id = 1;
+  // 이름(Strings의 키)
+  string name_key = 2;
+  // 종류(화면의 모양)
+  GatherKind kind = 3;
+  // 주는 재료
+  uint32 item_id = 4;
+  // 한 번에 주는 수량
+  uint32 count = 5;
+  // 채집 시간(ms). 시작한 틱부터 이만큼 뒤의 틱에 재료가 들어온다
+  uint32 gather_ms = 6;
+  // 횟수. 다 쓰면 사라졌다가 Spawns의 다시 나오는 시간 뒤에 다시 나온다
+  uint32 uses = 7;
+  // 필요 레벨
+  uint32 level = 8;
+}
+
+message GatherNodes {
+  repeated GatherNodesRow rows = 1;
+}

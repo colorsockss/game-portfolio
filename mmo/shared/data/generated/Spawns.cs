@@ -24,16 +24,18 @@ namespace PortfolioMmo.Data {
     static SpawnsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgxTcGF3bnMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKTAQoJU3Bhd25z",
-            "Um93EgoKAmlkGAEgASgNEgkKAXgYAiABKBESCQoBehgDIAEoERISCgptb25z",
-            "dGVyX2lkGAQgASgNEg0KBWNvdW50GAUgASgNEhYKDnNjYXR0ZXJfcmFkaXVz",
-            "GAYgASgBEhIKCnJlc3Bhd25fbXMYByABKA0SFQoNd2FuZGVyX3JhZGl1cxgI",
-            "IAEoASI1CgZTcGF3bnMSKwoEcm93cxgBIAMoCzIdLnBvcnRmb2xpby5tbW8u",
-            "ZGF0YS5TcGF3bnNSb3dCFKoCEVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
+            "CgxTcGF3bnMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLXAQoJU3Bhd25z",
+            "Um93EgoKAmlkGAEgASgNEgkKAXgYAiABKBESCQoBehgDIAEoERIXCgptb25z",
+            "dGVyX2lkGAQgASgNSACIAQESDQoFY291bnQYBSABKA0SFgoOc2NhdHRlcl9y",
+            "YWRpdXMYBiABKAESEgoKcmVzcGF3bl9tcxgHIAEoDRIVCg13YW5kZXJfcmFk",
+            "aXVzGAggASgBEhsKDmdhdGhlcl9ub2RlX2lkGAkgASgNSAGIAQFCDQoLX21v",
+            "bnN0ZXJfaWRCEQoPX2dhdGhlcl9ub2RlX2lkIjUKBlNwYXducxIrCgRyb3dz",
+            "GAEgAygLMh0ucG9ydGZvbGlvLm1tby5kYXRhLlNwYXduc1Jvd0IUqgIRUG9y",
+            "dGZvbGlvTW1vLkRhdGFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.SpawnsRow), global::PortfolioMmo.Data.SpawnsRow.Parser, new[]{ "Id", "X", "Z", "MonsterId", "Count", "ScatterRadius", "RespawnMs", "WanderRadius" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.SpawnsRow), global::PortfolioMmo.Data.SpawnsRow.Parser, new[]{ "Id", "X", "Z", "MonsterId", "Count", "ScatterRadius", "RespawnMs", "WanderRadius", "GatherNodeId" }, new[]{ "MonsterId", "GatherNodeId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Spawns), global::PortfolioMmo.Data.Spawns.Parser, new[]{ "Rows" }, null, null, null, null)
           }));
     }
@@ -49,6 +51,7 @@ namespace PortfolioMmo.Data {
   {
     private static readonly pb::MessageParser<SpawnsRow> _parser = new pb::MessageParser<SpawnsRow>(() => new SpawnsRow());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<SpawnsRow> Parser { get { return _parser; } }
@@ -76,6 +79,7 @@ namespace PortfolioMmo.Data {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public SpawnsRow(SpawnsRow other) : this() {
+      _hasBits0 = other._hasBits0;
       id_ = other.id_;
       x_ = other.x_;
       z_ = other.z_;
@@ -84,6 +88,7 @@ namespace PortfolioMmo.Data {
       scatterRadius_ = other.scatterRadius_;
       respawnMs_ = other.respawnMs_;
       wanderRadius_ = other.wanderRadius_;
+      gatherNodeId_ = other.gatherNodeId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -140,17 +145,32 @@ namespace PortfolioMmo.Data {
 
     /// <summary>Field number for the "monster_id" field.</summary>
     public const int MonsterIdFieldNumber = 4;
+    private readonly static uint MonsterIdDefaultValue = 0;
+
     private uint monsterId_;
     /// <summary>
-    /// 놓는 몬스터. 채집물의 열은 47이 더한다
+    /// 놓는 몬스터. 채집물의 줄은 비운다(줄마다 이것과 gatherNodeId 중 하나만. 맵 툴이 검사)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public uint MonsterId {
-      get { return monsterId_; }
+      get { if ((_hasBits0 & 1) != 0) { return monsterId_; } else { return MonsterIdDefaultValue; } }
       set {
+        _hasBits0 |= 1;
         monsterId_ = value;
       }
+    }
+    /// <summary>Gets whether the "monster_id" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMonsterId {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "monster_id" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMonsterId() {
+      _hasBits0 &= ~1;
     }
 
     /// <summary>Field number for the "count" field.</summary>
@@ -187,7 +207,7 @@ namespace PortfolioMmo.Data {
     public const int RespawnMsFieldNumber = 7;
     private uint respawnMs_;
     /// <summary>
-    /// 죽은 틱부터 다시 나오기까지(ms. 25가 씀)
+    /// 죽은 틱부터 다시 나오기까지(ms. 25가 씀). 채집물은 횟수를 다 쓴 틱부터(47)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -213,6 +233,36 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "gather_node_id" field.</summary>
+    public const int GatherNodeIdFieldNumber = 9;
+    private readonly static uint GatherNodeIdDefaultValue = 0;
+
+    private uint gatherNodeId_;
+    /// <summary>
+    /// 놓는 채집물(47). 몬스터의 줄은 비운다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint GatherNodeId {
+      get { if ((_hasBits0 & 2) != 0) { return gatherNodeId_; } else { return GatherNodeIdDefaultValue; } }
+      set {
+        _hasBits0 |= 2;
+        gatherNodeId_ = value;
+      }
+    }
+    /// <summary>Gets whether the "gather_node_id" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasGatherNodeId {
+      get { return (_hasBits0 & 2) != 0; }
+    }
+    /// <summary>Clears the value of the "gather_node_id" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearGatherNodeId() {
+      _hasBits0 &= ~2;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -236,6 +286,7 @@ namespace PortfolioMmo.Data {
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(ScatterRadius, other.ScatterRadius)) return false;
       if (RespawnMs != other.RespawnMs) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(WanderRadius, other.WanderRadius)) return false;
+      if (GatherNodeId != other.GatherNodeId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -246,11 +297,12 @@ namespace PortfolioMmo.Data {
       if (Id != 0) hash ^= Id.GetHashCode();
       if (X != 0) hash ^= X.GetHashCode();
       if (Z != 0) hash ^= Z.GetHashCode();
-      if (MonsterId != 0) hash ^= MonsterId.GetHashCode();
+      if (HasMonsterId) hash ^= MonsterId.GetHashCode();
       if (Count != 0) hash ^= Count.GetHashCode();
       if (ScatterRadius != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(ScatterRadius);
       if (RespawnMs != 0) hash ^= RespawnMs.GetHashCode();
       if (WanderRadius != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(WanderRadius);
+      if (HasGatherNodeId) hash ^= GatherNodeId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -281,7 +333,7 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(24);
         output.WriteSInt32(Z);
       }
-      if (MonsterId != 0) {
+      if (HasMonsterId) {
         output.WriteRawTag(32);
         output.WriteUInt32(MonsterId);
       }
@@ -300,6 +352,10 @@ namespace PortfolioMmo.Data {
       if (WanderRadius != 0D) {
         output.WriteRawTag(65);
         output.WriteDouble(WanderRadius);
+      }
+      if (HasGatherNodeId) {
+        output.WriteRawTag(72);
+        output.WriteUInt32(GatherNodeId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -323,7 +379,7 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(24);
         output.WriteSInt32(Z);
       }
-      if (MonsterId != 0) {
+      if (HasMonsterId) {
         output.WriteRawTag(32);
         output.WriteUInt32(MonsterId);
       }
@@ -342,6 +398,10 @@ namespace PortfolioMmo.Data {
       if (WanderRadius != 0D) {
         output.WriteRawTag(65);
         output.WriteDouble(WanderRadius);
+      }
+      if (HasGatherNodeId) {
+        output.WriteRawTag(72);
+        output.WriteUInt32(GatherNodeId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -362,7 +422,7 @@ namespace PortfolioMmo.Data {
       if (Z != 0) {
         size += 1 + pb::CodedOutputStream.ComputeSInt32Size(Z);
       }
-      if (MonsterId != 0) {
+      if (HasMonsterId) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(MonsterId);
       }
       if (Count != 0) {
@@ -376,6 +436,9 @@ namespace PortfolioMmo.Data {
       }
       if (WanderRadius != 0D) {
         size += 1 + 8;
+      }
+      if (HasGatherNodeId) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(GatherNodeId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -398,7 +461,7 @@ namespace PortfolioMmo.Data {
       if (other.Z != 0) {
         Z = other.Z;
       }
-      if (other.MonsterId != 0) {
+      if (other.HasMonsterId) {
         MonsterId = other.MonsterId;
       }
       if (other.Count != 0) {
@@ -412,6 +475,9 @@ namespace PortfolioMmo.Data {
       }
       if (other.WanderRadius != 0D) {
         WanderRadius = other.WanderRadius;
+      }
+      if (other.HasGatherNodeId) {
+        GatherNodeId = other.GatherNodeId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -464,6 +530,10 @@ namespace PortfolioMmo.Data {
             WanderRadius = input.ReadDouble();
             break;
           }
+          case 72: {
+            GatherNodeId = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -513,6 +583,10 @@ namespace PortfolioMmo.Data {
           }
           case 65: {
             WanderRadius = input.ReadDouble();
+            break;
+          }
+          case 72: {
+            GatherNodeId = input.ReadUInt32();
             break;
           }
         }

@@ -365,7 +365,7 @@ namespace MmoWorld
 			return std::nullopt;
 		}
 
-		// 길이: 시전은 Skills의 시전 시간, 귀환은 쓴 아이템(Items)의 쓰는 시간. 채집과 제작은 그 항목(47, 48)이 더한다.
+		// 길이: 시전은 Skills의 시전 시간, 귀환은 쓴 아이템(Items)의 쓰는 시간, 채집은 GatherNodes의 채집 시간(47). 제작은 48이 더한다.
 		double Length = 0;
 		const portfolio::mmo::ProgressState& Progress = Entity.Info.progress();
 		if (Progress.kind() == portfolio::mmo::PROGRESS_KIND_CAST)
@@ -377,6 +377,11 @@ namespace MmoWorld
 		{
 			const portfolio::mmo::data::ItemsRow* Item = Data.Item(Progress.id());
 			Length = Item ? Units::TicksFromMilliseconds(Item->use_ms()) : 0;
+		}
+		else if (Progress.kind() == portfolio::mmo::PROGRESS_KIND_GATHER)
+		{
+			const portfolio::mmo::data::GatherNodesRow* Node = Data.GatherNode(Progress.id());
+			Length = Node ? Units::TicksFromMilliseconds(Node->gather_ms()) : 0;
 		}
 		if (Length <= 0)
 		{

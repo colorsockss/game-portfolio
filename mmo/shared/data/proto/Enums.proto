@@ -144,3 +144,14 @@ enum NpcRole {
   // 경비병(44)
   NPC_ROLE_GUARD = 5;
 }
+
+enum GatherKind {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  GATHER_KIND_UNSPECIFIED = 0;
+  // 나무(47)
+  GATHER_KIND_WOOD = 1;
+  // 광석(47)
+  GATHER_KIND_ORE = 2;
+  // 약초(47)
+  GATHER_KIND_HERB = 3;
+}

@@ -198,8 +198,11 @@ void UMmoHudWidget::ShowProgress(double NowSeconds)
 	{
 		CastBar->SetPercent(static_cast<float>(*Ratio));
 		const portfolio::mmo::data::SkillsRow* Skill = Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_CAST ? Session->Data().Skill(Me->Info.progress().id()) : nullptr;
+		// 채집(47)은 채집물의 이름을 보인다.
+		const portfolio::mmo::data::GatherNodesRow* Node = Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_GATHER ? Session->Data().GatherNode(Me->Info.progress().id()) : nullptr;
 		CastText->SetText(Skill ? MmoText::Get(this, UTF8_TO_TCHAR(Skill->name_key().c_str()))
-			: Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_RECALL ? MmoText::Get(this, TEXT("progress.recall")) : FText::GetEmpty());
+			: Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_RECALL ? MmoText::Get(this, TEXT("progress.recall"))
+			: Node ? MmoText::Get(this, UTF8_TO_TCHAR(Node->name_key().c_str())) : FText::GetEmpty());
 	}
 }
 

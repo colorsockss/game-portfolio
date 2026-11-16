@@ -515,6 +515,18 @@ TPair<int32, int32> UMmoEntitySubsystem::CueKey(uint32 Id) const
 void UMmoEntitySubsystem::StartCast(const MmoWorld::FCombatEvent& Event, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data)
 {
 	const auto Found = World.Entities().find(Event.Target);
+	if (Found != World.Entities().end() && Found->second.Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_GATHER)
+	{
+		// 채집(47): 끝나는 틱까지 채집 동작을 되풀이한다(남의 채집도 보임).
+		CastEnds.Add(Event.Target, Found->second.Info.progress().end_tick());
+		const FMmoEntityVisual* Row = Looks.FindRef(Event.Target);
+		AActor* Actor = Actors.FindRef(Event.Target);
+		if (Row && Actor && !Row->Gather.IsNull() && Row->Gather.Get())
+		{
+			MmoCharacterLook::PlayAction(*ComponentsOf(*Actor).Key, Row->Gather.Get(), true);
+		}
+		return;
+	}
 	const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Event.Skill);
 	if (Found == World.Entities().end() || !Skill)
 	{
@@ -720,7 +732,8 @@ void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::
 	const TWeakObjectPtr<AActor> Requested(&Actor);
 	const double Started = FPlatformTime::Seconds();
 	Streamable.RequestAsyncLoad(
-		TArray<FSoftObjectPath>{ Row->Mesh.ToSoftObjectPath(), Row->Animation.ToSoftObjectPath(), Row->Attack.ToSoftObjectPath(), Row->Hit.ToSoftObjectPath(), Row->Death.ToSoftObjectPath() },
+		TArray<FSoftObjectPath>{ Row->Mesh.ToSoftObjectPath(), Row->Animation.ToSoftObjectPath(), Row->Attack.ToSoftObjectPath(), Row->Hit.ToSoftObjectPath(), Row->Death.ToSoftObjectPath(),
+			Row->Gather.ToSoftObjectPath() },
 		FStreamableDelegate::CreateWeakLambda(this, [this, Id, Requested, Row, Started]()
 		{
 			// 그동안 개체가 나갔거나 다시 들어와 다른 액터가 되었으면 버린다(새 액터는 자기 요청을 따로 했다).

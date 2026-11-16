@@ -1,4 +1,4 @@
-// 상호작용(World/의 Interaction)을 UE 없이 본다. 지금은 상호작용할 수 있는 종류가 없으므로 시험용 종류(몬스터를 채집물처럼)로 본다.
+// 상호작용(World/의 Interaction)을 UE 없이 본다. 채집물(47), 바닥 아이템(33), NPC(37)의 종류와 다가가기를 본다.
 // run.mjs가 빌드하고 실행한다.
 #include <cstdio>
 #include <cstdlib>
@@ -28,10 +28,11 @@ namespace
 	constexpr int32_t M = 32;
 	constexpr uint32_t Me = 1;
 
-	/** 시험용 종류: 몬스터는 채집물, 나머지는 상호작용하지 않는다. */
+	/** 실제 판단(KindOf). 채집물과 바닥 아이템은 데이터 없이도 종류가 정해진다. */
 	EInteractKind TestKind(const MmoWorld::FEntity& Entity)
 	{
-		return Entity.Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER ? EInteractKind::Gather : EInteractKind::None;
+		static const MmoData::FGameData NoData;
+		return FInteraction::KindOf(Entity, NoData);
 	}
 
 	/** 원점의 나(1)와 (x m, 0)의 개체들. */
@@ -81,19 +82,18 @@ namespace
 	/** 후보는 고르는 거리 안의 가장 가까운 상호작용할 수 있는 것이고(상호작용하지 않는 개체는 더 가까워도 건너뜀), 거리 밖이면 없다. */
 	void TheNearestCandidateInsideThePickRange()
 	{
-		const MmoWorld::FWorldState Near = World({ { 2, { 6, portfolio::mmo::ENTITY_KIND_MONSTER } }, { 3, { 4, portfolio::mmo::ENTITY_KIND_MONSTER } },
-			{ 4, { 1, portfolio::mmo::ENTITY_KIND_PLAYER } } });
+		const MmoWorld::FWorldState Near = World({ { 2, { 6, portfolio::mmo::ENTITY_KIND_GATHER_NODE } }, { 3, { 4, portfolio::mmo::ENTITY_KIND_GATHER_NODE } },
+			{ 4, { 1, portfolio::mmo::ENTITY_KIND_PLAYER } }, { 5, { 2, portfolio::mmo::ENTITY_KIND_MONSTER } } });
 		const std::optional<MmoWorld::FInteractTarget> Found = FInteraction::Nearest(Near, 0, 0, 10, TestKind);
 		Expect(Found && Found->Id == 3 && Found->Kind == EInteractKind::Gather, "the nearest interactable inside 10 m is the candidate");
-		Expect(!FInteraction::Nearest(World({ { 2, { 11, portfolio::mmo::ENTITY_KIND_MONSTER } } }), 0, 0, 10, TestKind), "nothing beyond 10 m");
-		const MmoData::FGameData NoData;
-		Expect(!FInteraction::Nearest(Near, 0, 0, 10, [&NoData](const MmoWorld::FEntity& Entity) { return FInteraction::KindOf(Entity, NoData); }), "monsters are not interactions");
+		Expect(!FInteraction::Nearest(World({ { 2, { 11, portfolio::mmo::ENTITY_KIND_GATHER_NODE } } }), 0, 0, 10, TestKind), "nothing beyond 10 m");
+		Expect(!FInteraction::Nearest(World({ { 2, { 3, portfolio::mmo::ENTITY_KIND_MONSTER } } }), 0, 0, 10, TestKind), "monsters are not interactions");
 	}
 
 	/** 고른 것이 실행 거리 밖이면 다가가고, 안이고 선이 트이면 일을 부르고 끝난다. 벽 너머면 거리 안이어도 부르지 않는다. 나가면 그만둔다. */
 	void WalkThenActInsideTheRangeAndInSight()
 	{
-		const MmoWorld::FWorldState Scene = World({ { 2, { 6, portfolio::mmo::ENTITY_KIND_MONSTER } } });
+		const MmoWorld::FWorldState Scene = World({ { 2, { 6, portfolio::mmo::ENTITY_KIND_GATHER_NODE } } });
 		const MmoWorld::FFieldMap Open = Field(32);
 		FInteraction Interaction;
 		Interaction.Start({ 2, EInteractKind::Gather });
@@ -102,9 +102,13 @@ namespace
 		const FInteractStep Close = Interaction.Update(Scene, Open, 4 * M, 0, 3, TestKind);
 		Expect(Close.Kind == FInteractStep::EKind::Act && Close.Target.Id == 2 && !Interaction.IsPending(), "inside 3 m in sight it acts once");
 
+		// 채집물 너머의 칸 (7, 0)에서 채집물(6, 0) 사이에는 벽이 없고, (4, 0)과 채집물 사이에는 벽(5)이 있다: 벽 너머 3 m 안에서는 멈추지 않고,
+		// 벽을 돌아 3 m 안이고 선이 트인 곳에 와서야 채집한다.
 		Interaction.Start({ 2, EInteractKind::Gather });
-		const FInteractStep Walled = Interaction.Update(Scene, Field(32, { 5 }), 4 * M, 0, 3, TestKind);
-		Expect(Walled.Kind == FInteractStep::EKind::Approach, "a wall in between keeps it walking");
+		const MmoWorld::FFieldMap Walled = Field(32, { 5 });
+		Expect(Interaction.Update(Scene, Walled, 4 * M, 0, 3, TestKind).Kind == FInteractStep::EKind::Approach, "a wall in between keeps it walking");
+		const FInteractStep Around = Interaction.Update(Scene, Walled, 8 * M, 0, 3, TestKind);
+		Expect(Around.Kind == FInteractStep::EKind::Act && Around.Target.Kind == EInteractKind::Gather, "it gathers from the open side inside 3 m");
 
 		Interaction.Start({ 9, EInteractKind::Gather });
 		Expect(Interaction.Update(Scene, Open, 0, 0, 3, TestKind).Kind == FInteractStep::EKind::None && !Interaction.IsPending(), "a target that left ends it");
@@ -144,8 +148,29 @@ namespace
 	}
 }
 
+namespace
+{
+	/** 채집물(47)은 채집이고, GatherNodes의 필요 레벨에 닿은 내 레벨만 채집할 수 있다. 모르는 채집물은 채집할 수 없다. */
+	void GatherNodesNeedTheirLevel()
+	{
+		MmoData::FGameData Data;
+		portfolio::mmo::data::GatherNodesRow* Oak = Data.GatherNodes.add_rows();
+		Oak->set_id(4);
+		Oak->set_level(15);
+		MmoWorld::FEntity Node;
+		Node.Info.set_kind(portfolio::mmo::ENTITY_KIND_GATHER_NODE);
+		Node.Info.set_template_id(4);
+		Expect(FInteraction::KindOf(Node, Data) == EInteractKind::Gather, "a gather node is gathered");
+		Expect(!FInteraction::CanGather(Node.Info, Data, 14), "level 14 cannot gather a level 15 node");
+		Expect(FInteraction::CanGather(Node.Info, Data, 15), "level 15 can");
+		Node.Info.set_template_id(9);
+		Expect(!FInteraction::CanGather(Node.Info, Data, 30), "an unknown node cannot be gathered");
+	}
+}
+
 int main()
 {
+	GatherNodesNeedTheirLevel();
 	GroundItemsArePickedUpByTheirOwnerFirst();
 	TheNearestCandidateInsideThePickRange();
 	WalkThenActInsideTheRangeAndInSight();

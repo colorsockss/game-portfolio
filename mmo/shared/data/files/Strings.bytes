@@ -1008,3 +1008,42 @@ Skills and potions {6} · Auto hunt {7} · Bag {8} · Character {9} · Skills {1
 Use the attack, target, interact and force attack buttons at the bottom right and the quickslots below. The auto hunt button hunts for you.
 B
 settings.guide조작 안내 다시 보기Show Controls Again
+#
+gather.pine	소나무	Pine Tree
+.
+item.gather.pine소나무 원목Pine Log
+�
+item.desc.3201R채집해 얻은 재료입니다. 제작에 쓰고 상점에 팔 수 있습니다.=A gathered material. Used in crafting and sellable at a shop.
++
+gather.copper구리 광맥Copper Vein
+/
+item.gather.copper구리 광석
+Copper Ore
+�
+item.desc.3202R채집해 얻은 재료입니다. 제작에 쓰고 상점에 팔 수 있습니다.=A gathered material. Used in crafting and sellable at a shop.
+
+gather.mugwort쑥Mugwort
+,
+item.gather.mugwort쑥 잎Mugwort Leaf
+�
+item.desc.3203R채집해 얻은 재료입니다. 제작에 쓰고 상점에 팔 수 있습니다.=A gathered material. Used in crafting and sellable at a shop.
+!
+
+gather.oak	참나무Oak Tree
+,
+item.gather.oak참나무 원목Oak Log
+�
+item.desc.3204R채집해 얻은 재료입니다. 제작에 쓰고 상점에 팔 수 있습니다.=A gathered material. Used in crafting and sellable at a shop.
+$
+gather.iron
+철 광맥	Iron Vein
+'
+item.gather.iron	철광석Iron Ore
+�
+item.desc.3205R채집해 얻은 재료입니다. 제작에 쓰고 상점에 팔 수 있습니다.=A gathered material. Used in crafting and sellable at a shop.
+!
+gather.ginseng인삼Ginseng
+2
+item.gather.ginseng인삼 뿌리Ginseng Root
+�
+item.desc.3206R채집해 얻은 재료입니다. 제작에 쓰고 상점에 팔 수 있습니다.=A gathered material. Used in crafting and sellable at a shop.

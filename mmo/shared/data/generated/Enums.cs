@@ -57,10 +57,13 @@ namespace PortfolioMmo.Data {
             "RVQQBiqIAQoHTnBjUm9sZRIYChROUENfUk9MRV9VTlNQRUNJRklFRBAAEhEK",
             "DU5QQ19ST0xFX1NIT1AQARIUChBOUENfUk9MRV9TVE9SQUdFEAISEgoOTlBD",
             "X1JPTEVfQ1JBRlQQAxISCg5OUENfUk9MRV9RVUVTVBAEEhIKDk5QQ19ST0xF",
-            "X0dVQVJEEAVCFKoCEVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
+            "X0dVQVJEEAUqagoKR2F0aGVyS2luZBIbChdHQVRIRVJfS0lORF9VTlNQRUNJ",
+            "RklFRBAAEhQKEEdBVEhFUl9LSU5EX1dPT0QQARITCg9HQVRIRVJfS0lORF9P",
+            "UkUQAhIUChBHQVRIRVJfS0lORF9IRVJCEANCFKoCEVBvcnRmb2xpb01tby5E",
+            "YXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), typeof(global::PortfolioMmo.Data.ItemKind), typeof(global::PortfolioMmo.Data.ItemGrade), typeof(global::PortfolioMmo.Data.EquipSlot), typeof(global::PortfolioMmo.Data.ItemUse), typeof(global::PortfolioMmo.Data.NpcRole), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), typeof(global::PortfolioMmo.Data.ItemKind), typeof(global::PortfolioMmo.Data.ItemGrade), typeof(global::PortfolioMmo.Data.EquipSlot), typeof(global::PortfolioMmo.Data.ItemUse), typeof(global::PortfolioMmo.Data.NpcRole), typeof(global::PortfolioMmo.Data.GatherKind), }, null, null));
     }
     #endregion
 
@@ -314,6 +317,25 @@ namespace PortfolioMmo.Data {
     /// 경비병(44)
     /// </summary>
     [pbr::OriginalName("NPC_ROLE_GUARD")] Guard = 5,
+  }
+
+  public enum GatherKind {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("GATHER_KIND_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 나무(47)
+    /// </summary>
+    [pbr::OriginalName("GATHER_KIND_WOOD")] Wood = 1,
+    /// <summary>
+    /// 광석(47)
+    /// </summary>
+    [pbr::OriginalName("GATHER_KIND_ORE")] Ore = 2,
+    /// <summary>
+    /// 약초(47)
+    /// </summary>
+    [pbr::OriginalName("GATHER_KIND_HERB")] Herb = 3,
   }
 
   #endregion

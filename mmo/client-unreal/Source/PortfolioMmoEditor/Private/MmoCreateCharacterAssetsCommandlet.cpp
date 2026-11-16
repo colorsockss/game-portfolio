@@ -283,10 +283,12 @@ namespace
 			};
 			Row.Skill = Sequence(Class.Skill);
 			Row.Cast = Sequence(Class.Cast);
+			// 채집 동작(47)은 두 직업 모두 팩의 줍는 동작이다.
+			Row.Gather = Sequence(TEXT("PickUp"));
 			if (!Row.Mesh.LoadSynchronous() || !Row.Animation.LoadSynchronous() || !Row.Attack.LoadSynchronous() || !Row.Hit.LoadSynchronous() || !Row.Death.LoadSynchronous()
-				|| !Row.Skill.LoadSynchronous() || (Class.Cast && !Row.Cast.LoadSynchronous()))
+				|| !Row.Skill.LoadSynchronous() || (Class.Cast && !Row.Cast.LoadSynchronous()) || !Row.Gather.LoadSynchronous())
 			{
-				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the mesh, the anim blueprint or the attack/hit/death/skill/cast animation is missing."), *Folder);
+				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the mesh, the anim blueprint or the attack/hit/death/skill/cast/pick-up animation is missing."), *Folder);
 				return false;
 			}
 		}

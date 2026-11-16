@@ -51,6 +51,10 @@ struct FMmoEntityVisual
 	/** 시전(Progress) 동안 되풀이하는 동작. 비면 시전 동작이 없다. */
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr<UAnimSequence> Cast;
+
+	/** 채집(Progress의 종류 채집. 47) 동안 되풀이하는 동작. 비면 채집 동작이 없다. */
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UAnimSequence> Gather;
 };
 
 /** 표에 줄이 없는 개체(와 불러오는 동안)의 자리 표시 하나: 개체 종류 → 도형과 색. */

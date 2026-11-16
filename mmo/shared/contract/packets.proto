@@ -93,6 +93,9 @@ message Packet {
     PartyMemberVitals party_member_vitals = 408;
     Karma karma = 409;
     DeathPenalty death_penalty = 410;
+
+    // 500–599: 생활(채집 47, 제작 48)
+    Gather gather = 500;
   }
 }
 
@@ -538,7 +541,7 @@ message Inventory {
   uint64 gold = 2;
 }
 
-// 얻은 까닭. 줍기(33), 구매(37), 채집(47), 제작(48), 퀘스트 보상(50)은 그 항목이 더한다.
+// 얻은 까닭. 제작(48), 퀘스트 보상(50)은 그 항목이 더한다.
 enum GainReason {
   GAIN_REASON_UNSPECIFIED = 0;
   GAIN_REASON_DEV_COMMAND = 1;
@@ -546,6 +549,8 @@ enum GainReason {
   GAIN_REASON_PICK_UP = 2;
   // 상점에서 삼(37).
   GAIN_REASON_BUY = 3;
+  // 채집물에서 채집함(47).
+  GAIN_REASON_GATHER = 4;
 }
 
 message ItemAmount {
@@ -900,7 +905,7 @@ enum FailReason {
   FAIL_REASON_PARTY_MEMBER = 39;
 }
 
-// ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
+// ActionFailed가 어느 요청의 실패인지. 요청 번호가 없는 요청을 만드는 항목이 더한다(제작은 48).
 enum RequestKind {
   REQUEST_KIND_UNSPECIFIED = 0;
   REQUEST_KIND_ATTACK = 1;
@@ -916,6 +921,8 @@ enum RequestKind {
   REQUEST_KIND_PARTY = 7;
   // 펫 부르기와 넣기(96).
   REQUEST_KIND_PET = 8;
+  // 채집 시작(47).
+  REQUEST_KIND_GATHER = 9;
 }
 
 // 클라이언트 → 서버. 대상을 기본 공격한다. 이미 공격 중이면 대상만 바꾼다. 다가가는 것은 클라이언트의 이동이다.
@@ -1036,4 +1043,13 @@ message AreaWarning {
   sint32 x = 3;
   sint32 z = 4;
   uint32 hit_tick = 5;
+}
+
+// ── 생활 ──
+
+// 클라이언트 → 서버. 채집물(그 연결이 받은 개체)을 채집하기 시작한다(47). 3 m 안이고 선이 트여야 하며, 필요 레벨과 재료가 들어갈 자리를 본다.
+// 요청 번호가 없고 실패는 ActionFailed(REQUEST_KIND_GATHER)가 알린다. 시작하면 Progress(종류 채집, 번호는 GatherNodes의 줄)가 가고,
+// 끝나는 틱에 같은 확인을 다시 해 재료를 넣는다(InventoryChanged의 새로 얻은 것, 까닭 채집). 걸리면 ProgressCancelled(그 이유)다.
+message Gather {
+  uint32 entity_id = 1;
 }

@@ -51,6 +51,9 @@ namespace MmoData
 		portfolio::mmo::data::Shops Shops;
 		portfolio::mmo::data::Pets Pets;
 
+		/** 채집물(47: 이름의 키, 종류, 재료, 채집 시간, 필요 레벨). id가 EntityEnter.template_id와 Progress의 번호다. */
+		portfolio::mmo::data::GatherNodes GatherNodes;
+
 		/** 직업과 레벨마다의 필요 경험치와 기본 능력치(31: 경험치 바의 비율). */
 		portfolio::mmo::data::Levels Levels;
 
@@ -86,6 +89,9 @@ namespace MmoData
 
 		/** 펫의 줄(96). 없으면 nullptr. */
 		const portfolio::mmo::data::PetsRow* Pet(uint32_t Id) const;
+
+		/** 채집물의 줄(47). 없으면 nullptr. */
+		const portfolio::mmo::data::GatherNodesRow* GatherNode(uint32_t Id) const;
 
 		/** 그 아이템의 상점 줄. 상점에 없으면 nullptr. */
 		const portfolio::mmo::data::ShopsRow* ShopItem(uint32_t ItemId) const;

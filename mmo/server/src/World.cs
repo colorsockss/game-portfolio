@@ -39,6 +39,7 @@ namespace PortfolioMmo.Server
         private readonly LingerSystem _lingering;
         private readonly SummonSystem _summons;
         private readonly LootSystem _loot;
+        private readonly GatherSystem _gather;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
         private readonly SkillSystem _skills;
@@ -87,6 +88,9 @@ namespace PortfolioMmo.Server
                 _bosses.Entered(player);
             };
             _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, _save, random);
+            // 채집물도 놓인 점의 번호를 플레이어보다 먼저 받는다(47).
+            _gather = new GatherSystem(data, field, _entities, _grid, _scheduler, _progress, _inventory);
+            _gather.PlaceAll(_spawn);
             // NPC도 놓인 점의 번호를 플레이어보다 먼저 받는다(37). 움직이지 않고 칸을 막지 않는다. 경비병(44)은 AiSystem이 움직인다.
             Npc? shop = null;
             Npc? keeper = null;
@@ -181,6 +185,13 @@ namespace PortfolioMmo.Server
         internal System.Collections.Generic.IEnumerable<Guard> Guards => System.Linq.Enumerable.OfType<Guard>(_entities.All);
 
         internal System.Collections.Generic.IEnumerable<GroundItem> GroundItems => System.Linq.Enumerable.OfType<GroundItem>(_entities.All);
+
+        /// <summary>
+        /// 월드에 있는 채집물과 놓인 점(47. 테스트가 봄).
+        /// </summary>
+        internal System.Collections.Generic.IEnumerable<GatherNode> GatherNodes => System.Linq.Enumerable.OfType<GatherNode>(_entities.All);
+
+        internal System.Collections.Generic.IEnumerable<GatherPoint> GatherPoints => _gather.Points;
 
         /// <summary>
         /// 날고 있는 직선 발사체(테스트가 수를 봄).
@@ -319,6 +330,9 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.UseItem when player != null:
                     Respond(player, packet.UseItem.RequestId, _inventory.Use(player, packet.UseItem, Tick));
                     break;
+                case Packet.BodyOneofCase.Gather when player != null:
+                    Answer(player, Outcome.From(_gather.Start(player, packet.Gather, Tick)), RequestKind.Gather);
+                    break;
                 case Packet.BodyOneofCase.PickUp when player != null:
                     Respond(player, packet.PickUp.RequestId, _loot.PickUp(player, packet.PickUp, Tick));
                     break;
@@ -412,6 +426,7 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.UseSkill => RequestKind.Skill,
                 Packet.BodyOneofCase.Revive => RequestKind.Revive,
                 Packet.BodyOneofCase.StorageOpen => RequestKind.Storage,
+                Packet.BodyOneofCase.Gather => RequestKind.Gather,
                 Packet.BodyOneofCase.PartyInvite or Packet.BodyOneofCase.PartyAnswer or Packet.BodyOneofCase.PartyLeave or Packet.BodyOneofCase.PartyKick => RequestKind.Party,
                 _ => null,
             };
@@ -613,6 +628,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.LingerEnd => _lingering.IsEndCurrent(job),
                 ScheduledKind.SummonEnd => _summons.IsEndCurrent(job),
                 ScheduledKind.Respawn => _spawn.PlacedAt(job.Owner) != null,
+                ScheduledKind.GatherRespawn => _gather.IsRespawnCurrent(job),
                 _ => throw UnknownKind(job.Kind),
             };
         }
@@ -624,7 +640,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.UnreachableEnd => false,
                 ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit or ScheduledKind.CastEnd or ScheduledKind.AreaHit => true,
                 ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd or ScheduledKind.GroundItemExpire
-                    or ScheduledKind.PartyInviteExpire or ScheduledKind.AggressorEnd or ScheduledKind.LingerEnd or ScheduledKind.SummonEnd => false,
+                    or ScheduledKind.PartyInviteExpire or ScheduledKind.AggressorEnd or ScheduledKind.LingerEnd or ScheduledKind.SummonEnd or ScheduledKind.GatherRespawn => false,
                 _ => throw UnknownKind(kind),
             };
         }
@@ -644,6 +660,12 @@ namespace PortfolioMmo.Server
                     break;
                 case ScheduledKind.ProgressEnd when _entities.Find(job.Owner) is Player { Progress.Kind: ProgressKind.Recall } recalling:
                     _inventory.FinishRecall(recalling, Tick);
+                    break;
+                case ScheduledKind.ProgressEnd when _entities.Find(job.Owner) is Player { Progress.Kind: ProgressKind.Gather } gathering:
+                    _gather.Finish(gathering, Tick);
+                    break;
+                case ScheduledKind.GatherRespawn:
+                    _gather.Respawn(job);
                     break;
                 case ScheduledKind.ProgressEnd:
                     _progress.End(job);

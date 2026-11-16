@@ -67,7 +67,7 @@ namespace PortfolioMmo.Balance
             foreach (ZonesRow zone in data.Zones.Rows.Where(zone => zone.Kind == ZoneKind.HuntingGround))
             {
                 uint[] ids = data.Spawns.Rows
-                    .Where(spawn => spawn.X >= zone.MinX && spawn.X < zone.MaxX && spawn.Z >= zone.MinZ && spawn.Z < zone.MaxZ)
+                    .Where(spawn => spawn.HasMonsterId && spawn.X >= zone.MinX && spawn.X < zone.MaxX && spawn.Z >= zone.MinZ && spawn.Z < zone.MaxZ)
                     .Select(spawn => spawn.MonsterId)
                     .Distinct()
                     .ToArray();
@@ -158,7 +158,7 @@ namespace PortfolioMmo.Balance
         /// </summary>
         private static IEnumerable<MonstersRow> Monsters(GameData data)
         {
-            return data.Spawns.Rows.Select(spawn => spawn.MonsterId).Distinct().Select(data.Monster).Where(monster => monster.Kind == MonsterKind.Normal).OrderBy(monster => monster.Level);
+            return data.Spawns.Rows.Where(spawn => spawn.HasMonsterId).Select(spawn => spawn.MonsterId).Distinct().Select(data.Monster).Where(monster => monster.Kind == MonsterKind.Normal).OrderBy(monster => monster.Level);
         }
 
         private static double Median(IEnumerable<double> values)

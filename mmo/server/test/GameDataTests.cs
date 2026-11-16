@@ -140,8 +140,8 @@ namespace PortfolioMmo.Server.Tests
         {
             GameData data = GameData.Load(GameData.DefaultFolder);
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
-            MonstersRow boss = Assert.Single(data.Spawns.Rows.Select(row => data.Monster(row.MonsterId)).Distinct(), monster => monster.Kind == MonsterKind.Boss);
-            SpawnsRow spawn = Assert.Single(data.Spawns.Rows, row => row.MonsterId == boss.Id);
+            MonstersRow boss = Assert.Single(data.Spawns.Rows.Where(row => row.HasMonsterId).Select(row => data.Monster(row.MonsterId)).Distinct(), monster => monster.Kind == MonsterKind.Boss);
+            SpawnsRow spawn = Assert.Single(data.Spawns.Rows, row => row.HasMonsterId && (row.MonsterId == boss.Id));
             Assert.Equal(1u, spawn.Count);
             Assert.Equal(ZoneKind.BossArea, data.Zones.Rows.Single(zone => zone.Id == field.ZoneAt(spawn.X * Units.PerMeter, spawn.Z * Units.PerMeter)).Kind);
             Assert.True(field.CanWalk((spawn.X * Units.PerMeter) + (Units.PerMeter / 2), (spawn.Z * Units.PerMeter) + (Units.PerMeter / 2), Walker.Monster));
@@ -197,7 +197,7 @@ namespace PortfolioMmo.Server.Tests
             GameData data = GameData.Load(GameData.DefaultFolder);
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
             // 보스(43)의 줄은 TheBossStandsAloneInItsLair가 본다.
-            SpawnsRow[] spawns = data.Spawns.Rows.Where(spawn => data.Monster(spawn.MonsterId).Kind == MonsterKind.Normal).ToArray();
+            SpawnsRow[] spawns = data.Spawns.Rows.Where(spawn => spawn.HasMonsterId && (data.Monster(spawn.MonsterId).Kind == MonsterKind.Normal)).ToArray();
             Assert.Equal(40, spawns.Length);
             var byZone = spawns.GroupBy(spawn => field.ZoneAt(spawn.X * Units.PerMeter, spawn.Z * Units.PerMeter)).ToDictionary(group => group.Key, group => group.ToList());
             Assert.Equal(new uint[] { 2, 3, 4, 5 }, byZone.Keys.OrderBy(zone => zone));
@@ -221,6 +221,27 @@ namespace PortfolioMmo.Server.Tests
             Assert.True(ranged.Aggressive);
             Assert.Contains(ranged.Id, byZone[3].Select(group => group.MonsterId));
             Assert.True(ranged.AttackRange > monsters.Where(monster => monster != ranged).Max(monster => monster.AttackRange));
+        }
+
+        /// <summary>
+        /// 채집물(47)은 나무·광석·약초 × 2단계의 6종이고, Spawns의 채집물 줄은 종마다 4무리, 무리마다 3개로 24줄 72개이며 모두 채집지 안이다.
+        /// 재료는 채집물마다 다른 재료(Items의 재료)다.
+        /// </summary>
+        [Fact]
+        public void GatherNodesFollowTheContentPlan()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
+            GatherNodesRow[] nodes = Enumerable.Range(1, 6).Select(id => data.GatherNode((uint)id)).ToArray();
+            Assert.Equal(new[] { GatherKind.Wood, GatherKind.Ore, GatherKind.Herb }, nodes.Select(node => node.Kind).Distinct());
+            Assert.All(nodes.GroupBy(node => node.Kind), kind => Assert.Equal(2, kind.Select(node => node.Level).Distinct().Count()));
+            Assert.Equal(6, nodes.Select(node => node.ItemId).Distinct().Count());
+            Assert.All(nodes, node => Assert.Equal(ItemKind.Material, data.Item(node.ItemId)!.Kind));
+
+            SpawnsRow[] spawns = data.Spawns.Rows.Where(row => row.HasGatherNodeId).ToArray();
+            Assert.Equal((24, 72L), (spawns.Length, spawns.Sum(row => (long)row.Count)));
+            Assert.All(spawns.GroupBy(row => row.GatherNodeId), kind => Assert.Equal(4, kind.Count()));
+            Assert.All(spawns, row => Assert.Equal(ZoneKind.GatheringGround, data.Zones.Rows.Single(zone => zone.Id == field.ZoneAt(row.X * Units.PerMeter, row.Z * Units.PerMeter)).Kind));
         }
 
         /// <summary>

@@ -226,6 +226,16 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// Add가 다 넣을 수 있는가(겹치는 아이템은 같은 아이템이 든 칸이나 빈 칸, 겹치지 않는 아이템은 빈 칸이 count개). 넣기 전에 묻는 일(채집 47)이 쓴다.
+        /// </summary>
+        public bool HasRoom(Player player, uint itemId, uint count)
+        {
+            ItemsRow item = _data.Item(itemId) ?? throw new ArgumentException($"Items has no row {itemId}.", nameof(itemId));
+            ItemSlot[] slots = player.Bag.Slots;
+            return item.Stackable ? slots.Any(slot => (slot.ItemId == itemId) || (slot.ItemId == 0)) : slots.Count(slot => slot.ItemId == 0) >= count;
+        }
+
+        /// <summary>
         /// 칸에서 count개를 뺀다(없으면 빈 칸이 됨). 칸에 그만큼 없으면 빼지 않고 false다.
         /// </summary>
         public bool Remove(Player player, int index, uint count)
