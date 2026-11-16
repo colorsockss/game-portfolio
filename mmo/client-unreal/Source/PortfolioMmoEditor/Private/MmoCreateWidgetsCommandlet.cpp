@@ -632,14 +632,26 @@ namespace
 		}
 
 		// 오른쪽 아래에 자동 사냥 버튼(PC와 터치 기기 모두. Z, 40)과 터치 기기에서만 보이는 강제 공격(44), 상호작용, 대상 고르기, 공격 버튼.
-		// PC에서는 Ctrl(누르는 동안), E, Tab, F가 같은 일을 한다.
-		Corner(*Root, Row(Builder, TEXT("TouchButtons"), {
-			Builder.Button(TEXT("AutoButton"), TEXT("hud.auto")),
+		// PC에서는 Ctrl(누르는 동안), E, Tab, F가 같은 일을 한다. 한 줄이면 가운데의 퀵슬롯과 겹쳐서(1920×1080의 영어에서 봄) 세 줄로 쌓고,
+		// 공격을 모서리에 둔다. 가장 넓은 줄도 4:3 화면의 퀵슬롯 오른쪽 자리(기준 해상도에서 약 320)에 들게 한 줄에 둘까지만 둔다.
+		// PC에서는 자동 사냥만 보여 모서리에 남는다.
+		UVerticalBox* TouchButtons = Builder.Add<UVerticalBox>(TEXT("TouchButtons"));
+		TouchButtons->AddChildToVerticalBox(Row(Builder, TEXT("TouchTopRow"), {
 			Builder.Button(TEXT("ForceButton"), TEXT("hud.forceAttack"), true),
 			Builder.Button(TEXT("InteractButton"), TEXT("interact.none"), true),
+		}))->SetPadding(FMargin(0.0f, 0.0f, 0.0f, Style.Gap));
+		TouchButtons->AddChildToVerticalBox(Row(Builder, TEXT("TouchMiddleRow"), {
 			Builder.Button(TEXT("TargetButton"), TEXT("hud.target"), true),
+		}))->SetPadding(FMargin(0.0f, 0.0f, 0.0f, Style.Gap));
+		TouchButtons->AddChildToVerticalBox(Row(Builder, TEXT("TouchBottomRow"), {
+			Builder.Button(TEXT("AutoButton"), TEXT("hud.auto")),
 			Builder.Button(TEXT("AttackButton"), TEXT("hud.attack"), true),
-		}), ECorner::BottomRight, FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5));
+		}));
+		for (UPanelSlot* RowSlot : TouchButtons->GetSlots())
+		{
+			Cast<UVerticalBoxSlot>(RowSlot)->SetHorizontalAlignment(HAlign_Right);
+		}
+		Corner(*Root, TouchButtons, ECorner::BottomRight, FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5));
 
 		// 오른쪽 위에 메뉴 버튼(PC와 터치 기기 모두. 키 표시와 누를 수 있는지는 UMmoHudWidget이 정함), 그 아래 시연 표시(설정 창에서 켬).
 		UVerticalBox* TopRight = Builder.Add<UVerticalBox>(TEXT("TopRight"));
