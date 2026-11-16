@@ -81,7 +81,7 @@ namespace PortfolioMmo.Server
                 return FailReason.PartyFull;
             }
 
-            if ((_entities.Find(targetId) is not Player target) || (target == inviter) || !inviter.Visible.Contains(target))
+            if ((_entities.Find(targetId) is not Player target) || (target == inviter) || !inviter.Visible.Contains(target) || target.Session.IsDetached)
             {
                 return FailReason.NoTarget;
             }

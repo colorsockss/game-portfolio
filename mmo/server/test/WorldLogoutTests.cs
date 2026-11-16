@@ -11,7 +11,7 @@ namespace PortfolioMmo.Server.Tests
     public partial class WorldTests
     {
         /// <summary>
-        /// Logout을 보내면 그 틱에 개체가 빠지며 사본이 큐에 들어가고 연결이 닫힌다. 죽은 동안과 기절한 동안에도 받는다.
+        /// Logout을 보내면 그 틱에 개체가 빠지며 사본이 큐에 들어가고 연결이 닫힌다. 죽은 동안과 기절한 동안에도 받는다(기절의 전투 상태는 지워 남지 않게 함. 46).
         /// </summary>
         [Fact]
         public void LoggingOutSavesRemovesAndCloses()
@@ -24,6 +24,7 @@ namespace PortfolioMmo.Server.Tests
             world.Inventory.Add(dead.Player, 3001, 4, GainReason.Unspecified);
             dead.Player.Dead = true;
             world.Effects.Apply(stunned.Player!, TestData.Effects.Rows.Single(row => row.Id == 1), world.Tick);
+            stunned.Player!.CombatEndTick = 0;
 
             world.Receive(dead, new Packet { Logout = new Logout() });
             world.Receive(stunned, new Packet { Logout = new Logout() });
@@ -31,6 +32,16 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal((0, (Player?)null), (world.PlayerCount, dead.Player));
             world.CompleteSaves();
             Assert.Contains(store.Load(id)!.State.Items, item => item is { ItemId: 3001, Count: 4 });
+        }
+
+        /// <summary>
+        /// 전투 상태를 지운 뒤 leave로 연결을 떼어, 남지 않고 그 틱에 빠지게 한다(46 전의 "월드에서 빠짐"을 보는 테스트가 씀).
+        /// </summary>
+        private static void LeaveNow(Session session, System.Action leave)
+        {
+            session.Player!.CombatEndTick = 0;
+            session.Player!.AggressorEndTick = 0;
+            leave();
         }
     }
 }

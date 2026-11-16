@@ -113,6 +113,9 @@ private:
 	void ApplyInputMode();
 	void OpenFromCommandLine();
 	void HandlePacket(const portfolio::mmo::Packet& Packet);
+
+	/** 내가 죽었다(Died, 또는 죽은 채 넘겨받음. 46): 열린 창을 닫고 사망 화면을 띄운다. */
+	void ShowDeath();
 	void HandleClosed(const FString& Reason);
 	APlayerController* PlayerController() const;
 	UMmoSession& Session() const;

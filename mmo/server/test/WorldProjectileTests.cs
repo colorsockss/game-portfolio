@@ -208,7 +208,7 @@ namespace PortfolioMmo.Server.Tests
                 {
                     (world, mage) => mage.Player!.Dead = true,
                     (world, mage) => world.Effects.Apply(mage.Player!, Effect(1), world.Tick),
-                    (world, mage) => world.Receive(mage, new Packet { LeaveWorld = new LeaveWorld() }),
+                    (world, mage) => LeaveNow(mage, () => world.Receive(mage, new Packet { LeaveWorld = new LeaveWorld() })),
                 })
                 {
                     World world = CombatWorld(TestData.Draw(64));

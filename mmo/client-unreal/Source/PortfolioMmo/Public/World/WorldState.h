@@ -171,6 +171,9 @@ namespace MmoWorld
 		/** 죽은 채 빠졌던 캐릭터라 부활 지점에서 부활해 들어왔는가(EnterWorldResult의 표시. 38). 꺼내면 내린다. */
 		bool TakeRevivedOnEnter() { return std::exchange(bRevivedOnEnter, false); }
 
+		/** 남아 있다 죽은 캐릭터를 넘겨받아 내 개체가 죽은 채 들어왔는가(46. 화면이 사망 화면을 띄움). 꺼내면 내린다. */
+		bool TakeDiedOnEnter() { return std::exchange(bDiedOnEnter, false); }
+
 		/** 내가 전투 상태인가: 어림한 서버의 지금 틱이 전투 상태가 끝나는 틱 앞이다. */
 		bool InCombat(double NowSeconds) const { return ServerClock.Now(NowSeconds) < Mine.CombatEndTick; }
 
@@ -225,5 +228,6 @@ namespace MmoWorld
 		std::vector<uint32_t> Entered;
 		std::vector<FGrowthEvent> Growth;
 		bool bRevivedOnEnter = false;
+		bool bDiedOnEnter = false;
 	};
 }

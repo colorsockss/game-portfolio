@@ -467,7 +467,19 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		}
 #endif
 	}
-	else if (Packet.body_case() == portfolio::mmo::Packet::kDied && Packet.died().id() == Session().World().SelfId())
+	else if ((Packet.body_case() == portfolio::mmo::Packet::kDied && Packet.died().id() == Session().World().SelfId())
+		|| (Packet.body_case() == portfolio::mmo::Packet::kEntitiesEnter && Session().World().TakeDiedOnEnter()))
+	{
+		ShowDeath();
+	}
+	else if (Packet.body_case() == portfolio::mmo::Packet::kRevived && Packet.revived().id() == Session().World().SelfId())
+	{
+		Close(EScreen::Death);
+	}
+}
+
+void UMmoUiManager::ShowDeath()
+{
 	{
 		// 내가 죽으면 열린 창을 닫고 사망 화면을 띄운다(대상은 전투 모델이 이미 풀었고, 자동 사냥은 컨트롤러가 끈다. 40).
 		Close(EScreen::Settings);
@@ -483,10 +495,6 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		Close(EScreen::Confirm);
 		Close(EScreen::Quantity);
 		Open(EScreen::Death);
-	}
-	else if (Packet.body_case() == portfolio::mmo::Packet::kRevived && Packet.revived().id() == Session().World().SelfId())
-	{
-		Close(EScreen::Death);
 	}
 }
 

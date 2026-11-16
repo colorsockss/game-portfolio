@@ -16,6 +16,7 @@ namespace PortfolioMmo.Server
             : base(id, EntityKind.Player, position.X, position.Z, position.Yaw)
         {
             CharacterId = character.Id;
+            LoginId = character.LoginId;
             Name = character.Name;
             Class = character.Class;
             Session = session;
@@ -25,6 +26,11 @@ namespace PortfolioMmo.Server
         /// 저장소의 캐릭터 번호. 개체 번호와 달리 다시 들어와도 같다.
         /// </summary>
         public long CharacterId { get; }
+
+        /// <summary>
+        /// 이 캐릭터의 계정(로그인 ID).
+        /// </summary>
+        public string LoginId { get; }
 
         /// <summary>
         /// 캐릭터 이름. 머리 위에 보인다.
@@ -37,9 +43,14 @@ namespace PortfolioMmo.Server
         public CharacterClass Class { get; }
 
         /// <summary>
-        /// 이 개체를 움직이는 연결.
+        /// 이 개체를 움직이는 연결. 월드에 남은 동안(46)은 보내는 것을 버리는 떼어진 세션이고, 넘겨받으면 새 연결로 바뀐다.
         /// </summary>
-        public Session Session { get; }
+        public Session Session { get; internal set; }
+
+        /// <summary>
+        /// 남김(46)의 빼기 예약과 견주는 세대 번호. 남을 때 새 번호를 받고 넘겨받으면 0이다.
+        /// </summary>
+        internal ulong LingerGeneration { get; set; }
 
         /// <summary>
         /// 표시 상태: 레벨(31. 그 전에는 모두 1), 이름 색(44), 입은 무기(34. Items의 번호, 없으면 0).

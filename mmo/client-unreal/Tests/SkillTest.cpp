@@ -400,6 +400,17 @@ namespace
 		Expect(Hit.Packets.size() == 1 && Hit.Packets[0].use_skill().target_id() == Other && Hit.Packets[0].use_skill().force_attack(), "the skill carries the force flag");
 	}
 
+	/** 죽은 채 넘겨받은 내 개체(46): EntityEnter가 죽었다고 오면 내 상태가 죽음이 되고 사망 화면의 사건이 한 번 나며, 공격과 스킬을 보내지 않는다. */
+	void ADeadTakeOverStartsDead()
+	{
+		FScene Scene;
+		Packet Dead = Enter(Me, portfolio::mmo::ENTITY_KIND_PLAYER, 0, 0);
+		Dead.mutable_entities_enter()->mutable_entities(0)->set_dead(true);
+		Scene.Apply(Dead);
+		Expect(Scene.World.SelfState().bDead && Scene.World.TakeDiedOnEnter() && !Scene.World.TakeDiedOnEnter(), "a dead self entity starts the death screen once");
+		Expect(!Scene.Combat.StartAttack(Me) && Scene.Combat.PressSkill(101, Scene.World, Scene.GameData, 0) == portfolio::mmo::FAIL_REASON_DEAD, "a dead takeover sends no requests");
+	}
+
 	/** 이동 입력을 쥔 채 시전 시간이 있는 스킬을 보내면 세우고 밀린 위치를 먼저 보내며, 쥐고 있던 입력은 한 번 놓을 때까지 막는다. */
 	void CastsStopAndIgnoreTheHeldMove()
 	{
@@ -657,6 +668,7 @@ int main(int ArgumentCount, char** Arguments)
 	MySlowAndStunAreAnswered();
 	TargetSkillsApproachAndSelfSkillsFireInPlace();
 	PlayersNeedForceAttack();
+	ADeadTakeOverStartsDead();
 	CastsStopAndIgnoreTheHeldMove();
 	LineProjectilesFollowTheirLaunch();
 	LineSkillsFireWithOrWithoutATarget();

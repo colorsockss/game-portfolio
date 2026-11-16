@@ -84,7 +84,8 @@ namespace PortfolioMmo.Server
                     break;
                 case ChatChannel.Whisper:
                     // shortcut: 월드의 플레이어는 모두 연결이 붙어 있다. 끊긴 채 남는 캐릭터(46)가 생기면 연결이 없는 것을 "받는 사람 없음"으로 뺀다.
-                    if (_entities.FindPlayer(chat.To) is not Player recipient)
+                    // 월드에 남은 캐릭터(46)는 받는 사람으로 삼지 않는다.
+                    if ((_entities.FindPlayer(chat.To) is not Player recipient) || recipient.Session.IsDetached)
                     {
                         return Outcome.Fail(FailReason.NoRecipient);
                     }

@@ -33,6 +33,14 @@ namespace PortfolioMmo.Server
             }
 
             player.QuickslotsChanged = false;
+            SendWhole(player);
+        }
+
+        /// <summary>
+        /// 배운 스킬과 퀵슬롯 전체를 본인에게 보낸다(들어올 때와 넘겨받을 때. 46).
+        /// </summary>
+        public void SendWhole(Player player)
+        {
             var learned = new LearnedSkills();
             learned.Skills.Add(player.Skills.OrderBy(skill => skill));
             player.Session.Send(new Packet { LearnedSkills = learned });

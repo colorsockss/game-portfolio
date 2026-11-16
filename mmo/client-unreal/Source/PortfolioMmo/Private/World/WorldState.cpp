@@ -101,6 +101,7 @@ namespace MmoWorld
 		}
 		Self = 0;
 		bRevivedOnEnter = false;
+		bDiedOnEnter = false;
 		LastAck = 0;
 		LastTick = 0;
 		ServerClock.Reset();
@@ -129,6 +130,12 @@ namespace MmoWorld
 				Entity = { Enter.id(), Enter.x(), Enter.z(), Enter.yaw(), Enter, {} };
 				Entity.Track.Push({ LastTick, Enter.x(), Enter.z(), Enter.yaw() });
 				Entered.push_back(Enter.id());
+				// 죽은 채 넘겨받은 내 개체(46)는 Died가 따로 오지 않는다.
+				if (Enter.id() == Self && Enter.dead() && !Mine.bDead)
+				{
+					Mine.bDead = true;
+					bDiedOnEnter = true;
+				}
 			}
 			break;
 		case portfolio::mmo::Packet::kEntitiesLeave:

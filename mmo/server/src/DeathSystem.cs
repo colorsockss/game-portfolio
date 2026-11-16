@@ -22,6 +22,11 @@ namespace PortfolioMmo.Server
         private readonly GrowthSystem _growth;
         private readonly LootSystem _loot;
         private readonly PkSystem _pk;
+
+        /// <summary>
+        /// 월드에 남은 캐릭터(46). 죽으면 다음 틱에 뺀다.
+        /// </summary>
+        public LingerSystem? Lingering { get; set; }
         private readonly uint _deadMonsterTicks;
         private readonly uint _reviveHpPercent;
         private readonly uint _expPercent;
@@ -61,6 +66,7 @@ namespace PortfolioMmo.Server
                 case Player player:
                     Penalize(player, tick);
                     _pk.Died(player);
+                    Lingering?.Died(player, tick);
                     // 몬스터는 표의 다른 대상을 고르거나, 고를 대상이 없으면 복귀한다.
                     foreach (Entity entity in _entities.All)
                     {

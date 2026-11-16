@@ -132,11 +132,19 @@ namespace PortfolioMmo.Server
             // 아직 아무도 받지 않은 개체라 EntityState 대신 EntityEnter가 무기를 싣고, 보는 쪽은 EntityEnter로 지금 체력을 받는다.
             player.StateChanged = false;
             player.VitalsChanged = false;
-            var whole = new Inventory();
-            whole.Slots.Add(bag.Slots.Concat(bag.Equipment).Where(slot => slot.ItemId != 0).Select(slot => slot.Clone()));
-            whole.Gold = bag.Gold;
-            player.Session.Send(new Packet { Inventory = whole });
+            SendWhole(player);
             _quickslots.Enter(player, state);
+        }
+
+        /// <summary>
+        /// 인벤토리 전체(입은 장비 포함)와 골드를 본인에게 보낸다(들어올 때와 넘겨받을 때. 46).
+        /// </summary>
+        public void SendWhole(Player player)
+        {
+            var whole = new Inventory();
+            whole.Slots.Add(player.Bag.Slots.Concat(player.Bag.Equipment).Where(slot => slot.ItemId != 0).Select(slot => slot.Clone()));
+            whole.Gold = player.Bag.Gold;
+            player.Session.Send(new Packet { Inventory = whole });
         }
 
         /// <summary>

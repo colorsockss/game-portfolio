@@ -100,8 +100,10 @@ Y
 settings.characterSelect캐릭터 선택Character Select
 (
 settings.logOut로그아웃Log Out
-;
-settings.logOutQuestion로그아웃할까요?Log out?
+�
+settings.logOutQuestion{로그아웃할까요?
+전투 중이거나 선공 표시가 있으면 캐릭터가 끝날 때까지 월드에 남습니다.^Log out?
+In combat or marked as an aggressor, your character stays in the world until it ends.
 7
 settings.statsOn성능 표시: 켬Performance: On
 9
@@ -841,10 +843,14 @@ $
 settings.shakeOff카메라 흔들림: 끔Camera shake: Off
 )
 settings.quit게임 종료	Quit Game
-@
-settings.quitQuestion게임을 끝낼까요?Quit the game?
-h
- settings.characterSelectQuestion'캐릭터 선택으로 돌아갈까요?Return to character select?
+�
+settings.quitQuestion|게임을 끝낼까요?
+전투 중이거나 선공 표시가 있으면 캐릭터가 끝날 때까지 월드에 남습니다.dQuit the game?
+In combat or marked as an aggressor, your character stays in the world until it ends.
+�
+ settings.characterSelectQuestion�캐릭터 선택으로 돌아갈까요?
+전투 중이거나 선공 표시가 있으면 캐릭터가 끝날 때까지 월드에 남습니다.qReturn to character select?
+In combat or marked as an aggressor, your character stays in the world until it ends.
 R
 fail.noRecipient받는 사람이 없습니다.No one by that name is online.
 G
@@ -939,3 +945,5 @@ _
 death.expLost잃은 경험치 {0}Experience lost {0}
 4
 death.dropped떨어뜨린 것: {0}Dropped: {0}
+�
+select.otherInWorldf이 계정의 다른 캐릭터가 아직 월드에 남아 있습니다. 잠시 뒤에 들어가세요.KAnother character of this account is still in the world. Try again shortly.

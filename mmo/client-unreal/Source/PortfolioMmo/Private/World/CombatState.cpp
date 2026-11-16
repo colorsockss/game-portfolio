@@ -131,6 +131,10 @@ namespace MmoWorld
 			Events.push_back({ ECombatEventKind::Revive, 0, Packet.revived().id(), 0, false, Packet.revived().id() == Me });
 			bSelfDead &= Packet.revived().id() != Me;
 			break;
+		case portfolio::mmo::Packet::kEntitiesEnter:
+			// 죽은 채 넘겨받은 내 개체(46): 부활할 때까지 요청을 만들지 않는다.
+			bSelfDead |= World.SelfState().bDead;
+			break;
 		case portfolio::mmo::Packet::kEntitiesLeave:
 			for (const uint32_t Id : Packet.entities_leave().ids())
 			{

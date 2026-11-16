@@ -144,7 +144,7 @@ namespace PortfolioMmo.Server.Tests
                 (world, monster, knight) => world.RemoveEntity(monster),
                 (world, monster, knight) => Return(world, monster),
                 (world, monster, knight) => knight.Player!.Dead = true,
-                (world, monster, knight) => world.Disconnect(knight),
+                (world, monster, knight) => LeaveNow(knight, () => world.Disconnect(knight)),
             })
             {
                 World world = CombatWorld(TestData.Draw(64));

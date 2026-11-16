@@ -74,6 +74,11 @@ namespace PortfolioMmo.Server
         /// 플레이어(주인)의 선공 표시가 끝나는 틱(44). A는 넣을 때의 끝나는 틱이고, 다시 붙어 끝나는 틱이 바뀐 옛 예약은 꺼낼 때 버린다(세대 번호를 쓰지 않음).
         /// </summary>
         AggressorEnd = 13,
+
+        /// <summary>
+        /// 월드에 남은 캐릭터(주인)를 빼는 틱(46). 세대 번호는 플레이어의 LingerGeneration이다(넘겨받으면 버림). 꺼낼 때 늦춰졌으면 다시 예약한다.
+        /// </summary>
+        LingerEnd = 14,
     }
 
     /// <summary>

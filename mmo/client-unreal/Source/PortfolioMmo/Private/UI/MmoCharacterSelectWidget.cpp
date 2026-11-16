@@ -112,7 +112,9 @@ void UMmoCharacterSelectWidget::HandlePacket(const portfolio::mmo::Packet& Packe
 		&& Packet.enter_world_result().result() != portfolio::mmo::ENTER_WORLD_RESULT_CODE_OK)
 	{
 		bEntering = false;
-		StatusText->SetText(MmoText::Get(this, TEXT("select.enterFailed")));
+		// 같은 계정의 다른 캐릭터가 월드에 남아 있으면 그 까닭을 알린다(46).
+		StatusText->SetText(MmoText::Get(this, Packet.enter_world_result().result() == portfolio::mmo::ENTER_WORLD_RESULT_CODE_OTHER_CHARACTER_IN_WORLD
+			? TEXT("select.otherInWorld") : TEXT("select.enterFailed")));
 		Refresh();
 	}
 }

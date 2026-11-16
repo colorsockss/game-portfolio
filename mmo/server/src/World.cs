@@ -36,6 +36,7 @@ namespace PortfolioMmo.Server
         private readonly PartySystem _party;
         private readonly BossSystem _bosses;
         private readonly PkSystem _pk;
+        private readonly LingerSystem _lingering;
         private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
@@ -112,6 +113,16 @@ namespace PortfolioMmo.Server
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, _pk, data);
             _combat.Deaths = _deaths;
             _deaths.Bosses = _bosses;
+            _lingering = new LingerSystem(_entities, _grid, _scheduler, _progress, _save);
+            _login.Lingering = _lingering;
+            _deaths.Lingering = _lingering;
+            _login.Resumed = player =>
+            {
+                _inventory.SendWhole(player);
+                _quickslots.SendWhole(player);
+                _pk.Entered(player);
+                _bosses.Entered(player);
+            };
             _view = new ViewSystem(_entities, _grid);
             _rateLimits = RateLimiter.Limits.From(data.Constants);
             _dev = dev ? new DevSystem(data, field, _entities, _movement, _progress, _spawn, _growth, _inventory, _pk) : null;
@@ -141,6 +152,11 @@ namespace PortfolioMmo.Server
         internal QuickslotSystem Quickslots => _quickslots;
 
         internal PartySystem Party => _party;
+
+        /// <summary>
+        /// 월드에 남은 캐릭터(46. 테스트가 수를 봄).
+        /// </summary>
+        internal LingerSystem Lingering => _lingering;
 
         /// <summary>
         /// 경비병들(44. 테스트가 상태와 자리를 봄).
@@ -557,6 +573,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.PartyInviteExpire => _party.IsInviteCurrent(job),
                 ScheduledKind.AreaHit => _bosses.IsAreaCurrent(job),
                 ScheduledKind.AggressorEnd => PkSystem.IsAggressorEndCurrent(_entities, job),
+                ScheduledKind.LingerEnd => _lingering.IsEndCurrent(job),
                 ScheduledKind.Respawn => _spawn.PlacedAt(job.Owner) != null,
                 _ => throw UnknownKind(job.Kind),
             };
@@ -569,7 +586,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.UnreachableEnd => false,
                 ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit or ScheduledKind.CastEnd or ScheduledKind.AreaHit => true,
                 ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd or ScheduledKind.GroundItemExpire
-                    or ScheduledKind.PartyInviteExpire or ScheduledKind.AggressorEnd => false,
+                    or ScheduledKind.PartyInviteExpire or ScheduledKind.AggressorEnd or ScheduledKind.LingerEnd => false,
                 _ => throw UnknownKind(kind),
             };
         }
@@ -604,6 +621,9 @@ namespace PortfolioMmo.Server
                     break;
                 case ScheduledKind.AggressorEnd:
                     _pk.EndAggressor((Player)_entities.Find(job.Owner)!);
+                    break;
+                case ScheduledKind.LingerEnd:
+                    _lingering.End(job, Tick);
                     break;
                 default:
                     throw UnknownKind(job.Kind);

@@ -273,12 +273,15 @@ enum EnterWorldResultCode {
   ENTER_WORLD_RESULT_CODE_OK = 0;
   // 이 계정에 그 번호의 캐릭터가 없다.
   ENTER_WORLD_RESULT_CODE_NO_SUCH_CHARACTER = 1;
+  // 이 계정의 다른 캐릭터가 아직 월드에 남아 있다(46. 전투 상태나 선공 표시로 남은 캐릭터가 빠진 뒤에 들어갈 수 있음).
+  ENTER_WORLD_RESULT_CODE_OTHER_CHARACTER_IN_WORLD = 2;
 }
 
-// 클라이언트 → 서버. 캐릭터 선택으로 돌아간다. 월드에 있을 때만 보낼 수 있다. 서버는 캐릭터를 저장하고 월드에서 뺀 뒤
 // 클라이언트 → 서버. 로그아웃한다(77): 월드에 있으면 그 틱에 캐릭터를 빼며 사본을 넣고, 남은 패킷을 보낸 뒤 연결을 닫는다. 죽은 동안과 기절한 동안에도 받는다.
+// 전투 상태이거나 선공 표시가 있으면 캐릭터는 빼지 않고 연결만 떼어 월드에 남긴다(46).
 message Logout {}
 
+// 클라이언트 → 서버. 캐릭터 선택으로 돌아간다. 월드에 있을 때만 보낼 수 있다. 서버는 캐릭터를 저장하고 월드에서 뺀 뒤(남는 규칙은 Logout과 같음. 46)
 // CharacterList를 보낸다. 연결은 그대로다.
 message LeaveWorld {}
 

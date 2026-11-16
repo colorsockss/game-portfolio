@@ -1097,6 +1097,7 @@ template <>
 enum EnterWorldResultCode : int {
   ENTER_WORLD_RESULT_CODE_OK = 0,
   ENTER_WORLD_RESULT_CODE_NO_SUCH_CHARACTER = 1,
+  ENTER_WORLD_RESULT_CODE_OTHER_CHARACTER_IN_WORLD = 2,
   EnterWorldResultCode_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   EnterWorldResultCode_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -1107,11 +1108,11 @@ extern const uint32_t EnterWorldResultCode_internal_data_[];
 inline constexpr EnterWorldResultCode EnterWorldResultCode_MIN =
     static_cast<EnterWorldResultCode>(0);
 inline constexpr EnterWorldResultCode EnterWorldResultCode_MAX =
-    static_cast<EnterWorldResultCode>(1);
+    static_cast<EnterWorldResultCode>(2);
 [[nodiscard]] inline bool EnterWorldResultCode_IsValid(int value) {
-  return 0 <= value && value <= 1;
+  return 0 <= value && value <= 2;
 }
-inline constexpr int EnterWorldResultCode_ARRAYSIZE = 1 + 1;
+inline constexpr int EnterWorldResultCode_ARRAYSIZE = 2 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 EnterWorldResultCode_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(EnterWorldResultCode) {
@@ -1126,7 +1127,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& EnterWorldResultCode_Name(EnterWorldResultCode value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<EnterWorldResultCode_descriptor, 0, 1>(
+  return ::google::protobuf::internal::NameOfDenseEnum<EnterWorldResultCode_descriptor, 0, 2>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool EnterWorldResultCode_Parse(

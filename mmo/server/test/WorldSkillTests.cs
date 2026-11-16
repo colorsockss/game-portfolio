@@ -277,7 +277,7 @@ namespace PortfolioMmo.Server.Tests
 
             Check((_, _, monster) => monster.Dead = true);
             Check((world, knight, _) => world.Effects.Apply(knight.Player!, Effect(1), world.Tick));
-            Check((world, knight, _) => world.Receive(knight, new Packet { LeaveWorld = new LeaveWorld() }));
+            Check((world, knight, _) => LeaveNow(knight, () => world.Receive(knight, new Packet { LeaveWorld = new LeaveWorld() })));
         }
 
         /// <summary>

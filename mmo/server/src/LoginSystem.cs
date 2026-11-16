@@ -60,6 +60,11 @@ namespace PortfolioMmo.Server
         private readonly (int X, int Z) _respawn;
         private readonly PkSystem _pk;
 
+        /// <summary>
+        /// 월드에 남는 캐릭터와 넘겨받기(46). World가 만든 뒤에 잇는다.
+        /// </summary>
+        public LingerSystem? Lingering { get; set; }
+
         public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, SaveQueue queue, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save, StatSystem stats, PkSystem pk, System.Func<uint> tick)
         {
             _pk = pk;
@@ -85,9 +90,14 @@ namespace PortfolioMmo.Server
         public System.Action<Player, CharacterSnapshot, bool>? Entered { get; set; }
 
         /// <summary>
-        /// 연결이 캐릭터에서 떨어지기 직전(끊김, 로그아웃, LeaveWorld, 재로그인, 예외. 월드에서 빼기 전). 파티(42)가 그 캐릭터를 뺀다.
+        /// 연결이 캐릭터에서 떨어지기 직전(끊김, 로그아웃, LeaveWorld, 재로그인, 예외. 월드에서 빼거나 남기기 전). 파티(42)가 그 캐릭터를 뺀다.
         /// </summary>
         public System.Action<Player>? Leaving { get; set; }
+
+        /// <summary>
+        /// 남아 있던 캐릭터를 넘겨받은 뒤(EnterWorldResult, 경험치, 쿨다운 뒤) 인벤토리·스킬·퀵슬롯·성향·보스 알림을 다시 보내는 일(46). World가 정한다.
+        /// </summary>
+        public System.Action<Player>? Resumed { get; set; }
 
         /// <summary>
         /// 로그인을 처리한다. 프로토콜 버전 → 데이터 해시 → ID 형식 → 동접 상한 순으로 보고, 실패하면 LoginResult를 보내고 끊는다. 같은 계정이 이미 로그인해 있으면 예전 연결을 끊는다.
@@ -150,6 +160,21 @@ namespace PortfolioMmo.Server
         public void EnterWorld(Session session, EnterWorld enter)
         {
             long id = (long)enter.CharacterId;
+            // 남아 있는 캐릭터(46)면 읽지 않고 넘겨받고, 같은 계정의 다른 캐릭터가 남아 있으면 거절한다.
+            if (Lingering?.Find(id) is Player kept && (kept.LoginId == session.LoginId))
+            {
+                Lingering.TakeOver(kept, session);
+                SendEnterHead(session, kept, false);
+                Resumed?.Invoke(kept);
+                return;
+            }
+
+            if (Lingering?.HasAccount(session.LoginId!) == true)
+            {
+                session.Send(new Packet { EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.OtherCharacterInWorld } });
+                return;
+            }
+
             bool loading = _loading.ContainsKey(id);
             _loading[id] = session;
             if (!loading)
@@ -193,14 +218,21 @@ namespace PortfolioMmo.Server
             _entities.Add(player);
             _grid.Add(player);
             session.Player = player;
+            SendEnterHead(session, player, revived);
+            Entered?.Invoke(player, state, revived);
+        }
+
+        /// <summary>
+        /// 들어올 때와 넘겨받을 때 처음 보내는 것: EnterWorldResult, 지금 경험치(얻은 양 0. 31), 직업의 쿨다운 전체.
+        /// </summary>
+        private void SendEnterHead(Session session, Player player, bool revived)
+        {
             session.Send(new Packet
             {
                 EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.Ok, SelfId = player.Id, Tick = _tick(), Revived = revived },
             });
-            // 지금 경험치를 알린다(얻은 양 0. 31).
             session.Send(new Packet { ExpGained = new ExpGained { Exp = player.Exp } });
             player.SendCooldowns(_data.Skills.Rows.Where(skill => skill.Class == (uint)player.Class).Select(skill => skill.Id));
-            Entered?.Invoke(player, state, revived);
         }
 
         /// <summary>
@@ -437,7 +469,8 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 연결의 개체를 월드에서 뺀다. 개체가 없으면 아무것도 하지 않는다. 주변 플레이어는 다음 시야 차례에 EntitiesLeave를 받는다.
+        /// 연결의 개체를 월드에서 뺀다. 전투 상태이거나 선공 표시가 있으면 빼지 않고 연결만 떼어 남긴다(46). 개체가 없으면 아무것도 하지 않는다.
+        /// 주변 플레이어는 다음 시야 차례에 EntitiesLeave를 받는다.
         /// </summary>
         private void Remove(Session session)
         {
@@ -449,6 +482,11 @@ namespace PortfolioMmo.Server
 
             Leaving?.Invoke(player);
             session.Player = null;
+            if (Lingering?.TryStay(player, _tick()) == true)
+            {
+                return;
+            }
+
             _entities.Remove(player);
             _grid.Remove(player);
             // 월드에서 빠지는 틱에 사본 하나짜리 묶음을 넣는다(LeaveWorld, 끊김, 같은 계정의 재로그인).

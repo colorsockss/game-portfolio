@@ -44,11 +44,27 @@ namespace PortfolioMmo.Server
         public RateLimiter Limiter { get; } = new RateLimiter();
 
         /// <summary>
+        /// 연결이 없는 세션이다(46. 월드에 남은 캐릭터에 붙임). 보내는 것을 버린다.
+        /// </summary>
+        public bool IsDetached { get; private init; }
+
+        /// <summary>
+        /// 월드에 남은 캐릭터에 붙일 떼어진 세션.
+        /// </summary>
+        public static Session Detached()
+        {
+            return new Session { IsDetached = true };
+        }
+
+        /// <summary>
         /// 이번 틱에 보낼 패킷에 더한다.
         /// </summary>
         public void Send(Packet packet)
         {
-            Outbox.Add(packet);
+            if (!IsDetached)
+            {
+                Outbox.Add(packet);
+            }
         }
 
         /// <summary>
