@@ -29,9 +29,11 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<uint, EnchantsRow> _enchants = new Dictionary<uint, EnchantsRow>();
         private readonly Dictionary<uint, ShopsRow> _shopItems = new Dictionary<uint, ShopsRow>();
         private readonly Dictionary<uint, GatherNodesRow> _gatherNodes = new Dictionary<uint, GatherNodesRow>();
+        private readonly Dictionary<uint, RecipesRow> _recipes = new Dictionary<uint, RecipesRow>();
+        private readonly Dictionary<(uint Family, ItemGrade Grade), ItemsRow> _equipment = new Dictionary<(uint Family, ItemGrade Grade), ItemsRow>();
 
         public GameData(ulong hash, Constants constants, Zones zones, MapGrid grid, Classes classes, Levels levels, Monsters monsters, Spawns spawns, Skills skills, Effects effects, Items? items = null, DropGroups? dropGroups = null, Enchants? enchants = null,
-            Npcs? npcs = null, Shops? shops = null, Pets? pets = null, GatherNodes? gatherNodes = null)
+            Npcs? npcs = null, Shops? shops = null, Pets? pets = null, GatherNodes? gatherNodes = null, Recipes? recipes = null)
         {
             Hash = hash;
             Constants = constants;
@@ -84,6 +86,20 @@ namespace PortfolioMmo.Server
                 _gatherNodes.Add(row.Id, row);
             }
 
+            Recipes = recipes ?? new Recipes();
+            foreach (RecipesRow row in Recipes.Rows)
+            {
+                _recipes.Add(row.Id, row);
+            }
+
+            foreach (ItemsRow row in _items.Values)
+            {
+                if (row.Kind == ItemKind.Equipment)
+                {
+                    _equipment.Add((row.Family, row.Grade), row);
+                }
+            }
+
             Shops = shops ?? new Shops();
             foreach (ShopsRow row in Shops.Rows)
             {
@@ -109,6 +125,27 @@ namespace PortfolioMmo.Server
         public PetsRow? Pet(uint id)
         {
             return System.Linq.Enumerable.FirstOrDefault(Pets.Rows, row => row.Id == id);
+        }
+
+        /// <summary>
+        /// 제작법(48). 줄의 차례가 제작 창의 차례다.
+        /// </summary>
+        public Recipes Recipes { get; }
+
+        /// <summary>
+        /// 제작법의 줄. 없으면 null(클라이언트가 보낸 번호).
+        /// </summary>
+        public RecipesRow? Recipe(uint id)
+        {
+            return _recipes.GetValueOrDefault(id);
+        }
+
+        /// <summary>
+        /// 그 종의 그 등급 장비(34. Items의 family와 grade). 없으면 null.
+        /// </summary>
+        public ItemsRow? Equipment(uint family, ItemGrade grade)
+        {
+            return _equipment.GetValueOrDefault((family, grade));
         }
 
         /// <summary>
@@ -249,6 +286,11 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// 모든 드롭 묶음(33. 데이터 테스트가 얻는 곳을 봄).
+        /// </summary>
+        public IEnumerable<DropGroupsRow> AllDropGroups => _dropGroups.Values;
+
+        /// <summary>
         /// 드롭 묶음(33). 없으면 null.
         /// </summary>
         public DropGroupsRow? DropGroup(uint id)
@@ -283,7 +325,8 @@ namespace PortfolioMmo.Server
                 Npcs.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Npcs.bytes"))),
                 Shops.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Shops.bytes"))),
                 Pets.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Pets.bytes"))),
-                GatherNodes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "GatherNodes.bytes"))));
+                GatherNodes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "GatherNodes.bytes"))),
+                Recipes.Parser.ParseFrom(File.ReadAllBytes(Path.Combine(folder, "Recipes.bytes"))));
         }
 
         /// <summary>

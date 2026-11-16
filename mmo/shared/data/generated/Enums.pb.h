@@ -61,6 +61,8 @@ enum MonsterKind : int;
 extern const uint32_t MonsterKind_internal_data_[];
 enum NpcRole : int;
 extern const uint32_t NpcRole_internal_data_[];
+enum RecipeKind : int;
+extern const uint32_t RecipeKind_internal_data_[];
 enum SkillCenter : int;
 extern const uint32_t SkillCenter_internal_data_[];
 enum SkillKind : int;
@@ -96,6 +98,9 @@ internal::EnumTraitsT<::portfolio::mmo::data::MonsterKind_internal_data_>
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::NpcRole_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::NpcRole>;
+template <>
+internal::EnumTraitsT<::portfolio::mmo::data::RecipeKind_internal_data_>
+    internal::EnumTraitsImpl::value<::portfolio::mmo::data::RecipeKind>;
 template <>
 internal::EnumTraitsT<::portfolio::mmo::data::SkillCenter_internal_data_>
     internal::EnumTraitsImpl::value<::portfolio::mmo::data::SkillCenter>;
@@ -588,6 +593,47 @@ template <>
   return ::google::protobuf::internal::ParseNamedEnum<GatherKind>(GatherKind_descriptor(), name,
                                            value);
 }
+enum RecipeKind : int {
+  RECIPE_KIND_UNSPECIFIED = 0,
+  RECIPE_KIND_ITEM = 1,
+  RECIPE_KIND_EQUIPMENT = 2,
+  RecipeKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::min(),
+  RecipeKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      ::std::numeric_limits<::int32_t>::max(),
+};
+
+extern const uint32_t RecipeKind_internal_data_[];
+inline constexpr RecipeKind RecipeKind_MIN =
+    static_cast<RecipeKind>(0);
+inline constexpr RecipeKind RecipeKind_MAX =
+    static_cast<RecipeKind>(2);
+[[nodiscard]] inline bool RecipeKind_IsValid(int value) {
+  return 0 <= value && value <= 2;
+}
+inline constexpr int RecipeKind_ARRAYSIZE = 2 + 1;
+[[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
+RecipeKind_descriptor();
+[[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(RecipeKind) {
+  return RecipeKind_descriptor();
+}
+template <typename T>
+[[nodiscard]] const ::std::string& RecipeKind_Name(T value) {
+  static_assert(::std::is_same<T, RecipeKind>::value ||
+                    ::std::is_integral<T>::value,
+                "Incorrect type passed to RecipeKind_Name().");
+  return RecipeKind_Name(static_cast<RecipeKind>(value));
+}
+template <>
+[[nodiscard]] inline const ::std::string& RecipeKind_Name(RecipeKind value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<RecipeKind_descriptor, 0, 2>(
+      static_cast<int>(value));
+}
+[[nodiscard]] inline bool RecipeKind_Parse(
+    ::absl::string_view name, RecipeKind* PROTOBUF_NONNULL value) {
+  return ::google::protobuf::internal::ParseNamedEnum<RecipeKind>(RecipeKind_descriptor(), name,
+                                           value);
+}
 using ::google::protobuf::internal::generated_enum::AbslParseFlag;
 using ::google::protobuf::internal::generated_enum::AbslUnparseFlag;
 
@@ -685,6 +731,12 @@ struct is_proto_enum<::portfolio::mmo::data::GatherKind> : std::true_type {};
 template <>
 inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::GatherKind>() {
   return ::portfolio::mmo::data::GatherKind_descriptor();
+}
+template <>
+struct is_proto_enum<::portfolio::mmo::data::RecipeKind> : std::true_type {};
+template <>
+inline const EnumDescriptor* PROTOBUF_NONNULL GetEnumDescriptor<::portfolio::mmo::data::RecipeKind>() {
+  return ::portfolio::mmo::data::RecipeKind_descriptor();
 }
 
 }  // namespace protobuf

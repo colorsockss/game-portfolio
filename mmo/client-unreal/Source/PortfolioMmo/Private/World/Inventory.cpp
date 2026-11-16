@@ -234,6 +234,15 @@ namespace MmoWorld
 		return Packet;
 	}
 
+	portfolio::mmo::Packet FInventory::Craft(uint32_t RecipeId)
+	{
+		portfolio::mmo::Packet Packet;
+		Packet.mutable_craft()->set_recipe_id(RecipeId);
+		Packet.mutable_craft()->set_request_id(++NextRequest);
+		Waiting.insert(NextRequest);
+		return Packet;
+	}
+
 	portfolio::mmo::Packet FInventory::Deposit(uint32_t Slot, uint32_t Count)
 	{
 		portfolio::mmo::Packet Packet;

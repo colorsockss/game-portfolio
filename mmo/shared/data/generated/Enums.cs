@@ -59,11 +59,13 @@ namespace PortfolioMmo.Data {
             "X1JPTEVfQ1JBRlQQAxISCg5OUENfUk9MRV9RVUVTVBAEEhIKDk5QQ19ST0xF",
             "X0dVQVJEEAUqagoKR2F0aGVyS2luZBIbChdHQVRIRVJfS0lORF9VTlNQRUNJ",
             "RklFRBAAEhQKEEdBVEhFUl9LSU5EX1dPT0QQARITCg9HQVRIRVJfS0lORF9P",
-            "UkUQAhIUChBHQVRIRVJfS0lORF9IRVJCEANCFKoCEVBvcnRmb2xpb01tby5E",
-            "YXRhYgZwcm90bzM="));
+            "UkUQAhIUChBHQVRIRVJfS0lORF9IRVJCEAMqWgoKUmVjaXBlS2luZBIbChdS",
+            "RUNJUEVfS0lORF9VTlNQRUNJRklFRBAAEhQKEFJFQ0lQRV9LSU5EX0lURU0Q",
+            "ARIZChVSRUNJUEVfS0lORF9FUVVJUE1FTlQQAkIUqgIRUG9ydGZvbGlvTW1v",
+            "LkRhdGFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), typeof(global::PortfolioMmo.Data.ItemKind), typeof(global::PortfolioMmo.Data.ItemGrade), typeof(global::PortfolioMmo.Data.EquipSlot), typeof(global::PortfolioMmo.Data.ItemUse), typeof(global::PortfolioMmo.Data.NpcRole), typeof(global::PortfolioMmo.Data.GatherKind), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PortfolioMmo.Data.ZoneKind), typeof(global::PortfolioMmo.Data.MonsterKind), typeof(global::PortfolioMmo.Data.SkillKind), typeof(global::PortfolioMmo.Data.SkillCenter), typeof(global::PortfolioMmo.Data.EffectKind), typeof(global::PortfolioMmo.Data.ItemKind), typeof(global::PortfolioMmo.Data.ItemGrade), typeof(global::PortfolioMmo.Data.EquipSlot), typeof(global::PortfolioMmo.Data.ItemUse), typeof(global::PortfolioMmo.Data.NpcRole), typeof(global::PortfolioMmo.Data.GatherKind), typeof(global::PortfolioMmo.Data.RecipeKind), }, null, null));
     }
     #endregion
 
@@ -336,6 +338,21 @@ namespace PortfolioMmo.Data {
     /// 약초(47)
     /// </summary>
     [pbr::OriginalName("GATHER_KIND_HERB")] Herb = 3,
+  }
+
+  public enum RecipeKind {
+    /// <summary>
+    /// 정하지 않음(proto3 enum의 0. 쓰지 않음)
+    /// </summary>
+    [pbr::OriginalName("RECIPE_KIND_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// 아이템 하나를 정한 수만큼 만듦(물약. 48)
+    /// </summary>
+    [pbr::OriginalName("RECIPE_KIND_ITEM")] Item = 1,
+    /// <summary>
+    /// 장비의 종을 만들고 등급을 확률로 정함(48)
+    /// </summary>
+    [pbr::OriginalName("RECIPE_KIND_EQUIPMENT")] Equipment = 2,
   }
 
   #endregion

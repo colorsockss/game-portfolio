@@ -515,9 +515,10 @@ TPair<int32, int32> UMmoEntitySubsystem::CueKey(uint32 Id) const
 void UMmoEntitySubsystem::StartCast(const MmoWorld::FCombatEvent& Event, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data)
 {
 	const auto Found = World.Entities().find(Event.Target);
-	if (Found != World.Entities().end() && Found->second.Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_GATHER)
+	if (Found != World.Entities().end() && (Found->second.Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_GATHER
+		|| Found->second.Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_CRAFT))
 	{
-		// 채집(47): 끝나는 틱까지 채집 동작을 되풀이한다(남의 채집도 보임).
+		// 채집(47)과 제작(48. 팩에 제작 동작이 없어 같은 줍는 동작): 끝나는 틱까지 그 동작을 되풀이한다(남의 것도 보임).
 		CastEnds.Add(Event.Target, Found->second.Info.progress().end_tick());
 		const FMmoEntityVisual* Row = Looks.FindRef(Event.Target);
 		AActor* Actor = Actors.FindRef(Event.Target);

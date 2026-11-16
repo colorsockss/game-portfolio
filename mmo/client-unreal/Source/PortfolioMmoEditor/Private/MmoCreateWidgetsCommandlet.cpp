@@ -51,6 +51,7 @@
 #include "UI/MmoQuantityWidget.h"
 #include "UI/MmoQuickslotBarWidget.h"
 #include "UI/MmoShopWidget.h"
+#include "UI/MmoCraftWidget.h"
 #include "UI/MmoStorageWidget.h"
 #include "UI/MmoMapWidget.h"
 #include "UI/MmoSkillsWidget.h"
@@ -912,6 +913,31 @@ namespace
 		return Builder.Save();
 	}
 
+	/** 제작 창(48): 제목, 제작법 목록(32의 아이템 칸, 한 줄 8칸), 결과, 필요 레벨, 재료 줄 셋, 골드, 등급의 확률, 자리 없음, 만들기와 닫기. */
+	bool CreateCraft(UClass* ItemSlotClass)
+	{
+		FWidgetBlueprintBuilder Builder(MmoUiPaths::Craft, UMmoCraftWidget::StaticClass());
+		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 8 + Style.Gap * 2, Style.Dim);
+		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("craft.title"), Style.TitleSize), Style.Section);
+		UTileView* Tiles = Builder.Add<UTileView>(TEXT("RecipeGrid"), true);
+		Tiles->SetEntryWidth(Style.ItemSlot);
+		Tiles->SetEntryHeight(Style.ItemSlot);
+		FindFProperty<FClassProperty>(UListViewBase::StaticClass(), TEXT("EntryWidgetClass"))->SetObjectPropertyValue_InContainer(Tiles, ItemSlotClass);
+		USizeBox* Size = Builder.Add<USizeBox>(TEXT("RecipeGridSize"));
+		Size->SetHeightOverride(Style.ItemSlot * 2);
+		Size->SetContent(Tiles);
+		AddWithGap(*Column, Size, Style.Section);
+		AddWithGap(*Column, Builder.Text(TEXT("ResultText"), FText::GetEmpty(), Style.BodySize + 2, true));
+		for (const TCHAR* Name : { TEXT("LevelText"), TEXT("Material0Text"), TEXT("Material1Text"), TEXT("Material2Text"), TEXT("GoldText"), TEXT("GradesText") })
+		{
+			AddWithGap(*Column, Builder.Text(Name, FText::GetEmpty(), Style.BodySize, true));
+		}
+		AddWithGap(*Column, Builder.Text(TEXT("RoomText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
+		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
+			Builder.Button(TEXT("ActButton"), TEXT("craft.make")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+		return Builder.Save();
+	}
+
 	/** 전체 지도(76): 제목, 지도 그림(점과 구역 이름의 캔버스, 내 화살표를 겹침), 닫기. */
 	bool CreateMap()
 	{
@@ -1179,7 +1205,7 @@ int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 	UClass* QuickslotBar = CreateQuickslotBar();
 	UClass* Chat = CreateChat();
 	const bool bOk = FWidgetBlueprintBuilder::ButtonClass && Joystick && ItemSlot && QuickslotBar && Chat && CreateLogin() && CreateCharacterSelect() && CreateCharacterCreate()
-		&& CreateHud(Joystick, Chat) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateStorage(ItemSlot) && CreateMap() && CreateParty() && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
+		&& CreateHud(Joystick, Chat) && CreateNotice() && CreateNameTag() && CreateSettings() && CreateCharacter() && CreateInventory(ItemSlot) && CreateEnchant(ItemSlot) && CreateSkills(QuickslotBar) && CreateShop(ItemSlot) && CreateCraft(ItemSlot) && CreateStorage(ItemSlot) && CreateMap() && CreateParty() && CreateItemDetail(QuickslotBar) && CreateConfirm() && CreateQuantity() && CreateDeath() && CreateIcons();
 	return bOk ? 0 : 1;
 }
 

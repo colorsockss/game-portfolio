@@ -54,6 +54,9 @@ namespace MmoData
 		/** 채집물(47: 이름의 키, 종류, 재료, 채집 시간, 필요 레벨). id가 EntityEnter.template_id와 Progress의 번호다. */
 		portfolio::mmo::data::GatherNodes GatherNodes;
 
+		/** 제작법(48: 결과, 재료, 골드, 제작 시간, 필요 레벨, 장비의 등급 확률). 줄의 차례가 제작 창의 차례이고 id가 Progress의 번호다. */
+		portfolio::mmo::data::Recipes Recipes;
+
 		/** 직업과 레벨마다의 필요 경험치와 기본 능력치(31: 경험치 바의 비율). */
 		portfolio::mmo::data::Levels Levels;
 
@@ -92,6 +95,15 @@ namespace MmoData
 
 		/** 채집물의 줄(47). 없으면 nullptr. */
 		const portfolio::mmo::data::GatherNodesRow* GatherNode(uint32_t Id) const;
+
+		/** 제작법의 줄(48). 없으면 nullptr. */
+		const portfolio::mmo::data::RecipesRow* Recipe(uint32_t Id) const;
+
+		/** 그 종의 그 등급 장비(Items의 family와 grade. 34). 없으면 nullptr. */
+		const portfolio::mmo::data::ItemsRow* Equipment(uint32_t Family, portfolio::mmo::data::ItemGrade Grade) const;
+
+		/** 제작법이 만드는 것을 보일 아이템(물약은 그 아이템, 장비는 그 종의 일반 등급). 없으면 nullptr. */
+		const portfolio::mmo::data::ItemsRow* RecipeItem(const portfolio::mmo::data::RecipesRow& Recipe) const;
 
 		/** 그 아이템의 상점 줄. 상점에 없으면 nullptr. */
 		const portfolio::mmo::data::ShopsRow* ShopItem(uint32_t ItemId) const;

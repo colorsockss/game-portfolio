@@ -52,7 +52,7 @@ struct FMmoEntityVisual
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr<UAnimSequence> Cast;
 
-	/** 채집(Progress의 종류 채집. 47) 동안 되풀이하는 동작. 비면 채집 동작이 없다. */
+	/** 채집(47)과 제작(48. 팩에 제작 동작이 없어 같은 것) 동안 되풀이하는 동작. 비면 그 동작이 없다. */
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr<UAnimSequence> Gather;
 };

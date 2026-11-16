@@ -20,6 +20,7 @@
 #include "Shops.pb.h"
 #include "Pets.pb.h"
 #include "GatherNodes.pb.h"
+#include "Recipes.pb.h"
 #include "Zones.pb.h"
 #pragma pop_macro("check")
 #pragma pop_macro("verify")

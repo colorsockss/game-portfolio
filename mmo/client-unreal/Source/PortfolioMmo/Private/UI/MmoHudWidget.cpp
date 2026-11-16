@@ -200,9 +200,13 @@ void UMmoHudWidget::ShowProgress(double NowSeconds)
 		const portfolio::mmo::data::SkillsRow* Skill = Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_CAST ? Session->Data().Skill(Me->Info.progress().id()) : nullptr;
 		// 채집(47)은 채집물의 이름을 보인다.
 		const portfolio::mmo::data::GatherNodesRow* Node = Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_GATHER ? Session->Data().GatherNode(Me->Info.progress().id()) : nullptr;
+		// 제작(48)은 만드는 것의 이름(장비는 그 종의 일반 등급의 이름)을 보인다.
+		const portfolio::mmo::data::RecipesRow* Recipe = Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_CRAFT ? Session->Data().Recipe(Me->Info.progress().id()) : nullptr;
+		const portfolio::mmo::data::ItemsRow* Crafted = Recipe ? Session->Data().RecipeItem(*Recipe) : nullptr;
 		CastText->SetText(Skill ? MmoText::Get(this, UTF8_TO_TCHAR(Skill->name_key().c_str()))
 			: Me->Info.progress().kind() == portfolio::mmo::PROGRESS_KIND_RECALL ? MmoText::Get(this, TEXT("progress.recall"))
-			: Node ? MmoText::Get(this, UTF8_TO_TCHAR(Node->name_key().c_str())) : FText::GetEmpty());
+			: Node ? MmoText::Get(this, UTF8_TO_TCHAR(Node->name_key().c_str()))
+			: Crafted ? MmoText::Get(this, UTF8_TO_TCHAR(Crafted->name_key().c_str())) : FText::GetEmpty());
 	}
 }
 

@@ -155,3 +155,12 @@ enum GatherKind {
   // 약초(47)
   GATHER_KIND_HERB = 3;
 }
+
+enum RecipeKind {
+  // 정하지 않음(proto3 enum의 0. 쓰지 않음)
+  RECIPE_KIND_UNSPECIFIED = 0;
+  // 아이템 하나를 정한 수만큼 만듦(물약. 48)
+  RECIPE_KIND_ITEM = 1;
+  // 장비의 종을 만들고 등급을 확률로 정함(48)
+  RECIPE_KIND_EQUIPMENT = 2;
+}

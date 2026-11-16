@@ -96,6 +96,7 @@ message Packet {
 
     // 500–599: 생활(채집 47, 제작 48)
     Gather gather = 500;
+    Craft craft = 501;
   }
 }
 
@@ -541,7 +542,7 @@ message Inventory {
   uint64 gold = 2;
 }
 
-// 얻은 까닭. 제작(48), 퀘스트 보상(50)은 그 항목이 더한다.
+// 얻은 까닭. 퀘스트 보상(50)은 그 항목이 더한다.
 enum GainReason {
   GAIN_REASON_UNSPECIFIED = 0;
   GAIN_REASON_DEV_COMMAND = 1;
@@ -551,6 +552,8 @@ enum GainReason {
   GAIN_REASON_BUY = 3;
   // 채집물에서 채집함(47).
   GAIN_REASON_GATHER = 4;
+  // 제작함(48).
+  GAIN_REASON_CRAFT = 5;
 }
 
 message ItemAmount {
@@ -903,6 +906,8 @@ enum FailReason {
   FAIL_REASON_PK_LEVEL_TOO_LOW = 38;
   // 대상이 같은 파티의 파티원이다(44).
   FAIL_REASON_PARTY_MEMBER = 39;
+  // 제작법의 재료가 모자란다(48).
+  FAIL_REASON_NOT_ENOUGH_MATERIALS = 42;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 요청 번호가 없는 요청을 만드는 항목이 더한다(제작은 48).
@@ -1052,4 +1057,13 @@ message AreaWarning {
 // 끝나는 틱에 같은 확인을 다시 해 재료를 넣는다(InventoryChanged의 새로 얻은 것, 까닭 채집). 걸리면 ProgressCancelled(그 이유)다.
 message Gather {
   uint32 entity_id = 1;
+}
+
+// 클라이언트 → 서버. 제작법(Recipes의 줄)으로 만들기 시작한다(48). 제작 NPC가 하나라 NPC를 싣지 않고, 그 NPC까지 3 m 안이고 선이 트여야 한다.
+// 필요 레벨, 재료, 골드, 재료를 뺀 뒤 결과가 들어갈 자리를 보고 RequestResult(같은 요청 번호)로 답한다. 시작하면 아무것도 빼지 않고 Progress(종류 제작,
+// 번호는 Recipes의 줄)가 가며, 끝나는 틱에 같은 확인을 다시 해 재료와 골드를 빼고 결과를 넣는다(InventoryChanged의 새로 얻은 것, 까닭 제작).
+// 걸리면 ProgressCancelled(그 이유)다.
+message Craft {
+  uint32 recipe_id = 1;
+  uint32 request_id = 2;
 }

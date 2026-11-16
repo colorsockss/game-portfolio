@@ -1,0 +1,37 @@
+// 자동 생성된 파일 — 직접 수정하지 마세요. data-tool이 워크북에서 만듭니다.
+syntax = "proto3";
+
+package portfolio.mmo.data;
+
+option csharp_namespace = "PortfolioMmo.Data";
+
+import "Enums.proto";
+
+message RecipesRow {
+  // 제작법의 번호(48. Craft와 Progress의 번호). 창의 차례가 이 줄의 차례다
+  uint32 id = 1;
+  // 만드는 것의 종류(아이템, 장비)
+  RecipeKind kind = 2;
+  // 만드는 아이템(물약)
+  optional uint32 item_id = 3;
+  // 한 번에 만드는 수
+  optional uint32 count = 4;
+  // 만드는 장비의 종(Items의 family). 등급은 gradeChances로 정하고 강화 +0이다
+  optional uint32 family = 5;
+  // 일반·고급·희귀·영웅의 확률(0–1). 장비 제작법은 넷이고 합이 1, 아이템 제작법은 비운다(서버의 데이터 테스트가 봄. when을 붙인 배열은 proto로 낼 수 없음)
+  repeated double grade_chances = 6;
+  // 재료(채집 재료 47, 몬스터 부산물 33)
+  repeated uint32 materials = 7;
+  // materials와 같은 차례의 수
+  repeated uint32 material_counts = 8;
+  // 드는 골드
+  uint32 gold = 9;
+  // 제작 시간(ms). 시작한 틱부터 이만큼 뒤의 틱에 재료와 골드를 빼고 결과를 넣는다
+  uint32 craft_ms = 10;
+  // 필요 레벨
+  uint32 level = 11;
+}
+
+message Recipes {
+  repeated RecipesRow rows = 1;
+}

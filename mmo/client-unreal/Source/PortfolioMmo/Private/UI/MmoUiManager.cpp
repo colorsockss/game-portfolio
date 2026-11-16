@@ -75,6 +75,8 @@ namespace
 			return MmoUiPaths::ClassOf(MmoUiPaths::Skills);
 		case EScreen::Shop:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Shop);
+		case EScreen::Craft:
+			return MmoUiPaths::ClassOf(MmoUiPaths::Craft);
 		case EScreen::Storage:
 			return MmoUiPaths::ClassOf(MmoUiPaths::Storage);
 		case EScreen::Map:
@@ -391,6 +393,7 @@ void UMmoUiManager::ReturnToCharacterSelect()
 	Close(EScreen::Enchant);
 	Close(EScreen::Skills);
 	Close(EScreen::Shop);
+	Close(EScreen::Craft);
 	Close(EScreen::Storage);
 	Close(EScreen::Map);
 	Close(EScreen::Party);
@@ -531,6 +534,7 @@ void UMmoUiManager::ShowDeath()
 		Close(EScreen::Enchant);
 		Close(EScreen::Skills);
 		Close(EScreen::Shop);
+		Close(EScreen::Craft);
 		Close(EScreen::Storage);
 		Close(EScreen::Map);
 		Close(EScreen::Party);
@@ -579,6 +583,14 @@ void UMmoUiManager::ShowShop()
 	if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
 	{
 		Open(EScreen::Shop);
+	}
+}
+
+void UMmoUiManager::ShowCraft()
+{
+	if (Stack.IsOpen(EScreen::Hud) && !Stack.IsOpen(EScreen::Death))
+	{
+		Open(EScreen::Craft);
 	}
 }
 
@@ -685,6 +697,7 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	Close(EScreen::Enchant);
 	Close(EScreen::Skills);
 	Close(EScreen::Shop);
+	Close(EScreen::Craft);
 	Close(EScreen::Storage);
 	Close(EScreen::Map);
 	Close(EScreen::Party);

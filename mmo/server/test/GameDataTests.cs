@@ -245,6 +245,38 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 제작법(48)은 16개: 2단계 물약 2(체력, 마나)와 2·3단계 장비 14(무기 2종과 방어구 다섯 칸, 종마다 등급 넷이 Items에 있음)이다. 장비 제작법의 확률은 넷이고
+        /// 합이 1이며, 2단계 물약과 3단계 장비는 Shops와 DropGroups에 없다. 재료는 모두 채집물이나 몬스터의 드롭에서 나온다.
+        /// </summary>
+        [Fact]
+        public void RecipesFollowTheContentPlan()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            RecipesRow[] recipes = data.Recipes.Rows.ToArray();
+            Assert.Equal(16, recipes.Length);
+            Assert.Equal(new uint[] { 2002, 2004 }, recipes.Where(row => row.Kind == RecipeKind.Item).Select(row => row.ItemId).OrderBy(id => id));
+            uint[] families = recipes.Where(row => row.Kind == RecipeKind.Equipment).Select(row => row.Family).OrderBy(family => family).ToArray();
+            Assert.Equal(new uint[] { 2, 3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18, 20, 21 }, families);
+            Assert.All(recipes.Where(row => row.Kind == RecipeKind.Equipment), row =>
+            {
+                Assert.Equal(4, row.GradeChances.Count);
+                Assert.Equal(1.0, row.GradeChances.Sum(), 6);
+                Assert.All(new[] { ItemGrade.Common, ItemGrade.Uncommon, ItemGrade.Rare, ItemGrade.Epic }, grade => Assert.NotNull(data.Equipment(row.Family, grade)));
+            });
+            Assert.All(recipes.Where(row => row.Kind == RecipeKind.Item), row => Assert.Empty(row.GradeChances));
+
+            var craftedOnly = new HashSet<uint> { 2002, 2004 };
+            craftedOnly.UnionWith(families.Where(family => family % 3 == 0)
+                .SelectMany(family => new[] { ItemGrade.Common, ItemGrade.Uncommon, ItemGrade.Rare, ItemGrade.Epic }.Select(grade => data.Equipment(family, grade)!.Id)));
+            Assert.DoesNotContain(data.Shops.Rows, row => craftedOnly.Contains(row.ItemId));
+            Assert.DoesNotContain(data.AllDropGroups.SelectMany(row => row.Items), craftedOnly.Contains);
+
+            var sources = new HashSet<uint>(Enumerable.Range(1, 6).Select(id => data.GatherNode((uint)id).ItemId));
+            sources.UnionWith(data.AllDropGroups.SelectMany(row => row.Items));
+            Assert.All(recipes.SelectMany(row => row.Materials), material => Assert.Contains(material, sources));
+        }
+
+        /// <summary>
         /// 플레이어의 스킬 12줄(직업마다 여섯)의 차례와 종류가 설계의 표와 같고, 필요 레벨은 1, 5, 10, 14, 17, 20이다. 마법사의 여섯째는 소환(95)이다.
         /// 시전 시간은 마법사의 대상 중심 범위 피해, 회복, 시전하는 단일 피해, 소환에만 있고 그 줄의 타격까지의 시간은 0이다. 거는 효과는 Effects의 줄이고,
         /// Classes의 첫 스킬은 직업의 첫째 스킬이다.

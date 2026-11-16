@@ -38,6 +38,8 @@ namespace MmoScreen
 		Map,
 		/** 파티 창(42). */
 		Party,
+		/** 제작 창(48). */
+		Craft,
 	};
 
 	/** 화면이 올라가는 층. 아래에서 위로 그린다. */

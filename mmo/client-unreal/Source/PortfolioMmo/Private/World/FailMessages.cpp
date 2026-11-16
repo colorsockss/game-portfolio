@@ -48,6 +48,7 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_PARTY_MEMBER: return "fail.partyMember";
 		case portfolio::mmo::FAIL_REASON_NO_PET: return "fail.noPet";
 		case portfolio::mmo::FAIL_REASON_ALREADY_HAVE_PET: return "fail.alreadyHavePet";
+		case portfolio::mmo::FAIL_REASON_NOT_ENOUGH_MATERIALS: return "fail.notEnoughMaterials";
 		default: return "fail.other";
 		}
 	}

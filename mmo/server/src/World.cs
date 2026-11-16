@@ -40,6 +40,7 @@ namespace PortfolioMmo.Server
         private readonly SummonSystem _summons;
         private readonly LootSystem _loot;
         private readonly GatherSystem _gather;
+        private readonly CraftSystem _craft;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
         private readonly SkillSystem _skills;
@@ -94,6 +95,7 @@ namespace PortfolioMmo.Server
             // NPC도 놓인 점의 번호를 플레이어보다 먼저 받는다(37). 움직이지 않고 칸을 막지 않는다. 경비병(44)은 AiSystem이 움직인다.
             Npc? shop = null;
             Npc? keeper = null;
+            Npc? crafter = null;
             foreach (NpcsRow row in data.Npcs.Rows)
             {
                 if (row.Role == NpcRole.Guard)
@@ -110,10 +112,12 @@ namespace PortfolioMmo.Server
                 _grid.Add(npc);
                 shop = row.Role == NpcRole.Shop ? npc : shop;
                 keeper = row.Role == NpcRole.Storage ? npc : keeper;
+                crafter = row.Role == NpcRole.Craft ? npc : crafter;
             }
 
             _shop = new ShopSystem(data, field, _inventory, shop);
             _storage = new StorageSystem(data, field, _inventory, keeper);
+            _craft = new CraftSystem(data, field, _progress, _inventory, crafter, random);
             _chat = new ChatSystem(data, _entities, _grid, _party);
             _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, _pk, data);
             _combat.Deaths = _deaths;
@@ -192,6 +196,11 @@ namespace PortfolioMmo.Server
         internal System.Collections.Generic.IEnumerable<GatherNode> GatherNodes => System.Linq.Enumerable.OfType<GatherNode>(_entities.All);
 
         internal System.Collections.Generic.IEnumerable<GatherPoint> GatherPoints => _gather.Points;
+
+        /// <summary>
+        /// 제작(48. 테스트가 제작 완료 사건을 듣고 등급의 굴림을 봄).
+        /// </summary>
+        internal CraftSystem Craft => _craft;
 
         /// <summary>
         /// 날고 있는 직선 발사체(테스트가 수를 봄).
@@ -333,6 +342,9 @@ namespace PortfolioMmo.Server
                 case Packet.BodyOneofCase.Gather when player != null:
                     Answer(player, Outcome.From(_gather.Start(player, packet.Gather, Tick)), RequestKind.Gather);
                     break;
+                case Packet.BodyOneofCase.Craft when player != null:
+                    Respond(player, packet.Craft.RequestId, _craft.Start(player, packet.Craft, Tick));
+                    break;
                 case Packet.BodyOneofCase.PickUp when player != null:
                     Respond(player, packet.PickUp.RequestId, _loot.PickUp(player, packet.PickUp, Tick));
                     break;
@@ -449,6 +461,7 @@ namespace PortfolioMmo.Server
                 Packet.BodyOneofCase.Sell => packet.Sell.RequestId,
                 Packet.BodyOneofCase.StorageDeposit => packet.StorageDeposit.RequestId,
                 Packet.BodyOneofCase.StorageWithdraw => packet.StorageWithdraw.RequestId,
+                Packet.BodyOneofCase.Craft => packet.Craft.RequestId,
                 _ => null,
             };
         }
@@ -663,6 +676,9 @@ namespace PortfolioMmo.Server
                     break;
                 case ScheduledKind.ProgressEnd when _entities.Find(job.Owner) is Player { Progress.Kind: ProgressKind.Gather } gathering:
                     _gather.Finish(gathering, Tick);
+                    break;
+                case ScheduledKind.ProgressEnd when _entities.Find(job.Owner) is Player { Progress.Kind: ProgressKind.Craft } crafting:
+                    _craft.Finish(crafting);
                     break;
                 case ScheduledKind.GatherRespawn:
                     _gather.Respawn(job);

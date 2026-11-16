@@ -355,7 +355,7 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// WithMonsters에 직업, 상수, 몬스터, 레벨, NPC를 바꾼 데이터. null이면 처음 값이다(NPC는 없음, 상점은 Shops).
         /// </summary>
-        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters, Levels? levels = null, Npcs? npcs = null, GatherNodes? gatherNodes = null)
+        public static GameData WithMonsters(IEnumerable<SpawnsRow> spawns, string[] rows, Classes? classes, Constants? constants, IEnumerable<MonstersRow>? monsters, Levels? levels = null, Npcs? npcs = null, GatherNodes? gatherNodes = null, Recipes? recipes = null)
         {
             (uint size, MapGrid grid, ZonesRow[] zones) = Map(rows);
             int min = -(int)size / 2;
@@ -372,7 +372,7 @@ namespace PortfolioMmo.Server.Tests
             table.Rows.Add(zones);
             return new GameData(
                 Hash, constants ?? Constants(size), table, grid, classes ?? Classes, levels ?? Levels,
-                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants, npcs, Shops, Pets, gatherNodes ?? GatherNodes);
+                new Monsters { Rows = { monsters ?? new[] { Monster(1, aggressive: true), Monster(2, aggressive: false) } } }, new Spawns { Rows = { spawns } }, Skills, Effects, Items, DropGroups, Enchants, npcs, Shops, Pets, gatherNodes ?? GatherNodes, recipes ?? Recipes);
         }
 
         /// <summary>
@@ -402,6 +402,19 @@ namespace PortfolioMmo.Server.Tests
         {
             return new SpawnsRow { Id = id, X = x, Z = z, GatherNodeId = nodeId, Count = count, ScatterRadius = scatter, RespawnMs = respawnMs };
         }
+
+        /// <summary>
+        /// 시험용 제작법(48): 1은 재료 3001 셋과 50골드로 2002를 둘(2초, 레벨 1), 2는 레벨 2가 필요한 갑옷(종 4), 3은 재료 3001 둘로 투구(종 3, 늘 일반 등급, 2초, 레벨 1).
+        /// </summary>
+        public static Recipes Recipes => new Recipes
+        {
+            Rows =
+            {
+                new RecipesRow { Id = 1, Kind = RecipeKind.Item, ItemId = 2002, Count = 2, Materials = { 3001 }, MaterialCounts = { 3 }, Gold = 50, CraftMs = 2000, Level = 1 },
+                new RecipesRow { Id = 2, Kind = RecipeKind.Equipment, Family = 4, GradeChances = { 1, 0, 0, 0 }, Materials = { 3001 }, MaterialCounts = { 1 }, CraftMs = 2000, Level = 2 },
+                new RecipesRow { Id = 3, Kind = RecipeKind.Equipment, Family = 3, GradeChances = { 1, 0, 0, 0 }, Materials = { 3001 }, MaterialCounts = { 2 }, CraftMs = 2000, Level = 1 },
+            },
+        };
 
         /// <summary>
         /// 시험용 채집물(47): 1은 재료 3001을 하나씩 주고 3초, 횟수 2, 레벨 1. 2는 레벨 5가 필요하다.

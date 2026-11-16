@@ -161,6 +161,35 @@ namespace MmoData
 		return nullptr;
 	}
 
+	const portfolio::mmo::data::RecipesRow* FGameData::Recipe(uint32_t Id) const
+	{
+		for (const portfolio::mmo::data::RecipesRow& Row : Recipes.rows())
+		{
+			if (Row.id() == Id)
+			{
+				return &Row;
+			}
+		}
+		return nullptr;
+	}
+
+	const portfolio::mmo::data::ItemsRow* FGameData::Equipment(uint32_t Family, portfolio::mmo::data::ItemGrade Grade) const
+	{
+		for (const portfolio::mmo::data::ItemsRow& Row : Items.rows())
+		{
+			if (Row.kind() == portfolio::mmo::data::ITEM_KIND_EQUIPMENT && Row.family() == Family && Row.grade() == Grade)
+			{
+				return &Row;
+			}
+		}
+		return nullptr;
+	}
+
+	const portfolio::mmo::data::ItemsRow* FGameData::RecipeItem(const portfolio::mmo::data::RecipesRow& Recipe) const
+	{
+		return Recipe.kind() == portfolio::mmo::data::RECIPE_KIND_ITEM ? Item(Recipe.item_id()) : Equipment(Recipe.family(), portfolio::mmo::data::ITEM_GRADE_COMMON);
+	}
+
 	std::optional<FGameData> Load(const FFileReader& Read)
 	{
 		const std::optional<std::string> HashText = Read(HashFile);
@@ -187,10 +216,11 @@ namespace MmoData
 		const std::optional<std::string> Shops = Read("Shops.bytes");
 		const std::optional<std::string> Pets = Read("Pets.bytes");
 		const std::optional<std::string> GatherNodes = Read("GatherNodes.bytes");
+		const std::optional<std::string> Recipes = Read("Recipes.bytes");
 		if (!Constants || !Zones || !Grid || !Classes || !Monsters || !Skills || !Effects || !Strings || !Data.Strings.ParseFromString(*Strings)
 			|| !Levels || !Data.Levels.ParseFromString(*Levels) || !Items || !Data.Items.ParseFromString(*Items) || !Enchants || !Data.Enchants.ParseFromString(*Enchants)
 			|| !Npcs || !Data.Npcs.ParseFromString(*Npcs) || !Shops || !Data.Shops.ParseFromString(*Shops) || !Pets || !Data.Pets.ParseFromString(*Pets)
-			|| !GatherNodes || !Data.GatherNodes.ParseFromString(*GatherNodes)
+			|| !GatherNodes || !Data.GatherNodes.ParseFromString(*GatherNodes) || !Recipes || !Data.Recipes.ParseFromString(*Recipes)
 			|| !Data.Constants.ParseFromString(*Constants)
 			|| !Data.Zones.ParseFromString(*Zones) || !Data.Grid.ParseFromString(*Grid) || !Data.Classes.ParseFromString(*Classes)
 			|| !Data.Monsters.ParseFromString(*Monsters) || !Data.Skills.ParseFromString(*Skills) || !Data.Effects.ParseFromString(*Effects))

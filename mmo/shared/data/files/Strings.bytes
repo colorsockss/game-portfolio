@@ -1047,3 +1047,30 @@ $
 item.gather.ginseng인삼 뿌리Ginseng Root
 �
 item.desc.3206R채집해 얻은 재료입니다. 제작에 쓰고 상점에 팔 수 있습니다.=A gathered material. Used in crafting and sellable at a shop.
+2
+npc.crafter장인 한결Hangyeol the Artisan
+L
+fail.notEnoughMaterials재료가 모자랍니다.Not enough materials.
+
+craft.title제작Crafting
+
+
+craft.make	만들기Craft
+C
+
+craft.pick만들 것을 고르세요.Pick something to craft.
+&
+craft.result
+{0} × {1}
+{0} × {1}
+0
+craft.material{0}  {1} / {2}{0}  {1} / {2}
+.
+
+craft.gold골드 {0} / {1}Gold {0} / {1}
+4
+craft.level필요 레벨 {0}Requires level {0}
+�
+craft.grades@등급: 일반 {0}% · 고급 {1}% · 희귀 {2}% · 영웅 {3}%=Grade: common {0}% · uncommon {1}% · rare {2}% · epic {3}%
+G
+craft.noRoom!가방에 자리가 없습니다.No room in your bag.
