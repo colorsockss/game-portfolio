@@ -334,7 +334,18 @@ namespace PortfolioMmo.Server
             transaction.Commit();
         }
 
+        /// <summary>
+        /// 문장과 연결을 닫는다. 저장 스레드(SaveQueue)가 일 하나를 하는 동안은 그 일이 끝나기를 기다린다(같은 잠금). 닫은 뒤의 일은 실패로 끝난다.
+        /// </summary>
         public void Dispose()
+        {
+            lock (this)
+            {
+                DisposeLocked();
+            }
+        }
+
+        private void DisposeLocked()
         {
             foreach (SqliteCommand command in new[]
             {

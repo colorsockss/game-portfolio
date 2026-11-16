@@ -178,7 +178,11 @@ namespace PortfolioMmo.Server
                     long started = Stopwatch.GetTimestamp();
                     try
                     {
-                        job.Run(_store);
+                        // 저장소를 닫는 쪽(CharacterStore.Dispose)이 같은 잠금을 잡아, 쓰는 도중의 트랜잭션을 닫지 않는다.
+                        lock (_store)
+                        {
+                            job.Run(_store);
+                        }
                     }
                     catch (Exception exception)
                     {
