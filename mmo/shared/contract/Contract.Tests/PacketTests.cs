@@ -191,5 +191,31 @@ namespace PortfolioMmo.Contract.Tests
             packet.WriteDelimitedTo(stream);
             return stream.Length;
         }
+
+        /// <summary>
+        /// 이어 붙여 쓴 EntityMoves(51)는 통째로 인코딩한 Packet과 같은 바이트다: 틱이 0이거나 원소가 없을 때, 한 원소 객체를 여러 패킷이 함께 쓸 때도 같다.
+        /// </summary>
+        [Fact]
+        public void EncodedEntityMovesMatchTheWholeMessage()
+        {
+            var encoder = new EntityMovesEncoder();
+            var shared = new EntityMove { Id = 7, X = -3, Z = 40000, Yaw = 255, Teleport = true };
+            EntityMoves[] cases =
+            {
+                new EntityMoves { Tick = 123456, Entities = { s_sampleMove, shared, new EntityMove { Id = 1 } } },
+                new EntityMoves { Tick = 0, Entities = { shared } },
+                new EntityMoves { Tick = 9 },
+                new EntityMoves { Tick = 10, Entities = { shared, s_sampleMove } },
+            };
+            foreach (EntityMoves moves in cases)
+            {
+                byte[] whole = new Packet { EntityMoves = moves }.ToByteArray();
+                byte[] joined = new byte[encoder.PacketSize(moves)];
+                var output = new CodedOutputStream(joined);
+                encoder.WritePacket(output, moves);
+                output.CheckNoSpaceLeft();
+                Assert.Equal(whole, joined);
+            }
+        }
     }
 }

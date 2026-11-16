@@ -107,6 +107,8 @@ namespace PortfolioMmo.Server
         /// 차례별 시간, 패킷 종류별 수와 바이트, 보내기 큐, 타이머의 흔들림.
         /// </summary>
         private readonly TickProfile _profile = new TickProfile(Stopwatch.Frequency);
+        private readonly EntityMovesEncoder _moves = new EntityMovesEncoder();
+        private readonly List<int> _packetSizes = new List<int>();
 
         /// <summary>
         /// endpoint에서 연결을 받을 서버를 만든다. 포트가 0이면 RunAsync를 부른 뒤 Port에서 실제 포트를 읽는다.
@@ -210,14 +212,17 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 이번 틱의 패킷을 한 버퍼에 이어 쓴다(길이 구분 프레임). 패킷마다 종류와 바이트를 측정에 넘긴다.
+        /// 이번 틱의 패킷을 한 버퍼에 이어 쓴다(길이 구분 프레임). 패킷마다 종류와 바이트를 측정에 넘긴다. EntityMoves는 원소를 틱에 한 번만 인코딩해
+        /// 연결마다 이어 붙인다(51. 보는 연결 수만큼 다시 인코딩하지 않음).
         /// </summary>
         private byte[] Serialize(List<Packet> packets)
         {
             int size = 0;
+            _packetSizes.Clear();
             foreach (Packet packet in packets)
             {
-                int packetSize = packet.CalculateSize();
+                int packetSize = packet.BodyCase == Packet.BodyOneofCase.EntityMoves ? _moves.PacketSize(packet.EntityMoves) : packet.CalculateSize();
+                _packetSizes.Add(packetSize);
                 int framed = CodedOutputStream.ComputeLengthSize(packetSize) + packetSize;
                 size += framed;
 
@@ -227,9 +232,18 @@ namespace PortfolioMmo.Server
 
             byte[] frame = new byte[size];
             var output = new CodedOutputStream(frame);
-            foreach (Packet packet in packets)
+            for (int index = 0; index < packets.Count; index++)
             {
-                output.WriteMessage(packet);
+                Packet packet = packets[index];
+                if (packet.BodyCase == Packet.BodyOneofCase.EntityMoves)
+                {
+                    output.WriteLength(_packetSizes[index]);
+                    _moves.WritePacket(output, packet.EntityMoves);
+                }
+                else
+                {
+                    output.WriteMessage(packet);
+                }
             }
 
             output.CheckNoSpaceLeft();
@@ -374,6 +388,8 @@ namespace PortfolioMmo.Server
                 }
             }
 
+            // 이 틱의 EntityMove 객체는 다음 틱에 새로 만들어지므로 그 바이트를 버린다.
+            _moves.Clear();
             return sent;
         }
 

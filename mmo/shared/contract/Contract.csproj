@@ -20,6 +20,7 @@
     <PackageReference Include="Google.Protobuf.Tools" Version="3.36.2" PrivateAssets="all" />
     <Compile Include="generated/*.cs" />
     <Compile Include="Units.cs" />
+    <Compile Include="EntityMovesEncoder.cs" />
   </ItemGroup>
   <!-- protoc_* 경로는 Google.Protobuf.Tools의 targets가 정한다. macOS용은 x86_64뿐이라 Apple Silicon에서는 Rosetta로 돈다. -->
   <Target Name="GenerateContract" BeforeTargets="BeforeBuild" Inputs="packets.proto" Outputs="$(ContractOutputDir)/Packets.cs;$(ContractOutputDir)/packets.pb.h;$(ContractOutputDir)/packets.pb.cc">
