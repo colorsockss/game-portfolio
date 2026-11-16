@@ -59,7 +59,7 @@ void UMmoShopWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	ShownLanguage = Session->Strings().Version();
 	BuyGrid->RegenerateAllEntries();
 	SellGrid->RegenerateAllEntries();
-	GoldText->SetText(MmoText::Format(this, TEXT("shop.gold"), { FText::AsNumber(Session->Inventory().Gold()).ToString() }));
+	GoldText->SetText(MmoText::Format(this, TEXT("shop.gold"), { FText::AsNumber(static_cast<uint64>(Session->Inventory().Gold())).ToString() }));
 	Refresh();
 }
 

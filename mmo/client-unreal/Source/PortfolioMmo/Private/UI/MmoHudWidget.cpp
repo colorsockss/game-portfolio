@@ -582,7 +582,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		const portfolio::mmo::data::ItemsRow* Item = Session->Data().Item(Gain.ItemId);
 		Ui->ShowNotice(Item
 			? MmoText::Format(this, TEXT("notice.gainItem"), { MmoText::Get(this, UTF8_TO_TCHAR(Item->name_key().c_str())).ToString(), FString::FromInt(Gain.Count) })
-			: MmoText::Format(this, TEXT("notice.gainGold"), { FText::AsNumber(Gain.Gold).ToString() }));
+			: MmoText::Format(this, TEXT("notice.gainGold"), { FText::AsNumber(static_cast<uint64>(Gain.Gold)).ToString() }));
 	}
 
 	const MmoWorld::FFieldMap* Field = Session->Field();

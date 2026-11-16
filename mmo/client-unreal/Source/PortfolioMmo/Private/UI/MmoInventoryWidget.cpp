@@ -53,7 +53,7 @@ void UMmoInventoryWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	// 보이는 항목만 다시 그린다(목록 위젯이 만든 칸 위젯은 보이는 줄의 것뿐).
 	Grid->RegenerateAllEntries();
 	EquipGrid->RegenerateAllEntries();
-	GoldText->SetText(MmoText::Format(this, TEXT("inventory.gold"), { FText::AsNumber(Session->Inventory().Gold()).ToString() }));
+	GoldText->SetText(MmoText::Format(this, TEXT("inventory.gold"), { FText::AsNumber(static_cast<uint64>(Session->Inventory().Gold())).ToString() }));
 }
 
 void UMmoInventoryWidget::HandleItemClicked(UObject* Item)
