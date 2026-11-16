@@ -44,6 +44,8 @@ namespace MmoWorld
 		case portfolio::mmo::FAIL_REASON_INVITE_PENDING: return "fail.invitePending";
 		case portfolio::mmo::FAIL_REASON_NO_INVITE: return "fail.noInvite";
 		case portfolio::mmo::FAIL_REASON_INVITE_DECLINED: return "fail.inviteDeclined";
+		case portfolio::mmo::FAIL_REASON_PK_LEVEL_TOO_LOW: return "fail.pkLevelTooLow";
+		case portfolio::mmo::FAIL_REASON_PARTY_MEMBER: return "fail.partyMember";
 		default: return "fail.other";
 		}
 	}

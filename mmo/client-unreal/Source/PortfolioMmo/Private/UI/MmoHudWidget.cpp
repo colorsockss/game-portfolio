@@ -69,6 +69,11 @@ void UMmoHudWidget::NativeOnInitialized()
 		}
 	});
 	TargetButton->OnClicked.AddDynamic(this, &UMmoHudWidget::HandleTargetClicked);
+	ForceButton->OnClickedNative.AddWeakLambda(this, [this]
+	{
+		MmoWorld::FCombatState& Combat = GetGameInstance()->GetSubsystem<UMmoSession>()->Combat();
+		Combat.SetForceAttack(!Combat.IsForceAttack());
+	});
 	PartyInviteButton->OnClickedNative.AddWeakLambda(this, [this]
 	{
 		portfolio::mmo::Packet Packet;
@@ -210,6 +215,11 @@ void UMmoHudWidget::ShowEffects(double ServerTick)
 	if (ServerTick < Session->World().SelfState().CombatEndTick)
 	{
 		Add(*MmoText::Get(this, TEXT("hud.combat")).ToString(), Session->World().SelfState().CombatEndTick);
+	}
+	// 선공 표시(44)도 효과 아이콘처럼 남은 시간과 함께 보인다.
+	if (ServerTick < Session->World().SelfState().AggressorEndTick)
+	{
+		Add(*MmoText::Get(this, TEXT("effect.aggressor")).ToString(), Session->World().SelfState().AggressorEndTick);
 	}
 	for (int32 Index = 0; Me && Index < Me->Info.effects_size(); ++Index)
 	{
@@ -506,6 +516,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	{
 		AutoButton->SetSelected(Controller->IsAutoHunting());
 	}
+	ForceButton->SetSelected(Session->Combat().IsForceAttack());
 	ShowMinimap(Now);
 	ShowInteract();
 	ShowParty();
@@ -517,6 +528,10 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	for (const portfolio::mmo::FailReason Reason : Session->Combat().TakeNotices())
 	{
 		Ui->ShowNotice(MmoText::Get(this, UTF8_TO_TCHAR(MmoWorld::FailKey(Reason))));
+	}
+	if (Session->Combat().TakeForceNotice())
+	{
+		Ui->ShowNotice(MmoText::Get(this, TEXT("notice.forceAttack")));
 	}
 	for (const MmoWorld::FRequestFailure& Failure : Session->Inventory().TakeFailures())
 	{

@@ -36,6 +36,9 @@ namespace
 	const FLinearColor CriticalColor(1.0f, 0.85f, 0.2f);
 	/** NPC의 이름 색(37). */
 	const FLinearColor NpcColor(0.55f, 0.9f, 0.6f);
+	/** 플레이어의 이름 색(44): 선공 표시는 보라색, 무법자는 빨간색. */
+	const FLinearColor AggressorColor(0.75f, 0.45f, 1.0f);
+	const FLinearColor OutlawColor(1.0f, 0.25f, 0.25f);
 
 	/** NPC 역할의 글 키(37). */
 	const TCHAR* RoleKey(int32 Role)
@@ -45,7 +48,6 @@ namespace
 		case portfolio::mmo::data::NPC_ROLE_STORAGE: return TEXT("npcRole.storage");
 		case portfolio::mmo::data::NPC_ROLE_CRAFT: return TEXT("npcRole.craft");
 		case portfolio::mmo::data::NPC_ROLE_QUEST: return TEXT("npcRole.quest");
-		case portfolio::mmo::data::NPC_ROLE_GUARD: return TEXT("npcRole.guard");
 		default: return TEXT("npcRole.shop");
 		}
 	}
@@ -196,9 +198,10 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 		}
 		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_NPC)
 		{
-			// 이름과 역할(37).
+			// 이름과 역할(37). 경비병(44)은 말하는 NPC가 아니라 이름만 둔다.
 			const portfolio::mmo::data::NpcsRow* Row = Session->Data().Npc(Info.template_id());
-			Tag.SetName(Row ? FString::Printf(TEXT("%s [%s]"), *MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString(), *MmoText::Get(this, RoleKey(Row->role())).ToString()) : FString(),
+			const FString Name = Row ? MmoText::Get(this, UTF8_TO_TCHAR(Row->name_key().c_str())).ToString() : FString();
+			Tag.SetName(!Row || Row->role() == portfolio::mmo::data::NPC_ROLE_GUARD ? Name : FString::Printf(TEXT("%s [%s]"), *Name, *MmoText::Get(this, RoleKey(Row->role())).ToString()),
 				NpcColor);
 		}
 		else if (Info.kind() == portfolio::mmo::ENTITY_KIND_GROUND_ITEM)
@@ -218,7 +221,9 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 		}
 		else
 		{
-			Tag.SetName(UTF8_TO_TCHAR(Info.name().c_str()), FLinearColor::White);
+			// 플레이어는 이름 색(44)으로 그린다.
+			Tag.SetName(UTF8_TO_TCHAR(Info.name().c_str()), Info.name_color() == portfolio::mmo::NAME_COLOR_OUTLAW ? OutlawColor
+				: Info.name_color() == portfolio::mmo::NAME_COLOR_AGGRESSOR ? AggressorColor : FLinearColor::White);
 			if (Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER)
 			{
 				// 내 체력은 SelfVitals가 따로 오므로 내 상태에서 읽는다.

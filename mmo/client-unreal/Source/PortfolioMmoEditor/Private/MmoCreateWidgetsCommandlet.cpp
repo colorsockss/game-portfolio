@@ -631,9 +631,11 @@ namespace
 			Slots->AddChildToHorizontalBox(Size)->SetPadding(FMargin(Index == 0 ? 0.0f : Style.Gap * 0.5f, 0.0f, 0.0f, 0.0f));
 		}
 
-		// 오른쪽 아래에 자동 사냥 버튼(PC와 터치 기기 모두. Z, 40)과 터치 기기에서만 보이는 상호작용, 대상 고르기, 공격 버튼. PC에서는 E, Tab, F가 같은 일을 한다.
+		// 오른쪽 아래에 자동 사냥 버튼(PC와 터치 기기 모두. Z, 40)과 터치 기기에서만 보이는 강제 공격(44), 상호작용, 대상 고르기, 공격 버튼.
+		// PC에서는 Ctrl(누르는 동안), E, Tab, F가 같은 일을 한다.
 		Corner(*Root, Row(Builder, TEXT("TouchButtons"), {
 			Builder.Button(TEXT("AutoButton"), TEXT("hud.auto")),
+			Builder.Button(TEXT("ForceButton"), TEXT("hud.forceAttack"), true),
 			Builder.Button(TEXT("InteractButton"), TEXT("interact.none"), true),
 			Builder.Button(TEXT("TargetButton"), TEXT("hud.target"), true),
 			Builder.Button(TEXT("AttackButton"), TEXT("hud.attack"), true),

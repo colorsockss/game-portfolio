@@ -68,6 +68,7 @@ export async function buildMap(source) {
   const zones = table('Zones');
   const spawns = table('Spawns');
   const npcs = table('Npcs');
+  const monsters = new Map(table('Monsters').map((row) => [row.id, row]));
   const town = enums.get('ZoneKind').members.get('Town');
 
   const errors = [];
@@ -127,6 +128,15 @@ export async function buildMap(source) {
   // NPC의 자리(m)는 막힌 칸 위가 아니어야 한다(37). 뒤의 항목이 더하는 NPC(경비병 44, 제작 48, 퀘스트 50, 창고 75)도 같다.
   for (const npc of npcs) {
     if (!open(npc.x, npc.z)) errors.push(`Npcs ${npc.id}: the NPC point (${npc.x}, ${npc.z}) is on a blocked cell or outside the field`);
+  }
+  // 무법자의 부활 지점은 모든 경비병(44. 수치의 몬스터 줄을 가리키는 NPC)의 인식 범위 밖이어야 한다(부활하자마자 다시 죽지 않게).
+  for (const npc of npcs.filter((entry) => entry.monsterId != null)) {
+    const range = monsters.get(npc.monsterId)?.detectRange ?? 0;
+    for (const zone of respawns) {
+      if (Math.hypot(zone.outlawRespawnX - npc.x, zone.outlawRespawnZ - npc.z) <= range) {
+        errors.push(`Npcs ${npc.id}: the outlaw respawn point (${zone.outlawRespawnX}, ${zone.outlawRespawnZ}) is within the guard's detect range (${range} m)`);
+      }
+    }
   }
   if (errors.length === 0) {
     // 무법자의 부활 지점, 무리의 자리, NPC의 자리는 마을의 부활 지점에서 걸어서 닿아야 한다.

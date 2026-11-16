@@ -112,6 +112,19 @@ namespace MmoWorld
 		/** 내 첫 공격의 동작을 AttackStart를 보낼 때 미리 시작했고 그 공격의 AttackSwing을 아직 받지 않았다. */
 		bool IsPredicted() const { return bPredicted; }
 
+		/** 강제 공격(44). PC는 Ctrl을 누르는 동안, 모바일은 HUD의 버튼이 켠다. 켜져 있으면 UseSkill에 표시를 싣는다. */
+		bool IsForceAttack() const { return bForceAttack; }
+		void SetForceAttack(bool bOn) { bForceAttack = bOn; }
+
+		/**
+		 * 대상(Id)을 기본 공격하거나 그에게 피해·상태 이상 스킬을 써도 되는가(44): 플레이어면 강제 공격이 켜져 있어야 한다. 아니면 false이고
+		 * "강제 공격을 켜야 함" 알림을 쌓는다(TakeForceNotice). 몬스터와 모르는 개체는 늘 참이다.
+		 */
+		bool MayAttack(const FWorldState& World, uint32_t Id);
+
+		/** 지난번에 꺼낸 뒤로 강제 공격이 꺼져 있어 플레이어를 치지 못한 적이 있다(HUD가 알림을 한 번 띄움). */
+		bool TakeForceNotice() { const bool bNotice = bForceNotice; bForceNotice = false; return bNotice; }
+
 		/** 대상을 고른다(0이면 푼다). 공격 중에 풀거나 다른 대상으로 바꾸면 공격을 끝내고 AttackStop을 돌려준다. */
 		std::optional<portfolio::mmo::Packet> SetTarget(uint32_t Id);
 
@@ -155,7 +168,8 @@ namespace MmoWorld
 
 		/**
 		 * 퀵슬롯의 스킬을 누른다: 죽음, 기절, 진행 중, 쿨다운, 마나, 대상(직선 발사체가 아닌 대상 스킬)을 먼저 보고, 통과하면 그 스킬을 기다리게 둔다
-		 * (UpdateSkill이 이어 감). 어긋나면 그 이유이고 아무것도 보내지 않으며, 이유를 알림으로 쌓는다.
+		 * (UpdateSkill이 이어 감). 어긋나면 그 이유이고 아무것도 보내지 않으며, 이유를 알림으로 쌓는다. 대상에게 쓰는 스킬의 대상이 플레이어인데
+		 * 강제 공격이 꺼져 있으면 "공격할 수 없는 대상"이고 그 대신 강제 공격의 알림을 쌓는다(44. 회복·강화와 자기 중심의 범위 스킬은 상관없음).
 		 */
 		portfolio::mmo::FailReason PressSkill(uint32_t SkillId, const FWorldState& World, const MmoData::FGameData& Data, double NowSeconds);
 
@@ -178,6 +192,7 @@ namespace MmoWorld
 		 * 누른 스킬을 보낸다: 시전 시간이 있으면 캐릭터를 세우고 밀린 위치를 먼저 보내며(Sender.Flush), 쥐고 있던 이동 입력을 놓을 때까지 무시한다.
 		 * 직선 발사체의 스킬도 밀린 위치와 방향을 먼저 보낸다(대상이 없으면 서버가 보는 쪽으로 쏨). 대상은 살아 있을 때만 싣는다.
 		 * 시전 시간이 없으면 쿨다운을 미리 돌린다. 내 동작(시전이면 ProgressStart, 아니면 Skill)을 미리 쌓고 답을 기다린다.
+		 * 강제 공격이 켜져 있으면 표시를 싣는다(44).
 		 */
 		FSkillFire FireSkill(const FWorldState& World, const MmoData::FGameData& Data, FMoveSender& Sender, int32_t X, int32_t Z, uint32_t Yaw, double NowSeconds);
 
@@ -224,6 +239,8 @@ namespace MmoWorld
 		uint32_t LastProjectile = 0;
 		/** 시전 시간이 있는 스킬을 보낼 때 쥐고 있던 이동 입력을 놓을 때까지 막는다. */
 		bool bHoldMove = false;
+		bool bForceAttack = false;
+		bool bForceNotice = false;
 		FCooldowns SkillCooldowns;
 		std::vector<FCombatEvent> Events;
 		std::vector<portfolio::mmo::FailReason> Notices;

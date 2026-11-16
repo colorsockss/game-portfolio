@@ -85,6 +85,16 @@ namespace PortfolioMmo.Server
 
         public NameColor NameColor { get; private set; }
 
+        /// <summary>
+        /// 성향(44). 0보다 낮으면 무법자다. 저장한다(characters의 alignment 열). PkSystem만 바꾼다.
+        /// </summary>
+        public int Karma { get; internal set; }
+
+        /// <summary>
+        /// 선공 표시가 끝나는 틱(44. 그 틱부터 아님). 0이면 선공 표시가 없다. 끝의 예약과 죽음이 0으로 돌리고, 저장하지 않는다.
+        /// </summary>
+        public uint AggressorEndTick { get; internal set; }
+
         public uint WeaponItemId { get; private set; }
 
         /// <summary>

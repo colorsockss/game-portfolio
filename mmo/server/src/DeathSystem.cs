@@ -7,7 +7,8 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 죽음과 부활(25). 전투 차례의 끝에서 그 틱에 죽은 개체를 정리하고(죽은 플레이어를 피해 표에서 뺌, 죽은 몬스터의 사라짐과 리스폰을 예약),
-    /// 죽은 몬스터의 경험치를 GrowthSystem에 넘기며(31), Revive를 받으면 마을의 부활 지점에서 일으킨다. 효과를 떼고(알리지 않음) 진행 중인 일을 취소한다(26). 선공 표시(44)는 그 항목이 Died에 잇는다.
+    /// 죽은 몬스터의 경험치를 GrowthSystem에 넘기며(31), Revive를 받으면 마을의 부활 지점(무법자는 무법자의 부활 지점. 44)에서 일으킨다. 효과를 떼고(알리지 않음)
+    /// 진행 중인 일을 취소하며(26) 선공 표시를 뗀다(44).
     /// 쿨다운과 성향은 남긴다. 사망 페널티는 45다.
     /// </summary>
     internal sealed class DeathSystem
@@ -20,17 +21,18 @@ namespace PortfolioMmo.Server
         private readonly ProgressSystem _progress;
         private readonly GrowthSystem _growth;
         private readonly LootSystem _loot;
+        private readonly PkSystem _pk;
         private readonly uint _deadMonsterTicks;
         private readonly uint _reviveHpPercent;
-        private readonly (int X, int Z) _respawn;
 
         /// <summary>
         /// 보스의 죽음 알림(43).
         /// </summary>
         public BossSystem? Bosses { get; set; }
 
-        public DeathSystem(EntityTable entities, Scheduler scheduler, MovementSystem movement, TickEvents events, EffectSystem effects, ProgressSystem progress, GrowthSystem growth, LootSystem loot, GameData data)
+        public DeathSystem(EntityTable entities, Scheduler scheduler, MovementSystem movement, TickEvents events, EffectSystem effects, ProgressSystem progress, GrowthSystem growth, LootSystem loot, PkSystem pk, GameData data)
         {
+            _pk = pk;
             _entities = entities;
             _scheduler = scheduler;
             _movement = movement;
@@ -41,8 +43,6 @@ namespace PortfolioMmo.Server
             _loot = loot;
             _deadMonsterTicks = Units.TicksFromMilliseconds(data.Constants.DeadMonsterMs);
             _reviveHpPercent = data.Constants.ReviveHpPercent;
-            ZonesRow town = data.Zones.Rows.First(zone => zone.Kind == ZoneKind.Town);
-            _respawn = (town.RespawnX * Units.PerMeter, town.RespawnZ * Units.PerMeter);
         }
 
         /// <summary>
@@ -55,6 +55,7 @@ namespace PortfolioMmo.Server
             switch (dead)
             {
                 case Player player:
+                    _pk.Died(player);
                     // 몬스터는 표의 다른 대상을 고르거나, 고를 대상이 없으면 복귀한다.
                     foreach (Entity entity in _entities.All)
                     {
@@ -89,7 +90,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// Revive: 죽었으면 마을의 부활 지점으로 옮기고 체력을 최대 체력의 일부로 채운다(마나는 그대로). 보는 쪽에는 순간 이동 표시가 있는 움직임과
+        /// Revive: 죽었으면 마을의 부활 지점(무법자는 무법자의 부활 지점)으로 옮기고 체력을 최대 체력의 일부로 채운다(마나는 그대로). 보는 쪽에는 순간 이동 표시가 있는 움직임과
         /// Revived가, 본인에게는 PositionReset과 Revived, SelfVitals가 간다. 살아 있으면 ActionFailed(NOT_DEAD).
         /// </summary>
         public Outcome Revive(Player player)
@@ -101,7 +102,8 @@ namespace PortfolioMmo.Server
 
             player.Dead = false;
             player.Hp = Math.Max(1, (uint)((ulong)player.MaxHp * _reviveHpPercent / 100));
-            _movement.Teleport(player, _respawn.X, _respawn.Z);
+            (int x, int z) = _pk.Respawn(player.Karma);
+            _movement.Teleport(player, x, z);
             _events.Revived(player);
             return Outcome.Done;
         }

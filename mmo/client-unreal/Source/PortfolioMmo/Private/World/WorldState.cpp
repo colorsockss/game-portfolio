@@ -227,6 +227,9 @@ namespace MmoWorld
 			Mine.CombatEndTick = Packet.self_vitals().combat_end_tick();
 			Mine.AggressorEndTick = Packet.self_vitals().aggressor_end_tick();
 			break;
+		case portfolio::mmo::Packet::kKarma:
+			Mine.Karma = Packet.karma().karma();
+			break;
 		case portfolio::mmo::Packet::kExpGained:
 			Mine.Exp = Packet.exp_gained().exp();
 			if (Packet.exp_gained().amount() > 0)

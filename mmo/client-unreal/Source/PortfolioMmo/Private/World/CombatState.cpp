@@ -48,6 +48,17 @@ namespace MmoWorld
 		return Packet;
 	}
 
+	bool FCombatState::MayAttack(const FWorldState& World, uint32_t Id)
+	{
+		const auto Target = World.Entities().find(Id);
+		if (bForceAttack || Target == World.Entities().end() || Target->second.Info.kind() != portfolio::mmo::ENTITY_KIND_PLAYER || Id == World.SelfId())
+		{
+			return true;
+		}
+		bForceNotice = true;
+		return false;
+	}
+
 	std::optional<portfolio::mmo::Packet> FCombatState::StopAttack()
 	{
 		if (!bAttacking)
@@ -305,6 +316,12 @@ namespace MmoWorld
 			Notices.push_back(Reason);
 			return Reason;
 		}
+		// 플레이어를 대상으로 잡은 채 대상에게 쓰는 스킬은 강제 공격이 켜져 있어야 한다(알림은 MayAttack이 쌓음).
+		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(SkillId);
+		if (TargetsOther(*Skill) && !MayAttack(World, TargetId))
+		{
+			return portfolio::mmo::FAIL_REASON_INVALID_TARGET;
+		}
 		Pending = SkillId;
 		return Reason;
 	}
@@ -421,6 +438,7 @@ namespace MmoWorld
 		portfolio::mmo::Packet Use;
 		Use.mutable_use_skill()->set_skill_id(Skill->id());
 		Use.mutable_use_skill()->set_target_id(Target);
+		Use.mutable_use_skill()->set_force_attack(bForceAttack);
 		Fire.Packets.push_back(Use);
 		// 시전은 시전 동작(Progress와 같은 사건)을, 나머지는 스킬 동작을 미리 시작한다.
 		if (Skill->cast_ms() > 0)

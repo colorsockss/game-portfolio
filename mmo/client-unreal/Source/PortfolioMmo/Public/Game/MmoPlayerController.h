@@ -222,6 +222,10 @@ private:
 	/** 채팅 입력(41). */
 	UPROPERTY()
 	TObjectPtr<UInputAction> ChatAction;
+
+	/** 강제 공격(44. PC의 Ctrl을 누르는 동안). */
+	UPROPERTY()
+	TObjectPtr<UInputAction> ForceAttackAction;
 	/** 상호작용하러 가는 길을 찾은 때의 개체 자리. */
 	MmoWorld::FPoint InteractGoal;
 	MmoScreen::FTouchGestures Gestures;

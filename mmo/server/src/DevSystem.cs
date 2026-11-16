@@ -8,7 +8,7 @@ namespace PortfolioMmo.Server
     /// <summary>
     /// 개발 명령(68). --dev로 띄운 서버만 DevCommand를 실행한다. 명령마다 평소의 시스템 함수를 불러 평소와 같은 패킷이 나간다.
     /// 지금의 명령은 순간 이동("tp x z", m), 몬스터 부르기("spawn 몬스터번호 [x z]", m), 레벨 주기("level n". 경험치는 0), 아이템 주기("item 번호 [수]"),
-    /// 골드 주기("gold n")이고, 성향은 44가 더한다.
+    /// 골드 주기("gold n"), 성향 정하기("karma n". 음수면 무법자. 44)다.
     /// </summary>
     internal sealed class DevSystem
     {
@@ -20,9 +20,11 @@ namespace PortfolioMmo.Server
         private readonly SpawnSystem _spawn;
         private readonly GrowthSystem _growth;
         private readonly InventorySystem _inventory;
+        private readonly PkSystem _pk;
 
-        public DevSystem(GameData data, FieldMap field, EntityTable entities, MovementSystem movement, ProgressSystem progress, SpawnSystem spawn, GrowthSystem growth, InventorySystem inventory)
+        public DevSystem(GameData data, FieldMap field, EntityTable entities, MovementSystem movement, ProgressSystem progress, SpawnSystem spawn, GrowthSystem growth, InventorySystem inventory, PkSystem pk)
         {
+            _pk = pk;
             _data = data;
             _field = field;
             _entities = entities;
@@ -76,6 +78,9 @@ namespace PortfolioMmo.Server
                     return added == FailReason.None ? Outcome.Done : Outcome.Fail(added);
                 case "gold" when (words.Length == 2) && ulong.TryParse(words[1], NumberStyles.None, CultureInfo.InvariantCulture, out ulong gold) && (gold >= 1):
                     _inventory.AddGold(player, gold, GainReason.DevCommand);
+                    return Outcome.Done;
+                case "karma" when (words.Length == 2) && int.TryParse(words[1], NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int karma):
+                    _pk.SetKarma(player, karma);
                     return Outcome.Done;
                 default:
                     return Outcome.Fail(FailReason.InvalidCommand);

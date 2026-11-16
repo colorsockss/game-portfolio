@@ -19,13 +19,20 @@ namespace PortfolioMmo.Server
         private readonly TickEvents _events;
         private readonly CombatSystem _combat;
         private readonly EffectSystem _effects;
+        private readonly PkSystem _pk;
         private readonly int _maxRadius;
+
+        /// <summary>
+        /// 직선 발사체가 플레이어에 닿는 반지름(1/32 m, 44). Constants의 플레이어 반지름이다.
+        /// </summary>
+        private readonly double _playerRadius;
         private readonly List<Flying> _flying = new List<Flying>();
         private readonly List<Entity> _query = new List<Entity>();
         private uint _lastId;
 
-        public ProjectileSystem(EntityTable entities, Grid grid, FieldMap field, GameData data, TickEvents events, CombatSystem combat, EffectSystem effects)
+        public ProjectileSystem(EntityTable entities, Grid grid, FieldMap field, GameData data, TickEvents events, CombatSystem combat, EffectSystem effects, PkSystem pk)
         {
+            _pk = pk;
             _entities = entities;
             _grid = grid;
             _field = field;
@@ -33,7 +40,8 @@ namespace PortfolioMmo.Server
             _events = events;
             _combat = combat;
             _effects = effects;
-            _maxRadius = (int)Math.Ceiling(data.MaxMonsterRadius * Units.PerMeter);
+            _playerRadius = data.Constants.PlayerRadius * Units.PerMeter;
+            _maxRadius = (int)Math.Ceiling(Math.Max(data.Constants.PlayerRadius, data.MaxMonsterRadius) * Units.PerMeter);
         }
 
         /// <summary>
@@ -50,6 +58,11 @@ namespace PortfolioMmo.Server
             public required Creature Caster { get; init; }
             public required ulong Generation { get; init; }
             public required SkillsRow Skill { get; init; }
+
+            /// <summary>
+            /// 쏜 UseSkill의 강제 공격 표시(44). 있을 때만 플레이어에 닿는다.
+            /// </summary>
+            public required bool Force { get; init; }
             public required int StartX { get; init; }
             public required int StartZ { get; init; }
             public required uint LaunchTick { get; init; }
@@ -72,7 +85,7 @@ namespace PortfolioMmo.Server
         /// 쏜 쪽의 자리에서 발사체를 낸다(나간 틱에는 옮기지 않음). 방향은 실려 온 대상이 살아 있으면 그 틱의 대상 쪽, 아니면 쏜 쪽이 보는 쪽이다.
         /// 쏜 쪽이 그대로이고 살아 있으며 기절하지 않은 것은 부르는 쪽(예약한 일의 세대 번호)이 봤다.
         /// </summary>
-        public void Launch(Creature caster, SkillsRow skill, uint targetId, uint tick)
+        public void Launch(Creature caster, SkillsRow skill, uint targetId, bool force, uint tick)
         {
             uint yaw = caster.Yaw;
             if ((_entities.Find(targetId) is Creature { Dead: false } target) && (target != caster) && ((target.X != caster.X) || (target.Z != caster.Z)))
@@ -88,6 +101,7 @@ namespace PortfolioMmo.Server
                 Caster = caster,
                 Generation = caster.StrikeGeneration,
                 Skill = skill,
+                Force = force,
                 StartX = caster.X,
                 StartZ = caster.Z,
                 LaunchTick = tick,
@@ -148,7 +162,7 @@ namespace PortfolioMmo.Server
             double az = flying.StartZ + (flying.DirectionZ * from);
             double bx = flying.StartX + (flying.DirectionX * to);
             double bz = flying.StartZ + (flying.DirectionZ * to);
-            (Monster? hit, double t) = FirstEnemy(caster, ax, az, bx, bz);
+            (Creature? hit, double t) = FirstEnemy(caster, flying.Force, ax, az, bx, bz);
             double endX = ax + ((bx - ax) * t);
             double endZ = az + ((bz - az) * t);
             if (!_field.HasLine((int)Math.Round(ax), (int)Math.Round(az), (int)Math.Round(endX), (int)Math.Round(endZ)))
@@ -159,6 +173,7 @@ namespace PortfolioMmo.Server
 
             if (hit != null)
             {
+                _pk.Attacked(caster, hit, tick);
                 _combat.Hit(caster, hit, flying.Skill.Coefficient, tick);
                 if (flying.Skill.HasEffect && !hit.Dead)
                 {
@@ -179,31 +194,32 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 선분 a→b가 원에 처음 닿는 점이 a에서 가장 가까운 적(살아 있고 CanAttack이 참이고 복귀 중이 아닌 몬스터)과 그 점의 비율(0–1).
+        /// 선분 a→b가 원에 처음 닿는 점이 a에서 가장 가까운 적(살아 있고 CanAttack이 참이고 복귀 중이 아닌 몬스터, 강제 공격 표시가 있으면 CanAttack이 참인 플레이어도. 44)과 그 점의 비율(0–1).
         /// 원의 가장자리에 닿기만 해도 맞는다. 없으면 (null, 1)이다. 같은 비율이면 격자의 차례(같은 상태면 같은 답)에서 먼저인 것이다.
         /// </summary>
-        private (Monster? Hit, double T) FirstEnemy(Creature caster, double ax, double az, double bx, double bz)
+        private (Creature? Hit, double T) FirstEnemy(Creature caster, bool force, double ax, double az, double bx, double bz)
         {
             double dx = bx - ax;
             double dz = bz - az;
             double length = Math.Sqrt((dx * dx) + (dz * dz));
             int centerX = (int)Math.Round((ax + bx) / 2);
             int centerZ = (int)Math.Round((az + bz) / 2);
-            _grid.Query(centerX, centerZ, (int)Math.Ceiling(length / 2) + _maxRadius + 1, entity => entity is Monster, _query);
-            Monster? best = null;
+            _grid.Query(centerX, centerZ, (int)Math.Ceiling(length / 2) + _maxRadius + 1, entity => (entity is Monster) || (force && (entity is Player)), _query);
+            Creature? best = null;
             double bestT = 1;
             foreach (Entity entity in _query)
             {
-                var monster = (Monster)entity;
-                if (monster.Dead || !_combat.CanAttack(caster, monster) || CombatSystem.IsReturning(monster))
+                var target = (Creature)entity;
+                if (target.Dead || (target == caster) || !_combat.CanAttack(caster, target) || CombatSystem.IsReturning(target))
                 {
                     continue;
                 }
 
-                double t = FirstTouch(ax, az, dx, dz, monster.X, monster.Z, monster.Template.Radius * Units.PerMeter);
+                double radius = target is Monster monster ? monster.Template.Radius * Units.PerMeter : _playerRadius;
+                double t = FirstTouch(ax, az, dx, dz, target.X, target.Z, radius);
                 if ((t >= 0) && ((best == null) || (t < bestT)))
                 {
-                    best = monster;
+                    best = target;
                     bestT = t;
                 }
             }

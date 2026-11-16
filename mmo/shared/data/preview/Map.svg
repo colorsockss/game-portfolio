@@ -2027,5 +2027,13 @@
 <text x="312" y="306" fill="#164f96">N1</text>
 <circle cx="308.5" cy="315.5" r="3" fill="#1f6fd1" stroke="#000" stroke-width="0.5"/>
 <text x="312" y="318" fill="#164f96">N2</text>
+<circle cx="300.5" cy="264.5" r="3" fill="#1f6fd1" stroke="#000" stroke-width="0.5"/>
+<text x="304" y="267" fill="#164f96">N3</text>
+<circle cx="300.5" cy="335.5" r="3" fill="#1f6fd1" stroke="#000" stroke-width="0.5"/>
+<text x="304" y="338" fill="#164f96">N4</text>
+<circle cx="335.5" cy="299.5" r="3" fill="#1f6fd1" stroke="#000" stroke-width="0.5"/>
+<text x="339" y="302" fill="#164f96">N5</text>
+<circle cx="264.5" cy="299.5" r="3" fill="#1f6fd1" stroke="#000" stroke-width="0.5"/>
+<text x="268" y="302" fill="#164f96">N6</text>
 <text x="4" y="594" fill="#333">막힌 칸: 진회색 · 장식: 연두 · 부활 지점: 초록 · 무법자의 부활 지점: 빨강 · 스폰: 보라(무리 번호·몬스터) · NPC: 파랑(N번호) · 1 m = 1</text>
 </svg>

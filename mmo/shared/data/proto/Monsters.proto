@@ -26,7 +26,7 @@ message MonstersRow {
   double speed = 8;
   // 반지름(m)
   double radius = 9;
-  // 인식 범위(m). 선공 몬스터만 쓴다
+  // 인식 범위(m). 선공 몬스터와 경비병(44)만 쓴다
   double detect_range = 10;
   // 추적 한계(m). 놓인 점에서의 직선거리가 이보다 멀어지면 복귀한다
   double chase_limit = 11;

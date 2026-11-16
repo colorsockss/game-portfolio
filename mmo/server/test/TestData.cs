@@ -188,7 +188,7 @@ namespace PortfolioMmo.Server.Tests
         };
 
         /// <summary>
-        /// 시험용 상수. 회복은 5%와 전투 상태의 1%, 치명타는 5%와 1.5배, 빈도 제한은 실제 값(토큰 40, 초당 30, 끊기 3초, 다시 세기 1초)이다.
+        /// 시험용 상수. 회복은 5%와 전투 상태의 1%, 치명타는 5%와 1.5배, 빈도 제한은 실제 값(토큰 40, 초당 30, 끊기 3초, 다시 세기 1초)이고 PK는 실제 값(44)이다.
         /// </summary>
         public static Constants Constants(uint fieldSize)
         {
@@ -198,6 +198,7 @@ namespace PortfolioMmo.Server.Tests
                 UnreachableMs = 5000, RepathDistance = 3, ReturnRangeMargin = 4, ReturnRegenPercent = 20, WanderPauseMinMs = 3000, WanderPauseMaxMs = 6000,
                 ReviveHpPercent = 30, DeadMonsterMs = 3000, InventorySlots = 60, StorageSlots = 3, DropLifetimeMs = 60000, OwnerOnlyMs = 10000, DropScatter = 1.5, InteractRange = 3, RateLimitTokens = 40, RateLimitRefillPerSecond = 30, RateLimitKickMs = 3000, RateLimitResetMs = 1000,
                 ChatMaxBytes = 180, ChatPerSecond = 2, PartyExpBonusPercent = 10, PartyInviteMs = 30000,
+                AggressorMs = 30000, PkMinLevel = 10, KarmaKillPenalty = 100, KarmaMonsterGain = 5,
             };
         }
 

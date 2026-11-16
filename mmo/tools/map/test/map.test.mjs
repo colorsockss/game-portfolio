@@ -40,16 +40,16 @@ async function source(objects, { fieldSize = 100, respawn = [0, 0], outlaw = [10
     ['Schema', [['index', 'name', 'type'], [0, 'id', 'uint'], [1, 'width', 'uint'], [2, 'depth', 'uint'], [3, 'blocks', 'bool'], [4, 'blocksCamera', 'bool'], [5, 'meshKey', 'string']]],
   ]);
   await workbook(path.join(folder, 'Monsters.xlsx'), [
-    ['Data', [['id'], [1]]],
-    ['Schema', [['index', 'name', 'type'], [0, 'id', 'uint']]],
+    ['Data', [['id', 'detectRange'], [1, 8]]],
+    ['Schema', [['index', 'name', 'type'], [0, 'id', 'uint'], [1, 'detectRange', 'double']]],
   ]);
   await workbook(path.join(folder, 'Spawns.xlsx'), [
     ['Data', [['id', 'x', 'z', 'monsterId'], ...spawns.map(([x, z], i) => [i + 1, x, z, 1])]],
     ['Schema', [['index', 'name', 'type', 'default', 'description', 'ref'], [0, 'id', 'uint'], [1, 'x', 'int'], [2, 'z', 'int'], [3, 'monsterId', 'uint?', null, null, 'Monsters']]],
   ]);
   await workbook(path.join(folder, 'Npcs.xlsx'), [
-    ['Data', [['id', 'x', 'z'], ...npcs.map(([x, z], i) => [i + 1, x, z])]],
-    ['Schema', [['index', 'name', 'type'], [0, 'id', 'uint'], [1, 'x', 'int'], [2, 'z', 'int']]],
+    ['Data', [['id', 'x', 'z', 'monsterId'], ...npcs.map(([x, z, monsterId], i) => [i + 1, x, z, monsterId])]],
+    ['Schema', [['index', 'name', 'type', 'default', 'description', 'ref'], [0, 'id', 'uint'], [1, 'x', 'int'], [2, 'z', 'int'], [3, 'monsterId', 'uint?', null, null, 'Monsters']]],
   ]);
   await writeFile(path.join(folder, 'MapObjects.tsv'), `# 시험용\n${objects.map((row) => row.join('\t')).join('\n')}\n`);
   return folder;
@@ -99,6 +99,8 @@ for (const [name, objects, options, message] of [
   ['a monster group in a safe zone', [], { spawns: [[30, 30], [5, -5]] }, /Spawns 2: the monster group point \(5, -5\) is in a safe zone/],
   ['an NPC on a blocked cell', [[2, 5, 5, 0]], { npcs: [[5, 5]] }, /Npcs 1: the NPC point \(5, 5\) is on a blocked cell/],
   ['an NPC walled in', [[2, 4, 5, 0], [2, 6, 5, 0], [2, 5, 4, 0], [2, 5, 6, 0]], { npcs: [[5, 5]] }, /Npcs 1: the NPC point \(5, 5\) cannot be walked to/],
+  // 무법자의 부활 지점 (10, 10)에서 5 m인 경비병(인식 범위 8 m). 곁의 경비병이 아닌 NPC는 상관없다.
+  ['a guard that sees the outlaw respawn point', [], { npcs: [[15, 10], [-15, -15, 1], [12, 10, 1]] }, /Npcs 3: the outlaw respawn point \(10, 10\) is within the guard's detect range \(8 m\)/],
 ]) {
   test(`the map stops on ${name}`, async () => {
     await assert.rejects(buildMap(await source(objects, options)), message);
@@ -119,6 +121,10 @@ test('an NPC in the town on an open reachable cell passes and is drawn in the pr
   const map = await generateMap(await source([], { npcs: [[5, -5]] }), out);
   assert.deepEqual(map.npcs.map((npc) => [npc.x, npc.z]), [[5, -5]]);
   assert.match(await readFile(path.join(out, 'preview/Map.svg'), 'utf8'), />N1</);
+});
+
+test('a guard farther than its detect range from the outlaw respawn point passes', async () => {
+  await buildMap(await source([], { npcs: [[-15, -15, 1], [10, 19, 1]] }));
 });
 
 test('an outlaw respawn point walled in on three sides is still reachable', async () => {

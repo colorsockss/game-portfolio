@@ -89,6 +89,7 @@ message Packet {
     PartyKick party_kick = 406;
     PartyState party_state = 407;
     PartyMemberVitals party_member_vitals = 408;
+    Karma karma = 409;
   }
 }
 
@@ -453,7 +454,7 @@ message EntityMove {
 }
 
 // 서버 → 클라이언트. 내 체력, 마나, 전투 상태와 선공 표시가 끝나는 틱(그 틱부터 아님). 하나라도 바뀐 틱에 본인에게만 가고,
-// 월드에 들어올 때 EnterWorldResult 뒤에 한 번 간다. 선공 표시는 backlog 44가 채운다.
+// 월드에 들어올 때 EnterWorldResult 뒤에 한 번 간다. 선공 표시는 44다.
 message SelfVitals {
   uint32 hp = 1;
   uint32 mp = 2;
@@ -742,6 +743,11 @@ message PartyMemberVital {
   sint32 z = 5;
 }
 
+// 서버 → 클라이언트. 내 성향(44). 바뀐 틱에 본인에게만 가고, 월드에 들어올 때 EnterWorldResult 뒤에 한 번 간다. 0보다 낮으면 무법자다.
+message Karma {
+  sint32 karma = 1;
+}
+
 // 채팅의 채널(41). 시스템 줄은 서버가 보내는 글이 아니라 클라이언트가 알림 패킷을 받아 넣는 줄이라 여기에 없다.
 enum ChatChannel {
   CHAT_CHANNEL_UNSPECIFIED = 0;
@@ -844,6 +850,10 @@ enum FailReason {
   FAIL_REASON_NO_INVITE = 36;
   // 초대받은 쪽이 거절했다(초대한 쪽에 보낸다. 42).
   FAIL_REASON_INVITE_DECLINED = 37;
+  // 공격하는 쪽이나 대상인 플레이어가 PK를 할 수 있는 레벨(Constants.pkMinLevel) 미만이다(44).
+  FAIL_REASON_PK_LEVEL_TOO_LOW = 38;
+  // 대상이 같은 파티의 파티원이다(44).
+  FAIL_REASON_PARTY_MEMBER = 39;
 }
 
 // ActionFailed가 어느 요청의 실패인지. 스킬, 채집, 퀵슬롯, 창고, 펫, 부활, 파티, 채팅은 그 요청을 만드는 항목이 더한다.
@@ -904,7 +914,7 @@ message Revived {
 }
 
 // 클라이언트 → 서버. 스킬을 쓴다. target_id는 대상(0이면 대상 없음). 중심이 자기인 스킬과 자기에게 쓰는 회복·강화는 대상을 보지 않는다.
-// force_attack은 강제 공격 표시이고 값을 보는 규칙은 44가 넣는다. 방향은 싣지 않는다. 직선 발사체의 스킬은 대상, 사거리, 선을 보지 않고
+// force_attack은 강제 공격 표시(44)이고, 서버는 범위 스킬과 직선 발사체의 스킬에서만 본다(없으면 플레이어는 맞지 않고 지나감). 방향은 싣지 않는다. 직선 발사체의 스킬은 대상, 사거리, 선을 보지 않고
 // 나가는 틱에 대상(없거나 죽었으면 캐릭터가 보는 쪽)으로 방향을 정한다.
 message UseSkill {
   uint32 skill_id = 1;

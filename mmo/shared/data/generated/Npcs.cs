@@ -128,7 +128,7 @@ namespace PortfolioMmo.Data {
     public const int RoleFieldNumber = 3;
     private global::PortfolioMmo.Data.NpcRole role_ = global::PortfolioMmo.Data.NpcRole.Unspecified;
     /// <summary>
-    /// 역할. 상점, 창고, 제작, 퀘스트 NPC는 하나씩이다
+    /// 역할. 상점, 창고, 제작, 퀘스트 NPC는 하나씩이고 경비병(44)은 여럿이다
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

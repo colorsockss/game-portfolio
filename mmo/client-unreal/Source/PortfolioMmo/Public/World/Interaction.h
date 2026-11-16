@@ -8,6 +8,7 @@
 #include <functional>
 #include <optional>
 
+#include "Data/GameData.h"
 #include "World/FieldMap.h"
 #include "World/PathFinder.h"
 #include "World/WorldState.h"
@@ -47,8 +48,11 @@ namespace MmoWorld
 		/** 개체가 어떤 상호작용을 받는가. 시험은 시험용 종류를 넣는다. */
 		using FKindOf = std::function<EInteractKind(const FEntity&)>;
 
-		/** 지금의 판단: 바닥 아이템은 줍기(주인은 보지 않음. 내 것만 고르려면 CanPickUp을 함께 쓴 FKindOf를 넘김), NPC는 말하기, 나머지는 None(47이 더함). */
-		static EInteractKind KindOf(const FEntity& Entity);
+		/**
+		 * 지금의 판단: 바닥 아이템은 줍기(주인은 보지 않음. 내 것만 고르려면 CanPickUp을 함께 쓴 FKindOf를 넘김), NPC는 말하기(역할이 경비병인 NPC는 None. 44),
+		 * 나머지는 None(47이 더함).
+		 */
+		static EInteractKind KindOf(const FEntity& Entity, const MmoData::FGameData& Data);
 
 		/**
 		 * 내가 지금 이 바닥 아이템을 주울 수 있는가(33): 주인이 없거나 나이거나, 주인만 줍는 시간이 끝나는 틱이 어림한 서버 틱보다 앞이다(서버의
@@ -59,7 +63,7 @@ namespace MmoWorld
 		/**
 		 * (X, Z)에서 고르는 거리(m) 안의 가장 가까운 상호작용할 수 있는 개체(내 개체 제외). 거리가 같으면 번호가 작은 것이다. 없으면 nullopt.
 		 */
-		static std::optional<FInteractTarget> Nearest(const FWorldState& World, int32_t X, int32_t Z, double PickMeters, const FKindOf& Kind = KindOf);
+		static std::optional<FInteractTarget> Nearest(const FWorldState& World, int32_t X, int32_t Z, double PickMeters, const FKindOf& Kind);
 
 		/** 후보에게 상호작용하러 간다(Update가 이어 감). 이미 가던 것은 바꾼다. */
 		void Start(const FInteractTarget& Target) { Pending = Target; }
@@ -73,7 +77,7 @@ namespace MmoWorld
 		 * (X, Z)에서 할 일: 개체가 실행 거리(m) 안이고 선이 트였으면 Act(그리고 끝남), 아니면 Approach. 개체가 나갔거나 더는 그 종류가 아니면
 		 * 그만두고 None이다.
 		 */
-		FInteractStep Update(const FWorldState& World, const FFieldMap& Field, int32_t X, int32_t Z, double RangeMeters, const FKindOf& Kind = KindOf);
+		FInteractStep Update(const FWorldState& World, const FFieldMap& Field, int32_t X, int32_t Z, double RangeMeters, const FKindOf& Kind);
 
 	private:
 		std::optional<FInteractTarget> Pending;

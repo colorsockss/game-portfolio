@@ -69,7 +69,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 플레이어의 저장할 상태 전부의 사본(까닭이 무엇이든 전부를 담음. 창고 75 포함). 성향은 44, 퀘스트 진행은 50, 펫은 96이 더한다.
+        /// 플레이어의 저장할 상태 전부의 사본(까닭이 무엇이든 전부를 담음. 창고 75, 성향 44 포함). 퀘스트 진행은 50, 펫은 96이 더한다.
         /// </summary>
         public static CharacterSnapshot Snapshot(Player player)
         {
@@ -82,7 +82,7 @@ namespace PortfolioMmo.Server
             List<SavedQuickslot> quickslots = player.Quickslots.Select((entry, index) => new SavedQuickslot((uint)index, entry.Kind, entry.Id))
                 .Where(entry => entry.Kind != QuickslotKind.Empty).ToList();
             return new CharacterSnapshot(
-                player.CharacterId, new SavedPosition(player.X, player.Z, player.Yaw), player.Level, player.Exp, player.Hp, player.Mp, bag.Gold, 0,
+                player.CharacterId, new SavedPosition(player.X, player.Z, player.Yaw), player.Level, player.Exp, player.Hp, player.Mp, bag.Gold, player.Karma,
                 items, player.Skills.OrderBy(skill => skill).ToList(), quickslots);
         }
 

@@ -13,7 +13,7 @@ namespace PortfolioMmo.Server.Tests
     public partial class WorldTests
     {
         /// <summary>
-        /// 들어온 연결은 EnterWorldResult 뒤에 자기 직업의 쿨다운 전체(26)와, 자기 직업과 레벨의 Levels 줄과 같은 SelfStats와, 가득 찬 SelfVitals를 받는다.
+        /// 들어온 연결은 EnterWorldResult 뒤에 자기 직업의 쿨다운 전체(26)와, 성향(44)과, 자기 직업과 레벨의 Levels 줄과 같은 SelfStats와, 가득 찬 SelfVitals를 받는다.
         /// </summary>
         [Fact]
         public void EnteringSendsStatsAndFullVitalsOfTheClassRow()
@@ -24,12 +24,13 @@ namespace PortfolioMmo.Server.Tests
             world.Step();
 
             var exp = new Packet { ExpGained = new ExpGained() };
-            List<Packet> knightPackets = knight.Outbox.Take(8).ToList();
+            var karma = new Packet { Karma = new Karma() };
+            List<Packet> knightPackets = knight.Outbox.Take(9).ToList();
             Assert.Equal(new[] { Packet.BodyOneofCase.Inventory, Packet.BodyOneofCase.LearnedSkills, Packet.BodyOneofCase.Quickslots }, knightPackets.Skip(3).Take(3).Select(packet => packet.BodyCase));
             knightPackets.RemoveRange(3, 3);
-            Assert.Equal(new[] { Entered(1), exp, Cooldowns(101, 102, 103, 104, 105, 106), SelfStats(TestData.KnightLevel1), SelfVitals(150, 50) }, knightPackets);
+            Assert.Equal(new[] { Entered(1), exp, Cooldowns(101, 102, 103, 104, 105, 106), karma, SelfStats(TestData.KnightLevel1), SelfVitals(150, 50) }, knightPackets);
             Assert.Equal(
-                new[] { exp, Cooldowns(201, 202, 203, 204, 205), SelfStats(TestData.MageLevel1), SelfVitals(100, 120) },
+                new[] { exp, Cooldowns(201, 202, 203, 204, 205), karma, SelfStats(TestData.MageLevel1), SelfVitals(100, 120) },
                 TakeVitals(mage).Where(packet => packet.BodyCase is not (Packet.BodyOneofCase.Inventory or Packet.BodyOneofCase.LearnedSkills or Packet.BodyOneofCase.Quickslots)));
             Assert.Equal(TestData.MageLevel1, mage.Player!.Stats);
         }

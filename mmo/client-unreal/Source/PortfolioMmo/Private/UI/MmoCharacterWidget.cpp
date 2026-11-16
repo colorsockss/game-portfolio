@@ -27,7 +27,7 @@ void UMmoCharacterWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	const MmoWorld::FEntity* Me = Session->World().SelfEntity();
 	const MmoWorld::FSelfState& Self = Session->World().SelfState();
 	const uint32 Level = Me ? Me->Info.level() : 0;
-	const TArray<uint32> Now = { Level, Self.Exp, Self.MaxHp, Self.MaxMp, Self.Attack, Self.Defense, Session->Strings().Version() };
+	const TArray<uint32> Now = { Level, Self.Exp, Self.MaxHp, Self.MaxMp, Self.Attack, Self.Defense, static_cast<uint32>(Self.Karma), Session->Strings().Version() };
 	if (Now == Shown)
 	{
 		return;
@@ -40,8 +40,10 @@ void UMmoCharacterWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	ExpText->SetText(bMax || !Row
 		? MmoText::Get(this, TEXT("character.expMax"))
 		: MmoText::Format(this, TEXT("character.exp"), { FString::FromInt(Self.Exp), FString::FromInt(Row->exp()) }));
-	StatsText->SetText(MmoText::Format(this, TEXT("character.stats"),
-		{ FString::FromInt(Self.MaxHp), FString::FromInt(Self.MaxMp), FString::FromInt(Self.Attack), FString::FromInt(Self.Defense) }));
+	// 능력치 아래에 성향(44)을 둔다.
+	StatsText->SetText(FText::FromString(MmoText::Format(this, TEXT("character.stats"),
+		{ FString::FromInt(Self.MaxHp), FString::FromInt(Self.MaxMp), FString::FromInt(Self.Attack), FString::FromInt(Self.Defense) }).ToString()
+		+ TEXT("\n") + MmoText::Format(this, TEXT("character.karma"), { FString::FromInt(Self.Karma) }).ToString()));
 }
 
 void UMmoCharacterWidget::HandleCloseClicked()

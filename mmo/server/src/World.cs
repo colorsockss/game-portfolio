@@ -35,6 +35,7 @@ namespace PortfolioMmo.Server
         private readonly ChatSystem _chat;
         private readonly PartySystem _party;
         private readonly BossSystem _bosses;
+        private readonly PkSystem _pk;
         private readonly LootSystem _loot;
         private readonly ProgressSystem _progress;
         private readonly EffectSystem _effects;
@@ -53,16 +54,17 @@ namespace PortfolioMmo.Server
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
             var stats = new StatSystem(data, random);
             _party = new PartySystem(data, _entities, _scheduler);
-            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, _queue, data, field, _entities, _grid, _save, stats, () => Tick);
+            _pk = new PkSystem(data, field, _scheduler);
+            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, _queue, data, field, _entities, _grid, _save, stats, _pk, () => Tick);
             _login.Leaving = _party.Leaving;
             _vitals = new VitalsSystem(_entities, data);
             _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random, _party);
             _events = new TickEvents(_grid);
             _progress = new ProgressSystem(_entities, _scheduler, _events);
             _effects = new EffectSystem(_entities, _scheduler, _events, stats, _progress, data);
-            _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events, _progress, _party);
-            _projectiles = new ProjectileSystem(_entities, _grid, field, data, _events, _combat, _effects);
-            _skills = new SkillSystem(_entities, _grid, field, _scheduler, data, _events, _combat, _effects, _progress, _projectiles);
+            _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events, _progress, _party, _pk);
+            _projectiles = new ProjectileSystem(_entities, _grid, field, data, _events, _combat, _effects, _pk);
+            _skills = new SkillSystem(_entities, _grid, field, _scheduler, data, _events, _combat, _effects, _progress, _projectiles, _pk);
             _combat.Skills = _skills;
             _combat.Projectiles = _projectiles;
             _bosses = new BossSystem(data, _entities, _grid, field, _scheduler, _events, _combat);
@@ -75,18 +77,28 @@ namespace PortfolioMmo.Server
             _movement = new MovementSystem(_entities, _grid, field);
             _growth = new GrowthSystem(_entities, stats, data, _party);
             _quickslots = new QuickslotSystem(data);
-            _inventory = new InventorySystem(data, _progress, _movement, stats, _quickslots, random);
+            _inventory = new InventorySystem(data, _progress, _movement, stats, _quickslots, _pk, random);
             _login.Entered = (player, state, revived) =>
             {
                 _inventory.Enter(player, state, revived);
+                _pk.Entered(player);
                 _bosses.Entered(player);
             };
             _loot = new LootSystem(data, _entities, _grid, field, _scheduler, _inventory, _save, random);
-            // NPC도 놓인 점의 번호를 플레이어보다 먼저 받는다(37). 움직이지 않고 칸을 막지 않는다.
+            // NPC도 놓인 점의 번호를 플레이어보다 먼저 받는다(37). 움직이지 않고 칸을 막지 않는다. 경비병(44)은 AiSystem이 움직인다.
             Npc? shop = null;
             Npc? keeper = null;
             foreach (NpcsRow row in data.Npcs.Rows)
             {
+                if (row.Role == NpcRole.Guard)
+                {
+                    var guard = new Guard(_entities.ReservePlacedId(), row, data.Monster(row.MonsterId)!) { StrikeGeneration = _scheduler.NewGeneration() };
+                    _entities.Add(guard);
+                    _grid.Add(guard);
+                    _ai.Add(guard);
+                    continue;
+                }
+
                 var npc = new Npc(_entities.ReservePlacedId(), row);
                 _entities.Add(npc);
                 _grid.Add(npc);
@@ -97,12 +109,12 @@ namespace PortfolioMmo.Server
             _shop = new ShopSystem(data, field, _inventory, shop);
             _storage = new StorageSystem(data, field, _inventory, keeper);
             _chat = new ChatSystem(data, _entities, _grid, _party);
-            _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, data);
+            _deaths = new DeathSystem(_entities, _scheduler, _movement, _events, _effects, _progress, _growth, _loot, _pk, data);
             _combat.Deaths = _deaths;
             _deaths.Bosses = _bosses;
             _view = new ViewSystem(_entities, _grid);
             _rateLimits = RateLimiter.Limits.From(data.Constants);
-            _dev = dev ? new DevSystem(data, field, _entities, _movement, _progress, _spawn, _growth, _inventory) : null;
+            _dev = dev ? new DevSystem(data, field, _entities, _movement, _progress, _spawn, _growth, _inventory, _pk) : null;
         }
 
         /// <summary>
@@ -129,6 +141,11 @@ namespace PortfolioMmo.Server
         internal QuickslotSystem Quickslots => _quickslots;
 
         internal PartySystem Party => _party;
+
+        /// <summary>
+        /// 경비병들(44. 테스트가 상태와 자리를 봄).
+        /// </summary>
+        internal System.Collections.Generic.IEnumerable<Guard> Guards => System.Linq.Enumerable.OfType<Guard>(_entities.All);
 
         internal System.Collections.Generic.IEnumerable<GroundItem> GroundItems => System.Linq.Enumerable.OfType<GroundItem>(_entities.All);
 
@@ -444,6 +461,12 @@ namespace PortfolioMmo.Server
             _ai.Step(Tick, elapsedTicks);
             long monsters = Stopwatch.GetTimestamp();
             _combat.Step(Tick);
+            // 몬스터의 경험치를 받은 플레이어의 성향을 올린다(44).
+            foreach ((Monster _, Player rewarded) in _growth.Rewarded)
+            {
+                _pk.Rewarded(rewarded);
+            }
+
             long combat = Stopwatch.GetTimestamp();
             _vitals.Step(Tick);
             long vitals = Stopwatch.GetTimestamp();
@@ -533,6 +556,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.GroundItemExpire => _loot.IsExpireCurrent(job),
                 ScheduledKind.PartyInviteExpire => _party.IsInviteCurrent(job),
                 ScheduledKind.AreaHit => _bosses.IsAreaCurrent(job),
+                ScheduledKind.AggressorEnd => PkSystem.IsAggressorEndCurrent(_entities, job),
                 ScheduledKind.Respawn => _spawn.PlacedAt(job.Owner) != null,
                 _ => throw UnknownKind(job.Kind),
             };
@@ -545,7 +569,7 @@ namespace PortfolioMmo.Server
                 ScheduledKind.UnreachableEnd => false,
                 ScheduledKind.Strike or ScheduledKind.SkillStart or ScheduledKind.SkillHit or ScheduledKind.CastEnd or ScheduledKind.AreaHit => true,
                 ScheduledKind.Despawn or ScheduledKind.Respawn or ScheduledKind.ProgressEnd or ScheduledKind.EffectEnd or ScheduledKind.GroundItemExpire
-                    or ScheduledKind.PartyInviteExpire => false,
+                    or ScheduledKind.PartyInviteExpire or ScheduledKind.AggressorEnd => false,
                 _ => throw UnknownKind(kind),
             };
         }
@@ -577,6 +601,9 @@ namespace PortfolioMmo.Server
                     break;
                 case ScheduledKind.PartyInviteExpire:
                     _party.ExpireInvite(job);
+                    break;
+                case ScheduledKind.AggressorEnd:
+                    _pk.EndAggressor((Player)_entities.Find(job.Owner)!);
                     break;
                 default:
                     throw UnknownKind(job.Kind);

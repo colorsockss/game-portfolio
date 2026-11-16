@@ -920,3 +920,18 @@ I
 notice.bossAppeared{0}이(가) 나타났습니다.{0} has appeared.
 C
 notice.bossDied{0}이(가) 쓰러졌습니다.{0} has fallen.
+
+	npc.guard	경비병Guard
+�
+fail.pkLevelTooLowC레벨 10 미만은 다른 플레이어와 싸울 수 없습니다.2Players below level 10 cannot fight other players.
+_
+fail.partyMember(파티원은 공격할 수 없습니다.!You cannot attack a party member.
+�
+notice.forceAttack?다른 플레이어는 강제 공격을 켜야 공격합니다.-Turn on force attack to attack other players.
+.
+hud.forceAttack강제 공격Force Attack
+%
+effect.aggressor선공	Aggressor
+(
+character.karma
+성향 {0}	Karma {0}

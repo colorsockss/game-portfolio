@@ -69,6 +69,11 @@ namespace PortfolioMmo.Server
         /// 보스(주인)의 범위 공격이 피해를 주는 틱(43). A, B는 고정한 중심의 x, z(int를 그대로 담음)이고, 세대 번호는 보스의 AreaGeneration이며 전투 차례로 넘긴다.
         /// </summary>
         AreaHit = 12,
+
+        /// <summary>
+        /// 플레이어(주인)의 선공 표시가 끝나는 틱(44). A는 넣을 때의 끝나는 틱이고, 다시 붙어 끝나는 틱이 바뀐 옛 예약은 꺼낼 때 버린다(세대 번호를 쓰지 않음).
+        /// </summary>
+        AggressorEnd = 13,
     }
 
     /// <summary>

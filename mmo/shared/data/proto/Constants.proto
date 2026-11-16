@@ -78,4 +78,12 @@ message Constants {
   uint32 party_exp_bonus_percent = 36;
   // 파티 초대가 답을 기다리는 시간(ms, 42). 지나면 초대가 사라진다
   uint32 party_invite_ms = 37;
+  // 선공 표시가 남는 시간(ms, 44). 일반 플레이어를 공격하기 시작한 틱부터 세고, 다시 그러면 새로 센다
+  uint32 aggressor_ms = 38;
+  // PK를 할 수 있는 레벨(44). 이보다 낮은 플레이어는 다른 플레이어를 공격하지도 받지도 않는다
+  uint32 pk_min_level = 39;
+  // 일반 플레이어를 죽인 플레이어의 성향이 내려가는 값(44). 성향이 0보다 낮으면 무법자다
+  uint32 karma_kill_penalty = 40;
+  // 몬스터를 잡아 경험치를 받을 때마다 성향이 오르는 값(44). 0을 넘지 않는다
+  uint32 karma_monster_gain = 41;
 }

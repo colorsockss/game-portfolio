@@ -95,18 +95,17 @@ namespace PortfolioMmo.Server
         private readonly StatSystem _stats;
         private readonly QuickslotSystem _quickslots;
         private readonly Random _random;
-        private readonly (int X, int Z) _respawn;
+        private readonly PkSystem _pk;
 
-        public InventorySystem(GameData data, ProgressSystem progress, MovementSystem movement, StatSystem stats, QuickslotSystem quickslots, Random random)
+        public InventorySystem(GameData data, ProgressSystem progress, MovementSystem movement, StatSystem stats, QuickslotSystem quickslots, PkSystem pk, Random random)
         {
+            _pk = pk;
             _data = data;
             _quickslots = quickslots;
             _stats = stats;
             _random = random;
             _progress = progress;
             _movement = movement;
-            ZonesRow town = data.Zones.Rows.First(zone => zone.Kind == ZoneKind.Town);
-            _respawn = (town.RespawnX * Units.PerMeter, town.RespawnZ * Units.PerMeter);
         }
 
         /// <summary>
@@ -307,7 +306,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 귀환의 끝(꺼낸 자리). 주문서를 아직 가졌고 전투 상태가 아니면 하나를 빼고 마을의 부활 지점으로 옮기며, 아니면 아무것도 빼지 않고 취소한다.
+        /// 귀환의 끝(꺼낸 자리). 주문서를 아직 가졌고 전투 상태가 아니면 하나를 빼고 마을의 부활 지점(무법자는 무법자의 부활 지점. 44)으로 옮기며, 아니면 아무것도 빼지 않고 취소한다.
         /// </summary>
         public void FinishRecall(Player player, uint tick)
         {
@@ -322,7 +321,8 @@ namespace PortfolioMmo.Server
 
             player.Progress = null;
             Remove(player, index, 1);
-            _movement.Teleport(player, _respawn.X, _respawn.Z);
+            (int x, int z) = _pk.Respawn(player.Karma);
+            _movement.Teleport(player, x, z);
         }
 
         /// <summary>

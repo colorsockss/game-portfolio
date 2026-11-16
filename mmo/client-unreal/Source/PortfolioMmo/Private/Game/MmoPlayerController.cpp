@@ -111,6 +111,9 @@ void AMmoPlayerController::SetupInputComponent()
 	ChatAction = NewObject<UInputAction>(this, TEXT("Chat"));
 	ChatAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(ChatAction, MmoKeys::KeyOf(EMmoAction::Chat));
+	ForceAttackAction = NewObject<UInputAction>(this, TEXT("ForceAttack"));
+	ForceAttackAction->ValueType = EInputActionValueType::Boolean;
+	Mapping->MapKey(ForceAttackAction, MmoKeys::KeyOf(EMmoAction::ForceAttack));
 	SkillsAction = NewObject<UInputAction>(this, TEXT("Skills"));
 	SkillsAction->ValueType = EInputActionValueType::Boolean;
 	Mapping->MapKey(SkillsAction, MmoKeys::KeyOf(EMmoAction::Skills));
@@ -163,6 +166,9 @@ void AMmoPlayerController::SetupInputComponent()
 	Enhanced->BindActionValueLambda(AutoHuntAction, ETriggerEvent::Started, [this](const FInputActionValue&) { ToggleAutoHunt(); });
 	Enhanced->BindActionValueLambda(MapAction, ETriggerEvent::Started, [this](const FInputActionValue&) { GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleMap(); });
 	Enhanced->BindActionValueLambda(ChatAction, ETriggerEvent::Started, [this](const FInputActionValue&) { GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->FocusChat(); });
+	// 강제 공격은 Ctrl을 누르고 있는 동안 켜진다(모바일은 HUD의 켜고 끄는 버튼).
+	Enhanced->BindActionValueLambda(ForceAttackAction, ETriggerEvent::Started, [this](const FInputActionValue&) { Session().Combat().SetForceAttack(true); });
+	Enhanced->BindActionValueLambda(ForceAttackAction, ETriggerEvent::Completed, [this](const FInputActionValue&) { Session().Combat().SetForceAttack(false); });
 	Enhanced->BindActionValueLambda(SkillsAction, ETriggerEvent::Started, [this](const FInputActionValue&)
 	{
 		GetLocalPlayer()->GetSubsystem<UMmoUiManager>()->ToggleSkills();
@@ -563,7 +569,9 @@ void AMmoPlayerController::SelectTarget(uint32 Id)
 
 void AMmoPlayerController::Engage()
 {
-	bEngaged = Session().Combat().Target() != 0;
+	// 플레이어는 강제 공격을 켠 채일 때만 다가가 공격한다(44. 아니면 알림만).
+	MmoWorld::FCombatState& Combat = Session().Combat();
+	bEngaged = Combat.Target() != 0 && Combat.MayAttack(Session().World(), Combat.Target());
 	// 길은 다음 UpdateEngagement가 찾는다.
 	EngagedGoal = { MIN_int32, MIN_int32 };
 	PathFollower.Start({});
@@ -667,32 +675,33 @@ void AMmoPlayerController::PressAt(const FVector2D& ScreenPosition, bool bWalk)
 	}
 
 	// 상호작용할 수 있는 개체(NPC, 채집물, 바닥 아이템)는 대상이 되지 않고 걸어가 상호작용한다. 다른 개체를 누르면 대상이 되고, 이미 대상인
-	// 몬스터를 다시 누르면 공격하러 간다. 다른 플레이어도 대상이 된다(공격은 44 전에는 서버가 거절).
+	// 몬스터나 플레이어를 다시 누르면 공격하러 간다(플레이어는 강제 공격을 켠 채일 때만. 44). 경비병(44)은 빈 땅을 누른 것과 같다.
 	FHitResult Hit;
-	if (GetHitResultAtScreenPosition(ScreenPosition, ECC_Visibility, false, Hit))
+	const AMmoEntityActor* Picked = GetHitResultAtScreenPosition(ScreenPosition, ECC_Visibility, false, Hit) ? Cast<AMmoEntityActor>(Hit.GetActor()) : nullptr;
+	const auto& Entities = Session().World().Entities();
+	const auto Found = Picked ? Entities.find(Picked->EntityId) : Entities.end();
+	const bool bGuard = Found != Entities.end() && Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_NPC
+		&& MmoWorld::FInteraction::KindOf(Found->second, Session().Data()) == MmoWorld::EInteractKind::None;
+	if (Picked && !bGuard)
 	{
-		if (const AMmoEntityActor* Picked = Cast<AMmoEntityActor>(Hit.GetActor()))
+		const MmoWorld::EInteractKind Kind = Found != Entities.end() ? MmoWorld::FInteraction::KindOf(Found->second, Session().Data()) : MmoWorld::EInteractKind::None;
+		if (Kind != MmoWorld::EInteractKind::None)
 		{
-			const auto& Entities = Session().World().Entities();
-			const auto Found = Entities.find(Picked->EntityId);
-			const MmoWorld::EInteractKind Kind = Found != Entities.end() ? MmoWorld::FInteraction::KindOf(Found->second) : MmoWorld::EInteractKind::None;
-			if (Kind != MmoWorld::EInteractKind::None)
-			{
-				bEngaged = false;
-				Session().Combat().CancelSkill();
-				Interaction.Start({ Picked->EntityId, Kind });
-				InteractGoal = { MIN_int32, MIN_int32 };
-			}
-			else if (Found != Entities.end() && Picked->EntityId == Session().Combat().Target() && Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER)
-			{
-				Engage();
-			}
-			else
-			{
-				SelectTarget(Picked->EntityId);
-			}
-			return;
+			bEngaged = false;
+			Session().Combat().CancelSkill();
+			Interaction.Start({ Picked->EntityId, Kind });
+			InteractGoal = { MIN_int32, MIN_int32 };
 		}
+		else if (Found != Entities.end() && Picked->EntityId == Session().Combat().Target()
+			&& (Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_MONSTER || Found->second.Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER))
+		{
+			Engage();
+		}
+		else
+		{
+			SelectTarget(Picked->EntityId);
+		}
+		return;
 	}
 
 	// 터치의 빈 곳은 대상을 푼다(이동은 조이스틱만).
@@ -730,9 +739,9 @@ std::optional<MmoWorld::FInteractTarget> AMmoPlayerController::InteractCandidate
 	const MmoWorld::FWorldState& World = Session().World();
 	const double ServerTick = World.Clock().Now(FPlatformTime::Seconds());
 	return MmoWorld::FInteraction::Nearest(World, MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), Session().Data().Constants.interact_pick_range(),
-		[&World, ServerTick, PartyId = Session().Party().Id()](const MmoWorld::FEntity& Entity)
+		[&World, &Data = Session().Data(), ServerTick, PartyId = Session().Party().Id()](const MmoWorld::FEntity& Entity)
 		{
-			const MmoWorld::EInteractKind Kind = MmoWorld::FInteraction::KindOf(Entity);
+			const MmoWorld::EInteractKind Kind = MmoWorld::FInteraction::KindOf(Entity, Data);
 			return Kind == MmoWorld::EInteractKind::PickUp && !MmoWorld::FInteraction::CanPickUp(Entity.Info, World.SelfId(), ServerTick, PartyId) ? MmoWorld::EInteractKind::None : Kind;
 		});
 }
@@ -764,7 +773,9 @@ void AMmoPlayerController::UpdateInteraction()
 		return;
 	}
 	const FVector Location = Self->GetActorLocation();
-	const MmoWorld::FInteractStep Step = Interaction.Update(Net.World(), *Field, MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), Net.Data().Constants.interact_range());
+	const MmoData::FGameData& Data = Net.Data();
+	const MmoWorld::FInteractStep Step = Interaction.Update(Net.World(), *Field, MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), Data.Constants.interact_range(),
+		[&Data](const MmoWorld::FEntity& Entity) { return MmoWorld::FInteraction::KindOf(Entity, Data); });
 	if (Step.Kind == MmoWorld::FInteractStep::EKind::Act)
 	{
 		PathFollower.Start({});

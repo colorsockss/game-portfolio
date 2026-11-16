@@ -256,6 +256,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kChatPerSecondFieldNumber = 35,
     kPartyExpBonusPercentFieldNumber = 36,
     kPartyInviteMsFieldNumber = 37,
+    kAggressorMsFieldNumber = 38,
+    kPkMinLevelFieldNumber = 39,
+    kKarmaKillPenaltyFieldNumber = 40,
+    kKarmaMonsterGainFieldNumber = 41,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -617,11 +621,51 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_party_invite_ms(::uint32_t value);
 
   public:
+  // uint32 aggressor_ms = 38;
+  void clear_aggressor_ms() ;
+  [[nodiscard]] ::uint32_t aggressor_ms() const;
+  void set_aggressor_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_aggressor_ms() const;
+  void _internal_set_aggressor_ms(::uint32_t value);
+
+  public:
+  // uint32 pk_min_level = 39;
+  void clear_pk_min_level() ;
+  [[nodiscard]] ::uint32_t pk_min_level() const;
+  void set_pk_min_level(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_pk_min_level() const;
+  void _internal_set_pk_min_level(::uint32_t value);
+
+  public:
+  // uint32 karma_kill_penalty = 40;
+  void clear_karma_kill_penalty() ;
+  [[nodiscard]] ::uint32_t karma_kill_penalty() const;
+  void set_karma_kill_penalty(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_karma_kill_penalty() const;
+  void _internal_set_karma_kill_penalty(::uint32_t value);
+
+  public:
+  // uint32 karma_monster_gain = 41;
+  void clear_karma_monster_gain() ;
+  [[nodiscard]] ::uint32_t karma_monster_gain() const;
+  void set_karma_monster_gain(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_karma_monster_gain() const;
+  void _internal_set_karma_monster_gain(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 36,
+      ::google::protobuf::internal::TcParseTable<5, 40,
                           0, 0,
                           7>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -686,6 +730,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t chat_per_second_;
     ::uint32_t party_exp_bonus_percent_;
     ::uint32_t party_invite_ms_;
+    ::uint32_t aggressor_ms_;
+    ::uint32_t pk_min_level_;
+    ::uint32_t karma_kill_penalty_;
+    ::uint32_t karma_monster_gain_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1570,6 +1618,102 @@ inline ::uint32_t Constants::_internal_party_invite_ms() const {
 inline void Constants::_internal_set_party_invite_ms(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.party_invite_ms_ = value;
+}
+
+// uint32 aggressor_ms = 38;
+inline void Constants::clear_aggressor_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.aggressor_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000010U);
+}
+inline ::uint32_t Constants::aggressor_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.aggressor_ms)
+  return _internal_aggressor_ms();
+}
+inline void Constants::set_aggressor_ms(::uint32_t value) {
+  _internal_set_aggressor_ms(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000010U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.aggressor_ms)
+}
+inline ::uint32_t Constants::_internal_aggressor_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.aggressor_ms_;
+}
+inline void Constants::_internal_set_aggressor_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.aggressor_ms_ = value;
+}
+
+// uint32 pk_min_level = 39;
+inline void Constants::clear_pk_min_level() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.pk_min_level_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000020U);
+}
+inline ::uint32_t Constants::pk_min_level() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.pk_min_level)
+  return _internal_pk_min_level();
+}
+inline void Constants::set_pk_min_level(::uint32_t value) {
+  _internal_set_pk_min_level(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000020U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.pk_min_level)
+}
+inline ::uint32_t Constants::_internal_pk_min_level() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.pk_min_level_;
+}
+inline void Constants::_internal_set_pk_min_level(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.pk_min_level_ = value;
+}
+
+// uint32 karma_kill_penalty = 40;
+inline void Constants::clear_karma_kill_penalty() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.karma_kill_penalty_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000040U);
+}
+inline ::uint32_t Constants::karma_kill_penalty() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.karma_kill_penalty)
+  return _internal_karma_kill_penalty();
+}
+inline void Constants::set_karma_kill_penalty(::uint32_t value) {
+  _internal_set_karma_kill_penalty(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000040U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.karma_kill_penalty)
+}
+inline ::uint32_t Constants::_internal_karma_kill_penalty() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.karma_kill_penalty_;
+}
+inline void Constants::_internal_set_karma_kill_penalty(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.karma_kill_penalty_ = value;
+}
+
+// uint32 karma_monster_gain = 41;
+inline void Constants::clear_karma_monster_gain() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.karma_monster_gain_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00000080U);
+}
+inline ::uint32_t Constants::karma_monster_gain() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.karma_monster_gain)
+  return _internal_karma_monster_gain();
+}
+inline void Constants::set_karma_monster_gain(::uint32_t value) {
+  _internal_set_karma_monster_gain(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00000080U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.karma_monster_gain)
+}
+inline ::uint32_t Constants::_internal_karma_monster_gain() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.karma_monster_gain_;
+}
+inline void Constants::_internal_set_karma_monster_gain(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.karma_monster_gain_ = value;
 }
 
 #ifdef __GNUC__

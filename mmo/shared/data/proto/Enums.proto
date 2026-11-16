@@ -25,6 +25,8 @@ enum MonsterKind {
   MONSTER_KIND_NORMAL = 1;
   // 필드 보스(43)
   MONSTER_KIND_BOSS = 2;
+  // 경비병(44). Npcs의 줄이 가리키고 Spawns에 두지 않는다. 공격력, 사거리, 공격 간격, 타격까지의 시간, 이동 속도, 인식 범위, 추적 한계만 쓴다
+  MONSTER_KIND_GUARD = 3;
 }
 
 enum SkillKind {

@@ -12,7 +12,7 @@ message NpcsRow {
   uint32 id = 1;
   // 이름(Strings의 키)
   string name_key = 2;
-  // 역할. 상점, 창고, 제작, 퀘스트 NPC는 하나씩이다
+  // 역할. 상점, 창고, 제작, 퀘스트 NPC는 하나씩이고 경비병(44)은 여럿이다
   NpcRole role = 3;
   // 자리 x(m). 막힌 칸이 아니고 마을의 부활 지점에서 걸어서 닿는다(맵 툴이 검사)
   sint32 x = 4;

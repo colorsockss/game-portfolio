@@ -6,13 +6,17 @@
 
 namespace MmoWorld
 {
-	EInteractKind FInteraction::KindOf(const FEntity& Entity)
+	EInteractKind FInteraction::KindOf(const FEntity& Entity, const MmoData::FGameData& Data)
 	{
-		// NPC는 말하기다(37. 역할마다 여는 창은 화면이 정함). shortcut: 경비병(44)도 NPC라 말하기가 되므로 44가 역할을 보고 뺀다.
+		// NPC는 말하기다(37. 역할마다 여는 창은 화면이 정함). 경비병(44)은 말하지 않는다(누르면 빈 땅을 누른 것과 같음).
 		switch (Entity.Info.kind())
 		{
 		case portfolio::mmo::ENTITY_KIND_GROUND_ITEM: return EInteractKind::PickUp;
-		case portfolio::mmo::ENTITY_KIND_NPC: return EInteractKind::Talk;
+		case portfolio::mmo::ENTITY_KIND_NPC:
+		{
+			const portfolio::mmo::data::NpcsRow* Row = Data.Npc(Entity.Info.template_id());
+			return Row && Row->role() == portfolio::mmo::data::NPC_ROLE_GUARD ? EInteractKind::None : EInteractKind::Talk;
+		}
 		default: return EInteractKind::None;
 		}
 	}

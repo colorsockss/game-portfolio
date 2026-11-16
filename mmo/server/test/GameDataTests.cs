@@ -152,6 +152,25 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 경비병(44)은 마을 안의 4명이고 모두 종류가 경비병인 Monsters의 한 줄을 가리킨다. 무법자의 부활 지점은 안전 지대 밖이고 모든 경비병의 인식 범위 밖이다
+        /// (맵 툴의 검증과 같은 조건).
+        /// </summary>
+        [Fact]
+        public void GuardsStandInTheTownAwayFromTheOutlawRespawn()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
+            NpcsRow[] guards = data.Npcs.Rows.Where(row => row.Role == NpcRole.Guard).ToArray();
+            Assert.Equal(4, guards.Length);
+            MonstersRow stats = data.Monster(Assert.Single(guards.Select(row => row.MonsterId).Distinct()));
+            Assert.Equal(MonsterKind.Guard, stats.Kind);
+            ZonesRow town = data.Zones.Rows.Single(zone => zone.Kind == ZoneKind.Town);
+            Assert.All(guards, guard => Assert.True(field.IsSafe(guard.X * Units.PerMeter, guard.Z * Units.PerMeter)));
+            Assert.False(field.IsSafe(town.OutlawRespawnX * Units.PerMeter, town.OutlawRespawnZ * Units.PerMeter));
+            Assert.All(guards, guard => Assert.True(Math.Sqrt(Math.Pow(town.OutlawRespawnX - guard.X, 2) + Math.Pow(town.OutlawRespawnZ - guard.Z, 2)) > stats.DetectRange));
+        }
+
+        /// <summary>
         /// 놓인 일반 몬스터의 양(72): 사냥터마다 12무리 60마리, 채집지는 한 종류.
         /// </summary>
         [Fact]

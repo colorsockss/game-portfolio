@@ -253,7 +253,7 @@ namespace PortfolioMmo.Data {
     public const int DetectRangeFieldNumber = 10;
     private double detectRange_;
     /// <summary>
-    /// 인식 범위(m). 선공 몬스터만 쓴다
+    /// 인식 범위(m). 선공 몬스터와 경비병(44)만 쓴다
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

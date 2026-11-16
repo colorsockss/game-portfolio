@@ -240,6 +240,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> TargetButton;
 
+	/** 강제 공격을 켜고 끈다(44). 켜져 있으면 고른 상태다. */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> ForceButton;
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> InteractButton;
 

@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLSBwoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSK2CAoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -46,12 +46,14 @@ namespace PortfolioMmo.Data {
             "ChlhdXRvX2h1bnRfbWFudWFsX3BhdXNlX21zGCAgASgNEhUKDXN0b3JhZ2Vf",
             "c2xvdHMYISABKA0SFgoOY2hhdF9tYXhfYnl0ZXMYIiABKA0SFwoPY2hhdF9w",
             "ZXJfc2Vjb25kGCMgASgNEh8KF3BhcnR5X2V4cF9ib251c19wZXJjZW50GCQg",
-            "ASgNEhcKD3BhcnR5X2ludml0ZV9tcxglIAEoDUIUqgIRUG9ydGZvbGlvTW1v",
-            "LkRhdGFiBnByb3RvMw=="));
+            "ASgNEhcKD3BhcnR5X2ludml0ZV9tcxglIAEoDRIUCgxhZ2dyZXNzb3JfbXMY",
+            "JiABKA0SFAoMcGtfbWluX2xldmVsGCcgASgNEhoKEmthcm1hX2tpbGxfcGVu",
+            "YWx0eRgoIAEoDRIaChJrYXJtYV9tb25zdGVyX2dhaW4YKSABKA1CFKoCEVBv",
+            "cnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain" }, null, null, null, null)
           }));
     }
     #endregion
@@ -129,6 +131,10 @@ namespace PortfolioMmo.Data {
       chatPerSecond_ = other.chatPerSecond_;
       partyExpBonusPercent_ = other.partyExpBonusPercent_;
       partyInviteMs_ = other.partyInviteMs_;
+      aggressorMs_ = other.aggressorMs_;
+      pkMinLevel_ = other.pkMinLevel_;
+      karmaKillPenalty_ = other.karmaKillPenalty_;
+      karmaMonsterGain_ = other.karmaMonsterGain_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -678,6 +684,66 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "aggressor_ms" field.</summary>
+    public const int AggressorMsFieldNumber = 38;
+    private uint aggressorMs_;
+    /// <summary>
+    /// 선공 표시가 남는 시간(ms, 44). 일반 플레이어를 공격하기 시작한 틱부터 세고, 다시 그러면 새로 센다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint AggressorMs {
+      get { return aggressorMs_; }
+      set {
+        aggressorMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "pk_min_level" field.</summary>
+    public const int PkMinLevelFieldNumber = 39;
+    private uint pkMinLevel_;
+    /// <summary>
+    /// PK를 할 수 있는 레벨(44). 이보다 낮은 플레이어는 다른 플레이어를 공격하지도 받지도 않는다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PkMinLevel {
+      get { return pkMinLevel_; }
+      set {
+        pkMinLevel_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "karma_kill_penalty" field.</summary>
+    public const int KarmaKillPenaltyFieldNumber = 40;
+    private uint karmaKillPenalty_;
+    /// <summary>
+    /// 일반 플레이어를 죽인 플레이어의 성향이 내려가는 값(44). 성향이 0보다 낮으면 무법자다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint KarmaKillPenalty {
+      get { return karmaKillPenalty_; }
+      set {
+        karmaKillPenalty_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "karma_monster_gain" field.</summary>
+    public const int KarmaMonsterGainFieldNumber = 41;
+    private uint karmaMonsterGain_;
+    /// <summary>
+    /// 몬스터를 잡아 경험치를 받을 때마다 성향이 오르는 값(44). 0을 넘지 않는다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint KarmaMonsterGain {
+      get { return karmaMonsterGain_; }
+      set {
+        karmaMonsterGain_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -729,6 +795,10 @@ namespace PortfolioMmo.Data {
       if (ChatPerSecond != other.ChatPerSecond) return false;
       if (PartyExpBonusPercent != other.PartyExpBonusPercent) return false;
       if (PartyInviteMs != other.PartyInviteMs) return false;
+      if (AggressorMs != other.AggressorMs) return false;
+      if (PkMinLevel != other.PkMinLevel) return false;
+      if (KarmaKillPenalty != other.KarmaKillPenalty) return false;
+      if (KarmaMonsterGain != other.KarmaMonsterGain) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -772,6 +842,10 @@ namespace PortfolioMmo.Data {
       if (ChatPerSecond != 0) hash ^= ChatPerSecond.GetHashCode();
       if (PartyExpBonusPercent != 0) hash ^= PartyExpBonusPercent.GetHashCode();
       if (PartyInviteMs != 0) hash ^= PartyInviteMs.GetHashCode();
+      if (AggressorMs != 0) hash ^= AggressorMs.GetHashCode();
+      if (PkMinLevel != 0) hash ^= PkMinLevel.GetHashCode();
+      if (KarmaKillPenalty != 0) hash ^= KarmaKillPenalty.GetHashCode();
+      if (KarmaMonsterGain != 0) hash ^= KarmaMonsterGain.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -934,6 +1008,22 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(168, 2);
         output.WriteUInt32(PartyInviteMs);
       }
+      if (AggressorMs != 0) {
+        output.WriteRawTag(176, 2);
+        output.WriteUInt32(AggressorMs);
+      }
+      if (PkMinLevel != 0) {
+        output.WriteRawTag(184, 2);
+        output.WriteUInt32(PkMinLevel);
+      }
+      if (KarmaKillPenalty != 0) {
+        output.WriteRawTag(192, 2);
+        output.WriteUInt32(KarmaKillPenalty);
+      }
+      if (KarmaMonsterGain != 0) {
+        output.WriteRawTag(200, 2);
+        output.WriteUInt32(KarmaMonsterGain);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1088,6 +1178,22 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(168, 2);
         output.WriteUInt32(PartyInviteMs);
       }
+      if (AggressorMs != 0) {
+        output.WriteRawTag(176, 2);
+        output.WriteUInt32(AggressorMs);
+      }
+      if (PkMinLevel != 0) {
+        output.WriteRawTag(184, 2);
+        output.WriteUInt32(PkMinLevel);
+      }
+      if (KarmaKillPenalty != 0) {
+        output.WriteRawTag(192, 2);
+        output.WriteUInt32(KarmaKillPenalty);
+      }
+      if (KarmaMonsterGain != 0) {
+        output.WriteRawTag(200, 2);
+        output.WriteUInt32(KarmaMonsterGain);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1205,6 +1311,18 @@ namespace PortfolioMmo.Data {
       }
       if (PartyInviteMs != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(PartyInviteMs);
+      }
+      if (AggressorMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(AggressorMs);
+      }
+      if (PkMinLevel != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(PkMinLevel);
+      }
+      if (KarmaKillPenalty != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(KarmaKillPenalty);
+      }
+      if (KarmaMonsterGain != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(KarmaMonsterGain);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1325,6 +1443,18 @@ namespace PortfolioMmo.Data {
       }
       if (other.PartyInviteMs != 0) {
         PartyInviteMs = other.PartyInviteMs;
+      }
+      if (other.AggressorMs != 0) {
+        AggressorMs = other.AggressorMs;
+      }
+      if (other.PkMinLevel != 0) {
+        PkMinLevel = other.PkMinLevel;
+      }
+      if (other.KarmaKillPenalty != 0) {
+        KarmaKillPenalty = other.KarmaKillPenalty;
+      }
+      if (other.KarmaMonsterGain != 0) {
+        KarmaMonsterGain = other.KarmaMonsterGain;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1489,6 +1619,22 @@ namespace PortfolioMmo.Data {
             PartyInviteMs = input.ReadUInt32();
             break;
           }
+          case 304: {
+            AggressorMs = input.ReadUInt32();
+            break;
+          }
+          case 312: {
+            PkMinLevel = input.ReadUInt32();
+            break;
+          }
+          case 320: {
+            KarmaKillPenalty = input.ReadUInt32();
+            break;
+          }
+          case 328: {
+            KarmaMonsterGain = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -1650,6 +1796,22 @@ namespace PortfolioMmo.Data {
           }
           case 296: {
             PartyInviteMs = input.ReadUInt32();
+            break;
+          }
+          case 304: {
+            AggressorMs = input.ReadUInt32();
+            break;
+          }
+          case 312: {
+            PkMinLevel = input.ReadUInt32();
+            break;
+          }
+          case 320: {
+            KarmaKillPenalty = input.ReadUInt32();
+            break;
+          }
+          case 328: {
+            KarmaMonsterGain = input.ReadUInt32();
             break;
           }
         }

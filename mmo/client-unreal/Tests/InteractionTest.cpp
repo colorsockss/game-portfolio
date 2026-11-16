@@ -86,7 +86,8 @@ namespace
 		const std::optional<MmoWorld::FInteractTarget> Found = FInteraction::Nearest(Near, 0, 0, 10, TestKind);
 		Expect(Found && Found->Id == 3 && Found->Kind == EInteractKind::Gather, "the nearest interactable inside 10 m is the candidate");
 		Expect(!FInteraction::Nearest(World({ { 2, { 11, portfolio::mmo::ENTITY_KIND_MONSTER } } }), 0, 0, 10, TestKind), "nothing beyond 10 m");
-		Expect(!FInteraction::Nearest(Near, 0, 0, 10), "nothing is interactable yet");
+		const MmoData::FGameData NoData;
+		Expect(!FInteraction::Nearest(Near, 0, 0, 10, [&NoData](const MmoWorld::FEntity& Entity) { return FInteraction::KindOf(Entity, NoData); }), "monsters are not interactions");
 	}
 
 	/** 고른 것이 실행 거리 밖이면 다가가고, 안이고 선이 트이면 일을 부르고 끝난다. 벽 너머면 거리 안이어도 부르지 않는다. 나가면 그만둔다. */
@@ -112,12 +113,19 @@ namespace
 
 namespace
 {
-	/** 바닥 아이템(33)은 줍기이고, 주인이 없거나 나이거나 주인만 줍는 시간이 지났을 때만 내가 주울 수 있다. */
+	/** 바닥 아이템(33)은 줍기이고, 주인이 없거나 나이거나 주인만 줍는 시간이 지났을 때만 내가 주울 수 있다. NPC는 말하기이고 경비병(44)은 아니다. */
 	void GroundItemsArePickedUpByTheirOwnerFirst()
 	{
 		MmoWorld::FEntity Item;
 		Item.Info.set_kind(portfolio::mmo::ENTITY_KIND_GROUND_ITEM);
-		Expect(FInteraction::KindOf(Item) == EInteractKind::PickUp, "a ground item is picked up");
+		MmoData::FGameData Data;
+		portfolio::mmo::data::NpcsRow* Merchant = Data.Npcs.add_rows();
+		Merchant->set_id(1);
+		Merchant->set_role(portfolio::mmo::data::NPC_ROLE_SHOP);
+		portfolio::mmo::data::NpcsRow* Guard = Data.Npcs.add_rows();
+		Guard->set_id(3);
+		Guard->set_role(portfolio::mmo::data::NPC_ROLE_GUARD);
+		Expect(FInteraction::KindOf(Item, Data) == EInteractKind::PickUp, "a ground item is picked up");
 		Expect(FInteraction::CanPickUp(Item.Info, 7, 0), "an item without an owner is anyone's");
 		Item.Info.set_owner_player_id(7);
 		Item.Info.set_owner_only_end_tick(200);
@@ -126,10 +134,13 @@ namespace
 		Expect(FInteraction::CanPickUp(Item.Info, 8, 200), "anyone picks up after the owner-only time");
 		MmoWorld::FEntity Monster;
 		Monster.Info.set_kind(portfolio::mmo::ENTITY_KIND_MONSTER);
-		Expect(FInteraction::KindOf(Monster) == EInteractKind::None, "a monster is not an interaction");
+		Expect(FInteraction::KindOf(Monster, Data) == EInteractKind::None, "a monster is not an interaction");
 		MmoWorld::FEntity Npc;
 		Npc.Info.set_kind(portfolio::mmo::ENTITY_KIND_NPC);
-		Expect(FInteraction::KindOf(Npc) == EInteractKind::Talk, "an NPC is talked to");
+		Npc.Info.set_template_id(1);
+		Expect(FInteraction::KindOf(Npc, Data) == EInteractKind::Talk, "an NPC is talked to");
+		Npc.Info.set_template_id(3);
+		Expect(FInteraction::KindOf(Npc, Data) == EInteractKind::None, "a guard is not talked to");
 	}
 }
 

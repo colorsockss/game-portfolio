@@ -58,9 +58,11 @@ namespace PortfolioMmo.Server
         /// 마을의 부활 지점(1/32 m). 새 캐릭터와 들어올 자리가 막힌 캐릭터가 여기서 시작한다.
         /// </summary>
         private readonly (int X, int Z) _respawn;
+        private readonly PkSystem _pk;
 
-        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, SaveQueue queue, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save, StatSystem stats, System.Func<uint> tick)
+        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, SaveQueue queue, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save, StatSystem stats, PkSystem pk, System.Func<uint> tick)
         {
+            _pk = pk;
             ZonesRow town = data.Zones.Rows.FirstOrDefault(zone => zone.Kind == ZoneKind.Town)
                 ?? throw new System.ArgumentException("Zones needs a town row with the respawn point.", nameof(data));
             _respawn = (town.RespawnX * Units.PerMeter, town.RespawnZ * Units.PerMeter);
@@ -158,7 +160,7 @@ namespace PortfolioMmo.Server
 
         /// <summary>
         /// 캐릭터를 읽었다(입력 차례). 기다리던 연결이 끊겼거나 이미 월드에 있으면 결과를 버린다. 이 계정의 캐릭터가 아니면 실패로 답한다.
-        /// 읽은 체력이 0이면(죽은 채 빠짐) 마을의 부활 지점에서 부활할 때의 체력으로 시작하고 표시를 켠다(무법자의 지점은 44. 페널티는 죽을 때 이미 줬음).
+        /// 읽은 체력이 0이면(죽은 채 빠짐) 마을의 부활 지점(무법자는 무법자의 부활 지점. 44)에서 부활할 때의 체력으로 시작하고 표시를 켠다(페널티는 죽을 때 이미 줬음).
         /// </summary>
         private void Loaded(long id, CharacterRecord? character)
         {
@@ -181,10 +183,11 @@ namespace PortfolioMmo.Server
             bool moved = revived || !_field.CanWalk(position.X, position.Z, Walker.Player);
             if (moved)
             {
-                position = new SavedPosition(_respawn.X, _respawn.Z, position.Yaw);
+                (int x, int z) = revived ? _pk.Respawn(state.Alignment) : _respawn;
+                position = new SavedPosition(x, z, position.Yaw);
             }
 
-            var player = new Player(_entities.NextPlayerId(), character, session, position) { Exp = state.Exp, DirtySlow = moved };
+            var player = new Player(_entities.NextPlayerId(), character, session, position) { Exp = state.Exp, Karma = state.Alignment, DirtySlow = moved };
             player.SetDisplayState(_data.HasLevel(character.Class, state.Level) ? state.Level : 1, player.NameColor, 0);
             _stats.Enter(player);
             _entities.Add(player);

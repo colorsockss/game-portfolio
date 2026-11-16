@@ -153,6 +153,7 @@ enum MonsterKind : int {
   MONSTER_KIND_UNSPECIFIED = 0,
   MONSTER_KIND_NORMAL = 1,
   MONSTER_KIND_BOSS = 2,
+  MONSTER_KIND_GUARD = 3,
   MonsterKind_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   MonsterKind_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -163,11 +164,11 @@ extern const uint32_t MonsterKind_internal_data_[];
 inline constexpr MonsterKind MonsterKind_MIN =
     static_cast<MonsterKind>(0);
 inline constexpr MonsterKind MonsterKind_MAX =
-    static_cast<MonsterKind>(2);
+    static_cast<MonsterKind>(3);
 [[nodiscard]] inline bool MonsterKind_IsValid(int value) {
-  return 0 <= value && value <= 2;
+  return 0 <= value && value <= 3;
 }
-inline constexpr int MonsterKind_ARRAYSIZE = 2 + 1;
+inline constexpr int MonsterKind_ARRAYSIZE = 3 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 MonsterKind_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(MonsterKind) {
@@ -182,7 +183,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& MonsterKind_Name(MonsterKind value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<MonsterKind_descriptor, 0, 2>(
+  return ::google::protobuf::internal::NameOfDenseEnum<MonsterKind_descriptor, 0, 3>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool MonsterKind_Parse(

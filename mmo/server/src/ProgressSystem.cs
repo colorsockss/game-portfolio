@@ -4,9 +4,9 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// 진행 중인 일 하나(26). Id는 종류에 따른 테이블의 번호(시전은 Skills)이고, Target은 시전의 대상, X와 Z는 시작한 자리다.
-    /// Generation은 끝의 예약의 세대 번호다.
+    /// Generation은 끝의 예약의 세대 번호다. Force는 시전한 UseSkill의 강제 공격 표시다(44).
     /// </summary>
-    internal sealed record ProgressWork(ProgressKind Kind, uint Id, uint Target, uint EndTick, int X, int Z, ulong Generation)
+    internal sealed record ProgressWork(ProgressKind Kind, uint Id, uint Target, uint EndTick, int X, int Z, ulong Generation, bool Force = false)
     {
         public ProgressState State()
         {
@@ -43,10 +43,10 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 일을 시작한다(진행 중인 일이 없는 것은 부르는 쪽이 봄). 시전의 끝은 전투 차례로, 다른 종류의 끝은 꺼낸 자리에서 한다.
         /// </summary>
-        public void Start(Creature creature, ProgressKind kind, uint id, uint target, uint endTick)
+        public void Start(Creature creature, ProgressKind kind, uint id, uint target, uint endTick, bool force = false)
         {
             ulong generation = _scheduler.NewGeneration();
-            creature.Progress = new ProgressWork(kind, id, target, endTick, creature.X, creature.Z, generation);
+            creature.Progress = new ProgressWork(kind, id, target, endTick, creature.X, creature.Z, generation, force);
             _scheduler.Add(endTick, kind == ProgressKind.Cast ? ScheduledKind.CastEnd : ScheduledKind.ProgressEnd, creature.Id, 0, 0, generation);
             _events.Progress(creature);
         }

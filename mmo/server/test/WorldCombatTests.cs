@@ -257,7 +257,7 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 없는 번호, 죽은 대상, 받지 않은 개체는 "대상이 없음", 플레이어, 복귀 중인 몬스터, 안전 지대 안에서 보낸 AttackStart는 "공격할 수 없는 대상"으로
+        /// 없는 번호, 죽은 대상, 받지 않은 개체는 "대상이 없음", 레벨 10 미만의 플레이어는 "레벨 10 미만"(44), 복귀 중인 몬스터, 안전 지대 안에서 보낸 AttackStart는 "공격할 수 없는 대상"으로
         /// ActionFailed(공격)를 받고 끊기지 않는다. AttackStop은 공격 상태를 끈다.
         /// </summary>
         [Fact]
@@ -274,7 +274,7 @@ namespace PortfolioMmo.Server.Tests
 
             foreach ((uint target, FailReason reason) in new[]
             {
-                (999u, FailReason.NoTarget), (dead.Id, FailReason.NoTarget), (far.Id, FailReason.NoTarget), (other.Player!.Id, FailReason.InvalidTarget),
+                (999u, FailReason.NoTarget), (dead.Id, FailReason.NoTarget), (far.Id, FailReason.NoTarget), (other.Player!.Id, FailReason.PkLevelTooLow),
             })
             {
                 Attack(world, knight, target);

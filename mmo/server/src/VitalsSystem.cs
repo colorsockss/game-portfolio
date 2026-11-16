@@ -117,14 +117,15 @@ namespace PortfolioMmo.Server
             }
 
             SelfVitals? sent = player.SentVitals;
-            if ((sent != null) && (sent.Hp == player.Hp) && (sent.Mp == player.Mp) && (sent.CombatEndTick == player.CombatEndTick))
+            if ((sent != null) && (sent.Hp == player.Hp) && (sent.Mp == player.Mp) && (sent.CombatEndTick == player.CombatEndTick)
+                && (sent.AggressorEndTick == player.AggressorEndTick))
             {
                 return;
             }
 
             // 체력과 마나가 바뀌면 60초 표시를 세운다(38. 전투 상태만 바뀐 것은 저장하지 않지만 함께 세워도 사본은 같음).
             player.DirtySlow = true;
-            var vitals = new SelfVitals { Hp = player.Hp, Mp = player.Mp, CombatEndTick = player.CombatEndTick };
+            var vitals = new SelfVitals { Hp = player.Hp, Mp = player.Mp, CombatEndTick = player.CombatEndTick, AggressorEndTick = player.AggressorEndTick };
             player.SentVitals = vitals;
             player.Session.Send(new Packet { SelfVitals = vitals });
         }

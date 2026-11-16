@@ -20,6 +20,7 @@ namespace PortfolioMmo.Server
         private readonly GameData _data;
         private readonly TickEvents _events;
         private readonly ProgressSystem _progress;
+        private readonly PkSystem _pk;
         private readonly uint _combatTicks;
 
         /// <summary>
@@ -47,8 +48,9 @@ namespace PortfolioMmo.Server
         /// </summary>
         public ProjectileSystem? Projectiles { get; set; }
 
-        public CombatSystem(EntityTable entities, FieldMap field, Scheduler scheduler, StatSystem stats, GameData data, TickEvents events, ProgressSystem progress, PartySystem party)
+        public CombatSystem(EntityTable entities, FieldMap field, Scheduler scheduler, StatSystem stats, GameData data, TickEvents events, ProgressSystem progress, PartySystem party, PkSystem pk)
         {
+            _pk = pk;
             _entities = entities;
             _field = field;
             _scheduler = scheduler;
@@ -61,16 +63,27 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 공격할 수 있는 사이인지(설계의 PK와 안전 지대). 지금은 플레이어와 몬스터 사이만 참이고, 플레이어가 안전 지대 안에 있으면 거짓이다
-        /// (플레이어는 안에서 밖의 몬스터를 치지 못하고, 몬스터는 안의 플레이어를 치지 못함). 플레이어 사이와 파티원은 44가 넓힌다.
+        /// 공격할 수 있는 사이인지(설계의 PK와 안전 지대). 플레이어와 몬스터 사이는 플레이어가 안전 지대 밖이어야 하고(플레이어는 안에서 밖의 몬스터를 치지 못하고,
+        /// 몬스터는 안의 플레이어를 치지 못함), 플레이어 사이는 PkSystem의 규칙이다(44). 경비병은 선공 표시가 있거나 무법자인 플레이어를 안전 지대에서도 치고,
+        /// 경비병은 누구의 대상도 아니다.
         /// </summary>
         public bool CanAttack(Creature attacker, Creature target)
         {
+            return AttackFailure(attacker, target) == FailReason.None;
+        }
+
+        /// <summary>
+        /// CanAttack이 거짓인 까닭(참이면 NONE). 플레이어 사이는 "레벨 10 미만", "파티원"이 따로 있고 나머지는 "공격할 수 없는 대상"이다.
+        /// </summary>
+        public FailReason AttackFailure(Creature attacker, Creature target)
+        {
             return (attacker, target) switch
             {
-                (Player player, Monster) => !_field.IsSafe(player.X, player.Z),
-                (Monster, Player player) => !_field.IsSafe(player.X, player.Z),
-                _ => false,
+                (Player player, Monster) => _field.IsSafe(player.X, player.Z) ? FailReason.InvalidTarget : FailReason.None,
+                (Monster, Player player) => _field.IsSafe(player.X, player.Z) ? FailReason.InvalidTarget : FailReason.None,
+                (Player player, Player victim) => _pk.PlayerFailure(player, victim),
+                (Guard, Player player) => PkSystem.IsNormal(player) ? FailReason.InvalidTarget : FailReason.None,
+                _ => FailReason.InvalidTarget,
             };
         }
 
@@ -92,9 +105,15 @@ namespace PortfolioMmo.Server
                 return Outcome.Fail(FailReason.NoTarget);
             }
 
-            if ((found is not Creature target) || !CanAttack(player, target) || IsReturning(target))
+            if (found is not Creature target)
             {
                 return Outcome.Fail(FailReason.InvalidTarget);
+            }
+
+            FailReason reason = IsReturning(target) ? FailReason.InvalidTarget : AttackFailure(player, target);
+            if (reason != FailReason.None)
+            {
+                return Outcome.Fail(reason);
             }
 
             player.AttackTarget = target.Id;
@@ -175,12 +194,13 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            if (!CanAttack(attacker, target) || IsReturning(target))
+            FailReason reason = IsReturning(target) ? FailReason.InvalidTarget : AttackFailure(attacker, target);
+            if (reason != FailReason.None)
             {
                 attacker.AttackTarget = 0;
                 if (attacker is Player player)
                 {
-                    player.Fail(FailReason.InvalidTarget, RequestKind.Attack);
+                    player.Fail(reason, RequestKind.Attack);
                 }
 
                 return;
@@ -194,6 +214,7 @@ namespace PortfolioMmo.Server
             }
 
             _events.Swing(attacker, target);
+            _pk.Attacked(attacker, target, tick);
             attacker.NextAttackTick = tick + attack.IntervalTicks;
             attacker.CombatEndTick = tick + _combatTicks;
             uint hitTick = tick + attack.HitDelayTicks;
@@ -269,6 +290,9 @@ namespace PortfolioMmo.Server
                     dead.Killer = dead.Damage.Killer(_party.SideOf);
                 }
 
+                // 죽은 쪽이 일반 플레이어였는지는 죽은 차례가 선공 표시를 떼기 전에 본다(44).
+                _pk.Killed(target, attacker);
+
                 _events.Died(target, attacker);
                 _died.Add(target);
             }
@@ -289,7 +313,7 @@ namespace PortfolioMmo.Server
             return attacker switch
             {
                 Player player => Of(_data.Class(player.Class)),
-                Monster monster => Of(monster.Template),
+                AiCreature mob => Of(mob.Template),
                 _ => throw new ArgumentException($"{attacker.Kind} has no basic attack.", nameof(attacker)),
             };
         }

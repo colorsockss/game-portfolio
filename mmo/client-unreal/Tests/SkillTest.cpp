@@ -370,6 +370,36 @@ namespace
 		Expect(None.Combat.PressSkill(101, None.World, None.GameData, 0) == portfolio::mmo::FAIL_REASON_NO_TARGET, "a target skill needs a target");
 	}
 
+	/**
+	 * 강제 공격(44): 꺼져 있으면 플레이어 대상의 공격과 피해 스킬을 보내지 않고 강제 공격의 알림을 쌓는다. 켜져 있으면 UseSkill에 표시가 실린다.
+	 * 회복 스킬과, 플레이어를 대상으로 잡은 채 쓰는 자기 중심의 범위 스킬은 꺼져 있어도 다가가지 않고 표시 없이 보낸다.
+	 */
+	void PlayersNeedForceAttack()
+	{
+		constexpr uint32_t Other = 3;
+		const MmoWorld::FFieldMap Map = Field(32);
+		FScene Scene;
+		Scene.Apply(Enter(Other, portfolio::mmo::ENTITY_KIND_PLAYER, M, 0));
+		Scene.Combat.SetTarget(Other);
+		Expect(!Scene.Combat.MayAttack(Scene.World, Other) && Scene.Combat.TakeForceNotice() && !Scene.Combat.TakeForceNotice(), "a player is not attacked without force");
+		Expect(Scene.Combat.MayAttack(Scene.World, Monster), "a monster needs no force");
+		Expect(Scene.Combat.PressSkill(101, Scene.World, Scene.GameData, 0) == portfolio::mmo::FAIL_REASON_INVALID_TARGET && Scene.Combat.PendingSkill() == 0
+			&& Scene.Combat.TakeForceNotice() && Scene.Combat.TakeNotices().empty(), "a damage skill on a player waits for force and shows its own notice");
+
+		const MmoWorld::FSkillFire Heal = Scene.Fire(203, Map);
+		Expect(Heal.Packets.size() == 1 && !Heal.Packets[0].use_skill().force_attack(), "a heal is sent without force");
+		Scene.Apply(Used(Me, 203, Me));
+		const MmoWorld::FSkillFire Area = Scene.Fire(104, Map);
+		Expect(Area.Packets.size() == 1 && Area.Packets[0].use_skill().target_id() == 0 && !Area.Packets[0].use_skill().force_attack(),
+			"a self centered area skill fires in place without force");
+		Scene.Apply(Used(Me, 104, Me));
+
+		Scene.Combat.SetForceAttack(true);
+		Expect(Scene.Combat.MayAttack(Scene.World, Other) && !Scene.Combat.TakeForceNotice(), "force allows attacking a player");
+		const MmoWorld::FSkillFire Hit = Scene.Fire(101, Map);
+		Expect(Hit.Packets.size() == 1 && Hit.Packets[0].use_skill().target_id() == Other && Hit.Packets[0].use_skill().force_attack(), "the skill carries the force flag");
+	}
+
 	/** 이동 입력을 쥔 채 시전 시간이 있는 스킬을 보내면 세우고 밀린 위치를 먼저 보내며, 쥐고 있던 입력은 한 번 놓을 때까지 막는다. */
 	void CastsStopAndIgnoreTheHeldMove()
 	{
@@ -626,6 +656,7 @@ int main(int ArgumentCount, char** Arguments)
 	EffectsAndProgressExpireOnTheirOwn();
 	MySlowAndStunAreAnswered();
 	TargetSkillsApproachAndSelfSkillsFireInPlace();
+	PlayersNeedForceAttack();
 	CastsStopAndIgnoreTheHeldMove();
 	LineProjectilesFollowTheirLaunch();
 	LineSkillsFireWithOrWithoutATarget();
