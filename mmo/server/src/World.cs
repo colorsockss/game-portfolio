@@ -63,7 +63,7 @@ namespace PortfolioMmo.Server
             _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, _queue, data, field, _entities, _grid, _save, stats, _pk, () => Tick, demo);
             _vitals = new VitalsSystem(_entities, data);
             _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random, _party);
-            _events = new TickEvents(_grid);
+            _events = new TickEvents();
             _progress = new ProgressSystem(_entities, _scheduler, _events);
             _effects = new EffectSystem(_entities, _scheduler, _events, stats, _progress, data);
             _combat = new CombatSystem(_entities, field, _scheduler, stats, data, _events, _progress, _party, _pk);
@@ -188,6 +188,11 @@ namespace PortfolioMmo.Server
         /// <summary>
         /// 월드의 소환수(95. 테스트가 봄).
         /// </summary>
+        /// <summary>
+        /// 월드의 모든 개체(52의 시야 테스트가 옛 규칙과 견줌).
+        /// </summary>
+        internal System.Collections.Generic.IEnumerable<Entity> AllEntities => _entities.All;
+
         internal System.Collections.Generic.IEnumerable<Summon> Summons() => System.Linq.Enumerable.OfType<Summon>(_entities.All);
 
         /// <summary>

@@ -17,17 +17,26 @@ namespace PortfolioMmo.Server
         private readonly Dictionary<long, List<Entity>> _cells = new Dictionary<long, List<Entity>>();
 
         /// <summary>
+        /// 이 틱에 시야 칸마다 들어오거나 나간 개체(52: 새로 놓임, 칸을 옮김, 월드에서 빠짐. 옮긴 개체는 두 칸 모두에 든다). 시야 차례가 끝나면 비운다.
+        /// </summary>
+        private readonly Dictionary<long, List<Entity>> _touched = new Dictionary<long, List<Entity>>();
+        private readonly List<List<Entity>> _touchedLists = new List<List<Entity>>();
+        private readonly Stack<List<Entity>> _freeLists = new Stack<List<Entity>>();
+
+        /// <summary>
         /// 개체를 지금 위치의 칸에 넣는다.
         /// </summary>
         public void Add(Entity entity)
         {
             entity.Cell = CellOf(entity.X, entity.Z);
             CellEntities(entity.Cell).Add(entity);
+            Touch(entity.Cell, entity);
         }
 
         public void Remove(Entity entity)
         {
             _cells[entity.Cell].Remove(entity);
+            Touch(entity.Cell, entity);
         }
 
         /// <summary>
@@ -39,8 +48,10 @@ namespace PortfolioMmo.Server
             if (cell != entity.Cell)
             {
                 _cells[entity.Cell].Remove(entity);
+                Touch(entity.Cell, entity);
                 CellEntities(cell).Add(entity);
                 entity.Cell = cell;
+                Touch(cell, entity);
             }
         }
 
@@ -61,6 +72,40 @@ namespace PortfolioMmo.Server
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 칸 둘레 3×3칸에서 이 틱에 들어오거나 나간 개체를 result에 더한다(52. 같은 개체가 여러 번 들 수 있음).
+        /// </summary>
+        public void CollectTouchedAround(long cell, List<Entity> result)
+        {
+            int cellX = (int)(cell >> 32);
+            int cellZ = (int)cell;
+            for (int offsetX = -1; offsetX <= 1; offsetX++)
+            {
+                for (int offsetZ = -1; offsetZ <= 1; offsetZ++)
+                {
+                    if (_touched.TryGetValue(CellKey(cellX + offsetX, cellZ + offsetZ), out List<Entity>? entities))
+                    {
+                        result.AddRange(entities);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 이 틱의 들고 난 목록을 비운다(시야 차례 끝. 52). 목록은 다시 쓴다.
+        /// </summary>
+        public void ClearTouched()
+        {
+            foreach (List<Entity> list in _touchedLists)
+            {
+                list.Clear();
+                _freeLists.Push(list);
+            }
+
+            _touchedLists.Clear();
+            _touched.Clear();
         }
 
         /// <summary>
@@ -153,6 +198,18 @@ namespace PortfolioMmo.Server
         private static long CellKey(int cellX, int cellZ)
         {
             return ((long)cellX << 32) | (uint)cellZ;
+        }
+
+        private void Touch(long cell, Entity entity)
+        {
+            if (!_touched.TryGetValue(cell, out List<Entity>? list))
+            {
+                list = _freeLists.Count > 0 ? _freeLists.Pop() : new List<Entity>();
+                _touched.Add(cell, list);
+                _touchedLists.Add(list);
+            }
+
+            list.Add(entity);
         }
     }
 }

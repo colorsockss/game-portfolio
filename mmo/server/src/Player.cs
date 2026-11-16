@@ -191,6 +191,24 @@ namespace PortfolioMmo.Server
         internal HashSet<Entity> NextVisible { get; set; } = new HashSet<Entity>();
 
         /// <summary>
+        /// 지난 시야 차례에 본 시야 칸(52). 이번 틱의 Cell과 다르면 둘레를 통째로 다시 본다. 처음에는 어느 칸과도 다른 값이다.
+        /// </summary>
+        internal long ViewCell { get; set; } = long.MinValue;
+
+        /// <summary>
+        /// 이번 시야 차례에 이 연결로 갈 것(52): 나간 개체, 들어온 개체, 움직임, 표시 상태가 바뀐 개체. 차례가 끝나면 비운다.
+        /// </summary>
+        internal EntitiesLeave? ViewLeave { get; set; }
+
+        internal EntitiesEnter? ViewEnter { get; set; }
+
+        internal HashSet<Entity> ViewEntered { get; } = new HashSet<Entity>();
+
+        internal EntityMoves? ViewMoves { get; set; }
+
+        internal List<Entity>? ViewChanged { get; set; }
+
+        /// <summary>
         /// 표시 상태를 바꾼다. 하나라도 바뀌면 이 틱의 시야 차례에 받은 연결과 본인에게 EntityState가 간다.
         /// </summary>
         public void SetDisplayState(uint level, NameColor nameColor, uint weaponItemId)

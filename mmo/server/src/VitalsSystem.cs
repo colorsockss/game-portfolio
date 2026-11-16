@@ -20,6 +20,7 @@ namespace PortfolioMmo.Server
 
         private readonly List<EntityVital> _changed = new List<EntityVital>();
         private readonly List<Creature> _changedCreatures = new List<Creature>();
+        private readonly Dictionary<Player, EntityVitals> _vitals = new Dictionary<Player, EntityVitals>();
 
         public VitalsSystem(EntityTable entities, GameData data)
         {
@@ -61,7 +62,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 체력이 바뀐 개체를 지난 틱의 시야(Visible)에 그 개체가 든 연결마다 EntityVitals 하나로 보내고 표시를 내린다.
+        /// 체력이 바뀐 개체를 그 개체를 받은 연결(Watchers, 지난 틱의 시야)마다 EntityVitals 하나로 보내고 표시를 내린다.
         /// 본인에게는 SelfVitals가 가므로 자기 개체는 Visible에 없다. 시야에 새로 드는 연결은 EntityEnter로 지금 체력을 받는다.
         /// </summary>
         private void SendEntityVitals()
@@ -83,21 +84,30 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            foreach (Player observer in _entities.Players)
+            // 받은 연결(52)마다 모은다. 지난 시야 차례 뒤에 월드에서 빠진 연결은 다음 시야 차례가 목록에서 빼므로 여기서 거른다.
+            _vitals.Clear();
+            for (int i = 0; i < _changedCreatures.Count; i++)
             {
-                EntityVitals? vitals = null;
-                for (int i = 0; i < _changedCreatures.Count; i++)
+                foreach (Player watcher in _changedCreatures[i].Watchers)
                 {
-                    if (observer.Visible.Contains(_changedCreatures[i]))
+                    if (_entities.Find(watcher.Id) != watcher)
                     {
-                        (vitals ??= new EntityVitals()).Entities.Add(_changed[i]);
+                        continue;
                     }
-                }
 
-                if (vitals != null)
-                {
-                    observer.Session.Send(new Packet { EntityVitals = vitals });
+                    if (!_vitals.TryGetValue(watcher, out EntityVitals? vitals))
+                    {
+                        vitals = new EntityVitals();
+                        _vitals.Add(watcher, vitals);
+                    }
+
+                    vitals.Entities.Add(_changed[i]);
                 }
+            }
+
+            foreach ((Player watcher, EntityVitals vitals) in _vitals)
+            {
+                watcher.Session.Send(new Packet { EntityVitals = vitals });
             }
         }
 

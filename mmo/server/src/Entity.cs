@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PortfolioMmo.Contract;
 
 namespace PortfolioMmo.Server
@@ -64,6 +65,12 @@ namespace PortfolioMmo.Server
         /// 이번 틱에 표시 상태가 바뀌었다. 시야 차례가 그 개체를 받은 연결과 본인에게 EntityState를 보낸 뒤 내린다.
         /// </summary>
         internal bool StateChanged { get; set; }
+
+        /// <summary>
+        /// 나를 받은 연결(52): EntitiesEnter를 보낸 뒤 EntitiesLeave를 보내기 전까지의 플레이어. 그 플레이어의 Visible에 내가 든 것과 늘 같고 ViewSystem만 바꾼다.
+        /// 움직임, 표시 상태, 사건, 체력은 시야 칸을 돌지 않고 이 목록으로 보낸다.
+        /// </summary>
+        internal HashSet<Player> Watchers { get; } = new HashSet<Player>();
 
         /// <summary>
         /// 시야에 들어올 때 보낼 원소. 모두가 싣는 것(번호, 종류, 위치와 방향)을 채운 뒤 종류마다의 것을 더한다.

@@ -10,13 +10,10 @@ namespace PortfolioMmo.Server
     /// </summary>
     internal sealed class TickEvents
     {
-        private readonly Grid _grid;
         private readonly List<Event> _events = new List<Event>();
-        private readonly HashSet<Entity> _around = new HashSet<Entity>();
 
-        public TickEvents(Grid grid)
+        public TickEvents()
         {
-            _grid = grid;
         }
 
         public int Count => _events.Count;
@@ -123,8 +120,7 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 사건을 난 순서대로 받는 연결에 넣고 비운다. 받는 연결은 대상 둘레 3×3 시야 칸의 플레이어 가운데 시야 집합에 대상이 든 연결이다
-        /// (개체마다 받은 연결의 목록을 두는 것은 52).
+        /// 사건을 난 순서대로 받는 연결에 넣고 비운다. 받는 연결은 대상을 받은 연결(Entity.Watchers. 52)과 대상 본인이다.
         /// </summary>
         public void Deliver()
         {
@@ -135,14 +131,9 @@ namespace PortfolioMmo.Server
                     self.Session.Send(PacketFor(self, @event));
                 }
 
-                _around.Clear();
-                _grid.CollectAround(@event.Target.Cell, _around);
-                foreach (Entity entity in _around)
+                foreach (Player observer in @event.Target.Watchers)
                 {
-                    if ((entity is Player observer) && (observer != @event.Target) && observer.Visible.Contains(@event.Target))
-                    {
-                        observer.Session.Send(PacketFor(observer, @event));
-                    }
+                    observer.Session.Send(PacketFor(observer, @event));
                 }
             }
 
