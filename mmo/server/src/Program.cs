@@ -17,7 +17,7 @@ namespace PortfolioMmo.Server
         /// 인자: --port(기본 7777), --max-players(동시 접속 상한, 기본 1000),
         /// --spawn-half-extent(처음 들어온 플레이어를 놓을 정사각형의 반 너비, m, 기본 0),
         /// --database(SQLite 파일, 작업 디렉터리 기준, 기본 mmo.sqlite), --data(기획 데이터 폴더, 기본 실행 파일 옆의 data/),
-        /// --dev(개발 명령 DevCommand를 실행함. 로컬의 확인과 시연용이고 Live에서는 켜지 않음).
+        /// --dev(개발 명령 DevCommand를 실행함. 로컬의 확인과 시연용이고 Live에서는 켜지 않음), --demo(체험 캐릭터를 만듦. Live의 시연 서버가 켬. 94).
         /// 데이터를 읽지 못하면 뜨지 않는다.
         /// </summary>
         public static async Task<int> Main(string[] args)
@@ -49,9 +49,10 @@ namespace PortfolioMmo.Server
             using PosixSignalRegistration terminate = PosixSignalRegistration.Create(PosixSignal.SIGTERM, stop);
 
             bool dev = Array.IndexOf(args, "--dev") >= 0;
-            var server = new GameServer(new IPEndPoint(IPAddress.Any, port), new World(maxPlayers, spawnHalfExtent, new Random(), store, data, dev));
+            bool demo = Array.IndexOf(args, "--demo") >= 0;
+            var server = new GameServer(new IPEndPoint(IPAddress.Any, port), new World(maxPlayers, spawnHalfExtent, new Random(), store, data, dev, demo));
             Task<int> running = server.RunAsync(cancellation.Token);
-            Console.WriteLine($"Listening on port {server.Port} (max players {maxPlayers}, data {data.Hash:x16}{(dev ? ", dev commands on" : string.Empty)})");
+            Console.WriteLine($"Listening on port {server.Port} (max players {maxPlayers}, data {data.Hash:x16}{(dev ? ", dev commands on" : string.Empty)}{(demo ? ", demo characters on" : string.Empty)})");
             int code = await running;
             Console.WriteLine(code == 0 ? "Stopped" : $"Stopped after an error (exit code {code})");
             return code;

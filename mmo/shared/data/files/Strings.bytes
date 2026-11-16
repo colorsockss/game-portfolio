@@ -992,3 +992,19 @@ N
 펫 넣기Dismiss Pet
 ]
 pet.replace,가진 펫({0})을 {1}(으)로 바꿀까요? Replace your pet ({0}) with {1}?
+F
+create.demo체험 캐릭터(레벨 20)Trial character (level 20)
+�
+create.demoUnavailable@이 서버에서는 체험 캐릭터를 만들 수 없습니다.+This server cannot create trial characters.
+&
+guide.title조작 안내Controls
+�
+guide.pc�이동 {0} · 누르기 {1} · 공격 {2} · 가까운 적 {3} · 상호작용 {4} · 강제 공격 {5}
+스킬과 물약 {6} · 자동 사냥 {7} · 가방 {8} · 캐릭터 {9} · 스킬 {10} · 지도 {11} · 채팅 {12} · 설정 {13}�Move {0} · Click {1} · Attack {2} · Nearest enemy {3} · Interact {4} · Force attack {5}
+Skills and potions {6} · Auto hunt {7} · Bag {8} · Character {9} · Skills {10} · Map {11} · Chat {12} · Settings {13}
+�
+guide.mobile�왼쪽 아래 조이스틱으로 걷고, 화면을 눌러 대상을 고릅니다.
+오른쪽 아래의 공격·대상·상호작용·강제 공격 버튼과 아래의 퀵슬롯을 씁니다. 자동 사냥 버튼으로 사냥을 맡길 수 있습니다.�Walk with the joystick at the bottom left and tap to pick targets.
+Use the attack, target, interact and force attack buttons at the bottom right and the quickslots below. The auto hunt button hunts for you.
+B
+settings.guide조작 안내 다시 보기Show Controls Again

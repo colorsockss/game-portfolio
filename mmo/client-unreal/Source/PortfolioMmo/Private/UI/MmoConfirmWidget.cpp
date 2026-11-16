@@ -12,7 +12,9 @@ void UMmoConfirmWidget::SetUp(const FText& Message, TFunction<void()> InOnYes, T
 	OnNo = MoveTemp(InOnNo);
 	YesButton->LabelKey = YesKey;
 	YesButton->RefreshText();
-	NoButton->LabelKey = NoKey;
+	// 아니요의 키가 없으면 버튼 하나의 알림 창이다(조작 안내 94).
+	NoButton->SetVisibility(NoKey ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	NoButton->LabelKey = NoKey ? NoKey : TEXT("common.no");
 	NoButton->RefreshText();
 }
 

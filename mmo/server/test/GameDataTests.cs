@@ -152,6 +152,24 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 체험 캐릭터(94)의 처음 상태: 두 직업 모두 레벨 20, 입은 장비는 칸마다 하나이고 그 직업이 입을 수 있는 레벨 20 이하의 장비이며, 아이템과 수의 차례가 같고, 펫이 있다.
+        /// </summary>
+        [Fact]
+        public void DemoCharactersStartReady()
+        {
+            GameData data = GameData.Load(GameData.DefaultFolder);
+            foreach (ClassesRow row in data.Classes.Rows)
+            {
+                Assert.Equal(20u, row.DemoLevel);
+                ItemsRow[] worn = row.DemoEquipment.Select(id => data.Item(id)!).ToArray();
+                Assert.Equal(worn.Length, worn.Select(item => item.Slot).Distinct().Count());
+                Assert.All(worn, item => Assert.True(item.Kind == ItemKind.Equipment && item.Level <= row.DemoLevel && (!item.HasClass || item.Class == row.Id)));
+                Assert.Equal(row.DemoItems.Count, row.DemoCounts.Count);
+                Assert.NotNull(data.Pet(row.DemoPet));
+            }
+        }
+
+        /// <summary>
         /// 경비병(44)은 마을 안의 4명이고 모두 종류가 경비병인 Monsters의 한 줄을 가리킨다. 무법자의 부활 지점은 안전 지대 밖이고 모든 경비병의 인식 범위 밖이다
         /// (맵 툴의 검증과 같은 조건).
         /// </summary>

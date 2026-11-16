@@ -777,6 +777,7 @@ namespace
 		AddWithGap(*Column, Builder.Button(TEXT("StatsButton"), FText::GetEmpty()), Style.Section);
 		AddWithGap(*Column, Builder.Button(TEXT("CharacterSelectButton"), TEXT("settings.characterSelect")));
 		AddWithGap(*Column, Builder.Button(TEXT("LogOutButton"), TEXT("settings.logOut")));
+		AddWithGap(*Column, Builder.Button(TEXT("GuideButton"), TEXT("settings.guide")));
 		AddWithGap(*Column, Builder.Button(TEXT("QuitButton"), TEXT("settings.quit")));
 		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
@@ -1059,6 +1060,8 @@ namespace
 		AddWithGap(*Column, NameBox, Style.Section);
 		AddWithGap(*Column, Row(Builder, TEXT("Classes"), {
 			Builder.Button(TEXT("KnightButton"), TEXT("class.knight")), Builder.Button(TEXT("MageButton"), TEXT("class.mage")) }), Style.Section);
+		// 체험 캐릭터(94). 서버가 만들 수 있다고 알렸을 때만 보인다(기반 클래스가 정함).
+		AddWithGap(*Column, Builder.Button(TEXT("DemoButton"), TEXT("create.demo")), Style.Section);
 		UHorizontalBox* Buttons = Row(Builder, TEXT("Buttons"), {
 			Builder.Button(TEXT("CancelButton"), TEXT("common.cancel")), Builder.Button(TEXT("CreateButton"), TEXT("create.create")) });
 		Column->AddChildToVerticalBox(Buttons)->SetPadding(FMargin(0.0f, 0.0f, 0.0f, Style.Gap));

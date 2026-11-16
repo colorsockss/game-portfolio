@@ -59,6 +59,10 @@ public:
 	UPROPERTY(config)
 	FString LastLoginId;
 
+	/** 조작 안내(94)를 본 캐릭터("서버 주소|캐릭터 번호"). */
+	UPROPERTY(config)
+	TArray<FString> GuideSeen;
+
 	/** 정하지 않은 값을 기기에 맞춰 채운 품질 단계. */
 	int32 QualityLevel() const;
 

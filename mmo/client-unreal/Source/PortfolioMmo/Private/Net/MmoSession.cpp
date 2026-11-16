@@ -127,17 +127,19 @@ void UMmoSession::LogOut()
 	HandleClosed(LoggedOutReason);
 }
 
-void UMmoSession::CreateCharacter(const FString& Name, portfolio::mmo::CharacterClass Class)
+void UMmoSession::CreateCharacter(const FString& Name, portfolio::mmo::CharacterClass Class, bool bDemo)
 {
 	portfolio::mmo::Packet Packet;
 	const FTCHARToUTF8 Utf8(*Name);
 	Packet.mutable_create_character()->set_name(Utf8.Get(), Utf8.Length());
 	Packet.mutable_create_character()->set_character_class(Class);
+	Packet.mutable_create_character()->set_demo(bDemo);
 	Connection().Send(Packet);
 }
 
 void UMmoSession::EnterWorld(uint64 CharacterId)
 {
+	LastCharacterId = CharacterId;
 	portfolio::mmo::Packet Packet;
 	Packet.mutable_enter_world()->set_character_id(CharacterId);
 	Connection().Send(Packet);
@@ -220,6 +222,10 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 	if (Packet.body_case() == portfolio::mmo::Packet::kCharacterList)
 	{
 		CharacterList = Packet.character_list();
+	}
+	if (Packet.body_case() == portfolio::mmo::Packet::kLoginResult)
+	{
+		bDemoAvailable = Packet.login_result().demo_available();
 	}
 	const double Now = FPlatformTime::Seconds();
 	WorldState.Apply(Packet, Now);

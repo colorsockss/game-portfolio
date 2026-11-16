@@ -23,7 +23,7 @@ After=network.target
 [Service]
 User=deploy
 WorkingDirectory=/srv/mmo/server/current
-ExecStart=/srv/mmo/server/current/PortfolioMmo.Server --port $port --database /srv/mmo/data/mmo.sqlite
+ExecStart=/srv/mmo/server/current/PortfolioMmo.Server --port $port --database /srv/mmo/data/mmo.sqlite --demo
 # 프로세스가 끝나면(저장 실패, 틱의 예외, 멈춤 감시. mmo backlog 38, 39) 다시 띄운다.
 Restart=always
 RestartSec=2
@@ -47,7 +47,7 @@ After=mmo-server.service
 [Service]
 User=deploy
 WorkingDirectory=/srv/mmo/server/current/bots
-ExecStart=/srv/mmo/server/current/bots/LoadTest --host 127.0.0.1 --port $port --bots 20 --hunt --seconds 0 --half-extent 285 --prefix livebot
+ExecStart=/srv/mmo/server/current/bots/LoadTest --host 127.0.0.1 --port $port --bots 20 --demo-bots 10 --hunt --seconds 0 --half-extent 285 --prefix livebot
 Restart=always
 RestartSec=10
 NoNewPrivileges=true

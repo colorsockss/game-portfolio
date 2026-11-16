@@ -1073,6 +1073,7 @@ enum CreateCharacterResultCode : int {
   CREATE_CHARACTER_RESULT_CODE_NAME_TAKEN = 2,
   CREATE_CHARACTER_RESULT_CODE_TOO_MANY = 3,
   CREATE_CHARACTER_RESULT_CODE_INVALID_CLASS = 4,
+  CREATE_CHARACTER_RESULT_CODE_DEMO_UNAVAILABLE = 5,
   CreateCharacterResultCode_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   CreateCharacterResultCode_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -1083,11 +1084,11 @@ extern const uint32_t CreateCharacterResultCode_internal_data_[];
 inline constexpr CreateCharacterResultCode CreateCharacterResultCode_MIN =
     static_cast<CreateCharacterResultCode>(0);
 inline constexpr CreateCharacterResultCode CreateCharacterResultCode_MAX =
-    static_cast<CreateCharacterResultCode>(4);
+    static_cast<CreateCharacterResultCode>(5);
 [[nodiscard]] inline bool CreateCharacterResultCode_IsValid(int value) {
-  return 0 <= value && value <= 4;
+  return 0 <= value && value <= 5;
 }
-inline constexpr int CreateCharacterResultCode_ARRAYSIZE = 4 + 1;
+inline constexpr int CreateCharacterResultCode_ARRAYSIZE = 5 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 CreateCharacterResultCode_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(CreateCharacterResultCode) {
@@ -1102,7 +1103,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& CreateCharacterResultCode_Name(CreateCharacterResultCode value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<CreateCharacterResultCode_descriptor, 0, 4>(
+  return ::google::protobuf::internal::NameOfDenseEnum<CreateCharacterResultCode_descriptor, 0, 5>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool CreateCharacterResultCode_Parse(
@@ -8854,6 +8855,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED LoginResult final : public ::google
   // accessors -------------------------------------------------------
   enum : int {
     kResultFieldNumber = 1,
+    kDemoAvailableFieldNumber = 4,
   };
   // .portfolio.mmo.LoginResultCode result = 1;
   void clear_result() ;
@@ -8865,11 +8867,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED LoginResult final : public ::google
   void _internal_set_result(::portfolio::mmo::LoginResultCode value);
 
   public:
+  // bool demo_available = 4;
+  void clear_demo_available() ;
+  [[nodiscard]] bool demo_available() const;
+  void set_demo_available(bool value);
+
+  private:
+  bool _internal_demo_available() const;
+  void _internal_set_demo_available(bool value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.LoginResult)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<0, 1,
+      ::google::protobuf::internal::TcParseTable<1, 2,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -8899,6 +8911,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED LoginResult final : public ::google
     ::google::protobuf::internal::HasBits<1> _has_bits_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     int result_;
+    bool demo_available_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -14291,6 +14304,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED CreateCharacter final : public ::go
   enum : int {
     kNameFieldNumber = 1,
     kCharacterClassFieldNumber = 2,
+    kDemoFieldNumber = 3,
   };
   // string name = 1;
   void clear_name() ;
@@ -14317,11 +14331,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED CreateCharacter final : public ::go
   void _internal_set_character_class(::portfolio::mmo::CharacterClass value);
 
   public:
+  // bool demo = 3;
+  void clear_demo() ;
+  [[nodiscard]] bool demo() const;
+  void set_demo(bool value);
+
+  private:
+  bool _internal_demo() const;
+  void _internal_set_demo(bool value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.CreateCharacter)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<1, 2,
+      ::google::protobuf::internal::TcParseTable<2, 3,
                           0, 42,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -14352,6 +14376,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED CreateCharacter final : public ::go
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::google::protobuf::internal::ArenaStringPtr name_;
     int character_class_;
+    bool demo_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -29073,6 +29098,30 @@ inline void LoginResult::_internal_set_result(::portfolio::mmo::LoginResultCode 
   _impl_.result_ = value;
 }
 
+// bool demo_available = 4;
+inline void LoginResult::clear_demo_available() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_available_ = false;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline bool LoginResult::demo_available() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.LoginResult.demo_available)
+  return _internal_demo_available();
+}
+inline void LoginResult::set_demo_available(bool value) {
+  _internal_set_demo_available(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.LoginResult.demo_available)
+}
+inline bool LoginResult::_internal_demo_available() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.demo_available_;
+}
+inline void LoginResult::_internal_set_demo_available(bool value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_available_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // Kicked
@@ -29486,6 +29535,30 @@ inline ::portfolio::mmo::CharacterClass CreateCharacter::_internal_character_cla
 inline void CreateCharacter::_internal_set_character_class(::portfolio::mmo::CharacterClass value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.character_class_ = value;
+}
+
+// bool demo = 3;
+inline void CreateCharacter::clear_demo() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_ = false;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000004U);
+}
+inline bool CreateCharacter::demo() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.CreateCharacter.demo)
+  return _internal_demo();
+}
+inline void CreateCharacter::set_demo(bool value) {
+  _internal_set_demo(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.CreateCharacter.demo)
+}
+inline bool CreateCharacter::_internal_demo() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.demo_;
+}
+inline void CreateCharacter::_internal_set_demo(bool value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_ = value;
 }
 
 // -------------------------------------------------------------------

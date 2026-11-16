@@ -47,9 +47,9 @@ namespace PortfolioMmo.Server
         private readonly DevSystem? _dev;
 
         /// <summary>
-        /// 빈 월드를 만든다. dev면 개발 명령(DevCommand)을 실행한다(서버의 --dev).
+        /// 빈 월드를 만든다. dev면 개발 명령(DevCommand)을 실행하고(서버의 --dev), demo면 체험 캐릭터를 만든다(--demo. 94).
         /// </summary>
-        public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store, GameData data, bool dev = false)
+        public World(int maxPlayers, int spawnHalfExtent, Random random, CharacterStore store, GameData data, bool dev = false, bool demo = false)
         {
             _queue = new SaveQueue(store);
             _save = new SaveSystem(_queue, _entities);
@@ -57,7 +57,7 @@ namespace PortfolioMmo.Server
             var stats = new StatSystem(data, random);
             _party = new PartySystem(data, _entities, _scheduler);
             _pk = new PkSystem(data, field, _scheduler);
-            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, _queue, data, field, _entities, _grid, _save, stats, _pk, () => Tick);
+            _login = new LoginSystem(maxPlayers, spawnHalfExtent, random, _queue, data, field, _entities, _grid, _save, stats, _pk, () => Tick, demo);
             _vitals = new VitalsSystem(_entities, data);
             _ai = new AiSystem(_entities, _grid, field, _scheduler, data, random, _party);
             _events = new TickEvents(_grid);

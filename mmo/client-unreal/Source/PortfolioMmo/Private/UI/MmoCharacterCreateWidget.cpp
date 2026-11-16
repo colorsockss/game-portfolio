@@ -17,6 +17,11 @@ void UMmoCharacterCreateWidget::NativeOnInitialized()
 	MageButton->OnClicked.AddDynamic(this, &UMmoCharacterCreateWidget::HandleMageClicked);
 	CreateButton->OnClicked.AddDynamic(this, &UMmoCharacterCreateWidget::HandleCreateClicked);
 	CancelButton->OnClicked.AddDynamic(this, &UMmoCharacterCreateWidget::HandleCancelClicked);
+	DemoButton->OnClickedNative.AddWeakLambda(this, [this]
+	{
+		bDemoSelected = !bDemoSelected;
+		DemoButton->SetSelected(bDemoSelected);
+	});
 	Session().OnPacket.AddUObject(this, &UMmoCharacterCreateWidget::HandlePacket);
 }
 
@@ -29,6 +34,10 @@ void UMmoCharacterCreateWidget::NativeConstruct()
 	StatusText->SetText(FText::GetEmpty());
 	CreateButton->SetWaiting(false);
 	SelectClass(false);
+	// 체험 캐릭터(94)는 서버가 만들 수 있다고 알렸을 때만 고를 수 있다.
+	bDemoSelected = false;
+	DemoButton->SetSelected(false);
+	DemoButton->SetVisibility(Session().IsDemoAvailable() ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	NameBox->SetKeyboardFocus();
 }
 
@@ -48,7 +57,8 @@ void UMmoCharacterCreateWidget::HandleCreateClicked()
 	CreateButton->SetWaiting(true);
 	StatusText->SetText(MmoText::Get(this, TEXT("create.creating")));
 	Session().CreateCharacter(
-		NameBox->GetText().ToString().TrimStartAndEnd(), bMageSelected ? portfolio::mmo::CHARACTER_CLASS_MAGE : portfolio::mmo::CHARACTER_CLASS_KNIGHT);
+		NameBox->GetText().ToString().TrimStartAndEnd(), bMageSelected ? portfolio::mmo::CHARACTER_CLASS_MAGE : portfolio::mmo::CHARACTER_CLASS_KNIGHT,
+		bDemoSelected && Session().IsDemoAvailable());
 }
 
 void UMmoCharacterCreateWidget::HandleCancelClicked()
@@ -77,6 +87,9 @@ void UMmoCharacterCreateWidget::HandlePacket(const portfolio::mmo::Packet& Packe
 		break;
 	case portfolio::mmo::CREATE_CHARACTER_RESULT_CODE_TOO_MANY:
 		StatusText->SetText(MmoText::Get(this, TEXT("create.tooMany")));
+		break;
+	case portfolio::mmo::CREATE_CHARACTER_RESULT_CODE_DEMO_UNAVAILABLE:
+		StatusText->SetText(MmoText::Get(this, TEXT("create.demoUnavailable")));
 		break;
 	default:
 		StatusText->SetText(MmoText::Get(this, TEXT("create.failed")));

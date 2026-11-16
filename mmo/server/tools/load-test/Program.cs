@@ -28,7 +28,8 @@ namespace PortfolioMmo.LoadTest
         /// <summary>
         /// 인자: --host(기본 127.0.0.1), --port(기본 7777), --bots(기본 1000), --seconds(측정 시간, 기본 30),
         /// --half-extent(봇이 걷는 정사각형의 반 너비, m, 기본 200), --data(Login에 실을 데이터 해시와 맵의 폴더, 기본 실행 파일 옆의 data/),
-        /// --hunt(사냥), --gather x,z(모일 점, m), --gather-radius(모이는 반지름, m, 기본 15), --prefix(로그인 ID의 앞, 기본 bot. 같은 서버에 두 무리를 붙일 때).
+        /// --hunt(사냥), --gather x,z(모일 점, m), --gather-radius(모이는 반지름, m, 기본 15), --prefix(로그인 ID의 앞, 기본 bot. 같은 서버에 두 무리를 붙일 때),
+        /// --demo-bots(앞에서부터 이만큼은 체험 캐릭터(94)로 만들어 기사와 마법사를 번갈아 사냥터 2와 3에서 사냥함. --demo 서버, 기본 0).
         /// --seconds 0이면 끝없이 돌고 끊기면 다시 붙는다(Live의 봇).
         /// 서버와 같은 생성물(mmo/shared/data/files/)을 써야 로그인이 된다.
         /// </summary>
@@ -42,6 +43,7 @@ namespace PortfolioMmo.LoadTest
             GameData data = GameData.Load(Option(args, "--data", GameData.DefaultFolder));
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
             string prefix = Option(args, "--prefix", "bot");
+            int demoBots = int.Parse(Option(args, "--demo-bots", "0"));
             var behavior = new Behavior(
                 Array.IndexOf(args, "--hunt") >= 0,
                 Point(Option(args, "--gather", string.Empty)),
@@ -50,7 +52,7 @@ namespace PortfolioMmo.LoadTest
             var bots = new List<Bot>();
             for (int index = 0; index < botCount; index++)
             {
-                bots.Add(await Bot.ConnectAsync(host, port, $"{prefix}_{index:D4}", data.Hash));
+                bots.Add(await Bot.ConnectAsync(host, port, $"{prefix}_{index:D4}", data.Hash, index < demoBots ? index : -1));
             }
 
             Console.WriteLine($"Connected {bots.Count} bots");
@@ -73,7 +75,7 @@ namespace PortfolioMmo.LoadTest
                         bots[index].Dispose();
                         try
                         {
-                            bots[index] = await Bot.ConnectAsync(host, port, $"{prefix}_{index:D4}", data.Hash);
+                            bots[index] = await Bot.ConnectAsync(host, port, $"{prefix}_{index:D4}", data.Hash, index < demoBots ? index : -1);
                         }
                         catch (SocketException)
                         {
@@ -150,6 +152,43 @@ namespace PortfolioMmo.LoadTest
         private const double StrikeRange = 1.5 * Units.PerMeter;
         private const uint SkillId = 101;
         private const long SkillTicks = 4 * Units.TicksPerSecond + 2;
+
+        /// <summary>
+        /// 체험 캐릭터의 마법사 봇(94): 첫째 스킬(직선 발사체, 쿨다운 3초), 치는 거리, 소환(95. 시전 2초)과 그동안 서 있는 틱, 소환을 다시 보는 간격.
+        /// </summary>
+        private const uint MageSkillId = 201;
+        private const long MageSkillTicks = 3 * Units.TicksPerSecond + 2;
+        private const double MageStrikeRange = 8 * Units.PerMeter;
+        private const uint SummonSkillId = 206;
+        private const long SummonCastTicks = 3 * Units.TicksPerSecond;
+        private const long SummonRetryTicks = 10 * Units.TicksPerSecond;
+
+        /// <summary>
+        /// 파티(94): 받은 초대를 수락하고 이만큼(5분) 초대한 플레이어를 따라 걸은 뒤 떠난다. 따라 걷는 거리는 10 m 안이다.
+        /// </summary>
+        private const long PartyTicks = 5 * 60 * Units.TicksPerSecond;
+        private const double FollowRange = 10 * Units.PerMeter;
+
+        /// <summary>
+        /// 체험 캐릭터의 차례(0부터. 짝수는 기사로 사냥터 2, 홀수는 마법사로 사냥터 3). -1이면 보통의 기사 봇이다.
+        /// </summary>
+        private int _demo = -1;
+        private bool IsMage => _demo >= 0 && (_demo % 2) == 1;
+
+        /// <summary>
+        /// 내 소환수의 번호(0이면 없음), 소환을 시전하느라 서 있는 틱, 다음에 소환을 볼 틱.
+        /// </summary>
+        private uint _summonId;
+        private long _castUntil;
+        private long _nextSummonTick;
+
+        /// <summary>
+        /// 파티: 초대한 플레이어의 번호(0이면 파티가 아님), 그 자리, 떠나는 틱, 이번 틱에 보낼 수락.
+        /// </summary>
+        private uint _leader;
+        private (int X, int Z)? _leaderAt;
+        private long _leaveTick;
+        private bool _accept;
         private const long ReviveTicks = 2 * Units.TicksPerSecond;
 
         /// <summary>
@@ -235,6 +274,11 @@ namespace PortfolioMmo.LoadTest
         private int _deaths;
 
         /// <summary>
+        /// 마지막으로 돈 틱(파티의 떠나는 틱을 받은 쪽에서 셈).
+        /// </summary>
+        private long _lastTick;
+
+        /// <summary>
         /// 연결된 봇을 만든다.
         /// </summary>
         private Bot(TcpClient client)
@@ -268,11 +312,11 @@ namespace PortfolioMmo.LoadTest
         /// <summary>
         /// 연결하고 로그인을 보낸다. 캐릭터 목록이 오면 첫 캐릭터로(없으면 만들어) 들어간다.
         /// </summary>
-        public static async Task<Bot> ConnectAsync(string host, int port, string loginId, ulong dataHash)
+        public static async Task<Bot> ConnectAsync(string host, int port, string loginId, ulong dataHash, int demo = -1)
         {
             var client = new TcpClient { NoDelay = true };
             await client.ConnectAsync(host, port);
-            var bot = new Bot(client) { _characterName = loginId.Replace("_", string.Empty) };
+            var bot = new Bot(client) { _characterName = loginId.Replace("_", string.Empty), _demo = demo };
             new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = loginId, DataHash = dataHash } }.WriteDelimitedTo(bot._stream);
             _ = bot.ReceiveAsync();
             return bot;
@@ -289,6 +333,7 @@ namespace PortfolioMmo.LoadTest
             var requests = new List<Packet>();
             lock (_gate)
             {
+                _lastTick = tick;
                 if (!_ready || !IsAlive)
                 {
                     return;
@@ -300,27 +345,48 @@ namespace PortfolioMmo.LoadTest
                     requests.Add(new Packet { Ping = new Ping() });
                 }
 
-                if (behavior.Hunt && Hunt(tick, requests))
+                // 파티(94): 수락하고, 떠날 때가 되면 떠난다. 파티인 동안은 초대한 플레이어에게서 10 m 넘게 떨어지면 그쪽으로 걷는다.
+                if (_accept)
+                {
+                    requests.Add(new Packet { PartyAnswer = new PartyAnswer { Accept = true } });
+                    _accept = false;
+                }
+
+                if ((_leader != 0) && (tick >= _leaveTick))
+                {
+                    requests.Add(new Packet { PartyLeave = new PartyLeave() });
+                    _leader = 0;
+                    _leaderAt = null;
+                }
+
+                bool following = (_leaderAt is (int leaderX, int leaderZ)) && (Math.Pow(leaderX - _x, 2) + Math.Pow(leaderZ - _z, 2) > FollowRange * FollowRange);
+                if (!following && behavior.Hunt && Hunt(tick, requests))
                 {
                     Send(requests);
                     return;
                 }
 
                 _heading += (random.NextDouble() - 0.5) * 0.4;
-                if (_target != 0)
+                Behavior here = _demo >= 0 ? behavior with { Gather = (_demo % 2) == 0 ? (-100.0 * Units.PerMeter, 0.0) : (0.0, 190.0 * Units.PerMeter), GatherRadius = 40 * Units.PerMeter } : behavior;
+                if (following && _leaderAt is (int towardX, int towardZ))
+                {
+                    _target = 0;
+                    _heading = Math.Atan2(towardZ - _z, towardX - _x);
+                }
+                else if (_target != 0)
                 {
                     // 대상 쪽으로 걷는다(막히면 아래에서 돌아섬).
                     (int X, int Z, bool Dead) goal = _monsters[_target];
                     _heading = Math.Atan2(goal.Z - _z, goal.X - _x);
                 }
-                else if (behavior.Gather is (double gatherX, double gatherZ) && (Math.Pow(gatherX - _x, 2) + Math.Pow(gatherZ - _z, 2) > behavior.GatherRadius * behavior.GatherRadius))
+                else if (here.Gather is (double gatherX, double gatherZ) && (Math.Pow(gatherX - _x, 2) + Math.Pow(gatherZ - _z, 2) > here.GatherRadius * here.GatherRadius))
                 {
                     _heading = Math.Atan2(gatherZ - _z, gatherX - _x);
                 }
 
                 double x = _x + (Math.Cos(_heading) * Stride);
                 double z = _z + (Math.Sin(_heading) * Stride);
-                if (((behavior.Gather == null) && ((Math.Abs(x) > halfExtent) || (Math.Abs(z) > halfExtent)))
+                if (((here.Gather == null) && ((Math.Abs(x) > halfExtent) || (Math.Abs(z) > halfExtent)))
                     || !field.CanWalkLine((int)Math.Round(_x), (int)Math.Round(_z), (int)Math.Round(x), (int)Math.Round(z), Walker.Player))
                 {
                     // 막힌 대상은 10초 동안 고르지 않고 돌아선다.
@@ -364,6 +430,20 @@ namespace PortfolioMmo.LoadTest
                 return true;
             }
 
+            // 마법사 봇(94)은 자기 소환수가 없으면 서서 소환한다(95. 시전하는 동안 걷지 않음).
+            if (tick < _castUntil)
+            {
+                return true;
+            }
+
+            if (IsMage && (_summonId == 0) && (tick >= _nextSummonTick))
+            {
+                requests.Add(new Packet { UseSkill = new UseSkill { SkillId = SummonSkillId } });
+                _castUntil = tick + SummonCastTicks;
+                _nextSummonTick = tick + SummonRetryTicks;
+                return true;
+            }
+
             if ((_target == 0) || !_monsters.TryGetValue(_target, out (int X, int Z, bool Dead) target) || target.Dead)
             {
                 _target = 0;
@@ -387,7 +467,8 @@ namespace PortfolioMmo.LoadTest
                 target = _monsters[_target];
             }
 
-            if (Math.Pow(target.X - _x, 2) + Math.Pow(target.Z - _z, 2) > StrikeRange * StrikeRange)
+            double reach = IsMage ? MageStrikeRange : StrikeRange;
+            if (Math.Pow(target.X - _x, 2) + Math.Pow(target.Z - _z, 2) > reach * reach)
             {
                 return false;
             }
@@ -400,8 +481,8 @@ namespace PortfolioMmo.LoadTest
 
             if (tick >= _nextSkillTick)
             {
-                requests.Add(new Packet { UseSkill = new UseSkill { SkillId = SkillId, TargetId = _target } });
-                _nextSkillTick = tick + SkillTicks;
+                requests.Add(new Packet { UseSkill = new UseSkill { SkillId = IsMage ? MageSkillId : SkillId, TargetId = _target } });
+                _nextSkillTick = tick + (IsMage ? MageSkillTicks : SkillTicks);
             }
 
             return true;
@@ -471,7 +552,7 @@ namespace PortfolioMmo.LoadTest
                     case Packet.BodyOneofCase.CharacterList when packet.CharacterList.Characters.Count == 0:
                         new Packet
                         {
-                            CreateCharacter = new CreateCharacter { Name = _characterName, CharacterClass = CharacterClass.Knight },
+                            CreateCharacter = new CreateCharacter { Name = _characterName, CharacterClass = IsMage ? CharacterClass.Mage : CharacterClass.Knight, Demo = _demo >= 0 },
                         }.WriteDelimitedTo(_stream);
                         break;
                     case Packet.BodyOneofCase.CharacterList:
@@ -498,6 +579,14 @@ namespace PortfolioMmo.LoadTest
                             {
                                 _monsters[entity.Id] = (entity.X, entity.Z, entity.Dead);
                             }
+                            else if ((entity.Kind == EntityKind.Summon) && (entity.SummonOwnerId == _selfId))
+                            {
+                                _summonId = entity.Id;
+                            }
+                            else if (entity.Id == _leader)
+                            {
+                                _leaderAt = (entity.X, entity.Z);
+                            }
                         }
 
                         break;
@@ -508,6 +597,10 @@ namespace PortfolioMmo.LoadTest
                             {
                                 _monsters[moved.Id] = (moved.X, moved.Z, monster.Dead);
                             }
+                            else if (moved.Id == _leader)
+                            {
+                                _leaderAt = (moved.X, moved.Z);
+                            }
                         }
 
                         break;
@@ -515,6 +608,7 @@ namespace PortfolioMmo.LoadTest
                         foreach (uint id in packet.EntitiesLeave.Ids)
                         {
                             _monsters.Remove(id);
+                            _summonId = id == _summonId ? 0 : _summonId;
                         }
 
                         break;
@@ -539,6 +633,23 @@ namespace PortfolioMmo.LoadTest
                         // 칠 수 없는 대상(안전 지대, 복귀 중)은 버리고 다른 대상을 고른다.
                         _attacking = false;
                         _target = 0;
+                        break;
+                    case Packet.BodyOneofCase.PartyInvited when _leader == 0:
+                        // 초대를 수락하고 5분 동안 초대한 플레이어를 따라 걸으며 그가 치는 몬스터를 함께 친다(플레이어는 치지 않음).
+                        _accept = true;
+                        _leader = packet.PartyInvited.InviterId;
+                        _leaveTick = long.MaxValue;
+                        break;
+                    case Packet.BodyOneofCase.PartyState when (_leader != 0) && (_leaveTick == long.MaxValue) && packet.PartyState.Members.Count > 0:
+                        _leaveTick = _lastTick + PartyTicks;
+                        break;
+                    case Packet.BodyOneofCase.AttackSwing when (_leader != 0) && (packet.AttackSwing.AttackerId == _leader) && _monsters.ContainsKey(packet.AttackSwing.TargetId):
+                        if (_target != packet.AttackSwing.TargetId)
+                        {
+                            _target = packet.AttackSwing.TargetId;
+                            _attacking = false;
+                        }
+
                         break;
                     case Packet.BodyOneofCase.PositionReset:
                         _x = packet.PositionReset.X;

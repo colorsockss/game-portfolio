@@ -8,6 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 #include "World/DevCommand.h"
+#include "World/GuideSeen.h"
 
 #include "UI/MmoText.h"
 #include "Blueprint/UserWidget.h"
@@ -328,6 +329,36 @@ void UMmoUiManager::LogOut()
 	});
 }
 
+void UMmoUiManager::ShowGuide()
+{
+	FText Text;
+	if (UMmoButtonWidget::IsTouchDevice())
+	{
+		Text = MmoText::Get(GetLocalPlayer(), TEXT("guide.mobile"));
+	}
+	else
+	{
+		// PC는 키 표(89)에서 채운다. 이동과 퀵슬롯은 여러 키라 한데 적는다.
+		const FString Move = MmoKeys::Hint(EMmoAction::MoveForward).ToString() + MmoKeys::Hint(EMmoAction::MoveLeft).ToString() + MmoKeys::Hint(EMmoAction::MoveBack).ToString() + MmoKeys::Hint(EMmoAction::MoveRight).ToString();
+		Text = MmoText::Format(GetLocalPlayer(), TEXT("guide.pc"), {
+			Move, MmoKeys::Hint(EMmoAction::Click).ToString(), MmoKeys::Hint(EMmoAction::Attack).ToString(), MmoKeys::Hint(EMmoAction::TargetNearest).ToString(), MmoKeys::Hint(EMmoAction::Interact).ToString(),
+			MmoKeys::Hint(EMmoAction::ForceAttack).ToString(), TEXT("1–8"), MmoKeys::Hint(EMmoAction::AutoHunt).ToString(), MmoKeys::Hint(EMmoAction::Bag).ToString(), MmoKeys::Hint(EMmoAction::Character).ToString(),
+			MmoKeys::Hint(EMmoAction::Skills).ToString(), MmoKeys::Hint(EMmoAction::Map).ToString(), MmoKeys::Hint(EMmoAction::Chat).ToString(), MmoKeys::Hint(EMmoAction::Back).ToString() });
+	}
+	const FString Server = Session().ServerAddress();
+	const uint64 CharacterId = Session().EnteredCharacterId();
+	Confirm(FText::FromString(MmoText::Get(GetLocalPlayer(), TEXT("guide.title")).ToString() + TEXT("\n\n") + Text.ToString()), [Server, CharacterId]
+	{
+		UMmoGameUserSettings& Settings = UMmoGameUserSettings::Get();
+		const FString Key = UTF8_TO_TCHAR(MmoWorld::FGuideSeen::Key(TCHAR_TO_UTF8(*Server), CharacterId).c_str());
+		if (!Settings.GuideSeen.Contains(Key))
+		{
+			Settings.GuideSeen.Add(Key);
+			Settings.SaveSettings();
+		}
+	}, nullptr, TEXT("common.close"), nullptr);
+}
+
 void UMmoUiManager::ConfirmCharacterSelect()
 {
 	Confirm(MmoText::Get(GetLocalPlayer(), TEXT("settings.characterSelectQuestion")), [this] { ReturnToCharacterSelect(); });
@@ -450,6 +481,17 @@ void UMmoUiManager::HandlePacket(const portfolio::mmo::Packet& Packet)
 		// 기기에 남긴 설정(소리의 두 크기, 이펙트 상한 등)을 이 월드의 연출에 적용한다(77).
 		UMmoGameUserSettings::Get().ApplyMmo(GetLocalPlayer()->GetWorld());
 		OpenFromCommandLine();
+		// 처음 들어온 캐릭터에는 조작 안내를 한 번 띄운다(94).
+		const TArray<FString>& Seen = UMmoGameUserSettings::Get().GuideSeen;
+		std::vector<std::string> Keys;
+		for (const FString& Key : Seen)
+		{
+			Keys.push_back(TCHAR_TO_UTF8(*Key));
+		}
+		if (!MmoWorld::FGuideSeen(Keys).Has(TCHAR_TO_UTF8(*Session().ServerAddress()), Session().EnteredCharacterId()))
+		{
+			ShowGuide();
+		}
 #if !UE_BUILD_SHIPPING
 		// 개발용: -MmoDevCommand="level 5"면 처음 월드에 들어간 뒤 한 번 그 개발 명령을 보낸다(콘솔을 열지 않고 확인과 시연을 맞춤. --dev 서버만 실행).
 		// ;로 나눈 여러 명령은 차례로 보낸다("level 10;item 2202").

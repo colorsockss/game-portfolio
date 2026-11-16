@@ -58,6 +58,12 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> CreateButton;
 
+	/** 체험 캐릭터(94. 레벨 20)를 고른다. 서버가 만들 수 있다고 알렸을 때만 보인다. */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> DemoButton;
+
+	bool bDemoSelected = false;
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> CancelButton;
 

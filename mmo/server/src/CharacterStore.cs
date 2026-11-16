@@ -169,12 +169,12 @@ namespace PortfolioMmo.Server
             _loadQuickslots = Command("SELECT slot, kind, id FROM quickslots WHERE owner = $id ORDER BY slot", ("$id", SqliteType.Integer));
             _count = Command("SELECT COUNT(*) FROM characters WHERE login_id = $loginId", ("$loginId", SqliteType.Text));
             _insert = Command(
-                @"INSERT INTO characters (login_id, name, class, x, z, yaw, level, exp, hp, mp, gold, alignment)
-                  VALUES ($loginId, $name, $class, $x, $z, $yaw, $level, $exp, $hp, $mp, $gold, $alignment)
+                @"INSERT INTO characters (login_id, name, class, x, z, yaw, level, exp, hp, mp, gold, alignment, pet, pet_out)
+                  VALUES ($loginId, $name, $class, $x, $z, $yaw, $level, $exp, $hp, $mp, $gold, $alignment, $pet, $petOut)
                   ON CONFLICT (name) DO NOTHING RETURNING id",
                 ("$loginId", SqliteType.Text), ("$name", SqliteType.Text), ("$class", SqliteType.Integer), ("$x", SqliteType.Integer), ("$z", SqliteType.Integer),
                 ("$yaw", SqliteType.Integer), ("$level", SqliteType.Integer), ("$exp", SqliteType.Integer), ("$hp", SqliteType.Integer), ("$mp", SqliteType.Integer),
-                ("$gold", SqliteType.Integer), ("$alignment", SqliteType.Integer));
+                ("$gold", SqliteType.Integer), ("$alignment", SqliteType.Integer), ("$pet", SqliteType.Integer), ("$petOut", SqliteType.Integer));
             _update = Command(
                 @"UPDATE characters SET x = $x, z = $z, yaw = $yaw, level = $level, exp = $exp, hp = $hp, mp = $mp, gold = $gold, alignment = $alignment,
                   pet = $pet, pet_out = $petOut WHERE id = $id",
@@ -371,11 +371,8 @@ namespace PortfolioMmo.Server
             command.Parameters["$mp"].Value = state.Mp;
             command.Parameters["$gold"].Value = (long)state.Gold;
             command.Parameters["$alignment"].Value = state.Alignment;
-            if (command.Parameters.Contains("$pet"))
-            {
-                command.Parameters["$pet"].Value = state.Pet;
-                command.Parameters["$petOut"].Value = state.PetOut ? 1 : 0;
-            }
+            command.Parameters["$pet"].Value = state.Pet;
+            command.Parameters["$petOut"].Value = state.PetOut ? 1 : 0;
         }
 
         private void InsertChildren(SqliteTransaction transaction, CharacterSnapshot state)

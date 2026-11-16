@@ -52,13 +52,21 @@ namespace PortfolioMmo.Server
         /// </summary>
         public static List<SavedQuickslot> StartQuickslots(GameData data, ClassesRow row)
         {
+            return StartQuickslots(data, row.FirstSkill != 0 ? new[] { row.FirstSkill } : Array.Empty<uint>(), row.StartItems);
+        }
+
+        /// <summary>
+        /// 배운 스킬들과 아이템들로 채운 퀵슬롯: 스킬을 차례로, 이어서 물약을 빈 자리에 올린다(36. 체험 캐릭터 94도 씀).
+        /// </summary>
+        public static List<SavedQuickslot> StartQuickslots(GameData data, IEnumerable<uint> skills, IEnumerable<uint> items)
+        {
             var slots = new List<SavedQuickslot>();
-            if (row.FirstSkill != 0)
+            foreach (uint skill in skills.Take((int)Constant.QuickslotCount))
             {
-                slots.Add(new SavedQuickslot(0, QuickslotKind.Skill, row.FirstSkill));
+                slots.Add(new SavedQuickslot((uint)slots.Count, QuickslotKind.Skill, skill));
             }
 
-            foreach (uint itemId in row.StartItems.Where(itemId => data.Item(itemId) is { Use: ItemUse.HealHp or ItemUse.HealMp }).Distinct())
+            foreach (uint itemId in items.Where(itemId => data.Item(itemId) is { Use: ItemUse.HealHp or ItemUse.HealMp }).Distinct())
             {
                 if (slots.Count < (int)Constant.QuickslotCount)
                 {

@@ -230,6 +230,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
   enum : int {
     kStartItemsFieldNumber = 7,
     kStartCountsFieldNumber = 8,
+    kDemoEquipmentFieldNumber = 11,
+    kDemoItemsFieldNumber = 13,
+    kDemoCountsFieldNumber = 14,
     kAttackRangeFieldNumber = 2,
     kIdFieldNumber = 1,
     kAttackIntervalMsFieldNumber = 3,
@@ -237,6 +240,10 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
     kHitDelayMsFieldNumber = 4,
     kFirstSkillFieldNumber = 6,
     kStartWeaponFieldNumber = 9,
+    kDemoLevelFieldNumber = 10,
+    kDemoEnchantFieldNumber = 12,
+    kDemoGoldFieldNumber = 15,
+    kDemoPetFieldNumber = 16,
   };
   // repeated uint32 start_items = 7;
   [[nodiscard]] int start_items_size() const;
@@ -274,6 +281,63 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
   private:
   const ::google::protobuf::RepeatedField<::uint32_t>& _internal_start_counts() const;
   ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL _internal_mutable_start_counts();
+
+  public:
+  // repeated uint32 demo_equipment = 11;
+  [[nodiscard]] int demo_equipment_size() const;
+  private:
+  int _internal_demo_equipment_size() const;
+
+  public:
+  void clear_demo_equipment() ;
+  [[nodiscard]] ::uint32_t demo_equipment(int index) const;
+  void set_demo_equipment(int index, ::uint32_t value);
+  void add_demo_equipment(::uint32_t value);
+  [[nodiscard]] const ::google::protobuf::RepeatedField<::uint32_t>& demo_equipment()
+      const;
+  ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL mutable_demo_equipment();
+
+  private:
+  const ::google::protobuf::RepeatedField<::uint32_t>& _internal_demo_equipment() const;
+  ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL _internal_mutable_demo_equipment();
+
+  public:
+  // repeated uint32 demo_items = 13;
+  [[nodiscard]] int demo_items_size() const;
+  private:
+  int _internal_demo_items_size() const;
+
+  public:
+  void clear_demo_items() ;
+  [[nodiscard]] ::uint32_t demo_items(int index) const;
+  void set_demo_items(int index, ::uint32_t value);
+  void add_demo_items(::uint32_t value);
+  [[nodiscard]] const ::google::protobuf::RepeatedField<::uint32_t>& demo_items()
+      const;
+  ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL mutable_demo_items();
+
+  private:
+  const ::google::protobuf::RepeatedField<::uint32_t>& _internal_demo_items() const;
+  ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL _internal_mutable_demo_items();
+
+  public:
+  // repeated uint32 demo_counts = 14;
+  [[nodiscard]] int demo_counts_size() const;
+  private:
+  int _internal_demo_counts_size() const;
+
+  public:
+  void clear_demo_counts() ;
+  [[nodiscard]] ::uint32_t demo_counts(int index) const;
+  void set_demo_counts(int index, ::uint32_t value);
+  void add_demo_counts(::uint32_t value);
+  [[nodiscard]] const ::google::protobuf::RepeatedField<::uint32_t>& demo_counts()
+      const;
+  ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL mutable_demo_counts();
+
+  private:
+  const ::google::protobuf::RepeatedField<::uint32_t>& _internal_demo_counts() const;
+  ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL _internal_mutable_demo_counts();
 
   public:
   // double attack_range = 2;
@@ -347,11 +411,51 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
   void _internal_set_start_weapon(::uint32_t value);
 
   public:
+  // uint32 demo_level = 10;
+  void clear_demo_level() ;
+  [[nodiscard]] ::uint32_t demo_level() const;
+  void set_demo_level(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_demo_level() const;
+  void _internal_set_demo_level(::uint32_t value);
+
+  public:
+  // uint32 demo_enchant = 12;
+  void clear_demo_enchant() ;
+  [[nodiscard]] ::uint32_t demo_enchant() const;
+  void set_demo_enchant(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_demo_enchant() const;
+  void _internal_set_demo_enchant(::uint32_t value);
+
+  public:
+  // uint32 demo_gold = 15;
+  void clear_demo_gold() ;
+  [[nodiscard]] ::uint32_t demo_gold() const;
+  void set_demo_gold(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_demo_gold() const;
+  void _internal_set_demo_gold(::uint32_t value);
+
+  public:
+  // uint32 demo_pet = 16;
+  void clear_demo_pet() ;
+  [[nodiscard]] ::uint32_t demo_pet() const;
+  void set_demo_pet(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_demo_pet() const;
+  void _internal_set_demo_pet(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.ClassesRow)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<4, 9,
+      ::google::protobuf::internal::TcParseTable<4, 16,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -382,6 +486,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::google::protobuf::RepeatedField<::uint32_t> start_items_;
     ::google::protobuf::RepeatedField<::uint32_t> start_counts_;
+    ::google::protobuf::RepeatedField<::uint32_t> demo_equipment_;
+    ::google::protobuf::RepeatedField<::uint32_t> demo_items_;
+    ::google::protobuf::RepeatedField<::uint32_t> demo_counts_;
     double attack_range_;
     ::uint32_t id_;
     ::uint32_t attack_interval_ms_;
@@ -389,8 +496,15 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED ClassesRow final : public ::google:
     ::uint32_t hit_delay_ms_;
     ::uint32_t first_skill_;
     ::uint32_t start_weapon_;
+    ::uint32_t demo_level_;
+    ::uint32_t demo_enchant_;
+    ::uint32_t demo_gold_;
+    ::uint32_t demo_pet_;
     ::google::protobuf::internal::CachedSize _start_items_cached_byte_size_;
     ::google::protobuf::internal::CachedSize _start_counts_cached_byte_size_;
+    ::google::protobuf::internal::CachedSize _demo_equipment_cached_byte_size_;
+    ::google::protobuf::internal::CachedSize _demo_items_cached_byte_size_;
+    ::google::protobuf::internal::CachedSize _demo_counts_cached_byte_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -628,7 +742,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Classes final : public ::google::pr
 inline void ClassesRow::clear_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.id_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x00000008U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00000040U);
 }
 inline ::uint32_t ClassesRow::id() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.id)
@@ -636,7 +750,7 @@ inline ::uint32_t ClassesRow::id() const {
 }
 inline void ClassesRow::set_id(::uint32_t value) {
   _internal_set_id(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00000008U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000040U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.id)
 }
 inline ::uint32_t ClassesRow::_internal_id() const {
@@ -652,7 +766,7 @@ inline void ClassesRow::_internal_set_id(::uint32_t value) {
 inline void ClassesRow::clear_attack_range() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.attack_range_ = 0;
-  ClearHasBit(_impl_._has_bits_[0], 0x00000004U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00000020U);
 }
 inline double ClassesRow::attack_range() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.attack_range)
@@ -660,7 +774,7 @@ inline double ClassesRow::attack_range() const {
 }
 inline void ClassesRow::set_attack_range(double value) {
   _internal_set_attack_range(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000020U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.attack_range)
 }
 inline double ClassesRow::_internal_attack_range() const {
@@ -676,7 +790,7 @@ inline void ClassesRow::_internal_set_attack_range(double value) {
 inline void ClassesRow::clear_attack_interval_ms() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.attack_interval_ms_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x00000010U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00000080U);
 }
 inline ::uint32_t ClassesRow::attack_interval_ms() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.attack_interval_ms)
@@ -684,7 +798,7 @@ inline ::uint32_t ClassesRow::attack_interval_ms() const {
 }
 inline void ClassesRow::set_attack_interval_ms(::uint32_t value) {
   _internal_set_attack_interval_ms(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00000010U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000080U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.attack_interval_ms)
 }
 inline ::uint32_t ClassesRow::_internal_attack_interval_ms() const {
@@ -700,7 +814,7 @@ inline void ClassesRow::_internal_set_attack_interval_ms(::uint32_t value) {
 inline void ClassesRow::clear_hit_delay_ms() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.hit_delay_ms_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x00000040U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00000200U);
 }
 inline ::uint32_t ClassesRow::hit_delay_ms() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.hit_delay_ms)
@@ -708,7 +822,7 @@ inline ::uint32_t ClassesRow::hit_delay_ms() const {
 }
 inline void ClassesRow::set_hit_delay_ms(::uint32_t value) {
   _internal_set_hit_delay_ms(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00000040U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000200U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.hit_delay_ms)
 }
 inline ::uint32_t ClassesRow::_internal_hit_delay_ms() const {
@@ -722,13 +836,13 @@ inline void ClassesRow::_internal_set_hit_delay_ms(::uint32_t value) {
 
 // optional double projectile_speed = 5;
 inline bool ClassesRow::has_projectile_speed() const {
-  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00000020U);
+  bool value = CheckHasBit(_impl_._has_bits_[0], 0x00000100U);
   return value;
 }
 inline void ClassesRow::clear_projectile_speed() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.projectile_speed_ = 0;
-  ClearHasBit(_impl_._has_bits_[0], 0x00000020U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00000100U);
 }
 inline double ClassesRow::projectile_speed() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.projectile_speed)
@@ -736,7 +850,7 @@ inline double ClassesRow::projectile_speed() const {
 }
 inline void ClassesRow::set_projectile_speed(double value) {
   _internal_set_projectile_speed(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00000020U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000100U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.projectile_speed)
 }
 inline double ClassesRow::_internal_projectile_speed() const {
@@ -752,7 +866,7 @@ inline void ClassesRow::_internal_set_projectile_speed(double value) {
 inline void ClassesRow::clear_first_skill() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.first_skill_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x00000080U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00000400U);
 }
 inline ::uint32_t ClassesRow::first_skill() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.first_skill)
@@ -760,7 +874,7 @@ inline ::uint32_t ClassesRow::first_skill() const {
 }
 inline void ClassesRow::set_first_skill(::uint32_t value) {
   _internal_set_first_skill(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00000080U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000400U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.first_skill)
 }
 inline ::uint32_t ClassesRow::_internal_first_skill() const {
@@ -878,7 +992,7 @@ ClassesRow::_internal_mutable_start_counts() {
 inline void ClassesRow::clear_start_weapon() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.start_weapon_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x00000100U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00000800U);
 }
 inline ::uint32_t ClassesRow::start_weapon() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.start_weapon)
@@ -886,7 +1000,7 @@ inline ::uint32_t ClassesRow::start_weapon() const {
 }
 inline void ClassesRow::set_start_weapon(::uint32_t value) {
   _internal_set_start_weapon(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00000100U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000800U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.start_weapon)
 }
 inline ::uint32_t ClassesRow::_internal_start_weapon() const {
@@ -896,6 +1010,255 @@ inline ::uint32_t ClassesRow::_internal_start_weapon() const {
 inline void ClassesRow::_internal_set_start_weapon(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.start_weapon_ = value;
+}
+
+// uint32 demo_level = 10;
+inline void ClassesRow::clear_demo_level() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_level_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00001000U);
+}
+inline ::uint32_t ClassesRow::demo_level() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.demo_level)
+  return _internal_demo_level();
+}
+inline void ClassesRow::set_demo_level(::uint32_t value) {
+  _internal_set_demo_level(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00001000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.demo_level)
+}
+inline ::uint32_t ClassesRow::_internal_demo_level() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.demo_level_;
+}
+inline void ClassesRow::_internal_set_demo_level(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_level_ = value;
+}
+
+// repeated uint32 demo_equipment = 11;
+inline int ClassesRow::_internal_demo_equipment_size() const {
+  return _internal_demo_equipment().size();
+}
+inline int ClassesRow::demo_equipment_size() const {
+  return _internal_demo_equipment_size();
+}
+inline void ClassesRow::clear_demo_equipment() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_equipment_.Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000004U);
+}
+inline ::uint32_t ClassesRow::demo_equipment(int index) const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.demo_equipment)
+  return _internal_demo_equipment().Get(index);
+}
+inline void ClassesRow::set_demo_equipment(int index, ::uint32_t value) {
+  _internal_mutable_demo_equipment()->Set(index, value);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.demo_equipment)
+}
+inline void ClassesRow::add_demo_equipment(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _internal_mutable_demo_equipment()
+      ->InternalAddWithArena<const ::google::protobuf::MessageLite*>(
+          internal_visibility(), this, value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_add:portfolio.mmo.data.ClassesRow.demo_equipment)
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>& ClassesRow::demo_equipment() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:portfolio.mmo.data.ClassesRow.demo_equipment)
+  return _internal_demo_equipment();
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL ClassesRow::mutable_demo_equipment()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000004U);
+  // @@protoc_insertion_point(field_mutable_list:portfolio.mmo.data.ClassesRow.demo_equipment)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_demo_equipment();
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>&
+ClassesRow::_internal_demo_equipment() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.demo_equipment_;
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL
+ClassesRow::_internal_mutable_demo_equipment() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.demo_equipment_;
+}
+
+// uint32 demo_enchant = 12;
+inline void ClassesRow::clear_demo_enchant() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_enchant_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00002000U);
+}
+inline ::uint32_t ClassesRow::demo_enchant() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.demo_enchant)
+  return _internal_demo_enchant();
+}
+inline void ClassesRow::set_demo_enchant(::uint32_t value) {
+  _internal_set_demo_enchant(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00002000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.demo_enchant)
+}
+inline ::uint32_t ClassesRow::_internal_demo_enchant() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.demo_enchant_;
+}
+inline void ClassesRow::_internal_set_demo_enchant(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_enchant_ = value;
+}
+
+// repeated uint32 demo_items = 13;
+inline int ClassesRow::_internal_demo_items_size() const {
+  return _internal_demo_items().size();
+}
+inline int ClassesRow::demo_items_size() const {
+  return _internal_demo_items_size();
+}
+inline void ClassesRow::clear_demo_items() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_items_.Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000008U);
+}
+inline ::uint32_t ClassesRow::demo_items(int index) const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.demo_items)
+  return _internal_demo_items().Get(index);
+}
+inline void ClassesRow::set_demo_items(int index, ::uint32_t value) {
+  _internal_mutable_demo_items()->Set(index, value);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.demo_items)
+}
+inline void ClassesRow::add_demo_items(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _internal_mutable_demo_items()
+      ->InternalAddWithArena<const ::google::protobuf::MessageLite*>(
+          internal_visibility(), this, value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000008U);
+  // @@protoc_insertion_point(field_add:portfolio.mmo.data.ClassesRow.demo_items)
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>& ClassesRow::demo_items() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:portfolio.mmo.data.ClassesRow.demo_items)
+  return _internal_demo_items();
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL ClassesRow::mutable_demo_items()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000008U);
+  // @@protoc_insertion_point(field_mutable_list:portfolio.mmo.data.ClassesRow.demo_items)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_demo_items();
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>&
+ClassesRow::_internal_demo_items() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.demo_items_;
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL
+ClassesRow::_internal_mutable_demo_items() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.demo_items_;
+}
+
+// repeated uint32 demo_counts = 14;
+inline int ClassesRow::_internal_demo_counts_size() const {
+  return _internal_demo_counts().size();
+}
+inline int ClassesRow::demo_counts_size() const {
+  return _internal_demo_counts_size();
+}
+inline void ClassesRow::clear_demo_counts() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_counts_.Clear();
+  ClearHasBit(_impl_._has_bits_[0], 0x00000010U);
+}
+inline ::uint32_t ClassesRow::demo_counts(int index) const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.demo_counts)
+  return _internal_demo_counts().Get(index);
+}
+inline void ClassesRow::set_demo_counts(int index, ::uint32_t value) {
+  _internal_mutable_demo_counts()->Set(index, value);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.demo_counts)
+}
+inline void ClassesRow::add_demo_counts(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _internal_mutable_demo_counts()
+      ->InternalAddWithArena<const ::google::protobuf::MessageLite*>(
+          internal_visibility(), this, value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000010U);
+  // @@protoc_insertion_point(field_add:portfolio.mmo.data.ClassesRow.demo_counts)
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>& ClassesRow::demo_counts() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:portfolio.mmo.data.ClassesRow.demo_counts)
+  return _internal_demo_counts();
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL ClassesRow::mutable_demo_counts()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000010U);
+  // @@protoc_insertion_point(field_mutable_list:portfolio.mmo.data.ClassesRow.demo_counts)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_demo_counts();
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>&
+ClassesRow::_internal_demo_counts() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.demo_counts_;
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* PROTOBUF_NONNULL
+ClassesRow::_internal_mutable_demo_counts() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.demo_counts_;
+}
+
+// uint32 demo_gold = 15;
+inline void ClassesRow::clear_demo_gold() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_gold_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00004000U);
+}
+inline ::uint32_t ClassesRow::demo_gold() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.demo_gold)
+  return _internal_demo_gold();
+}
+inline void ClassesRow::set_demo_gold(::uint32_t value) {
+  _internal_set_demo_gold(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00004000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.demo_gold)
+}
+inline ::uint32_t ClassesRow::_internal_demo_gold() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.demo_gold_;
+}
+inline void ClassesRow::_internal_set_demo_gold(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_gold_ = value;
+}
+
+// uint32 demo_pet = 16;
+inline void ClassesRow::clear_demo_pet() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_pet_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00008000U);
+}
+inline ::uint32_t ClassesRow::demo_pet() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.ClassesRow.demo_pet)
+  return _internal_demo_pet();
+}
+inline void ClassesRow::set_demo_pet(::uint32_t value) {
+  _internal_set_demo_pet(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00008000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.ClassesRow.demo_pet)
+}
+inline ::uint32_t ClassesRow::_internal_demo_pet() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.demo_pet_;
+}
+inline void ClassesRow::_internal_set_demo_pet(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.demo_pet_ = value;
 }
 
 // -------------------------------------------------------------------

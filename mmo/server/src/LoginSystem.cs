@@ -61,12 +61,18 @@ namespace PortfolioMmo.Server
         private readonly PkSystem _pk;
 
         /// <summary>
+        /// 체험 캐릭터를 만드는 서버다(94. --demo).
+        /// </summary>
+        private readonly bool _demo;
+
+        /// <summary>
         /// 월드에 남는 캐릭터와 넘겨받기(46). World가 만든 뒤에 잇는다.
         /// </summary>
         public LingerSystem? Lingering { get; set; }
 
-        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, SaveQueue queue, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save, StatSystem stats, PkSystem pk, System.Func<uint> tick)
+        public LoginSystem(int maxPlayers, int spawnHalfExtent, System.Random random, SaveQueue queue, GameData data, FieldMap field, EntityTable entities, Grid grid, SaveSystem save, StatSystem stats, PkSystem pk, System.Func<uint> tick, bool demo = false)
         {
+            _demo = demo;
             _pk = pk;
             ZonesRow town = data.Zones.Rows.FirstOrDefault(zone => zone.Kind == ZoneKind.Town)
                 ?? throw new System.ArgumentException("Zones needs a town row with the respawn point.", nameof(data));
@@ -126,7 +132,7 @@ namespace PortfolioMmo.Server
 
             _accounts.Add(login.LoginId, session);
             session.LoginId = login.LoginId;
-            session.Send(new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok } });
+            session.Send(new Packet { LoginResult = new LoginResult { Result = LoginResultCode.Ok, DemoAvailable = _demo } });
             SendCharacterList(session);
         }
 
@@ -144,10 +150,14 @@ namespace PortfolioMmo.Server
             {
                 result = CreateCharacterResultCode.InvalidName;
             }
+            else if (create.Demo && !_demo)
+            {
+                result = CreateCharacterResultCode.DemoUnavailable;
+            }
             else
             {
                 // 처음 들어갈 자리와 처음 상태는 만들 때 정해 한 트랜잭션에 넣는다. 결과와 바뀐 목록은 저장 스레드에서 돌아온 틱에 보낸다.
-                _queue.Enqueue(new CreateJob(session, create.Name, create.CharacterClass, StartState(create.CharacterClass)));
+                _queue.Enqueue(new CreateJob(session, create.Name, create.CharacterClass, create.Demo ? DemoState(create.CharacterClass) : StartState(create.CharacterClass)));
                 return;
             }
 
@@ -354,6 +364,28 @@ namespace PortfolioMmo.Server
             return new CharacterSnapshot(
                 0, new SavedPosition(x, z, 0), 1, 0, level.MaxHp, level.MaxMp, 0, 0, InventorySystem.StartItems(_data, row),
                 row.FirstSkill != 0 ? new[] { row.FirstSkill } : System.Array.Empty<uint>(), QuickslotSystem.StartQuickslots(_data, row));
+        }
+
+        /// <summary>
+        /// 체험 캐릭터(94)의 처음 상태: Classes의 체험용 열(레벨, 입은 장비와 강화, 아이템, 골드, 나와 있는 펫)에 직업의 스킬 모두와 그것으로 채운 퀵슬롯(36의 규칙).
+        /// 체력은 들어올 때 장비를 더한 최대 체력으로 맞춰지도록 크게 둔다.
+        /// </summary>
+        private CharacterSnapshot DemoState(CharacterClass characterClass)
+        {
+            (int x, int z) = StartPosition();
+            ClassesRow row = _data.Class(characterClass);
+            LevelsRow level = _data.Level(characterClass, row.DemoLevel);
+            var items = new List<SavedItem>();
+            for (int index = 0; index < System.Math.Min(row.DemoItems.Count, row.DemoCounts.Count); index++)
+            {
+                items.Add(new SavedItem(ItemPlace.Inventory, (uint)items.Count, row.DemoItems[index], row.DemoCounts[index], 0));
+            }
+
+            items.AddRange(row.DemoEquipment.Select(itemId => new SavedItem(ItemPlace.Equipment, (uint)_data.Item(itemId)!.Slot - 1, itemId, 1, row.DemoEnchant)));
+            uint[] skills = _data.Skills.Rows.Where(skill => skill.Class == (uint)characterClass && skill.HasClass).Select(skill => skill.Id).Order().ToArray();
+            return new CharacterSnapshot(
+                0, new SavedPosition(x, z, 0), row.DemoLevel, 0, int.MaxValue, level.MaxMp, row.DemoGold, 0, items, skills,
+                QuickslotSystem.StartQuickslots(_data, skills, row.DemoItems), row.DemoPet, row.DemoPet != 0);
         }
 
         private static Packet ListPacket(List<CharacterListEntry> characters)

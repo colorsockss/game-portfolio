@@ -65,6 +65,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> LogOutButton;
 
+	/** 조작 안내 다시 보기(94). */
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMmoButtonWidget> GuideButton;
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMmoButtonWidget> CloseButton;
 

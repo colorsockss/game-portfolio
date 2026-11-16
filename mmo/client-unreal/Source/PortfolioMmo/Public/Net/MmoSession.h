@@ -46,10 +46,17 @@ public:
 	bool IsLoggingOut() const { return bLoggingOut; }
 
 	/** 캐릭터를 만든다(캐릭터 선택 중). 결과는 OnPacket의 CreateCharacterResult와 바뀐 CharacterList로 온다. */
-	void CreateCharacter(const FString& Name, portfolio::mmo::CharacterClass Class);
+	void CreateCharacter(const FString& Name, portfolio::mmo::CharacterClass Class, bool bDemo = false);
 
 	/** 이 캐릭터로 월드에 들어간다(캐릭터 선택 중). 결과는 OnPacket의 EnterWorldResult로 온다. */
 	void EnterWorld(uint64 CharacterId);
+
+	/** 로그인한 서버가 체험 캐릭터(94)를 만들 수 있다(LoginResult). */
+	bool IsDemoAvailable() const { return bDemoAvailable; }
+
+	/** 마지막으로 들어간 캐릭터 번호와 서버 주소(조작 안내를 본 캐릭터의 키. 94). */
+	uint64 EnteredCharacterId() const { return LastCharacterId; }
+	FString ServerAddress() const { return FString::Printf(TEXT("%s:%d"), *Host, Port); }
 
 	/** 캐릭터 선택으로 돌아간다. 월드를 바로 비우고(액터가 지워짐), 서버는 CharacterList로 답한다. */
 	void LeaveWorld();
@@ -123,6 +130,8 @@ private:
 	/** 연결할 서버. UMmoSettings의 값이고, 명령줄의 -MmoServer=호스트:포트가 이긴다. */
 	FString Host;
 	int32 Port = 0;
+	bool bDemoAvailable = false;
+	uint64 LastCharacterId = 0;
 	FString CurrentLoginId;
 	MmoWorld::FWorldState WorldState;
 	MmoWorld::FCombatState CombatState;

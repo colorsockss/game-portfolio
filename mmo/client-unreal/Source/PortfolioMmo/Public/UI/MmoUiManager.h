@@ -108,6 +108,9 @@ public:
 	/** 확인 팝업을 거쳐 게임을 끝낸다(설정 창의 게임 종료. 77). 월드 안이면 로그아웃을 마친 뒤 끝낸다. */
 	void QuitGame();
 
+	/** 조작 안내(94)를 띄운다: PC는 키 표에서 채운 키, 터치 기기는 조이스틱과 버튼의 설명. 닫으면 이 캐릭터를 본 것으로 기기에 남긴다. */
+	void ShowGuide();
+
 private:
 	void Show(MmoScreen::EScreen Screen, UUserWidget& Widget, const FOnShown& OnShown);
 	void ApplyInputMode();

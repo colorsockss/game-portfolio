@@ -51,11 +51,11 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
     {
       PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_._has_bits_),
       0, // no _extensions_
-      9, 120,  // max_field_number, fast_idx_mask
+      16, 120,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294966784,  // skipmap
+      4294901760,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      9,  // num_field_entries
+      16,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -65,30 +65,33 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
       ::_pbi::TcParser::GetTable<::portfolio::mmo::data::ClassesRow>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      {::_pbi::TcParser::MiniParse, {}},
+      // uint32 demo_pet = 16;
+      {::_pbi::TcParser::FastV32S2,
+       {384, 15, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_pet_)}},
       // uint32 id = 1;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.id_), 3>(),
-       {8, 3, 0,
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.id_), 6>(),
+       {8, 6, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.id_)}},
       // double attack_range = 2;
       {::_pbi::TcParser::FastF64S1,
-       {17, 2, 0,
+       {17, 5, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.attack_range_)}},
       // uint32 attack_interval_ms = 3;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.attack_interval_ms_), 4>(),
-       {24, 4, 0,
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.attack_interval_ms_), 7>(),
+       {24, 7, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.attack_interval_ms_)}},
       // uint32 hit_delay_ms = 4;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.hit_delay_ms_), 6>(),
-       {32, 6, 0,
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.hit_delay_ms_), 9>(),
+       {32, 9, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.hit_delay_ms_)}},
       // optional double projectile_speed = 5;
       {::_pbi::TcParser::FastF64S1,
-       {41, 5, 0,
+       {41, 8, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.projectile_speed_)}},
       // uint32 first_skill = 6;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.first_skill_), 7>(),
-       {48, 7, 0,
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.first_skill_), 10>(),
+       {48, 10, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.first_skill_)}},
       // repeated uint32 start_items = 7;
       {::_pbi::TcParser::FastV32P1,
@@ -99,36 +102,68 @@ constexpr ClassesRow::ParseTableT_ ClassesRow::InternalGenerateParseTable_(const
        {66, 1, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_counts_)}},
       // uint32 start_weapon = 9;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.start_weapon_), 8>(),
-       {72, 8, 0,
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.start_weapon_), 11>(),
+       {72, 11, 0,
         PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_weapon_)}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
+      // uint32 demo_level = 10;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.demo_level_), 12>(),
+       {80, 12, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_level_)}},
+      // repeated uint32 demo_equipment = 11;
+      {::_pbi::TcParser::FastV32P1,
+       {90, 2, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_equipment_)}},
+      // uint32 demo_enchant = 12;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.demo_enchant_), 13>(),
+       {96, 13, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_enchant_)}},
+      // repeated uint32 demo_items = 13;
+      {::_pbi::TcParser::FastV32P1,
+       {106, 3, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_items_)}},
+      // repeated uint32 demo_counts = 14;
+      {::_pbi::TcParser::FastV32P1,
+       {114, 4, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_counts_)}},
+      // uint32 demo_gold = 15;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ClassesRow, _impl_.demo_gold_), 14>(),
+       {120, 14, 0,
+        PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_gold_)}},
     }}, {{
       65535, 65535
     }}, {{
       // uint32 id = 1;
-      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.id_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.id_), _Internal::kHasBitsOffset + 6, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // double attack_range = 2;
-      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.attack_range_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.attack_range_), _Internal::kHasBitsOffset + 5, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
       // uint32 attack_interval_ms = 3;
-      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.attack_interval_ms_), _Internal::kHasBitsOffset + 4, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.attack_interval_ms_), _Internal::kHasBitsOffset + 7, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 hit_delay_ms = 4;
-      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.hit_delay_ms_), _Internal::kHasBitsOffset + 6, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.hit_delay_ms_), _Internal::kHasBitsOffset + 9, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // optional double projectile_speed = 5;
-      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.projectile_speed_), _Internal::kHasBitsOffset + 5, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.projectile_speed_), _Internal::kHasBitsOffset + 8, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
       // uint32 first_skill = 6;
-      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.first_skill_), _Internal::kHasBitsOffset + 7, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.first_skill_), _Internal::kHasBitsOffset + 10, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // repeated uint32 start_items = 7;
       {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_items_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcRepeated | ::_fl::kPackedUInt32)},
       // repeated uint32 start_counts = 8;
       {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_counts_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcRepeated | ::_fl::kPackedUInt32)},
       // uint32 start_weapon = 9;
-      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_weapon_), _Internal::kHasBitsOffset + 8, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_weapon_), _Internal::kHasBitsOffset + 11, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 demo_level = 10;
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_level_), _Internal::kHasBitsOffset + 12, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // repeated uint32 demo_equipment = 11;
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_equipment_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcRepeated | ::_fl::kPackedUInt32)},
+      // uint32 demo_enchant = 12;
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_enchant_), _Internal::kHasBitsOffset + 13, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // repeated uint32 demo_items = 13;
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_items_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcRepeated | ::_fl::kPackedUInt32)},
+      // repeated uint32 demo_counts = 14;
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_counts_), _Internal::kHasBitsOffset + 4, 0, (0 | ::_fl::kFcRepeated | ::_fl::kPackedUInt32)},
+      // uint32 demo_gold = 15;
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_gold_), _Internal::kHasBitsOffset + 14, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // uint32 demo_pet = 16;
+      {PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_pet_), _Internal::kHasBitsOffset + 15, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     // no aux_entries
     {{
@@ -150,13 +185,32 @@ inline constexpr ClassesRow::Impl_::Impl_(
             PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.start_counts_)>()
          }
         ,
+        demo_equipment_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::data::ClassesRow,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_equipment_)>()
+         }
+        ,
+        demo_items_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::data::ClassesRow,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_items_)>()
+         }
+        ,
+        demo_counts_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::data::ClassesRow,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_counts_)>()
+         }
+        ,
         attack_range_{0},
         id_{0u},
         attack_interval_ms_{0u},
         projectile_speed_{0},
         hit_delay_ms_{0u},
         first_skill_{0u},
-        start_weapon_{0u} {}
+        start_weapon_{0u},
+        demo_level_{0u},
+        demo_enchant_{0u},
+        demo_gold_{0u},
+        demo_pet_{0u} {}
 
 template <typename>
 constexpr ClassesRow::ClassesRow(::_pbi::ConstantInitialized,
@@ -412,7 +466,7 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_._has_bits_),
-        12, // hasbit index offset
+        19, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.attack_range_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.attack_interval_ms_),
@@ -422,15 +476,29 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.start_items_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.start_counts_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.start_weapon_),
-        3,
-        2,
-        4,
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_level_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_equipment_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_enchant_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_items_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_counts_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_gold_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_pet_),
         6,
         5,
         7,
+        9,
+        8,
+        10,
         0,
         1,
-        8,
+        11,
+        12,
+        2,
+        13,
+        3,
+        4,
+        14,
+        15,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::Classes, _impl_._has_bits_),
         4, // hasbit index offset
@@ -441,7 +509,7 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::portfolio::mmo::data::ClassesRow)},
-        {21, sizeof(::portfolio::mmo::data::Classes)},
+        {35, sizeof(::portfolio::mmo::data::Classes)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -450,21 +518,25 @@ static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
 };
 const char descriptor_table_protodef_Classes_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\rClasses.proto\022\022portfolio.mmo.data\"\352\001\n\n"
+    "\n\rClasses.proto\022\022portfolio.mmo.data\"\372\002\n\n"
     "ClassesRow\022\n\n\002id\030\001 \001(\r\022\024\n\014attack_range\030\002"
     " \001(\001\022\032\n\022attack_interval_ms\030\003 \001(\r\022\024\n\014hit_"
     "delay_ms\030\004 \001(\r\022\035\n\020projectile_speed\030\005 \001(\001"
     "H\000\210\001\001\022\023\n\013first_skill\030\006 \001(\r\022\023\n\013start_item"
     "s\030\007 \003(\r\022\024\n\014start_counts\030\010 \003(\r\022\024\n\014start_w"
-    "eapon\030\t \001(\rB\023\n\021_projectile_speed\"7\n\007Clas"
-    "ses\022,\n\004rows\030\001 \003(\0132\036.portfolio.mmo.data.C"
-    "lassesRowB\024\252\002\021PortfolioMmo.Datab\006proto3"
+    "eapon\030\t \001(\r\022\022\n\ndemo_level\030\n \001(\r\022\026\n\016demo_"
+    "equipment\030\013 \003(\r\022\024\n\014demo_enchant\030\014 \001(\r\022\022\n"
+    "\ndemo_items\030\r \003(\r\022\023\n\013demo_counts\030\016 \003(\r\022\021"
+    "\n\tdemo_gold\030\017 \001(\r\022\020\n\010demo_pet\030\020 \001(\rB\023\n\021_"
+    "projectile_speed\"7\n\007Classes\022,\n\004rows\030\001 \003("
+    "\0132\036.portfolio.mmo.data.ClassesRowB\024\252\002\021Po"
+    "rtfolioMmo.Datab\006proto3"
 };
 static ::absl::once_flag descriptor_table_Classes_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_Classes_2eproto = {
     false,
     false,
-    359,
+    503,
     descriptor_table_protodef_Classes_2eproto,
     "Classes.proto",
     &descriptor_table_Classes_2eproto_once,
@@ -509,6 +581,27 @@ PROTOBUF_NDEBUG_INLINE ClassesRow::Impl_::Impl_(
               PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.start_counts_)>()
           , arena, from.start_counts_
         }
+        ,
+        demo_equipment_ {
+          visibility, ::_pbi::InternalMetadataOffset::Build<
+              ::portfolio::mmo::data::ClassesRow,
+              PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_equipment_)>()
+          , arena, from.demo_equipment_
+        }
+        ,
+        demo_items_ {
+          visibility, ::_pbi::InternalMetadataOffset::Build<
+              ::portfolio::mmo::data::ClassesRow,
+              PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_items_)>()
+          , arena, from.demo_items_
+        }
+        ,
+        demo_counts_ {
+          visibility, ::_pbi::InternalMetadataOffset::Build<
+              ::portfolio::mmo::data::ClassesRow,
+              PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_counts_)>()
+          , arena, from.demo_counts_
+        }
      {}
 
 ClassesRow::ClassesRow(
@@ -529,9 +622,9 @@ ClassesRow::ClassesRow(
                offsetof(Impl_, attack_range_),
            reinterpret_cast<const char*>(&from._impl_) +
                offsetof(Impl_, attack_range_),
-           offsetof(Impl_, start_weapon_) -
+           offsetof(Impl_, demo_pet_) -
                offsetof(Impl_, attack_range_) +
-               sizeof(Impl_::start_weapon_));
+               sizeof(Impl_::demo_pet_));
 
   // @@protoc_insertion_point(copy_constructor:portfolio.mmo.data.ClassesRow)
 }
@@ -547,6 +640,21 @@ PROTOBUF_NDEBUG_INLINE ClassesRow::Impl_::Impl_(
             ::portfolio::mmo::data::ClassesRow,
             PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.start_counts_)>()
          }
+        ,
+        demo_equipment_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::data::ClassesRow,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_equipment_)>()
+         }
+        ,
+        demo_items_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::data::ClassesRow,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_items_)>()
+         }
+        ,
+        demo_counts_ { visibility, ::_pbi::InternalMetadataOffset::Build<
+            ::portfolio::mmo::data::ClassesRow,
+            PROTOBUF_FIELD_OFFSET(::portfolio::mmo::data::ClassesRow, _impl_.demo_counts_)>()
+         }
      {}
 
 inline void ClassesRow::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
@@ -554,9 +662,9 @@ inline void ClassesRow::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, attack_range_),
            0,
-           offsetof(Impl_, start_weapon_) -
+           offsetof(Impl_, demo_pet_) -
                offsetof(Impl_, attack_range_) +
-               sizeof(Impl_::start_weapon_));
+               sizeof(Impl_::demo_pet_));
 }
 ClassesRow::~ClassesRow() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.data.ClassesRow)
@@ -605,22 +713,37 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       _impl_.start_items_.Clear();
     }
     if (CheckHasBit(cached_has_bits, 0x00000002U)) {
       _impl_.start_counts_.Clear();
     }
+    if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      _impl_.demo_equipment_.Clear();
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      _impl_.demo_items_.Clear();
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      _impl_.demo_counts_.Clear();
+    }
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x000000fcU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x000000e0U)) {
     ::memset(&this_._impl_.attack_range_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.first_skill_) -
+                 reinterpret_cast<char*>(&this_._impl_.attack_interval_ms_) -
                  reinterpret_cast<char*>(&this_._impl_.attack_range_)) +
-                 sizeof(_impl_.first_skill_));
+                 sizeof(_impl_.attack_interval_ms_));
   }
-  this_._impl_.start_weapon_ = 0u;
+  if (BatchCheckHasBit(cached_has_bits, 0x0000ff00U)) {
+    ::memset(&this_._impl_.projectile_speed_, 0,
+             static_cast<::size_t>(
+                 reinterpret_cast<char*>(&this_._impl_.demo_pet_) -
+                 reinterpret_cast<char*>(&this_._impl_.projectile_speed_)) +
+                 sizeof(_impl_.demo_pet_));
+  }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -645,7 +768,7 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
 
   cached_has_bits = this_._impl_._has_bits_[0];
   // uint32 id = 1;
-  if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000040U)) {
     if (this_._internal_id() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -654,7 +777,7 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
   }
 
   // double attack_range = 2;
-  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000020U)) {
     if (::absl::bit_cast<::uint64_t>(this_._internal_attack_range()) != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteDoubleToArray(
@@ -663,7 +786,7 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
   }
 
   // uint32 attack_interval_ms = 3;
-  if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000080U)) {
     if (this_._internal_attack_interval_ms() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -672,7 +795,7 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
   }
 
   // uint32 hit_delay_ms = 4;
-  if (CheckHasBit(cached_has_bits, 0x00000040U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000200U)) {
     if (this_._internal_hit_delay_ms() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -681,14 +804,14 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
   }
 
   // optional double projectile_speed = 5;
-  if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000100U)) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteDoubleToArray(
         5, this_._internal_projectile_speed(), target);
   }
 
   // uint32 first_skill = 6;
-  if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000400U)) {
     if (this_._internal_first_skill() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -719,11 +842,80 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
   }
 
   // uint32 start_weapon = 9;
-  if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+  if (CheckHasBit(cached_has_bits, 0x00000800U)) {
     if (this_._internal_start_weapon() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
           9, this_._internal_start_weapon(), target);
+    }
+  }
+
+  // uint32 demo_level = 10;
+  if (CheckHasBit(cached_has_bits, 0x00001000U)) {
+    if (this_._internal_demo_level() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          10, this_._internal_demo_level(), target);
+    }
+  }
+
+  // repeated uint32 demo_equipment = 11;
+  if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+    {
+      int byte_size = this_._impl_._demo_equipment_cached_byte_size_.Get();
+      if (byte_size > 0) {
+        target = stream->WriteUInt32Packed(
+            11, this_._internal_demo_equipment(), byte_size, target);
+      }
+    }
+  }
+
+  // uint32 demo_enchant = 12;
+  if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+    if (this_._internal_demo_enchant() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          12, this_._internal_demo_enchant(), target);
+    }
+  }
+
+  // repeated uint32 demo_items = 13;
+  if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+    {
+      int byte_size = this_._impl_._demo_items_cached_byte_size_.Get();
+      if (byte_size > 0) {
+        target = stream->WriteUInt32Packed(
+            13, this_._internal_demo_items(), byte_size, target);
+      }
+    }
+  }
+
+  // repeated uint32 demo_counts = 14;
+  if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+    {
+      int byte_size = this_._impl_._demo_counts_cached_byte_size_.Get();
+      if (byte_size > 0) {
+        target = stream->WriteUInt32Packed(
+            14, this_._internal_demo_counts(), byte_size, target);
+      }
+    }
+  }
+
+  // uint32 demo_gold = 15;
+  if (CheckHasBit(cached_has_bits, 0x00004000U)) {
+    if (this_._internal_demo_gold() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          15, this_._internal_demo_gold(), target);
+    }
+  }
+
+  // uint32 demo_pet = 16;
+  if (CheckHasBit(cached_has_bits, 0x00008000U)) {
+    if (this_._internal_demo_pet() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          16, this_._internal_demo_pet(), target);
     }
   }
 
@@ -750,8 +942,8 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  total_size += static_cast<bool>(0x00000020U & cached_has_bits) * 9;
-  if (BatchCheckHasBit(cached_has_bits, 0x000000dfU)) {
+  total_size += static_cast<bool>(0x00000100U & cached_has_bits) * 9;
+  if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     // repeated uint32 start_items = 7;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       total_size +=
@@ -766,47 +958,96 @@ PROTOBUF_NOINLINE void ClassesRow::Clear() {
               this_._internal_start_counts(), 1,
               this_._impl_._start_counts_cached_byte_size_);
     }
-    // double attack_range = 2;
+    // repeated uint32 demo_equipment = 11;
     if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      total_size +=
+          ::_pbi::WireFormatLite::UInt32SizeWithPackedTagSize(
+              this_._internal_demo_equipment(), 1,
+              this_._impl_._demo_equipment_cached_byte_size_);
+    }
+    // repeated uint32 demo_items = 13;
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      total_size +=
+          ::_pbi::WireFormatLite::UInt32SizeWithPackedTagSize(
+              this_._internal_demo_items(), 1,
+              this_._impl_._demo_items_cached_byte_size_);
+    }
+    // repeated uint32 demo_counts = 14;
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      total_size +=
+          ::_pbi::WireFormatLite::UInt32SizeWithPackedTagSize(
+              this_._internal_demo_counts(), 1,
+              this_._impl_._demo_counts_cached_byte_size_);
+    }
+    // double attack_range = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
       if (::absl::bit_cast<::uint64_t>(this_._internal_attack_range()) != 0) {
         total_size += 9;
       }
     }
     // uint32 id = 1;
-    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
       if (this_._internal_id() != 0) {
         total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
             this_._internal_id());
       }
     }
     // uint32 attack_interval_ms = 3;
-    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
       if (this_._internal_attack_interval_ms() != 0) {
         total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
             this_._internal_attack_interval_ms());
       }
     }
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x0000fe00U)) {
     // uint32 hit_delay_ms = 4;
-    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000200U)) {
       if (this_._internal_hit_delay_ms() != 0) {
         total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
             this_._internal_hit_delay_ms());
       }
     }
     // uint32 first_skill = 6;
-    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000400U)) {
       if (this_._internal_first_skill() != 0) {
         total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
             this_._internal_first_skill());
       }
     }
-  }
-   {
     // uint32 start_weapon = 9;
-    if (CheckHasBit(cached_has_bits, 0x00000100U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000800U)) {
       if (this_._internal_start_weapon() != 0) {
         total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
             this_._internal_start_weapon());
+      }
+    }
+    // uint32 demo_level = 10;
+    if (CheckHasBit(cached_has_bits, 0x00001000U)) {
+      if (this_._internal_demo_level() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_demo_level());
+      }
+    }
+    // uint32 demo_enchant = 12;
+    if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+      if (this_._internal_demo_enchant() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_demo_enchant());
+      }
+    }
+    // uint32 demo_gold = 15;
+    if (CheckHasBit(cached_has_bits, 0x00004000U)) {
+      if (this_._internal_demo_gold() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_demo_gold());
+      }
+    }
+    // uint32 demo_pet = 16;
+    if (CheckHasBit(cached_has_bits, 0x00008000U)) {
+      if (this_._internal_demo_pet() != 0) {
+        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                        this_._internal_demo_pet());
       }
     }
   }
@@ -835,37 +1076,68 @@ void ClassesRow::MergeImpl(::google::protobuf::MessageLite& to_msg,
       _this->_internal_mutable_start_counts()->MergeFrom(from._internal_start_counts());
     }
     if (CheckHasBit(cached_has_bits, 0x00000004U)) {
+      _this->_internal_mutable_demo_equipment()->MergeFrom(from._internal_demo_equipment());
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+      _this->_internal_mutable_demo_items()->MergeFrom(from._internal_demo_items());
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      _this->_internal_mutable_demo_counts()->MergeFrom(from._internal_demo_counts());
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
       if (::absl::bit_cast<::uint64_t>(from._internal_attack_range()) != 0) {
         _this->_impl_.attack_range_ = from._impl_.attack_range_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000008U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
       if (from._internal_id() != 0) {
         _this->_impl_.id_ = from._impl_.id_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
       if (from._internal_attack_interval_ms() != 0) {
         _this->_impl_.attack_interval_ms_ = from._impl_.attack_interval_ms_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x0000ff00U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000100U)) {
       _this->_impl_.projectile_speed_ = from._impl_.projectile_speed_;
     }
-    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000200U)) {
       if (from._internal_hit_delay_ms() != 0) {
         _this->_impl_.hit_delay_ms_ = from._impl_.hit_delay_ms_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000400U)) {
       if (from._internal_first_skill() != 0) {
         _this->_impl_.first_skill_ = from._impl_.first_skill_;
       }
     }
-  }
-  if (CheckHasBit(cached_has_bits, 0x00000100U)) {
-    if (from._internal_start_weapon() != 0) {
-      _this->_impl_.start_weapon_ = from._impl_.start_weapon_;
+    if (CheckHasBit(cached_has_bits, 0x00000800U)) {
+      if (from._internal_start_weapon() != 0) {
+        _this->_impl_.start_weapon_ = from._impl_.start_weapon_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00001000U)) {
+      if (from._internal_demo_level() != 0) {
+        _this->_impl_.demo_level_ = from._impl_.demo_level_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00002000U)) {
+      if (from._internal_demo_enchant() != 0) {
+        _this->_impl_.demo_enchant_ = from._impl_.demo_enchant_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00004000U)) {
+      if (from._internal_demo_gold() != 0) {
+        _this->_impl_.demo_gold_ = from._impl_.demo_gold_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00008000U)) {
+      if (from._internal_demo_pet() != 0) {
+        _this->_impl_.demo_pet_ = from._impl_.demo_pet_;
+      }
     }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -887,9 +1159,12 @@ void ClassesRow::InternalSwap(ClassesRow* PROTOBUF_RESTRICT PROTOBUF_NONNULL oth
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   _impl_.start_items_.InternalSwap(&other->_impl_.start_items_);
   _impl_.start_counts_.InternalSwap(&other->_impl_.start_counts_);
+  _impl_.demo_equipment_.InternalSwap(&other->_impl_.demo_equipment_);
+  _impl_.demo_items_.InternalSwap(&other->_impl_.demo_items_);
+  _impl_.demo_counts_.InternalSwap(&other->_impl_.demo_counts_);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.start_weapon_)
-      + sizeof(ClassesRow::_impl_.start_weapon_)
+      PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.demo_pet_)
+      + sizeof(ClassesRow::_impl_.demo_pet_)
       - PROTOBUF_FIELD_OFFSET(ClassesRow, _impl_.attack_range_)>(
           reinterpret_cast<char*>(&_impl_.attack_range_),
           reinterpret_cast<char*>(&other->_impl_.attack_range_));

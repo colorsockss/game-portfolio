@@ -24,18 +24,22 @@ namespace PortfolioMmo.Data {
     static ClassesReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1DbGFzc2VzLnByb3RvEhJwb3J0Zm9saW8ubW1vLmRhdGEi6gEKCkNsYXNz",
+            "Cg1DbGFzc2VzLnByb3RvEhJwb3J0Zm9saW8ubW1vLmRhdGEi+gIKCkNsYXNz",
             "ZXNSb3cSCgoCaWQYASABKA0SFAoMYXR0YWNrX3JhbmdlGAIgASgBEhoKEmF0",
             "dGFja19pbnRlcnZhbF9tcxgDIAEoDRIUCgxoaXRfZGVsYXlfbXMYBCABKA0S",
             "HQoQcHJvamVjdGlsZV9zcGVlZBgFIAEoAUgAiAEBEhMKC2ZpcnN0X3NraWxs",
             "GAYgASgNEhMKC3N0YXJ0X2l0ZW1zGAcgAygNEhQKDHN0YXJ0X2NvdW50cxgI",
-            "IAMoDRIUCgxzdGFydF93ZWFwb24YCSABKA1CEwoRX3Byb2plY3RpbGVfc3Bl",
-            "ZWQiNwoHQ2xhc3NlcxIsCgRyb3dzGAEgAygLMh4ucG9ydGZvbGlvLm1tby5k",
-            "YXRhLkNsYXNzZXNSb3dCFKoCEVBvcnRmb2xpb01tby5EYXRhYgZwcm90bzM="));
+            "IAMoDRIUCgxzdGFydF93ZWFwb24YCSABKA0SEgoKZGVtb19sZXZlbBgKIAEo",
+            "DRIWCg5kZW1vX2VxdWlwbWVudBgLIAMoDRIUCgxkZW1vX2VuY2hhbnQYDCAB",
+            "KA0SEgoKZGVtb19pdGVtcxgNIAMoDRITCgtkZW1vX2NvdW50cxgOIAMoDRIR",
+            "CglkZW1vX2dvbGQYDyABKA0SEAoIZGVtb19wZXQYECABKA1CEwoRX3Byb2pl",
+            "Y3RpbGVfc3BlZWQiNwoHQ2xhc3NlcxIsCgRyb3dzGAEgAygLMh4ucG9ydGZv",
+            "bGlvLm1tby5kYXRhLkNsYXNzZXNSb3dCFKoCEVBvcnRmb2xpb01tby5EYXRh",
+            "YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.ClassesRow), global::PortfolioMmo.Data.ClassesRow.Parser, new[]{ "Id", "AttackRange", "AttackIntervalMs", "HitDelayMs", "ProjectileSpeed", "FirstSkill", "StartItems", "StartCounts", "StartWeapon" }, new[]{ "ProjectileSpeed" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.ClassesRow), global::PortfolioMmo.Data.ClassesRow.Parser, new[]{ "Id", "AttackRange", "AttackIntervalMs", "HitDelayMs", "ProjectileSpeed", "FirstSkill", "StartItems", "StartCounts", "StartWeapon", "DemoLevel", "DemoEquipment", "DemoEnchant", "DemoItems", "DemoCounts", "DemoGold", "DemoPet" }, new[]{ "ProjectileSpeed" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Classes), global::PortfolioMmo.Data.Classes.Parser, new[]{ "Rows" }, null, null, null, null)
           }));
     }
@@ -89,6 +93,13 @@ namespace PortfolioMmo.Data {
       startItems_ = other.startItems_.Clone();
       startCounts_ = other.startCounts_.Clone();
       startWeapon_ = other.startWeapon_;
+      demoLevel_ = other.demoLevel_;
+      demoEquipment_ = other.demoEquipment_.Clone();
+      demoEnchant_ = other.demoEnchant_;
+      demoItems_ = other.demoItems_.Clone();
+      demoCounts_ = other.demoCounts_.Clone();
+      demoGold_ = other.demoGold_;
+      demoPet_ = other.demoPet_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -246,6 +257,108 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "demo_level" field.</summary>
+    public const int DemoLevelFieldNumber = 10;
+    private uint demoLevel_;
+    /// <summary>
+    /// 체험 캐릭터(94)의 레벨. 직업의 스킬은 모두 배운 채이고 퀵슬롯은 36의 규칙대로 채운다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint DemoLevel {
+      get { return demoLevel_; }
+      set {
+        demoLevel_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "demo_equipment" field.</summary>
+    public const int DemoEquipmentFieldNumber = 11;
+    private static readonly pb::FieldCodec<uint> _repeated_demoEquipment_codec
+        = pb::FieldCodec.ForUInt32(90);
+    private readonly pbc::RepeatedField<uint> demoEquipment_ = new pbc::RepeatedField<uint>();
+    /// <summary>
+    /// 체험 캐릭터가 입은 채로 시작하는 장비(Items의 줄. 칸마다 하나)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<uint> DemoEquipment {
+      get { return demoEquipment_; }
+    }
+
+    /// <summary>Field number for the "demo_enchant" field.</summary>
+    public const int DemoEnchantFieldNumber = 12;
+    private uint demoEnchant_;
+    /// <summary>
+    /// 체험 캐릭터의 입은 장비의 강화 수치(35)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint DemoEnchant {
+      get { return demoEnchant_; }
+      set {
+        demoEnchant_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "demo_items" field.</summary>
+    public const int DemoItemsFieldNumber = 13;
+    private static readonly pb::FieldCodec<uint> _repeated_demoItems_codec
+        = pb::FieldCodec.ForUInt32(106);
+    private readonly pbc::RepeatedField<uint> demoItems_ = new pbc::RepeatedField<uint>();
+    /// <summary>
+    /// 체험 캐릭터의 인벤토리 아이템(Items의 줄)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<uint> DemoItems {
+      get { return demoItems_; }
+    }
+
+    /// <summary>Field number for the "demo_counts" field.</summary>
+    public const int DemoCountsFieldNumber = 14;
+    private static readonly pb::FieldCodec<uint> _repeated_demoCounts_codec
+        = pb::FieldCodec.ForUInt32(114);
+    private readonly pbc::RepeatedField<uint> demoCounts_ = new pbc::RepeatedField<uint>();
+    /// <summary>
+    /// 체험 캐릭터의 아이템마다의 수(demoItems와 같은 차례)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<uint> DemoCounts {
+      get { return demoCounts_; }
+    }
+
+    /// <summary>Field number for the "demo_gold" field.</summary>
+    public const int DemoGoldFieldNumber = 15;
+    private uint demoGold_;
+    /// <summary>
+    /// 체험 캐릭터의 골드
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint DemoGold {
+      get { return demoGold_; }
+      set {
+        demoGold_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "demo_pet" field.</summary>
+    public const int DemoPetFieldNumber = 16;
+    private uint demoPet_;
+    /// <summary>
+    /// 체험 캐릭터가 나와 있는 채로 가진 펫(Pets의 줄. 96)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint DemoPet {
+      get { return demoPet_; }
+      set {
+        demoPet_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -270,6 +383,13 @@ namespace PortfolioMmo.Data {
       if(!startItems_.Equals(other.startItems_)) return false;
       if(!startCounts_.Equals(other.startCounts_)) return false;
       if (StartWeapon != other.StartWeapon) return false;
+      if (DemoLevel != other.DemoLevel) return false;
+      if(!demoEquipment_.Equals(other.demoEquipment_)) return false;
+      if (DemoEnchant != other.DemoEnchant) return false;
+      if(!demoItems_.Equals(other.demoItems_)) return false;
+      if(!demoCounts_.Equals(other.demoCounts_)) return false;
+      if (DemoGold != other.DemoGold) return false;
+      if (DemoPet != other.DemoPet) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -286,6 +406,13 @@ namespace PortfolioMmo.Data {
       hash ^= startItems_.GetHashCode();
       hash ^= startCounts_.GetHashCode();
       if (StartWeapon != 0) hash ^= StartWeapon.GetHashCode();
+      if (DemoLevel != 0) hash ^= DemoLevel.GetHashCode();
+      hash ^= demoEquipment_.GetHashCode();
+      if (DemoEnchant != 0) hash ^= DemoEnchant.GetHashCode();
+      hash ^= demoItems_.GetHashCode();
+      hash ^= demoCounts_.GetHashCode();
+      if (DemoGold != 0) hash ^= DemoGold.GetHashCode();
+      if (DemoPet != 0) hash ^= DemoPet.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -334,6 +461,25 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(72);
         output.WriteUInt32(StartWeapon);
       }
+      if (DemoLevel != 0) {
+        output.WriteRawTag(80);
+        output.WriteUInt32(DemoLevel);
+      }
+      demoEquipment_.WriteTo(output, _repeated_demoEquipment_codec);
+      if (DemoEnchant != 0) {
+        output.WriteRawTag(96);
+        output.WriteUInt32(DemoEnchant);
+      }
+      demoItems_.WriteTo(output, _repeated_demoItems_codec);
+      demoCounts_.WriteTo(output, _repeated_demoCounts_codec);
+      if (DemoGold != 0) {
+        output.WriteRawTag(120);
+        output.WriteUInt32(DemoGold);
+      }
+      if (DemoPet != 0) {
+        output.WriteRawTag(128, 1);
+        output.WriteUInt32(DemoPet);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -374,6 +520,25 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(72);
         output.WriteUInt32(StartWeapon);
       }
+      if (DemoLevel != 0) {
+        output.WriteRawTag(80);
+        output.WriteUInt32(DemoLevel);
+      }
+      demoEquipment_.WriteTo(ref output, _repeated_demoEquipment_codec);
+      if (DemoEnchant != 0) {
+        output.WriteRawTag(96);
+        output.WriteUInt32(DemoEnchant);
+      }
+      demoItems_.WriteTo(ref output, _repeated_demoItems_codec);
+      demoCounts_.WriteTo(ref output, _repeated_demoCounts_codec);
+      if (DemoGold != 0) {
+        output.WriteRawTag(120);
+        output.WriteUInt32(DemoGold);
+      }
+      if (DemoPet != 0) {
+        output.WriteRawTag(128, 1);
+        output.WriteUInt32(DemoPet);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -406,6 +571,21 @@ namespace PortfolioMmo.Data {
       size += startCounts_.CalculateSize(_repeated_startCounts_codec);
       if (StartWeapon != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(StartWeapon);
+      }
+      if (DemoLevel != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(DemoLevel);
+      }
+      size += demoEquipment_.CalculateSize(_repeated_demoEquipment_codec);
+      if (DemoEnchant != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(DemoEnchant);
+      }
+      size += demoItems_.CalculateSize(_repeated_demoItems_codec);
+      size += demoCounts_.CalculateSize(_repeated_demoCounts_codec);
+      if (DemoGold != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(DemoGold);
+      }
+      if (DemoPet != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(DemoPet);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -441,6 +621,21 @@ namespace PortfolioMmo.Data {
       startCounts_.Add(other.startCounts_);
       if (other.StartWeapon != 0) {
         StartWeapon = other.StartWeapon;
+      }
+      if (other.DemoLevel != 0) {
+        DemoLevel = other.DemoLevel;
+      }
+      demoEquipment_.Add(other.demoEquipment_);
+      if (other.DemoEnchant != 0) {
+        DemoEnchant = other.DemoEnchant;
+      }
+      demoItems_.Add(other.demoItems_);
+      demoCounts_.Add(other.demoCounts_);
+      if (other.DemoGold != 0) {
+        DemoGold = other.DemoGold;
+      }
+      if (other.DemoPet != 0) {
+        DemoPet = other.DemoPet;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -499,6 +694,37 @@ namespace PortfolioMmo.Data {
             StartWeapon = input.ReadUInt32();
             break;
           }
+          case 80: {
+            DemoLevel = input.ReadUInt32();
+            break;
+          }
+          case 90:
+          case 88: {
+            demoEquipment_.AddEntriesFrom(input, _repeated_demoEquipment_codec);
+            break;
+          }
+          case 96: {
+            DemoEnchant = input.ReadUInt32();
+            break;
+          }
+          case 106:
+          case 104: {
+            demoItems_.AddEntriesFrom(input, _repeated_demoItems_codec);
+            break;
+          }
+          case 114:
+          case 112: {
+            demoCounts_.AddEntriesFrom(input, _repeated_demoCounts_codec);
+            break;
+          }
+          case 120: {
+            DemoGold = input.ReadUInt32();
+            break;
+          }
+          case 128: {
+            DemoPet = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -554,6 +780,37 @@ namespace PortfolioMmo.Data {
           }
           case 72: {
             StartWeapon = input.ReadUInt32();
+            break;
+          }
+          case 80: {
+            DemoLevel = input.ReadUInt32();
+            break;
+          }
+          case 90:
+          case 88: {
+            demoEquipment_.AddEntriesFrom(ref input, _repeated_demoEquipment_codec);
+            break;
+          }
+          case 96: {
+            DemoEnchant = input.ReadUInt32();
+            break;
+          }
+          case 106:
+          case 104: {
+            demoItems_.AddEntriesFrom(ref input, _repeated_demoItems_codec);
+            break;
+          }
+          case 114:
+          case 112: {
+            demoCounts_.AddEntriesFrom(ref input, _repeated_demoCounts_codec);
+            break;
+          }
+          case 120: {
+            DemoGold = input.ReadUInt32();
+            break;
+          }
+          case 128: {
+            DemoPet = input.ReadUInt32();
             break;
           }
         }
