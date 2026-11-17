@@ -1890,7 +1890,8 @@ data/                기획 데이터 원본
   - **확인**: 클라이언트만 고친 커밋에서 `mmo-unreal-ci`만 돌고, 서버만 고친 커밋에서는 돌지 않고, `packets.proto`를 고친 커밋에서는 둘 다 도는 것을 봅니다. 엔진 헤더를 엔진 없는 폴더에 include한 커밋이 CI에서 실패하는 것을 봅니다. 로컬의 `npm run check`가 같은 영역으로 나눠 도는 것을 봅니다.
   - 한 것(2026-11-17): macOS 러너는 쓰지 않기로 하고(비공개 저장소의 분당 요금이 Linux의 약 10배), `build.mjs linux`가 Docker(Mac은 colima)의 Ubuntu 24.04 clang 컨테이너에서 arm64 Linux용 libprotobuf·abseil을 빌드해 LFS로 커밋했습니다(91개, 9.8 MB). `run.mjs`는 Mac과 arm64 Linux에서 돌고(Linux는 `--start-group`으로 링크), 같은 컨테이너에서 모든 테스트가 통과했습니다. `test:mmo`에서 Unreal 테스트를 떼어 `test:mmo-unreal`로 두고, `mmo-unreal-ci.yml`(`ubuntu-24.04-arm`, Linux 라이브러리의 LFS만 받음)을 더하고, `mmo-ci.yml`의 `paths`와 `check.mjs`의 규칙을 나눴습니다(`client-unreal/`은 mmo-unreal, `shared/`는 둘 다, 그 밖의 `mmo/`는 mmo. 규칙 테스트를 더함).
   - GitHub에서 본 것(2026-11-17): 15개 커밋을 푸시한 실행(44040504746, `package.json`이 바뀌어 네 워크플로가 모두 돎)에서 `mmo-unreal-ci`가 `ubuntu-24.04-arm`에서 통과했습니다(잡 100초: 체크아웃과 LFS 3초, `setup-node` 5초, `test:mmo-unreal` 87초).
-  - 남은 것: 영역으로 나뉘는 것(클라이언트만 고친 커밋에서 `mmo-unreal-ci`만, 서버만 고친 커밋에서는 돌지 않음, `packets.proto`를 고친 커밋에서는 둘 다)과 엔진 헤더를 include한 커밋이 실패하는 것은 그런 커밋을 푸시할 때 봅니다.
+    - 같은 실행에서 `mmo-ci`가 79의 틱 번호와 받은 때가 어긋나는 버그로 실패해 고쳤고(79의 "고친 것"), 서버와 문서만 고친 그 커밋(51838e5d)의 푸시에서는 `mmo-ci`만 돌아 통과하고(44041544306, 잡 57초) `mmo-unreal-ci`는 돌지 않았습니다.
+  - 남은 것: 클라이언트만 고친 커밋에서 `mmo-unreal-ci`만 도는 것, `packets.proto`를 고친 커밋에서 둘 다 도는 것, 엔진 헤더를 include한 커밋이 실패하는 것은 그런 커밋을 푸시할 때 봅니다.
 
 - [ ] **67. iOS와 Windows** `M7` — Mac과 Android 말고 다른 플랫폼으로 빌드합니다.
   - **계약·데이터**: 없음.
