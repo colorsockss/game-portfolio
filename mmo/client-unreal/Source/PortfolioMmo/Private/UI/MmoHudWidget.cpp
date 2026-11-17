@@ -464,10 +464,11 @@ void UMmoHudWidget::ShowInteract()
 	// 그림은 아이콘 표(73)가 생기면 더한다.
 	switch (Kind)
 	{
-	case MmoWorld::EInteractKind::PickUp: InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.pickUp"))); break;
-	case MmoWorld::EInteractKind::Gather: InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.gather"))); break;
-	case MmoWorld::EInteractKind::Talk: InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.talk"))); break;
-	default: InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.none"))); break;
+	// 그림이 있는 버튼(101: 원형의 손 아이콘)은 라벨을 쓰지 않고 누를 수 있는지만 바꾼다.
+	case MmoWorld::EInteractKind::PickUp: if (!InteractButton->Icon) InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.pickUp"))); break;
+	case MmoWorld::EInteractKind::Gather: if (!InteractButton->Icon) InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.gather"))); break;
+	case MmoWorld::EInteractKind::Talk: if (!InteractButton->Icon) InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.talk"))); break;
+	default: if (!InteractButton->Icon) InteractButton->SetLabel(MmoText::Get(this, TEXT("interact.none"))); break;
 	}
 	InteractButton->SetIsEnabled(Kind != MmoWorld::EInteractKind::None);
 }

@@ -23,7 +23,7 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 | 아이템 아이콘 | 장비 21종, 소모품 18(물약 4, 귀환·강화 주문서 2, 스킬북 10, 펫 2), 재료 15(채집 6, 몬스터 부산물 9) | 있음(아래 "아이콘". Codex image_gen, 100. 스킬북은 직업마다 한 그림) | - |
 | 스킬 아이콘 | 12(소환 95 포함) | 있음(아래 "아이콘". 100) | - |
 | 효과 아이콘 | 4와 전투 상태, 선공 표시 | 효과 4는 있음(HUD의 아이콘 칸. 100). 전투 상태와 선공 표시는 HUD의 글 한 줄 | - |
-| UI 그림(창 판, 버튼, 바, 아이템 칸, 조이스틱) | 7 | 있음(아래 "UI 그림". Codex image_gen, 99) | - |
+| UI 그림(바의 광택 채움, 조이스틱) | 3 | 있음(아래 "UI 그림". Codex image_gen, 99). 창 판·버튼·바의 바탕·칸은 101에서 그림 대신 선으로 그림 | - |
 | 메뉴와 버튼 아이콘 | 메뉴 5(가방, 캐릭터, 스킬, 퀘스트, 설정)와 터치 버튼 | 메뉴 5는 있음(100). 터치 버튼은 글을 쓴 버튼 | 터치 버튼은 정하지 않음 |
 | 글꼴 | 한글과 영문이 함께 나오는 것 1 | 엔진 기본 글꼴(한글도 그려짐) | 정하지 않음. CC0 글꼴이 없으면 엔진 기본 글꼴로 둠 |
 | 이펙트와 소리 | 아래 "이펙트와 소리"와 보스 등장(소리는 있음, 이펙트는 자리 표시) | 아래 표의 자리 표시(레벨 업은 31, 줍기는 33, 강화의 소리는 35가 더함). 보스 등장은 43이 연출 표에 줄을 더함 | 정하지 않음 |
@@ -127,6 +127,7 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 | 스킬 | `skill_101`–`skill_106`(기사), `skill_201`–`skill_206`(마법사) | 퀵슬롯, 스킬 창 | colorsocks | Codex image_gen |
 | 효과 | `effect_1`–`effect_4`(기절, 감속, 방어력 올림, 공격력 올림) | HUD의 효과 아이콘 칸 | colorsocks | Codex image_gen |
 | 메뉴 | `menu_bag`, `menu_character`, `menu_skills`, `menu_quest`, `menu_settings` | HUD 오른쪽 위의 메뉴 버튼(라벨 대신) | colorsocks | Codex image_gen |
+| 행동(101) | `action_attack`, `action_auto`, `action_target`, `action_interact`, `action_force` | HUD 오른쪽 아래의 원형 버튼 | colorsocks | Codex image_gen |
 
 - 약관은 위 "UI 그림"의 표(Codex image_gen, OpenAI Terms of Use)와 같습니다.
 - 아이템은 투명 배경에 물건 하나, 스킬은 꽉 찬 정사각형(기사는 강철·진홍·금, 마법사는 비전의 파랑·보라·불꽃 주황), 효과와 메뉴는 앤틱 금속의 문장입니다.
@@ -140,18 +141,14 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 
 | 파일 | 쓰는 곳 | 최종 크기 | 만든 사람 | 도구 |
 |---|---|---|---|---|
-| `panel.png` | 모든 창과 팝업의 판(9-slice, 테두리 18%) | 512×512 | colorsocks | Codex image_gen |
-| `button.png` | 공용 버튼(9-slice, 테두리 20%. 밝기만이라 상태의 색을 곱함) | 512×144 | colorsocks | Codex image_gen |
-| `bar_frame.png` | 체력·마나·경험치·시전·보스 바의 바탕(9-slice) | 512×64 | colorsocks | Codex image_gen |
-| `bar_fill.png` | 그 바의 채움(밝기만이라 색을 곱함) | 512×64 | colorsocks | Codex image_gen |
-| `slot.png` | 아이템 칸(9-slice, 테두리 15%. 등급의 색을 곱함) | 256×256 | colorsocks | Codex image_gen |
+| `bar_fill.png` | 체력·마나·경험치·시전·보스 바의 채움(밝기만이라 색을 곱함) | 512×64 | colorsocks | Codex image_gen |
 | `joystick_base.png`, `joystick_thumb.png` | 터치의 가상 조이스틱(엔진의 모바일 HUD 텍스처를 바꿈) | 512×512, 256×256 | colorsocks | Codex image_gen |
 
 | 도구 | 약관 | 출력의 권리 |
 |---|---|---|
 | Codex image_gen(OpenAI) | [OpenAI Terms of Use](https://openai.com/policies/terms-of-use) | 약관상 출력은 사용자의 것입니다 |
 
-- 버튼은 회색 그림에 청동(보통 0.50, 0.36, 0.20)을 곱하고, 고른 버튼은 1보다 큰 곱으로 금빛이 됩니다. 글은 밝은 크림색입니다.
+- 2026-11-18(101): 사용자가 UI가 깔끔하지 않다고 해 리니지 라이크 UI로 바꾸면서, 창 판(`panel.png`), 버튼(`button.png`), 바의 바탕(`bar_frame.png`), 칸(`slot.png`)의 장식 그림은 지우고 둥근 상자 브러시의 1.5 px 금빛 선으로 바꿨습니다(장식이 많아 어지러웠음). 남은 그림은 위 표의 세 장입니다.
 - 채팅·알림·말풍선의 반투명 바탕과 이름표의 낮은 바는 그림 없이 둡니다(작거나 반투명해 테두리가 보이지 않음). 아이콘(메뉴, 스킬, 효과, 아이템)은 100입니다.
 
 ## 이펙트와 소리

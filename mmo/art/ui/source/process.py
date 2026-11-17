@@ -13,11 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.dirname(HERE)
 # 파일 → (최종 크기, 9-slice의 가운데(가로·세로 비율, 그 안의 밝기 흩어짐을 잼), 둥근 것인지). 크기는 prompts.md의 표와 같다.
 ASSETS = {
-    "panel.png": ((512, 512), (0.2, 0.2), False),
-    "button.png": ((512, 144), (0.22, 0.22), False),
-    "bar_frame.png": ((512, 64), (0.17, 0.3), False),
     "bar_fill.png": ((512, 64), None, False),
-    "slot.png": ((256, 256), (0.17, 0.17), False),
     "joystick_base.png": ((512, 512), None, True),
     "joystick_thumb.png": ((256, 256), None, True),
 }

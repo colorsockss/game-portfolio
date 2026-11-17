@@ -62,6 +62,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UTexture2D> Icon;
 
+	/**
+	 * 생성기가 정해 두는 이 버튼만의 모양(101: HUD의 원형 행동 버튼, 바탕 없는 메뉴 아이콘). bOwnStyle이 거짓이면 공용 버튼(WBP_Button)의 모양이다.
+	 * 모양의 값은 생성기의 스타일 표에 있다.
+	 */
+	UPROPERTY(EditAnywhere)
+	bool bOwnStyle = false;
+
+	UPROPERTY(EditAnywhere)
+	FButtonStyle OwnStyle;
+
 	UPROPERTY(EditAnywhere)
 	bool bTouchOnly = false;
 

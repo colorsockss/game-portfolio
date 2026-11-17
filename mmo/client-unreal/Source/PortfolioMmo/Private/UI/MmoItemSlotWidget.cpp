@@ -19,7 +19,8 @@ FLinearColor UMmoItemSlotWidget::GradeColor(int32 Grade)
 	case portfolio::mmo::data::ITEM_GRADE_EPIC:
 		return FLinearColor(0.75f, 0.4f, 1.0f);
 	default:
-		return FLinearColor(0.85f, 0.85f, 0.85f);
+		// 일반 등급은 어두운 청동 테두리(101).
+		return FLinearColor(0.42f, 0.36f, 0.26f);
 	}
 }
 
@@ -42,8 +43,8 @@ void UMmoItemSlotWidget::Show(uint32 ItemId, uint32 Count)
 {
 	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
 	const portfolio::mmo::data::ItemsRow* Item = ItemId != 0 ? Session->Data().Item(ItemId) : nullptr;
-	// 칸 그림(청동 테두리)에 곱한다. 빈 칸은 어둡게.
-	GradeBorder->SetBrushColor(Item ? GradeColor(Item->grade()) : FLinearColor(0.55f, 0.55f, 0.58f));
+	// 칸의 테두리 색이다. 빈 칸은 어두운 회색.
+	GradeBorder->SetBrushColor(Item ? GradeColor(Item->grade()) : FLinearColor(0.16f, 0.16f, 0.17f));
 	const UMmoIcons* Icons = LoadObject<UMmoIcons>(nullptr, UMmoIcons::Path);
 	UTexture2D* Texture = Item && Icons ? Icons->Load(EMmoIconKind::Item, static_cast<int32>(ItemId)) : nullptr;
 	IconImage->SetVisibility(Texture ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);

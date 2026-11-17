@@ -75,6 +75,10 @@ void UMmoButtonWidget::NativePreConstruct()
 	SetKeyHint(KeyHint);
 	const float Height = IsTouchDevice() ? MinHeightTouch : MinHeightPointer;
 	Size->SetMinDesiredHeight(Height);
+	if (bOwnStyle)
+	{
+		Button->SetStyle(OwnStyle);
+	}
 	if (Icon)
 	{
 		// 그림만 있는 버튼은 정사각형이고, 그림이 작아지지 않게 라벨의 안쪽 여백을 줄인다.
@@ -82,7 +86,7 @@ void UMmoButtonWidget::NativePreConstruct()
 		Size->SetMinDesiredWidth(Height);
 		if (UButtonSlot* Content = Cast<UButtonSlot>(Button->GetContentSlot()))
 		{
-			Content->SetPadding(FMargin(4.0f));
+			Content->SetPadding(FMargin(FMath::RoundToFloat(Height * 0.14f)));
 		}
 	}
 	if (bTouchOnly && !IsDesignTime() && !IsTouchDevice())

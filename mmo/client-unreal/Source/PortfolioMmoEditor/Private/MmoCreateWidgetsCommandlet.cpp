@@ -81,17 +81,28 @@ namespace
 	{
 		FLinearColor Backdrop{ 0.02f, 0.02f, 0.03f, 1.0f };
 		FLinearColor Dim{ 0.0f, 0.0f, 0.0f, 0.5f };
+		/** 옆에 붙인 창(가방, 캐릭터, 스킬)의 바탕. 월드가 보이게 옅다(101). */
+		FLinearColor SideDim{ 0.0f, 0.0f, 0.0f, 0.18f };
 		FLinearColor Text{ 0.92f, 0.92f, 0.90f, 1.0f };
 		FLinearColor Positive{ 0.45f, 0.9f, 0.55f, 1.0f };
 		FLinearColor Negative{ 1.0f, 0.4f, 0.35f, 1.0f };
 		FLinearColor Shadow{ 0.0f, 0.0f, 0.0f, 0.8f };
 		FLinearColor NoticeBack{ 0.0f, 0.0f, 0.0f, 0.65f };
-		/** 버튼의 그림(button.png. 밝기만)에 곱하는 색(99: 청동). */
-		FLinearColor ButtonNormal{ 0.50f, 0.36f, 0.20f, 1.0f };
-		FLinearColor ButtonHovered{ 0.65f, 0.48f, 0.28f, 1.0f };
-		FLinearColor ButtonPressed{ 0.34f, 0.24f, 0.13f, 1.0f };
-		FLinearColor ButtonDisabled{ 0.20f, 0.20f, 0.20f, 1.0f };
-		FLinearColor ButtonText{ 0.96f, 0.90f, 0.76f, 1.0f };
+		/**
+		 * 판과 버튼(101: 리니지 라이크 개편). 짙은 숯색 판에 1 px 금빛 선, 버튼은 어두운 바탕에 같은 선이다. 그림 없이 둥근 상자 브러시로 그려
+		 * 어느 크기에서도 선이 같은 굵기다.
+		 */
+		FLinearColor PanelFill{ 0.014f, 0.014f, 0.016f, 0.94f };
+		FLinearColor Line{ 0.62f, 0.50f, 0.30f, 1.0f };
+		FLinearColor LineDim{ 0.62f, 0.50f, 0.30f, 0.35f };
+		FLinearColor ButtonNormal{ 0.028f, 0.024f, 0.02f, 0.92f };
+		FLinearColor ButtonHovered{ 0.06f, 0.05f, 0.038f, 0.95f };
+		FLinearColor ButtonPressed{ 0.012f, 0.01f, 0.009f, 0.95f };
+		FLinearColor ButtonDisabled{ 0.02f, 0.02f, 0.02f, 0.8f };
+		FLinearColor ButtonText{ 0.95f, 0.90f, 0.80f, 1.0f };
+		/** HUD의 원형 행동 버튼과 미니맵·칸의 바탕. */
+		FLinearColor RoundFill{ 0.02f, 0.02f, 0.025f, 0.6f };
+		FLinearColor SlotFill{ 0.012f, 0.012f, 0.014f, 1.0f };
 		/** 체력·마나 바의 채움과 바탕. */
 		FLinearColor Hp{ 0.75f, 0.12f, 0.10f, 1.0f };
 		FLinearColor Mp{ 0.15f, 0.35f, 0.85f, 1.0f };
@@ -101,43 +112,35 @@ namespace
 		FLinearColor Cast{ 0.95f, 0.75f, 0.2f, 1.0f };
 		FLinearColor Status{ 1.0f, 0.6f, 0.3f, 1.0f };
 		FLinearColor CooldownShade{ 0.0f, 0.0f, 0.0f, 0.65f };
-		/** 고른 버튼(캐릭터 칸, 직업)의 배경 곱. 버튼의 색과 곱한 뒤에 0–1로 잘리므로 1보다 커도 된다(청동 → 금). */
-		FLinearColor Selected{ 2.1f, 1.8f, 1.1f, 1.0f };
+		/** 고른 버튼(캐릭터 칸, 직업, 켠 자동 사냥)의 배경 곱. 버튼의 색과 곱한 뒤에 0–1로 잘리므로 1보다 커도 된다(어두운 바탕 → 호박색, 선 → 밝은 금). */
+		FLinearColor Selected{ 8.0f, 5.5f, 2.5f, 1.0f };
 		/** 채팅의 줄 색(주변, 파티, 전체, 귓속말, 시스템. 41)과 채팅창·말풍선의 바탕. */
 		FLinearColor ChatNearby{ 0.92f, 0.92f, 0.90f, 1.0f };
 		FLinearColor ChatParty{ 0.45f, 0.75f, 1.0f, 1.0f };
 		FLinearColor ChatWorld{ 1.0f, 0.75f, 0.45f, 1.0f };
 		FLinearColor ChatWhisper{ 1.0f, 0.55f, 0.9f, 1.0f };
 		FLinearColor ChatSystem{ 0.95f, 0.85f, 0.3f, 1.0f };
-		FLinearColor ChatBack{ 0.0f, 0.0f, 0.0f, 0.45f };
+		FLinearColor ChatBack{ 0.0f, 0.0f, 0.0f, 0.12f };
 
-		int32 TitleSize = 24;
-		int32 BodySize = 18;
+		int32 TitleSize = 22;
+		int32 BodySize = 17;
 		int32 SmallSize = 14;
 		int32 KeySize = 11;
 		int32 ValueSize = 32;
 
-		/** 버튼의 최소 높이. 터치는 손가락으로 누를 크기(약 9 mm)를 겨냥한 값이고, 실제 휴대폰에서 재서 정한다(재지 않았습니다). */
-		float ButtonHeightTouch = 120.0f;
-		float ButtonHeightPointer = 44.0f;
-		float ButtonRadius = 6.0f;
+		/** 버튼의 최소 높이. 터치는 손가락으로 누를 크기를 겨냥한 값이고(101에서 리니지 라이크 HUD의 작은 버튼 55–90 px에 맞춰 줄임), 실제 휴대폰에서 재서 정한다(재지 않았습니다). */
+		float ButtonHeightTouch = 76.0f;
+		float ButtonHeightPointer = 40.0f;
+		/** HUD의 작은 글 버튼(채팅, 파티)의 터치 높이(101). */
+		float ButtonHeightCompact = 48.0f;
+		float ButtonRadius = 3.0f;
 		FMargin ButtonPadding{ 16.0f, 6.0f };
 
-		/** 창 판의 안쪽 여백. 판의 테두리 장식(화면에서 약 23 px) 안에 내용을 둔다. */
-		float PanelPadding = 32.0f;
-		/**
-		 * UI 그림(99. mmo/art/ui/)의 9-slice: 가장자리의 비율(그림의 몇 %가 테두리인지. mmo/art/ui/source/prompts.md의 조건)과,
-		 * 그 비율을 곱해 화면에서의 테두리 크기를 정하는 그림의 크기(ImageSize).
-		 */
-		FMargin PanelMargin{ 0.18f };
-		FVector2D PanelImageSize{ 128.0, 128.0 };
-		FMargin ButtonMargin{ 0.2f };
-		FVector2D ButtonImageSize{ 128.0, 36.0 };
-		FMargin BarMargin{ 0.15f, 0.25f };
-		/** 바의 테두리 안에 채움을 두는 여백. 이보다 낮은 바(이름표)는 그림 없이 둥근 상자다. */
-		float BarInset = 4.0f;
+		/** 창 판의 안쪽 여백. */
+		float PanelPadding = 20.0f;
+		/** 바의 바탕 안에 채움을 두는 여백. 이보다 낮은 바(이름표)는 광택 채움 없이 둥근 상자다. */
+		float BarInset = 2.0f;
 		float BarArtMinHeight = 12.0f;
-		FMargin SlotMargin{ 0.15f };
 		/** 세로로 쌓은 것 사이와 나란한 버튼 사이. */
 		float Gap = 8.0f;
 		float Section = 16.0f;
@@ -150,26 +153,32 @@ namespace
 		float EffectIcon = 40.0f;
 		/** HUD의 요소가 화면 모서리(안전 영역 안)에서 떨어지는 거리. */
 		float HudMargin = 24.0f;
-		float JoystickSize = 240.0f;
+		float JoystickSize = 200.0f;
 		/** HUD의 체력·마나 바 크기. */
-		float BarWidth = 320.0f;
-		float BarHeight = 24.0f;
+		float BarWidth = 380.0f;
+		float BarHeight = 22.0f;
+		/** 화면 맨 아래 전체 폭의 경험치 바 높이(101). */
+		float ExpBarHeight = 5.0f;
+		/** HUD 오른쪽 아래의 원형 공격 버튼과 그 둘레의 작은 원형 버튼, 오른쪽 위의 메뉴 아이콘(101). */
+		float AttackSize = 150.0f;
+		float RoundSize = 78.0f;
+		float MenuIcon = 60.0f;
 		/** 이름표의 체력 바 크기. */
 		float TagBarWidth = 80.0f;
 		float TagBarHeight = 6.0f;
-		/** 퀵슬롯 한 칸의 폭. */
-		float SlotWidth = 80.0f;
+		/** 퀵슬롯 한 칸(정사각형)의 변. */
+		float SlotWidth = 76.0f;
 		float NoticeTop = 80.0f;
 		/** 채팅창의 폭, 줄 목록의 높이, 받는 사람 칸의 폭(41). 말풍선의 가장 넓은 폭. */
-		float ChatWidth = 440.0f;
-		float ChatLinesHeight = 180.0f;
+		float ChatWidth = 420.0f;
+		float ChatLinesHeight = 120.0f;
 		float ChatToWidth = 110.0f;
 		float BubbleWidth = 240.0f;
 		/** HUD의 파티 칸이 왼쪽 위에서 내려오는 거리(구역 표시 아래)와 파티원 칸의 폭(42). */
-		float PartyTop = 190.0f;
+		float PartyTop = 470.0f;
 		float PartySlotWidth = 180.0f;
 		/** HUD의 보스 체력 바가 위에서 내려오는 거리(대상 정보 아래)와 바의 폭(43). */
-		float BossTop = 120.0f;
+		float BossTop = 80.0f;
 		float BossBarWidth = 520.0f;
 	};
 
@@ -213,45 +222,38 @@ namespace
 	}
 
 	/**
-	 * UI 그림(99): Codex image_gen으로 만든 판타지 MMO풍 그림(mmo/art/ui/. 프롬프트와 후처리는 mmo/art/ui/source/). 창 판, 버튼(밝기만이라 색을 곱함),
-	 * 바의 바탕과 채움(밝기만), 아이템 칸, 조이스틱. Main이 맨 먼저 가져온다. 채팅·알림·말풍선의 반투명 바탕은 그림 없이 둔다.
+	 * UI 그림(99): Codex image_gen으로 만든 그림(mmo/art/ui/. 프롬프트와 후처리는 mmo/art/ui/source/). 바의 광택 채움(밝기만이라 색을 곱함)과 조이스틱.
+	 * Main이 맨 먼저 가져온다. 창 판, 버튼, 바의 바탕, 칸은 101에서 그림 대신 둥근 상자에 1.5 px 선(LineBox)으로 바꿨다.
 	 */
 	struct FMmoArt
 	{
-		UTexture2D* Panel = nullptr;
-		UTexture2D* Button = nullptr;
-		UTexture2D* BarFrame = nullptr;
 		UTexture2D* BarFill = nullptr;
-		UTexture2D* Slot = nullptr;
 		UTexture2D* JoystickBase = nullptr;
 		UTexture2D* JoystickThumb = nullptr;
 
 		bool Import()
 		{
 			const auto Get = [](const TCHAR* Name) { return ImportTexture(TEXT("ui"), TEXT("/Game/UI/Art"), Name); };
-			Panel = Get(TEXT("panel"));
-			Button = Get(TEXT("button"));
-			BarFrame = Get(TEXT("bar_frame"));
 			BarFill = Get(TEXT("bar_fill"));
-			Slot = Get(TEXT("slot"));
 			JoystickBase = Get(TEXT("joystick_base"));
 			JoystickThumb = Get(TEXT("joystick_thumb"));
-			return Panel && Button && BarFrame && BarFill && Slot && JoystickBase && JoystickThumb;
+			return BarFill && JoystickBase && JoystickThumb;
 		}
 	};
 
 	FMmoArt Art;
 
-	/** 9-slice 그림의 브러시: 가장자리(Margin 비율)는 그대로 그리고 가운데만 늘린다. ImageSize에 비율을 곱한 것이 화면에서의 테두리 크기다. */
-	FSlateBrush BoxBrush(UTexture2D* Texture, const FVector2D& ImageSize, const FMargin& Margin, const FLinearColor& Tint = FLinearColor::White)
+	/** 판과 버튼의 브러시(101): 둥근 상자에 1 px 선. */
+	FSlateBrush LineBox(const FLinearColor& Fill, const FLinearColor& Outline, float Radius = 3.0f)
 	{
-		FSlateBrush Brush;
-		Brush.SetResourceObject(Texture);
-		Brush.ImageSize = ImageSize;
-		Brush.DrawAs = ESlateBrushDrawType::Box;
-		Brush.Margin = Margin;
-		Brush.TintColor = FSlateColor(Tint);
-		return Brush;
+		// 선은 1.5 px: 720p 창(UI 배율 약 0.67)에서도 1 px 남짓 보인다.
+		return FSlateRoundedBoxBrush(Fill, Radius, Outline, 1.5f);
+	}
+
+	/** 원형(높이의 반이 반지름) 버튼의 브러시. */
+	FSlateBrush CircleBrush(const FLinearColor& Fill, const FLinearColor& Outline, float Width)
+	{
+		return FSlateRoundedBoxBrush(Fill, Outline, Width);
 	}
 
 	/** 위젯 블루프린트 하나를 만드는 동안의 상태. 디스크의 옛 파일을 지우고 새로 만든다. */
@@ -286,7 +288,28 @@ namespace
 		{
 			T* Widget = Blueprint->WidgetTree->ConstructWidget<T>(Class, Name);
 			Widget->bIsVariable = bBound;
+			if constexpr (std::is_same_v<T, UEditableTextBox>)
+			{
+				StyleInput(*Widget);
+			}
 			return Widget;
+		}
+
+		/** 글 입력 칸(101): 엔진 기본의 흰 칸 대신 버튼과 같은 어두운 바탕에 옅은 금빛 선, 밝은 글. */
+		static void StyleInput(UEditableTextBox& Box)
+		{
+			FEditableTextBoxStyle Look = Box.GetWidgetStyle();
+			Look.SetBackgroundImageNormal(FSlateRoundedBoxBrush(Style.ButtonNormal, Style.ButtonRadius, Style.LineDim, 1.5f));
+			Look.SetBackgroundImageHovered(FSlateRoundedBoxBrush(Style.ButtonHovered, Style.ButtonRadius, Style.LineDim, 1.5f));
+			Look.SetBackgroundImageFocused(FSlateRoundedBoxBrush(Style.ButtonNormal, Style.ButtonRadius, Style.Line, 1.5f));
+			Look.SetBackgroundImageReadOnly(FSlateRoundedBoxBrush(Style.ButtonDisabled, Style.ButtonRadius, Style.LineDim, 1.5f));
+			Look.SetForegroundColor(FSlateColor(Style.Text));
+			Look.SetFocusedForegroundColor(FSlateColor(Style.Text));
+			Look.SetPadding(FMargin(10.0f, 6.0f));
+			FSlateFontInfo Font = Look.TextStyle.Font;
+			Font.Size = Style.BodySize;
+			Look.SetFont(Font);
+			Box.SetWidgetStyle(Look);
 		}
 
 		/** 스타일 표의 글자색과 그림자로 글을 만든다. 코드가 채우는 글(상태 줄 등)이다. */
@@ -340,9 +363,9 @@ namespace
 
 		/**
 		 * 창과 팝업: 화면 전체를 덮는 바탕(Backdrop 또는 Dim) 위, 안전 영역 안의 가운데에 폭 Width의 판을 둔다. 판 안의 세로 상자를 낸다.
-		 * 화면의 비율이 달라도 창은 가운데에 같은 폭으로 있다.
+		 * 화면의 비율이 달라도 창은 가운데에 같은 폭으로 있다. bSide면 리니지 라이크 창처럼 오른쪽(메뉴 아이콘 줄 아래)에 붙여 월드가 보이게 한다(101).
 		 */
-		UVerticalBox* Window(float Width, const FLinearColor& Back)
+		UVerticalBox* Window(float Width, const FLinearColor& Back, bool bSide = false)
 		{
 			UBorder* Root = Add<UBorder>(TEXT("Back"));
 			Root->SetBrushColor(Back);
@@ -354,11 +377,15 @@ namespace
 			USizeBox* Size = Add<USizeBox>(TEXT("PanelSize"));
 			Size->SetWidthOverride(Width);
 			USafeZoneSlot* SizeSlot = Cast<USafeZoneSlot>(Safe->AddChild(Size));
-			SizeSlot->SetHorizontalAlignment(HAlign_Center);
+			SizeSlot->SetHorizontalAlignment(bSide ? HAlign_Right : HAlign_Center);
 			SizeSlot->SetVerticalAlignment(VAlign_Center);
+			if (bSide)
+			{
+				SizeSlot->SetPadding(FMargin(0.0f, Style.MenuIcon + Style.Gap * 4.0f, Style.HudMargin, Style.HudMargin));
+			}
 
 			UBorder* Panel = Add<UBorder>(TEXT("Panel"));
-			Panel->SetBrush(BoxBrush(Art.Panel, Style.PanelImageSize, Style.PanelMargin));
+			Panel->SetBrush(LineBox(Style.PanelFill, Style.Line, 4.0f));
 			Panel->SetPadding(FMargin(Style.PanelPadding));
 			Size->SetContent(Panel);
 			UVerticalBox* Column = Add<UVerticalBox>(TEXT("Column"));
@@ -465,6 +492,44 @@ namespace
 		return Result;
 	}
 
+	/**
+	 * 창의 머리줄(101): 왼쪽에 제목(Title. Strings의 키), bClose면 오른쪽 위에 ✕(CloseButton. 창의 기반 클래스가 묶음), 그 아래 옅은 금빛 선.
+	 * 리니지 라이크 창처럼 닫기는 아래 버튼이 아니라 머리줄에 있다.
+	 */
+	void Header(FWidgetBlueprintBuilder& Builder, UVerticalBox& Column, UWidget* TitleWidget, bool bClose)
+	{
+		UHorizontalBox* Bar = Builder.Add<UHorizontalBox>(TEXT("HeaderBar"));
+		UHorizontalBoxSlot* TitleSlot = Bar->AddChildToHorizontalBox(TitleWidget);
+		TitleSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+		TitleSlot->SetVerticalAlignment(VAlign_Center);
+		if (bClose)
+		{
+			UMmoButtonWidget* Close = Builder.Button(TEXT("CloseButton"), FText::AsCultureInvariant(TEXT("\u00D7")));
+			Close->MinHeightTouch = Style.ButtonHeightPointer;
+			Close->bOwnStyle = true;
+			FButtonStyle Plain;
+			Plain.SetNormal(FSlateNoResource());
+			Plain.SetHovered(LineBox(Style.ButtonHovered, Style.LineDim));
+			Plain.SetPressed(LineBox(Style.ButtonPressed, Style.LineDim));
+			Plain.SetNormalPadding(FMargin(0.0f));
+			Plain.SetPressedPadding(FMargin(0.0f));
+			Close->OwnStyle = Plain;
+			Bar->AddChildToHorizontalBox(Close)->SetVerticalAlignment(VAlign_Center);
+		}
+		Column.AddChildToVerticalBox(Bar);
+		UImage* Rule = Builder.Add<UImage>(TEXT("HeaderRule"));
+		Rule->SetBrush(FSlateRoundedBoxBrush(Style.LineDim, 0.0f));
+		USizeBox* RuleSize = Builder.Add<USizeBox>(TEXT("HeaderRuleSize"));
+		RuleSize->SetHeightOverride(1.0f);
+		RuleSize->SetContent(Rule);
+		Column.AddChildToVerticalBox(RuleSize)->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, Style.Section));
+	}
+
+	void Header(FWidgetBlueprintBuilder& Builder, UVerticalBox& Column, const TCHAR* TitleKey, bool bClose)
+	{
+		Header(Builder, Column, Builder.KeyText(TEXT("Title"), TitleKey, Style.TitleSize), bClose);
+	}
+
 	/** 창의 아래에 오른쪽 정렬로 버튼 줄을 둔다. */
 	void ButtonsAtEnd(UVerticalBox& Column, UHorizontalBox* Buttons)
 	{
@@ -473,7 +538,7 @@ namespace
 
 	FSlateBrush ButtonBrush(const FLinearColor& Color)
 	{
-		return BoxBrush(Art.Button, Style.ButtonImageSize, Style.ButtonMargin, Color);
+		return LineBox(Color, Style.Line, Style.ButtonRadius);
 	}
 
 	/** 공용 버튼(WBP_Button). 다른 화면이 모두 이것을 놓으므로 맨 먼저 만든다. */
@@ -549,6 +614,8 @@ namespace
 
 		UImage* Base = Builder.Add<UImage>(TEXT("Base"));
 		Base->SetBrushFromTexture(Art.JoystickBase);
+		// 리니지 라이크 HUD처럼 바탕은 흐릿하게(101).
+		Base->SetRenderOpacity(0.55f);
 		UOverlaySlot* BaseSlot = Stack->AddChildToOverlay(Base);
 		BaseSlot->SetHorizontalAlignment(HAlign_Fill);
 		BaseSlot->SetVerticalAlignment(VAlign_Fill);
@@ -580,7 +647,7 @@ namespace
 		if (bArt)
 		{
 			UImage* Frame = Builder.Add<UImage>(*FString::Printf(TEXT("%sBarFrame"), Name));
-			Frame->SetBrush(BoxBrush(Art.BarFrame, FVector2D(128.0, Height), Style.BarMargin));
+			Frame->SetBrush(LineBox(Style.BarBack, FLinearColor(0.0f, 0.0f, 0.0f, 0.9f), 2.0f));
 			UOverlaySlot* FrameSlot = Stack->AddChildToOverlay(Frame);
 			FrameSlot->SetHorizontalAlignment(HAlign_Fill);
 			FrameSlot->SetVerticalAlignment(VAlign_Fill);
@@ -629,7 +696,7 @@ namespace
 		Size->SetWidthOverride(Style.ChatWidth);
 		Builder.SetRoot(Size);
 		UBorder* Back = Builder.Add<UBorder>(TEXT("Back"));
-		Back->SetBrush(FSlateRoundedBoxBrush(Style.ChatBack, Style.ButtonRadius));
+		Back->SetBrush(FSlateRoundedBoxBrush(Style.ChatBack, 4.0f));
 		Back->SetPadding(FMargin(Style.Gap));
 		Size->SetContent(Back);
 		UVerticalBox* Column = Builder.Add<UVerticalBox>(TEXT("Column"));
@@ -639,7 +706,9 @@ namespace
 		LinesSize->SetContent(Builder.Add<UScrollBox>(TEXT("LinesBox"), true));
 		AddWithGap(*Column, LinesSize);
 		UHorizontalBox* Input = Builder.Add<UHorizontalBox>(TEXT("Input"));
-		Input->AddChildToHorizontalBox(Builder.Button(TEXT("ChannelButton"), FText::GetEmpty()));
+		UMmoButtonWidget* Channel = Builder.Button(TEXT("ChannelButton"), FText::GetEmpty());
+		Channel->MinHeightTouch = Style.ButtonHeightCompact;
+		Input->AddChildToHorizontalBox(Channel);
 		USizeBox* ToSize = Builder.Add<USizeBox>(TEXT("ToSize"));
 		ToSize->SetWidthOverride(Style.ChatToWidth);
 		UEditableTextBox* To = Builder.Add<UEditableTextBox>(TEXT("ToBox"), true);
@@ -654,38 +723,90 @@ namespace
 		LineSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 		LineSlot->SetPadding(FMargin(Style.Gap * 0.5f, 0.0f));
 		LineSlot->SetVerticalAlignment(VAlign_Center);
-		Input->AddChildToHorizontalBox(Builder.Button(TEXT("SendButton"), TEXT("chat.send")));
+		UMmoButtonWidget* Send = Builder.Button(TEXT("SendButton"), TEXT("chat.send"));
+		Send->MinHeightTouch = Style.ButtonHeightCompact;
+		Input->AddChildToHorizontalBox(Send);
 		Column->AddChildToVerticalBox(Input);
 		return Builder.Save() ? Builder.GeneratedClass() : nullptr;
 	}
 
+	/** 원형 버튼(101): 이름표 Name, 그림 Icon(없으면 라벨), 지름 Size, 선 색 Outline. Cluster의 Center에 둔다. */
+	UMmoButtonWidget* RoundButton(FWidgetBlueprintBuilder& Builder, UCanvasPanel& Cluster, const TCHAR* Name, const TCHAR* LabelKey, const TCHAR* Icon, bool bTouchOnly,
+		float Size, FVector2D Center, const FLinearColor& Outline)
+	{
+		UMmoButtonWidget* Result = Builder.Button(Name, LabelKey, bTouchOnly);
+		if (Icon)
+		{
+			Result->Icon = ImportIcon(Icon);
+		}
+		Result->MinHeightTouch = Size;
+		Result->MinHeightPointer = Size;
+		Result->bOwnStyle = true;
+		FButtonStyle Round;
+		Round.SetNormal(CircleBrush(Style.RoundFill, Outline, 2.0f));
+		Round.SetHovered(CircleBrush(Style.ButtonHovered, Outline, 2.0f));
+		Round.SetPressed(CircleBrush(Style.ButtonPressed, Outline, 2.0f));
+		Round.SetDisabled(CircleBrush(Style.RoundFill, Style.LineDim, 2.0f));
+		Round.SetNormalPadding(FMargin(0.0f));
+		Round.SetPressedPadding(FMargin(0.0f));
+		Result->OwnStyle = Round;
+		USizeBox* Box = Builder.Add<USizeBox>(*FString::Printf(TEXT("%sSize"), Name));
+		Box->SetWidthOverride(Size);
+		Box->SetHeightOverride(Size);
+		Box->SetContent(Result);
+		UCanvasPanelSlot* Slot = Cluster.AddChildToCanvas(Box);
+		Slot->SetPosition(Center - FVector2D(Size * 0.5, Size * 0.5));
+		Slot->SetSize(FVector2D(Size, Size));
+		return Result;
+	}
+
+	/**
+	 * HUD(101: 리니지 라이크 배치). 필드에는 판을 거의 두지 않고 글과 아이콘에 그림자만 준다. 틀은 미니맵과 칸뿐이다.
+	 *   왼쪽 위: 체력·마나 바, 걸린 효과, 미니맵, 구역, 그 아래 파티. 오른쪽 위: 메뉴 아이콘 줄과 그 아래 퀘스트 추적.
+	 *   위 가운데: 대상과 보스. 아래 가운데: 시전 바와 정사각형 퀵슬롯 8칸. 맨 아래: 전체 폭의 얇은 경험치 바(왼쪽 아래에 %).
+	 *   오른쪽 아래: 큰 원형 공격 버튼과 그 둘레(왼쪽 위로 원호)의 자동 사냥·대상·상호작용·강제 공격. 왼쪽 아래: 조이스틱(터치)과 그 위 채팅.
+	 * PC에서는 터치 버튼과 조이스틱이 감춰지고 채팅이 조이스틱 자리로 내려간다(UMmoHudWidget).
+	 */
 	bool CreateHud(UClass* JoystickClass, UClass* ChatClass)
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Hud, UMmoHudWidget::StaticClass());
 		UCanvasPanel* Root = Builder.SafeCanvas();
+		const float Bottom = Style.ExpBarHeight;
+
+		// 맨 아래 전체 폭의 경험치 바와 왼쪽 아래의 %.
+		UProgressBar* Exp = Builder.Add<UProgressBar>(TEXT("ExpBar"), true);
+		FProgressBarStyle ExpStyle = Exp->GetWidgetStyle();
+		ExpStyle.BackgroundImage = FSlateRoundedBoxBrush(FLinearColor(0.0f, 0.0f, 0.0f, 0.55f), 0.0f);
+		FSlateBrush ExpFill;
+		ExpFill.SetResourceObject(Art.BarFill);
+		ExpStyle.FillImage = ExpFill;
+		Exp->SetWidgetStyle(ExpStyle);
+		Exp->SetFillColorAndOpacity(Style.Exp);
+		Exp->SetPercent(0.5f);
+		Exp->SetVisibility(ESlateVisibility::HitTestInvisible);
+		UCanvasPanelSlot* ExpSlot = Root->AddChildToCanvas(Exp);
+		ExpSlot->SetAnchors(FAnchors(0.0f, 1.0f, 1.0f, 1.0f));
+		ExpSlot->SetAlignment(FVector2D(0.0, 1.0));
+		ExpSlot->SetOffsets(FMargin(0.0f, 0.0f, 0.0f, Bottom));
+		UTextBlock* ExpText = Builder.Text(TEXT("ExpText"), FText::GetEmpty(), Style.SmallSize, true);
+		ExpText->SetVisibility(ESlateVisibility::HitTestInvisible);
+		Corner(*Root, ExpText, ECorner::BottomLeft, FVector2D(Style.HudMargin, Bottom + 2.0f));
 
 		// 채팅창(41)은 왼쪽 아래, 터치 기기에서는 조이스틱 위다(PC에서는 UMmoHudWidget이 조이스틱 자리로 내림).
 		UMmoChatWidget* Chat = Builder.Add<UMmoChatWidget>(ChatClass, TEXT("ChatBox"), true);
 		Chat->KindColors = { Style.ChatNearby, Style.ChatParty, Style.ChatWorld, Style.ChatWhisper, Style.ChatSystem };
 		Chat->LineSize = Style.SmallSize;
-		Corner(*Root, Chat, ECorner::BottomLeft, FVector2D(Style.HudMargin, Style.HudMargin * 2.5 + Style.JoystickSize + Style.Gap));
-
+		Corner(*Root, Chat, ECorner::BottomLeft, FVector2D(Style.HudMargin, Style.HudMargin * 2.5 + Style.JoystickSize + Style.Gap + Bottom));
 		// 조이스틱은 왼쪽 아래(터치 기기에서만 보임. UMmoHudWidget).
 		Corner(*Root, Builder.Add<UUserWidget>(JoystickClass, TEXT("Joystick"), true), ECorner::BottomLeft,
-			FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5));
+			FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5 + Bottom));
 
-		// 왼쪽 위에 내 체력·마나·경험치 바, 그 아래 지금 구역(이름과 권장 레벨)과 안전 지대 표시.
+		// 왼쪽 위: 체력·마나 바, 걸린 효과의 아이콘과 남은 초(100), 그림이 없는 효과·전투 상태·소환수·선공 표시의 글 줄, 미니맵(76), 구역.
 		UVerticalBox* Zone = Builder.Add<UVerticalBox>(TEXT("Zone"));
-		Zone->SetVisibility(ESlateVisibility::HitTestInvisible);
-		Corner(*Root, Zone, ECorner::TopLeft);
+		Zone->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		Corner(*Root, Zone, ECorner::TopLeft, FVector2D(Style.HudMargin, Style.Gap * 2.0f));
 		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Hp"), Style.Hp));
-		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Mp"), Style.Mp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
-		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Exp"), Style.Exp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, Style.Gap));
-		Zone->AddChildToVerticalBox(Builder.Text(TEXT("ZoneText"), FText::GetEmpty(), Style.BodySize, true));
-		UMmoTextBlock* SafeZoneText = Builder.KeyText(TEXT("SafeZoneText"), TEXT("hud.safeZone"), Style.SmallSize, true, Style.Positive);
-		SafeZoneText->SetVisibility(ESlateVisibility::Collapsed);
-		Zone->AddChildToVerticalBox(SafeZoneText);
-		// 걸린 효과의 아이콘과 남은 초(100. 쓰지 않는 칸은 UMmoHudWidget이 감춤), 그 아래 그림이 없는 효과·전투 상태·소환수·선공 표시의 글 줄.
+		Zone->AddChildToVerticalBox(Bar(Builder, TEXT("Mp"), Style.Mp))->SetPadding(FMargin(0.0f, 4.0f, 0.0f, Style.Gap));
 		UHorizontalBox* EffectIcons = Builder.Add<UHorizontalBox>(TEXT("EffectIcons"));
 		for (int32 Index = 0; Index < UMmoHudWidget::EffectIconCount; ++Index)
 		{
@@ -701,129 +822,14 @@ namespace
 			UOverlaySlot* TimeSlot = Stack->AddChildToOverlay(Builder.Text(*FString::Printf(TEXT("Effect%dTime"), Index), FText::GetEmpty(), Style.KeySize + 1));
 			TimeSlot->SetHorizontalAlignment(HAlign_Right);
 			TimeSlot->SetVerticalAlignment(VAlign_Bottom);
-			EffectIcons->AddChildToHorizontalBox(Cell)->SetPadding(FMargin(Index == 0 ? 0.0f : Style.Gap * 0.5f, 0.0f, 0.0f, 0.0f));
+			EffectIcons->AddChildToHorizontalBox(Cell)->SetPadding(FMargin(Index == 0 ? 0.0f : 4.0f, 0.0f, 0.0f, 0.0f));
 		}
-		Zone->AddChildToVerticalBox(EffectIcons)->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
+		Zone->AddChildToVerticalBox(EffectIcons);
 		Zone->AddChildToVerticalBox(Builder.Text(TEXT("EffectsText"), FText::GetEmpty(), Style.SmallSize, true, Style.Status));
-		// 받은 퀘스트의 진행 한 줄(50). 받은 것이 없으면 UMmoHudWidget이 감춘다.
-		UTextBlock* QuestText = Builder.Text(TEXT("QuestText"), FText::GetEmpty(), Style.SmallSize + 2, true);
-		QuestText->SetVisibility(ESlateVisibility::Collapsed);
-		Zone->AddChildToVerticalBox(QuestText)->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
-
-		// 위 가운데에 내 대상의 정보(이름과 레벨, 체력 바). 대상이 없으면 UMmoHudWidget이 감춘다.
-		UVerticalBox* Target = Builder.Add<UVerticalBox>(TEXT("TargetPanel"), true);
-		Target->SetVisibility(ESlateVisibility::Collapsed);
-		Corner(*Root, Target, ECorner::TopCenter);
-		UTextBlock* TargetName = Builder.Text(TEXT("TargetNameText"), FText::GetEmpty(), Style.BodySize, true);
-		Target->AddChildToVerticalBox(TargetName)->SetHorizontalAlignment(HAlign_Center);
-		Target->AddChildToVerticalBox(Bar(Builder, TEXT("TargetHp"), Style.Hp))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
-		// 대상이 다른 플레이어면 귓속말 버튼(41)과 파티 초대 버튼(42). 보이는지는 UMmoHudWidget이 정한다.
-		UMmoButtonWidget* Whisper = Builder.Button(TEXT("WhisperButton"), TEXT("target.whisper"));
-		Whisper->SetVisibility(ESlateVisibility::Collapsed);
-		UMmoButtonWidget* PartyInvite = Builder.Button(TEXT("PartyInviteButton"), TEXT("party.invite"));
-		PartyInvite->SetVisibility(ESlateVisibility::Collapsed);
-		Target->AddChildToVerticalBox(Row(Builder, TEXT("TargetButtons"), { Whisper, PartyInvite }))->SetHorizontalAlignment(HAlign_Center);
-
-		// 위 가운데, 대상 정보 아래에 보스 체력 바(시야 안에 보스가 있을 때만. 43).
-		UVerticalBox* Boss = Builder.Add<UVerticalBox>(TEXT("BossPanel"), true);
-		Boss->SetVisibility(ESlateVisibility::Collapsed);
-		Corner(*Root, Boss, ECorner::TopCenter, FVector2D(0.0, Style.HudMargin + Style.BossTop));
-		Boss->AddChildToVerticalBox(Builder.Text(TEXT("BossNameText"), FText::GetEmpty(), Style.BodySize, true, Style.Negative))->SetHorizontalAlignment(HAlign_Center);
-		Boss->AddChildToVerticalBox(Bar(Builder, TEXT("BossHp"), Style.Hp, Style.BossBarWidth))->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
-
-		// 왼쪽, 구역 표시 아래에 파티 버튼과 파티원 칸(42. 칸마다 이름 버튼과 작은 체력 바. 파티원이 없는 칸은 UMmoHudWidget이 감춤).
-		UVerticalBox* Party = Builder.Add<UVerticalBox>(TEXT("Party"));
-		Party->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		Corner(*Root, Party, ECorner::TopLeft, FVector2D(Style.HudMargin, Style.HudMargin + Style.PartyTop));
-		AddWithGap(*Party, Builder.Button(TEXT("PartyButton"), TEXT("party.button")));
-		Cast<UVerticalBoxSlot>(Party->GetChildAt(0)->Slot)->SetHorizontalAlignment(HAlign_Left);
-		for (int32 Index = 0; Index < UMmoHudWidget::PartySlotCount(); ++Index)
-		{
-			UVerticalBox* Member = Builder.Add<UVerticalBox>(*FString::Printf(TEXT("PartyMember%dBox"), Index));
-			Member->SetVisibility(ESlateVisibility::Collapsed);
-			USizeBox* MemberSize = Builder.Add<USizeBox>(*FString::Printf(TEXT("PartyMember%dSize"), Index));
-			MemberSize->SetWidthOverride(Style.PartySlotWidth);
-			MemberSize->SetContent(Builder.Button(*FString::Printf(TEXT("PartyMember%d"), Index), FText::GetEmpty()));
-			Member->AddChildToVerticalBox(MemberSize);
-			Member->AddChildToVerticalBox(Bar(Builder, *FString::Printf(TEXT("PartyMember%dHp"), Index), Style.Hp, Style.PartySlotWidth, Style.TagBarHeight, false))
-				->SetPadding(FMargin(0.0f, 2.0f, 0.0f, 0.0f));
-			AddWithGap(*Party, Member);
-		}
-
-		// 아래 가운데에 내 진행 바(시전. 진행 중일 때만 보임)와 퀵슬롯 8칸(칸마다 버튼 위에 쿨다운 가림). 칸은 UMmoHudWidget이 이름(Slot<n>)으로 찾는다.
-		UVerticalBox* Actions = Builder.Add<UVerticalBox>(TEXT("Actions"));
-		Corner(*Root, Actions, ECorner::BottomCenter);
-		UVerticalBox* CastPanel = Builder.Add<UVerticalBox>(TEXT("CastPanel"), true);
-		CastPanel->SetVisibility(ESlateVisibility::Collapsed);
-		CastPanel->AddChildToVerticalBox(Bar(Builder, TEXT("Cast"), Style.Cast));
-		Actions->AddChildToVerticalBox(CastPanel)->SetHorizontalAlignment(HAlign_Center);
-		UHorizontalBox* Slots = Builder.Add<UHorizontalBox>(TEXT("Slots"));
-		Actions->AddChildToVerticalBox(Slots)->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, 0.0f));
-		for (int32 Index = 0; Index < UMmoHudWidget::QuickslotCount(); ++Index)
-		{
-			USizeBox* Size = Builder.Add<USizeBox>(*FString::Printf(TEXT("Slot%dSize"), Index));
-			Size->SetWidthOverride(Style.SlotWidth);
-			UOverlay* Stack = Builder.Add<UOverlay>(*FString::Printf(TEXT("Slot%dStack"), Index));
-			Size->SetContent(Stack);
-			UOverlaySlot* ButtonSlot = Stack->AddChildToOverlay(Builder.Button(*FString::Printf(TEXT("Slot%d"), Index), FText::GetEmpty()));
-			ButtonSlot->SetHorizontalAlignment(HAlign_Fill);
-			UProgressBar* Shade = Builder.Add<UProgressBar>(*FString::Printf(TEXT("Slot%dCooldown"), Index));
-			FProgressBarStyle ShadeStyle = Shade->GetWidgetStyle();
-			ShadeStyle.BackgroundImage = FSlateNoResource();
-			ShadeStyle.FillImage = FSlateRoundedBoxBrush(FLinearColor::White, Style.ButtonRadius);
-			Shade->SetWidgetStyle(ShadeStyle);
-			Shade->SetFillColorAndOpacity(Style.CooldownShade);
-			Shade->SetBarFillType(EProgressBarFillType::BottomToTop);
-			Shade->SetPercent(0.0f);
-			Shade->SetVisibility(ESlateVisibility::HitTestInvisible);
-			UOverlaySlot* ShadeSlot = Stack->AddChildToOverlay(Shade);
-			ShadeSlot->SetHorizontalAlignment(HAlign_Fill);
-			ShadeSlot->SetVerticalAlignment(VAlign_Fill);
-			Slots->AddChildToHorizontalBox(Size)->SetPadding(FMargin(Index == 0 ? 0.0f : Style.Gap * 0.5f, 0.0f, 0.0f, 0.0f));
-		}
-
-		// 오른쪽 아래에 자동 사냥 버튼(PC와 터치 기기 모두. Z, 40)과 터치 기기에서만 보이는 강제 공격(44), 상호작용, 대상 고르기, 공격 버튼.
-		// PC에서는 Ctrl(누르는 동안), E, Tab, F가 같은 일을 한다. 한 줄이면 가운데의 퀵슬롯과 겹쳐서(1920×1080의 영어에서 봄) 세 줄로 쌓고,
-		// 공격을 모서리에 둔다. 가장 넓은 줄도 4:3 화면의 퀵슬롯 오른쪽 자리(기준 해상도에서 약 320)에 들게 한 줄에 둘까지만 둔다.
-		// PC에서는 자동 사냥만 보여 모서리에 남는다.
-		UVerticalBox* TouchButtons = Builder.Add<UVerticalBox>(TEXT("TouchButtons"));
-		TouchButtons->AddChildToVerticalBox(Row(Builder, TEXT("TouchTopRow"), {
-			Builder.Button(TEXT("ForceButton"), TEXT("hud.forceAttack"), true),
-			Builder.Button(TEXT("InteractButton"), TEXT("interact.none"), true),
-		}))->SetPadding(FMargin(0.0f, 0.0f, 0.0f, Style.Gap));
-		TouchButtons->AddChildToVerticalBox(Row(Builder, TEXT("TouchMiddleRow"), {
-			Builder.Button(TEXT("TargetButton"), TEXT("hud.target"), true),
-		}))->SetPadding(FMargin(0.0f, 0.0f, 0.0f, Style.Gap));
-		TouchButtons->AddChildToVerticalBox(Row(Builder, TEXT("TouchBottomRow"), {
-			Builder.Button(TEXT("AutoButton"), TEXT("hud.auto")),
-			Builder.Button(TEXT("AttackButton"), TEXT("hud.attack"), true),
-		}));
-		for (UPanelSlot* RowSlot : TouchButtons->GetSlots())
-		{
-			Cast<UVerticalBoxSlot>(RowSlot)->SetHorizontalAlignment(HAlign_Right);
-		}
-		Corner(*Root, TouchButtons, ECorner::BottomRight, FVector2D(Style.HudMargin * 2.5, Style.HudMargin * 2.5));
-
-		// 오른쪽 위에 메뉴 버튼(PC와 터치 기기 모두. 키 표시와 누를 수 있는지는 UMmoHudWidget이 정함), 그 아래 시연 표시(설정 창에서 켬).
-		UVerticalBox* TopRight = Builder.Add<UVerticalBox>(TEXT("TopRight"));
-		Corner(*Root, TopRight, ECorner::TopRight);
-		UTextBlock* Stats = Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.SmallSize, true);
-		Stats->SetVisibility(ESlateVisibility::Collapsed);
-		// 메뉴 버튼은 라벨 대신 그림이다(100. mmo/art/icons/menu_<이름>.png).
-		const auto MenuButton = [&Builder](const TCHAR* Name, const TCHAR* LabelKey, const TCHAR* Icon)
-		{
-			UMmoButtonWidget* Result = Builder.Button(Name, LabelKey);
-			Result->Icon = ImportIcon(Icon);
-			return Result;
-		};
-		TopRight->AddChildToVerticalBox(Row(Builder, TEXT("MenuButtons"), {
-			MenuButton(TEXT("BagButton"), TEXT("menu.bag"), TEXT("menu_bag")),
-			MenuButton(TEXT("CharacterButton"), TEXT("menu.character"), TEXT("menu_character")),
-			MenuButton(TEXT("SkillsButton"), TEXT("menu.skills"), TEXT("menu_skills")),
-			MenuButton(TEXT("QuestButton"), TEXT("menu.quest"), TEXT("menu_quest")),
-			MenuButton(TEXT("SettingsButton"), TEXT("menu.settings"), TEXT("menu_settings")),
-		}));
-		// 미니맵(76): 투명한 버튼(누르면 지도) 안에 바탕 그림, 점의 캔버스, 가운데의 내 화살표.
+		// 미니맵(76): 1 px 금빛 선의 틀 안에 투명한 버튼(누르면 지도), 바탕 그림, 점의 캔버스, 가운데의 내 화살표.
+		UBorder* MinimapFrame = Builder.Add<UBorder>(TEXT("MinimapFrame"));
+		MinimapFrame->SetBrush(LineBox(Style.RoundFill, Style.Line, 2.0f));
+		MinimapFrame->SetPadding(FMargin(2.0f));
 		UButton* Minimap = Builder.Add<UButton>(TEXT("MinimapButton"), true);
 		FButtonStyle Clear;
 		Clear.SetNormal(FSlateNoResource());
@@ -832,6 +838,7 @@ namespace
 		Clear.SetNormalPadding(FMargin(0.0f));
 		Clear.SetPressedPadding(FMargin(0.0f));
 		Minimap->SetStyle(Clear);
+		MinimapFrame->SetContent(Minimap);
 		USizeBox* MinimapSize = Builder.Add<USizeBox>(TEXT("MinimapSize"));
 		MinimapSize->SetWidthOverride(UMmoHudWidget::MinimapSize);
 		MinimapSize->SetHeightOverride(UMmoHudWidget::MinimapSize);
@@ -851,8 +858,153 @@ namespace
 		UOverlaySlot* ArrowSlot = MinimapStack->AddChildToOverlay(Arrow);
 		ArrowSlot->SetHorizontalAlignment(HAlign_Center);
 		ArrowSlot->SetVerticalAlignment(VAlign_Center);
-		TopRight->AddChildToVerticalBox(Minimap)->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, 0.0f));
-		Cast<UVerticalBoxSlot>(Minimap->Slot)->SetHorizontalAlignment(HAlign_Right);
+		Zone->AddChildToVerticalBox(MinimapFrame)->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, 4.0f));
+		Cast<UVerticalBoxSlot>(MinimapFrame->Slot)->SetHorizontalAlignment(HAlign_Left);
+		Zone->AddChildToVerticalBox(Builder.Text(TEXT("ZoneText"), FText::GetEmpty(), Style.SmallSize + 1, true));
+		UMmoTextBlock* SafeZoneText = Builder.KeyText(TEXT("SafeZoneText"), TEXT("hud.safeZone"), Style.SmallSize, true, Style.Positive);
+		SafeZoneText->SetVisibility(ESlateVisibility::Collapsed);
+		Zone->AddChildToVerticalBox(SafeZoneText);
+
+		// 위 가운데에 내 대상의 정보(이름과 레벨, 얇은 체력 바). 대상이 없으면 UMmoHudWidget이 감춘다.
+		UVerticalBox* Target = Builder.Add<UVerticalBox>(TEXT("TargetPanel"), true);
+		Target->SetVisibility(ESlateVisibility::Collapsed);
+		Corner(*Root, Target, ECorner::TopCenter, FVector2D(0.0, Style.Gap * 2.0f));
+		UTextBlock* TargetName = Builder.Text(TEXT("TargetNameText"), FText::GetEmpty(), Style.BodySize, true);
+		Target->AddChildToVerticalBox(TargetName)->SetHorizontalAlignment(HAlign_Center);
+		Target->AddChildToVerticalBox(Bar(Builder, TEXT("TargetHp"), Style.Hp, Style.BarWidth, 16.0f))->SetPadding(FMargin(0.0f, 4.0f, 0.0f, 0.0f));
+		// 대상이 다른 플레이어면 귓속말 버튼(41)과 파티 초대 버튼(42). 보이는지는 UMmoHudWidget이 정한다.
+		UMmoButtonWidget* Whisper = Builder.Button(TEXT("WhisperButton"), TEXT("target.whisper"));
+		Whisper->SetVisibility(ESlateVisibility::Collapsed);
+		UMmoButtonWidget* PartyInvite = Builder.Button(TEXT("PartyInviteButton"), TEXT("party.invite"));
+		PartyInvite->SetVisibility(ESlateVisibility::Collapsed);
+		Target->AddChildToVerticalBox(Row(Builder, TEXT("TargetButtons"), { Whisper, PartyInvite }))->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, 0.0f));
+		Cast<UVerticalBoxSlot>(Target->GetChildAt(2)->Slot)->SetHorizontalAlignment(HAlign_Center);
+		// 위 가운데, 대상 정보 아래에 보스 체력 바(시야 안에 보스가 있을 때만. 43).
+		UVerticalBox* Boss = Builder.Add<UVerticalBox>(TEXT("BossPanel"), true);
+		Boss->SetVisibility(ESlateVisibility::Collapsed);
+		Corner(*Root, Boss, ECorner::TopCenter, FVector2D(0.0, Style.Gap * 2.0f + Style.BossTop));
+		Boss->AddChildToVerticalBox(Builder.Text(TEXT("BossNameText"), FText::GetEmpty(), Style.BodySize, true, Style.Negative))->SetHorizontalAlignment(HAlign_Center);
+		Boss->AddChildToVerticalBox(Bar(Builder, TEXT("BossHp"), Style.Hp, Style.BossBarWidth, 18.0f))->SetPadding(FMargin(0.0f, 4.0f, 0.0f, 0.0f));
+
+		// 왼쪽, 미니맵과 구역 아래에 파티 버튼과 파티원 칸(42. 칸마다 이름 버튼과 작은 체력 바. 파티원이 없는 칸은 UMmoHudWidget이 감춤).
+		UVerticalBox* Party = Builder.Add<UVerticalBox>(TEXT("Party"));
+		Party->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		Corner(*Root, Party, ECorner::TopLeft, FVector2D(Style.HudMargin, Style.PartyTop));
+		UMmoButtonWidget* PartyButton = Builder.Button(TEXT("PartyButton"), TEXT("party.button"));
+		PartyButton->MinHeightTouch = Style.ButtonHeightCompact;
+		AddWithGap(*Party, PartyButton);
+		Cast<UVerticalBoxSlot>(Party->GetChildAt(0)->Slot)->SetHorizontalAlignment(HAlign_Left);
+		for (int32 Index = 0; Index < UMmoHudWidget::PartySlotCount(); ++Index)
+		{
+			UVerticalBox* Member = Builder.Add<UVerticalBox>(*FString::Printf(TEXT("PartyMember%dBox"), Index));
+			Member->SetVisibility(ESlateVisibility::Collapsed);
+			USizeBox* MemberSize = Builder.Add<USizeBox>(*FString::Printf(TEXT("PartyMember%dSize"), Index));
+			MemberSize->SetWidthOverride(Style.PartySlotWidth);
+			UMmoButtonWidget* MemberButton = Builder.Button(*FString::Printf(TEXT("PartyMember%d"), Index), FText::GetEmpty());
+			MemberButton->MinHeightTouch = Style.ButtonHeightCompact;
+			MemberSize->SetContent(MemberButton);
+			Member->AddChildToVerticalBox(MemberSize);
+			Member->AddChildToVerticalBox(Bar(Builder, *FString::Printf(TEXT("PartyMember%dHp"), Index), Style.Hp, Style.PartySlotWidth, Style.TagBarHeight, false))
+				->SetPadding(FMargin(0.0f, 2.0f, 0.0f, 0.0f));
+			AddWithGap(*Party, Member);
+		}
+
+		// 아래 가운데에 내 진행 바(시전. 진행 중일 때만 보임)와 정사각형 퀵슬롯 8칸(칸마다 버튼 위에 쿨다운 가림). 칸은 UMmoHudWidget이 이름(Slot<n>)으로 찾는다.
+		UVerticalBox* Actions = Builder.Add<UVerticalBox>(TEXT("Actions"));
+		Corner(*Root, Actions, ECorner::BottomCenter, FVector2D(0.0, Bottom + Style.Gap * 2.0f));
+		UVerticalBox* CastPanel = Builder.Add<UVerticalBox>(TEXT("CastPanel"), true);
+		CastPanel->SetVisibility(ESlateVisibility::Collapsed);
+		CastPanel->AddChildToVerticalBox(Bar(Builder, TEXT("Cast"), Style.Cast));
+		Actions->AddChildToVerticalBox(CastPanel)->SetHorizontalAlignment(HAlign_Center);
+		UHorizontalBox* Slots = Builder.Add<UHorizontalBox>(TEXT("Slots"));
+		Actions->AddChildToVerticalBox(Slots)->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, 0.0f));
+		for (int32 Index = 0; Index < UMmoHudWidget::QuickslotCount(); ++Index)
+		{
+			USizeBox* Size = Builder.Add<USizeBox>(*FString::Printf(TEXT("Slot%dSize"), Index));
+			Size->SetWidthOverride(Style.SlotWidth);
+			Size->SetHeightOverride(Style.SlotWidth);
+			UOverlay* Stack = Builder.Add<UOverlay>(*FString::Printf(TEXT("Slot%dStack"), Index));
+			Size->SetContent(Stack);
+			UMmoButtonWidget* SlotButton = Builder.Button(*FString::Printf(TEXT("Slot%d"), Index), FText::GetEmpty());
+			SlotButton->MinHeightTouch = Style.SlotWidth;
+			SlotButton->MinHeightPointer = Style.SlotWidth;
+			UOverlaySlot* ButtonSlot = Stack->AddChildToOverlay(SlotButton);
+			ButtonSlot->SetHorizontalAlignment(HAlign_Fill);
+			ButtonSlot->SetVerticalAlignment(VAlign_Fill);
+			UProgressBar* Shade = Builder.Add<UProgressBar>(*FString::Printf(TEXT("Slot%dCooldown"), Index));
+			FProgressBarStyle ShadeStyle = Shade->GetWidgetStyle();
+			ShadeStyle.BackgroundImage = FSlateNoResource();
+			ShadeStyle.FillImage = FSlateRoundedBoxBrush(FLinearColor::White, Style.ButtonRadius);
+			Shade->SetWidgetStyle(ShadeStyle);
+			Shade->SetFillColorAndOpacity(Style.CooldownShade);
+			Shade->SetBarFillType(EProgressBarFillType::BottomToTop);
+			Shade->SetPercent(0.0f);
+			Shade->SetVisibility(ESlateVisibility::HitTestInvisible);
+			UOverlaySlot* ShadeSlot = Stack->AddChildToOverlay(Shade);
+			ShadeSlot->SetHorizontalAlignment(HAlign_Fill);
+			ShadeSlot->SetVerticalAlignment(VAlign_Fill);
+			Slots->AddChildToHorizontalBox(Size)->SetPadding(FMargin(Index == 0 ? 0.0f : 6.0f, 0.0f, 0.0f, 0.0f));
+		}
+
+		// 오른쪽 아래: 큰 원형 공격 버튼(터치)과 그 왼쪽 위로 원호를 그리는 자동 사냥(PC와 터치. Z, 40), 대상 고르기, 상호작용(줍기·채집·말하기의
+		// 글), 강제 공격(44). PC에서는 Ctrl(누르는 동안), E, Tab, F가 같은 일을 하고 자동 사냥만 보인다.
+		USizeBox* ClusterSize = Builder.Add<USizeBox>(TEXT("ActionClusterSize"));
+		ClusterSize->SetWidthOverride(480.0f);
+		ClusterSize->SetHeightOverride(340.0f);
+		ClusterSize->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		UCanvasPanel* Cluster = Builder.Add<UCanvasPanel>(TEXT("ActionCluster"));
+		Cluster->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		ClusterSize->SetContent(Cluster);
+		const FVector2D AttackCenter(480.0 - Style.AttackSize * 0.5, 340.0 - Style.AttackSize * 0.5);
+		const auto Around = [&AttackCenter](double Degrees)
+		{
+			const double Radius = 155.0;
+			const double Radians = FMath::DegreesToRadians(Degrees);
+			return AttackCenter + FVector2D(FMath::Cos(Radians), -FMath::Sin(Radians)) * Radius;
+		};
+		const FLinearColor Red(0.85f, 0.35f, 0.25f, 1.0f);
+		RoundButton(Builder, *Cluster, TEXT("AttackButton"), TEXT("hud.attack"), TEXT("action_attack"), true, Style.AttackSize, AttackCenter, Red);
+		RoundButton(Builder, *Cluster, TEXT("AutoButton"), TEXT("hud.auto"), TEXT("action_auto"), false, Style.RoundSize, Around(195.0), Style.Line);
+		RoundButton(Builder, *Cluster, TEXT("TargetButton"), TEXT("hud.target"), TEXT("action_target"), true, Style.RoundSize, Around(150.0), Style.Line);
+		RoundButton(Builder, *Cluster, TEXT("InteractButton"), TEXT("interact.none"), TEXT("action_interact"), true, Style.RoundSize, Around(115.0), Style.Line);
+		RoundButton(Builder, *Cluster, TEXT("ForceButton"), TEXT("hud.forceAttack"), TEXT("action_force"), true, Style.RoundSize, Around(85.0), Red);
+		Corner(*Root, ClusterSize, ECorner::BottomRight, FVector2D(Style.HudMargin, Bottom + Style.Gap * 2.0f));
+
+		// 오른쪽 위에 바탕 없는 메뉴 아이콘 줄(PC와 터치 기기 모두. 키 표시와 누를 수 있는지는 UMmoHudWidget이 정함), 그 아래 퀘스트 추적과 시연 표시.
+		UVerticalBox* TopRight = Builder.Add<UVerticalBox>(TEXT("TopRight"));
+		TopRight->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		Corner(*Root, TopRight, ECorner::TopRight, FVector2D(Style.HudMargin, Style.Gap * 2.0f));
+		const auto MenuButton = [&Builder](const TCHAR* Name, const TCHAR* LabelKey, const TCHAR* Icon)
+		{
+			UMmoButtonWidget* Result = Builder.Button(Name, LabelKey);
+			Result->Icon = ImportIcon(Icon);
+			Result->MinHeightTouch = Style.MenuIcon;
+			Result->MinHeightPointer = Style.MenuIcon;
+			Result->bOwnStyle = true;
+			FButtonStyle Plain;
+			Plain.SetNormal(FSlateNoResource());
+			Plain.SetHovered(CircleBrush(FLinearColor(1.0f, 0.9f, 0.6f, 0.12f), FLinearColor::Transparent, 0.0f));
+			Plain.SetPressed(CircleBrush(FLinearColor(0.0f, 0.0f, 0.0f, 0.3f), FLinearColor::Transparent, 0.0f));
+			Plain.SetNormalPadding(FMargin(0.0f));
+			Plain.SetPressedPadding(FMargin(0.0f));
+			Result->OwnStyle = Plain;
+			return Result;
+		};
+		TopRight->AddChildToVerticalBox(Row(Builder, TEXT("MenuButtons"), {
+			MenuButton(TEXT("BagButton"), TEXT("menu.bag"), TEXT("menu_bag")),
+			MenuButton(TEXT("CharacterButton"), TEXT("menu.character"), TEXT("menu_character")),
+			MenuButton(TEXT("SkillsButton"), TEXT("menu.skills"), TEXT("menu_skills")),
+			MenuButton(TEXT("QuestButton"), TEXT("menu.quest"), TEXT("menu_quest")),
+			MenuButton(TEXT("SettingsButton"), TEXT("menu.settings"), TEXT("menu_settings")),
+		}))->SetHorizontalAlignment(HAlign_Right);
+		// 받은 퀘스트의 진행(50): 바탕 없이 그림자만 준 글. 받은 것이 없으면 UMmoHudWidget이 감춘다.
+		UTextBlock* QuestText = Builder.Text(TEXT("QuestText"), FText::GetEmpty(), Style.SmallSize + 2, true, Style.ChatSystem);
+		QuestText->SetVisibility(ESlateVisibility::Collapsed);
+		QuestText->SetJustification(ETextJustify::Right);
+		TopRight->AddChildToVerticalBox(QuestText)->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, 0.0f));
+		Cast<UVerticalBoxSlot>(QuestText->Slot)->SetHorizontalAlignment(HAlign_Right);
+		UTextBlock* Stats = Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.SmallSize, true);
+		Stats->SetVisibility(ESlateVisibility::Collapsed);
 		TopRight->AddChildToVerticalBox(Stats)->SetHorizontalAlignment(HAlign_Right);
 		return Builder.Save();
 	}
@@ -915,7 +1067,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Death, UMmoDeathWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("death.title"), Style.TitleSize), Style.Section);
+		Header(Builder, *Column, TEXT("death.title"), false);
 		// 잃은 경험치와 떨어뜨린 것(45). 글은 기반 클래스가 채운다.
 		UTextBlock* Penalty = Builder.Text(TEXT("PenaltyText"), FText::GetEmpty(), Style.SmallSize, true);
 		Penalty->SetAutoWrapText(true);
@@ -928,7 +1080,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Settings, UMmoSettingsWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowWide, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("settings.title"), Style.TitleSize), Style.Section);
+		Header(Builder, *Column, TEXT("settings.title"), true);
 		// 기기에 남기는 설정의 줄(77)과 시연 표시(30)를 두 칸씩. 글(지금 값)은 기반 클래스가 채운다.
 		const auto Pair = [&](const TCHAR* Name, const TCHAR* Left, const TCHAR* Right)
 		{
@@ -949,7 +1101,6 @@ namespace
 		AddWithGap(*Column, Builder.Button(TEXT("LogOutButton"), TEXT("settings.logOut")));
 		AddWithGap(*Column, Builder.Button(TEXT("GuideButton"), TEXT("settings.guide")));
 		AddWithGap(*Column, Builder.Button(TEXT("QuitButton"), TEXT("settings.quit")));
-		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
 	}
 
@@ -961,13 +1112,17 @@ namespace
 		Size->SetWidthOverride(Style.ItemSlot);
 		Size->SetHeightOverride(Style.ItemSlot);
 		Builder.SetRoot(Size);
-		// 칸 그림(slot.png)에 UMmoItemSlotWidget이 등급의 색을 곱한다(99). 내용은 청동 테두리 안에 둔다.
+		// 등급의 색(UMmoItemSlotWidget이 곱함)인 1.5 px 테두리 안에 어두운 바탕(101).
 		UBorder* Grade = Builder.Add<UBorder>(TEXT("GradeBorder"), true);
-		Grade->SetBrush(BoxBrush(Art.Slot, FVector2D(Style.ItemSlot, Style.ItemSlot), Style.SlotMargin));
-		Grade->SetPadding(FMargin(Style.ItemSlot * Style.SlotMargin.Left * 0.6f));
+		Grade->SetBrush(FSlateRoundedBoxBrush(FLinearColor::White, 3.0f));
+		Grade->SetPadding(FMargin(1.5f));
 		Size->SetContent(Grade);
+		UBorder* Inner = Builder.Add<UBorder>(TEXT("Inner"));
+		Inner->SetBrush(FSlateRoundedBoxBrush(Style.SlotFill, 2.0f));
+		Inner->SetPadding(FMargin(3.0f));
+		Grade->SetContent(Inner);
 		UOverlay* Stack = Builder.Add<UOverlay>(TEXT("Stack"));
-		Grade->SetContent(Stack);
+		Inner->SetContent(Stack);
 		UImage* Icon = Builder.Add<UImage>(TEXT("IconImage"), true);
 		Icon->SetVisibility(ESlateVisibility::Collapsed);
 		UOverlaySlot* IconSlot = Stack->AddChildToOverlay(Icon);
@@ -1008,8 +1163,8 @@ namespace
 	bool CreateSkills(UClass* QuickslotBarClass)
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Skills, UMmoSkillsWidget::StaticClass());
-		UVerticalBox* Column = Builder.Window(Style.WindowWide, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("skills.title"), Style.TitleSize), Style.Section);
+		UVerticalBox* Column = Builder.Window(Style.WindowWide, Style.SideDim, true);
+		Header(Builder, *Column, TEXT("skills.title"), true);
 		AddWithGap(*Column, ButtonGrid(Builder, TEXT("SkillGrid"), TEXT("Skill"), UMmoSkillsWidget::MaxSkills, 3), Style.Section);
 		UTextBlock* Detail = Builder.Text(TEXT("DetailText"), FText::GetEmpty(), Style.BodySize, true);
 		Detail->SetAutoWrapText(true);
@@ -1017,7 +1172,7 @@ namespace
 		AddWithGap(*Column, Builder.Text(TEXT("HintText"), FText::GetEmpty(), Style.SmallSize + 2, true));
 		AddWithGap(*Column, Builder.Add<UMmoQuickslotBarWidget>(QuickslotBarClass, TEXT("SlotBar"), true), Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("ClearButton"), TEXT("skills.clear")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+			Builder.Button(TEXT("ClearButton"), TEXT("skills.clear")) }));
 		return Builder.Save();
 	}
 
@@ -1026,7 +1181,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Enchant, UMmoEnchantWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 6 + Style.Gap * 2, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("enchant.title"), Style.TitleSize), Style.Section);
+		Header(Builder, *Column, TEXT("enchant.title"), true);
 		UTileView* Targets = Builder.Add<UTileView>(TEXT("Targets"), true);
 		Targets->SetEntryWidth(Style.ItemSlot);
 		Targets->SetEntryHeight(Style.ItemSlot);
@@ -1038,7 +1193,6 @@ namespace
 		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("ResultText"), FText::GetEmpty(), Style.BodySize, true, Style.Positive), Style.Section);
 		AddWithGap(*Column, Builder.Button(TEXT("GoButton"), TEXT("enchant.go")));
-		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
 	}
 
@@ -1047,7 +1201,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Shop, UMmoShopWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 6 + Style.Gap * 2, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("shop.title"), Style.TitleSize), Style.Section);
+		Header(Builder, *Column, TEXT("shop.title"), true);
 		const auto Grid = [&](const TCHAR* Name, const TCHAR* TitleName, const TCHAR* TitleKey, int32 Rows)
 		{
 			AddWithGap(*Column, Builder.KeyText(TitleName, TitleKey, Style.SmallSize + 2));
@@ -1065,7 +1219,7 @@ namespace
 		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("GoldText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("ActButton"), TEXT("shop.buy")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+			Builder.Button(TEXT("ActButton"), TEXT("shop.buy")) }));
 		return Builder.Save();
 	}
 
@@ -1074,7 +1228,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Quest, UMmoQuestWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 7, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("quest.title"), Style.TitleSize), Style.Section);
+		Header(Builder, *Column, TEXT("quest.title"), true);
 		AddWithGap(*Column, Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.BodySize + 2, true));
 		UTextBlock* Description = Builder.Text(TEXT("DescriptionText"), FText::GetEmpty(), Style.BodySize, true);
 		Description->SetAutoWrapText(true);
@@ -1083,7 +1237,7 @@ namespace
 		AddWithGap(*Column, Builder.Text(TEXT("RewardText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
 			Builder.Button(TEXT("GoalButton"), TEXT("quest.goal")), Builder.Button(TEXT("AcceptButton"), TEXT("quest.accept")),
-			Builder.Button(TEXT("CompleteButton"), TEXT("quest.complete")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+			Builder.Button(TEXT("CompleteButton"), TEXT("quest.complete")) }));
 		return Builder.Save();
 	}
 
@@ -1092,7 +1246,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Craft, UMmoCraftWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 8 + Style.Gap * 2, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("craft.title"), Style.TitleSize), Style.Section);
+		Header(Builder, *Column, TEXT("craft.title"), true);
 		UTileView* Tiles = Builder.Add<UTileView>(TEXT("RecipeGrid"), true);
 		Tiles->SetEntryWidth(Style.ItemSlot);
 		Tiles->SetEntryHeight(Style.ItemSlot);
@@ -1108,7 +1262,7 @@ namespace
 		}
 		AddWithGap(*Column, Builder.Text(TEXT("RoomText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("ActButton"), TEXT("craft.make")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+			Builder.Button(TEXT("ActButton"), TEXT("craft.make")) }));
 		return Builder.Save();
 	}
 
@@ -1117,7 +1271,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Map, UMmoMapWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(UMmoMapWidget::MapSize + Style.PanelPadding * 2, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("menu.map"), Style.TitleSize), Style.Gap);
+		Header(Builder, *Column, TEXT("menu.map"), true);
 		USizeBox* Size = Builder.Add<USizeBox>(TEXT("MapSize"));
 		Size->SetWidthOverride(UMmoMapWidget::MapSize);
 		Size->SetHeightOverride(UMmoMapWidget::MapSize);
@@ -1137,7 +1291,6 @@ namespace
 		ArrowSlot->SetAutoSize(true);
 		ArrowSlot->SetAlignment(FVector2D(0.5, 0.5));
 		AddWithGap(*Column, Size, Style.Section);
-		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), { Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
 		return Builder.Save();
 	}
 
@@ -1146,7 +1299,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Storage, UMmoStorageWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 10 + Style.Gap * 6 + Style.PanelPadding * 2, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("storage.title"), Style.TitleSize), Style.Gap);
+		Header(Builder, *Column, TEXT("storage.title"), true);
 		UTextBlock* Hint = Builder.KeyText(TEXT("HintText"), TEXT("storage.hint"), Style.SmallSize + 2);
 		Hint->SetAutoWrapText(true);
 		AddWithGap(*Column, Hint, Style.Section);
@@ -1166,7 +1319,6 @@ namespace
 			return Box;
 		};
 		AddWithGap(*Column, Row(Builder, TEXT("Sides"), { Side(TEXT("StorageGrid"), TEXT("storage.title")), Side(TEXT("BagGrid"), TEXT("storage.mine")) }), Style.Section);
-		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), { Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
 		return Builder.Save();
 	}
 
@@ -1174,8 +1326,8 @@ namespace
 	bool CreateInventory(UClass* ItemSlotClass)
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Inventory, UMmoInventoryWidget::StaticClass());
-		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 6 + Style.Gap * 2, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("inventory.title"), Style.TitleSize), Style.Section);
+		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 6 + Style.Gap * 2, Style.SideDim, true);
+		Header(Builder, *Column, TEXT("inventory.title"), true);
 		// 입은 장비 여섯 칸(34): 무기, 투구, 갑옷, 장갑, 신발, 장신구.
 		AddWithGap(*Column, Builder.KeyText(TEXT("EquipmentTitle"), TEXT("inventory.equipment"), Style.SmallSize + 2));
 		UTileView* EquipGrid = Builder.Add<UTileView>(TEXT("EquipGrid"), true);
@@ -1197,7 +1349,6 @@ namespace
 		GridSize->SetContent(Grid);
 		AddWithGap(*Column, GridSize);
 		AddWithGap(*Column, Builder.Text(TEXT("GoldText"), FText::GetEmpty(), Style.BodySize, true));
-		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
 	}
 
@@ -1206,7 +1357,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::ItemDetail, UMmoItemDetailWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
-		AddWithGap(*Column, Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.TitleSize, true), Style.Section);
+		Header(Builder, *Column, Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.TitleSize, true), true);
 		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.SmallSize + 2, true));
 		AddWithGap(*Column, Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("WarnText"), FText::GetEmpty(), Style.SmallSize + 2, true, Style.Negative));
@@ -1219,7 +1370,6 @@ namespace
 		AddWithGap(*Column, Builder.KeyText(TEXT("QuickslotTitle"), TEXT("detail.quickslot"), Style.SmallSize + 2, true));
 		AddWithGap(*Column, Builder.Add<UMmoQuickslotBarWidget>(QuickslotBarClass, TEXT("SlotBar"), true));
 		AddWithGap(*Column, Builder.Button(TEXT("DropButton"), TEXT("detail.drop")));
-		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
 	}
 
@@ -1227,15 +1377,14 @@ namespace
 	bool CreateCharacter()
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Character, UMmoCharacterWidget::StaticClass());
-		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("character.title"), Style.TitleSize), Style.Section);
+		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.SideDim, true);
+		Header(Builder, *Column, TEXT("character.title"), true);
 		AddWithGap(*Column, Builder.Text(TEXT("LevelText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("ExpText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
 		// 가진 펫과 부르기·넣기(96). 글은 기반 클래스가 채운다.
 		AddWithGap(*Column, Builder.Text(TEXT("PetText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Button(TEXT("PetButton"), FText::GetEmpty()), Style.Section);
-		Column->AddChildToVerticalBox(Builder.Button(TEXT("CloseButton"), TEXT("common.close")));
 		return Builder.Save();
 	}
 
@@ -1244,7 +1393,7 @@ namespace
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::CharacterSelect, UMmoCharacterSelectWidget::StaticClass());
 		// 바탕은 반투명이라 뒤의 월드에 세운 고른 캐릭터(34)가 보인다.
 		UVerticalBox* Column = Builder.Window(Style.WindowWide, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("select.title"), Style.TitleSize), Style.Section);
+		Header(Builder, *Column, TEXT("select.title"), false);
 
 		// 칸 4개(Constant의 캐릭터 수). 글은 기반 클래스가 SetLabel로 채운다.
 		for (int32 Index = 0; Index < 4; ++Index)
@@ -1266,7 +1415,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::CharacterCreate, UMmoCharacterCreateWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("create.title"), Style.TitleSize), Style.Section);
+		Header(Builder, *Column, TEXT("create.title"), false);
 		UEditableTextBox* NameBox = Builder.Add<UEditableTextBox>(TEXT("NameBox"), true);
 		NameBox->SetHintText(FText::FromString(TEXT("create.nameHint")));
 		AddWithGap(*Column, NameBox, Style.Section);
@@ -1301,7 +1450,7 @@ namespace
 	{
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Party, UMmoPartyWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
-		AddWithGap(*Column, Builder.KeyText(TEXT("Title"), TEXT("party.title"), Style.TitleSize), Style.Section);
+		Header(Builder, *Column, TEXT("party.title"), true);
 		UMmoTextBlock* Empty = Builder.KeyText(TEXT("EmptyText"), TEXT("party.empty"), Style.BodySize, true);
 		Empty->SetVisibility(ESlateVisibility::Collapsed);
 		AddWithGap(*Column, Empty);
@@ -1316,7 +1465,7 @@ namespace
 			AddWithGap(*Column, Line);
 		}
 		Column->AddChildToVerticalBox(Builder.Add<USizeBox>(TEXT("Spacer")))->SetPadding(FMargin(0.0f, Style.Section * 0.5f, 0.0f, 0.0f));
-		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), { Builder.Button(TEXT("LeaveButton"), TEXT("party.leave")), Builder.Button(TEXT("CloseButton"), TEXT("common.close")) }));
+		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), { Builder.Button(TEXT("LeaveButton"), TEXT("party.leave")) }));
 		return Builder.Save();
 	}
 

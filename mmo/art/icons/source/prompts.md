@@ -186,3 +186,15 @@ Constraints: transparent background
 | `menu_skills.png` | arcane blue | Skills: an open spellbook with a small glowing spark |
 | `menu_quest.png` | warm amber | Quests: a rolled scroll with a quill |
 | `menu_settings.png` | warm amber | Settings: a cogwheel |
+
+### 행동 (HUD의 터치 버튼. 리니지 라이크 HUD 개편)
+
+"효과와 메뉴"의 공통 스타일과 틀을 씁니다.
+
+| 파일 | 색 | 그림 |
+|---|---|---|
+| `action_attack.png` | crimson red | Attack: two crossed swords |
+| `action_auto.png` | emerald green | Auto Hunt: a circular arrow loop around a small sword |
+| `action_target.png` | crimson red | Target: a crosshair reticle with four inward-pointing notches |
+| `action_interact.png` | warm amber | Interact: an open gauntleted hand reaching forward |
+| `action_force.png` | fiery red | Force Attack: a single sword with a red glowing blade and a small flame |
