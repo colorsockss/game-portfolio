@@ -26,22 +26,61 @@ DEFINE_LOG_CATEGORY_STATIC(LogMmoCreateCharacterAssets, Log, All);
 
 namespace
 {
-	/** 달리기의 속도(언리얼 단위/초). Constant의 최대 속도 6 m/s다. */
+	/** 플레이어의 달리기 속도(언리얼 단위/초). Constant의 최대 속도 6 m/s다. */
 	constexpr float RunSpeed = 600.0f;
 
-	struct FClassAnimations
+	/**
+	 * 모습 하나: 가져온 메시(import_characters.py, import_creatures.py)와 그 동작으로 블렌드 스페이스, 애니메이션 블루프린트, 표현 표의 줄을 만든다.
+	 * 동작은 이름 끝(<뼈대>Armature_<동작>)으로 찾는다. 팩마다 뼈대의 이름이 달라서다(CharacterArmature, MonsterArmature, Armature 등).
+	 */
+	struct FCreature
 	{
+		/** 에셋 폴더와 이름(BS_<이름>_Locomotion, ABP_<이름>). */
 		const TCHAR* Folder;
-		const TCHAR* ClassName;
-		const TCHAR* SourceName;
-		/** 표현 표의 키(직업의 값). */
-		int32 Key;
-		/** 공격 동작(가져온 팩의 애니메이션 이름 끝). */
+		const TCHAR* Name;
+		/** 가져온 메시의 이름. 스켈레톤은 <원본>_Skeleton이다. */
+		const TCHAR* Source;
+		/** 표현 표의 종류와 키들(같은 모습을 쓰는 NPC 여럿은 키가 여럿). */
+		int32 Kind;
+		TArray<int32> Keys;
+		/** 원하는 키(m). 바인드 포즈의 높이로 나눠 크기 배수를 정한다. 0이면 Scale을 그대로 쓴다. */
+		float Height;
+		float Scale;
+		/** 이동 동작이 제 빠르기로 도는 속도(언리얼 단위/초. 데이터의 이동 속도). */
+		float MoveSpeed;
+		const TCHAR* Idle;
+		const TCHAR* Move;
 		const TCHAR* Attack;
-		/** 스킬 동작과 시전 동작(같은 이름 끝). 시전이 없는 직업은 nullptr. */
-		const TCHAR* Skill;
-		const TCHAR* Cast;
+		/** 아래는 없으면 nullptr. 피격 동작이 없는 모델도 있다(슬라임, 해골). */
+		const TCHAR* Hit;
+		const TCHAR* Death;
+		const TCHAR* Skill = nullptr;
+		const TCHAR* Cast = nullptr;
+		const TCHAR* Gather = nullptr;
 	};
+
+	/** 폴더에서 이름이 <뼈대>Armature_<Clip>으로 끝나는 애니메이션. Clip이 nullptr이면 nullptr. */
+	UAnimSequence* FindClip(const FCreature& Creature, const TCHAR* Clip)
+	{
+		if (!Clip)
+		{
+			return nullptr;
+		}
+		IAssetRegistry& Registry = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).Get();
+		Registry.ScanPathsSynchronous({ FString(Creature.Folder) }, true);
+		TArray<FAssetData> Found;
+		Registry.GetAssetsByPath(FName(Creature.Folder), Found);
+		const FString Suffix = FString::Printf(TEXT("Armature_%s"), Clip);
+		for (const FAssetData& Asset : Found)
+		{
+			if (Asset.AssetClassPath == UAnimSequence::StaticClass()->GetClassPathName() && Asset.AssetName.ToString().EndsWith(Suffix))
+			{
+				return Cast<UAnimSequence>(Asset.GetAsset());
+			}
+		}
+		UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: no animation ends with %s."), Creature.Folder, *Suffix);
+		return nullptr;
+	}
 
 	/** 패키지에 에셋 하나를 새로 저장한다. 같은 이름의 파일이 있으면 지우고 만든다. */
 	bool Save(UPackage* Package, UObject* Asset, const FString& Filename)
@@ -58,20 +97,20 @@ namespace
 		return true;
 	}
 
-	bool CreateLocomotion(const FClassAnimations& Class)
+	bool CreateLocomotion(const FCreature& Creature)
 	{
-		const FString Folder(Class.Folder);
-		const FString Source(Class.SourceName);
+		const FString Folder(Creature.Folder);
+		const FString Source(Creature.Source);
 		USkeleton* Skeleton = LoadObject<USkeleton>(nullptr, *FString::Printf(TEXT("%s/%s_Skeleton.%s_Skeleton"), *Folder, *Source, *Source));
-		UAnimSequence* Idle = LoadObject<UAnimSequence>(nullptr, *FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_Idle_Weapon"), *Folder, *Source));
-		UAnimSequence* Run = LoadObject<UAnimSequence>(nullptr, *FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_Run_Weapon"), *Folder, *Source));
-		if (!Skeleton || !Idle || !Run)
+		UAnimSequence* Idle = FindClip(Creature, Creature.Idle);
+		UAnimSequence* Move = FindClip(Creature, Creature.Move);
+		if (!Skeleton || !Idle || !Move)
 		{
-			UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the skeleton or the idle/run animation is missing. Run import_characters.py first."), *Folder);
+			UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the skeleton or the idle/move animation is missing. Run import_characters.py and import_creatures.py first."), *Folder);
 			return false;
 		}
 
-		const FString Name = FString::Printf(TEXT("BS_%s_Locomotion"), Class.ClassName);
+		const FString Name = FString::Printf(TEXT("BS_%s_Locomotion"), Creature.Name);
 		const FString PackageName = Folder / Name;
 		const FString Filename = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
 		IFileManager::Get().Delete(*Filename, false, true, true);
@@ -79,16 +118,16 @@ namespace
 		UBlendSpace1D* BlendSpace = NewObject<UBlendSpace1D>(Package, *Name, RF_Public | RF_Standalone);
 		BlendSpace->SetSkeleton(Skeleton);
 
-		// 축은 보호된 속성이라 리플렉션으로 정한다(에디터의 세부 정보 패널과 같은 값).
+		// 축은 보호된 속성이라 리플렉션으로 정한다(에디터의 세부 정보 패널과 같은 값). 이동 동작은 제 속도에 두고, 그보다 빠르면 그 동작 그대로다.
 		const FStructProperty* Property = FindFProperty<FStructProperty>(UBlendSpace::StaticClass(), TEXT("BlendParameters"));
 		FBlendParameter& Speed = Property->ContainerPtrToValuePtr<FBlendParameter>(BlendSpace)[0];
 		Speed.DisplayName = TEXT("Speed");
 		Speed.Min = 0.0f;
-		Speed.Max = RunSpeed;
+		Speed.Max = FMath::Max(RunSpeed, Creature.MoveSpeed);
 		Speed.GridNum = 4;
 
 		BlendSpace->AddSample(Idle, FVector(0.0, 0.0, 0.0));
-		BlendSpace->AddSample(Run, FVector(RunSpeed, 0.0, 0.0));
+		BlendSpace->AddSample(Move, FVector(Creature.MoveSpeed, 0.0, 0.0));
 		BlendSpace->ValidateSampleData();
 		BlendSpace->ResampleData();
 
@@ -107,17 +146,18 @@ namespace
 	}
 
 	/**
-	 * 애니메이션 블루프린트 ABP_<직업>(부모 UMmoAnimInstance)를 만든다. 이동 블렌드 스페이스(축 = 인스턴스의 Speed)를 둘 두어,
+	 * 애니메이션 블루프린트 ABP_<이름>(부모 UMmoAnimInstance)를 만든다. 이동 블렌드 스페이스(축 = 인스턴스의 Speed)를 둘 두어,
 	 * 하나는 그대로 하체가 되고 다른 하나는 상체 슬롯(UpperBody)을 지나 뼈마다 섞기(Abdomen부터 위)의 상체가 된 뒤, 온몸 슬롯(DefaultSlot) → 출력이다.
 	 * 공격·스킬·피격 동작은 UMmoAnimInstance::PlayAction이 상체 슬롯에, 죽음은 온몸 슬롯에 넣는다(걷는 중에 쳐도 다리는 걷는 동작을 이어 감).
+	 * 뼈대에 Abdomen이 없으면(몬스터, 동물) 섞지 않고 이동 → 상체 슬롯 → 온몸 슬롯 → 출력이라, 동작이 온몸에 든다.
 	 * 상체 슬롯은 뼈대의 슬롯 그룹에 등록하고 뼈대를 저장한다. 블렌드 스페이스를 만든 뒤에 부른다.
 	 */
-	bool CreateAnimBlueprint(const FClassAnimations& Class)
+	bool CreateAnimBlueprint(const FCreature& Creature)
 	{
-		const FString Folder(Class.Folder);
-		const FString Source(Class.SourceName);
+		const FString Folder(Creature.Folder);
+		const FString Source(Creature.Source);
 		USkeleton* Skeleton = LoadObject<USkeleton>(nullptr, *FString::Printf(TEXT("%s/%s_Skeleton.%s_Skeleton"), *Folder, *Source, *Source));
-		UBlendSpace* Locomotion = LoadObject<UBlendSpace>(nullptr, *FString::Printf(TEXT("%s/BS_%s_Locomotion.BS_%s_Locomotion"), *Folder, Class.ClassName, Class.ClassName));
+		UBlendSpace* Locomotion = LoadObject<UBlendSpace>(nullptr, *FString::Printf(TEXT("%s/BS_%s_Locomotion.BS_%s_Locomotion"), *Folder, Creature.Name, Creature.Name));
 		if (!Skeleton || !Locomotion)
 		{
 			UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the skeleton or the blend space is missing."), *Folder);
@@ -129,7 +169,7 @@ namespace
 		FModuleManager::Get().LoadModuleChecked(TEXT("PropertyAccessEditor"));
 		FModuleManager::Get().LoadModuleChecked(TEXT("AnimGraph"));
 
-		const FString Name = FString::Printf(TEXT("ABP_%s"), Class.ClassName);
+		const FString Name = FString::Printf(TEXT("ABP_%s"), Creature.Name);
 		const FString PackageName = Folder / Name;
 		const FString Filename = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
 		IFileManager::Get().Delete(*Filename, false, true, true);
@@ -193,34 +233,50 @@ namespace
 			return Slot;
 		};
 
-		UEdGraphPin* Lower = Locomotion2(0);
-		UEdGraphPin* UpperSource = Locomotion2(300);
-		UAnimGraphNode_Slot* Upper = MakeSlot(UMmoAnimInstance::UpperSlotName, -600, 300);
-
-		FGraphNodeCreator<UAnimGraphNode_LayeredBoneBlend> BlendCreator(*Graph);
-		UAnimGraphNode_LayeredBoneBlend* Blend = BlendCreator.CreateNode();
-		Blend->Node.LayerSetup[0].BranchFilters.Add({ UMmoAnimInstance::UpperBodyBone, 0 });
-		// 상체의 회전을 메시 공간에서 섞어, 하체가 돌아도 상체 동작이 같은 쪽을 본다.
-		Blend->Node.bMeshSpaceRotationBlend = true;
-		Blend->NodePosX = -300;
-		BlendCreator.Finalize();
-
 		UAnimGraphNode_Slot* Full = MakeSlot(UMmoAnimInstance::SlotName, 0, 0);
-
 		UEdGraphPin* Result = PinOf(*Root, TEXT("Result"), EGPD_Input);
-		UEdGraphPin* UpperIn = PinOf(*Upper, TEXT("Source"), EGPD_Input);
-		UEdGraphPin* UpperOut = PinOf(*Upper, TEXT("Pose"), EGPD_Output);
-		UEdGraphPin* Base = PinOf(*Blend, TEXT("BasePose"), EGPD_Input);
-		UEdGraphPin* Layer = PinOf(*Blend, TEXT("BlendPoses_0"), EGPD_Input);
-		UEdGraphPin* BlendOut = PinOf(*Blend, TEXT("Pose"), EGPD_Output);
 		UEdGraphPin* FullIn = PinOf(*Full, TEXT("Source"), EGPD_Input);
 		UEdGraphPin* FullOut = PinOf(*Full, TEXT("Pose"), EGPD_Output);
-		if (!Lower || !UpperSource || !Result || !UpperIn || !UpperOut || !Base || !Layer || !BlendOut || !FullIn || !FullOut
-			|| !Schema->TryCreateConnection(Lower, Base) || !Schema->TryCreateConnection(UpperSource, UpperIn) || !Schema->TryCreateConnection(UpperOut, Layer)
-			|| !Schema->TryCreateConnection(BlendOut, FullIn) || !Schema->TryCreateConnection(FullOut, Result))
+		if (Skeleton->GetReferenceSkeleton().FindBoneIndex(UMmoAnimInstance::UpperBodyBone) == INDEX_NONE)
 		{
-			UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("Could not wire the anim graph of %s."), *PackageName);
-			return false;
+			// 상체가 따로 없는 뼈대: 이동 → 상체 슬롯 → 온몸 슬롯 → 출력.
+			UEdGraphPin* Moving = Locomotion2(0);
+			UAnimGraphNode_Slot* Action = MakeSlot(UMmoAnimInstance::UpperSlotName, -300, 0);
+			UEdGraphPin* ActionIn = PinOf(*Action, TEXT("Source"), EGPD_Input);
+			UEdGraphPin* ActionOut = PinOf(*Action, TEXT("Pose"), EGPD_Output);
+			if (!Moving || !Result || !FullIn || !FullOut || !ActionIn || !ActionOut || !Schema->TryCreateConnection(Moving, ActionIn)
+				|| !Schema->TryCreateConnection(ActionOut, FullIn) || !Schema->TryCreateConnection(FullOut, Result))
+			{
+				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("Could not wire the anim graph of %s."), *PackageName);
+				return false;
+			}
+		}
+		else
+		{
+			UEdGraphPin* Lower = Locomotion2(0);
+			UEdGraphPin* UpperSource = Locomotion2(300);
+			UAnimGraphNode_Slot* Upper = MakeSlot(UMmoAnimInstance::UpperSlotName, -600, 300);
+
+			FGraphNodeCreator<UAnimGraphNode_LayeredBoneBlend> BlendCreator(*Graph);
+			UAnimGraphNode_LayeredBoneBlend* Blend = BlendCreator.CreateNode();
+			Blend->Node.LayerSetup[0].BranchFilters.Add({ UMmoAnimInstance::UpperBodyBone, 0 });
+			// 상체의 회전을 메시 공간에서 섞어, 하체가 돌아도 상체 동작이 같은 쪽을 본다.
+			Blend->Node.bMeshSpaceRotationBlend = true;
+			Blend->NodePosX = -300;
+			BlendCreator.Finalize();
+
+			UEdGraphPin* UpperIn = PinOf(*Upper, TEXT("Source"), EGPD_Input);
+			UEdGraphPin* UpperOut = PinOf(*Upper, TEXT("Pose"), EGPD_Output);
+			UEdGraphPin* Base = PinOf(*Blend, TEXT("BasePose"), EGPD_Input);
+			UEdGraphPin* Layer = PinOf(*Blend, TEXT("BlendPoses_0"), EGPD_Input);
+			UEdGraphPin* BlendOut = PinOf(*Blend, TEXT("Pose"), EGPD_Output);
+			if (!Lower || !UpperSource || !Result || !UpperIn || !UpperOut || !Base || !Layer || !BlendOut || !FullIn || !FullOut
+				|| !Schema->TryCreateConnection(Lower, Base) || !Schema->TryCreateConnection(UpperSource, UpperIn) || !Schema->TryCreateConnection(UpperOut, Layer)
+				|| !Schema->TryCreateConnection(BlendOut, FullIn) || !Schema->TryCreateConnection(FullOut, Result))
+			{
+				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("Could not wire the anim graph of %s."), *PackageName);
+				return false;
+			}
 		}
 
 		FKismetEditorUtilities::CompileBlueprint(Blueprint);
@@ -233,7 +289,7 @@ namespace
 	}
 
 	/** 표현 표를 만든다. 블렌드 스페이스와 애니메이션 블루프린트를 만든 뒤에 부른다. */
-	bool CreateVisuals(TConstArrayView<FClassAnimations> Classes)
+	bool CreateVisuals(TConstArrayView<FCreature> Creatures)
 	{
 		const FString PackageName = FPackageName::ObjectPathToPackageName(FString(UMmoEntityVisuals::Path));
 		const FString Filename = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
@@ -265,32 +321,40 @@ namespace
 		// 무기(34): 그림이 생기면(91) 종 → 메시의 줄을 Weapons에 더한다. 지금은 모두 자리 표시 막대다.
 		Visuals->WeaponPlaceholder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
 
-		for (const FClassAnimations& Class : Classes)
+		for (const FCreature& Creature : Creatures)
 		{
-			const FString Folder(Class.Folder);
-			const FString Source(Class.SourceName);
-			FMmoEntityVisual& Row = Visuals->Rows.AddDefaulted_GetRef();
-			Row.Kind = UMmoEntityVisuals::PlayerKind();
-			Row.Key = Class.Key;
-			Row.Mesh = TSoftObjectPtr<USkeletalMesh>(FSoftObjectPath(FString::Printf(TEXT("%s/%s.%s"), *Folder, *Source, *Source)));
-			Row.Animation = TSoftClassPtr<UMmoAnimInstance>(FSoftObjectPath(FString::Printf(TEXT("%s/ABP_%s.ABP_%s_C"), *Folder, Class.ClassName, Class.ClassName)));
-			Row.Attack = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_%s.%s_Anim_CharacterArmature_%s"), *Folder, *Source, Class.Attack, *Source, Class.Attack)));
-			Row.Hit = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_RecieveHit.%s_Anim_CharacterArmature_RecieveHit"), *Folder, *Source, *Source)));
-			Row.Death = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_Death.%s_Anim_CharacterArmature_Death"), *Folder, *Source, *Source)));
-			const auto Sequence = [&](const TCHAR* Name)
+			const FString Folder(Creature.Folder);
+			const FString Source(Creature.Source);
+			USkeletalMesh* Mesh = LoadObject<USkeletalMesh>(nullptr, *FString::Printf(TEXT("%s/%s.%s"), *Folder, *Source, *Source));
+			UClass* Animation = LoadObject<UClass>(nullptr, *FString::Printf(TEXT("%s/ABP_%s.ABP_%s_C"), *Folder, Creature.Name, Creature.Name));
+			UAnimSequence* Attack = FindClip(Creature, Creature.Attack);
+			UAnimSequence* Death = FindClip(Creature, Creature.Death);
+			if (!Mesh || !Animation || !Attack || !Death || (Creature.Hit && !FindClip(Creature, Creature.Hit)) || (Creature.Skill && !FindClip(Creature, Creature.Skill))
+				|| (Creature.Cast && !FindClip(Creature, Creature.Cast)) || (Creature.Gather && !FindClip(Creature, Creature.Gather)))
 			{
-				return Name ? TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(FString::Printf(TEXT("%s/%s_Anim_CharacterArmature_%s.%s_Anim_CharacterArmature_%s"), *Folder, *Source, Name, *Source, Name)))
-							: TSoftObjectPtr<UAnimSequence>();
-			};
-			Row.Skill = Sequence(Class.Skill);
-			Row.Cast = Sequence(Class.Cast);
-			// 채집 동작(47)은 두 직업 모두 팩의 줍는 동작이다.
-			Row.Gather = Sequence(TEXT("PickUp"));
-			if (!Row.Mesh.LoadSynchronous() || !Row.Animation.LoadSynchronous() || !Row.Attack.LoadSynchronous() || !Row.Hit.LoadSynchronous() || !Row.Death.LoadSynchronous()
-				|| !Row.Skill.LoadSynchronous() || (Class.Cast && !Row.Cast.LoadSynchronous()) || !Row.Gather.LoadSynchronous())
-			{
-				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the mesh, the anim blueprint or the attack/hit/death/skill/cast/pick-up animation is missing."), *Folder);
+				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("%s: the mesh, the anim blueprint or an animation is missing."), *Folder);
 				return false;
+			}
+			// 바인드 포즈의 높이(가져온 단위)로 원하는 키를 나눠 크기 배수를 정한다. 팩마다 단위와 키가 다르다.
+			const double BindHeight = Mesh->GetImportedBounds().BoxExtent.Z * 2.0;
+			const float Scale = Creature.Height > 0.0f ? static_cast<float>(Creature.Height * 100.0 / BindHeight) : Creature.Scale;
+			UE_LOG(LogMmoCreateCharacterAssets, Display, TEXT("%s: bind pose %.1f units tall, bottom %.1f, scale %.3f"), Creature.Name, BindHeight,
+				Mesh->GetImportedBounds().Origin.Z - Mesh->GetImportedBounds().BoxExtent.Z, Scale);
+			const auto Soft = [](UAnimSequence* Sequence) { return TSoftObjectPtr<UAnimSequence>(Sequence); };
+			for (const int32 Key : Creature.Keys)
+			{
+				FMmoEntityVisual& Row = Visuals->Rows.AddDefaulted_GetRef();
+				Row.Kind = Creature.Kind;
+				Row.Key = Key;
+				Row.Mesh = Mesh;
+				Row.Animation = TSoftClassPtr<UMmoAnimInstance>(FSoftObjectPath(Animation));
+				Row.Attack = Soft(Attack);
+				Row.Hit = Soft(FindClip(Creature, Creature.Hit));
+				Row.Death = Soft(Death);
+				Row.Skill = Soft(FindClip(Creature, Creature.Skill));
+				Row.Cast = Soft(FindClip(Creature, Creature.Cast));
+				Row.Gather = Soft(FindClip(Creature, Creature.Gather));
+				Row.Scale = Scale;
 			}
 		}
 		return Save(Package, Visuals, Filename);
@@ -307,15 +371,51 @@ UMmoCreateCharacterAssetsCommandlet::UMmoCreateCharacterAssetsCommandlet()
 
 int32 UMmoCreateCharacterAssetsCommandlet::Main(const FString& Params)
 {
-	// 직업 → 폴더와 가져온 원본 이름(Quaternius RPG Characters의 Warrior, Wizard). import_characters.py의 폴더와 같다.
-	const FClassAnimations Classes[] = {
-		{ TEXT("/Game/Characters/Knight"), TEXT("Knight"), TEXT("Warrior"), UMmoEntityVisuals::KnightKey(), TEXT("Sword_Attack"), TEXT("Sword_AttackFast"), nullptr },
-		{ TEXT("/Game/Characters/Mage"), TEXT("Mage"), TEXT("Wizard"), UMmoEntityVisuals::MageKey(), TEXT("Staff_Attack"), TEXT("Spell1"), TEXT("Spell2") },
-	};
-	bool bOk = true;
-	for (const FClassAnimations& Class : Classes)
+	const int32 Player = UMmoEntityVisuals::PlayerKind();
+	const int32 Monster = UMmoEntityVisuals::MonsterKind();
+	// 몬스터의 키는 Monsters의 id, NPC는 Npcs의 id(경비병 넷이 3–6), 소환수는 몬스터 템플릿의 id다. 이동 속도는 데이터의 speed(m/s)다.
+	// 플레이어는 import_characters.py가, 나머지는 import_creatures.py가 가져온 폴더다(원본은 docs/art.md). 플레이어의 크기는 바인드 포즈의
+	// 발바닥부터 머리 끝까지 272 단위를 1.8 m로 줄인 값이다(무기가 머리 위로 나와 높이로 정하지 않음).
+	const auto People = [](const TCHAR* Name, const TCHAR* Source, TArray<int32> Keys, float MoveSpeed, const TCHAR* Attack = TEXT("Punch"))
 	{
-		bOk &= CreateLocomotion(Class) && CreateAnimBlueprint(Class);
+		return FCreature{ nullptr, Name, Source, UMmoEntityVisuals::NpcKind(), MoveTemp(Keys), 1.8f, 1.0f, MoveSpeed, TEXT("Idle"), TEXT("Walk"), Attack, TEXT("RecieveHit"), TEXT("Defeat") };
+	};
+	TArray<FCreature> Creatures = {
+		{ TEXT("/Game/Characters/Knight"), TEXT("Knight"), TEXT("Warrior"), Player, { UMmoEntityVisuals::KnightKey() }, 0.0f, 180.0f / 272.0f, RunSpeed,
+			TEXT("Idle_Weapon"), TEXT("Run_Weapon"), TEXT("Sword_Attack"), TEXT("RecieveHit"), TEXT("Death"), TEXT("Sword_AttackFast"), nullptr, TEXT("PickUp") },
+		{ TEXT("/Game/Characters/Mage"), TEXT("Mage"), TEXT("Wizard"), Player, { UMmoEntityVisuals::MageKey() }, 0.0f, 180.0f / 272.0f, RunSpeed,
+			TEXT("Idle_Weapon"), TEXT("Run_Weapon"), TEXT("Staff_Attack"), TEXT("RecieveHit"), TEXT("Death"), TEXT("Spell1"), TEXT("Spell2"), TEXT("PickUp") },
+		{ nullptr, TEXT("Slime"), TEXT("Slime"), Monster, { 1 }, 0.7f, 1.0f, 250.0f, TEXT("Slime_Idle"), TEXT("Slime_Walk"), TEXT("Slime_Attack"), nullptr, TEXT("Slime_Death") },
+		{ nullptr, TEXT("Mushroom"), TEXT("Mushnub"), Monster, { 2 }, 1.0f, 1.0f, 250.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Bite_Front"), TEXT("HitRecieve"), TEXT("Death") },
+		{ nullptr, TEXT("Boar"), TEXT("Bull"), Monster, { 3 }, 1.1f, 1.0f, 350.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Attack_Headbutt"), TEXT("Idle_HitReact_Left"), TEXT("Death") },
+		{ nullptr, TEXT("Goblin"), TEXT("Goblin_Male"), Monster, { 4 }, 1.3f, 1.0f, 300.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Punch"), TEXT("RecieveHit"), TEXT("Defeat") },
+		{ nullptr, TEXT("Wolf"), TEXT("Wolf"), Monster, { 5 }, 1.1f, 1.0f, 400.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Attack"), TEXT("Idle_HitReact_Left"), TEXT("Death") },
+		{ nullptr, TEXT("GoblinArcher"), TEXT("Goblin_Female"), Monster, { 6 }, 1.3f, 1.0f, 300.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Shoot_OneHanded"), TEXT("RecieveHit"), TEXT("Defeat") },
+		{ nullptr, TEXT("Orc"), TEXT("Orc"), Monster, { 7 }, 2.0f, 1.0f, 300.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Punch"), TEXT("HitReact"), TEXT("Death") },
+		{ nullptr, TEXT("Skeleton"), TEXT("Skeleton"), Monster, { 8 }, 1.8f, 1.0f, 350.0f, TEXT("Skeleton_Idle"), TEXT("Skeleton_Running"), TEXT("Skeleton_Attack"), nullptr, TEXT("Skeleton_Death") },
+		{ nullptr, TEXT("Troll"), TEXT("Cyclops"), Monster, { 9 }, 2.6f, 1.0f, 300.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Bite_InPlace"), TEXT("HitRecieve"), TEXT("Death") },
+		{ nullptr, TEXT("StoneGiant"), TEXT("Yeti"), Monster, { 10 }, 4.5f, 1.0f, 300.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Bite_InPlace"), TEXT("HitRecieve"), TEXT("Death") },
+		{ nullptr, TEXT("Spirit"), TEXT("Ghost"), UMmoEntityVisuals::SummonKind(), { 12 }, 1.4f, 1.0f, 700.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Bite_InPlace"), TEXT("HitRecieve"), TEXT("Death") },
+		People(TEXT("Merchant"), TEXT("OldClassy_Male"), { 1 }, 300.0f),
+		People(TEXT("Keeper"), TEXT("Worker_Male"), { 2 }, 300.0f),
+		People(TEXT("Guard"), TEXT("Knight_Male"), { 3, 4, 5, 6 }, 550.0f),
+		People(TEXT("Crafter"), TEXT("Viking_Male"), { 7 }, 300.0f),
+		People(TEXT("QuestGiver"), TEXT("Wizard"), { 8 }, 300.0f),
+	};
+	// 플레이어 말고는 /Game/Creatures/<이름>이다(import_creatures.py와 같은 폴더).
+	TArray<FString> Folders;
+	Folders.Reserve(Creatures.Num());
+	for (FCreature& Creature : Creatures)
+	{
+		if (!Creature.Folder)
+		{
+			Creature.Folder = *Folders.Add_GetRef(FString::Printf(TEXT("/Game/Creatures/%s"), Creature.Name));
+		}
 	}
-	return bOk && CreateVisuals(Classes) ? 0 : 1;
+	bool bOk = true;
+	for (const FCreature& Creature : Creatures)
+	{
+		bOk &= CreateLocomotion(Creature) && CreateAnimBlueprint(Creature);
+	}
+	return bOk && CreateVisuals(Creatures) ? 0 : 1;
 }

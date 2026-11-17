@@ -841,9 +841,10 @@ void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::
 
 	const auto [Mesh, Placeholder] = ComponentsOf(Actor);
 	const FMmoEntityVisual* Row = Visuals->Find(Info.kind(), KeyOf(Info));
-	if (Row && Row->Mesh.Get() && Row->Animation.Get() && Row->Attack.Get() && Row->Hit.Get() && Row->Death.Get())
+	// 피격 동작이 없는 모델도 있다(슬라임, 해골. 91).
+	if (Row && Row->Mesh.Get() && Row->Animation.Get() && Row->Attack.Get() && (Row->Hit.IsNull() || Row->Hit.Get()) && Row->Death.Get())
 	{
-		MmoCharacterLook::Apply(*Mesh, *Placeholder, Row->Mesh.Get(), Row->Animation.Get());
+		MmoCharacterLook::Apply(*Mesh, *Placeholder, Row->Mesh.Get(), Row->Animation.Get(), Row->Scale);
 		Looks.Add(Id, Row);
 		ShowDeadIfDead(Id, *Mesh, *Placeholder, Row);
 		return;
@@ -874,7 +875,7 @@ void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::
 			}
 
 			const auto [LoadedMesh, LoadedPlaceholder] = ComponentsOf(*Current);
-			MmoCharacterLook::Apply(*LoadedMesh, *LoadedPlaceholder, Row->Mesh.Get(), Row->Animation.Get());
+			MmoCharacterLook::Apply(*LoadedMesh, *LoadedPlaceholder, Row->Mesh.Get(), Row->Animation.Get(), Row->Scale);
 			Looks.Add(Id, Row);
 			ShowDeadIfDead(Id, *LoadedMesh, *LoadedPlaceholder, Row);
 			UE_LOG(LogMmoNet, Display, TEXT("Loaded the look of entity %u in %.0f ms"), Id, (FPlatformTime::Seconds() - Started) * 1000.0);

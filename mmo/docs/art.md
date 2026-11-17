@@ -9,17 +9,17 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | 무엇 | 수 | 지금 | 넣을 것 |
 |---|---|---|---|
 | 캐릭터 메시 | 2(기사, 마법사) | 있음(아래 "캐릭터") | - |
-| 몬스터 메시 | 9종과 필드 보스 1 | 자리 표시: 빨간 원기둥 | 정하지 않음. 캐릭터와 화풍이 같은 Quaternius의 CC0 팩이 후보 |
-| NPC 메시 | 5종(상점, 창고, 제작, 퀘스트, 경비병) | 아직 없음(37, 44가 넣음). 넣으면 초록 원기둥 | 캐릭터 팩의 남은 넷(성직자, 수도사, 궁수, 도적)이 후보 |
+| 몬스터 메시 | 9종과 필드 보스 1 | 있음(아래 "몬스터·소환수·NPC". 2026-11-17) | - |
+| NPC 메시 | 5종(상점, 창고, 제작, 퀘스트, 경비병) | 있음(아래 "몬스터·소환수·NPC") | - |
 | 채집물 메시 | 6종(나무·광석·약초 × 2단계) | 아직 없음(47). 넣으면 갈색 원뿔 | 정하지 않음 |
 | 무기 메시 | 2(검, 지팡이) | 캐릭터 메시에 붙어 있음 | 입은 무기를 바꿔 보이는 것은 34가 정함 |
 | 바닥 아이템 메시 | 1 | 자리 표시: 노란 작은 상자(33) | 정하지 않음 |
 | 환경 메시 | 아래 "맵의 것"의 9종 | 엔진 기본 도형의 자리 표시 | 아래 "맵의 것" |
 | 캐릭터 애니메이션 | 대기, 달리기, 공격, 피격, 죽음, 시전 | 있음(캐릭터 팩) | - |
 | 채집·제작·귀환 동작 | 3 | 아직 없음(47, 48, 32) | 캐릭터 팩의 `PickUp`(채집)이 후보 |
-| 몬스터 애니메이션 | 종마다 대기, 걷기, 공격, 피격, 죽음 | 자리 표시(원기둥은 동작이 없고 죽으면 눕힘) | 몬스터 메시와 함께 |
-| 소환수 메시와 애니메이션(95) | 1(정령): 대기, 걷기, 공격, 피격, 죽음과 나타나고 사라지는 이펙트 | 자리 표시: 보라색 구 | 정하지 않음(91) |
-| 펫 메시와 애니메이션(96) | 2(고양이, 부엉이): 걷기, 줍기 | 자리 표시: 펫마다 색이 다른 작은 구(개체 서브시스템이 만듦) | 정하지 않음(91) |
+| 몬스터 애니메이션 | 종마다 대기, 걷기, 공격, 피격, 죽음 | 있음(슬라임과 해골은 피격 동작이 없음) | - |
+| 소환수 메시와 애니메이션(95) | 1(정령): 대기, 걷기, 공격, 피격, 죽음과 나타나고 사라지는 이펙트 | 메시와 동작은 있음(Ghost). 나타나고 사라지는 이펙트는 아래 "이펙트와 소리" | 이펙트는 정하지 않음 |
+| 펫 메시와 애니메이션(96) | 2(고양이, 부엉이): 걷기, 줍기 | 자리 표시: 펫마다 색이 다른 작은 구(개체 서브시스템이 만듦) | Ultimate Monsters의 `Cat`과 `Birb`(부엉이가 CC0로 없어 둥근 새. 받아 둠). 펫을 스켈레탈 메시로 그리는 코드가 필요 |
 | 아이템 아이콘 | 장비 21종, 소모품 18(물약 4, 귀환·강화 주문서 2, 스킬북 10, 펫 2), 재료 15(채집 6, 몬스터 부산물 9) | 글자 아이콘(인벤토리의 칸, 퀵슬롯의 물약. 32) | 정하지 않음 |
 | 스킬 아이콘 | 12(소환 95 포함) | 글자 아이콘(퀵슬롯) | 정하지 않음 |
 | 효과 아이콘 | 4와 전투 상태, 선공 표시 | HUD의 글 한 줄 | 정하지 않음. 아이콘으로 보이는 것은 그 화면을 고치는 항목 |
@@ -37,8 +37,10 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | 에셋 | 만드는 것 |
 |---|---|
 | `Maps/Field`, `Materials/M_Ground`, `M_Sky`, `M_Placeholder` | `Scripts/create_content.py`(땅, 해, 하늘, 안개, 머티리얼)와 에디터 모듈의 `MmoBuildMap`(맵에 놓인 것의 자리 표시) |
-| `Characters/M_Character`, `Characters/<직업>/MI_*` | `Scripts/import_characters.py`(가져온 텍스처를 받는 머티리얼) |
-| `Characters/<직업>/ABP_*`, `BS_*_Locomotion`, `Characters/DA_EntityVisuals` | 에디터 모듈의 `MmoCreateCharacterAssets` |
+| `Characters/M_Character`, `Characters/M_EntityColor` | `Scripts/create_entity_materials.py`(가져온 텍스처나 원본의 색을 받는 머티리얼) |
+| `Characters/<직업>/MI_*` | `Scripts/import_characters.py` |
+| `Creatures/<이름>/` 전부(메시, 스켈레톤, 애니메이션, 머티리얼 인스턴스) | `Scripts/import_creatures.py`(아래 "몬스터·소환수·NPC"의 원본에서) |
+| `Characters/<직업>/ABP_*`, `BS_*_Locomotion`, `Creatures/<이름>/ABP_*`, `BS_*_Locomotion`, `Characters/DA_EntityVisuals` | 에디터 모듈의 `MmoCreateCharacterAssets` |
 | `UI/WBP_*`, `UI/DA_Icons` | 에디터 모듈의 `MmoCreateWidgets` |
 | `Effects/` 전부 | 에디터 모듈의 `MmoCreateEffectAssets`(아래 "이펙트와 소리") |
 
@@ -51,6 +53,36 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 
 - 팩의 FBX 하나에 스켈레탈 메시, 스켈레톤, 애니메이션(대기·달리기·공격·죽음 등)이 함께 들어 있습니다. 지금은 `Idle_Weapon`과 `Run_Weapon`만 씁니다(대기·달리기 블렌드 스페이스).
 - 기사·마법사 말고 같은 팩의 성직자(Cleric), 수도사(Monk), 궁수(Ranger), 도적(Rogue)은 세 번째 직업부터 쓸 수 있습니다.
+
+## 몬스터·소환수·NPC
+
+2026-11-17(backlog 91의 첫 단계). 모두 Quaternius의 CC0 팩이고, 원본은 저장소 밖 `MMO_ART_SOURCE`(기본 `~/.cache/mmo-art-sources`)의 폴더에 두고 `Scripts/import_creatures.py`가 가져옵니다. 캐릭터와 같은 화풍의 몬스터가 모자라 CC0로 없는 것은 비슷한 모델로 대신했습니다(사용자가 정함). 크기는 표현 표의 줄마다 원하는 키로 맞춥니다.
+
+| 무엇(데이터 id) | 원본 모델(팩) | 대체와 고침 |
+|---|---|---|
+| 슬라임(몬스터 1) | `Slime`(Animated Monster Pack) | 애니메이션에서 루트 트랙을 지움(바인드 포즈와 크기가 달라 보이지 않았음). 피격 동작 없음 |
+| 버섯(2) | `Mushnub`(Ultimate Monsters) | Cute Monsters의 `Mushroom`은 대기 동작뿐이라 바꿈 |
+| 멧돼지(3) | `Bull`(Ultimate Animated Animals) | 멧돼지가 CC0로 없어 소에 갈색 색조 |
+| 고블린(4), 고블린 궁수(6) | `Goblin_Male`, `Goblin_Female`(Ultimate Animated Character Pack) | 궁수의 공격은 `Shoot_OneHanded` |
+| 늑대(5) | `Wolf`(Ultimate Animated Animals) | Animal Pack Vol.2의 늑대는 공격·죽음이 없어 바꿈 |
+| 오크(7) | `Orc`(Ultimate Monsters의 Big) | - |
+| 해골(8) | `Skeleton`(Animated Monster Pack) | 피격 동작 없음 |
+| 트롤(9) | `Cyclops`(Cute Animated Monsters) | 트롤이 없어 외눈 거인 |
+| 돌거인(10, 필드 보스) | `Yeti`(Cute Animated Monsters) | 골렘이 없어 예티에 회색 색조, 키 4.5 m |
+| 정령(12, 소환수) | `Ghost`(Cute Animated Monsters) | - |
+| 상인, 창고지기, 제작, 퀘스트, 경비병(NPC 1, 2, 7, 8, 3–6) | `OldClassy_Male`, `Worker_Male`, `Viking_Male`, `Wizard`, `Knight_Male`(Ultimate Animated Character Pack) | 캐릭터와 화풍이 같은 CC0 마을 사람이 없어 이 팩(평면 색)으로 정함 |
+
+| 팩(`MMO_ART_SOURCE` 안의 폴더) | 받는 곳 | 라이선스 |
+|---|---|---|
+| Animated Monster Pack(`monster-pack/`) | [OpenGameArt: LowPoly Animated Monsters](https://opengameart.org/content/lowpoly-animated-monsters) (`Animated Monster Pack by @Quaternius.zip`, 1.3 MB) | CC0 1.0(팩의 License.txt) |
+| Cute Animated Monsters(`cute-monsters/`) | [OpenGameArt: Textured Cute Monster Pack](https://opengameart.org/content/textured-cute-monster-pack) (`cute_animated_monsters_-_aug_2020.zip`, 9.7 MB) | CC0 1.0(페이지) |
+| Ultimate Animated Character Pack(`character-pack/`) | [OpenGameArt: Animated Characters Pack](https://opengameart.org/content/animated-characters-pack) (`ultimate_animated_character_pack_by_quaternius.zip`, 46.2 MB) | CC0 1.0(페이지) |
+| Ultimate Monsters(`ultimate-monsters/`) | [quaternius.com: Ultimate Monsters](https://quaternius.com/packs/ultimatemonsters.html)의 Google Drive에서 낱개로: `Mushnub.fbx`, `Orc.fbx`(Big), `Cat.fbx`, `Birb.fbx`, `Atlas_Monsters.png`, `License.txt` | CC0 1.0(License.txt) |
+| Ultimate Animated Animals(`ultimate-animals/`) | [quaternius.com: Ultimate Animated Animals](https://quaternius.com/packs/ultimateanimatedanimals.html)의 Google Drive에서 낱개로: `Wolf.fbx`, `Bull.fbx`, `License.txt` | CC0 1.0(License.txt) |
+
+- OpenGameArt의 zip은 받은 대로 각 폴더에 풀고(그 안의 `FBX/`, `Textures/`를 씀), Drive의 낱개 파일은 폴더 바로 아래에 둡니다.
+- 함께 받았지만 쓰지 않은 것: Animal Pack Vol.2(OpenGameArt `Animal Pack Vol.2 by @Quaternius.zip`, 2.0 MB, CC0. 고양이·독수리·늑대가 대기와 걷기뿐).
+- 버린 후보: Quaternius의 Bestiary·Fantasy Races는 CC0가 아니라 자체 라이선스(QAL)이고, OpenGameArt의 "496 pixel art icons"는 CC0로 적혀 있지만 CC-BY 3.0인 그림이 섞여 있습니다(91의 조사, 2026-11-17).
 
 ## 맵의 것
 

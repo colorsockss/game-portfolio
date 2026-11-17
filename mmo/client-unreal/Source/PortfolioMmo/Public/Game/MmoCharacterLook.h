@@ -32,8 +32,8 @@ namespace MmoCharacterLook
 	/** 자리 표시(종류마다의 도형과 색)를 보이고 스켈레탈 메시를 감춘다. 불러오는 동안과 표에 줄이 없는 개체가 이렇게 보인다. */
 	void ShowPlaceholder(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* Shape, UMaterialInterface* Material, const FLinearColor& Color, const FVector& Scale);
 
-	/** 불러온 메시와 애니메이션 블루프린트를 입히고 자리 표시를 감춘다. */
-	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, TSubclassOf<UMmoAnimInstance> Animation);
+	/** 불러온 메시와 애니메이션 블루프린트를 표현 표의 크기(Scale)로 입히고 자리 표시를 감춘다. */
+	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, TSubclassOf<UMmoAnimInstance> Animation, float Scale);
 
 	/** 속도(언리얼 단위/초)로 대기와 달리기를 섞는다. 0이 대기, 600(6 m/s)이 달리기다. */
 	void SetSpeed(USkeletalMeshComponent& Mesh, double Speed);
@@ -51,8 +51,8 @@ namespace MmoCharacterLook
 	void SetDead(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UAnimSequenceBase* Death, bool bDead, bool bInstant);
 
 	/**
-	 * 스켈레탈 메시 컴포넌트를 액터의 앞(+X)을 보는 사람 크기로 둔다. Feet는 그 컴포넌트의 부모에서 발(지면)까지다.
-	 * 들여온 메시는 +Y를 보고(Unreal의 스켈레탈 메시 관례) 키가 2.72 m라 돌리고 줄인다.
+	 * 스켈레탈 메시 컴포넌트를 액터의 앞(+X)을 보게 둔다. Feet는 그 컴포넌트의 부모에서 발(지면)까지다.
+	 * 들여온 메시는 +Y를 보므로(Unreal의 스켈레탈 메시 관례) 돌린다. 크기는 모습을 입힐 때 표현 표의 줄이 정한다(Apply).
 	 */
 	void SetUpBody(USkeletalMeshComponent& Mesh, const FVector& Feet);
 

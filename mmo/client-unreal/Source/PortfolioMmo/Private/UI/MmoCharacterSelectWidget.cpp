@@ -195,7 +195,7 @@ void UMmoCharacterSelectWidget::ShowPreview(uint32 CharacterClass, uint32 Weapon
 	Mesh->SetSkeletalMesh(Row->Mesh.LoadSynchronous());
 	Mesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	Mesh->SetAnimInstanceClass(Row->Animation.LoadSynchronous());
-	Mesh->SetWorldScale3D(FVector(180.0 / 272.0));
+	Mesh->SetWorldScale3D(FVector(Row->Scale));
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Preview = Actor;
 
