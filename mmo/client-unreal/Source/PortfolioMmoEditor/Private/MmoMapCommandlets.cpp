@@ -7,6 +7,7 @@
 #include "Engine/StaticMesh.h"
 #include "FileHelpers.h"
 #include "Game/MmoMapObject.h"
+#include "Game/MmoTerrain.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -181,7 +182,9 @@ int32 UMmoBuildMapCommandlet::Main(const FString& Params)
 		++Removed;
 	}
 
-	TArray<MmoMapDecoration::FTreeSpot> Trees;
+	// 땅의 높낮이(106): 자연의 막는 것이 놓인 칸은 솟을 수 있다(집·울타리·소품의 칸은 낮은 땅이라 바닥이 평평함).
+	TArray<bool> Natural;
+	Natural.SetNumZeroed(Layout->Size * Layout->Size);
 	for (const FPlaced& Placed : Objects)
 	{
 		const FMmoMapObjectKind* Kind = Kinds.Find(Placed.Kind);
@@ -190,9 +193,44 @@ int32 UMmoBuildMapCommandlet::Main(const FString& Params)
 			UE_LOG(LogMmoMap, Error, TEXT("Map.tsv places kind %d without its kind line."), Placed.Kind);
 			return 1;
 		}
+		if (Kind->MeshKey != TEXT("mountain") && Kind->MeshKey != TEXT("rock_large") && Kind->MeshKey != TEXT("rock") && Kind->MeshKey != TEXT("tree"))
+		{
+			continue;
+		}
+		const FIntPoint Size = AMmoMapObject::Footprint(*Kind, Placed.Rotation);
+		for (int32 Z = Placed.Z; Z < Placed.Z + Size.Y; ++Z)
+		{
+			for (int32 X = Placed.X; X < Placed.X + Size.X; ++X)
+			{
+				const int32 Column = X - Layout->Min;
+				const int32 Row = Z - Layout->Min;
+				if (Column >= 0 && Row >= 0 && Column < Layout->Size && Row < Layout->Size)
+				{
+					Natural[Row * Layout->Size + Column] = true;
+				}
+			}
+		}
+	}
+	const AMmoTerrain* Terrain = MmoMapDecoration::BuildTerrain(*World, *Layout, Natural);
+	if (!Terrain)
+	{
+		return 1;
+	}
 
+	TArray<MmoMapDecoration::FTreeSpot> Trees;
+	for (const FPlaced& Placed : Objects)
+	{
+		const FMmoMapObjectKind* Kind = Kinds.Find(Placed.Kind);
 		AMmoMapObject* Object = World->SpawnActor<AMmoMapObject>();
 		Object->Place(*Kind, Placed.X, Placed.Z, Placed.Rotation);
+		// 차지하는 사각형의 네 모서리와 가운데 중 가장 낮은 땅에 조금 묻는다(비탈에서 한쪽이 뜨지 않게).
+		const FIntPoint Size = AMmoMapObject::Footprint(*Kind, Placed.Rotation);
+		double Lowest = TNumericLimits<double>::Max();
+		for (const FVector2D Corner : { FVector2D(0.0, 0.0), FVector2D(1.0, 0.0), FVector2D(0.0, 1.0), FVector2D(1.0, 1.0), FVector2D(0.5, 0.5) })
+		{
+			Lowest = FMath::Min(Lowest, Terrain->HeightAt((Placed.Z + Size.Y * Corner.Y) * 100.0, (Placed.X + Size.X * Corner.X) * 100.0));
+		}
+		Object->SetActorLocation(Object->GetActorLocation() + FVector(0.0, 0.0, Lowest - 5.0));
 		ApplyMesh(*Object, Placeholder, *Layout, Placed);
 		Object->SetActorLabel(FString::Printf(TEXT("%s_%d_%d"), *Kind->MeshKey, Placed.X, Placed.Z));
 		Object->SetFolderPath(TEXT("Map"));
@@ -202,7 +240,7 @@ int32 UMmoBuildMapCommandlet::Main(const FString& Params)
 		}
 	}
 
-	if (!MmoMapDecoration::Decorate(*World, *Layout, Trees))
+	if (!MmoMapDecoration::Decorate(*World, *Layout, Trees, *Terrain))
 	{
 		return 1;
 	}

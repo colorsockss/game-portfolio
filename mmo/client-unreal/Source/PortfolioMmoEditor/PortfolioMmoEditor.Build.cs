@@ -30,6 +30,8 @@ public class PortfolioMmoEditor : ModuleRules
             "PortfolioMmo",
             "Niagara",
             "NiagaraEditor",
+            "MeshDescription",
+            "StaticMeshDescription",
         });
     }
 }

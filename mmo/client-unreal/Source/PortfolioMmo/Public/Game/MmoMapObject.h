@@ -67,6 +67,9 @@ public:
 	const FMmoMapObjectKind& Kind() const { return KindRow; }
 	UStaticMeshComponent& Mesh() const { return *MeshComponent; }
 
+	/** 방향대로 돌린 뒤 차지하는 x, z 칸 수(m). 90도와 270도는 가로와 세로가 바뀐다. */
+	static FIntPoint Footprint(const FMmoMapObjectKind& Kind, int32 Rotation);
+
 	/** 충돌 상자의 가장 낮은 높이(m). 캡슐(1.8 m)보다 높다. 카메라는 놓일 자리가 상자 안일 때만 당기므로(AMmoCharacter) 상자는 메시만큼만 높다. */
 	static constexpr double MinBlockHeight = 2.5;
 

@@ -3,6 +3,7 @@
 #include "Components/AudioComponent.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
+#include "Game/MmoCharacter.h"
 #include "Game/MmoCoordinates.h"
 #include "Game/MmoEntitySubsystem.h"
 #include "Game/MmoFxActor.h"
@@ -133,6 +134,11 @@ AMmoFxActor* UMmoCueSubsystem::Play(EMmoCue Cue, int32 Kind, int32 Key, const FV
 	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, Location, FRotator::ZeroRotator, 1.0f, 1.0f, 0.0f, nullptr, ConcurrencyFor(Sound));
 	}
+	if (AMmoCharacter* Self = Found->Shake > 0.0f ? Cast<AMmoCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)) : nullptr;
+		Self && FVector::DistSquared2D(Self->GetActorLocation(), Location) < FMath::Square(ShakeRange))
+	{
+		Self->Shake(Found->Shake);
+	}
 	if (Found->Layers.IsEmpty() || ActiveEffects() >= MaxActiveEffects)
 	{
 		return nullptr;
@@ -142,7 +148,7 @@ AMmoFxActor* UMmoCueSubsystem::Play(EMmoCue Cue, int32 Kind, int32 Key, const FV
 	{
 		return nullptr;
 	}
-	Shape->Start(Found->Layers, Hold);
+	Shape->Start(Found->Layers, Hold, Found->Light);
 	if (!IsValid(Shape))
 	{
 		// 겹의 에셋을 아직 불러오지 않아 그릴 것이 없었다.

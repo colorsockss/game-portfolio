@@ -3,7 +3,10 @@
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Async/ParallelFor.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Engine/CollisionProfile.h"
 #include "Game/MmoFieldLayout.h"
+#include "Game/MmoTerrain.h"
+#include "MmoMeshBuilder.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Engine/Texture2D.h"
@@ -170,6 +173,46 @@ namespace MmoMapDecoration
 			TArray<double> Density;
 		};
 
+		/** N×N 격자를 반지름 Radius 칸의 상자로 흐린다(가로, 세로를 차례로. 밖은 가장자리 값). */
+		TArray<double> Blur(const TArray<double>& Values, int32 N, int32 Radius)
+		{
+			TArray<double> Across;
+			Across.SetNumUninitialized(N * N);
+			TArray<double> Out;
+			Out.SetNumUninitialized(N * N);
+			for (int32 Pass = 0; Pass < 2; ++Pass)
+			{
+				const TArray<double>& From = Pass == 0 ? Values : Across;
+				TArray<double>& To = Pass == 0 ? Across : Out;
+				ParallelFor(N, [&](int32 Line)
+				{
+					for (int32 Index = 0; Index < N; ++Index)
+					{
+						double Sum = 0.0;
+						for (int32 Offset = -Radius; Offset <= Radius; ++Offset)
+						{
+							const int32 Other = FMath::Clamp(Index + Offset, 0, N - 1);
+							Sum += Pass == 0 ? From[Line * N + Other] : From[Other * N + Line];
+						}
+						(Pass == 0 ? To[Line * N + Index] : To[Index * N + Line]) = Sum / (Radius * 2 + 1);
+					}
+				});
+			}
+			return Out;
+		}
+
+		/** N×N 격자(칸의 가운데가 정수 + 0.5)의 값을 (U, V)(칸)에서 이어 읽는다. */
+		double Bilinear(const TArray<double>& Values, int32 N, double U, double V)
+		{
+			const double X = FMath::Clamp(U - 0.5, 0.0, N - 1.0);
+			const double Y = FMath::Clamp(V - 0.5, 0.0, N - 1.0);
+			const int32 X0 = FMath::Min(FMath::FloorToInt32(X), N - 2);
+			const int32 Y0 = FMath::Min(FMath::FloorToInt32(Y), N - 2);
+			const double A = X - X0;
+			const double B = Y - Y0;
+			return FMath::Lerp(FMath::Lerp(Values[Y0 * N + X0], Values[Y0 * N + X0 + 1], A), FMath::Lerp(Values[(Y0 + 1) * N + X0], Values[(Y0 + 1) * N + X0 + 1], A), B);
+		}
+
 		/** 패키지를 새로 만든다(디스크의 옛 파일은 지움). */
 		UPackage* NewPackage(const FString& Name, FString& Filename)
 		{
@@ -309,8 +352,8 @@ namespace MmoMapDecoration
 			return Mix.Weights.Last().Key;
 		}
 
-		/** 풀과 덤불의 액터를 다시 만든다. 메시마다 인스턴스 메시 하나이고 충돌이 없다. */
-		bool Scatter(UWorld& World, const FGround& Ground, const FMmoFieldLayout& Layout)
+		/** 풀과 덤불의 액터를 다시 만든다. 메시마다 인스턴스 메시 하나이고 충돌이 없다. 땅의 높이에 놓는다(106). */
+		bool Scatter(UWorld& World, const FGround& Ground, const FMmoFieldLayout& Layout, const AMmoTerrain& Terrain)
 		{
 			TArray<TArray<FTransform>> Instances;
 			Instances.SetNum(UE_ARRAY_COUNT(ScatterMeshes));
@@ -352,7 +395,7 @@ namespace MmoMapDecoration
 					const double PZ = Z + 0.15 + 0.7 * Hash01(X, Z, 74);
 					const double Scale = FMath::Lerp(ScatterMeshes[Mesh].MinScale, ScatterMeshes[Mesh].MaxScale, Hash01(X, Z, 75));
 					// 패킷의 z(앞)가 Unreal의 X, x(오른쪽)가 Y다(MmoCoordinates).
-					Instances[Mesh].Add(FTransform(FRotator(0.0, Hash01(X, Z, 76) * 360.0, 0.0), FVector(PZ * 100.0, PX * 100.0, 0.0), FVector(Scale)));
+					Instances[Mesh].Add(FTransform(FRotator(0.0, Hash01(X, Z, 76) * 360.0, 0.0), FVector(PZ * 100.0, PX * 100.0, Terrain.HeightAt(PZ * 100.0, PX * 100.0) - 3.0), FVector(Scale)));
 				}
 			}
 
@@ -459,7 +502,193 @@ namespace MmoMapDecoration
 		return Mesh || Name == MeshKey ? Mesh : LoadObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("/Game/Environment/%s.%s"), *MeshKey, *MeshKey), nullptr, LOAD_NoWarn | LOAD_Quiet);
 	}
 
-	bool Decorate(UWorld& World, const FMmoFieldLayout& Layout, const TArray<FTreeSpot>& Trees)
+	AMmoTerrain* BuildTerrain(UWorld& World, const FMmoFieldLayout& Layout, const TArray<bool>& Natural)
+	{
+		constexpr int32 Margin = 90;
+		constexpr int32 Spacing = 3;
+		constexpr int32 ChunksPerSide = 4;
+		const int32 N = Layout.Size + Margin * 2;
+		const int32 ExtMin = Layout.Min - Margin;
+		const auto Inside = [&](int32 Column, int32 Row)
+		{
+			return Column >= Margin && Row >= Margin && Column < Margin + Layout.Size && Row < Margin + Layout.Size;
+		};
+
+		// 낮은 땅: 필드 안에서 걸을 수 있거나 사람이 지은 것(집, 울타리, 소품)이 놓인 칸. 나머지(자연의 막는 것, 필드 밖)는 낮은 땅에서의
+		// 거리(m)만큼 솟는다(두 번 훑는 근사 거리: 곧게 1, 비스듬히 √2).
+		TArray<double> Distance;
+		Distance.SetNumUninitialized(N * N);
+		for (int32 Row = 0; Row < N; ++Row)
+		{
+			for (int32 Column = 0; Column < N; ++Column)
+			{
+				const int32 X = ExtMin + Column;
+				const int32 Z = ExtMin + Row;
+				const bool bLow = Inside(Column, Row) && (Layout.IsOpen(X, Z) || !Natural[(Row - Margin) * Layout.Size + Column - Margin]);
+				Distance[Row * N + Column] = bLow ? 0.0 : 1.0e9;
+			}
+		}
+		const auto Relax = [&](int32 Column, int32 Row, int32 DX, int32 DZ, double Step)
+		{
+			const int32 C = Column + DX;
+			const int32 R = Row + DZ;
+			if (C >= 0 && R >= 0 && C < N && R < N)
+			{
+				Distance[Row * N + Column] = FMath::Min(Distance[Row * N + Column], Distance[R * N + C] + Step);
+			}
+		};
+		for (int32 Row = 0; Row < N; ++Row)
+		{
+			for (int32 Column = 0; Column < N; ++Column)
+			{
+				Relax(Column, Row, -1, 0, 1.0);
+				Relax(Column, Row, 0, -1, 1.0);
+				Relax(Column, Row, -1, -1, UE_SQRT_2);
+				Relax(Column, Row, 1, -1, UE_SQRT_2);
+			}
+		}
+		for (int32 Row = N - 1; Row >= 0; --Row)
+		{
+			for (int32 Column = N - 1; Column >= 0; --Column)
+			{
+				Relax(Column, Row, 1, 0, 1.0);
+				Relax(Column, Row, 0, 1, 1.0);
+				Relax(Column, Row, 1, 1, UE_SQRT_2);
+				Relax(Column, Row, -1, 1, UE_SQRT_2);
+			}
+		}
+
+		// 칸마다: 오르내림의 높이(구역의 종류. 마을은 마을의 사각형에서 15 m 밖까지 평평)와 솟음(m).
+		FIntRect TownRect;
+		for (const FMmoFieldLayout::FZone& Zone : Layout.Zones)
+		{
+			if (Zone.Kind == Town)
+			{
+				TownRect = Zone.Rect;
+			}
+		}
+		TArray<double> Amplitude;
+		TArray<double> Raise;
+		Amplitude.SetNumUninitialized(N * N);
+		Raise.SetNumUninitialized(N * N);
+		ParallelFor(N, [&](int32 Row)
+		{
+			for (int32 Column = 0; Column < N; ++Column)
+			{
+				const int32 X = ExtMin + Column;
+				const int32 Z = ExtMin + Row;
+				const int32 Kind = Layout.KindAt(X, Z);
+				Amplitude[Row * N + Column] = Kind == Gathering ? 2.4 : Kind == Boss ? 1.6 : 3.2;
+				const double D = Distance[Row * N + Column];
+				const double Outside = FMath::Max(FMath::Max(Layout.Min - (X + 0.5), (X + 0.5) - (Layout.Min + Layout.Size)),
+					FMath::Max(Layout.Min - (Z + 0.5), (Z + 0.5) - (Layout.Min + Layout.Size)));
+				const double Fade = 1.0 - SmoothStep(Margin - 35.0, Margin - 5.0, Outside);
+				Raise[Row * N + Column] = D <= 1.5 ? 0.0 : 9.0 * (1.0 - FMath::Exp(-(D - 1.5) / 6.0)) * (0.6 + 0.8 * Fbm(X, Z, 30.0, 91)) * Fade;
+			}
+		});
+		Amplitude = Blur(Amplitude, N, 8);
+		Raise = Blur(Raise, N, 2);
+
+		const int32 Count = N / Spacing + 1;
+		TArray<float> Heights;
+		Heights.SetNumUninitialized(Count * Count);
+		ParallelFor(Count, [&](int32 I)
+		{
+			for (int32 J = 0; J < Count; ++J)
+			{
+				// I가 Unreal의 X(패킷의 z), J가 Y(패킷의 x)다.
+				const double Z = ExtMin + I * Spacing;
+				const double X = ExtMin + J * Spacing;
+				const double Dx = FMath::Max(FMath::Max(TownRect.Min.X - X, X - TownRect.Max.X), 0.0);
+				const double Dz = FMath::Max(FMath::Max(TownRect.Min.Y - Z, Z - TownRect.Max.Y), 0.0);
+				const double Flat = SmoothStep(0.0, 15.0, FMath::Sqrt(Dx * Dx + Dz * Dz));
+				const double Rolling = Bilinear(Amplitude, N, X - ExtMin, Z - ExtMin) * Flat * Fbm(X, Z, 36.0, 81);
+				Heights[I * Count + J] = static_cast<float>((Rolling + Bilinear(Raise, N, X - ExtMin, Z - ExtMin)) * 100.0);
+			}
+		});
+
+		// 걸을 수 있는 칸의 가장 가파른 비탈(캐릭터 이동 컴포넌트는 44°까지 오름. 서버는 높이를 모르므로 클라이언트가 못 오르면 어긋남).
+		double Steepest = 0.0;
+		for (int32 I = 0; I + 1 < Count; ++I)
+		{
+			for (int32 J = 0; J + 1 < Count; ++J)
+			{
+				if (Layout.IsOpen(ExtMin + J * Spacing, ExtMin + I * Spacing))
+				{
+					const double Rise = FMath::Max(FMath::Abs(Heights[(I + 1) * Count + J] - Heights[I * Count + J]), FMath::Abs(Heights[I * Count + J + 1] - Heights[I * Count + J]));
+					Steepest = FMath::Max(Steepest, FMath::RadiansToDegrees(FMath::Atan(Rise / (Spacing * 100.0))));
+				}
+			}
+		}
+
+		for (TActorIterator<AMmoTerrain> It(&World); It; ++It)
+		{
+			World.EditorDestroyActor(*It, true);
+		}
+		AMmoTerrain* Terrain = World.SpawnActor<AMmoTerrain>();
+		Terrain->SetActorLabel(TEXT("Terrain"));
+		Terrain->SetFolderPath(TEXT("Map"));
+		Terrain->SetHeights(FVector2D(ExtMin * 100.0, ExtMin * 100.0), Spacing * 100.0f, Count, Count, Heights);
+
+		// 조각: 한 변을 ChunksPerSide로 나눈 사각형마다 메시 하나(카메라가 보는 조각만 그림). 충돌은 삼각형 그대로이고 카메라는 막지 않는다.
+		const int32 Quads = Count - 1;
+		const int32 PerChunk = FMath::DivideAndRoundUp(Quads, ChunksPerSide);
+		for (int32 CI = 0; CI < ChunksPerSide; ++CI)
+		{
+			for (int32 CJ = 0; CJ < ChunksPerSide; ++CJ)
+			{
+				const int32 I0 = CI * PerChunk;
+				const int32 J0 = CJ * PerChunk;
+				const int32 I1 = FMath::Min(I0 + PerChunk, Quads);
+				const int32 J1 = FMath::Min(J0 + PerChunk, Quads);
+				const int32 Width = J1 - J0 + 1;
+				TArray<FVector3f> Positions;
+				TArray<FVector2f> UVs;
+				TArray<int32> Triangles;
+				for (int32 I = I0; I <= I1; ++I)
+				{
+					for (int32 J = J0; J <= J1; ++J)
+					{
+						const float WX = (ExtMin + I * Spacing) * 100.0f;
+						const float WY = (ExtMin + J * Spacing) * 100.0f;
+						Positions.Add(FVector3f(WX, WY, Heights[I * Count + J]));
+						UVs.Add(FVector2f(WY / 100.0f, WX / 100.0f));
+					}
+				}
+				for (int32 I = 0; I < I1 - I0; ++I)
+				{
+					for (int32 J = 0; J < J1 - J0; ++J)
+					{
+						const int32 V00 = I * Width + J;
+						const int32 V10 = V00 + Width;
+						const int32 V01 = V00 + 1;
+						const int32 V11 = V10 + 1;
+						// 대각선은 (I, J)–(I+1, J+1)(AMmoTerrain::HeightAt과 같음). 위에서 볼 때 앞면이 되는 차례.
+						Triangles.Append({ V00, V11, V10, V00, V01, V11 });
+					}
+				}
+				const FString Name = FString::Printf(TEXT("/Game/Environment/Terrain/SM_Terrain_%d_%d"), CI, CJ);
+				UStaticMesh* Mesh = MmoMeshBuilder::Create(Name, Positions, UVs, Triangles, nullptr, true);
+				if (!Mesh)
+				{
+					return nullptr;
+				}
+				UStaticMeshComponent* Component = NewObject<UStaticMeshComponent>(Terrain, *FString::Printf(TEXT("Chunk_%d_%d"), CI, CJ));
+				Component->SetStaticMesh(Mesh);
+				Component->SetMobility(EComponentMobility::Static);
+				Component->SetupAttachment(Terrain->GetRootComponent());
+				Component->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+				Component->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+				Terrain->AddInstanceComponent(Component);
+				Component->RegisterComponent();
+			}
+		}
+		UE_LOG(LogMmoMapDecoration, Display, TEXT("Built the terrain: %d x %d points every %d m, %d chunks, steepest walkable slope %.1f degrees."), Count, Count, Spacing,
+			ChunksPerSide * ChunksPerSide, Steepest);
+		return Terrain;
+	}
+
+	bool Decorate(UWorld& World, const FMmoFieldLayout& Layout, const TArray<FTreeSpot>& Trees, const AMmoTerrain& Terrain)
 	{
 		const FGround Ground(Layout, Trees);
 		UTexture2D* Mask = BakeMask(Ground, Layout);
@@ -482,6 +711,12 @@ namespace MmoMapDecoration
 			UE_LOG(LogMmoMapDecoration, Error, TEXT("The Field level has no Floor actor. Run Scripts/create_content.py first."));
 			return false;
 		}
-		return Scatter(World, Ground, Layout);
+		TArray<UStaticMeshComponent*> Chunks;
+		Terrain.GetComponents(Chunks);
+		for (UStaticMeshComponent* Chunk : Chunks)
+		{
+			Chunk->SetMaterial(0, Instance);
+		}
+		return Scatter(World, Ground, Layout, Terrain);
 	}
 }

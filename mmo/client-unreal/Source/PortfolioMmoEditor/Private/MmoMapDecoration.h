@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 
 struct FMmoFieldLayout;
+class AMmoTerrain;
 class UStaticMesh;
 class UWorld;
 
@@ -32,6 +33,14 @@ namespace MmoMapDecoration
 	/** 칸의 해시(같은 자리면 같은 값). */
 	uint32 Hash(int32 X, int32 Z, uint32 Salt);
 
-	/** 땅의 마스크와 바닥의 머티리얼, 풀과 덤불을 다시 만든다. 실패하면 까닭을 남기고 false. */
-	bool Decorate(UWorld& World, const FMmoFieldLayout& Layout, const TArray<FTreeSpot>& Trees);
+	/**
+	 * 땅의 높낮이(106)를 다시 만든다: 높이의 격자(3 m 간격, 필드와 둘레 90 m)를 AMmoTerrain에 넣고 조각마다의 메시(/Game/Environment/Terrain/)를
+	 * 붙인다. 걸을 수 있는 땅은 구역마다 다른 높이(마을은 평평, 사냥터는 0–2 m)로 완만하게 오르내리고, 자연의 막는 것(Natural: 산, 큰 바위, 바위,
+	 * 나무가 놓인 칸. Size×Size)이 모인 곳과 필드 밖은 걸을 수 있는 칸에서 멀수록 솟아 언덕과 산자락이 된다(둘레의 끝에서 0으로 내려옴).
+	 * 같은 데이터면 같은 결과다. 실패하면 nullptr.
+	 */
+	AMmoTerrain* BuildTerrain(UWorld& World, const FMmoFieldLayout& Layout, const TArray<bool>& Natural);
+
+	/** 땅의 마스크와 바닥·땅의 머티리얼, 풀과 덤불(땅 높이에 놓음)을 다시 만든다. 실패하면 까닭을 남기고 false. */
+	bool Decorate(UWorld& World, const FMmoFieldLayout& Layout, const TArray<FTreeSpot>& Trees, const AMmoTerrain& Terrain);
 }

@@ -24,7 +24,8 @@ enum class EMmoSoundGroup : uint8
  * 연출(이펙트와 소리)을 트는 곳. 사건에서 연출 표(UMmoCues)의 줄을 찾아 튼다. 표를 처음 읽을 때 배경음 말고 모든 줄의 에셋을 비동기로
  * 불러오고(104), 배경음은 처음 쓰일 때 불러온다. 다 불러오기 전의 사건은 연출 없이 지나간다.
  *   - 이펙트: Niagara의 컴포넌트 풀(ENCPoolMethod)에서 꺼내 쓰고 끝나면 돌려놓는다. 줄에 모양의 겹(104)이 있으면 그것을 그리는 액터
- *     (AMmoFxActor)도 띄운다. 동시에 켠 이펙트(Niagara와 모양 액터)가 MaxActiveEffects면 새 것을 틀지 않는다.
+ *     (AMmoFxActor)도 띄운다(빛도 그 액터가 켬. 105). 동시에 켠 이펙트(Niagara와 모양 액터)가 MaxActiveEffects면 새 것을 틀지 않는다.
+ *   - 흔들림: 줄에 Shake가 있고 내 캐릭터가 ShakeRange 안이면 카메라를 흔든다(105. 큰 스킬의 착지).
  *   - 소리: 같은 소리는 한 번에 MaxSameSound개까지(넘으면 가장 오래된 것을 끔). 효과와 배경음 두 묶음이고 SetVolume이 묶음의 크기를 바꾼다.
  *   - 배경음: 내 캐릭터가 있는 구역의 종류가 바뀌면 바꾼다(앞의 것은 줄이며 끔).
  */
@@ -34,7 +35,6 @@ class PORTFOLIOMMO_API UMmoCueSubsystem : public UTickableWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	/** 동시에 켜는 이펙트의 상한. shortcut: 한 값이다. 그래픽 품질의 단계(77)가 생기면 그 단계가 정한다. */
 	/** 동시에 켜는 이펙트 수의 상한. 그래픽 품질의 단계가 정한다(77). */
 	int32 MaxActiveEffects = 32;
 
@@ -42,6 +42,9 @@ public:
 
 	/** 같은 소리를 한 번에 트는 수의 상한(처음 값). */
 	static constexpr int32 MaxSameSound = 8;
+
+	/** 줄의 Shake가 내 카메라를 흔드는 거리(언리얼 단위. 105). */
+	static constexpr double ShakeRange = 2000.0;
 
 	/** 발소리 하나마다 걷는 거리(언리얼 단위). */
 	static constexpr double StepLength = 120.0;

@@ -754,7 +754,8 @@ void AMmoPlayerController::PressAt(const FVector2D& ScreenPosition, bool bWalk)
 		return;
 	}
 
-	// 땅은 평지(높이 0)라 화면의 광선과 땅의 평면이 만나는 곳이다. 맵의 것(건물 등)을 눌러도 그 뒤의 땅이다. 대상은 그대로다.
+	// 화면의 광선이 땅에 닿는 곳이다(높이 0의 평면과 만나는 곳에서 시작해 그 자리의 땅 높이의 평면으로 몇 번 고쳐 감. 땅의 비탈은 완만해
+	// 몇 번이면 맞음. 106). 맵의 것(건물 등)을 눌러도 그 뒤의 땅이다. 대상은 그대로다.
 	bEngaged = false;
 	Interaction.Cancel();
 	if (IsStunned())
@@ -767,7 +768,12 @@ void AMmoPlayerController::PressAt(const FVector2D& ScreenPosition, bool bWalk)
 	{
 		return;
 	}
-	WalkTo(Origin + Direction * (-Origin.Z / Direction.Z));
+	FVector Ground = Origin + Direction * (-Origin.Z / Direction.Z);
+	for (int32 Step = 0; Step < 4; ++Step)
+	{
+		Ground = Origin + Direction * ((AMmoTerrain::GroundZ(Ground.X, Ground.Y) - Origin.Z) / Direction.Z);
+	}
+	WalkTo(Ground);
 }
 
 std::optional<MmoWorld::FInteractTarget> AMmoPlayerController::InteractCandidate() const

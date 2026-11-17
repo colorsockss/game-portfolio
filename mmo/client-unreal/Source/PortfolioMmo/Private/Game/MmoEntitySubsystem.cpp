@@ -13,6 +13,7 @@
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "Animation/AnimSequence.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/StaticMeshComponent.h"
@@ -46,6 +47,13 @@ namespace
 	constexpr float HitFlashOpacity = 0.7f;
 	/** 연출을 트는 높이(언리얼 단위): 가슴(1 m). */
 	const FVector Chest(0.0, 0.0, 100.0);
+
+	/** 액터의 가슴. 내 캐릭터(ACharacter)는 액터의 자리가 캡슐의 가운데라 발로 내린 뒤 올린다(그러지 않으면 내 연출만 0.9 m 떠 있었음. 105). */
+	FVector ChestOf(const AActor& Actor)
+	{
+		const ACharacter* Character = Cast<ACharacter>(&Actor);
+		return Actor.GetActorLocation() + Chest - FVector(0.0, 0.0, Character ? Character->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : 0.0);
+	}
 	using MmoCharacterLook::FadeSeconds;
 	using MmoCharacterLook::MeshFadeIndex;
 	using MmoCharacterLook::PlaceholderFadeIndex;
@@ -249,7 +257,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 			}
 			if (const AActor* Target = Actors.FindRef(Event.Target))
 			{
-				Cues().Play(EMmoCue::Hit, CueKey(Event.Attacker).Key, CueKey(Event.Attacker).Value, Target->GetActorLocation() + Chest);
+				Cues().Play(EMmoCue::Hit, CueKey(Event.Attacker).Key, CueKey(Event.Attacker).Value, ChestOf(*Target), FacingOf(Event.Attacker, Event.Target));
 			}
 		}
 		else if (Event.Kind == MmoWorld::ECombatEventKind::Death || Event.Kind == MmoWorld::ECombatEventKind::Revive)
@@ -262,7 +270,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 				MmoCharacterLook::SetDead(*Mesh, *Placeholder, Row ? Row->Death.Get() : nullptr, bDead, false);
 				if (!bDead)
 				{
-					Cues().Play(EMmoCue::Revive, 0, 0, Actor->GetActorLocation() + Chest);
+					Cues().Play(EMmoCue::Revive, 0, 0, ChestOf(*Actor));
 				}
 			}
 		}
@@ -274,7 +282,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		{
 			if (const AActor* Actor = Actors.FindRef(Event.Id))
 			{
-				Cues().Play(EMmoCue::LevelUp, 0, 0, Actor->GetActorLocation());
+				Cues().Play(EMmoCue::LevelUp, 0, 0, ChestOf(*Actor));
 			}
 			if (Event.bMine)
 			{
@@ -504,7 +512,7 @@ void UMmoEntitySubsystem::ShowSkill(const MmoWorld::FCombatEvent& Event, const M
 	EndCharge(Event.Attacker);
 	if (const AActor* Caster = Actors.FindRef(Event.Attacker))
 	{
-		Cues().Play(EMmoCue::SkillCast, 0, static_cast<int32>(Event.Skill), Caster->GetActorLocation() + Chest, FacingOf(Event.Attacker, Event.Target));
+		Cues().Play(EMmoCue::SkillCast, 0, static_cast<int32>(Event.Skill), ChestOf(*Caster), FacingOf(Event.Attacker, Event.Target));
 	}
 
 	const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Event.Skill);
@@ -679,7 +687,7 @@ void UMmoEntitySubsystem::StartCast(const MmoWorld::FCombatEvent& Event, const M
 	if (Actor)
 	{
 		EndCharge(Event.Target);
-		AMmoFxActor* Charge = Cues().Play(EMmoCue::SkillCharge, 0, static_cast<int32>(Event.Skill), Actor->GetActorLocation() + Chest, Actor->GetActorRotation(),
+		AMmoFxActor* Charge = Cues().Play(EMmoCue::SkillCharge, 0, static_cast<int32>(Event.Skill), ChestOf(*Actor), Actor->GetActorRotation(),
 			Skill->cast_ms() / 1000.0f);
 		if (Charge)
 		{
@@ -713,12 +721,12 @@ void UMmoEntitySubsystem::PreviewEffects(const MmoWorld::FWorldState& World, con
 	{
 		PreviewCastAt = -1.0;
 		EndCharge(World.SelfId());
-		Cues().Play(EMmoCue::SkillCast, 0, PreviewSkill, Self->GetActorLocation() + Chest, Self->GetActorRotation());
+		Cues().Play(EMmoCue::SkillCast, 0, PreviewSkill, ChestOf(*Self), Self->GetActorRotation());
 	}
 	if (PreviewHitAt >= 0.0 && Now >= PreviewHitAt && Skill)
 	{
 		PreviewHitAt = -1.0;
-		const FVector At = Self->GetActorLocation() + Chest + (MmoWorld::FCombatState::TargetsOther(*Skill) ? Forward : FVector::ZeroVector);
+		const FVector At = ChestOf(*Self) + (MmoWorld::FCombatState::TargetsOther(*Skill) ? Forward : FVector::ZeroVector);
 		Cues().Play(EMmoCue::SkillHit, 0, PreviewSkill, At, Self->GetActorRotation());
 	}
 	if (PreviewSkills.IsEmpty() || Now < PreviewNext)
@@ -730,7 +738,7 @@ void UMmoEntitySubsystem::PreviewEffects(const MmoWorld::FWorldState& World, con
 	PreviewSkills.Add(PreviewSkill);
 	Skill = Data.Skill(PreviewSkill);
 	const double Cast = Skill ? Skill->cast_ms() / 1000.0 : 0.0;
-	if (AMmoFxActor* Charge = Cast > 0.0 ? Cues().Play(EMmoCue::SkillCharge, 0, PreviewSkill, Self->GetActorLocation() + Chest, Self->GetActorRotation(), Cast) : nullptr)
+	if (AMmoFxActor* Charge = Cast > 0.0 ? Cues().Play(EMmoCue::SkillCharge, 0, PreviewSkill, ChestOf(*Self), Self->GetActorRotation(), Cast) : nullptr)
 	{
 		ChargeEffects.Add(World.SelfId(), Charge);
 	}
@@ -851,7 +859,7 @@ void UMmoEntitySubsystem::DrawCombat(const MmoWorld::FWorldState& World, MmoWorl
 		}
 		if (const AActor* At = Actors.FindRef(PendingHits[Index].Anchor))
 		{
-			Cues().Play(EMmoCue::SkillHit, 0, static_cast<int32>(PendingHits[Index].Skill), At->GetActorLocation() + Chest,
+			Cues().Play(EMmoCue::SkillHit, 0, static_cast<int32>(PendingHits[Index].Skill), ChestOf(*At),
 				FacingOf(PendingHits[Index].Caster, PendingHits[Index].Anchor));
 		}
 		PendingHits.RemoveAtSwap(Index);

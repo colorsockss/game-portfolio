@@ -270,13 +270,15 @@ roughness(placeholder, 0.85)
 materials.recompile_material(placeholder)
 save(placeholder)
 
-# 열려 있는 레벨은 지울 수 없으므로, 이미 있으면 열어서 액터를 비운다.
+# 열려 있는 레벨은 지울 수 없으므로, 이미 있으면 열어서 액터를 비운다. 지우지 못하는 것은 월드 설정과 기본 브러시뿐이다(볼륨도 브러시의
+# 자식이라 브러시를 통째로 남기면 포스트 프로세스 볼륨이 돌릴 때마다 하나씩 늘었음. 105에서 고침).
 levels = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 actors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
 if assets.does_asset_exist(LEVEL):
     if not levels.load_level(LEVEL):
         raise RuntimeError(f"Could not load {LEVEL}")
-    actors.destroy_actors([a for a in actors.get_all_level_actors() if not isinstance(a, (unreal.WorldSettings, unreal.Brush))])
+    actors.destroy_actors([a for a in actors.get_all_level_actors()
+                           if not isinstance(a, unreal.WorldSettings) and (not isinstance(a, unreal.Brush) or isinstance(a, unreal.Volume))])
 elif not levels.new_level(LEVEL):
     raise RuntimeError(f"Could not create {LEVEL}")
 
@@ -287,7 +289,8 @@ def spawn(actor_class, label, location=unreal.Vector(0, 0, 0), rotation=unreal.R
     return actor
 
 
-floor = spawn(unreal.StaticMeshActor, "Floor")
+# 바닥은 먼 지평선까지의 평면이다. 필드와 둘레는 MmoBuildMap이 만드는 땅(106. 높이 0 이상)이 덮으므로 그 아래(−20 cm)에 둬 겹쳐 깜빡이지 않게 한다.
+floor = spawn(unreal.StaticMeshActor, "Floor", unreal.Vector(0, 0, -20))
 floor.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Plane.Plane"))
 floor.static_mesh_component.set_material(0, ground)
 floor.set_actor_scale3d(unreal.Vector(MAP_SIZE_METERS, MAP_SIZE_METERS, 1))
@@ -323,14 +326,16 @@ fog.component.set_editor_property("fog_density", 0.0008)
 fog.component.set_editor_property("fog_inscattering_luminance", SKY_COLOR)
 fog.component.set_editor_property("start_distance", 10000.0)
 
-# 포스트 프로세스(103): 레벨 전체에 하나. 블룸은 스킬 이펙트의 빛(가산 머티리얼이 1을 넘음)이 번지게 하고, 노출은 자동이되 천천히
+# 포스트 프로세스(103): 레벨 전체에 하나. 블룸은 스킬 이펙트의 빛(가산 머티리얼이 1을 넘음)이 번지게 하고(105: 문턱 0.8을 넘는 것만 번져
+# 땅과 하늘은 번지지 않고 이펙트만 크게 빛남. 모바일의 낮은 단계에서 꺼지던 블룸은 Config/Android/AndroidScalability.ini가 켬), 노출은 자동이되 천천히
 # 따라가 어두운 숲과 밝은 길을 오가도 출렁이지 않게 하며(조금 어둡게), 색은 조금 따뜻하고 대비를 높이며, 가장자리는 어둡게 한다. 모바일(Vulkan, 모바일
 # HDR)도 블룸·톤 매핑·색 보정·비네트를 그린다. SSAO는 데스크톱만이다.
 post = spawn(unreal.PostProcessVolume, "PostProcess")
 post.set_editor_property("unbound", True)
 settings = post.get_editor_property("settings")
 for name, value in [
-    ("bloom_intensity", 0.6),
+    ("bloom_intensity", 1.5),
+    ("bloom_threshold", 0.8),
     ("auto_exposure_speed_up", 2.0),
     ("auto_exposure_speed_down", 2.0),
     ("auto_exposure_bias", -0.4),

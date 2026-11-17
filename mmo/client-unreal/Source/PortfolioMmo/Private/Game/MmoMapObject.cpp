@@ -3,13 +3,9 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 
-namespace
+FIntPoint AMmoMapObject::Footprint(const FMmoMapObjectKind& Kind, int32 Rotation)
 {
-	/** 방향대로 돌린 뒤 차지하는 x, z 칸 수(m). 90도와 270도는 가로와 세로가 바뀐다. */
-	FIntPoint Footprint(const FMmoMapObjectKind& Kind, int32 Rotation)
-	{
-		return Rotation % 180 == 0 ? FIntPoint(Kind.Width, Kind.Depth) : FIntPoint(Kind.Depth, Kind.Width);
-	}
+	return Rotation % 180 == 0 ? FIntPoint(Kind.Width, Kind.Depth) : FIntPoint(Kind.Depth, Kind.Width);
 }
 
 AMmoMapObject::AMmoMapObject()

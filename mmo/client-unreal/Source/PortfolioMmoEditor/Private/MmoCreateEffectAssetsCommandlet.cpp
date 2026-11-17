@@ -19,6 +19,7 @@
 #include "Materials/MaterialExpressionVectorParameter.h"
 #include "Materials/MaterialExpressionVertexNormalWS.h"
 #include "Materials/MaterialInstanceConstant.h"
+#include "MmoMeshBuilder.h"
 #include "Misc/PackageName.h"
 #include "Misc/Paths.h"
 #include "Engine/Texture2D.h"
@@ -168,9 +169,9 @@ namespace
 	}
 
 	/** mmo/art/effects/<Name>.png(Kenney Particle Pack, CC0. 91)를 /Game/Effects/Textures/<Name>으로 가져온다. */
-	UTexture2D* ImportParticle(const TCHAR* Name)
+	UTexture2D* ImportParticle(const TCHAR* Name, const TCHAR* Folder = TEXT("effects"))
 	{
-		const FString Source = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() / TEXT("../art/effects") / FString::Printf(TEXT("%s.png"), Name));
+		const FString Source = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() / TEXT("../art") / Folder / FString::Printf(TEXT("%s.png"), Name));
 		const FString Filename = FPackageName::LongPackageNameToFilename(FString::Printf(TEXT("/Game/Effects/Textures/%s"), Name), FPackageName::GetAssetPackageExtension());
 		IFileManager::Get().Delete(*Filename, false, true, true);
 		UAssetImportTask* Task = NewObject<UAssetImportTask>();
@@ -252,7 +253,7 @@ namespace
 	 * 모양 겹의 머티리얼(104): 흰 그림의 밝기 × 색(커스텀 프리미티브 데이터 0–2) × 불투명도(3)를 빛으로 더한다. 인스턴스가 그림(Sprite),
 	 * 그림이 세로로 흐르는 속도(PanV. 기둥), 판의 네 가장자리를 흐리는 정도(EdgeFade. 기둥), 가장자리만 밝히는 정도(Fresnel. 방패, 운석)를 정한다.
 	 */
-	UMaterial* CreateFxMaterial(UTexture2D* DefaultSprite)
+	UMaterial* CreateFxMaterial(UTexture2D* DefaultSprite, UTexture2D* NoiseTexture)
 	{
 		FString Filename;
 		UPackage* Package = NewPackage(TEXT("/Game/Effects/M_Fx"), Filename);
@@ -270,19 +271,44 @@ namespace
 			Parameter->DefaultValue = 0.0f;
 			return Parameter;
 		};
+		UMaterialExpressionTextureObjectParameter* Noise = NewObject<UMaterialExpressionTextureObjectParameter>(Material);
+		Noise->ParameterName = TEXT("Noise");
+		Noise->Texture = NoiseTexture;
 		UMaterialExpressionVectorParameter* Tint = NewObject<UMaterialExpressionVectorParameter>(Material);
 		Tint->ParameterName = TEXT("Tint");
 		Tint->bUseCustomPrimitiveData = true;
 		Tint->PrimitiveDataIndex = 0;
 		Tint->DefaultValue = FLinearColor::White;
+		// 겹의 진행(0–1). 궤적의 머리다(AMmoFxActor가 커스텀 프리미티브 데이터 4에 씀).
+		UMaterialExpressionScalarParameter* Progress = Scalar(TEXT("Progress"));
+		Progress->bUseCustomPrimitiveData = true;
+		Progress->PrimitiveDataIndex = 4;
+		UMaterialExpressionScalarParameter* Distort = Scalar(TEXT("Distort"));
+		Distort->DefaultValue = 0.025f;
+		// 105: 노이즈로 그림을 일렁이게 하고(Distort) 얼룩지게 해(넓은 판이 한 색으로 칠해져 보이지 않게) 흐려질 때 노이즈로 갉아먹으며
+		// 갉는 경계를 밝게 태운다. Wipe가 1이면 휘두름의 궤적: 호(SM_FxArc)의 U를 따라 머리(Progress)에서 꼬리로 흐려지며 가늘어지는
+		// 칼날의 띠(V의 바깥쪽이 가장 밝음)를 그림 대신 그린다.
 		UMaterialExpressionCustom* Custom = NewObject<UMaterialExpressionCustom>(Material);
 		Custom->OutputType = CMOT_Float3;
 		Custom->Code = TEXT(
-			"float2 Moved = UV + float2(0.0, Time * PanV);\n"
-			"float Shape = Texture2DSample(Sprite, SpriteSampler, Moved).r;\n"
+			"float2 Flow = (Texture2DSample(Noise, NoiseSampler, UV * 0.9 + Time * float2(0.11, 0.17)).rg - 0.5) * Distort;\n"
+			"float2 Moved = UV + Flow + float2(0.0, Time * PanV);\n"
+			"float Mottle = Texture2DSample(Noise, NoiseSampler, Moved * 2.3 + Time * float2(0.04, -0.06)).b;\n"
+			"float Shape = Texture2DSample(Sprite, SpriteSampler, Moved).r * (0.45 + Mottle * 1.1);\n"
+			"float Behind = Progress * 1.3 - UV.x;\n"
+			"float Along = saturate(Behind / 0.6);\n"
+			"float Trail = saturate(Behind * 25.0) * (1.0 - Along) * (1.0 - Along);\n"
+			"float Inner = lerp(0.2, 0.8, Along);\n"
+			"float Blade = smoothstep(Inner, 0.88, UV.y) * smoothstep(1.0, 0.9, UV.y);\n"
+			"float Streak = Texture2DSample(Noise, NoiseSampler, float2(UV.x * 0.3, UV.y * 2.0 + Progress * 0.2)).b;\n"
+			"Shape = lerp(Shape, Blade * (0.5 + Streak) * Trail, Wipe);\n"
 			"float Edge = lerp(1.0, saturate(sin(saturate(UV.y) * 3.14159) * 1.4) * saturate(sin(saturate(UV.x) * 3.14159) * 1.2), EdgeFade);\n"
 			"float Rim = lerp(1.0, pow(saturate(1.0 - abs(dot(normalize(Normal), normalize(View)))), 1.5) * 1.6, Fresnel);\n"
-			"return Tint * Shape * Edge * Rim * Opacity;");
+			"float Grain = Texture2DSample(Noise, NoiseSampler, UV * 1.7 + 0.37).g;\n"
+			"float Cut = (1.0 - Opacity) * 1.2 - 0.1;\n"
+			"float Eaten = smoothstep(Cut, Cut + 0.1, Grain);\n"
+			"float Burn = saturate(1.0 - abs(Grain - Cut - 0.05) * 8.0) * saturate((1.0 - Opacity) * 6.0);\n"
+			"return Tint * Shape * Edge * Rim * Eaten * (1.0 + Burn);");
 		Custom->Inputs.Empty();
 		TArray<UMaterialExpression*> Expressions = { Sprite, Tint, Custom };
 		const auto Input = [&](const TCHAR* Name, UMaterialExpression* Source, int32 Output)
@@ -302,6 +328,10 @@ namespace
 		Input(TEXT("Normal"), NewObject<UMaterialExpressionVertexNormalWS>(Material), 0);
 		Input(TEXT("View"), NewObject<UMaterialExpressionCameraVectorWS>(Material), 0);
 		Input(TEXT("Sprite"), Sprite, 0);
+		Input(TEXT("Noise"), Noise, 0);
+		Input(TEXT("Progress"), Progress, 0);
+		Input(TEXT("Distort"), Distort, 0);
+		Input(TEXT("Wipe"), Scalar(TEXT("Wipe")), 0);
 		for (UMaterialExpression* Expression : Expressions)
 		{
 			Material->GetExpressionCollection().AddExpression(Expression);
@@ -405,13 +435,44 @@ namespace
 namespace
 {
 	/**
+	 * 휘두름의 호(105): 앞(+X)을 가운데로 Degrees만큼 도는 띠(안쪽 반지름 Inner, 바깥 0.5 m. 판처럼 지름 1 m라 크기가 지름 m).
+	 * U는 도는 쪽(0 → 1, 위에서 볼 때 시계 방향), V는 안(0) → 바깥(1)이다.
+	 */
+	UStaticMesh* CreateArcMesh(UMaterialInterface* Material)
+	{
+		constexpr int32 Segments = 24;
+		constexpr double Degrees = 180.0;
+		constexpr double Inner = 0.55;
+		TArray<FVector3f> Positions;
+		TArray<FVector2f> UVs;
+		TArray<int32> Triangles;
+		for (int32 Index = 0; Index <= Segments; ++Index)
+		{
+			const double U = static_cast<double>(Index) / Segments;
+			const double Angle = FMath::DegreesToRadians((U - 0.5) * Degrees);
+			for (const double Radius : { Inner, 1.0 })
+			{
+				Positions.Add(FVector3f(FMath::Cos(Angle) * Radius * 50.0, FMath::Sin(Angle) * Radius * 50.0, 0.0));
+				UVs.Add(FVector2f(U, Radius == 1.0 ? 1.0 : 0.0));
+			}
+			if (Index > 0)
+			{
+				const int32 A = (Index - 1) * 2;
+				Triangles.Append({ A, A + 2, A + 1, A + 1, A + 2, A + 3 });
+			}
+		}
+		return MmoMeshBuilder::Create(TEXT("/Game/Effects/SM_FxArc"), Positions, UVs, Triangles, Material, false);
+	}
+
+	/**
 	 * 스킬마다 다른 연출(104). 모양 겹(M_Fx의 인스턴스를 입힌 엔진 도형)과 색을 입힌 파티클(템플릿의 복사본)로, 직업의 색(기사는 강철·금,
 	 * 마법사는 원소)과 스킬의 모양(베기, 땅의 고리, 기둥, 방패, 떨어지는 운석, 시전의 마법진)을 나눈다. 부활과 레벨 업의 줄에도 겹을 더한다.
 	 * 땅은 연출의 자리(가슴)에서 Z −98이다.
 	 */
 	bool AddSkillCues(UMmoCues& Cues, TFunctionRef<UTexture2D*(const TCHAR*)> SpriteOf, USoundBase* CastSound, USoundBase* HitSound, USoundBase* ReviveSound)
 	{
-		UMaterial* Fx = CreateFxMaterial(SpriteOf(TEXT("circle_02")));
+		// 노이즈는 땅의 것(mmo/art/ground/noise.png. 세 채널이 서로 다른 타일 노이즈)을 같이 쓴다.
+		UMaterial* Fx = CreateFxMaterial(SpriteOf(TEXT("circle_02")), ImportParticle(TEXT("noise"), TEXT("ground")));
 		UMaterial* Tint = CreateTintedParticleMaterial(SpriteOf(TEXT("spark_01")));
 		if (!Fx || !Tint)
 		{
@@ -419,9 +480,11 @@ namespace
 		}
 
 		bool bFailed = false;
-		const auto Shape = [&](const TCHAR* Sprite, float PanV, float EdgeFade, float Fresnel) -> TSoftObjectPtr<UMaterialInterface>
+		// Distort는 일렁임의 세기(UV), Wipe가 1이면 휘두름의 궤적이다(105).
+		const auto Shape = [&](const TCHAR* Sprite, float PanV, float EdgeFade, float Fresnel, float Distort = 0.025f, float Wipe = 0.0f) -> TSoftObjectPtr<UMaterialInterface>
 		{
-			const FString Name = FString::Printf(TEXT("Fx/MI_Fx_%s%s%s"), Sprite, PanV != 0.0f ? TEXT("_Flow") : TEXT(""), Fresnel > 0.0f ? TEXT("_Rim") : TEXT(""));
+			const FString Name = FString::Printf(TEXT("Fx/MI_Fx_%s%s%s%s"), Sprite, PanV != 0.0f ? TEXT("_Flow") : TEXT(""), Fresnel > 0.0f ? TEXT("_Rim") : TEXT(""),
+				Wipe > 0.0f ? TEXT("_Trail") : TEXT(""));
 			UTexture2D* Texture = SpriteOf(Sprite);
 			UMaterialInstanceConstant* Instance = Texture ? CreateInstance(Name, Fx, [&](UMaterialInstanceConstant& Out)
 			{
@@ -429,6 +492,8 @@ namespace
 				Out.SetScalarParameterValueEditorOnly(FMaterialParameterInfo(TEXT("PanV")), PanV);
 				Out.SetScalarParameterValueEditorOnly(FMaterialParameterInfo(TEXT("EdgeFade")), EdgeFade);
 				Out.SetScalarParameterValueEditorOnly(FMaterialParameterInfo(TEXT("Fresnel")), Fresnel);
+				Out.SetScalarParameterValueEditorOnly(FMaterialParameterInfo(TEXT("Distort")), Distort);
+				Out.SetScalarParameterValueEditorOnly(FMaterialParameterInfo(TEXT("Wipe")), Wipe);
 			}) : nullptr;
 			bFailed |= !Instance;
 			return Instance;
@@ -467,10 +532,13 @@ namespace
 		const TSoftObjectPtr<UMaterialInterface> Arc = Shape(TEXT("slash_03"), 0.0f, 0.0f, 0.0f);
 		const TSoftObjectPtr<UMaterialInterface> Swirl = Shape(TEXT("twirl_02"), 0.0f, 0.0f, 0.0f);
 		const TSoftObjectPtr<UMaterialInterface> Star = Shape(TEXT("star_06"), 0.0f, 0.0f, 0.0f);
-		const TSoftObjectPtr<UMaterialInterface> FlameFlow = Shape(TEXT("flame_01"), 1.4f, 1.0f, 0.0f);
-		const TSoftObjectPtr<UMaterialInterface> MistFlow = Shape(TEXT("smoke_01"), 0.8f, 1.0f, 0.0f);
+		const TSoftObjectPtr<UMaterialInterface> FlameFlow = Shape(TEXT("flame_01"), 1.4f, 1.0f, 0.0f, 0.07f);
+		const TSoftObjectPtr<UMaterialInterface> MistFlow = Shape(TEXT("smoke_01"), 0.8f, 1.0f, 0.0f, 0.05f);
 		const TSoftObjectPtr<UMaterialInterface> ShieldRim = Shape(TEXT("smoke_01"), 0.25f, 0.0f, 1.0f);
-		const TSoftObjectPtr<UMaterialInterface> FireBall = Shape(TEXT("flame_01"), -2.0f, 0.0f, 0.6f);
+		const TSoftObjectPtr<UMaterialInterface> FireBall = Shape(TEXT("flame_01"), -2.0f, 0.0f, 0.6f, 0.06f);
+		const TSoftObjectPtr<UMaterialInterface> Trail = Shape(TEXT("smoke_01"), 0.0f, 0.0f, 0.0f, 0.02f, 1.0f);
+		const TSoftObjectPtr<UStaticMesh> ArcMesh(Trail.Get() ? CreateArcMesh(Trail.Get()) : nullptr);
+		bFailed |= ArcMesh.IsNull();
 
 		const TSoftObjectPtr<UNiagaraSystem> SteelSparks = Burst(TEXT("NS_Steel"), TEXT("RadialBurst"), TEXT("spark_01"), Steel);
 		const TSoftObjectPtr<UNiagaraSystem> GoldStars = Burst(TEXT("NS_Gold"), TEXT("RadialBurst"), TEXT("star_01"), Gold);
@@ -505,6 +573,7 @@ namespace
 		const auto Ground = [&](const TSoftObjectPtr<UMaterialInterface>& Material, const FLinearColor& Color, double FromRadius, double ToRadius, float Duration)
 		{
 			FMmoFxLayer Out = Layer(Plane, Material, Color, Duration);
+			Out.bGround = true;
 			Out.From = Out.To = FVector(0.0, 0.0, Floor);
 			Out.StartScale = FVector(FromRadius * 2.0, FromRadius * 2.0, 1.0);
 			Out.EndScale = FVector(ToRadius * 2.0, ToRadius * 2.0, 1.0);
@@ -562,13 +631,37 @@ namespace
 		{
 			Cues.Rows.Add({ Cue, 0, Key, Effect, Sound, MoveTemp(Layers) });
 		};
+		// 105: 휘두름의 궤적. 연출의 자리(대상의 가슴)를 지나도록 호의 가운데를 시전자 쪽으로 물려, 지름 Size m의 반원을 Duration 동안
+		// 머리에서 꼬리로 긋는다. Roll로 비스듬히 벤다.
+		const auto Swing = [&](const FLinearColor& Color, double Size, float Duration, double Roll)
+		{
+			FMmoFxLayer Out = Layer(ArcMesh, Trail, Color, Duration);
+			Out.From = Out.To = FVector(-Size * 35.0, 0.0, -10.0);
+			Out.Rotation = FRotator(0.0, 0.0, Roll);
+			Out.StartScale = Out.EndScale = FVector(Size, Size, 1.0);
+			Out.FadeIn = 0.0f;
+			Out.FadeOut = Duration * 0.35f;
+			return Out;
+		};
+		// 105: 둘레를 비추는 빛(색은 HDR 색의 가장 큰 채널을 1로. 세기는 해(10)에 견준 가운데의 밝기)과 마지막에 더한 줄에 빛·흔들림을
+		// 붙이는 것.
+		const auto Light = [](const FLinearColor& Color, float Intensity, float Radius, float Duration, float Delay = 0.0f)
+		{
+			return FMmoFxLight{ Color / Color.GetMax(), Intensity, Radius, Delay, Duration };
+		};
+		const auto Lit = [&Cues](const FMmoFxLight& Glow, float Shake = 0.0f)
+		{
+			Cues.Rows.Last().Light = Glow;
+			Cues.Rows.Last().Shake = Shake;
+		};
 
 		// 기사 101 베기: 대상 앞을 가르는 초승달과 기울어진 호, 강철빛 불꽃.
 		{
 			FMmoFxLayer Second = Delayed(Flat(Arc, Gold * 1.2f, 2.6, 3.6, 0.3f), 0.05f);
 			Second.Rotation = FRotator(0.0, 0.0, 30.0);
 			Add(EMmoCue::SkillCast, 101, nullptr, CastSound, {});
-			Add(EMmoCue::SkillHit, 101, SteelSparks, HitSound, { Flat(Crescent, Steel * 1.8f, 3.2, 4.4, 0.3f), Second, Flat(Glow, Steel, 1.0, 2.6, 0.2f) });
+			Add(EMmoCue::SkillHit, 101, SteelSparks, HitSound, { Swing(Steel * 2.2f, 3.6, 0.22f, 20.0), Flat(Crescent, Steel * 1.8f, 3.2, 4.4, 0.3f), Second, Flat(Glow, Steel, 1.0, 2.6, 0.2f) });
+			Lit(Light(Steel, 8.0f, 4.0f, 0.25f));
 		}
 		// 102 방패 치기(기절): 땅을 울리는 금빛 고리와 머리 위에서 도는 별.
 		{
@@ -579,6 +672,7 @@ namespace
 			Stun.FadeOut = 0.5f;
 			Add(EMmoCue::SkillCast, 102, nullptr, CastSound, {});
 			Add(EMmoCue::SkillHit, 102, GoldStars, HitSound, { Ground(Ring, Gold, 0.5, 2.4, 0.45f), Stun, Flat(Glow, Gold, 1.0, 2.5, 0.2f) });
+			Lit(Light(Gold, 10.0f, 5.0f, 0.35f), 6.0f);
 		}
 		// 103 수호(방어력 올림): 푸른 방패의 구와 발밑에서 도는 마법진.
 		{
@@ -592,6 +686,7 @@ namespace
 			Circle.Spin = 70.0f;
 			Circle.FadeOut = 0.5f;
 			Add(EMmoCue::SkillCast, 103, ShieldStars, CastSound, { Dome, Circle, Ground(Ring, Shield, 0.4, 2.2, 0.5f) });
+			Lit(Light(Shield, 6.0f, 5.0f, 1.2f));
 			Add(EMmoCue::SkillHit, 103, nullptr, nullptr, {});
 		}
 		// 104 회전 베기(자기 둘레 4 m): 빠르게 도는 소용돌이와 퍼지는 먼지.
@@ -600,7 +695,14 @@ namespace
 			Whirl.From = Whirl.To = FVector(0.0, 0.0, -50.0);
 			Whirl.Spin = 900.0f;
 			Whirl.FadeOut = 0.25f;
-			Add(EMmoCue::SkillCast, 104, nullptr, CastSound, { Whirl, Ground(Disc, Dust * 0.6f, 1.0, 4.2, 0.55f), Ground(Ring, Steel * 0.7f, 1.0, 4.2, 0.4f) });
+			// 두 호가 마주 보며 돌아 한 바퀴를 긋는다.
+			FMmoFxLayer CutA = Swing(Steel * 1.6f, 5.0, 0.4f, 0.0);
+			CutA.From = CutA.To = FVector(0.0, 0.0, -30.0);
+			CutA.Spin = 540.0f;
+			FMmoFxLayer CutB = CutA;
+			CutB.Rotation.Yaw = 180.0;
+			Add(EMmoCue::SkillCast, 104, nullptr, CastSound, { Whirl, CutA, CutB, Ground(Disc, Dust * 0.6f, 1.0, 4.2, 0.55f), Ground(Ring, Steel * 0.7f, 1.0, 4.2, 0.4f) });
+			Lit(Light(Steel, 8.0f, 6.0f, 0.45f), 7.0f);
 			Add(EMmoCue::SkillHit, 104, SteelSparks, HitSound, {});
 		}
 		// 105 힘줄 끊기(감속): 붉은 두 호와 조여 드는 보랏빛 고리.
@@ -613,10 +715,12 @@ namespace
 			Slow.FadeIn = 0.1f;
 			Slow.FadeOut = 0.4f;
 			Add(EMmoCue::SkillCast, 105, nullptr, CastSound, {});
-			Add(EMmoCue::SkillHit, 105, BloodSparks, HitSound, { First, Second, Slow });
+			Add(EMmoCue::SkillHit, 105, BloodSparks, HitSound, { Swing(Blood * 2.0f, 3.2, 0.2f, -30.0), First, Second, Slow });
+			Lit(Light(Blood, 8.0f, 4.0f, 0.3f));
 		}
 		// 106 분노(공격력 올림): 솟는 불기둥과 붉은 고리.
 		Add(EMmoCue::SkillCast, 106, Embers, CastSound, Join({ Pillar(FlameFlow, Fire, 0.9, 3.2, 1.0f), { Ground(Disc, Fire * 0.5f, 0.6, 2.6, 0.6f), Ground(Ring, Fire, 0.5, 2.8, 0.45f) } }));
+		Lit(Light(Fire, 14.0f, 6.0f, 1.0f));
 		Add(EMmoCue::SkillHit, 106, nullptr, nullptr, {});
 
 		// 마법사 201 마력탄: 손 앞에 서는 보랏빛 마법진(발사체는 마력의 흔적).
@@ -628,6 +732,7 @@ namespace
 			Flash.From = Flash.To = Circle.From;
 			Flash.Rotation = Circle.Rotation;
 			Add(EMmoCue::SkillCast, 201, ArcaneSparks, CastSound, { Circle, Flash, Ground(Ring, Arcane, 0.5, 1.8, 0.35f) });
+			Lit(Light(Arcane, 8.0f, 4.0f, 0.35f));
 		}
 		// 202 운석(대상 둘레 4 m, 시전 1.5초): 발밑의 불의 마법진, 떨어지는 불덩이, 퍼지는 불의 고리와 타는 땅.
 		{
@@ -643,7 +748,20 @@ namespace
 			Burning.FadeOut = 1.1f;
 			Add(EMmoCue::SkillCharge, 202, nullptr, nullptr, { Hold(Ground(RuneB, Fire * 0.8f, 1.6, 1.7, 1.5f), 45.0f), Hold(Ground(Glow, Fire * 0.35f, 1.2, 1.4, 1.5f), 0.0f) });
 			Add(EMmoCue::SkillCast, 202, nullptr, CastSound, {});
-			Add(EMmoCue::SkillHit, 202, nullptr, HitSound, { Meteor, Delayed(Ground(Ring, Fire, 1.0, 4.5, 0.5f), 0.26f), Flash, Burning });
+			// 운석의 꼬리: 운석을 따라 내려오는 엇갈린 세운 판 둘(불꽃이 위로 흐름).
+			TArray<FMmoFxLayer> Tail;
+			for (const double Yaw : { 0.0, 90.0 })
+			{
+				FMmoFxLayer Out = Layer(Plane, FlameFlow, Fire * 1.1f, 0.27f);
+				Out.From = Meteor.From + FVector(0.0, 0.0, 190.0);
+				Out.To = Meteor.To + FVector(0.0, 0.0, 190.0);
+				Out.Rotation = FRotator(0.0, Yaw, 90.0);
+				Out.StartScale = Out.EndScale = FVector(1.2, 3.6, 1.0);
+				Out.FadeIn = Out.FadeOut = 0.02f;
+				Tail.Add(Out);
+			}
+			Add(EMmoCue::SkillHit, 202, nullptr, HitSound, Join({ { Meteor, Delayed(Ground(Ring, Fire, 1.0, 4.5, 0.5f), 0.26f), Flash, Burning }, Tail }));
+			Lit(Light(Fire, 25.0f, 9.0f, 0.9f, 0.26f), 22.0f);
 		}
 		// 203 치유(시전 1초): 발밑의 초록 마법진, 대상에 서는 빛기둥과 올라가는 고리.
 		{
@@ -652,6 +770,7 @@ namespace
 			Add(EMmoCue::SkillCharge, 203, nullptr, nullptr, { Hold(Ground(RuneA, Heal * 0.8f, 1.4, 1.5, 1.0f), 40.0f) });
 			Add(EMmoCue::SkillCast, 203, nullptr, CastSound, {});
 			Add(EMmoCue::SkillHit, 203, HealStars, nullptr, Join({ Pillar(MistFlow, Heal, 0.8, 3.0, 1.1f), { Rising } }));
+			Lit(Light(Heal, 10.0f, 6.0f, 1.1f));
 		}
 		// 204 서리(자기 둘레 5 m, 감속): 퍼지는 얼음 고리와 서리 낀 땅.
 		{
@@ -659,29 +778,47 @@ namespace
 			Frosted.FadeIn = 0.1f;
 			Frosted.FadeOut = 1.1f;
 			Add(EMmoCue::SkillCast, 204, nullptr, CastSound, { Ground(ThickRing, Frost, 1.0, 5.2, 0.5f), Frosted, Flat(Glow, Frost, 1.5, 4.0, 0.25f) });
+			Lit(Light(Frost, 12.0f, 7.0f, 0.6f), 5.0f);
 			Add(EMmoCue::SkillHit, 204, FrostStars, HitSound, {});
 		}
 		// 205 화염(시전 2초): 발밑의 불의 마법진, 대상에 치솟는 불기둥.
 		Add(EMmoCue::SkillCharge, 205, nullptr, nullptr, { Hold(Ground(RuneA, Fire * 0.8f, 1.4, 1.5, 2.0f), -60.0f), Hold(Ground(Ring, Fire * 0.5f, 1.6, 1.6, 2.0f), 0.0f) });
 		Add(EMmoCue::SkillCast, 205, nullptr, CastSound, {});
 		Add(EMmoCue::SkillHit, 205, FireBurst, HitSound, Join({ Pillar(FlameFlow, Fire * 1.2f, 1.0, 4.5, 1.0f), { Ground(Disc, Fire * 0.5f, 0.5, 2.4, 0.7f), Flat(Glow, Fire, 1.0, 4.0, 0.25f) } }));
+		Lit(Light(Fire, 18.0f, 7.0f, 1.0f), 10.0f);
 		// 206 정령 부르기(시전 2초): 청록의 마법진과 빛기둥.
 		Add(EMmoCue::SkillCharge, 206, nullptr, nullptr, { Hold(Ground(RuneB, Spirit * 0.8f, 1.9, 2.0, 2.0f), 30.0f) });
 		Add(EMmoCue::SkillCast, 206, nullptr, CastSound, {});
 		Add(EMmoCue::SkillHit, 206, SpiritStars, nullptr, Join({ Pillar(MistFlow, Spirit, 1.1, 4.0, 1.2f), { Ground(Ring, Spirit, 1.0, 3.0, 0.7f) } }));
+		Lit(Light(Spirit, 10.0f, 6.0f, 1.2f));
 		// 보스 901 내려찍기(43): 퍼지는 흙먼지와 땅의 고리.
 		{
 			FMmoFxLayer Flash = Flat(Glow, Fire * 0.5f, 2.0, 6.0, 0.25f);
 			Flash.From = Flash.To = FVector(0.0, 0.0, -60.0);
 			Add(EMmoCue::SkillHit, 901, DustCloud, HitSound, { Ground(Disc, Dust * 0.7f, 1.0, 5.5, 0.7f), Ground(Ring, Dust * 1.2f, 1.0, 5.5, 0.5f), Flash });
+			Lit(Light(Fire, 14.0f, 8.0f, 0.5f), 22.0f);
 		}
 
-		// 부활과 레벨 업의 줄(키 0)에 금빛 기둥과 고리를 더하고, 마법사의 발사체를 마력의 흔적으로 바꾼다.
+		// 부활과 레벨 업의 줄(키 0)에 금빛 기둥과 고리를 더하고, 마법사의 발사체를 마력의 흔적으로 바꾼다. 105: 기본 공격의 타격에 짧은
+		// 번쩍임을 더하고, 기사의 타격에는 휘두름의 궤적도 긋는다.
+		const FLinearColor Impact(2.4f, 2.2f, 1.9f);
 		for (FMmoCueRow& Row : Cues.Rows)
 		{
-			if (Row.Cue == EMmoCue::Revive)
+			if (Row.Cue == EMmoCue::Hit)
+			{
+				FMmoFxLayer Spark = Flat(Glow, Impact, 0.5, 1.4, 0.12f);
+				Spark.FadeIn = 0.0f;
+				Spark.FadeOut = 0.08f;
+				Row.Layers = { Spark };
+				if (Row.Kind == UMmoEntityVisuals::PlayerKind() && Row.Key == UMmoEntityVisuals::KnightKey())
+				{
+					Row.Layers.Add(Swing(Steel * 1.4f, 2.6, 0.18f, 15.0));
+				}
+			}
+			else if (Row.Cue == EMmoCue::Revive)
 			{
 				Row.Layers = Join({ Pillar(MistFlow, Gold, 0.9, 3.5, 1.3f), { Ground(Ring, Gold, 0.5, 2.2, 0.7f) } });
+				Row.Light = Light(Gold, 10.0f, 6.0f, 1.3f);
 			}
 			else if (Row.Cue == EMmoCue::LevelUp)
 			{
@@ -690,6 +827,7 @@ namespace
 				FMmoFxLayer Circle = Ground(RuneB, Gold * 0.7f, 1.8, 1.8, 1.5f);
 				Circle.Spin = 60.0f;
 				Row.Layers = Join({ Pillar(MistFlow, Gold * 1.2f, 1.0, 4.0, 1.5f), { Rising, Circle } });
+				Row.Light = Light(Gold, 12.0f, 7.0f, 1.5f);
 			}
 			else if (Row.Cue == EMmoCue::Projectile && Row.Kind == UMmoEntityVisuals::PlayerKind() && Row.Key == UMmoEntityVisuals::MageKey())
 			{

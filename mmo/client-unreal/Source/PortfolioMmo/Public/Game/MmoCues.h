@@ -50,9 +50,10 @@ enum class EMmoCue : uint8
 };
 
 /**
- * 이펙트의 모양 한 겹(104). 엔진 기본 도형(1 m의 판이나 구) 하나에 가산 머티리얼(M_Fx의 인스턴스: 그림, 흐르는 속도, 가장자리 흐림)을
- * 입혀 시간에 따라 옮기고 키우고 돌리고 흐린다. 색(1을 넘으면 블룸으로 번짐)과 불투명도는 커스텀 프리미티브 데이터 0–3이라 같은 머티리얼을
- * 스킬마다 다른 색으로 쓴다. 자리와 방향은 연출의 자리(개체의 가슴, 땅은 Z −98)와 방향(시전자가 대상을 보는 쪽)에 대한 것이다.
+ * 이펙트의 모양 한 겹(104). 엔진 기본 도형(1 m의 판이나 구)이나 휘두름의 호(SM_FxArc) 하나에 가산 머티리얼(M_Fx의 인스턴스: 그림, 흐르는
+ * 속도, 가장자리 흐림, 일렁임, 궤적)을 입혀 시간에 따라 옮기고 키우고 돌리고 흐린다. 색(1을 넘으면 블룸으로 번짐)과 불투명도는 커스텀 프리미티브
+ * 데이터 0–3, 겹의 진행(0–1. 궤적의 머리)은 4라 같은 머티리얼을 스킬마다 다른 색으로 쓴다. 흐려질 때는 노이즈로 갉아먹히며 경계가 밝게
+ * 탄다(105). 자리와 방향은 연출의 자리(개체의 가슴, 땅은 Z −98)와 방향(시전자가 대상을 보는 쪽)에 대한 것이다.
  */
 USTRUCT()
 struct FMmoFxLayer
@@ -107,6 +108,37 @@ struct FMmoFxLayer
 	/** 시전 동안 남는다(시전의 연출. 남는 시간은 시전 시간이 정하고 Duration은 그보다 짧으면 무시). */
 	UPROPERTY(EditAnywhere)
 	bool bHold = false;
+
+	/** 땅에 눕는 겹(고리, 마법진, 타는 땅). 비탈에서는 땅의 기울기를 따라 눕는다(106). */
+	UPROPERTY(EditAnywhere)
+	bool bGround = false;
+};
+
+/**
+ * 연출이 둘레를 비추는 빛(105). 그림자 없는 점광이 빨리 켜지고 남은 시간의 제곱으로 꺼진다. 거리의 제곱으로 줄지 않고 반지름까지 매끄럽게
+ * 줄어(옛 방식의 감쇠) 빛 곁의 캐릭터가 하얗게 타지 않는다.
+ */
+USTRUCT()
+struct FMmoFxLight
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	FLinearColor Color = FLinearColor::White;
+
+	/** 가장 밝을 때 가운데의 밝기(해가 10). 0이면 빛이 없다. */
+	UPROPERTY(EditAnywhere)
+	float Intensity = 0.0f;
+
+	/** 빛이 닿는 반지름(m). */
+	UPROPERTY(EditAnywhere)
+	float Radius = 5.0f;
+
+	UPROPERTY(EditAnywhere)
+	float Delay = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+	float Duration = 0.4f;
 };
 
 /** 연출 표의 줄 하나: (때, 개체 종류, 키) → 이펙트와 소리. 둘 다 비어도 된다. */
@@ -135,6 +167,14 @@ struct FMmoCueRow
 	/** 모양의 겹(104. 스킬마다 다른 고리, 기둥, 방패, 베기). Niagara 이펙트와 함께 난다. */
 	UPROPERTY(EditAnywhere)
 	TArray<FMmoFxLayer> Layers;
+
+	/** 둘레를 비추는 빛(105. 겹이 있는 줄만). */
+	UPROPERTY(EditAnywhere)
+	FMmoFxLight Light;
+
+	/** 내 캐릭터가 가까이(UMmoCueSubsystem::ShakeRange) 있으면 카메라를 흔드는 세기(cm. 0이면 흔들지 않음. 105). */
+	UPROPERTY(EditAnywhere)
+	float Shake = 0.0f;
 };
 
 /**

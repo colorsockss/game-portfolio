@@ -71,17 +71,20 @@ namespace
 	/** 카메라 흔들림을 켜고 끄는 한 곳(처음 값은 켬). 설정 창의 줄과 기기에 남기는 것은 77이 이 값에 잇는다. */
 	TAutoConsoleVariable<bool> CVarCameraShake(TEXT("Mmo.CameraShake"), true, TEXT("Shake the camera a little when my character is hit."));
 
-	/** 흔들림의 길이(초)와 세기(언리얼 단위, 카메라 거리 13–36 m에서 약하게 보이는 값). */
+	/** 흔들림의 길이(초). 세기는 Shake가 받는다(기본 12 cm는 카메라 거리 13–36 m에서 약하게 보이는 값). */
 	constexpr double ShakeSeconds = 0.2;
-	constexpr double ShakeStrength = 12.0;
 }
 
-void AMmoCharacter::Shake()
+void AMmoCharacter::Shake(float Strength)
 {
-	if (CVarCameraShake.GetValueOnGameThread())
+	if (!CVarCameraShake.GetValueOnGameThread())
 	{
-		ShakeUntil = FPlatformTime::Seconds() + ShakeSeconds;
+		return;
 	}
+	// 흔들리는 중이면 남은 세기와 새 세기 중 센 것으로 다시 시작한다.
+	const double Left = FMath::Max(0.0, ShakeUntil - FPlatformTime::Seconds()) / ShakeSeconds;
+	ShakeStrength = FMath::Max(Strength, static_cast<float>(ShakeStrength * Left));
+	ShakeUntil = FPlatformTime::Seconds() + ShakeSeconds;
 }
 
 void AMmoCharacter::Zoom(float Amount)
