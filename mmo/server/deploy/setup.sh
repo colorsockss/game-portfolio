@@ -29,6 +29,9 @@ Restart=always
 RestartSec=2
 # SIGTERM을 받으면 모두에게 SERVER_SHUTDOWN을 보내고 위치를 저장한 뒤 내려간다. 저장 큐의 한도(10초)보다 길게 기다린다.
 TimeoutStopSec=30
+# 연결마다 소켓 하나다. systemd의 기본 soft 한도(1024)는 동접 상한(--max-players 기본 1000)에 데이터베이스와 로그를 더하면 모자라므로,
+# .NET 런타임이 soft를 hard까지 올리는 것에 기대지 않고 적는다(63).
+LimitNOFILE=65536
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true

@@ -42,6 +42,7 @@ namespace PortfolioMmo.LoadTest
             double halfExtent = int.Parse(Option(args, "--half-extent", "200")) * Units.PerMeter;
             GameData data = GameData.Load(Option(args, "--data", GameData.DefaultFolder));
             var field = new FieldMap(data.Constants.FieldSize, data.Zones.Rows, data.Grid);
+            Bot.IsHealItem = id => data.Item(id)?.Use == PortfolioMmo.Data.ItemUse.HealHp;
             string prefix = Option(args, "--prefix", "bot");
             int demoBots = int.Parse(Option(args, "--demo-bots", "0"));
             var behavior = new Behavior(
@@ -105,7 +106,8 @@ namespace PortfolioMmo.LoadTest
             int alive = bots.Count(bot => bot.IsAlive);
             Console.WriteLine(
                 $"bots {alive}/{bots.Count} alive, received {bytes / elapsed / bots.Count:F0} B/s per bot, "
-                + $"resets {bots.Sum(bot => bot.Resets) - startResets} in {elapsed:F0} s, kills {bots.Sum(bot => bot.Kills)}, deaths {bots.Sum(bot => bot.Deaths)}");
+                + $"resets {bots.Sum(bot => bot.Resets) - startResets} in {elapsed:F0} s, kills {bots.Sum(bot => bot.Kills)}, deaths {bots.Sum(bot => bot.Deaths)}, "
+                + $"pick-ups {bots.Sum(bot => bot.PickUps)}, potions {bots.Sum(bot => bot.Potions)}");
             foreach (Bot bot in bots)
             {
                 bot.Dispose();
@@ -190,6 +192,22 @@ namespace PortfolioMmo.LoadTest
         /// </summary>
         private uint _leader;
         private (int X, int Z)? _leaderAt;
+
+        /// <summary>
+        /// 체력 물약인가(Items의 쓰임이 체력 회복. 63). Main이 데이터를 읽은 뒤 넣는다.
+        /// </summary>
+        internal static Func<uint, bool> IsHealItem { get; set; } = _ => false;
+
+        /// <summary>
+        /// 줍기와 물약(63): 받은 바닥 아이템의 자리, 인벤토리 칸 → 아이템, 내 체력과 최대 체력, 다음에 물약을 볼 틱, 요청 번호.
+        /// </summary>
+        private readonly Dictionary<uint, (int X, int Z)> _groundItems = new Dictionary<uint, (int X, int Z)>();
+        private readonly Dictionary<uint, uint> _bag = new Dictionary<uint, uint>();
+        private uint _hp;
+        private uint _maxHp;
+        private long _nextPotionTick;
+        private uint _requestId;
+        private const double PickRange = 3 * Units.PerMeter;
         private long _leaveTick;
         private bool _accept;
         private const long ReviveTicks = 2 * Units.TicksPerSecond;
@@ -285,6 +303,8 @@ namespace PortfolioMmo.LoadTest
         private long _skipUntil;
         private int _kills;
         private int _deaths;
+        private int _pickUps;
+        private int _potions;
 
         /// <summary>
         /// 마지막으로 돈 틱(파티의 떠나는 틱을 받은 쪽에서 셈).
@@ -316,6 +336,13 @@ namespace PortfolioMmo.LoadTest
         public int Kills => Volatile.Read(ref _kills);
 
         public int Deaths => Volatile.Read(ref _deaths);
+
+        /// <summary>
+        /// 보낸 줍기와 물약 쓰기의 수(63. 서버가 받아들였는지는 세지 않음).
+        /// </summary>
+        public int PickUps => Volatile.Read(ref _pickUps);
+
+        public int Potions => Volatile.Read(ref _potions);
 
         /// <summary>
         /// 서버가 아직 끊지 않았다.
@@ -370,6 +397,11 @@ namespace PortfolioMmo.LoadTest
                     requests.Add(new Packet { PartyLeave = new PartyLeave() });
                     _leader = 0;
                     _leaderAt = null;
+                }
+
+                if (!_dead)
+                {
+                    UsePotionAndPickUp(tick, requests);
                 }
 
                 bool following = (_leaderAt is (int leaderX, int leaderZ)) && (Math.Pow(leaderX - _x, 2) + Math.Pow(leaderZ - _z, 2) > FollowRange * FollowRange);
@@ -525,6 +557,60 @@ namespace PortfolioMmo.LoadTest
             return true;
         }
 
+        /// <summary>
+        /// 인벤토리 칸의 바뀜을 반영한다(빈 칸은 뺌. 장비와 창고는 보지 않음).
+        /// </summary>
+        private void Bag(IEnumerable<ItemSlot> slots)
+        {
+            foreach (ItemSlot slot in slots)
+            {
+                if (slot.Place != ItemPlace.Inventory)
+                {
+                    continue;
+                }
+
+                if ((slot.ItemId == 0) || (slot.Count == 0))
+                {
+                    _bag.Remove(slot.Index);
+                }
+                else
+                {
+                    _bag[slot.Index] = slot.ItemId;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 체력이 절반 아래면 1초에 한 번까지 체력 물약을 쓰고(서버의 물약 쿨다운이 거름), 3 m 안의 바닥 아이템을 틱에 하나 줍는다(63. 주인이 아니면 서버가 실패로 답함).
+        /// </summary>
+        private void UsePotionAndPickUp(long tick, List<Packet> requests)
+        {
+            if ((_maxHp > 0) && (_hp * 2 < _maxHp) && (tick >= _nextPotionTick))
+            {
+                _nextPotionTick = tick + Units.TicksPerSecond;
+                foreach ((uint slot, uint itemId) in _bag)
+                {
+                    if (IsHealItem(itemId))
+                    {
+                        requests.Add(new Packet { UseItem = new UseItem { Slot = slot, RequestId = ++_requestId } });
+                        _potions++;
+                        break;
+                    }
+                }
+            }
+
+            foreach ((uint id, (int X, int Z) item) in _groundItems)
+            {
+                if (Math.Pow(item.X - _x, 2) + Math.Pow(item.Z - _z, 2) <= PickRange * PickRange)
+                {
+                    requests.Add(new Packet { PickUp = new PickUp { EntityId = id, RequestId = ++_requestId } });
+                    _pickUps++;
+                    _groundItems.Remove(id);
+                    break;
+                }
+            }
+        }
+
         private void Send(List<Packet> packets)
         {
             try
@@ -615,6 +701,10 @@ namespace PortfolioMmo.LoadTest
                             {
                                 _monsters[entity.Id] = (entity.X, entity.Z, entity.Dead);
                             }
+                            else if (entity.Kind == EntityKind.GroundItem)
+                            {
+                                _groundItems[entity.Id] = (entity.X, entity.Z);
+                            }
                             else if ((entity.Kind == EntityKind.Summon) && (entity.SummonOwnerId == _selfId))
                             {
                                 _summonId = entity.Id;
@@ -644,9 +734,23 @@ namespace PortfolioMmo.LoadTest
                         foreach (uint id in packet.EntitiesLeave.Ids)
                         {
                             _monsters.Remove(id);
+                            _groundItems.Remove(id);
                             _summonId = id == _summonId ? 0 : _summonId;
                         }
 
+                        break;
+                    case Packet.BodyOneofCase.SelfVitals:
+                        _hp = packet.SelfVitals.Hp;
+                        break;
+                    case Packet.BodyOneofCase.SelfStats:
+                        _maxHp = packet.SelfStats.MaxHp;
+                        break;
+                    case Packet.BodyOneofCase.Inventory:
+                        _bag.Clear();
+                        Bag(packet.Inventory.Slots);
+                        break;
+                    case Packet.BodyOneofCase.InventoryChanged:
+                        Bag(packet.InventoryChanged.Slots);
                         break;
                     case Packet.BodyOneofCase.Died when packet.Died.Id == _selfId:
                         _dead = true;
