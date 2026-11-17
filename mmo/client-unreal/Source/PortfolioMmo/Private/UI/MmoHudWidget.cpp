@@ -701,7 +701,11 @@ void UMmoHudWidget::ShowMinimap(double Now)
 	const FVector Location = Self->GetActorLocation();
 	const std::vector<MmoWorld::FMapPoint> Points = MmoWorld::FMapView::Points(*Field, Session->Data(), MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location),
 		MmoCoordinates::ToYaw(Self->GetActorRotation()), Session->Party().Positions(Session->World()), Session->Bosses().Positions(), QuestGoalOf(*Session, Location));
-	const double Span = MinimapMeters / Field->GridSize();
+	// 화면과 같은 방향으로 돌린다(97: 카메라가 북동쪽을 위로 봄). 돌린 사각형이 틀을 다 덮도록 Cover배 넓은 범위를 그려 Cover배 키우고
+	// 틀 밖은 자른다(축척은 그대로). 점은 바탕과 같은 변환을 받고, 화살표는 내 방향에서 카메라의 방위를 뺀다.
+	constexpr double Cover = 1.45;
+	const float CameraYaw = GetOwningPlayer() ? static_cast<float>(GetOwningPlayer()->GetControlRotation().Yaw) : 0.0f;
+	const double Span = MinimapMeters / Field->GridSize() * Cover;
 	const double MinU = Points[0].U - Span / 2;
 	const double MinV = Points[0].V - Span / 2;
 	FSlateBrush Brush;
@@ -710,5 +714,12 @@ void UMmoHudWidget::ShowMinimap(double Now)
 	Brush.SetUVRegion(FBox2f(FVector2f(MinU, MinV), FVector2f(MinU + Span, MinV + Span)));
 	MinimapImage->SetBrush(Brush);
 	MmoMapDrawing::PlaceDots(*MinimapDots, MinimapDotPool, Points, MinU, MinV, Span, MinimapSize);
-	MinimapArrow->SetRenderTransformAngle(static_cast<float>(Points[0].YawDegrees));
+	const FWidgetTransform Turned(FVector2D::ZeroVector, FVector2D(Cover, Cover), FVector2D::ZeroVector, -CameraYaw);
+	MinimapImage->SetRenderTransform(Turned);
+	MinimapDots->SetRenderTransform(Turned);
+	if (UPanelWidget* Stack = MinimapImage->GetParent())
+	{
+		Stack->SetClipping(EWidgetClipping::ClipToBounds);
+	}
+	MinimapArrow->SetRenderTransformAngle(static_cast<float>(Points[0].YawDegrees) - CameraYaw);
 }
