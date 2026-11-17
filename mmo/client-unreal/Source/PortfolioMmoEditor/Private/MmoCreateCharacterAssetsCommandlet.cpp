@@ -241,7 +241,8 @@ namespace
 		UPackage* Package = CreatePackage(*PackageName);
 		UMmoEntityVisuals* Visuals = NewObject<UMmoEntityVisuals>(Package, *FPackageName::GetShortName(PackageName), RF_Public | RF_Standalone);
 		// 종류마다의 자리 표시(73): 서는 개체는 원기둥, 채집물은 원뿔, 바닥 아이템은 상자, 소환수(95)는 구이고 색으로 종류를 가른다.
-		Visuals->PlaceholderMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Materials/M_Placeholder.M_Placeholder"));
+		// 머티리얼은 나타나고 사라질 수 있는 개체용(59. create_entity_materials.py)이다. 맵의 자리 표시는 불투명한 M_Placeholder다.
+		Visuals->PlaceholderMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Materials/M_EntityPlaceholder.M_EntityPlaceholder"));
 		const FVector Standing(0.6, 0.6, 1.8);
 		const struct { int32 Kind; const TCHAR* Shape; FLinearColor Color; FVector Scale; } Placeholders[] = {
 			{ UMmoEntityVisuals::PlayerKind(), TEXT("Cylinder"), FLinearColor(0.25f, 0.5f, 1.0f), Standing },
@@ -256,7 +257,7 @@ namespace
 			UStaticMesh* Shape = LoadObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("/Engine/BasicShapes/%s.%s"), Placeholder.Shape, Placeholder.Shape));
 			if (!Shape || !Visuals->PlaceholderMaterial)
 			{
-				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("The engine shape %s or /Game/Materials/M_Placeholder is missing."), Placeholder.Shape);
+				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("The engine shape %s or /Game/Materials/M_EntityPlaceholder (create_entity_materials.py) is missing."), Placeholder.Shape);
 				return false;
 			}
 			Visuals->Placeholders.Add({ Placeholder.Kind, Shape, Placeholder.Color, Placeholder.Scale });

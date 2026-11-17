@@ -45,6 +45,36 @@ namespace
 	constexpr float HitFlashOpacity = 0.7f;
 	/** 연출을 트는 높이(언리얼 단위): 가슴(1 m). */
 	const FVector Chest(0.0, 0.0, 100.0);
+	/** 서서히 나타나고 사라지는 시간(초. 59). */
+	constexpr float FadeSeconds = 0.3f;
+	/** 사라진 정도를 읽는 커스텀 프리미티브 데이터의 칸: 캐릭터 머티리얼은 0, 개체의 자리 표시·무기·펫은 3(create_entity_materials.py). */
+	constexpr int32 MeshFadeIndex = 0;
+	constexpr int32 PlaceholderFadeIndex = 3;
+	/** 품질 높음에서 그림자를 드리우는 다른 개체의 거리(언리얼 단위, 15 m. 59의 처음 값). */
+	constexpr double ShadowDistance = 1500.0;
+
+	/** 액터의 메시들에 보이는 정도(0–1)를 넣는다. 머티리얼이 사라진 정도(1 - Shown)를 디더 마스크로 거른다. */
+	void SetFade(AActor& Actor, float Visible)
+	{
+		Actor.ForEachComponent<UPrimitiveComponent>(false, [Visible](UPrimitiveComponent* Component)
+		{
+			if (Component->IsA<USkeletalMeshComponent>())
+			{
+				Component->SetCustomPrimitiveDataFloat(MeshFadeIndex, 1.0f - Visible);
+			}
+			else if (Component->IsA<UStaticMeshComponent>())
+			{
+				Component->SetCustomPrimitiveDataFloat(PlaceholderFadeIndex, 1.0f - Visible);
+			}
+		});
+	}
+
+	/** 개체의 몸(스켈레탈 메시와 자리 표시)이 그림자를 드리우는지 정한다. 손의 무기는 늘 드리우지 않는다(MmoCharacterLook). */
+	void SetShadow(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, bool bCast)
+	{
+		Mesh.SetCastShadow(bCast);
+		Placeholder.SetCastShadow(bCast);
+	}
 
 	/** 표현 표에서 개체를 찾는 키: 플레이어는 직업, 몬스터·NPC·채집물은 템플릿 번호, 바닥 아이템은 아이템 번호. */
 	int32 KeyOf(const portfolio::mmo::EntityEnter& Info)
@@ -87,9 +117,22 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 		MeshYaw.Remove(Id);
 		FlashMaterials.Remove(Id);
 		FlashUntil.Remove(Id);
+		CastsShadow.Remove(Id);
+		const float Visible = Shown.FindRef(Id);
+		Shown.Remove(Id);
 		if (TObjectPtr<AActor> Actor; Actors.RemoveAndCopyValue(Id, Actor) && Actor)
 		{
-			Actor->Destroy();
+			// 다른 개체는 그 자리에서 서서히 사라진 뒤 지운다(누를 수 없게 충돌을 끔). 내 캐릭터(월드를 떠남)는 바로 지운다.
+			if (Cast<AMmoEntityActor>(Actor) && Visible > 0.0f)
+			{
+				Actor->SetActorEnableCollision(false);
+				LeavingActors.Add(Actor);
+				LeavingShown.Add(Visible);
+			}
+			else
+			{
+				Actor->Destroy();
+			}
 		}
 	}
 
@@ -163,7 +206,7 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 			continue;
 		}
 		const uint32 Worn = Found->second.Info.weapon_item_id();
-		if (const uint32* Shown = ShownWeapons.Find(Id); !Shown || *Shown != Worn)
+		if (const uint32* Drawn = ShownWeapons.Find(Id); !Drawn || *Drawn != Worn)
 		{
 			ShowWeapon(Id, *Actor, Worn);
 		}
@@ -175,6 +218,11 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 	World.Expire(Now);
 	for (const MmoWorld::FCombatEvent& Event : Combat.TakeEvents())
 	{
+		// 나를 대상으로 한 공격의 공격자는 그릴 캐릭터를 고를 때 앞에 둔다(59).
+		if ((Event.Kind == MmoWorld::ECombatEventKind::Swing || Event.Kind == MmoWorld::ECombatEventKind::Damage) && Event.Target == World.SelfId())
+		{
+			Drawing.NoteAttack(Event.Attacker, Now);
+		}
 		if (Event.Kind == MmoWorld::ECombatEventKind::Swing)
 		{
 			PlayAction(Event.Attacker, &FMmoEntityVisual::Attack);
@@ -250,7 +298,78 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 	}
 	DrawCombat(World, Combat);
 	DrawWarnings(Session->Bosses(), World, Session->Data(), ServerTick);
+	DrawFadesAndShadows(World, *Session, DeltaTime, Now);
 	DrawPets(World, Session->Data(), ServerTick, DeltaTime);
+}
+
+void UMmoEntitySubsystem::DrawFadesAndShadows(const MmoWorld::FWorldState& World, UMmoSession& Session, float DeltaTime, double Now)
+{
+	const UMmoGameUserSettings::FLevel& Level = UMmoGameUserSettings::Levels[UMmoGameUserSettings::Get().QualityLevel()];
+	std::vector<uint32_t> Party;
+	for (const MmoWorld::FPartyMember& Member : Session.Party().Members())
+	{
+		Party.push_back(Member.Id);
+	}
+	const MmoWorld::FEntity* Self = World.SelfEntity();
+	Drawing.Update(MmoWorld::FDrawSelection::Candidates(World), Self ? Self->X : 0, Self ? Self->Z : 0, Party, Session.Combat().Target(), static_cast<size_t>(Level.DrawCharacters), Now);
+
+	const AActor* SelfActor = Actors.FindRef(World.SelfId());
+	const float Step = DeltaTime / FadeSeconds;
+	for (const TPair<uint32, TObjectPtr<AActor>>& Pair : Actors)
+	{
+		AActor* Actor = Pair.Value;
+		if (!Actor)
+		{
+			continue;
+		}
+		const bool bSelf = Pair.Key == World.SelfId();
+		if (!bSelf)
+		{
+			// 막 들어온 개체는 감춘 채 0에서 시작한다(그리지 않는 개체는 그대로 감춰 둠).
+			float* Found = Shown.Find(Pair.Key);
+			if (!Found)
+			{
+				Found = &Shown.Add(Pair.Key, 0.0f);
+				Actor->SetActorHiddenInGame(true);
+				SetFade(*Actor, 0.0f);
+			}
+			float& Visible = *Found;
+			const float Goal = Drawing.Draws(World, Pair.Key) ? 1.0f : 0.0f;
+			if (Visible != Goal)
+			{
+				Visible = Goal > Visible ? FMath::Min(Goal, Visible + Step) : FMath::Max(Goal, Visible - Step);
+				Actor->SetActorHiddenInGame(Visible <= 0.0f);
+				SetFade(*Actor, Visible);
+			}
+		}
+
+		// 그림자: 낮음은 끔(엔진의 그림자 품질 0), 중간은 내 캐릭터만, 높음은 내 캐릭터와 가까운 개체까지.
+		const bool bCast = Level.Shadows == 1 ? bSelf
+			: Level.Shadows == 2 && (bSelf || (SelfActor && FVector::DistSquared2D(Actor->GetActorLocation(), SelfActor->GetActorLocation()) <= ShadowDistance * ShadowDistance));
+		if (bool* Cast = CastsShadow.Find(Pair.Key); !Cast || *Cast != bCast)
+		{
+			const auto [Mesh, Placeholder] = ComponentsOf(*Actor);
+			SetShadow(*Mesh, *Placeholder, bCast);
+			CastsShadow.Add(Pair.Key, bCast);
+		}
+	}
+
+	for (int32 Index = LeavingActors.Num() - 1; Index >= 0; --Index)
+	{
+		LeavingShown[Index] -= Step;
+		AActor* Actor = LeavingActors[Index];
+		if (!Actor || LeavingShown[Index] <= 0.0f)
+		{
+			if (Actor)
+			{
+				Actor->Destroy();
+			}
+			LeavingActors.RemoveAtSwap(Index);
+			LeavingShown.RemoveAtSwap(Index);
+			continue;
+		}
+		SetFade(*Actor, LeavingShown[Index]);
+	}
 }
 
 void UMmoEntitySubsystem::DrawPets(const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick, float DeltaTime)
@@ -264,7 +383,9 @@ void UMmoEntitySubsystem::DrawPets(const MmoWorld::FWorldState& World, const Mmo
 		const uint32 PetId = Entity.Info.kind() == portfolio::mmo::ENTITY_KIND_PLAYER ? Entity.Info.pet_id() : 0;
 		const portfolio::mmo::data::PetsRow* Pet = Data.Pet(PetId);
 		const AActor* Owner = Actors.FindRef(Id);
-		if (!Pet || !Owner || !Field || (Id != World.SelfId() && !bOthers))
+		// 펫은 주인과 함께 나타나고 사라진다(59). 그리지 않는 주인(다 사라짐)의 펫은 없다.
+		const float OwnerShown = Id == World.SelfId() ? 1.0f : Shown.FindRef(Id);
+		if (!Pet || !Owner || !Field || (Id != World.SelfId() && !bOthers) || OwnerShown <= 0.0f)
 		{
 			continue;
 		}
@@ -299,19 +420,27 @@ void UMmoEntitySubsystem::DrawPets(const MmoWorld::FWorldState& World, const Mmo
 		AStaticMeshActor* Actor = PetActors.FindRef(Id);
 		if (!Actor)
 		{
-			Actor = SpawnMarker(TEXT("Sphere"), FVector(0.35), PetId == 1 ? FLinearColor(1.0f, 0.75f, 0.35f) : FLinearColor(0.85f, 0.9f, 1.0f));
+			Actor = SpawnMarker(TEXT("Sphere"), FVector(0.35), PetId == 1 ? FLinearColor(1.0f, 0.75f, 0.35f) : FLinearColor(0.85f, 0.9f, 1.0f),
+				Visuals ? Visuals->PlaceholderMaterial.Get() : nullptr);
 			PetActors.Add(Id, Actor);
 		}
 		Actor->SetActorHiddenInGame(false);
 		Actor->SetActorLocation(MmoCoordinates::ToWorld(Next.X, Next.Z) + FVector(0, 0, 25));
+		SetFade(*Actor, OwnerShown);
 	}
 	for (auto It = PetActors.CreateIterator(); It; ++It)
 	{
 		if (!Seen.Contains(It.Key()))
 		{
-			if (It.Value())
+			// 주인이 시야에서 나갔으면 그 자리에서 서서히 사라지고, 주인을 다 감췄거나 펫을 넣었으면 바로 지운다.
+			if (AStaticMeshActor* Pet = It.Value(); Pet && !World.Entities().contains(It.Key()))
 			{
-				It.Value()->Destroy();
+				LeavingActors.Add(Pet);
+				LeavingShown.Add(1.0f);
+			}
+			else if (Pet)
+			{
+				Pet->Destroy();
 			}
 			PetPoints.Remove(It.Key());
 			It.RemoveCurrent();
@@ -677,7 +806,7 @@ void UMmoEntitySubsystem::DrawCombat(const MmoWorld::FWorldState& World, MmoWorl
 	}
 }
 
-AStaticMeshActor* UMmoEntitySubsystem::SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color)
+AStaticMeshActor* UMmoEntitySubsystem::SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color, UMaterialInterface* Material)
 {
 	if (!MarkerMaterial)
 	{
@@ -690,7 +819,7 @@ AStaticMeshActor* UMmoEntitySubsystem::SpawnMarker(const TCHAR* Shape, const FVe
 	Marker->SetMobility(EComponentMobility::Movable);
 	UStaticMeshComponent* Mesh = Marker->GetStaticMeshComponent();
 	Mesh->SetStaticMesh(LoadObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("/Engine/BasicShapes/%s.%s"), Shape, Shape)));
-	Mesh->SetMaterial(0, MarkerMaterial);
+	Mesh->SetMaterial(0, Material ? Material : MarkerMaterial.Get());
 	Mesh->SetDefaultCustomPrimitiveDataVector4(0, FVector4(Color.R, Color.G, Color.B, 1.0));
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh->SetCastShadow(false);

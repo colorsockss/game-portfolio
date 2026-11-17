@@ -1,5 +1,6 @@
 # 직업마다 캐릭터(스켈레탈 메시, 스켈레톤, 애니메이션, 텍스처, 머티리얼)를 가져온다. 원본은 저장소에 두지 않고(docs/art.md에 출처),
 # 압축을 푼 Quaternius "RPG Characters - Nov 2020"(CC0) 폴더를 MMO_CHARACTER_SOURCE로 준다. 다시 돌리면 같은 에셋을 덮는다.
+# 캐릭터 머티리얼(M_Character)은 먼저 create_entity_materials.py로 만든다.
 #
 #   MMO_CHARACTER_SOURCE="<압축을 푼 폴더>/RPG Characters - Nov 2020" \
 #   "/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor-Cmd" "$PWD/mmo/client-unreal/PortfolioMmo.uproject" \
@@ -43,22 +44,11 @@ def save(asset):
         raise RuntimeError(f"Could not save {asset.get_path_name()}")
 
 
-# 텍스처 하나를 받는 캐릭터 머티리얼. 직업마다 인스턴스가 텍스처만 바꾼다.
-if assets.does_asset_exist(MATERIAL):
-    assets.delete_asset(MATERIAL)
-material = tools.create_asset("M_Character", "/Game/Characters", unreal.Material, unreal.MaterialFactoryNew())
-# 스켈레탈 메시 사용 표시가 없으면 게임에서는(에디터만 자동으로 켬) 엔진의 기본 머티리얼로 그린다.
-material.set_editor_property("used_with_skeletal_mesh", True)
-texture = materials.create_material_expression(material, unreal.MaterialExpressionTextureSampleParameter2D, -400, 0)
-texture.set_editor_property("parameter_name", "BaseColor")
-# 텍스처 파라미터는 기본 텍스처가 있어야 컴파일된다.
-texture.set_editor_property("texture", unreal.load_asset("/Engine/EngineResources/DefaultTexture.DefaultTexture"))
-materials.connect_material_property(texture, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
-roughness = materials.create_material_expression(material, unreal.MaterialExpressionConstant, -400, 300)
-roughness.set_editor_property("r", 0.8)
-materials.connect_material_property(roughness, "", unreal.MaterialProperty.MP_ROUGHNESS)
-materials.recompile_material(material)
-save(material)
+# 텍스처 하나를 받는 캐릭터 머티리얼(나타나고 사라짐 포함)은 create_entity_materials.py가 만든다. 직업마다 인스턴스가 텍스처만 바꾼다.
+material = unreal.load_asset(MATERIAL)
+if material is None:
+    raise RuntimeError(f"{MATERIAL} is missing. Run create_entity_materials.py first.")
+
 
 def material_instance(name, folder, texture_file):
     """M_Character에 텍스처 하나를 끼운 인스턴스."""

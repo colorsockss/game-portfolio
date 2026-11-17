@@ -5,12 +5,14 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "World/BossWatch.h"
 #include "World/CombatState.h"
+#include "World/DrawSelection.h"
 #include "World/PathFinder.h"
 
 #include "MmoEntitySubsystem.generated.h"
 
 class AStaticMeshActor;
 class UMmoCueSubsystem;
+class UMmoSession;
 class UNiagaraComponent;
 class UMaterialInterface;
 class UMaterialInstanceDynamic;
@@ -32,6 +34,8 @@ namespace portfolio::mmo
  * 다 불러오기 전에 개체가 나갔으면 결과를 버린다. 한 번 불러온 줄은 메모리에 남아 다음 개체에는 바로 입힌다.
  * 전투 모델(FCombatState)의 사건을 받은 순서대로 꺼내 공격·피격 동작을 틀고 OnCombatEvent로 알린다(피해 숫자는 이름표 층이 그림).
  * 따라가는 발사체와 내 대상의 발밑 원을 자리 표시(색을 입힌 엔진의 구와 원기둥)로 그린다. 이펙트로 바꾸는 것은 backlog 27이다.
+ * 다른 플레이어는 품질 단계의 그릴 캐릭터 수까지만 그린다(59. MmoWorld::FDrawSelection). 들어오고 나가는 개체와 그릴 캐릭터에 들고 빠지는 플레이어는
+ * 0.3초 동안 서서히 나타나고 사라지며(개체 머티리얼의 디더 마스크), 다 사라진 개체는 액터를 감춰 그리지 않는다. 그림자는 품질 단계대로 드리운다.
  */
 UCLASS()
 class UMmoEntitySubsystem : public UTickableWorldSubsystem
@@ -80,6 +84,12 @@ private:
 	/** 보스의 예고된 범위(43): 바깥 원과, 피해를 주는 틱까지 차오르는 안쪽 원. 끝난 예고는 감춘다. */
 	void DrawWarnings(MmoWorld::FBossWatch& Watch, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick);
 
+	/**
+	 * 그릴 캐릭터를 고치고(59), 개체마다 보이는 정도를 그릴 개체는 1로, 아닌 개체는 0으로 FadeSeconds 동안 옮겨 머티리얼에 넣는다. 0이면 액터를 감춘다.
+	 * 시야에서 나간 액터는 사라진 뒤 지운다. 그림자는 품질 단계대로(끔, 내 캐릭터만, 가까운 캐릭터까지) 드리운다.
+	 */
+	void DrawFadesAndShadows(const MmoWorld::FWorldState& World, UMmoSession& Session, float DeltaTime, double Now);
+
 	/** 개체가 죽어 있으면 쓰러진 자세로 둔다(모습을 입히거나 불러온 뒤). */
 	void ShowDeadIfDead(uint32 Id, USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, const FMmoEntityVisual* Row);
 
@@ -113,8 +123,8 @@ private:
 	/** 풀에서 감춰진 자리 표시를 꺼내(없으면 만듦) Seconds 동안 보인다. */
 	void Flash(TArray<TObjectPtr<AStaticMeshActor>>& Pool, TArray<double>& Until, const TCHAR* Shape, const FLinearColor& Color, const FVector& Location, const FVector& Scale, double Seconds);
 
-	/** 자리 표시 액터 하나(엔진의 기본 도형, 색은 커스텀 프리미티브 데이터). */
-	AStaticMeshActor* SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color);
+	/** 자리 표시 액터 하나(엔진의 기본 도형, 색은 커스텀 프리미티브 데이터). Material이 없으면 맵의 자리 표시와 같은 불투명한 머티리얼이다. */
+	AStaticMeshActor* SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color, UMaterialInterface* Material = nullptr);
 
 	/** 개체 번호 → 그 개체의 액터(내 캐릭터 포함). */
 	UPROPERTY()
@@ -194,6 +204,20 @@ private:
 
 	/** 시전 동작을 트는 개체 → 시전이 끝나는 서버 틱. */
 	TMap<uint32, uint32> CastEnds;
+
+	/** 그릴 다른 플레이어(59). */
+	MmoWorld::FDrawSelection Drawing;
+
+	/** 개체 번호 → 보이는 정도(0 안 보임 ~ 1 다 보임). 내 캐릭터는 없다. */
+	TMap<uint32, float> Shown;
+
+	/** 시야에서 나가 사라지는 중인 액터(개체, 펫)와 저마다 남은 보이는 정도. */
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> LeavingActors;
+	TArray<float> LeavingShown;
+
+	/** 개체 번호 → 지금 그림자를 드리우는지(바뀔 때만 컴포넌트를 고침). */
+	TMap<uint32, bool> CastsShadow;
 
 	FStreamableManager Streamable;
 };

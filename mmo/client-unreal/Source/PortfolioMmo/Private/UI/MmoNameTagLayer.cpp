@@ -178,7 +178,8 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 	for (const auto& [Id, Entity] : World.Entities())
 	{
 		const AActor* Actor = Actors->FindActor(Id);
-		if (!Actor)
+		// 그리지 않는 개체(그릴 캐릭터 수에 들지 못해 다 사라진 플레이어와 그 소환수. 59)는 이름표도 그리지 않는다.
+		if (!Actor || Actor->IsHidden())
 		{
 			continue;
 		}
