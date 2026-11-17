@@ -700,6 +700,29 @@ void UMmoUiManager::OpenFromCommandLine()
 	{
 		ToggleMap();
 	}
+	else if (Screen == TEXT("Shop"))
+	{
+		ShowShop();
+	}
+	else if (Screen == TEXT("Craft"))
+	{
+		ShowCraft();
+	}
+	else if (Screen == TEXT("Storage"))
+	{
+		// NPC에게 말을 걸 때와 같이 창고를 열어 달라고 보낸다. 창고 NPC 곁이어야 서버가 Storage로 답하고 그때 창이 열린다(75).
+		portfolio::mmo::Packet Request;
+		Request.mutable_storage_open();
+		Session().Send(Request);
+	}
+	else if (Screen == TEXT("Enchant"))
+	{
+		ShowEnchant(2006);
+	}
+	else if (Screen == TEXT("ItemDetail"))
+	{
+		ShowItemDetail(0);
+	}
 	else if (Screen == TEXT("Quest"))
 	{
 		ToggleQuest();
