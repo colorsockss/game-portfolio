@@ -36,13 +36,25 @@ namespace MmoWorld
 		double Offset = 0;
 	};
 
-	/** 개체가 어떤 틱에 있던 자리. 좌표와 방향은 패킷의 단위다. */
+	class FFieldMap;
+
+	/**
+	 * 개체가 어떤 틱에 있던 자리와 그 뒤의 움직임(54). 좌표와 방향은 패킷의 단위다. 틱은 이어 그리던 자리를 남길 때 소수가 된다.
+	 * 빠르기가 있으면 다음 기록까지 Yaw 쪽(플레이어)이나 다음 꺾이는 점(몬스터, 경비병, 소환수) 쪽으로 이어 그린다.
+	 */
 	struct FTrackSample
 	{
-		int64_t Tick = 0;
+		double Tick = 0;
 		int32_t X = 0;
 		int32_t Z = 0;
 		uint32_t Yaw = 0;
+		/** 빠르기(좌표 칸/초). 0이면 서 있다. */
+		uint32_t Speed = 0;
+		bool bHasNext = false;
+		int32_t NextX = 0;
+		int32_t NextZ = 0;
+		/** 이어 그릴 수 있는 거리(좌표 칸): 다음 꺾이는 점까지, 또는 Yaw 쪽으로 막힌 칸 앞까지. FEntityTrack::Push가 채운다. */
+		double Reach = 0;
 	};
 
 	/** 보간한 자리. 좌표와 방향은 패킷의 단위이고 소수다. Yaw는 0 이상 YawSteps 미만이다. */
@@ -53,23 +65,36 @@ namespace MmoWorld
 		double Yaw = 0;
 	};
 
-	/** 개체의 최근 자리 기록(틱 번호 차례). 다른 개체를 서버 틱 사이에서 매끄럽게 그리는 데 쓴다. */
+	/**
+	 * 개체의 최근 자리 기록(틱 번호 차례). 다른 개체를 서버 틱 사이에서 매끄럽게 그리는 데 쓴다. 서버는 움직임이 바뀔 때만 알리므로(54) 마지막 기록 뒤로는
+	 * 그 기록의 빠르기로 이어 그린다.
+	 */
 	class FEntityTrack
 	{
 	public:
 		/** 기록은 이만큼만 둔다. 그리는 틱은 받은 틱보다 2틱 뒤라 몇 개면 넉넉하다. */
 		static constexpr size_t Capacity = 8;
 
-		/** 멈춰 있던 개체가 다시 움직였다고 볼 틱 간격. 계속 걷는 개체도 패킷이 몰리거나 프레임이 낮으면 한두 틱이 빠진다. */
-		static constexpr int64_t RestartGapTicks = 4;
+		/**
+		 * 플레이어를 마지막 기록 뒤로 이어 그리는 가장 긴 틱 수. 걷는 플레이어는 서버가 0.5초(Constants.moveConfirmMs)마다 확인을 보내므로 그 두 배를 넘게
+		 * 아무것도 오지 않으면 더 가지 않고 선다(연결이 밀린 동안 멀리 앞질러 그리지 않게). 다음 꺾이는 점이 있는 개체는 그 점까지 간다.
+		 */
+		static constexpr double MaxExtrapolationTicks = 20;
+
+		/** 늦게 온 기록(그리는 틱이 이미 지난 기록)을 이 틱 수에 걸쳐 따라잡는다. */
+		static constexpr double CatchUpTicks = 1;
 
 		/**
-		 * 기록을 더한다. 앞 기록보다 RestartGapTicks 넘게 뒤면 한 틱 앞에 옛 자리를 끼워, 오래 서 있던 개체가 출발할 때 미끄러지지 않게 한다.
-		 * 앞 기록과 틱이 같거나 앞이면 마지막 기록을 고친다.
+		 * 기록을 더한다. 이어 그리는 중이었으면(그리는 틱이 마지막 기록 뒤) 지금 그린 자리를 그 틱의 기록으로 남겨 새 기록까지 튀지 않게 잇는다.
+		 * 새 기록이 그리는 틱보다 앞이면(늦게 옴) 그 기록에서 CatchUpTicks 뒤까지 이어 그린 자리를 대신 넣는다. 앞 기록과 틱이 같거나 앞이면
+		 * 마지막 기록을 고친다. Field가 있으면 플레이어(다음 꺾이는 점이 없음)를 막힌 칸 앞까지만 이어 그린다.
 		 */
-		void Push(const FTrackSample& Sample);
+		void Push(FTrackSample Added, double RenderTick = 0, const FFieldMap* Field = nullptr);
 
-		/** RenderTick의 자리. 앞뒤 두 기록 사이를 선형으로, 방향은 가까운 쪽으로 보간한다. 기록 밖이면 끝의 기록에 세운다(앞질러 그리지 않는다). */
+		/**
+		 * RenderTick의 자리. 앞뒤 두 기록 사이를 선형으로, 방향은 가까운 쪽으로 보간한다. 마지막 기록 뒤는 그 빠르기로 Reach까지(플레이어는 MaxExtrapolationTicks 안)
+		 * 이어 그리고, 빠르기가 0이면 그 자리에 선다. 첫 기록 앞은 첫 기록에 선다.
+		 */
 		FPose Sample(double RenderTick) const;
 
 		void Clear() { Samples.clear(); }
@@ -150,8 +175,11 @@ namespace MmoWorld
 		/** 월드를 떠날 때(끊김, LeaveWorld, 새 연결) 비운다. 보이던 개체는 모두 나간 목록에 들어간다. */
 		void Reset();
 
-		/** 서버가 보낸 패킷 하나를 반영한다. 월드와 무관한 패킷은 무시한다. NowSeconds는 받은 때(단조 증가하는 내 시간, 초)다. */
-		void Apply(const portfolio::mmo::Packet& Packet, double NowSeconds);
+		/**
+		 * 서버가 보낸 패킷 하나를 반영한다. 월드와 무관한 패킷은 무시한다. NowSeconds는 받은 때(단조 증가하는 내 시간, 초)다.
+		 * Field가 있으면 다른 플레이어를 막힌 칸 앞까지만 이어 그린다(54).
+		 */
+		void Apply(const portfolio::mmo::Packet& Packet, double NowSeconds, const FFieldMap* Field = nullptr);
 
 		/** 내 개체 번호. 월드에 들어가기 전이면 0. */
 		uint32_t SelfId() const { return Self; }
@@ -220,13 +248,11 @@ namespace MmoWorld
 		std::vector<uint32_t> TakeEntered();
 
 	private:
-		/** 받은 틱 번호를 시계와 들어온 개체의 기록에 쓴다. */
+		/** 받은 틱 번호를 시계에 쓴다. */
 		void ObserveTick(uint32_t Tick, double NowSeconds);
 
 		uint32_t Self = 0;
 		uint32_t LastAck = 0;
-		/** 마지막으로 받은 서버 틱 번호(EnterWorldResult, Pong, EntityMoves). EntityEnter에는 틱이 없어 들어온 개체의 첫 기록에 쓴다. */
-		uint32_t LastTick = 0;
 		FServerClock ServerClock;
 		FSelfState Mine;
 		std::unordered_map<uint32_t, FEntity> Visible;

@@ -47,17 +47,12 @@ namespace PortfolioMmo.Server
         internal long Cell { get; set; }
 
         /// <summary>
-        /// 이번 틱에 움직였다. 시야 차례가 EntityMoves에 넣은 뒤 내린다.
-        /// </summary>
-        internal bool Moved { get; set; }
-
-        /// <summary>
-        /// 이번 틱의 움직임이 걸은 것이 아니라 옮겨진 것이다(EntityMove.teleport). 시야 차례가 Moved와 함께 내린다.
+        /// 이번 틱에 걸은 것이 아니라 옮겨졌다(EntityMove.teleport). 그 틱에 꼭 알리고(54), 시야 차례가 보낸 뒤 내린다.
         /// </summary>
         internal bool Teleported { get; set; }
 
         /// <summary>
-        /// 이번 틱의 EntityMove. 이 개체를 보는 모든 연결의 EntityMoves가 같은 객체를 담는다.
+        /// 이번 틱에 알리는 EntityMove(54). 이 개체를 보는 모든 연결의 EntityMoves가 같은 객체를 담는다.
         /// </summary>
         internal EntityMove? MoveMessage { get; set; }
 

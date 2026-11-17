@@ -223,7 +223,8 @@ namespace PortfolioMmo.Server.Tests
         };
 
         /// <summary>
-        /// 시험용 상수. 회복은 5%와 전투 상태의 1%, 치명타는 5%와 1.5배, 빈도 제한은 실제 값(토큰 40, 초당 30, 끊기 3초, 다시 세기 1초)이고 PK(44)와 사망 페널티(45)는 실제 값이다.
+        /// 시험용 상수. 회복은 5%와 전투 상태의 1%, 치명타는 5%와 1.5배, 빈도 제한은 실제 값(토큰 40, 초당 30, 끊기 3초, 다시 세기 1초)이고 PK(44)와 사망 페널티(45),
+        /// 이동 알림(54. 방향 8칸, 방향 간격 4틱, 확인·멈춤·다음 점 간격 10틱)은 실제 값이다.
         /// </summary>
         public static Constants Constants(uint fieldSize)
         {
@@ -235,6 +236,7 @@ namespace PortfolioMmo.Server.Tests
                 ChatMaxBytes = 180, ChatPerSecond = 2, PartyExpBonusPercent = 10, PartyInviteMs = 30000,
                 SummonFollowDistance = 2, SummonLeashDistance = 20, AggressorMs = 30000, PkMinLevel = 10, KarmaKillPenalty = 100, KarmaMonsterGain = 5,
                 PetPickIntervalMs = 1000, DeathExpPercent = 5, OutlawDeathExpPercent = 10, OutlawDropInventoryPercent = 50, OutlawDropEquipmentPercent = 10,
+                MoveTurnYaw = 8, MoveTurnMs = 200, MoveConfirmMs = 500, MoveStopMs = 500, MoveGoalMs = 500,
             };
         }
 

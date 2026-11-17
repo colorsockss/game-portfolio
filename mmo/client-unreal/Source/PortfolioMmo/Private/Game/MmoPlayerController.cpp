@@ -409,7 +409,7 @@ void AMmoPlayerController::PlayerTick(float DeltaTime)
 	const FVector Location = Self->GetActorLocation();
 	portfolio::mmo::Packet Packet;
 	const uint32 Ack = GetGameInstance()->GetSubsystem<UMmoSession>()->World().Ack();
-	if (MoveSender.Update(DeltaTime, MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), MmoCoordinates::ToYaw(Self->GetActorRotation()), Ack, *Packet.mutable_move()))
+	if (MoveSender.Update(DeltaTime, MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), MmoCoordinates::ToYaw(Self->GetActorRotation()), IsWalking(), Ack, *Packet.mutable_move()))
 	{
 		Connection->Send(Packet);
 	}
@@ -502,6 +502,13 @@ bool AMmoPlayerController::IsStunned() const
 	return Session().World().SelfEffect(Session().Data(), portfolio::mmo::data::EFFECT_KIND_STUN, FPlatformTime::Seconds()).has_value();
 }
 
+bool AMmoPlayerController::IsWalking() const
+{
+	// 출발과 멈춤이 한 프레임이라(AMmoCharacter) 속도는 0이거나 최대 속도에 감속을 곱한 값이다. 벽에 정면으로 막히면 0이 된다.
+	const APawn* Self = GetPawn();
+	return Self && Self->GetVelocity().Size2D() > 1.0;
+}
+
 void AMmoPlayerController::UseQuickslot(int32 Index)
 {
 	NoteManual();
@@ -568,7 +575,7 @@ void AMmoPlayerController::UpdateSkillUse()
 	}
 
 	PathFollower.Start({});
-	const MmoWorld::FSkillFire Fire = Net.Combat().FireSkill(Net.World(), Net.Data(), MoveSender, X, Z, MmoCoordinates::ToYaw(Self->GetActorRotation()), FPlatformTime::Seconds());
+	const MmoWorld::FSkillFire Fire = Net.Combat().FireSkill(Net.World(), Net.Data(), MoveSender, X, Z, MmoCoordinates::ToYaw(Self->GetActorRotation()), IsWalking(), FPlatformTime::Seconds());
 	if (Fire.bStop)
 	{
 		// 시전은 세운 자리에서 해야 다음 Move가 시전을 취소하지 않는다. 공격하러 가던 길도 버린다.
@@ -658,9 +665,9 @@ void AMmoPlayerController::UpdateEngagement()
 		PathFollower.Start({});
 		if (!Combat.IsAttacking() && !IsStunned())
 		{
-			// 밀린 위치를 먼저 보내 서버가 지금 자리에서 사거리와 선을 보게 한다.
+			// 밀린 위치를 먼저 보내 서버가 지금 자리에서 사거리와 선을 보게 한다. 길을 버리고 서서 치므로 움직이는 중 표시는 끈다.
 			portfolio::mmo::Packet Move;
-			if (MoveSender.Flush(X, Z, MmoCoordinates::ToYaw(Self->GetActorRotation()), Net.World().Ack(), *Move.mutable_move()))
+			if (MoveSender.Flush(X, Z, MmoCoordinates::ToYaw(Self->GetActorRotation()), false, Net.World().Ack(), *Move.mutable_move()))
 			{
 				Net.Send(Move);
 			}
@@ -834,7 +841,7 @@ void AMmoPlayerController::Act(const MmoWorld::FInteractTarget& Target)
 		}
 		const FVector Location = Self->GetActorLocation();
 		portfolio::mmo::Packet Move;
-		if (MoveSender.Flush(MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), MmoCoordinates::ToYaw(Self->GetActorRotation()), Session().World().Ack(), *Move.mutable_move()))
+		if (MoveSender.Flush(MmoCoordinates::ToX(Location), MmoCoordinates::ToZ(Location), MmoCoordinates::ToYaw(Self->GetActorRotation()), false, Session().World().Ack(), *Move.mutable_move()))
 		{
 			Session().Send(Move);
 		}

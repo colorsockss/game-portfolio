@@ -141,6 +141,9 @@ private:
 	/** 내가 기절해 있다(이동과 행동의 입력을 막음). */
 	bool IsStunned() const;
 
+	/** 내 캐릭터가 걷고 있다(속도가 있음). Move의 움직이는 중 표시다(54). */
+	bool IsWalking() const;
+
 	UMmoSession& Session() const;
 	/** 터치: 한 손가락으로 끌면 카메라를 돌리고, 짧게 누르면(탭) 그 자리를 누르며, 두 손가락을 벌리면 당긴다. */
 	void UpdateTouchCamera();

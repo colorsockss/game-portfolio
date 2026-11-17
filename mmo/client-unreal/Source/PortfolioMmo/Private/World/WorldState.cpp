@@ -4,6 +4,7 @@
 #include <cmath>
 #include <utility>
 
+#include "World/FieldMap.h"
 #include "World/Units.h"
 
 namespace MmoWorld
@@ -34,22 +35,108 @@ namespace MmoWorld
 		return bKnown ? Offset + NowSeconds * Units::TicksPerSecond : 0;
 	}
 
-	void FEntityTrack::Push(const FTrackSample& Sample)
+	namespace
 	{
+		/**
+		 * 기록 S에서 Ticks 틱 동안 이어 그린 자리. 빠르기 × 시간을 S.Reach까지만 간다. 플레이어는 MaxExtrapolationTicks까지만 세고, 몬스터·경비병·소환수는
+		 * 다음 꺾이는 점을 바꿀 때만 알려 오므로 그 점까지 시간의 끝 없이 간다.
+		 */
+		FPose Extrapolate(const FTrackSample& S, double Ticks)
+		{
+			const double Counted = S.bHasNext ? std::max(Ticks, 0.0) : std::clamp(Ticks, 0.0, FEntityTrack::MaxExtrapolationTicks);
+			const double Distance = std::min(S.Speed * Counted / Units::TicksPerSecond, S.Reach);
+			if (Distance <= 0)
+			{
+				return { double(S.X), double(S.Z), double(S.Yaw) };
+			}
+			double DirectionX = 0;
+			double DirectionZ = 0;
+			if (S.bHasNext)
+			{
+				const double Length = std::hypot(double(S.NextX) - S.X, double(S.NextZ) - S.Z);
+				DirectionX = (S.NextX - S.X) / Length;
+				DirectionZ = (S.NextZ - S.Z) / Length;
+			}
+			else
+			{
+				Units::Direction(S.Yaw, DirectionX, DirectionZ);
+			}
+			return { S.X + DirectionX * Distance, S.Z + DirectionZ * Distance, double(S.Yaw) };
+		}
+
+		/**
+		 * 기록 S에서 이어 그릴 수 있는 거리(좌표 칸). 서 있으면 0, 다음 꺾이는 점이 있으면 그 점까지다. 플레이어는 MaxExtrapolationTicks 동안의 거리를 넘지 않고,
+		 * Field가 있으면 Yaw 쪽으로 걷는 선이 막히기 전까지다(막히는 거리를 반으로 나눠 찾음. 걷는 선은 길수록 막히기 쉬우므로 한 번 막힌 거리 뒤는 보지 않음).
+		 */
+		double ReachOf(const FTrackSample& S, const FFieldMap* Field)
+		{
+			if (S.Speed == 0)
+			{
+				return 0;
+			}
+			if (S.bHasNext)
+			{
+				return std::hypot(double(S.NextX) - S.X, double(S.NextZ) - S.Z);
+			}
+			const double Longest = S.Speed * FEntityTrack::MaxExtrapolationTicks / Units::TicksPerSecond;
+			if (!Field)
+			{
+				return Longest;
+			}
+			double DirectionX = 0;
+			double DirectionZ = 0;
+			Units::Direction(S.Yaw, DirectionX, DirectionZ);
+			const auto Open = [&](double Distance)
+			{
+				return Field->CanWalkLine(S.X, S.Z, static_cast<int32_t>(std::lround(S.X + DirectionX * Distance)), static_cast<int32_t>(std::lround(S.Z + DirectionZ * Distance)));
+			};
+			if (Open(Longest))
+			{
+				return Longest;
+			}
+			double Low = 0;
+			double High = Longest;
+			for (int Step = 0; Step < 10; ++Step)
+			{
+				const double Middle = (Low + High) / 2;
+				(Open(Middle) ? Low : High) = Middle;
+			}
+			return Low;
+		}
+	}
+
+	void FEntityTrack::Push(FTrackSample Added, double RenderTick, const FFieldMap* Field)
+	{
+		Added.Reach = ReachOf(Added, Field);
 		if (!Samples.empty())
 		{
-			const FTrackSample Last = Samples.back();
-			if (Sample.Tick <= Last.Tick)
+			const FTrackSample& Last = Samples.back();
+			if (Added.Tick <= Last.Tick)
 			{
-				Samples.back() = { Last.Tick, Sample.X, Sample.Z, Sample.Yaw };
+				Added.Tick = Last.Tick;
+				Samples.back() = Added;
 				return;
 			}
-			if (Sample.Tick - Last.Tick > RestartGapTicks)
+			if (RenderTick > Last.Tick)
 			{
-				Samples.push_back({ Sample.Tick - 1, Last.X, Last.Z, Last.Yaw });
+				// 이어 그리던 자리를 그리는 틱의 기록으로 남겨, 새 기록까지 지금 자리에서 잇는다(서 있던 개체는 출발할 때까지 그 자리에 선다).
+				const FPose Drawn = Sample(RenderTick);
+				const FTrackSample Anchor{ RenderTick, static_cast<int32_t>(std::lround(Drawn.X)), static_cast<int32_t>(std::lround(Drawn.Z)),
+					static_cast<uint32_t>(std::lround(Drawn.Yaw)) % Units::YawSteps };
+				if (Added.Tick <= RenderTick)
+				{
+					// 늦게 온 기록은 그 기록에서 이어 그린 자리를 조금 뒤의 기록으로 넣어 따라잡는다.
+					const double Ahead = RenderTick + CatchUpTicks;
+					const FPose Caught = Extrapolate(Added, Ahead - Added.Tick);
+					Added.Tick = Ahead;
+					Added.X = static_cast<int32_t>(std::lround(Caught.X));
+					Added.Z = static_cast<int32_t>(std::lround(Caught.Z));
+					Added.Reach = ReachOf(Added, Field);
+				}
+				Samples.push_back(Anchor);
 			}
 		}
-		Samples.push_back(Sample);
+		Samples.push_back(Added);
 		if (Samples.size() > Capacity)
 		{
 			Samples.erase(Samples.begin(), Samples.end() - Capacity);
@@ -70,7 +157,7 @@ namespace MmoWorld
 		}
 		if (RenderTick >= Last.Tick)
 		{
-			return { double(Last.X), double(Last.Z), double(Last.Yaw) };
+			return Extrapolate(Last, RenderTick - Last.Tick);
 		}
 
 		size_t Next = 1;
@@ -80,7 +167,7 @@ namespace MmoWorld
 		}
 		const FTrackSample& A = Samples[Next - 1];
 		const FTrackSample& B = Samples[Next];
-		const double T = (RenderTick - A.Tick) / double(B.Tick - A.Tick);
+		const double T = (RenderTick - A.Tick) / (B.Tick - A.Tick);
 
 		// 방향은 가까운 쪽으로 돈다: 차이를 -반 바퀴 이상 반 바퀴 미만으로 감는다.
 		const int32_t Half = Units::YawSteps / 2;
@@ -103,7 +190,6 @@ namespace MmoWorld
 		bRevivedOnEnter = false;
 		bDiedOnEnter = false;
 		LastAck = 0;
-		LastTick = 0;
 		ServerClock.Reset();
 		Mine = {};
 		Visible.clear();
@@ -123,7 +209,7 @@ namespace MmoWorld
 		return nullptr;
 	}
 
-	void FWorldState::Apply(const portfolio::mmo::Packet& Packet, double NowSeconds)
+	void FWorldState::Apply(const portfolio::mmo::Packet& Packet, double NowSeconds, const FFieldMap* Field)
 	{
 		switch (Packet.body_case())
 		{
@@ -140,7 +226,9 @@ namespace MmoWorld
 			{
 				FEntity& Entity = Visible[Enter.id()];
 				Entity = { Enter.id(), Enter.x(), Enter.z(), Enter.yaw(), Enter, {} };
-				Entity.Track.Push({ LastTick, Enter.x(), Enter.z(), Enter.yaw() });
+				// 걷는 중에 들어온 개체는 첫 기록부터 이어 그린다(54).
+				Entity.Track.Push({ double(Packet.entities_enter().tick()), Enter.x(), Enter.z(), Enter.yaw(), Enter.speed(), Enter.kind() != portfolio::mmo::ENTITY_KIND_PLAYER,
+					Enter.next_x(), Enter.next_z() }, RenderTick(NowSeconds), Field);
 				Entered.push_back(Enter.id());
 				// 죽은 채 넘겨받은 내 개체(46)는 Died가 따로 오지 않는다.
 				if (Enter.id() == Self && Enter.dead() && !Mine.bDead)
@@ -174,7 +262,8 @@ namespace MmoWorld
 					{
 						Found->second.Track.Clear();
 					}
-					Found->second.Track.Push({ Packet.entity_moves().tick(), Move.x(), Move.z(), Move.yaw() });
+					Found->second.Track.Push({ double(Packet.entity_moves().tick()), Move.x(), Move.z(), Move.yaw(), Move.speed(),
+						Found->second.Info.kind() != portfolio::mmo::ENTITY_KIND_PLAYER, Move.next_x(), Move.next_z() }, RenderTick(NowSeconds), Field);
 				}
 			}
 			break;
@@ -429,7 +518,6 @@ namespace MmoWorld
 
 	void FWorldState::ObserveTick(uint32_t Tick, double NowSeconds)
 	{
-		LastTick = Tick;
 		ServerClock.Observe(Tick, NowSeconds);
 	}
 }

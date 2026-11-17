@@ -78,7 +78,7 @@ namespace PortfolioMmo.Server
             _spawn = new SpawnSystem(data, field, _entities, _grid, _ai, _scheduler, random);
             _spawn.Spawned = _bosses.Spawned;
             _spawn.PlaceAll();
-            _movement = new MovementSystem(_entities, _grid, field);
+            _movement = new MovementSystem(_entities, _grid, field, Units.TicksFromMilliseconds(data.Constants.MoveStopMs));
             _growth = new GrowthSystem(_entities, stats, data, _party);
             _quickslots = new QuickslotSystem(data);
             _inventory = new InventorySystem(data, _progress, _movement, stats, _quickslots, _pk, random);
@@ -150,7 +150,7 @@ namespace PortfolioMmo.Server
                 _pk.Entered(player);
                 _bosses.Entered(player);
             };
-            _view = new ViewSystem(_entities, _grid, data.Constants.ViewMargin);
+            _view = new ViewSystem(_entities, _grid, new MoveNotifier(data.Constants), data.Constants.ViewMargin);
             _rateLimits = RateLimiter.Limits.From(data.Constants);
             _dev = dev ? new DevSystem(data, field, _entities, _movement, _progress, _spawn, _growth, _inventory, _pk) : null;
         }

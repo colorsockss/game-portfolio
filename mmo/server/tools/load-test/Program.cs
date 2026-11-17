@@ -28,7 +28,7 @@ namespace PortfolioMmo.LoadTest
         /// <summary>
         /// 인자: --host(기본 127.0.0.1), --port(기본 7777), --bots(기본 1000), --seconds(측정 시간, 기본 30),
         /// --half-extent(봇이 걷는 정사각형의 반 너비, m, 기본 200), --data(Login에 실을 데이터 해시와 맵의 폴더, 기본 실행 파일 옆의 data/),
-        /// --hunt(사냥), --gather x,z(모일 점, m), --gather-radius(모이는 반지름, m, 기본 15), --edge(시야 칸의 경계선을 ±6 m로 오감. 78), --prefix(로그인 ID의 앞, 기본 bot. 같은 서버에 두 무리를 붙일 때),
+        /// --hunt(사냥), --gather x,z(모일 점, m), --gather-radius(모이는 반지름, m, 기본 15), --edge(시야 칸의 경계선을 ±6 m로 오감. 78), --straight(틱마다 방향을 흔들지 않고 곧게 걸음. 막히면 돌아섬. 54), --every(걷는 동안 이 틱 수에 한 번만 Move를 보냄. 프레임이 낮거나 패킷이 몰린 클라이언트, 기본 1. 54), --prefix(로그인 ID의 앞, 기본 bot. 같은 서버에 두 무리를 붙일 때),
         /// --demo-bots(앞에서부터 이만큼은 체험 캐릭터(94)로 만들어 기사와 마법사를 번갈아 사냥터 2와 3에서 사냥함. --demo 서버, 기본 0).
         /// --seconds 0이면 끝없이 돌고 끊기면 다시 붙는다(Live의 봇).
         /// 서버와 같은 생성물(mmo/shared/data/files/)을 써야 로그인이 된다.
@@ -48,7 +48,9 @@ namespace PortfolioMmo.LoadTest
                 Array.IndexOf(args, "--hunt") >= 0,
                 Point(Option(args, "--gather", string.Empty)),
                 double.Parse(Option(args, "--gather-radius", "15"), System.Globalization.CultureInfo.InvariantCulture) * Units.PerMeter,
-                Array.IndexOf(args, "--edge") >= 0);
+                Array.IndexOf(args, "--edge") >= 0,
+                Array.IndexOf(args, "--straight") >= 0,
+                int.Parse(Option(args, "--every", "1")));
 
             var bots = new List<Bot>();
             for (int index = 0; index < botCount; index++)
@@ -134,7 +136,7 @@ namespace PortfolioMmo.LoadTest
     /// <summary>
     /// 봇의 행동: 사냥, 모일 점(좌표)과 반지름(좌표 단위).
     /// </summary>
-    internal readonly record struct Behavior(bool Hunt, (double X, double Z)? Gather, double GatherRadius, bool Edge = false);
+    internal readonly record struct Behavior(bool Hunt, (double X, double Z)? Gather, double GatherRadius, bool Edge = false, bool Straight = false, int Every = 1);
 
     /// <summary>
     /// 로그인하고 걸어 다니는 봇 하나. 받기는 자기 작업에서, 걷기는 Program의 틱 루프에서 하므로 위치는 잠그고 고친다.
@@ -241,6 +243,16 @@ namespace PortfolioMmo.LoadTest
         /// 걷는 방향(라디안).
         /// </summary>
         private double _heading;
+
+        /// <summary>
+        /// 걷는 중이라고 보낸 Move가 마지막이다(54). 서서 치기 시작하면 움직이는 중 표시를 끈 Move를 한 번 보낸다(실제 클라이언트처럼).
+        /// </summary>
+        private bool _walking;
+
+        /// <summary>
+        /// 마지막으로 보낸 방향.
+        /// </summary>
+        private uint _yaw;
 
         /// <summary>
         /// 마지막으로 받은 PositionReset의 ack.
@@ -363,11 +375,22 @@ namespace PortfolioMmo.LoadTest
                 bool following = (_leaderAt is (int leaderX, int leaderZ)) && (Math.Pow(leaderX - _x, 2) + Math.Pow(leaderZ - _z, 2) > FollowRange * FollowRange);
                 if (!following && behavior.Hunt && Hunt(tick, requests))
                 {
+                    // 죽은 봇은 서버가 이미 세웠다(죽은 동안의 Move는 되돌림).
+                    if (_walking && !_dead)
+                    {
+                        requests.Add(new Packet { Move = new Move { X = (int)Math.Round(_x), Z = (int)Math.Round(_z), Yaw = _yaw, Ack = _ack } });
+                    }
+
+                    _walking = false;
+
                     Send(requests);
                     return;
                 }
 
-                _heading += (random.NextDouble() - 0.5) * 0.4;
+                if (!behavior.Straight)
+                {
+                    _heading += (random.NextDouble() - 0.5) * 0.4;
+                }
                 Behavior here = _demo >= 0 ? behavior with { Gather = (_demo % 2) == 0 ? (-100.0 * Units.PerMeter, 0.0) : (0.0, 190.0 * Units.PerMeter), GatherRadius = 40 * Units.PerMeter } : behavior;
                 if (following && _leaderAt is (int towardX, int towardZ))
                 {
@@ -415,11 +438,16 @@ namespace PortfolioMmo.LoadTest
                 _z = z;
                 // heading은 +x에서 반시계로 잰 각이고, yaw는 +z(앞)에서 시계로 잰다.
                 double turns = ((Math.PI / 2) - _heading) / (2 * Math.PI);
-                uint yaw = (uint)((turns - Math.Floor(turns)) * Units.YawSteps) % Units.YawSteps;
-                move = new Move { X = (int)Math.Round(x), Z = (int)Math.Round(z), Yaw = yaw, Ack = _ack };
+                _yaw = (uint)((turns - Math.Floor(turns)) * Units.YawSteps) % Units.YawSteps;
+                _walking = true;
+                move = new Move { X = (int)Math.Round(x), Z = (int)Math.Round(z), Yaw = _yaw, Ack = _ack, Moving = true };
             }
 
-            requests.Add(new Packet { Move = move });
+            if ((tick + _selfId) % behavior.Every == 0)
+            {
+                requests.Add(new Packet { Move = move });
+            }
+
             Send(requests);
         }
 

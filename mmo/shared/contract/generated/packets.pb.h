@@ -896,7 +896,7 @@ namespace portfolio {
 namespace mmo {
 enum ProtocolVersion : int {
   PROTOCOL_VERSION_UNSPECIFIED = 0,
-  PROTOCOL_VERSION_CURRENT = 2,
+  PROTOCOL_VERSION_CURRENT = 3,
   ProtocolVersion_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),
   ProtocolVersion_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -907,11 +907,11 @@ extern const uint32_t ProtocolVersion_internal_data_[];
 inline constexpr ProtocolVersion ProtocolVersion_MIN =
     static_cast<ProtocolVersion>(0);
 inline constexpr ProtocolVersion ProtocolVersion_MAX =
-    static_cast<ProtocolVersion>(2);
+    static_cast<ProtocolVersion>(3);
 [[nodiscard]] inline bool ProtocolVersion_IsValid(int value) {
-  return 0 <= value && value <= 2 && ((5u >> value) & 1) != 0;
+  return 0 <= value && value <= 3 && ((9u >> value) & 1) != 0;
 }
-inline constexpr int ProtocolVersion_ARRAYSIZE = 2 + 1;
+inline constexpr int ProtocolVersion_ARRAYSIZE = 3 + 1;
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 ProtocolVersion_descriptor();
 [[nodiscard]] inline auto ProtobufInternalGetEnumDescriptor(ProtocolVersion) {
@@ -926,7 +926,7 @@ template <typename T>
 }
 template <>
 [[nodiscard]] inline const ::std::string& ProtocolVersion_Name(ProtocolVersion value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<ProtocolVersion_descriptor, 0, 2>(
+  return ::google::protobuf::internal::NameOfDenseEnum<ProtocolVersion_descriptor, 0, 3>(
       static_cast<int>(value));
 }
 [[nodiscard]] inline bool ProtocolVersion_Parse(
@@ -9159,6 +9159,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Move final : public ::google::proto
     kZFieldNumber = 2,
     kYawFieldNumber = 3,
     kAckFieldNumber = 4,
+    kMovingFieldNumber = 5,
   };
   // sint32 x = 1;
   void clear_x() ;
@@ -9200,11 +9201,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Move final : public ::google::proto
   void _internal_set_ack(::uint32_t value);
 
   public:
+  // bool moving = 5;
+  void clear_moving() ;
+  [[nodiscard]] bool moving() const;
+  void set_moving(bool value);
+
+  private:
+  bool _internal_moving() const;
+  void _internal_set_moving(bool value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.Move)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<2, 4,
+      ::google::protobuf::internal::TcParseTable<3, 5,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -9237,6 +9248,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Move final : public ::google::proto
     ::int32_t z_;
     ::uint32_t yaw_;
     ::uint32_t ack_;
+    bool moving_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -12529,6 +12541,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityMove final : public ::google:
     kZFieldNumber = 3,
     kYawFieldNumber = 4,
     kTeleportFieldNumber = 5,
+    kSpeedFieldNumber = 6,
+    kNextXFieldNumber = 7,
+    kNextZFieldNumber = 8,
   };
   // uint32 id = 1;
   void clear_id() ;
@@ -12580,11 +12595,41 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityMove final : public ::google:
   void _internal_set_teleport(bool value);
 
   public:
+  // uint32 speed = 6;
+  void clear_speed() ;
+  [[nodiscard]] ::uint32_t speed() const;
+  void set_speed(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_speed() const;
+  void _internal_set_speed(::uint32_t value);
+
+  public:
+  // sint32 next_x = 7;
+  void clear_next_x() ;
+  [[nodiscard]] ::int32_t next_x() const;
+  void set_next_x(::int32_t value);
+
+  private:
+  ::int32_t _internal_next_x() const;
+  void _internal_set_next_x(::int32_t value);
+
+  public:
+  // sint32 next_z = 8;
+  void clear_next_z() ;
+  [[nodiscard]] ::int32_t next_z() const;
+  void set_next_z(::int32_t value);
+
+  private:
+  ::int32_t _internal_next_z() const;
+  void _internal_set_next_z(::int32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.EntityMove)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<3, 5,
+      ::google::protobuf::internal::TcParseTable<3, 8,
                           0, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -12618,6 +12663,9 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityMove final : public ::google:
     ::int32_t z_;
     ::uint32_t yaw_;
     bool teleport_;
+    ::uint32_t speed_;
+    ::int32_t next_x_;
+    ::int32_t next_z_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -20283,7 +20331,6 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityEnter final : public ::google
     kHpFieldNumber = 12,
     kMaxHpFieldNumber = 13,
     kSpeedFieldNumber = 17,
-    kMoveYawFieldNumber = 18,
     kNextXFieldNumber = 19,
     kNextZFieldNumber = 20,
     kItemIdFieldNumber = 21,
@@ -20478,16 +20525,6 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityEnter final : public ::google
   void _internal_set_speed(::uint32_t value);
 
   public:
-  // uint32 move_yaw = 18;
-  void clear_move_yaw() ;
-  [[nodiscard]] ::uint32_t move_yaw() const;
-  void set_move_yaw(::uint32_t value);
-
-  private:
-  ::uint32_t _internal_move_yaw() const;
-  void _internal_set_move_yaw(::uint32_t value);
-
-  public:
   // sint32 next_x = 19;
   void clear_next_x() ;
   [[nodiscard]] ::int32_t next_x() const;
@@ -20630,7 +20667,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityEnter final : public ::google
   [[nodiscard]] inline bool has_owner() const;
   inline void clear_has_owner();
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 30,
+      ::google::protobuf::internal::TcParseTable<5, 29,
                           2, 62,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -20675,7 +20712,6 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntityEnter final : public ::google
     ::uint32_t hp_;
     ::uint32_t max_hp_;
     ::uint32_t speed_;
-    ::uint32_t move_yaw_;
     ::int32_t next_x_;
     ::int32_t next_z_;
     ::uint32_t item_id_;
@@ -21958,6 +21994,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntitiesEnter final : public ::goog
   // accessors -------------------------------------------------------
   enum : int {
     kEntitiesFieldNumber = 1,
+    kTickFieldNumber = 2,
   };
   // repeated .portfolio.mmo.EntityEnter entities = 1;
   [[nodiscard]] int entities_size() const;
@@ -21979,11 +22016,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntitiesEnter final : public ::goog
   ::google::protobuf::RepeatedPtrField<::portfolio::mmo::EntityEnter>* PROTOBUF_NONNULL _internal_mutable_entities();
 
   public:
+  // uint32 tick = 2;
+  void clear_tick() ;
+  [[nodiscard]] ::uint32_t tick() const;
+  void set_tick(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_tick() const;
+  void _internal_set_tick(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.EntitiesEnter)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<0, 1,
+      ::google::protobuf::internal::TcParseTable<1, 2,
                           1, 0,
                           2>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -22013,6 +22060,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED EntitiesEnter final : public ::goog
     ::google::protobuf::internal::HasBits<1> _has_bits_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::google::protobuf::RepeatedPtrField< ::portfolio::mmo::EntityEnter > entities_;
+    ::uint32_t tick_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -31463,6 +31511,30 @@ inline void Move::_internal_set_ack(::uint32_t value) {
   _impl_.ack_ = value;
 }
 
+// bool moving = 5;
+inline void Move::clear_moving() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.moving_ = false;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000010U);
+}
+inline bool Move::moving() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.Move.moving)
+  return _internal_moving();
+}
+inline void Move::set_moving(bool value) {
+  _internal_set_moving(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000010U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.Move.moving)
+}
+inline bool Move::_internal_moving() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.moving_;
+}
+inline void Move::_internal_set_moving(bool value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.moving_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // PositionReset
@@ -31596,6 +31668,30 @@ inline ::google::protobuf::RepeatedPtrField<::portfolio::mmo::EntityEnter>* PROT
 EntitiesEnter::_internal_mutable_entities() {
   ::google::protobuf::internal::TSanRead(&_impl_);
   return &_impl_.entities_;
+}
+
+// uint32 tick = 2;
+inline void EntitiesEnter::clear_tick() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.tick_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
+}
+inline ::uint32_t EntitiesEnter::tick() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.EntitiesEnter.tick)
+  return _internal_tick();
+}
+inline void EntitiesEnter::set_tick(::uint32_t value) {
+  _internal_set_tick(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.EntitiesEnter.tick)
+}
+inline ::uint32_t EntitiesEnter::_internal_tick() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.tick_;
+}
+inline void EntitiesEnter::_internal_set_tick(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.tick_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -32111,7 +32207,7 @@ inline void EntityEnter::set_allocated_progress(::portfolio::mmo::ProgressState*
 inline void EntityEnter::clear_dead() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.dead_ = false;
-  ClearHasBit(_impl_._has_bits_[0], 0x00100000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00080000U);
 }
 inline bool EntityEnter::dead() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.dead)
@@ -32119,7 +32215,7 @@ inline bool EntityEnter::dead() const {
 }
 inline void EntityEnter::set_dead(bool value) {
   _internal_set_dead(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00100000U);
+  SetHasBit(_impl_._has_bits_[0], 0x00080000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.dead)
 }
 inline bool EntityEnter::_internal_dead() const {
@@ -32155,35 +32251,11 @@ inline void EntityEnter::_internal_set_speed(::uint32_t value) {
   _impl_.speed_ = value;
 }
 
-// uint32 move_yaw = 18;
-inline void EntityEnter::clear_move_yaw() {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.move_yaw_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x00010000U);
-}
-inline ::uint32_t EntityEnter::move_yaw() const {
-  // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.move_yaw)
-  return _internal_move_yaw();
-}
-inline void EntityEnter::set_move_yaw(::uint32_t value) {
-  _internal_set_move_yaw(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00010000U);
-  // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.move_yaw)
-}
-inline ::uint32_t EntityEnter::_internal_move_yaw() const {
-  ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.move_yaw_;
-}
-inline void EntityEnter::_internal_set_move_yaw(::uint32_t value) {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.move_yaw_ = value;
-}
-
 // sint32 next_x = 19;
 inline void EntityEnter::clear_next_x() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.next_x_ = 0;
-  ClearHasBit(_impl_._has_bits_[0], 0x00020000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00010000U);
 }
 inline ::int32_t EntityEnter::next_x() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.next_x)
@@ -32191,7 +32263,7 @@ inline ::int32_t EntityEnter::next_x() const {
 }
 inline void EntityEnter::set_next_x(::int32_t value) {
   _internal_set_next_x(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00020000U);
+  SetHasBit(_impl_._has_bits_[0], 0x00010000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.next_x)
 }
 inline ::int32_t EntityEnter::_internal_next_x() const {
@@ -32207,7 +32279,7 @@ inline void EntityEnter::_internal_set_next_x(::int32_t value) {
 inline void EntityEnter::clear_next_z() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.next_z_ = 0;
-  ClearHasBit(_impl_._has_bits_[0], 0x00040000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00020000U);
 }
 inline ::int32_t EntityEnter::next_z() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.next_z)
@@ -32215,7 +32287,7 @@ inline ::int32_t EntityEnter::next_z() const {
 }
 inline void EntityEnter::set_next_z(::int32_t value) {
   _internal_set_next_z(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00040000U);
+  SetHasBit(_impl_._has_bits_[0], 0x00020000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.next_z)
 }
 inline ::int32_t EntityEnter::_internal_next_z() const {
@@ -32231,7 +32303,7 @@ inline void EntityEnter::_internal_set_next_z(::int32_t value) {
 inline void EntityEnter::clear_item_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.item_id_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x00080000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00040000U);
 }
 inline ::uint32_t EntityEnter::item_id() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.item_id)
@@ -32239,7 +32311,7 @@ inline ::uint32_t EntityEnter::item_id() const {
 }
 inline void EntityEnter::set_item_id(::uint32_t value) {
   _internal_set_item_id(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00080000U);
+  SetHasBit(_impl_._has_bits_[0], 0x00040000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.item_id)
 }
 inline ::uint32_t EntityEnter::_internal_item_id() const {
@@ -32255,7 +32327,7 @@ inline void EntityEnter::_internal_set_item_id(::uint32_t value) {
 inline void EntityEnter::clear_count() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.count_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x00400000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00200000U);
 }
 inline ::uint32_t EntityEnter::count() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.count)
@@ -32263,7 +32335,7 @@ inline ::uint32_t EntityEnter::count() const {
 }
 inline void EntityEnter::set_count(::uint32_t value) {
   _internal_set_count(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00400000U);
+  SetHasBit(_impl_._has_bits_[0], 0x00200000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.count)
 }
 inline ::uint32_t EntityEnter::_internal_count() const {
@@ -32279,7 +32351,7 @@ inline void EntityEnter::_internal_set_count(::uint32_t value) {
 inline void EntityEnter::clear_enchant() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.enchant_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x00800000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00400000U);
 }
 inline ::uint32_t EntityEnter::enchant() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.enchant)
@@ -32287,7 +32359,7 @@ inline ::uint32_t EntityEnter::enchant() const {
 }
 inline void EntityEnter::set_enchant(::uint32_t value) {
   _internal_set_enchant(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00800000U);
+  SetHasBit(_impl_._has_bits_[0], 0x00400000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.enchant)
 }
 inline ::uint32_t EntityEnter::_internal_enchant() const {
@@ -32369,7 +32441,7 @@ inline ::uint32_t EntityEnter::_internal_owner_party_id() const {
 inline void EntityEnter::clear_owner_only_end_tick() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.owner_only_end_tick_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x01000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00800000U);
 }
 inline ::uint32_t EntityEnter::owner_only_end_tick() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.owner_only_end_tick)
@@ -32377,7 +32449,7 @@ inline ::uint32_t EntityEnter::owner_only_end_tick() const {
 }
 inline void EntityEnter::set_owner_only_end_tick(::uint32_t value) {
   _internal_set_owner_only_end_tick(value);
-  SetHasBit(_impl_._has_bits_[0], 0x01000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x00800000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.owner_only_end_tick)
 }
 inline ::uint32_t EntityEnter::_internal_owner_only_end_tick() const {
@@ -32393,7 +32465,7 @@ inline void EntityEnter::_internal_set_owner_only_end_tick(::uint32_t value) {
 inline void EntityEnter::clear_dropped_by_player() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.dropped_by_player_ = false;
-  ClearHasBit(_impl_._has_bits_[0], 0x00200000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00100000U);
 }
 inline bool EntityEnter::dropped_by_player() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.dropped_by_player)
@@ -32401,7 +32473,7 @@ inline bool EntityEnter::dropped_by_player() const {
 }
 inline void EntityEnter::set_dropped_by_player(bool value) {
   _internal_set_dropped_by_player(value);
-  SetHasBit(_impl_._has_bits_[0], 0x00200000U);
+  SetHasBit(_impl_._has_bits_[0], 0x00100000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.dropped_by_player)
 }
 inline bool EntityEnter::_internal_dropped_by_player() const {
@@ -32417,7 +32489,7 @@ inline void EntityEnter::_internal_set_dropped_by_player(bool value) {
 inline void EntityEnter::clear_summon_owner_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.summon_owner_id_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x02000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x01000000U);
 }
 inline ::uint32_t EntityEnter::summon_owner_id() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.summon_owner_id)
@@ -32425,7 +32497,7 @@ inline ::uint32_t EntityEnter::summon_owner_id() const {
 }
 inline void EntityEnter::set_summon_owner_id(::uint32_t value) {
   _internal_set_summon_owner_id(value);
-  SetHasBit(_impl_._has_bits_[0], 0x02000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x01000000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.summon_owner_id)
 }
 inline ::uint32_t EntityEnter::_internal_summon_owner_id() const {
@@ -32441,7 +32513,7 @@ inline void EntityEnter::_internal_set_summon_owner_id(::uint32_t value) {
 inline void EntityEnter::clear_summon_end_tick() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.summon_end_tick_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x04000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x02000000U);
 }
 inline ::uint32_t EntityEnter::summon_end_tick() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.summon_end_tick)
@@ -32449,7 +32521,7 @@ inline ::uint32_t EntityEnter::summon_end_tick() const {
 }
 inline void EntityEnter::set_summon_end_tick(::uint32_t value) {
   _internal_set_summon_end_tick(value);
-  SetHasBit(_impl_._has_bits_[0], 0x04000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x02000000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.summon_end_tick)
 }
 inline ::uint32_t EntityEnter::_internal_summon_end_tick() const {
@@ -32465,7 +32537,7 @@ inline void EntityEnter::_internal_set_summon_end_tick(::uint32_t value) {
 inline void EntityEnter::clear_pet_id() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.pet_id_ = 0u;
-  ClearHasBit(_impl_._has_bits_[0], 0x08000000U);
+  ClearHasBit(_impl_._has_bits_[0], 0x04000000U);
 }
 inline ::uint32_t EntityEnter::pet_id() const {
   // @@protoc_insertion_point(field_get:portfolio.mmo.EntityEnter.pet_id)
@@ -32473,7 +32545,7 @@ inline ::uint32_t EntityEnter::pet_id() const {
 }
 inline void EntityEnter::set_pet_id(::uint32_t value) {
   _internal_set_pet_id(value);
-  SetHasBit(_impl_._has_bits_[0], 0x08000000U);
+  SetHasBit(_impl_._has_bits_[0], 0x04000000U);
   // @@protoc_insertion_point(field_set:portfolio.mmo.EntityEnter.pet_id)
 }
 inline ::uint32_t EntityEnter::_internal_pet_id() const {
@@ -33106,6 +33178,78 @@ inline bool EntityMove::_internal_teleport() const {
 inline void EntityMove::_internal_set_teleport(bool value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.teleport_ = value;
+}
+
+// uint32 speed = 6;
+inline void EntityMove::clear_speed() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.speed_ = 0u;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000020U);
+}
+inline ::uint32_t EntityMove::speed() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.EntityMove.speed)
+  return _internal_speed();
+}
+inline void EntityMove::set_speed(::uint32_t value) {
+  _internal_set_speed(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000020U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.EntityMove.speed)
+}
+inline ::uint32_t EntityMove::_internal_speed() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.speed_;
+}
+inline void EntityMove::_internal_set_speed(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.speed_ = value;
+}
+
+// sint32 next_x = 7;
+inline void EntityMove::clear_next_x() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.next_x_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000040U);
+}
+inline ::int32_t EntityMove::next_x() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.EntityMove.next_x)
+  return _internal_next_x();
+}
+inline void EntityMove::set_next_x(::int32_t value) {
+  _internal_set_next_x(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000040U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.EntityMove.next_x)
+}
+inline ::int32_t EntityMove::_internal_next_x() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.next_x_;
+}
+inline void EntityMove::_internal_set_next_x(::int32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.next_x_ = value;
+}
+
+// sint32 next_z = 8;
+inline void EntityMove::clear_next_z() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.next_z_ = 0;
+  ClearHasBit(_impl_._has_bits_[0], 0x00000080U);
+}
+inline ::int32_t EntityMove::next_z() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.EntityMove.next_z)
+  return _internal_next_z();
+}
+inline void EntityMove::set_next_z(::int32_t value) {
+  _internal_set_next_z(value);
+  SetHasBit(_impl_._has_bits_[0], 0x00000080U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.EntityMove.next_z)
+}
+inline ::int32_t EntityMove::_internal_next_z() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.next_z_;
+}
+inline void EntityMove::_internal_set_next_z(::int32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.next_z_ = value;
 }
 
 // -------------------------------------------------------------------

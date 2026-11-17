@@ -28,6 +28,7 @@ namespace PortfolioMmo.Server
 
         protected override void Fill(EntityEnter enter)
         {
+            FillMotion(enter);
             enter.TemplateId = Row.Id;
         }
     }

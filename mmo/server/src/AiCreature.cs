@@ -53,5 +53,35 @@ namespace PortfolioMmo.Server
         /// 길을 찾은 때의 대상 자리. 대상이 여기서 다시 찾는 거리(Constants)를 넘게 옮기면 길을 다시 찾는다.
         /// </summary>
         internal (int X, int Z) PathGoal { get; set; }
+
+        /// <summary>
+        /// 이번 틱에 걸었다(54). AI 차례의 처음에 내리고 걸음이 켠다. 걷는 동안의 빠르기는 MoveNotifier가 속도와 감속으로 구한다.
+        /// </summary>
+        internal bool Walked { get; set; }
+
+        /// <summary>
+        /// 걸어가는 다음 꺾이는 점(54): 길의 점, 배회의 점, 놓인 점, 쫓는 대상 앞의 설 자리. 걸은 틱에 MoveToward가 남기고, 곧게 쫓을 때의 설 자리는 구한 틱에 남긴다.
+        /// 걷지 않은 틱의 값은 알리지 않는다.
+        /// </summary>
+        internal (int X, int Z) Next { get; set; }
+
+        /// <summary>
+        /// 이번 틱의 다음 꺾이는 점은 바뀌면 알림의 간격을 기다리지 않고 알린다(54). 지난 틱에 쫓던 대상을 이번 틱에도 쫓아 그 대상 앞의 설 자리나 새로 찾은
+        /// 길의 첫 점으로 간 것(대상이 움직여 바뀐 점)만 거짓이다. 길의 둘째 점부터(앞 점에 닿아 넘어감), 배회, 복귀, 쫓기 시작함, 대상이 바뀜은 참이다.
+        /// </summary>
+        internal bool NextImmediate { get; set; }
+
+        /// <summary>
+        /// 이번 틱과 지난 틱에 쫓은 대상(0이면 쫓지 않음). NextImmediate를 정한다.
+        /// </summary>
+        internal uint Chased { get; set; }
+
+        internal uint PreviousChased { get; set; }
+
+        /// <summary>
+        /// 곧게 쫓을 때 설 자리(Next)를 구한 대상의 자리(54). 같은 대상이 그 자리에 있으면 설 자리를 다시 구하지 않는다(지금 자리에서 다시 구하면 반올림으로
+        /// 한 칸씩 흔들려 알림이 늘고, 보는 쪽이 이어 그리는 점과도 어긋남).
+        /// </summary>
+        internal (int X, int Z) StopFor { get; set; }
     }
 }

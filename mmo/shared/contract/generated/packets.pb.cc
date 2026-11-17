@@ -5410,11 +5410,11 @@ constexpr Move::ParseTableT_ Move::InternalGenerateParseTable_(const ::_pbi::Cla
     {
       PROTOBUF_FIELD_OFFSET(Move, _impl_._has_bits_),
       0, // no _extensions_
-      4, 24,  // max_field_number, fast_idx_mask
+      5, 56,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967280,  // skipmap
+      4294967264,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      4,  // num_field_entries
+      5,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -5424,10 +5424,7 @@ constexpr Move::ParseTableT_ Move::InternalGenerateParseTable_(const ::_pbi::Cla
       ::_pbi::TcParser::GetTable<::portfolio::mmo::Move>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      // uint32 ack = 4;
-      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Move, _impl_.ack_), 3>(),
-       {32, 3, 0,
-        PROTOBUF_FIELD_OFFSET(Move, _impl_.ack_)}},
+      {::_pbi::TcParser::MiniParse, {}},
       // sint32 x = 1;
       {::_pbi::TcParser::FastZ32S1,
        {8, 0, 0,
@@ -5440,6 +5437,16 @@ constexpr Move::ParseTableT_ Move::InternalGenerateParseTable_(const ::_pbi::Cla
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Move, _impl_.yaw_), 2>(),
        {24, 2, 0,
         PROTOBUF_FIELD_OFFSET(Move, _impl_.yaw_)}},
+      // uint32 ack = 4;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Move, _impl_.ack_), 3>(),
+       {32, 3, 0,
+        PROTOBUF_FIELD_OFFSET(Move, _impl_.ack_)}},
+      // bool moving = 5;
+      {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(Move, _impl_.moving_), 4>(),
+       {40, 4, 0,
+        PROTOBUF_FIELD_OFFSET(Move, _impl_.moving_)}},
+      {::_pbi::TcParser::MiniParse, {}},
+      {::_pbi::TcParser::MiniParse, {}},
     }}, {{
       65535, 65535
     }}, {{
@@ -5451,6 +5458,8 @@ constexpr Move::ParseTableT_ Move::InternalGenerateParseTable_(const ::_pbi::Cla
       {PROTOBUF_FIELD_OFFSET(Move, _impl_.yaw_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 ack = 4;
       {PROTOBUF_FIELD_OFFSET(Move, _impl_.ack_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // bool moving = 5;
+      {PROTOBUF_FIELD_OFFSET(Move, _impl_.moving_), _Internal::kHasBitsOffset + 4, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
     }},
     // no aux_entries
     {{
@@ -5465,7 +5474,8 @@ inline constexpr Move::Impl_::Impl_(
       : x_{0},
         z_{0},
         yaw_{0u},
-        ack_{0u} {}
+        ack_{0u},
+        moving_{false} {}
 
 template <typename>
 constexpr Move::Move(::_pbi::ConstantInitialized,
@@ -7789,11 +7799,11 @@ constexpr EntityMove::ParseTableT_ EntityMove::InternalGenerateParseTable_(const
     {
       PROTOBUF_FIELD_OFFSET(EntityMove, _impl_._has_bits_),
       0, // no _extensions_
-      5, 56,  // max_field_number, fast_idx_mask
+      8, 56,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967264,  // skipmap
+      4294967040,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      5,  // num_field_entries
+      8,  // num_field_entries
       0,  // num_aux_entries
       offsetof(ParseTableT_, field_names),  // no aux_entries
       class_data,
@@ -7803,7 +7813,10 @@ constexpr EntityMove::ParseTableT_ EntityMove::InternalGenerateParseTable_(const
       ::_pbi::TcParser::GetTable<::portfolio::mmo::EntityMove>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
-      {::_pbi::TcParser::MiniParse, {}},
+      // sint32 next_z = 8;
+      {::_pbi::TcParser::FastZ32S1,
+       {64, 7, 0,
+        PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.next_z_)}},
       // uint32 id = 1;
       {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EntityMove, _impl_.id_), 0>(),
        {8, 0, 0,
@@ -7824,8 +7837,14 @@ constexpr EntityMove::ParseTableT_ EntityMove::InternalGenerateParseTable_(const
       {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EntityMove, _impl_.teleport_), 4>(),
        {40, 4, 0,
         PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.teleport_)}},
-      {::_pbi::TcParser::MiniParse, {}},
-      {::_pbi::TcParser::MiniParse, {}},
+      // uint32 speed = 6;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EntityMove, _impl_.speed_), 5>(),
+       {48, 5, 0,
+        PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.speed_)}},
+      // sint32 next_x = 7;
+      {::_pbi::TcParser::FastZ32S1,
+       {56, 6, 0,
+        PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.next_x_)}},
     }}, {{
       65535, 65535
     }}, {{
@@ -7839,6 +7858,12 @@ constexpr EntityMove::ParseTableT_ EntityMove::InternalGenerateParseTable_(const
       {PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.yaw_), _Internal::kHasBitsOffset + 3, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // bool teleport = 5;
       {PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.teleport_), _Internal::kHasBitsOffset + 4, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
+      // uint32 speed = 6;
+      {PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.speed_), _Internal::kHasBitsOffset + 5, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      // sint32 next_x = 7;
+      {PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.next_x_), _Internal::kHasBitsOffset + 6, 0, (0 | ::_fl::kFcOptional | ::_fl::kSInt32)},
+      // sint32 next_z = 8;
+      {PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.next_z_), _Internal::kHasBitsOffset + 7, 0, (0 | ::_fl::kFcOptional | ::_fl::kSInt32)},
     }},
     // no aux_entries
     {{
@@ -7854,7 +7879,10 @@ inline constexpr EntityMove::Impl_::Impl_(
         x_{0},
         z_{0},
         yaw_{0u},
-        teleport_{false} {}
+        teleport_{false},
+        speed_{0u},
+        next_x_{0},
+        next_z_{0} {}
 
 template <typename>
 constexpr EntityMove::EntityMove(::_pbi::ConstantInitialized,
@@ -13178,9 +13206,9 @@ constexpr EntityEnter::ParseTableT_ EntityEnter::InternalGenerateParseTable_(con
       0, // no _extensions_
       30, 248,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      3221225472,  // skipmap
+      3221356544,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      30,  // num_field_entries
+      29,  // num_field_entries
       2,  // num_aux_entries
       offsetof(ParseTableT_, aux_entries),
       class_data,
@@ -13253,67 +13281,64 @@ constexpr EntityEnter::ParseTableT_ EntityEnter::InternalGenerateParseTable_(con
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.progress_)}},
       // bool dead = 16;
       {::_pbi::TcParser::FastV8S2,
-       {384, 20, 0,
+       {384, 19, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.dead_)}},
       // uint32 speed = 17;
       {::_pbi::TcParser::FastV32S2,
        {392, 15, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.speed_)}},
-      // uint32 move_yaw = 18;
-      {::_pbi::TcParser::FastV32S2,
-       {400, 16, 0,
-        PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.move_yaw_)}},
+      {::_pbi::TcParser::MiniParse, {}},
       // sint32 next_x = 19;
       {::_pbi::TcParser::FastZ32S2,
-       {408, 17, 0,
+       {408, 16, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.next_x_)}},
       // sint32 next_z = 20;
       {::_pbi::TcParser::FastZ32S2,
-       {416, 18, 0,
+       {416, 17, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.next_z_)}},
       // uint32 item_id = 21;
       {::_pbi::TcParser::FastV32S2,
-       {424, 19, 0,
+       {424, 18, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.item_id_)}},
       // uint32 count = 22;
       {::_pbi::TcParser::FastV32S2,
-       {432, 22, 0,
+       {432, 21, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.count_)}},
       // uint32 enchant = 23;
       {::_pbi::TcParser::FastV32S2,
-       {440, 23, 0,
+       {440, 22, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.enchant_)}},
       // uint32 owner_player_id = 24;
       {::_pbi::TcParser::FastMiniParse2,
        {448, ::uint8_t{1},
         ::uint32_t{
             PROTOBUF_FIELD_OFFSET(ParseTableT_, field_entries) +
-            sizeof(_pbi::TcParseTableBase::FieldEntry) * 23}}},
+            sizeof(_pbi::TcParseTableBase::FieldEntry) * 22}}},
       // uint32 owner_party_id = 25;
       {::_pbi::TcParser::FastMiniParse2,
        {456, ::uint8_t{1},
         ::uint32_t{
             PROTOBUF_FIELD_OFFSET(ParseTableT_, field_entries) +
-            sizeof(_pbi::TcParseTableBase::FieldEntry) * 24}}},
+            sizeof(_pbi::TcParseTableBase::FieldEntry) * 23}}},
       // uint32 owner_only_end_tick = 26;
       {::_pbi::TcParser::FastV32S2,
-       {464, 24, 0,
+       {464, 23, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.owner_only_end_tick_)}},
       // bool dropped_by_player = 27;
       {::_pbi::TcParser::FastV8S2,
-       {472, 21, 0,
+       {472, 20, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.dropped_by_player_)}},
       // uint32 summon_owner_id = 28;
       {::_pbi::TcParser::FastV32S2,
-       {480, 25, 0,
+       {480, 24, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.summon_owner_id_)}},
       // uint32 summon_end_tick = 29;
       {::_pbi::TcParser::FastV32S2,
-       {488, 26, 0,
+       {488, 25, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.summon_end_tick_)}},
       // uint32 pet_id = 30;
       {::_pbi::TcParser::FastV32S2,
-       {496, 27, 0,
+       {496, 26, 0,
         PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.pet_id_)}},
       {::_pbi::TcParser::MiniParse, {}},
     }}, {{
@@ -13350,35 +13375,33 @@ constexpr EntityEnter::ParseTableT_ EntityEnter::InternalGenerateParseTable_(con
       // .portfolio.mmo.ProgressState progress = 15;
       {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.progress_), _Internal::kHasBitsOffset + 2, 1, (0 | ::_fl::kFcOptional | ::_fl::kMessage | ::_fl::kTvTable)},
       // bool dead = 16;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.dead_), _Internal::kHasBitsOffset + 20, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.dead_), _Internal::kHasBitsOffset + 19, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
       // uint32 speed = 17;
       {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.speed_), _Internal::kHasBitsOffset + 15, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
-      // uint32 move_yaw = 18;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.move_yaw_), _Internal::kHasBitsOffset + 16, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // sint32 next_x = 19;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.next_x_), _Internal::kHasBitsOffset + 17, 0, (0 | ::_fl::kFcOptional | ::_fl::kSInt32)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.next_x_), _Internal::kHasBitsOffset + 16, 0, (0 | ::_fl::kFcOptional | ::_fl::kSInt32)},
       // sint32 next_z = 20;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.next_z_), _Internal::kHasBitsOffset + 18, 0, (0 | ::_fl::kFcOptional | ::_fl::kSInt32)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.next_z_), _Internal::kHasBitsOffset + 17, 0, (0 | ::_fl::kFcOptional | ::_fl::kSInt32)},
       // uint32 item_id = 21;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.item_id_), _Internal::kHasBitsOffset + 19, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.item_id_), _Internal::kHasBitsOffset + 18, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 count = 22;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.count_), _Internal::kHasBitsOffset + 22, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.count_), _Internal::kHasBitsOffset + 21, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 enchant = 23;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.enchant_), _Internal::kHasBitsOffset + 23, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.enchant_), _Internal::kHasBitsOffset + 22, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 owner_player_id = 24;
       {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.owner_.owner_player_id_), _Internal::kOneofCaseOffset + 0, 0, (0 | ::_fl::kFcOneof | ::_fl::kUInt32)},
       // uint32 owner_party_id = 25;
       {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.owner_.owner_party_id_), _Internal::kOneofCaseOffset + 0, 0, (0 | ::_fl::kFcOneof | ::_fl::kUInt32)},
       // uint32 owner_only_end_tick = 26;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.owner_only_end_tick_), _Internal::kHasBitsOffset + 24, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.owner_only_end_tick_), _Internal::kHasBitsOffset + 23, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // bool dropped_by_player = 27;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.dropped_by_player_), _Internal::kHasBitsOffset + 21, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.dropped_by_player_), _Internal::kHasBitsOffset + 20, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
       // uint32 summon_owner_id = 28;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.summon_owner_id_), _Internal::kHasBitsOffset + 25, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.summon_owner_id_), _Internal::kHasBitsOffset + 24, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 summon_end_tick = 29;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.summon_end_tick_), _Internal::kHasBitsOffset + 26, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.summon_end_tick_), _Internal::kHasBitsOffset + 25, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
       // uint32 pet_id = 30;
-      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.pet_id_), _Internal::kHasBitsOffset + 27, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
+      {PROTOBUF_FIELD_OFFSET(EntityEnter, _impl_.pet_id_), _Internal::kHasBitsOffset + 26, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     {{
         #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -13426,7 +13449,6 @@ inline constexpr EntityEnter::Impl_::Impl_(
         hp_{0u},
         max_hp_{0u},
         speed_{0u},
-        move_yaw_{0u},
         next_x_{0},
         next_z_{0},
         item_id_{0u},
@@ -14329,11 +14351,11 @@ constexpr EntitiesEnter::ParseTableT_ EntitiesEnter::InternalGenerateParseTable_
     {
       PROTOBUF_FIELD_OFFSET(EntitiesEnter, _impl_._has_bits_),
       0, // no _extensions_
-      1, 0,  // max_field_number, fast_idx_mask
+      2, 8,  // max_field_number, fast_idx_mask
       offsetof(ParseTableT_, field_lookup_table),
-      4294967294,  // skipmap
+      4294967292,  // skipmap
       offsetof(ParseTableT_, field_entries),
-      1,  // num_field_entries
+      2,  // num_field_entries
       1,  // num_aux_entries
       offsetof(ParseTableT_, aux_entries),
       class_data,
@@ -14343,6 +14365,10 @@ constexpr EntitiesEnter::ParseTableT_ EntitiesEnter::InternalGenerateParseTable_
       ::_pbi::TcParser::GetTable<::portfolio::mmo::EntitiesEnter>(),  // to_prefetch
       #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
     }, {{
+      // uint32 tick = 2;
+      {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EntitiesEnter, _impl_.tick_), 1>(),
+       {16, 1, 0,
+        PROTOBUF_FIELD_OFFSET(EntitiesEnter, _impl_.tick_)}},
       // repeated .portfolio.mmo.EntityEnter entities = 1;
       {::_pbi::TcParser::FastMtR1,
        {10, 0, 0,
@@ -14352,6 +14378,8 @@ constexpr EntitiesEnter::ParseTableT_ EntitiesEnter::InternalGenerateParseTable_
     }}, {{
       // repeated .portfolio.mmo.EntityEnter entities = 1;
       {PROTOBUF_FIELD_OFFSET(EntitiesEnter, _impl_.entities_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+      // uint32 tick = 2;
+      {PROTOBUF_FIELD_OFFSET(EntitiesEnter, _impl_.tick_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUInt32)},
     }},
     {{
         #ifndef PROTOBUF_MESSAGE_GLOBALS
@@ -14373,7 +14401,8 @@ inline constexpr EntitiesEnter::Impl_::Impl_(
             ::portfolio::mmo::EntitiesEnter,
             PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntitiesEnter, _impl_.entities_)>()
          }
-     {}
+        ,
+        tick_{0u} {}
 
 template <typename>
 constexpr EntitiesEnter::EntitiesEnter(::_pbi::ConstantInitialized,
@@ -15368,15 +15397,17 @@ const ::uint32_t
         0,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Move, _impl_._has_bits_),
-        7, // hasbit index offset
+        8, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Move, _impl_.x_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Move, _impl_.z_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Move, _impl_.yaw_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Move, _impl_.ack_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::Move, _impl_.moving_),
         0,
         1,
         2,
         3,
+        4,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::PositionReset, _impl_._has_bits_),
         6, // hasbit index offset
@@ -15388,13 +15419,15 @@ const ::uint32_t
         2,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntitiesEnter, _impl_._has_bits_),
-        4, // hasbit index offset
+        5, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntitiesEnter, _impl_.entities_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntitiesEnter, _impl_.tick_),
         0,
+        1,
         0x085, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_._has_bits_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_._oneof_case_[0]),
-        35, // hasbit index offset
+        34, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.x_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.z_),
@@ -15412,7 +15445,6 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.progress_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.dead_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.speed_),
-        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.move_yaw_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.next_x_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.next_z_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityEnter, _impl_.item_id_),
@@ -15441,21 +15473,20 @@ const ::uint32_t
         14,
         0,
         2,
-        20,
+        19,
         15,
         16,
         17,
         18,
-        19,
-        22,
-        23,
-        ~0u,
-        ~0u,
-        24,
         21,
+        22,
+        ~0u,
+        ~0u,
+        23,
+        20,
+        24,
         25,
         26,
-        27,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EffectState, _impl_._has_bits_),
         5, // hasbit index offset
@@ -15510,17 +15541,23 @@ const ::uint32_t
         0,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_._has_bits_),
-        8, // hasbit index offset
+        11, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.id_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.x_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.z_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.yaw_),
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.teleport_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.speed_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.next_x_),
+        PROTOBUF_FIELD_OFFSET(::portfolio::mmo::EntityMove, _impl_.next_z_),
         0,
         1,
         2,
         3,
         4,
+        5,
+        6,
+        7,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::portfolio::mmo::SelfVitals, _impl_._has_bits_),
         7, // hasbit index offset
@@ -16045,84 +16082,84 @@ static const ::_pbi::MigrationSchema
         {159, sizeof(::portfolio::mmo::LeaveWorld)},
         {160, sizeof(::portfolio::mmo::Pong)},
         {165, sizeof(::portfolio::mmo::Move)},
-        {176, sizeof(::portfolio::mmo::PositionReset)},
-        {185, sizeof(::portfolio::mmo::EntitiesEnter)},
-        {190, sizeof(::portfolio::mmo::EntityEnter)},
-        {255, sizeof(::portfolio::mmo::EffectState)},
-        {262, sizeof(::portfolio::mmo::ProgressState)},
-        {271, sizeof(::portfolio::mmo::EntityState)},
-        {284, sizeof(::portfolio::mmo::FieldNotice)},
-        {295, sizeof(::portfolio::mmo::EntitiesLeave)},
-        {300, sizeof(::portfolio::mmo::EntityMoves)},
-        {307, sizeof(::portfolio::mmo::EntityMove)},
-        {320, sizeof(::portfolio::mmo::SelfVitals)},
-        {331, sizeof(::portfolio::mmo::EntityVitals)},
-        {336, sizeof(::portfolio::mmo::EntityVital)},
-        {345, sizeof(::portfolio::mmo::SelfStats)},
-        {356, sizeof(::portfolio::mmo::ExpGained)},
-        {363, sizeof(::portfolio::mmo::ItemSlot)},
-        {376, sizeof(::portfolio::mmo::Inventory)},
-        {383, sizeof(::portfolio::mmo::ItemAmount)},
-        {390, sizeof(::portfolio::mmo::Gain)},
-        {401, sizeof(::portfolio::mmo::InventoryChanged)},
-        {410, sizeof(::portfolio::mmo::UseItem)},
-        {417, sizeof(::portfolio::mmo::PickUp)},
-        {424, sizeof(::portfolio::mmo::DropItem)},
-        {433, sizeof(::portfolio::mmo::Equip)},
-        {440, sizeof(::portfolio::mmo::Unequip)},
-        {447, sizeof(::portfolio::mmo::Enchant)},
-        {458, sizeof(::portfolio::mmo::EnchantResult)},
-        {465, sizeof(::portfolio::mmo::LearnedSkills)},
-        {470, sizeof(::portfolio::mmo::SkillLearned)},
-        {475, sizeof(::portfolio::mmo::Quickslot)},
-        {482, sizeof(::portfolio::mmo::SetQuickslot)},
-        {489, sizeof(::portfolio::mmo::Quickslots)},
-        {494, sizeof(::portfolio::mmo::Buy)},
-        {503, sizeof(::portfolio::mmo::Sell)},
-        {512, sizeof(::portfolio::mmo::StorageOpen)},
-        {513, sizeof(::portfolio::mmo::Storage)},
-        {518, sizeof(::portfolio::mmo::StorageChanged)},
-        {523, sizeof(::portfolio::mmo::StorageDeposit)},
-        {532, sizeof(::portfolio::mmo::StorageWithdraw)},
-        {541, sizeof(::portfolio::mmo::Chat)},
-        {550, sizeof(::portfolio::mmo::ChatReceived)},
-        {563, sizeof(::portfolio::mmo::PartyInvite)},
-        {568, sizeof(::portfolio::mmo::PartyInvited)},
-        {577, sizeof(::portfolio::mmo::PartyAnswer)},
-        {582, sizeof(::portfolio::mmo::PartyLeave)},
-        {583, sizeof(::portfolio::mmo::PartyKick)},
-        {588, sizeof(::portfolio::mmo::PartyState)},
-        {597, sizeof(::portfolio::mmo::PartyMember)},
-        {606, sizeof(::portfolio::mmo::PartyMemberVitals)},
-        {611, sizeof(::portfolio::mmo::PartyMemberVital)},
-        {624, sizeof(::portfolio::mmo::PetState)},
-        {631, sizeof(::portfolio::mmo::SetPetOut)},
-        {636, sizeof(::portfolio::mmo::DeathPenalty)},
-        {643, sizeof(::portfolio::mmo::Karma)},
-        {648, sizeof(::portfolio::mmo::RequestResult)},
-        {655, sizeof(::portfolio::mmo::ActionFailed)},
-        {662, sizeof(::portfolio::mmo::AttackStart)},
-        {667, sizeof(::portfolio::mmo::AttackStop)},
-        {668, sizeof(::portfolio::mmo::AttackSwing)},
-        {675, sizeof(::portfolio::mmo::Damaged)},
-        {688, sizeof(::portfolio::mmo::Died)},
-        {695, sizeof(::portfolio::mmo::Revive)},
-        {696, sizeof(::portfolio::mmo::Revived)},
-        {705, sizeof(::portfolio::mmo::UseSkill)},
-        {714, sizeof(::portfolio::mmo::SkillUsed)},
-        {723, sizeof(::portfolio::mmo::Progress)},
-        {730, sizeof(::portfolio::mmo::ProgressCancelled)},
-        {737, sizeof(::portfolio::mmo::EffectApplied)},
-        {744, sizeof(::portfolio::mmo::Cooldowns)},
-        {749, sizeof(::portfolio::mmo::Cooldown)},
-        {758, sizeof(::portfolio::mmo::ProjectileLaunched)},
-        {775, sizeof(::portfolio::mmo::ProjectileEnded)},
-        {780, sizeof(::portfolio::mmo::AreaWarning)},
-        {793, sizeof(::portfolio::mmo::Gather)},
-        {798, sizeof(::portfolio::mmo::Craft)},
-        {805, sizeof(::portfolio::mmo::QuestAccept)},
-        {810, sizeof(::portfolio::mmo::QuestComplete)},
-        {815, sizeof(::portfolio::mmo::QuestState)},
+        {178, sizeof(::portfolio::mmo::PositionReset)},
+        {187, sizeof(::portfolio::mmo::EntitiesEnter)},
+        {194, sizeof(::portfolio::mmo::EntityEnter)},
+        {257, sizeof(::portfolio::mmo::EffectState)},
+        {264, sizeof(::portfolio::mmo::ProgressState)},
+        {273, sizeof(::portfolio::mmo::EntityState)},
+        {286, sizeof(::portfolio::mmo::FieldNotice)},
+        {297, sizeof(::portfolio::mmo::EntitiesLeave)},
+        {302, sizeof(::portfolio::mmo::EntityMoves)},
+        {309, sizeof(::portfolio::mmo::EntityMove)},
+        {328, sizeof(::portfolio::mmo::SelfVitals)},
+        {339, sizeof(::portfolio::mmo::EntityVitals)},
+        {344, sizeof(::portfolio::mmo::EntityVital)},
+        {353, sizeof(::portfolio::mmo::SelfStats)},
+        {364, sizeof(::portfolio::mmo::ExpGained)},
+        {371, sizeof(::portfolio::mmo::ItemSlot)},
+        {384, sizeof(::portfolio::mmo::Inventory)},
+        {391, sizeof(::portfolio::mmo::ItemAmount)},
+        {398, sizeof(::portfolio::mmo::Gain)},
+        {409, sizeof(::portfolio::mmo::InventoryChanged)},
+        {418, sizeof(::portfolio::mmo::UseItem)},
+        {425, sizeof(::portfolio::mmo::PickUp)},
+        {432, sizeof(::portfolio::mmo::DropItem)},
+        {441, sizeof(::portfolio::mmo::Equip)},
+        {448, sizeof(::portfolio::mmo::Unequip)},
+        {455, sizeof(::portfolio::mmo::Enchant)},
+        {466, sizeof(::portfolio::mmo::EnchantResult)},
+        {473, sizeof(::portfolio::mmo::LearnedSkills)},
+        {478, sizeof(::portfolio::mmo::SkillLearned)},
+        {483, sizeof(::portfolio::mmo::Quickslot)},
+        {490, sizeof(::portfolio::mmo::SetQuickslot)},
+        {497, sizeof(::portfolio::mmo::Quickslots)},
+        {502, sizeof(::portfolio::mmo::Buy)},
+        {511, sizeof(::portfolio::mmo::Sell)},
+        {520, sizeof(::portfolio::mmo::StorageOpen)},
+        {521, sizeof(::portfolio::mmo::Storage)},
+        {526, sizeof(::portfolio::mmo::StorageChanged)},
+        {531, sizeof(::portfolio::mmo::StorageDeposit)},
+        {540, sizeof(::portfolio::mmo::StorageWithdraw)},
+        {549, sizeof(::portfolio::mmo::Chat)},
+        {558, sizeof(::portfolio::mmo::ChatReceived)},
+        {571, sizeof(::portfolio::mmo::PartyInvite)},
+        {576, sizeof(::portfolio::mmo::PartyInvited)},
+        {585, sizeof(::portfolio::mmo::PartyAnswer)},
+        {590, sizeof(::portfolio::mmo::PartyLeave)},
+        {591, sizeof(::portfolio::mmo::PartyKick)},
+        {596, sizeof(::portfolio::mmo::PartyState)},
+        {605, sizeof(::portfolio::mmo::PartyMember)},
+        {614, sizeof(::portfolio::mmo::PartyMemberVitals)},
+        {619, sizeof(::portfolio::mmo::PartyMemberVital)},
+        {632, sizeof(::portfolio::mmo::PetState)},
+        {639, sizeof(::portfolio::mmo::SetPetOut)},
+        {644, sizeof(::portfolio::mmo::DeathPenalty)},
+        {651, sizeof(::portfolio::mmo::Karma)},
+        {656, sizeof(::portfolio::mmo::RequestResult)},
+        {663, sizeof(::portfolio::mmo::ActionFailed)},
+        {670, sizeof(::portfolio::mmo::AttackStart)},
+        {675, sizeof(::portfolio::mmo::AttackStop)},
+        {676, sizeof(::portfolio::mmo::AttackSwing)},
+        {683, sizeof(::portfolio::mmo::Damaged)},
+        {696, sizeof(::portfolio::mmo::Died)},
+        {703, sizeof(::portfolio::mmo::Revive)},
+        {704, sizeof(::portfolio::mmo::Revived)},
+        {713, sizeof(::portfolio::mmo::UseSkill)},
+        {722, sizeof(::portfolio::mmo::SkillUsed)},
+        {731, sizeof(::portfolio::mmo::Progress)},
+        {738, sizeof(::portfolio::mmo::ProgressCancelled)},
+        {745, sizeof(::portfolio::mmo::EffectApplied)},
+        {752, sizeof(::portfolio::mmo::Cooldowns)},
+        {757, sizeof(::portfolio::mmo::Cooldown)},
+        {766, sizeof(::portfolio::mmo::ProjectileLaunched)},
+        {783, sizeof(::portfolio::mmo::ProjectileEnded)},
+        {788, sizeof(::portfolio::mmo::AreaWarning)},
+        {801, sizeof(::portfolio::mmo::Gather)},
+        {806, sizeof(::portfolio::mmo::Craft)},
+        {813, sizeof(::portfolio::mmo::QuestAccept)},
+        {818, sizeof(::portfolio::mmo::QuestComplete)},
+        {823, sizeof(::portfolio::mmo::QuestState)},
 };
 static const ::_pbi::MessageGlobalsBase* PROTOBUF_NONNULL const
     file_message_globals[] = {
@@ -16347,259 +16384,261 @@ const char descriptor_table_protodef_packets_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "lt\0223\n\006result\030\001 \001(\0162#.portfolio.mmo.Enter"
     "WorldResultCode\022\017\n\007self_id\030\002 \001(\r\022\014\n\004tick"
     "\030\003 \001(\r\022\017\n\007revived\030\004 \001(\010\"\010\n\006Logout\"\014\n\nLea"
-    "veWorld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r\"6\n\004Move\022\t\n"
+    "veWorld\"\024\n\004Pong\022\014\n\004tick\030\001 \001(\r\"F\n\004Move\022\t\n"
     "\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003yaw\030\003 \001(\r\022\013\n\003ack\030"
-    "\004 \001(\r\"2\n\rPositionReset\022\t\n\001x\030\001 \001(\021\022\t\n\001z\030\002"
-    " \001(\021\022\013\n\003ack\030\003 \001(\r\"=\n\rEntitiesEnter\022,\n\010en"
-    "tities\030\001 \003(\0132\032.portfolio.mmo.EntityEnter"
-    "\"\306\005\n\013EntityEnter\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022"
-    "\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\'\n\004kind\030\007 \001(\0162\031."
-    "portfolio.mmo.EntityKind\022\014\n\004name\030\005 \001(\t\0226"
-    "\n\017character_class\030\006 \001(\0162\035.portfolio.mmo."
-    "CharacterClass\022\r\n\005level\030\010 \001(\r\022,\n\nname_co"
-    "lor\030\t \001(\0162\030.portfolio.mmo.NameColor\022\026\n\016w"
-    "eapon_item_id\030\n \001(\r\022\023\n\013template_id\030\013 \001(\r"
-    "\022\n\n\002hp\030\014 \001(\r\022\016\n\006max_hp\030\r \001(\r\022+\n\007effects\030"
-    "\016 \003(\0132\032.portfolio.mmo.EffectState\022.\n\010pro"
-    "gress\030\017 \001(\0132\034.portfolio.mmo.ProgressStat"
-    "e\022\014\n\004dead\030\020 \001(\010\022\r\n\005speed\030\021 \001(\r\022\020\n\010move_y"
-    "aw\030\022 \001(\r\022\016\n\006next_x\030\023 \001(\021\022\016\n\006next_z\030\024 \001(\021"
-    "\022\017\n\007item_id\030\025 \001(\r\022\r\n\005count\030\026 \001(\r\022\017\n\007ench"
-    "ant\030\027 \001(\r\022\031\n\017owner_player_id\030\030 \001(\rH\000\022\030\n\016"
-    "owner_party_id\030\031 \001(\rH\000\022\033\n\023owner_only_end"
-    "_tick\030\032 \001(\r\022\031\n\021dropped_by_player\030\033 \001(\010\022\027"
-    "\n\017summon_owner_id\030\034 \001(\r\022\027\n\017summon_end_ti"
-    "ck\030\035 \001(\r\022\016\n\006pet_id\030\036 \001(\rB\007\n\005owner\"2\n\013Eff"
-    "ectState\022\021\n\teffect_id\030\001 \001(\r\022\020\n\010end_tick\030"
-    "\002 \001(\r\"X\n\rProgressState\022)\n\004kind\030\001 \001(\0162\033.p"
-    "ortfolio.mmo.ProgressKind\022\n\n\002id\030\002 \001(\r\022\020\n"
-    "\010end_tick\030\003 \001(\r\"~\n\013EntityState\022\n\n\002id\030\001 \001"
-    "(\r\022,\n\nname_color\030\002 \001(\0162\030.portfolio.mmo.N"
-    "ameColor\022\026\n\016weapon_item_id\030\003 \001(\r\022\r\n\005leve"
-    "l\030\004 \001(\r\022\016\n\006pet_id\030\005 \001(\r\"f\n\013FieldNotice\022,"
-    "\n\004kind\030\001 \001(\0162\036.portfolio.mmo.FieldNotice"
-    "Kind\022\023\n\013template_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001"
-    "z\030\004 \001(\021\"\034\n\rEntitiesLeave\022\013\n\003ids\030\001 \003(\r\"H\n"
-    "\013EntityMoves\022\014\n\004tick\030\001 \001(\r\022+\n\010entities\030\002"
-    " \003(\0132\031.portfolio.mmo.EntityMove\"M\n\nEntit"
-    "yMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022"
-    "\013\n\003yaw\030\004 \001(\r\022\020\n\010teleport\030\005 \001(\010\"Y\n\nSelfVi"
-    "tals\022\n\n\002hp\030\001 \001(\r\022\n\n\002mp\030\002 \001(\r\022\027\n\017combat_e"
-    "nd_tick\030\003 \001(\r\022\032\n\022aggressor_end_tick\030\004 \001("
-    "\r\"<\n\014EntityVitals\022,\n\010entities\030\001 \003(\0132\032.po"
-    "rtfolio.mmo.EntityVital\"5\n\013EntityVital\022\n"
-    "\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"L"
-    "\n\tSelfStats\022\016\n\006max_hp\030\001 \001(\r\022\016\n\006max_mp\030\002 "
-    "\001(\r\022\016\n\006attack\030\003 \001(\r\022\017\n\007defense\030\004 \001(\r\"(\n\t"
-    "ExpGained\022\016\n\006amount\030\001 \001(\021\022\013\n\003exp\030\002 \001(\r\"s"
-    "\n\010ItemSlot\022\'\n\005place\030\001 \001(\0162\030.portfolio.mm"
-    "o.ItemPlace\022\r\n\005index\030\002 \001(\r\022\017\n\007item_id\030\003 "
-    "\001(\r\022\r\n\005count\030\004 \001(\r\022\017\n\007enchant\030\005 \001(\r\"A\n\tI"
-    "nventory\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo."
-    "ItemSlot\022\014\n\004gold\030\002 \001(\004\",\n\nItemAmount\022\017\n\007"
-    "item_id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\"t\n\004Gain\022)\n\006"
-    "reason\030\001 \001(\0162\031.portfolio.mmo.GainReason\022"
-    ")\n\004item\030\002 \001(\0132\031.portfolio.mmo.ItemAmount"
-    "H\000\022\016\n\004gold\030\003 \001(\004H\000B\006\n\004what\"l\n\020InventoryC"
-    "hanged\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.It"
-    "emSlot\022\014\n\004gold\030\002 \001(\004\022\"\n\005gains\030\003 \003(\0132\023.po"
-    "rtfolio.mmo.Gain\"+\n\007UseItem\022\014\n\004slot\030\001 \001("
-    "\r\022\022\n\nrequest_id\030\002 \001(\r\"/\n\006PickUp\022\021\n\tentit"
-    "y_id\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\";\n\010DropIt"
-    "em\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nreque"
-    "st_id\030\003 \001(\r\")\n\005Equip\022\014\n\004slot\030\001 \001(\r\022\022\n\nre"
-    "quest_id\030\002 \001(\r\"1\n\007Unequip\022\022\n\nequip_slot\030"
-    "\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"i\n\007Enchant\022\'\n\005"
-    "place\030\001 \001(\0162\030.portfolio.mmo.ItemPlace\022\014\n"
-    "\004slot\030\002 \001(\r\022\023\n\013scroll_slot\030\003 \001(\r\022\022\n\nrequ"
-    "est_id\030\004 \001(\r\"1\n\rEnchantResult\022\017\n\007success"
-    "\030\001 \001(\010\022\017\n\007enchant\030\002 \001(\r\"\037\n\rLearnedSkills"
-    "\022\016\n\006skills\030\001 \003(\r\"\035\n\014SkillLearned\022\r\n\005skil"
-    "l\030\001 \001(\r\"C\n\tQuickslot\022*\n\004kind\030\001 \001(\0162\034.por"
-    "tfolio.mmo.QuickslotKind\022\n\n\002id\030\002 \001(\r\"E\n\014"
-    "SetQuickslot\022\r\n\005index\030\001 \001(\r\022&\n\004slot\030\002 \001("
-    "\0132\030.portfolio.mmo.Quickslot\"5\n\nQuickslot"
-    "s\022\'\n\005slots\030\001 \003(\0132\030.portfolio.mmo.Quicksl"
-    "ot\"9\n\003Buy\022\017\n\007item_id\030\001 \001(\r\022\r\n\005count\030\002 \001("
-    "\r\022\022\n\nrequest_id\030\003 \001(\r\"7\n\004Sell\022\014\n\004slot\030\001 "
-    "\001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"\r"
-    "\n\013StorageOpen\"1\n\007Storage\022&\n\005slots\030\001 \003(\0132"
-    "\027.portfolio.mmo.ItemSlot\"8\n\016StorageChang"
-    "ed\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo.ItemSl"
-    "ot\"A\n\016StorageDeposit\022\014\n\004slot\030\001 \001(\r\022\r\n\005co"
-    "unt\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\"B\n\017Storage"
-    "Withdraw\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n"
-    "\nrequest_id\030\003 \001(\r\"M\n\004Chat\022+\n\007channel\030\001 \001"
-    "(\0162\032.portfolio.mmo.ChatChannel\022\n\n\002to\030\002 \001"
-    "(\t\022\014\n\004text\030\003 \001(\t\"}\n\014ChatReceived\022+\n\007chan"
-    "nel\030\001 \001(\0162\032.portfolio.mmo.ChatChannel\022\021\n"
-    "\tsender_id\030\002 \001(\r\022\023\n\013sender_name\030\003 \001(\t\022\n\n"
-    "\002to\030\004 \001(\t\022\014\n\004text\030\005 \001(\t\" \n\013PartyInvite\022\021"
-    "\n\ttarget_id\030\001 \001(\r\"M\n\014PartyInvited\022\022\n\ninv"
-    "iter_id\030\001 \001(\r\022\024\n\014inviter_name\030\002 \001(\t\022\023\n\013e"
-    "xpire_tick\030\003 \001(\r\"\035\n\013PartyAnswer\022\016\n\006accep"
-    "t\030\001 \001(\010\"\014\n\nPartyLeave\"\036\n\tPartyKick\022\021\n\tta"
-    "rget_id\030\001 \001(\r\"^\n\nPartyState\022\020\n\010party_id\030"
-    "\001 \001(\r\022\021\n\tleader_id\030\002 \001(\r\022+\n\007members\030\003 \003("
-    "\0132\032.portfolio.mmo.PartyMember\"_\n\013PartyMe"
-    "mber\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\0226\n\017charac"
-    "ter_class\030\003 \001(\0162\035.portfolio.mmo.Characte"
-    "rClass\"E\n\021PartyMemberVitals\0220\n\007members\030\001"
-    " \003(\0132\037.portfolio.mmo.PartyMemberVital\"P\n"
-    "\020PartyMemberVital\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001("
-    "\r\022\016\n\006max_hp\030\003 \001(\r\022\t\n\001x\030\004 \001(\021\022\t\n\001z\030\005 \001(\021\""
-    "\'\n\010PetState\022\016\n\006pet_id\030\001 \001(\r\022\013\n\003out\030\002 \001(\010"
-    "\"\030\n\tSetPetOut\022\013\n\003out\030\001 \001(\010\"H\n\014DeathPenal"
-    "ty\022\020\n\010exp_lost\030\001 \001(\r\022&\n\005items\030\002 \003(\0132\027.po"
-    "rtfolio.mmo.ItemSlot\"\026\n\005Karma\022\r\n\005karma\030\001"
-    " \001(\021\"N\n\rRequestResult\022\022\n\nrequest_id\030\001 \001("
-    "\r\022)\n\006result\030\002 \001(\0162\031.portfolio.mmo.FailRe"
-    "ason\"f\n\014ActionFailed\022)\n\006reason\030\001 \001(\0162\031.p"
-    "ortfolio.mmo.FailReason\022+\n\007request\030\002 \001(\016"
-    "2\032.portfolio.mmo.RequestKind\" \n\013AttackSt"
-    "art\022\021\n\ttarget_id\030\001 \001(\r\"\014\n\nAttackStop\"5\n\013"
-    "AttackSwing\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\ttarg"
-    "et_id\030\002 \001(\r\"_\n\007Damaged\022\023\n\013attacker_id\030\001 "
-    "\001(\r\022\021\n\ttarget_id\030\002 \001(\r\022\016\n\006damage\030\003 \001(\r\022\n"
-    "\n\002hp\030\004 \001(\r\022\020\n\010critical\030\005 \001(\010\"%\n\004Died\022\n\n\002"
-    "id\030\001 \001(\r\022\021\n\tkiller_id\030\002 \001(\r\"\010\n\006Revive\"1\n"
-    "\007Revived\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_"
-    "hp\030\003 \001(\r\"E\n\010UseSkill\022\020\n\010skill_id\030\001 \001(\r\022\021"
-    "\n\ttarget_id\030\002 \001(\r\022\024\n\014force_attack\030\003 \001(\010\""
-    "C\n\tSkillUsed\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill"
-    "_id\030\002 \001(\r\022\021\n\ttarget_id\030\003 \001(\r\"C\n\010Progress"
-    "\022\n\n\002id\030\001 \001(\r\022+\n\005state\030\002 \001(\0132\034.portfolio."
-    "mmo.ProgressState\"J\n\021ProgressCancelled\022\n"
-    "\n\002id\030\001 \001(\r\022)\n\006reason\030\002 \001(\0162\031.portfolio.m"
-    "mo.FailReason\"G\n\rEffectApplied\022\n\n\002id\030\001 \001"
-    "(\r\022*\n\006effect\030\002 \001(\0132\032.portfolio.mmo.Effec"
-    "tState\"5\n\tCooldowns\022(\n\007entries\030\001 \003(\0132\027.p"
-    "ortfolio.mmo.Cooldown\">\n\010Cooldown\022\020\n\010ski"
-    "ll_id\030\001 \001(\r\022\020\n\010end_tick\030\002 \001(\r\022\016\n\006potion\030"
-    "\003 \001(\r\"s\n\022ProjectileLaunched\022\n\n\002id\030\001 \001(\r\022"
-    "\021\n\tcaster_id\030\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021"
-    "\022\014\n\004tick\030\005 \001(\r\022\013\n\003yaw\030\006 \001(\r\022\r\n\005speed\030\007 \001"
-    "(\r\"\035\n\017ProjectileEnded\022\n\n\002id\030\001 \001(\r\"Z\n\013Are"
-    "aWarning\022\021\n\tcaster_id\030\001 \001(\r\022\020\n\010skill_id\030"
-    "\002 \001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\020\n\010hit_tick\030"
-    "\005 \001(\r\"\033\n\006Gather\022\021\n\tentity_id\030\001 \001(\r\".\n\005Cr"
-    "aft\022\021\n\trecipe_id\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001"
-    "(\r\"!\n\013QuestAccept\022\022\n\nrequest_id\030\001 \001(\r\"#\n"
-    "\rQuestComplete\022\022\n\nrequest_id\030\001 \001(\r\"C\n\nQu"
-    "estState\022\021\n\tcompleted\030\001 \001(\r\022\020\n\010accepted\030"
-    "\002 \001(\010\022\020\n\010progress\030\003 \001(\r*Q\n\017ProtocolVersi"
-    "on\022 \n\034PROTOCOL_VERSION_UNSPECIFIED\020\000\022\034\n\030"
-    "PROTOCOL_VERSION_CURRENT\020\002*\355\002\n\010Constant\022"
-    "\030\n\024CONSTANT_UNSPECIFIED\020\000\022\034\n\030CONSTANT_UN"
-    "ITS_PER_METER\020 \022$\n\037CONSTANT_MAP_HALF_EXT"
-    "ENT_METERS\020\200\010\022\027\n\022CONSTANT_YAW_STEPS\020\200\002\022\035"
-    "\n\031CONSTANT_TICKS_PER_SECOND\020\024\022(\n$CONSTAN"
-    "T_MAX_SPEED_METERS_PER_SECOND\020\006\022\"\n\036CONST"
-    "ANT_PING_INTERVAL_SECONDS\020\005\022!\n\035CONSTANT_"
-    "IDLE_TIMEOUT_SECONDS\020\017\022\033\n\027CONSTANT_MAX_C"
-    "HARACTERS\020\004\022\034\n\030CONSTANT_QUICKSLOT_COUNT\020"
-    "\010\022\033\n\027CONSTANT_MAX_PARTY_SIZE\020\005\032\002\020\001*\303\001\n\017L"
-    "oginResultCode\022\030\n\024LOGIN_RESULT_CODE_OK\020\000"
-    "\022&\n\"LOGIN_RESULT_CODE_INVALID_LOGIN_ID\020\001"
-    "\022&\n\"LOGIN_RESULT_CODE_VERSION_MISMATCH\020\002"
-    "\022!\n\035LOGIN_RESULT_CODE_SERVER_FULL\020\003\022#\n\037L"
-    "OGIN_RESULT_CODE_DATA_MISMATCH\020\004*\347\001\n\nKic"
-    "kReason\022\033\n\027KICK_REASON_UNSPECIFIED\020\000\022\037\n\033"
-    "KICK_REASON_DUPLICATE_LOGIN\020\001\022\037\n\033KICK_RE"
-    "ASON_SERVER_SHUTDOWN\020\002\022 \n\034KICK_REASON_MA"
-    "LFORMED_PACKET\020\003\022\034\n\030KICK_REASON_IDLE_TIM"
-    "EOUT\020\004\022\034\n\030KICK_REASON_RATE_LIMITED\020\005\022\034\n\030"
-    "KICK_REASON_SERVER_ERROR\020\006*g\n\016CharacterC"
-    "lass\022\037\n\033CHARACTER_CLASS_UNSPECIFIED\020\000\022\032\n"
-    "\026CHARACTER_CLASS_KNIGHT\020\001\022\030\n\024CHARACTER_C"
-    "LASS_MAGE\020\002*\252\002\n\031CreateCharacterResultCod"
-    "e\022#\n\037CREATE_CHARACTER_RESULT_CODE_OK\020\000\022-"
-    "\n)CREATE_CHARACTER_RESULT_CODE_INVALID_N"
-    "AME\020\001\022+\n\'CREATE_CHARACTER_RESULT_CODE_NA"
-    "ME_TAKEN\020\002\022)\n%CREATE_CHARACTER_RESULT_CO"
-    "DE_TOO_MANY\020\003\022.\n*CREATE_CHARACTER_RESULT"
-    "_CODE_INVALID_CLASS\020\004\0221\n-CREATE_CHARACTE"
-    "R_RESULT_CODE_DEMO_UNAVAILABLE\020\005*\233\001\n\024Ent"
-    "erWorldResultCode\022\036\n\032ENTER_WORLD_RESULT_"
-    "CODE_OK\020\000\022-\n)ENTER_WORLD_RESULT_CODE_NO_"
-    "SUCH_CHARACTER\020\001\0224\n0ENTER_WORLD_RESULT_C"
-    "ODE_OTHER_CHARACTER_IN_WORLD\020\002*\301\001\n\nEntit"
-    "yKind\022\033\n\027ENTITY_KIND_UNSPECIFIED\020\000\022\026\n\022EN"
-    "TITY_KIND_PLAYER\020\001\022\027\n\023ENTITY_KIND_MONSTE"
-    "R\020\002\022\023\n\017ENTITY_KIND_NPC\020\003\022\033\n\027ENTITY_KIND_"
-    "GATHER_NODE\020\004\022\033\n\027ENTITY_KIND_GROUND_ITEM"
-    "\020\005\022\026\n\022ENTITY_KIND_SUMMON\020\006*S\n\tNameColor\022"
-    "\025\n\021NAME_COLOR_NORMAL\020\000\022\030\n\024NAME_COLOR_AGG"
-    "RESSOR\020\001\022\025\n\021NAME_COLOR_OUTLAW\020\002*\213\001\n\014Prog"
-    "ressKind\022\026\n\022PROGRESS_KIND_NONE\020\000\022\026\n\022PROG"
-    "RESS_KIND_CAST\020\001\022\030\n\024PROGRESS_KIND_GATHER"
-    "\020\002\022\027\n\023PROGRESS_KIND_CRAFT\020\003\022\030\n\024PROGRESS_"
-    "KIND_RECALL\020\004*\236\001\n\017FieldNoticeKind\022!\n\035FIE"
-    "LD_NOTICE_KIND_UNSPECIFIED\020\000\022#\n\037FIELD_NO"
-    "TICE_KIND_BOSS_APPEARED\020\001\022\037\n\033FIELD_NOTIC"
-    "E_KIND_BOSS_DIED\020\002\022\"\n\036FIELD_NOTICE_KIND_"
-    "BOSS_PRESENT\020\003*W\n\tItemPlace\022\030\n\024ITEM_PLAC"
-    "E_INVENTORY\020\000\022\030\n\024ITEM_PLACE_EQUIPMENT\020\001\022"
-    "\026\n\022ITEM_PLACE_STORAGE\020\002*\301\001\n\nGainReason\022\033"
-    "\n\027GAIN_REASON_UNSPECIFIED\020\000\022\033\n\027GAIN_REAS"
-    "ON_DEV_COMMAND\020\001\022\027\n\023GAIN_REASON_PICK_UP\020"
-    "\002\022\023\n\017GAIN_REASON_BUY\020\003\022\026\n\022GAIN_REASON_GA"
-    "THER\020\004\022\025\n\021GAIN_REASON_CRAFT\020\005\022\034\n\030GAIN_RE"
-    "ASON_QUEST_REWARD\020\006*\\\n\rQuickslotKind\022\030\n\024"
-    "QUICKSLOT_KIND_EMPTY\020\000\022\030\n\024QUICKSLOT_KIND"
-    "_SKILL\020\001\022\027\n\023QUICKSLOT_KIND_ITEM\020\002*\216\001\n\013Ch"
-    "atChannel\022\034\n\030CHAT_CHANNEL_UNSPECIFIED\020\000\022"
-    "\027\n\023CHAT_CHANNEL_NEARBY\020\001\022\026\n\022CHAT_CHANNEL"
-    "_PARTY\020\002\022\026\n\022CHAT_CHANNEL_WORLD\020\003\022\030\n\024CHAT"
-    "_CHANNEL_WHISPER\020\004*\361\n\n\nFailReason\022\024\n\020FAI"
-    "L_REASON_NONE\020\000\022\031\n\025FAIL_REASON_NO_TARGET"
-    "\020\001\022\036\n\032FAIL_REASON_INVALID_TARGET\020\002\022\024\n\020FA"
-    "IL_REASON_DEAD\020\003\022\030\n\024FAIL_REASON_NOT_DEAD"
-    "\020\004\022\033\n\027FAIL_REASON_NOT_LEARNED\020\005\022\030\n\024FAIL_"
-    "REASON_COOLDOWN\020\006\022\035\n\031FAIL_REASON_NOT_ENO"
-    "UGH_MP\020\007\022\034\n\030FAIL_REASON_OUT_OF_RANGE\020\010\022\027"
-    "\n\023FAIL_REASON_BLOCKED\020\t\022\024\n\020FAIL_REASON_B"
-    "USY\020\n\022\027\n\023FAIL_REASON_STUNNED\020\013\022\031\n\025FAIL_R"
-    "EASON_CANCELLED\020\014\022\037\n\033FAIL_REASON_INVALID"
-    "_COMMAND\020\r\022\036\n\032FAIL_REASON_INVENTORY_FULL"
-    "\020\016\022\027\n\023FAIL_REASON_NO_ITEM\020\017\022\035\n\031FAIL_REAS"
-    "ON_UNUSABLE_ITEM\020\020\022\031\n\025FAIL_REASON_IN_COM"
-    "BAT\020\021\022\030\n\024FAIL_REASON_TOO_FAST\020\022\022\034\n\030FAIL_"
-    "REASON_ALREADY_GONE\020\023\022\031\n\025FAIL_REASON_NOT"
-    "_YOURS\020\024\022\035\n\031FAIL_REASON_LEVEL_TOO_LOW\020\025\022"
-    "\033\n\027FAIL_REASON_WRONG_CLASS\020\026\022\033\n\027FAIL_REA"
-    "SON_MAX_ENCHANT\020\027\022\037\n\033FAIL_REASON_ALREADY"
-    "_LEARNED\020\030\022\037\n\033FAIL_REASON_NOT_ENOUGH_GOL"
-    "D\020\031\022\032\n\026FAIL_REASON_UNSELLABLE\020\032\022\034\n\030FAIL_"
-    "REASON_STORAGE_FULL\020\033\022\034\n\030FAIL_REASON_NO_"
-    "RECIPIENT\020\034\022\035\n\031FAIL_REASON_TEXT_TOO_LONG"
-    "\020\035\022\035\n\031FAIL_REASON_CHAT_TOO_FAST\020\036\022\030\n\024FAI"
-    "L_REASON_NO_PARTY\020\037\022\032\n\026FAIL_REASON_NOT_L"
-    "EADER\020 \022\032\n\026FAIL_REASON_PARTY_FULL\020!\022 \n\034F"
-    "AIL_REASON_ALREADY_IN_PARTY\020\"\022\036\n\032FAIL_RE"
-    "ASON_INVITE_PENDING\020#\022\031\n\025FAIL_REASON_NO_"
-    "INVITE\020$\022\037\n\033FAIL_REASON_INVITE_DECLINED\020"
-    "%\022\026\n\022FAIL_REASON_NO_PET\020(\022 \n\034FAIL_REASON"
-    "_ALREADY_HAVE_PET\020)\022 \n\034FAIL_REASON_PK_LE"
-    "VEL_TOO_LOW\020&\022\034\n\030FAIL_REASON_PARTY_MEMBE"
-    "R\020\'\022$\n FAIL_REASON_NOT_ENOUGH_MATERIALS\020"
-    "*\022!\n\035FAIL_REASON_QUEST_IN_PROGRESS\020+\022!\n\035"
-    "FAIL_REASON_NO_QUEST_ACCEPTED\020,\022\035\n\031FAIL_"
-    "REASON_NO_QUEST_LEFT\020-\022\036\n\032FAIL_REASON_QU"
-    "EST_NOT_DONE\020.*\211\002\n\013RequestKind\022\034\n\030REQUES"
-    "T_KIND_UNSPECIFIED\020\000\022\027\n\023REQUEST_KIND_ATT"
-    "ACK\020\001\022\027\n\023REQUEST_KIND_REVIVE\020\002\022\026\n\022REQUES"
-    "T_KIND_SKILL\020\003\022\025\n\021REQUEST_KIND_CHAT\020\004\022\032\n"
-    "\026REQUEST_KIND_QUICKSLOT\020\005\022\030\n\024REQUEST_KIN"
-    "D_STORAGE\020\006\022\026\n\022REQUEST_KIND_PARTY\020\007\022\024\n\020R"
-    "EQUEST_KIND_PET\020\010\022\027\n\023REQUEST_KIND_GATHER"
-    "\020\tB\030\252\002\025PortfolioMmo.Contractb\006proto3"
+    "\004 \001(\r\022\016\n\006moving\030\005 \001(\010\"2\n\rPositionReset\022\t"
+    "\n\001x\030\001 \001(\021\022\t\n\001z\030\002 \001(\021\022\013\n\003ack\030\003 \001(\r\"K\n\rEnt"
+    "itiesEnter\022,\n\010entities\030\001 \003(\0132\032.portfolio"
+    ".mmo.EntityEnter\022\014\n\004tick\030\002 \001(\r\"\272\005\n\013Entit"
+    "yEnter\022\n\n\002id\030\001 \001(\r\022\t\n\001x\030\002 \001(\021\022\t\n\001z\030\003 \001(\021"
+    "\022\013\n\003yaw\030\004 \001(\r\022\'\n\004kind\030\007 \001(\0162\031.portfolio."
+    "mmo.EntityKind\022\014\n\004name\030\005 \001(\t\0226\n\017characte"
+    "r_class\030\006 \001(\0162\035.portfolio.mmo.CharacterC"
+    "lass\022\r\n\005level\030\010 \001(\r\022,\n\nname_color\030\t \001(\0162"
+    "\030.portfolio.mmo.NameColor\022\026\n\016weapon_item"
+    "_id\030\n \001(\r\022\023\n\013template_id\030\013 \001(\r\022\n\n\002hp\030\014 \001"
+    "(\r\022\016\n\006max_hp\030\r \001(\r\022+\n\007effects\030\016 \003(\0132\032.po"
+    "rtfolio.mmo.EffectState\022.\n\010progress\030\017 \001("
+    "\0132\034.portfolio.mmo.ProgressState\022\014\n\004dead\030"
+    "\020 \001(\010\022\r\n\005speed\030\021 \001(\r\022\016\n\006next_x\030\023 \001(\021\022\016\n\006"
+    "next_z\030\024 \001(\021\022\017\n\007item_id\030\025 \001(\r\022\r\n\005count\030\026"
+    " \001(\r\022\017\n\007enchant\030\027 \001(\r\022\031\n\017owner_player_id"
+    "\030\030 \001(\rH\000\022\030\n\016owner_party_id\030\031 \001(\rH\000\022\033\n\023ow"
+    "ner_only_end_tick\030\032 \001(\r\022\031\n\021dropped_by_pl"
+    "ayer\030\033 \001(\010\022\027\n\017summon_owner_id\030\034 \001(\r\022\027\n\017s"
+    "ummon_end_tick\030\035 \001(\r\022\016\n\006pet_id\030\036 \001(\rB\007\n\005"
+    "ownerJ\004\010\022\020\023\"2\n\013EffectState\022\021\n\teffect_id\030"
+    "\001 \001(\r\022\020\n\010end_tick\030\002 \001(\r\"X\n\rProgressState"
+    "\022)\n\004kind\030\001 \001(\0162\033.portfolio.mmo.ProgressK"
+    "ind\022\n\n\002id\030\002 \001(\r\022\020\n\010end_tick\030\003 \001(\r\"~\n\013Ent"
+    "ityState\022\n\n\002id\030\001 \001(\r\022,\n\nname_color\030\002 \001(\016"
+    "2\030.portfolio.mmo.NameColor\022\026\n\016weapon_ite"
+    "m_id\030\003 \001(\r\022\r\n\005level\030\004 \001(\r\022\016\n\006pet_id\030\005 \001("
+    "\r\"f\n\013FieldNotice\022,\n\004kind\030\001 \001(\0162\036.portfol"
+    "io.mmo.FieldNoticeKind\022\023\n\013template_id\030\002 "
+    "\001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\"\034\n\rEntitiesLea"
+    "ve\022\013\n\003ids\030\001 \003(\r\"H\n\013EntityMoves\022\014\n\004tick\030\001"
+    " \001(\r\022+\n\010entities\030\002 \003(\0132\031.portfolio.mmo.E"
+    "ntityMove\"|\n\nEntityMove\022\n\n\002id\030\001 \001(\r\022\t\n\001x"
+    "\030\002 \001(\021\022\t\n\001z\030\003 \001(\021\022\013\n\003yaw\030\004 \001(\r\022\020\n\010telepo"
+    "rt\030\005 \001(\010\022\r\n\005speed\030\006 \001(\r\022\016\n\006next_x\030\007 \001(\021\022"
+    "\016\n\006next_z\030\010 \001(\021\"Y\n\nSelfVitals\022\n\n\002hp\030\001 \001("
+    "\r\022\n\n\002mp\030\002 \001(\r\022\027\n\017combat_end_tick\030\003 \001(\r\022\032"
+    "\n\022aggressor_end_tick\030\004 \001(\r\"<\n\014EntityVita"
+    "ls\022,\n\010entities\030\001 \003(\0132\032.portfolio.mmo.Ent"
+    "ityVital\"5\n\013EntityVital\022\n\n\002id\030\001 \001(\r\022\n\n\002h"
+    "p\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"L\n\tSelfStats\022\016\n\006"
+    "max_hp\030\001 \001(\r\022\016\n\006max_mp\030\002 \001(\r\022\016\n\006attack\030\003"
+    " \001(\r\022\017\n\007defense\030\004 \001(\r\"(\n\tExpGained\022\016\n\006am"
+    "ount\030\001 \001(\021\022\013\n\003exp\030\002 \001(\r\"s\n\010ItemSlot\022\'\n\005p"
+    "lace\030\001 \001(\0162\030.portfolio.mmo.ItemPlace\022\r\n\005"
+    "index\030\002 \001(\r\022\017\n\007item_id\030\003 \001(\r\022\r\n\005count\030\004 "
+    "\001(\r\022\017\n\007enchant\030\005 \001(\r\"A\n\tInventory\022&\n\005slo"
+    "ts\030\001 \003(\0132\027.portfolio.mmo.ItemSlot\022\014\n\004gol"
+    "d\030\002 \001(\004\",\n\nItemAmount\022\017\n\007item_id\030\001 \001(\r\022\r"
+    "\n\005count\030\002 \001(\r\"t\n\004Gain\022)\n\006reason\030\001 \001(\0162\031."
+    "portfolio.mmo.GainReason\022)\n\004item\030\002 \001(\0132\031"
+    ".portfolio.mmo.ItemAmountH\000\022\016\n\004gold\030\003 \001("
+    "\004H\000B\006\n\004what\"l\n\020InventoryChanged\022&\n\005slots"
+    "\030\001 \003(\0132\027.portfolio.mmo.ItemSlot\022\014\n\004gold\030"
+    "\002 \001(\004\022\"\n\005gains\030\003 \003(\0132\023.portfolio.mmo.Gai"
+    "n\"+\n\007UseItem\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequest_id"
+    "\030\002 \001(\r\"/\n\006PickUp\022\021\n\tentity_id\030\001 \001(\r\022\022\n\nr"
+    "equest_id\030\002 \001(\r\";\n\010DropItem\022\014\n\004slot\030\001 \001("
+    "\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\r\")\n\005"
+    "Equip\022\014\n\004slot\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\""
+    "1\n\007Unequip\022\022\n\nequip_slot\030\001 \001(\r\022\022\n\nreques"
+    "t_id\030\002 \001(\r\"i\n\007Enchant\022\'\n\005place\030\001 \001(\0162\030.p"
+    "ortfolio.mmo.ItemPlace\022\014\n\004slot\030\002 \001(\r\022\023\n\013"
+    "scroll_slot\030\003 \001(\r\022\022\n\nrequest_id\030\004 \001(\r\"1\n"
+    "\rEnchantResult\022\017\n\007success\030\001 \001(\010\022\017\n\007encha"
+    "nt\030\002 \001(\r\"\037\n\rLearnedSkills\022\016\n\006skills\030\001 \003("
+    "\r\"\035\n\014SkillLearned\022\r\n\005skill\030\001 \001(\r\"C\n\tQuic"
+    "kslot\022*\n\004kind\030\001 \001(\0162\034.portfolio.mmo.Quic"
+    "kslotKind\022\n\n\002id\030\002 \001(\r\"E\n\014SetQuickslot\022\r\n"
+    "\005index\030\001 \001(\r\022&\n\004slot\030\002 \001(\0132\030.portfolio.m"
+    "mo.Quickslot\"5\n\nQuickslots\022\'\n\005slots\030\001 \003("
+    "\0132\030.portfolio.mmo.Quickslot\"9\n\003Buy\022\017\n\007it"
+    "em_id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id"
+    "\030\003 \001(\r\"7\n\004Sell\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 "
+    "\001(\r\022\022\n\nrequest_id\030\003 \001(\r\"\r\n\013StorageOpen\"1"
+    "\n\007Storage\022&\n\005slots\030\001 \003(\0132\027.portfolio.mmo"
+    ".ItemSlot\"8\n\016StorageChanged\022&\n\005slots\030\001 \003"
+    "(\0132\027.portfolio.mmo.ItemSlot\"A\n\016StorageDe"
+    "posit\022\014\n\004slot\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nre"
+    "quest_id\030\003 \001(\r\"B\n\017StorageWithdraw\022\014\n\004slo"
+    "t\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001"
+    "(\r\"M\n\004Chat\022+\n\007channel\030\001 \001(\0162\032.portfolio."
+    "mmo.ChatChannel\022\n\n\002to\030\002 \001(\t\022\014\n\004text\030\003 \001("
+    "\t\"}\n\014ChatReceived\022+\n\007channel\030\001 \001(\0162\032.por"
+    "tfolio.mmo.ChatChannel\022\021\n\tsender_id\030\002 \001("
+    "\r\022\023\n\013sender_name\030\003 \001(\t\022\n\n\002to\030\004 \001(\t\022\014\n\004te"
+    "xt\030\005 \001(\t\" \n\013PartyInvite\022\021\n\ttarget_id\030\001 \001"
+    "(\r\"M\n\014PartyInvited\022\022\n\ninviter_id\030\001 \001(\r\022\024"
+    "\n\014inviter_name\030\002 \001(\t\022\023\n\013expire_tick\030\003 \001("
+    "\r\"\035\n\013PartyAnswer\022\016\n\006accept\030\001 \001(\010\"\014\n\nPart"
+    "yLeave\"\036\n\tPartyKick\022\021\n\ttarget_id\030\001 \001(\r\"^"
+    "\n\nPartyState\022\020\n\010party_id\030\001 \001(\r\022\021\n\tleader"
+    "_id\030\002 \001(\r\022+\n\007members\030\003 \003(\0132\032.portfolio.m"
+    "mo.PartyMember\"_\n\013PartyMember\022\n\n\002id\030\001 \001("
+    "\r\022\014\n\004name\030\002 \001(\t\0226\n\017character_class\030\003 \001(\016"
+    "2\035.portfolio.mmo.CharacterClass\"E\n\021Party"
+    "MemberVitals\0220\n\007members\030\001 \003(\0132\037.portfoli"
+    "o.mmo.PartyMemberVital\"P\n\020PartyMemberVit"
+    "al\022\n\n\002id\030\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001"
+    "(\r\022\t\n\001x\030\004 \001(\021\022\t\n\001z\030\005 \001(\021\"\'\n\010PetState\022\016\n\006"
+    "pet_id\030\001 \001(\r\022\013\n\003out\030\002 \001(\010\"\030\n\tSetPetOut\022\013"
+    "\n\003out\030\001 \001(\010\"H\n\014DeathPenalty\022\020\n\010exp_lost\030"
+    "\001 \001(\r\022&\n\005items\030\002 \003(\0132\027.portfolio.mmo.Ite"
+    "mSlot\"\026\n\005Karma\022\r\n\005karma\030\001 \001(\021\"N\n\rRequest"
+    "Result\022\022\n\nrequest_id\030\001 \001(\r\022)\n\006result\030\002 \001"
+    "(\0162\031.portfolio.mmo.FailReason\"f\n\014ActionF"
+    "ailed\022)\n\006reason\030\001 \001(\0162\031.portfolio.mmo.Fa"
+    "ilReason\022+\n\007request\030\002 \001(\0162\032.portfolio.mm"
+    "o.RequestKind\" \n\013AttackStart\022\021\n\ttarget_i"
+    "d\030\001 \001(\r\"\014\n\nAttackStop\"5\n\013AttackSwing\022\023\n\013"
+    "attacker_id\030\001 \001(\r\022\021\n\ttarget_id\030\002 \001(\r\"_\n\007"
+    "Damaged\022\023\n\013attacker_id\030\001 \001(\r\022\021\n\ttarget_i"
+    "d\030\002 \001(\r\022\016\n\006damage\030\003 \001(\r\022\n\n\002hp\030\004 \001(\r\022\020\n\010c"
+    "ritical\030\005 \001(\010\"%\n\004Died\022\n\n\002id\030\001 \001(\r\022\021\n\tkil"
+    "ler_id\030\002 \001(\r\"\010\n\006Revive\"1\n\007Revived\022\n\n\002id\030"
+    "\001 \001(\r\022\n\n\002hp\030\002 \001(\r\022\016\n\006max_hp\030\003 \001(\r\"E\n\010Use"
+    "Skill\022\020\n\010skill_id\030\001 \001(\r\022\021\n\ttarget_id\030\002 \001"
+    "(\r\022\024\n\014force_attack\030\003 \001(\010\"C\n\tSkillUsed\022\021\n"
+    "\tcaster_id\030\001 \001(\r\022\020\n\010skill_id\030\002 \001(\r\022\021\n\tta"
+    "rget_id\030\003 \001(\r\"C\n\010Progress\022\n\n\002id\030\001 \001(\r\022+\n"
+    "\005state\030\002 \001(\0132\034.portfolio.mmo.ProgressSta"
+    "te\"J\n\021ProgressCancelled\022\n\n\002id\030\001 \001(\r\022)\n\006r"
+    "eason\030\002 \001(\0162\031.portfolio.mmo.FailReason\"G"
+    "\n\rEffectApplied\022\n\n\002id\030\001 \001(\r\022*\n\006effect\030\002 "
+    "\001(\0132\032.portfolio.mmo.EffectState\"5\n\tCoold"
+    "owns\022(\n\007entries\030\001 \003(\0132\027.portfolio.mmo.Co"
+    "oldown\">\n\010Cooldown\022\020\n\010skill_id\030\001 \001(\r\022\020\n\010"
+    "end_tick\030\002 \001(\r\022\016\n\006potion\030\003 \001(\r\"s\n\022Projec"
+    "tileLaunched\022\n\n\002id\030\001 \001(\r\022\021\n\tcaster_id\030\002 "
+    "\001(\r\022\t\n\001x\030\003 \001(\021\022\t\n\001z\030\004 \001(\021\022\014\n\004tick\030\005 \001(\r\022"
+    "\013\n\003yaw\030\006 \001(\r\022\r\n\005speed\030\007 \001(\r\"\035\n\017Projectil"
+    "eEnded\022\n\n\002id\030\001 \001(\r\"Z\n\013AreaWarning\022\021\n\tcas"
+    "ter_id\030\001 \001(\r\022\020\n\010skill_id\030\002 \001(\r\022\t\n\001x\030\003 \001("
+    "\021\022\t\n\001z\030\004 \001(\021\022\020\n\010hit_tick\030\005 \001(\r\"\033\n\006Gather"
+    "\022\021\n\tentity_id\030\001 \001(\r\".\n\005Craft\022\021\n\trecipe_i"
+    "d\030\001 \001(\r\022\022\n\nrequest_id\030\002 \001(\r\"!\n\013QuestAcce"
+    "pt\022\022\n\nrequest_id\030\001 \001(\r\"#\n\rQuestComplete\022"
+    "\022\n\nrequest_id\030\001 \001(\r\"C\n\nQuestState\022\021\n\tcom"
+    "pleted\030\001 \001(\r\022\020\n\010accepted\030\002 \001(\010\022\020\n\010progre"
+    "ss\030\003 \001(\r*Q\n\017ProtocolVersion\022 \n\034PROTOCOL_"
+    "VERSION_UNSPECIFIED\020\000\022\034\n\030PROTOCOL_VERSIO"
+    "N_CURRENT\020\003*\355\002\n\010Constant\022\030\n\024CONSTANT_UNS"
+    "PECIFIED\020\000\022\034\n\030CONSTANT_UNITS_PER_METER\020 "
+    "\022$\n\037CONSTANT_MAP_HALF_EXTENT_METERS\020\200\010\022\027"
+    "\n\022CONSTANT_YAW_STEPS\020\200\002\022\035\n\031CONSTANT_TICK"
+    "S_PER_SECOND\020\024\022(\n$CONSTANT_MAX_SPEED_MET"
+    "ERS_PER_SECOND\020\006\022\"\n\036CONSTANT_PING_INTERV"
+    "AL_SECONDS\020\005\022!\n\035CONSTANT_IDLE_TIMEOUT_SE"
+    "CONDS\020\017\022\033\n\027CONSTANT_MAX_CHARACTERS\020\004\022\034\n\030"
+    "CONSTANT_QUICKSLOT_COUNT\020\010\022\033\n\027CONSTANT_M"
+    "AX_PARTY_SIZE\020\005\032\002\020\001*\303\001\n\017LoginResultCode\022"
+    "\030\n\024LOGIN_RESULT_CODE_OK\020\000\022&\n\"LOGIN_RESUL"
+    "T_CODE_INVALID_LOGIN_ID\020\001\022&\n\"LOGIN_RESUL"
+    "T_CODE_VERSION_MISMATCH\020\002\022!\n\035LOGIN_RESUL"
+    "T_CODE_SERVER_FULL\020\003\022#\n\037LOGIN_RESULT_COD"
+    "E_DATA_MISMATCH\020\004*\347\001\n\nKickReason\022\033\n\027KICK"
+    "_REASON_UNSPECIFIED\020\000\022\037\n\033KICK_REASON_DUP"
+    "LICATE_LOGIN\020\001\022\037\n\033KICK_REASON_SERVER_SHU"
+    "TDOWN\020\002\022 \n\034KICK_REASON_MALFORMED_PACKET\020"
+    "\003\022\034\n\030KICK_REASON_IDLE_TIMEOUT\020\004\022\034\n\030KICK_"
+    "REASON_RATE_LIMITED\020\005\022\034\n\030KICK_REASON_SER"
+    "VER_ERROR\020\006*g\n\016CharacterClass\022\037\n\033CHARACT"
+    "ER_CLASS_UNSPECIFIED\020\000\022\032\n\026CHARACTER_CLAS"
+    "S_KNIGHT\020\001\022\030\n\024CHARACTER_CLASS_MAGE\020\002*\252\002\n"
+    "\031CreateCharacterResultCode\022#\n\037CREATE_CHA"
+    "RACTER_RESULT_CODE_OK\020\000\022-\n)CREATE_CHARAC"
+    "TER_RESULT_CODE_INVALID_NAME\020\001\022+\n\'CREATE"
+    "_CHARACTER_RESULT_CODE_NAME_TAKEN\020\002\022)\n%C"
+    "REATE_CHARACTER_RESULT_CODE_TOO_MANY\020\003\022."
+    "\n*CREATE_CHARACTER_RESULT_CODE_INVALID_C"
+    "LASS\020\004\0221\n-CREATE_CHARACTER_RESULT_CODE_D"
+    "EMO_UNAVAILABLE\020\005*\233\001\n\024EnterWorldResultCo"
+    "de\022\036\n\032ENTER_WORLD_RESULT_CODE_OK\020\000\022-\n)EN"
+    "TER_WORLD_RESULT_CODE_NO_SUCH_CHARACTER\020"
+    "\001\0224\n0ENTER_WORLD_RESULT_CODE_OTHER_CHARA"
+    "CTER_IN_WORLD\020\002*\301\001\n\nEntityKind\022\033\n\027ENTITY"
+    "_KIND_UNSPECIFIED\020\000\022\026\n\022ENTITY_KIND_PLAYE"
+    "R\020\001\022\027\n\023ENTITY_KIND_MONSTER\020\002\022\023\n\017ENTITY_K"
+    "IND_NPC\020\003\022\033\n\027ENTITY_KIND_GATHER_NODE\020\004\022\033"
+    "\n\027ENTITY_KIND_GROUND_ITEM\020\005\022\026\n\022ENTITY_KI"
+    "ND_SUMMON\020\006*S\n\tNameColor\022\025\n\021NAME_COLOR_N"
+    "ORMAL\020\000\022\030\n\024NAME_COLOR_AGGRESSOR\020\001\022\025\n\021NAM"
+    "E_COLOR_OUTLAW\020\002*\213\001\n\014ProgressKind\022\026\n\022PRO"
+    "GRESS_KIND_NONE\020\000\022\026\n\022PROGRESS_KIND_CAST\020"
+    "\001\022\030\n\024PROGRESS_KIND_GATHER\020\002\022\027\n\023PROGRESS_"
+    "KIND_CRAFT\020\003\022\030\n\024PROGRESS_KIND_RECALL\020\004*\236"
+    "\001\n\017FieldNoticeKind\022!\n\035FIELD_NOTICE_KIND_"
+    "UNSPECIFIED\020\000\022#\n\037FIELD_NOTICE_KIND_BOSS_"
+    "APPEARED\020\001\022\037\n\033FIELD_NOTICE_KIND_BOSS_DIE"
+    "D\020\002\022\"\n\036FIELD_NOTICE_KIND_BOSS_PRESENT\020\003*"
+    "W\n\tItemPlace\022\030\n\024ITEM_PLACE_INVENTORY\020\000\022\030"
+    "\n\024ITEM_PLACE_EQUIPMENT\020\001\022\026\n\022ITEM_PLACE_S"
+    "TORAGE\020\002*\301\001\n\nGainReason\022\033\n\027GAIN_REASON_U"
+    "NSPECIFIED\020\000\022\033\n\027GAIN_REASON_DEV_COMMAND\020"
+    "\001\022\027\n\023GAIN_REASON_PICK_UP\020\002\022\023\n\017GAIN_REASO"
+    "N_BUY\020\003\022\026\n\022GAIN_REASON_GATHER\020\004\022\025\n\021GAIN_"
+    "REASON_CRAFT\020\005\022\034\n\030GAIN_REASON_QUEST_REWA"
+    "RD\020\006*\\\n\rQuickslotKind\022\030\n\024QUICKSLOT_KIND_"
+    "EMPTY\020\000\022\030\n\024QUICKSLOT_KIND_SKILL\020\001\022\027\n\023QUI"
+    "CKSLOT_KIND_ITEM\020\002*\216\001\n\013ChatChannel\022\034\n\030CH"
+    "AT_CHANNEL_UNSPECIFIED\020\000\022\027\n\023CHAT_CHANNEL"
+    "_NEARBY\020\001\022\026\n\022CHAT_CHANNEL_PARTY\020\002\022\026\n\022CHA"
+    "T_CHANNEL_WORLD\020\003\022\030\n\024CHAT_CHANNEL_WHISPE"
+    "R\020\004*\361\n\n\nFailReason\022\024\n\020FAIL_REASON_NONE\020\000"
+    "\022\031\n\025FAIL_REASON_NO_TARGET\020\001\022\036\n\032FAIL_REAS"
+    "ON_INVALID_TARGET\020\002\022\024\n\020FAIL_REASON_DEAD\020"
+    "\003\022\030\n\024FAIL_REASON_NOT_DEAD\020\004\022\033\n\027FAIL_REAS"
+    "ON_NOT_LEARNED\020\005\022\030\n\024FAIL_REASON_COOLDOWN"
+    "\020\006\022\035\n\031FAIL_REASON_NOT_ENOUGH_MP\020\007\022\034\n\030FAI"
+    "L_REASON_OUT_OF_RANGE\020\010\022\027\n\023FAIL_REASON_B"
+    "LOCKED\020\t\022\024\n\020FAIL_REASON_BUSY\020\n\022\027\n\023FAIL_R"
+    "EASON_STUNNED\020\013\022\031\n\025FAIL_REASON_CANCELLED"
+    "\020\014\022\037\n\033FAIL_REASON_INVALID_COMMAND\020\r\022\036\n\032F"
+    "AIL_REASON_INVENTORY_FULL\020\016\022\027\n\023FAIL_REAS"
+    "ON_NO_ITEM\020\017\022\035\n\031FAIL_REASON_UNUSABLE_ITE"
+    "M\020\020\022\031\n\025FAIL_REASON_IN_COMBAT\020\021\022\030\n\024FAIL_R"
+    "EASON_TOO_FAST\020\022\022\034\n\030FAIL_REASON_ALREADY_"
+    "GONE\020\023\022\031\n\025FAIL_REASON_NOT_YOURS\020\024\022\035\n\031FAI"
+    "L_REASON_LEVEL_TOO_LOW\020\025\022\033\n\027FAIL_REASON_"
+    "WRONG_CLASS\020\026\022\033\n\027FAIL_REASON_MAX_ENCHANT"
+    "\020\027\022\037\n\033FAIL_REASON_ALREADY_LEARNED\020\030\022\037\n\033F"
+    "AIL_REASON_NOT_ENOUGH_GOLD\020\031\022\032\n\026FAIL_REA"
+    "SON_UNSELLABLE\020\032\022\034\n\030FAIL_REASON_STORAGE_"
+    "FULL\020\033\022\034\n\030FAIL_REASON_NO_RECIPIENT\020\034\022\035\n\031"
+    "FAIL_REASON_TEXT_TOO_LONG\020\035\022\035\n\031FAIL_REAS"
+    "ON_CHAT_TOO_FAST\020\036\022\030\n\024FAIL_REASON_NO_PAR"
+    "TY\020\037\022\032\n\026FAIL_REASON_NOT_LEADER\020 \022\032\n\026FAIL"
+    "_REASON_PARTY_FULL\020!\022 \n\034FAIL_REASON_ALRE"
+    "ADY_IN_PARTY\020\"\022\036\n\032FAIL_REASON_INVITE_PEN"
+    "DING\020#\022\031\n\025FAIL_REASON_NO_INVITE\020$\022\037\n\033FAI"
+    "L_REASON_INVITE_DECLINED\020%\022\026\n\022FAIL_REASO"
+    "N_NO_PET\020(\022 \n\034FAIL_REASON_ALREADY_HAVE_P"
+    "ET\020)\022 \n\034FAIL_REASON_PK_LEVEL_TOO_LOW\020&\022\034"
+    "\n\030FAIL_REASON_PARTY_MEMBER\020\'\022$\n FAIL_REA"
+    "SON_NOT_ENOUGH_MATERIALS\020*\022!\n\035FAIL_REASO"
+    "N_QUEST_IN_PROGRESS\020+\022!\n\035FAIL_REASON_NO_"
+    "QUEST_ACCEPTED\020,\022\035\n\031FAIL_REASON_NO_QUEST"
+    "_LEFT\020-\022\036\n\032FAIL_REASON_QUEST_NOT_DONE\020.*"
+    "\211\002\n\013RequestKind\022\034\n\030REQUEST_KIND_UNSPECIF"
+    "IED\020\000\022\027\n\023REQUEST_KIND_ATTACK\020\001\022\027\n\023REQUES"
+    "T_KIND_REVIVE\020\002\022\026\n\022REQUEST_KIND_SKILL\020\003\022"
+    "\025\n\021REQUEST_KIND_CHAT\020\004\022\032\n\026REQUEST_KIND_Q"
+    "UICKSLOT\020\005\022\030\n\024REQUEST_KIND_STORAGE\020\006\022\026\n\022"
+    "REQUEST_KIND_PARTY\020\007\022\024\n\020REQUEST_KIND_PET"
+    "\020\010\022\027\n\023REQUEST_KIND_GATHER\020\tB\030\252\002\025Portfoli"
+    "oMmo.Contractb\006proto3"
 };
 static ::absl::once_flag descriptor_table_packets_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_packets_2eproto = {
     false,
     false,
-    14836,
+    14901,
     descriptor_table_protodef_packets_2eproto,
     "packets.proto",
     &descriptor_table_packets_2eproto_once,
@@ -16620,7 +16659,7 @@ ProtocolVersion_descriptor() {
   return file_level_enum_descriptors_packets_2eproto[0];
 }
 PROTOBUF_CONSTINIT const uint32_t ProtocolVersion_internal_data_[] = {
-    65536u, 32u, 2u, };
+    65536u, 32u, 4u, };
 [[nodiscard]] const ::google::protobuf::EnumDescriptor* PROTOBUF_NONNULL
 Constant_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_packets_2eproto);
@@ -23233,9 +23272,9 @@ inline void Move::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, x_),
            0,
-           offsetof(Impl_, ack_) -
+           offsetof(Impl_, moving_) -
                offsetof(Impl_, x_) +
-               sizeof(Impl_::ack_));
+               sizeof(Impl_::moving_));
 }
 Move::~Move() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.Move)
@@ -23284,12 +23323,12 @@ PROTOBUF_NOINLINE void Move::Clear() {
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
     ::memset(&this_._impl_.x_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.ack_) -
+                 reinterpret_cast<char*>(&this_._impl_.moving_) -
                  reinterpret_cast<char*>(&this_._impl_.x_)) +
-                 sizeof(_impl_.ack_));
+                 sizeof(_impl_.moving_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -23350,6 +23389,15 @@ PROTOBUF_NOINLINE void Move::Clear() {
     }
   }
 
+  // bool moving = 5;
+  if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+    if (this_._internal_moving() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteBoolToArray(
+          5, this_._internal_moving(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -23373,7 +23421,7 @@ PROTOBUF_NOINLINE void Move::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
     // sint32 x = 1;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (this_._internal_x() != 0) {
@@ -23402,6 +23450,12 @@ PROTOBUF_NOINLINE void Move::Clear() {
             this_._internal_ack());
       }
     }
+    // bool moving = 5;
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      if (this_._internal_moving() != 0) {
+        total_size += 2;
+      }
+    }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
@@ -23420,7 +23474,7 @@ void Move::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000000fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (from._internal_x() != 0) {
         _this->_impl_.x_ = from._impl_.x_;
@@ -23439,6 +23493,11 @@ void Move::MergeImpl(::google::protobuf::MessageLite& to_msg,
     if (CheckHasBit(cached_has_bits, 0x00000008U)) {
       if (from._internal_ack() != 0) {
         _this->_impl_.ack_ = from._impl_.ack_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000010U)) {
+      if (from._internal_moving() != 0) {
+        _this->_impl_.moving_ = from._impl_.moving_;
       }
     }
   }
@@ -23460,8 +23519,8 @@ void Move::InternalSwap(Move* PROTOBUF_RESTRICT PROTOBUF_NONNULL other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Move, _impl_.ack_)
-      + sizeof(Move::_impl_.ack_)
+      PROTOBUF_FIELD_OFFSET(Move, _impl_.moving_)
+      + sizeof(Move::_impl_.moving_)
       - PROTOBUF_FIELD_OFFSET(Move, _impl_.x_)>(
           reinterpret_cast<char*>(&_impl_.x_),
           reinterpret_cast<char*>(&other->_impl_.x_));
@@ -23756,6 +23815,7 @@ EntitiesEnter::EntitiesEnter(
   _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  _impl_.tick_ = from._impl_.tick_;
 
   // @@protoc_insertion_point(copy_constructor:portfolio.mmo.EntitiesEnter)
 }
@@ -23770,6 +23830,7 @@ PROTOBUF_NDEBUG_INLINE EntitiesEnter::Impl_::Impl_(
 
 inline void EntitiesEnter::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.tick_ = {};
 }
 EntitiesEnter::~EntitiesEnter() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.EntitiesEnter)
@@ -23821,6 +23882,7 @@ PROTOBUF_NOINLINE void EntitiesEnter::Clear() {
   if (CheckHasBit(cached_has_bits, 0x00000001U)) {
     _impl_.entities_.Clear();
   }
+  this_._impl_.tick_ = 0u;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -23856,6 +23918,15 @@ PROTOBUF_NOINLINE void EntitiesEnter::Clear() {
     }
   }
 
+  // uint32 tick = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+    if (this_._internal_tick() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          2, this_._internal_tick(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -23878,13 +23949,20 @@ PROTOBUF_NOINLINE void EntitiesEnter::Clear() {
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
-   {
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
     // repeated .portfolio.mmo.EntityEnter entities = 1;
-    cached_has_bits = this_._impl_._has_bits_[0];
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       total_size += 1UL * this_._internal_entities_size();
       for (const auto& msg : this_._internal_entities()) {
         total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+      }
+    }
+    // uint32 tick = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (this_._internal_tick() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_tick());
       }
     }
   }
@@ -23906,10 +23984,17 @@ void EntitiesEnter::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-    _this->_internal_mutable_entities()->InternalMergeFromWithArena(
-        ::google::protobuf::MessageLite::internal_visibility(), arena,
-        from._internal_entities());
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      _this->_internal_mutable_entities()->InternalMergeFromWithArena(
+          ::google::protobuf::MessageLite::internal_visibility(), arena,
+          from._internal_entities());
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (from._internal_tick() != 0) {
+        _this->_impl_.tick_ = from._impl_.tick_;
+      }
+    }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
@@ -23929,6 +24014,7 @@ void EntitiesEnter::InternalSwap(EntitiesEnter* PROTOBUF_RESTRICT PROTOBUF_NONNU
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   _impl_.entities_.InternalSwap(&other->_impl_.entities_);
+  swap(_impl_.tick_, other->_impl_.tick_);
 }
 
 ::google::protobuf::Metadata EntitiesEnter::GetMetadata() const {
@@ -24119,17 +24205,17 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
                  sizeof(_impl_.speed_));
   }
   if (BatchCheckHasBit(cached_has_bits, 0x00ff0000U)) {
-    ::memset(&this_._impl_.move_yaw_, 0,
+    ::memset(&this_._impl_.next_x_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.enchant_) -
-                 reinterpret_cast<char*>(&this_._impl_.move_yaw_)) +
-                 sizeof(_impl_.enchant_));
+                 reinterpret_cast<char*>(&this_._impl_.owner_only_end_tick_) -
+                 reinterpret_cast<char*>(&this_._impl_.next_x_)) +
+                 sizeof(_impl_.owner_only_end_tick_));
   }
-  if (BatchCheckHasBit(cached_has_bits, 0x0f000000U)) {
-    ::memset(&this_._impl_.owner_only_end_tick_, 0,
+  if (BatchCheckHasBit(cached_has_bits, 0x07000000U)) {
+    ::memset(&this_._impl_.summon_owner_id_, 0,
              static_cast<::size_t>(
                  reinterpret_cast<char*>(&this_._impl_.pet_id_) -
-                 reinterpret_cast<char*>(&this_._impl_.owner_only_end_tick_)) +
+                 reinterpret_cast<char*>(&this_._impl_.summon_owner_id_)) +
                  sizeof(_impl_.pet_id_));
   }
   clear_owner();
@@ -24294,7 +24380,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   }
 
   // bool dead = 16;
-  if (CheckHasBit(cached_has_bits, 0x00100000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00080000U)) {
     if (this_._internal_dead() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteBoolToArray(
@@ -24311,17 +24397,8 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
     }
   }
 
-  // uint32 move_yaw = 18;
-  if (CheckHasBit(cached_has_bits, 0x00010000U)) {
-    if (this_._internal_move_yaw() != 0) {
-      target = stream->EnsureSpace(target);
-      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
-          18, this_._internal_move_yaw(), target);
-    }
-  }
-
   // sint32 next_x = 19;
-  if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00010000U)) {
     if (this_._internal_next_x() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteSInt32ToArray(
@@ -24330,7 +24407,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   }
 
   // sint32 next_z = 20;
-  if (CheckHasBit(cached_has_bits, 0x00040000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00020000U)) {
     if (this_._internal_next_z() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteSInt32ToArray(
@@ -24339,7 +24416,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   }
 
   // uint32 item_id = 21;
-  if (CheckHasBit(cached_has_bits, 0x00080000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00040000U)) {
     if (this_._internal_item_id() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -24348,7 +24425,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   }
 
   // uint32 count = 22;
-  if (CheckHasBit(cached_has_bits, 0x00400000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00200000U)) {
     if (this_._internal_count() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -24357,7 +24434,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   }
 
   // uint32 enchant = 23;
-  if (CheckHasBit(cached_has_bits, 0x00800000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00400000U)) {
     if (this_._internal_enchant() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -24382,7 +24459,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
       break;
   }
   // uint32 owner_only_end_tick = 26;
-  if (CheckHasBit(cached_has_bits, 0x01000000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00800000U)) {
     if (this_._internal_owner_only_end_tick() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -24391,7 +24468,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   }
 
   // bool dropped_by_player = 27;
-  if (CheckHasBit(cached_has_bits, 0x00200000U)) {
+  if (CheckHasBit(cached_has_bits, 0x00100000U)) {
     if (this_._internal_dropped_by_player() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteBoolToArray(
@@ -24400,7 +24477,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   }
 
   // uint32 summon_owner_id = 28;
-  if (CheckHasBit(cached_has_bits, 0x02000000U)) {
+  if (CheckHasBit(cached_has_bits, 0x01000000U)) {
     if (this_._internal_summon_owner_id() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -24409,7 +24486,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   }
 
   // uint32 summon_end_tick = 29;
-  if (CheckHasBit(cached_has_bits, 0x04000000U)) {
+  if (CheckHasBit(cached_has_bits, 0x02000000U)) {
     if (this_._internal_summon_end_tick() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -24418,7 +24495,7 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
   }
 
   // uint32 pet_id = 30;
-  if (CheckHasBit(cached_has_bits, 0x08000000U)) {
+  if (CheckHasBit(cached_has_bits, 0x04000000U)) {
     if (this_._internal_pet_id() != 0) {
       target = stream->EnsureSpace(target);
       target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
@@ -24564,85 +24641,78 @@ PROTOBUF_NOINLINE void EntityEnter::Clear() {
     }
   }
   if (BatchCheckHasBit(cached_has_bits, 0x00ff0000U)) {
-    // uint32 move_yaw = 18;
-    if (CheckHasBit(cached_has_bits, 0x00010000U)) {
-      if (this_._internal_move_yaw() != 0) {
-        total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
-                                        this_._internal_move_yaw());
-      }
-    }
     // sint32 next_x = 19;
-    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00010000U)) {
       if (this_._internal_next_x() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::SInt32Size(
                                         this_._internal_next_x());
       }
     }
     // sint32 next_z = 20;
-    if (CheckHasBit(cached_has_bits, 0x00040000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
       if (this_._internal_next_z() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::SInt32Size(
                                         this_._internal_next_z());
       }
     }
     // uint32 item_id = 21;
-    if (CheckHasBit(cached_has_bits, 0x00080000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00040000U)) {
       if (this_._internal_item_id() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_item_id());
       }
     }
     // bool dead = 16;
-    if (CheckHasBit(cached_has_bits, 0x00100000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00080000U)) {
       if (this_._internal_dead() != 0) {
         total_size += 3;
       }
     }
     // bool dropped_by_player = 27;
-    if (CheckHasBit(cached_has_bits, 0x00200000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00100000U)) {
       if (this_._internal_dropped_by_player() != 0) {
         total_size += 3;
       }
     }
     // uint32 count = 22;
-    if (CheckHasBit(cached_has_bits, 0x00400000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00200000U)) {
       if (this_._internal_count() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_count());
       }
     }
     // uint32 enchant = 23;
-    if (CheckHasBit(cached_has_bits, 0x00800000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00400000U)) {
       if (this_._internal_enchant() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_enchant());
       }
     }
-  }
-  if (BatchCheckHasBit(cached_has_bits, 0x0f000000U)) {
     // uint32 owner_only_end_tick = 26;
-    if (CheckHasBit(cached_has_bits, 0x01000000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00800000U)) {
       if (this_._internal_owner_only_end_tick() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_owner_only_end_tick());
       }
     }
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x07000000U)) {
     // uint32 summon_owner_id = 28;
-    if (CheckHasBit(cached_has_bits, 0x02000000U)) {
+    if (CheckHasBit(cached_has_bits, 0x01000000U)) {
       if (this_._internal_summon_owner_id() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_summon_owner_id());
       }
     }
     // uint32 summon_end_tick = 29;
-    if (CheckHasBit(cached_has_bits, 0x04000000U)) {
+    if (CheckHasBit(cached_has_bits, 0x02000000U)) {
       if (this_._internal_summon_end_tick() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_summon_end_tick());
       }
     }
     // uint32 pet_id = 30;
-    if (CheckHasBit(cached_has_bits, 0x08000000U)) {
+    if (CheckHasBit(cached_has_bits, 0x04000000U)) {
       if (this_._internal_pet_id() != 0) {
         total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
                                         this_._internal_pet_id());
@@ -24777,63 +24847,58 @@ void EntityEnter::MergeImpl(::google::protobuf::MessageLite& to_msg,
   }
   if (BatchCheckHasBit(cached_has_bits, 0x00ff0000U)) {
     if (CheckHasBit(cached_has_bits, 0x00010000U)) {
-      if (from._internal_move_yaw() != 0) {
-        _this->_impl_.move_yaw_ = from._impl_.move_yaw_;
-      }
-    }
-    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
       if (from._internal_next_x() != 0) {
         _this->_impl_.next_x_ = from._impl_.next_x_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00040000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00020000U)) {
       if (from._internal_next_z() != 0) {
         _this->_impl_.next_z_ = from._impl_.next_z_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00080000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00040000U)) {
       if (from._internal_item_id() != 0) {
         _this->_impl_.item_id_ = from._impl_.item_id_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00100000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00080000U)) {
       if (from._internal_dead() != 0) {
         _this->_impl_.dead_ = from._impl_.dead_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00200000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00100000U)) {
       if (from._internal_dropped_by_player() != 0) {
         _this->_impl_.dropped_by_player_ = from._impl_.dropped_by_player_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00400000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00200000U)) {
       if (from._internal_count() != 0) {
         _this->_impl_.count_ = from._impl_.count_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x00800000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00400000U)) {
       if (from._internal_enchant() != 0) {
         _this->_impl_.enchant_ = from._impl_.enchant_;
       }
     }
-  }
-  if (BatchCheckHasBit(cached_has_bits, 0x0f000000U)) {
-    if (CheckHasBit(cached_has_bits, 0x01000000U)) {
+    if (CheckHasBit(cached_has_bits, 0x00800000U)) {
       if (from._internal_owner_only_end_tick() != 0) {
         _this->_impl_.owner_only_end_tick_ = from._impl_.owner_only_end_tick_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x02000000U)) {
+  }
+  if (BatchCheckHasBit(cached_has_bits, 0x07000000U)) {
+    if (CheckHasBit(cached_has_bits, 0x01000000U)) {
       if (from._internal_summon_owner_id() != 0) {
         _this->_impl_.summon_owner_id_ = from._impl_.summon_owner_id_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x04000000U)) {
+    if (CheckHasBit(cached_has_bits, 0x02000000U)) {
       if (from._internal_summon_end_tick() != 0) {
         _this->_impl_.summon_end_tick_ = from._impl_.summon_end_tick_;
       }
     }
-    if (CheckHasBit(cached_has_bits, 0x08000000U)) {
+    if (CheckHasBit(cached_has_bits, 0x04000000U)) {
       if (from._internal_pet_id() != 0) {
         _this->_impl_.pet_id_ = from._impl_.pet_id_;
       }
@@ -26418,9 +26483,9 @@ inline void EntityMove::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   ::memset(reinterpret_cast<char*>(&_impl_) +
                offsetof(Impl_, id_),
            0,
-           offsetof(Impl_, teleport_) -
+           offsetof(Impl_, next_z_) -
                offsetof(Impl_, id_) +
-               sizeof(Impl_::teleport_));
+               sizeof(Impl_::next_z_));
 }
 EntityMove::~EntityMove() {
   // @@protoc_insertion_point(destructor:portfolio.mmo.EntityMove)
@@ -26469,12 +26534,12 @@ PROTOBUF_NOINLINE void EntityMove::Clear() {
   ::uint32_t cached_has_bits [[maybe_unused]] = 0;
 
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     ::memset(&this_._impl_.id_, 0,
              static_cast<::size_t>(
-                 reinterpret_cast<char*>(&this_._impl_.teleport_) -
+                 reinterpret_cast<char*>(&this_._impl_.next_z_) -
                  reinterpret_cast<char*>(&this_._impl_.id_)) +
-                 sizeof(_impl_.teleport_));
+                 sizeof(_impl_.next_z_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -26544,6 +26609,33 @@ PROTOBUF_NOINLINE void EntityMove::Clear() {
     }
   }
 
+  // uint32 speed = 6;
+  if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+    if (this_._internal_speed() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+          6, this_._internal_speed(), target);
+    }
+  }
+
+  // sint32 next_x = 7;
+  if (CheckHasBit(cached_has_bits, 0x00000040U)) {
+    if (this_._internal_next_x() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteSInt32ToArray(
+          7, this_._internal_next_x(), target);
+    }
+  }
+
+  // sint32 next_z = 8;
+  if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+    if (this_._internal_next_z() != 0) {
+      target = stream->EnsureSpace(target);
+      target = ::_pbi::WireFormatLite::WriteSInt32ToArray(
+          8, this_._internal_next_z(), target);
+    }
+  }
+
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -26567,7 +26659,7 @@ PROTOBUF_NOINLINE void EntityMove::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     // uint32 id = 1;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (this_._internal_id() != 0) {
@@ -26602,6 +26694,27 @@ PROTOBUF_NOINLINE void EntityMove::Clear() {
         total_size += 2;
       }
     }
+    // uint32 speed = 6;
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+      if (this_._internal_speed() != 0) {
+        total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+            this_._internal_speed());
+      }
+    }
+    // sint32 next_x = 7;
+    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
+      if (this_._internal_next_x() != 0) {
+        total_size += ::_pbi::WireFormatLite::SInt32SizePlusOne(
+            this_._internal_next_x());
+      }
+    }
+    // sint32 next_z = 8;
+    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+      if (this_._internal_next_z() != 0) {
+        total_size += ::_pbi::WireFormatLite::SInt32SizePlusOne(
+            this_._internal_next_z());
+      }
+    }
   }
   return this_.MaybeComputeUnknownFieldsSize(total_size,
                                              &this_._impl_._cached_size_);
@@ -26620,7 +26733,7 @@ void EntityMove::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (BatchCheckHasBit(cached_has_bits, 0x0000001fU)) {
+  if (BatchCheckHasBit(cached_has_bits, 0x000000ffU)) {
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
       if (from._internal_id() != 0) {
         _this->_impl_.id_ = from._impl_.id_;
@@ -26646,6 +26759,21 @@ void EntityMove::MergeImpl(::google::protobuf::MessageLite& to_msg,
         _this->_impl_.teleport_ = from._impl_.teleport_;
       }
     }
+    if (CheckHasBit(cached_has_bits, 0x00000020U)) {
+      if (from._internal_speed() != 0) {
+        _this->_impl_.speed_ = from._impl_.speed_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000040U)) {
+      if (from._internal_next_x() != 0) {
+        _this->_impl_.next_x_ = from._impl_.next_x_;
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000080U)) {
+      if (from._internal_next_z() != 0) {
+        _this->_impl_.next_z_ = from._impl_.next_z_;
+      }
+    }
   }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
@@ -26665,8 +26793,8 @@ void EntityMove::InternalSwap(EntityMove* PROTOBUF_RESTRICT PROTOBUF_NONNULL oth
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.teleport_)
-      + sizeof(EntityMove::_impl_.teleport_)
+      PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.next_z_)
+      + sizeof(EntityMove::_impl_.next_z_)
       - PROTOBUF_FIELD_OFFSET(EntityMove, _impl_.id_)>(
           reinterpret_cast<char*>(&_impl_.id_),
           reinterpret_cast<char*>(&other->_impl_.id_));

@@ -33,14 +33,14 @@ namespace PortfolioMmo.Server.Tests
             Session first = Join(world, "hero_01");
             world.Step();
             Assert.Equal(
-                new[] { Entered(1), Enter(Entity(1, "hero01")) },
+                new[] { Entered(1), Enter(0, Entity(1, "hero01")) },
                 Take(first));
 
             Session second = Join(world, "hero_02", CharacterClass.Mage);
             world.Step();
-            Assert.Equal(new[] { Enter(Entity(2, "hero02", characterClass: CharacterClass.Mage)) }, Take(first));
+            Assert.Equal(new[] { Enter(1, Entity(2, "hero02", characterClass: CharacterClass.Mage)) }, Take(first));
             Assert.Equal(
-                new[] { Entered(2, tick: 1), Enter(Entity(2, "hero02", characterClass: CharacterClass.Mage), Entity(1, "hero01")) },
+                new[] { Entered(2, tick: 1), Enter(1, Entity(2, "hero02", characterClass: CharacterClass.Mage), Entity(1, "hero01")) },
                 Take(second));
         }
 
@@ -149,7 +149,7 @@ namespace PortfolioMmo.Server.Tests
             uint tick = world.Tick;
             Enter(world, leaver, id);
             world.Step();
-            Assert.Equal(new[] { Entered(3, tick), Enter(Entity(3, "hero01", x: 100), Entity(2, "hero02")) }, Take(leaver));
+            Assert.Equal(new[] { Entered(3, tick), Enter(tick, Entity(3, "hero01", x: 100), Entity(2, "hero02")) }, Take(leaver));
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace PortfolioMmo.Server.Tests
             uint tick = world.Tick;
             Enter(world, renewed, id);
             world.Step();
-            Assert.Equal(new[] { Entered(2, tick), Enter(Entity(2, "hero01", x: 100)) }, Take(renewed));
+            Assert.Equal(new[] { Entered(2, tick), Enter(tick, Entity(2, "hero01", x: 100)) }, Take(renewed));
         }
 
         /// <summary>
@@ -251,7 +251,8 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 움직인 개체는 그 틱의 EntityMoves로 주변 플레이어에게 가고, 움직인 본인은 받지 않는다.
+        /// 서 있는 채 자리를 옮긴 개체(움직이는 중 표시가 없는 Move)는 그 틱의 EntityMoves로 주변 플레이어에게 가고, 움직인 본인은 받지 않는다.
+        /// 걷는 개체를 언제 알리는지는 WorldMoveNoticeTests(54)가 본다.
         /// </summary>
         [Fact]
         public void MovesReachObserversButNotTheMover()
@@ -300,8 +301,8 @@ namespace PortfolioMmo.Server.Tests
             Assert.Contains(new Packet { EntitiesLeave = new EntitiesLeave { Ids = { 2 } } }, Take(walker));
 
             WalkTo(world, walker, CellSize * 2 - Stride, 0);
-            Assert.Equal(new[] { Enter(Entity(1, "hero01", x: CellSize * 2 - Stride)) }, Take(stayer));
-            Assert.Equal(new[] { Enter(Entity(2, "hero02")) }, Take(walker));
+            Assert.Equal(new[] { Enter(world.Tick - 1, Entity(1, "hero01", x: CellSize * 2 - Stride)) }, Take(stayer));
+            Assert.Equal(new[] { Enter(world.Tick - 1, Entity(2, "hero02")) }, Take(walker));
         }
 
         /// <summary>
@@ -413,7 +414,7 @@ namespace PortfolioMmo.Server.Tests
             Enter(restarted, again, id);
             restarted.Step();
             Assert.Equal(
-                new[] { Entered(1), Enter(new EntityEnter { Id = 1, Kind = EntityKind.Player, X = 100, Yaw = 32, Name = "hero01", CharacterClass = CharacterClass.Knight, Level = 1, Hp = 150, MaxHp = 150 }) },
+                new[] { Entered(1), Enter(0, new EntityEnter { Id = 1, Kind = EntityKind.Player, X = 100, Yaw = 32, Name = "hero01", CharacterClass = CharacterClass.Knight, Level = 1, Hp = 150, MaxHp = 150 }) },
                 Take(again));
         }
 
@@ -434,7 +435,7 @@ namespace PortfolioMmo.Server.Tests
             Take(again);
             Enter(world, again, id);
             world.Step();
-            Assert.Equal(new[] { Entered(2, tick), Enter(Entity(2, "hero01", x: 100)) }, Take(again));
+            Assert.Equal(new[] { Entered(2, tick), Enter(tick, Entity(2, "hero01", x: 100)) }, Take(again));
         }
 
         /// <summary>
@@ -684,11 +685,11 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
-        /// 시야에 들어온 개체들의 패킷.
+        /// 시야에 들어온 개체들의 패킷(그 틱의 것).
         /// </summary>
-        private static Packet Enter(params EntityEnter[] entities)
+        private static Packet Enter(uint tick, params EntityEnter[] entities)
         {
-            return new Packet { EntitiesEnter = new EntitiesEnter { Entities = { entities } } };
+            return new Packet { EntitiesEnter = new EntitiesEnter { Entities = { entities }, Tick = tick } };
         }
 
         /// <summary>

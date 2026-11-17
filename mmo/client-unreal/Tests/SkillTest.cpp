@@ -170,7 +170,7 @@ namespace
 			{
 				return {};
 			}
-			return Combat.FireSkill(World, GameData, Sender, 0, 0, 0, 0);
+			return Combat.FireSkill(World, GameData, Sender, 0, 0, 0, false, 0);
 		}
 	};
 
@@ -469,13 +469,13 @@ namespace
 		FScene Scene;
 		MmoWorld::FMoveSender Sender;
 		Packet Move;
-		Sender.Update(1, 0, 0, 0, 0, *Move.mutable_move());
+		Sender.Update(1, 0, 0, 0, true, 0, *Move.mutable_move());
 		Expect(Scene.Combat.AllowMove(true), "moving is allowed at first");
 		Scene.Combat.PressSkill(205, Scene.World, Scene.GameData, 0);
 		Expect(Scene.Combat.UpdateSkill(Scene.World, Map, Scene.GameData, 10, 0).Kind == FSkillStep::EKind::Fire, "the cast is ready");
-		const MmoWorld::FSkillFire Fire = Scene.Combat.FireSkill(Scene.World, Scene.GameData, Sender, 10, 0, 0, 0);
-		Expect(Fire.bStop && Fire.Packets.size() == 2 && Fire.Packets[0].move().x() == 10 && Fire.Packets[1].use_skill().skill_id() == 205,
-			"a cast stops, flushes the position, then sends UseSkill");
+		const MmoWorld::FSkillFire Fire = Scene.Combat.FireSkill(Scene.World, Scene.GameData, Sender, 10, 0, 0, true, 0);
+		Expect(Fire.bStop && Fire.Packets.size() == 2 && Fire.Packets[0].move().x() == 10 && !Fire.Packets[0].move().moving() && Fire.Packets[1].use_skill().skill_id() == 205,
+			"a cast stops, flushes the position as standing, then sends UseSkill");
 		Expect(Scene.Combat.Cooldowns().End(205) == 0, "a cast does not predict its cooldown");
 		Expect(!Scene.Combat.AllowMove(true), "the held move is ignored");
 		Expect(Scene.Combat.AllowMove(false) && Scene.Combat.AllowMove(true), "a new move after letting go is allowed");
@@ -570,9 +570,9 @@ namespace
 		Expect(None.Combat.UpdateSkill(None.World, Open, None.GameData, 0, 0).Kind == FSkillStep::EKind::Fire, "without a target it fires at once");
 		MmoWorld::FMoveSender Sender;
 		Packet Move;
-		Sender.Update(1, 0, 0, 0, 0, *Move.mutable_move());
-		const MmoWorld::FSkillFire Fire = None.Combat.FireSkill(None.World, None.GameData, Sender, 10, 0, 64, 0);
-		Expect(!Fire.bStop && Fire.Packets.size() == 2 && Fire.Packets[0].move().x() == 10 && Fire.Packets[0].move().yaw() == 64
+		Sender.Update(1, 0, 0, 0, true, 0, *Move.mutable_move());
+		const MmoWorld::FSkillFire Fire = None.Combat.FireSkill(None.World, None.GameData, Sender, 10, 0, 64, true, 0);
+		Expect(!Fire.bStop && Fire.Packets.size() == 2 && Fire.Packets[0].move().x() == 10 && Fire.Packets[0].move().yaw() == 64 && Fire.Packets[0].move().moving()
 			&& Fire.Packets[1].use_skill().skill_id() == 201 && Fire.Packets[1].use_skill().target_id() == 0,
 			"it flushes the position and facing first, then sends UseSkill without a target");
 

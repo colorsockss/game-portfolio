@@ -26,9 +26,12 @@ AMmoCharacter::AMmoCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	GetCapsuleComponent()->InitCapsuleSize(34.0f, 90.0f);
 
-	// 서버의 이동 검증(속도 예산은 이 속도의 1.1배)과 같은 최대 속도로 걷는다.
+	// 서버의 이동 검증(속도 예산은 이 속도의 1.1배)과 같은 최대 속도로 걷는다. 출발과 멈춤은 한 프레임이다: 서버가 보는 쪽에 알리는 빠르기가
+	// 최대 속도에 감속을 곱한 값이라(54), 가속하는 동안이 있으면 다른 클라이언트가 그 빠르기로 앞질러 그린다.
 	UCharacterMovementComponent* Movement = GetCharacterMovement();
 	Movement->MaxWalkSpeed = MmoWorld::Units::MaxSpeedMetersPerSecond * 100.0;
+	Movement->MaxAcceleration = 1.0e6;
+	Movement->BrakingDecelerationWalking = 1.0e6;
 	Movement->bOrientRotationToMovement = true;
 	Movement->RotationRate = FRotator(0.0, 720.0, 0.0);
 	bUseControllerRotationYaw = false;

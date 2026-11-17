@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKzCgoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKlCwoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -54,12 +54,14 @@ namespace PortfolioMmo.Data {
             "ASgNEiUKHW91dGxhd19kcm9wX2VxdWlwbWVudF9wZXJjZW50GC0gASgNEh4K",
             "FnN1bW1vbl9mb2xsb3dfZGlzdGFuY2UYLiABKAESHQoVc3VtbW9uX2xlYXNo",
             "X2Rpc3RhbmNlGC8gASgBEhwKFHBldF9waWNrX2ludGVydmFsX21zGDAgASgN",
-            "EhMKC3ZpZXdfbWFyZ2luGDEgASgBQhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIG",
-            "cHJvdG8z"));
+            "EhMKC3ZpZXdfbWFyZ2luGDEgASgBEhUKDW1vdmVfdHVybl95YXcYMiABKA0S",
+            "FAoMbW92ZV90dXJuX21zGDMgASgNEhcKD21vdmVfY29uZmlybV9tcxg0IAEo",
+            "DRIUCgxtb3ZlX3N0b3BfbXMYNSABKA0SFAoMbW92ZV9nb2FsX21zGDYgASgN",
+            "QhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain", "DeathExpPercent", "OutlawDeathExpPercent", "OutlawDropInventoryPercent", "OutlawDropEquipmentPercent", "SummonFollowDistance", "SummonLeashDistance", "PetPickIntervalMs", "ViewMargin" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain", "DeathExpPercent", "OutlawDeathExpPercent", "OutlawDropInventoryPercent", "OutlawDropEquipmentPercent", "SummonFollowDistance", "SummonLeashDistance", "PetPickIntervalMs", "ViewMargin", "MoveTurnYaw", "MoveTurnMs", "MoveConfirmMs", "MoveStopMs", "MoveGoalMs" }, null, null, null, null)
           }));
     }
     #endregion
@@ -149,6 +151,11 @@ namespace PortfolioMmo.Data {
       summonLeashDistance_ = other.summonLeashDistance_;
       petPickIntervalMs_ = other.petPickIntervalMs_;
       viewMargin_ = other.viewMargin_;
+      moveTurnYaw_ = other.moveTurnYaw_;
+      moveTurnMs_ = other.moveTurnMs_;
+      moveConfirmMs_ = other.moveConfirmMs_;
+      moveStopMs_ = other.moveStopMs_;
+      moveGoalMs_ = other.moveGoalMs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -878,6 +885,81 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "move_turn_yaw" field.</summary>
+    public const int MoveTurnYawFieldNumber = 50;
+    private uint moveTurnYaw_;
+    /// <summary>
+    /// 걷는 플레이어의 방향(yaw 칸, 한 바퀴 256)이 마지막으로 알린 값에서 이만큼 넘게 달라지면 알린다(54. 8칸은 약 11도)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint MoveTurnYaw {
+      get { return moveTurnYaw_; }
+      set {
+        moveTurnYaw_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "move_turn_ms" field.</summary>
+    public const int MoveTurnMsFieldNumber = 51;
+    private uint moveTurnMs_;
+    /// <summary>
+    /// 방향이 바뀐 것을 알리는 가장 짧은 간격(ms, 54). 개체마다 잰다. 서 있는 개체가 돈 것도 이 간격으로 알린다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint MoveTurnMs {
+      get { return moveTurnMs_; }
+      set {
+        moveTurnMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "move_confirm_ms" field.</summary>
+    public const int MoveConfirmMsFieldNumber = 52;
+    private uint moveConfirmMs_;
+    /// <summary>
+    /// 걷는 플레이어를 바뀐 것이 없어도 다시 알리는 간격(ms, 54). 이어 그린 자리가 어긋난 것을 이만큼마다 바로잡는다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint MoveConfirmMs {
+      get { return moveConfirmMs_; }
+      set {
+        moveConfirmMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "move_stop_ms" field.</summary>
+    public const int MoveStopMsFieldNumber = 53;
+    private uint moveStopMs_;
+    /// <summary>
+    /// 걷는 중인 플레이어에게서 Move가 이만큼 오지 않으면 멈춤으로 알린다(ms, 54)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint MoveStopMs {
+      get { return moveStopMs_; }
+      set {
+        moveStopMs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "move_goal_ms" field.</summary>
+    public const int MoveGoalMsFieldNumber = 54;
+    private uint moveGoalMs_;
+    /// <summary>
+    /// 쫓는 대상이 움직여 바뀐 몬스터·경비병·소환수의 다음 꺾이는 점을 알리는 가장 짧은 간격(ms, 54). 꺾이는 점에 닿아 다음 점으로 바뀐 것은 그때마다 알린다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint MoveGoalMs {
+      get { return moveGoalMs_; }
+      set {
+        moveGoalMs_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -941,6 +1023,11 @@ namespace PortfolioMmo.Data {
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SummonLeashDistance, other.SummonLeashDistance)) return false;
       if (PetPickIntervalMs != other.PetPickIntervalMs) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(ViewMargin, other.ViewMargin)) return false;
+      if (MoveTurnYaw != other.MoveTurnYaw) return false;
+      if (MoveTurnMs != other.MoveTurnMs) return false;
+      if (MoveConfirmMs != other.MoveConfirmMs) return false;
+      if (MoveStopMs != other.MoveStopMs) return false;
+      if (MoveGoalMs != other.MoveGoalMs) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -996,6 +1083,11 @@ namespace PortfolioMmo.Data {
       if (SummonLeashDistance != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SummonLeashDistance);
       if (PetPickIntervalMs != 0) hash ^= PetPickIntervalMs.GetHashCode();
       if (ViewMargin != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(ViewMargin);
+      if (MoveTurnYaw != 0) hash ^= MoveTurnYaw.GetHashCode();
+      if (MoveTurnMs != 0) hash ^= MoveTurnMs.GetHashCode();
+      if (MoveConfirmMs != 0) hash ^= MoveConfirmMs.GetHashCode();
+      if (MoveStopMs != 0) hash ^= MoveStopMs.GetHashCode();
+      if (MoveGoalMs != 0) hash ^= MoveGoalMs.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1206,6 +1298,26 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(137, 3);
         output.WriteDouble(ViewMargin);
       }
+      if (MoveTurnYaw != 0) {
+        output.WriteRawTag(144, 3);
+        output.WriteUInt32(MoveTurnYaw);
+      }
+      if (MoveTurnMs != 0) {
+        output.WriteRawTag(152, 3);
+        output.WriteUInt32(MoveTurnMs);
+      }
+      if (MoveConfirmMs != 0) {
+        output.WriteRawTag(160, 3);
+        output.WriteUInt32(MoveConfirmMs);
+      }
+      if (MoveStopMs != 0) {
+        output.WriteRawTag(168, 3);
+        output.WriteUInt32(MoveStopMs);
+      }
+      if (MoveGoalMs != 0) {
+        output.WriteRawTag(176, 3);
+        output.WriteUInt32(MoveGoalMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1408,6 +1520,26 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(137, 3);
         output.WriteDouble(ViewMargin);
       }
+      if (MoveTurnYaw != 0) {
+        output.WriteRawTag(144, 3);
+        output.WriteUInt32(MoveTurnYaw);
+      }
+      if (MoveTurnMs != 0) {
+        output.WriteRawTag(152, 3);
+        output.WriteUInt32(MoveTurnMs);
+      }
+      if (MoveConfirmMs != 0) {
+        output.WriteRawTag(160, 3);
+        output.WriteUInt32(MoveConfirmMs);
+      }
+      if (MoveStopMs != 0) {
+        output.WriteRawTag(168, 3);
+        output.WriteUInt32(MoveStopMs);
+      }
+      if (MoveGoalMs != 0) {
+        output.WriteRawTag(176, 3);
+        output.WriteUInt32(MoveGoalMs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1561,6 +1693,21 @@ namespace PortfolioMmo.Data {
       }
       if (ViewMargin != 0D) {
         size += 2 + 8;
+      }
+      if (MoveTurnYaw != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MoveTurnYaw);
+      }
+      if (MoveTurnMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MoveTurnMs);
+      }
+      if (MoveConfirmMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MoveConfirmMs);
+      }
+      if (MoveStopMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MoveStopMs);
+      }
+      if (MoveGoalMs != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MoveGoalMs);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1717,6 +1864,21 @@ namespace PortfolioMmo.Data {
       }
       if (other.ViewMargin != 0D) {
         ViewMargin = other.ViewMargin;
+      }
+      if (other.MoveTurnYaw != 0) {
+        MoveTurnYaw = other.MoveTurnYaw;
+      }
+      if (other.MoveTurnMs != 0) {
+        MoveTurnMs = other.MoveTurnMs;
+      }
+      if (other.MoveConfirmMs != 0) {
+        MoveConfirmMs = other.MoveConfirmMs;
+      }
+      if (other.MoveStopMs != 0) {
+        MoveStopMs = other.MoveStopMs;
+      }
+      if (other.MoveGoalMs != 0) {
+        MoveGoalMs = other.MoveGoalMs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1929,6 +2091,26 @@ namespace PortfolioMmo.Data {
             ViewMargin = input.ReadDouble();
             break;
           }
+          case 400: {
+            MoveTurnYaw = input.ReadUInt32();
+            break;
+          }
+          case 408: {
+            MoveTurnMs = input.ReadUInt32();
+            break;
+          }
+          case 416: {
+            MoveConfirmMs = input.ReadUInt32();
+            break;
+          }
+          case 424: {
+            MoveStopMs = input.ReadUInt32();
+            break;
+          }
+          case 432: {
+            MoveGoalMs = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -2138,6 +2320,26 @@ namespace PortfolioMmo.Data {
           }
           case 393: {
             ViewMargin = input.ReadDouble();
+            break;
+          }
+          case 400: {
+            MoveTurnYaw = input.ReadUInt32();
+            break;
+          }
+          case 408: {
+            MoveTurnMs = input.ReadUInt32();
+            break;
+          }
+          case 416: {
+            MoveConfirmMs = input.ReadUInt32();
+            break;
+          }
+          case 424: {
+            MoveStopMs = input.ReadUInt32();
+            break;
+          }
+          case 432: {
+            MoveGoalMs = input.ReadUInt32();
             break;
           }
         }

@@ -32,8 +32,8 @@ namespace
 	{
 		std::vector<uint8_t> Frame;
 		MmoProtocol::AppendFrame(LoginPacket(), Frame);
-		// 길이 13, Packet.login(필드 1, 길이 11), Login.protocol_version = 2(PROTOCOL_VERSION_CURRENT), Login.login_id = "hero_01".
-		const std::vector<uint8_t> Expected = { 0x0D, 0x0A, 0x0B, 0x08, 0x02, 0x12, 0x07, 'h', 'e', 'r', 'o', '_', '0', '1' };
+		// 길이 13, Packet.login(필드 1, 길이 11), Login.protocol_version = 3(PROTOCOL_VERSION_CURRENT), Login.login_id = "hero_01".
+		const std::vector<uint8_t> Expected = { 0x0D, 0x0A, 0x0B, 0x08, 0x03, 0x12, 0x07, 'h', 'e', 'r', 'o', '_', '0', '1' };
 		Expect(Frame == Expected, "AppendFrame writes the varint length and the message");
 	}
 

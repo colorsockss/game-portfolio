@@ -7,12 +7,13 @@ namespace PortfolioMmo.Server
     /// 시야(52). 보는 쪽은 플레이어이고 보이는 쪽은 모든 개체다. 연결이 받은 개체(Player.Visible)와 개체를 받은 연결(Entity.Watchers)을 함께 고친다.
     /// 시야 칸을 옮기지 않은 플레이어는 둘레 3×3 시야 칸에서 이 틱에 들고 난 개체(Grid의 목록)만 보고, 칸을 옮겼거나 막 들어온 플레이어만 둘레를 통째로 다시 본다.
     /// 소환수(95)는 시야 칸으로 찾지 않고 주인에 딸려 들고 난다(내 소환수는 늘). 3×3칸을 벗어난 개체는 바깥 테두리에서 여유(78)를 넘게 멀어져야 나간다. 움직임과 표시 상태는 개체마다 받은 연결의 목록으로 모아, 연결마다
-    /// 나간 것 → 들어온 것 → 움직임 → 표시 상태의 차례로 보낸다.
+    /// 나간 것 → 들어온 것 → 움직임 → 표시 상태의 차례로 보낸다. 움직임은 MoveNotifier가 알리기로 한 개체만 보낸다(54).
     /// </summary>
     internal sealed class ViewSystem
     {
         private readonly EntityTable _entities;
         private readonly Grid _grid;
+        private readonly MoveNotifier _notifier;
         private readonly List<Entity> _touched = new List<Entity>();
         private readonly List<Entity> _leaving = new List<Entity>();
         private readonly List<Entity> _moving = new List<Entity>();
@@ -26,10 +27,11 @@ namespace PortfolioMmo.Server
         private readonly long _marginSquared;
 
         /// <param name="marginMeters">시야 경계의 여유(m, 78). 0이면 3×3칸을 벗어나는 틱에 나간다.</param>
-        public ViewSystem(EntityTable entities, Grid grid, double marginMeters = 0)
+        public ViewSystem(EntityTable entities, Grid grid, MoveNotifier notifier, double marginMeters = 0)
         {
             _entities = entities;
             _grid = grid;
+            _notifier = notifier;
             long margin = (long)System.Math.Round(marginMeters * Units.PerMeter);
             _marginSquared = margin * margin;
         }
@@ -57,7 +59,7 @@ namespace PortfolioMmo.Server
         public void Step(uint tick)
         {
             ForgetDeparted();
-            Collect();
+            Collect(tick);
             foreach (Player observer in _entities.Players)
             {
                 if (observer.JustEntered || (observer.Cell != observer.ViewCell))
@@ -76,12 +78,12 @@ namespace PortfolioMmo.Server
             SyncSummons();
             foreach (Entity entity in _moving)
             {
-                if (!entity.Moved)
+                if (entity.Watchers.Count == 0)
                 {
                     continue;
                 }
 
-                entity.MoveMessage ??= new EntityMove { Id = entity.Id, X = entity.X, Z = entity.Z, Yaw = entity.Yaw, Teleport = entity.Teleported };
+                entity.MoveMessage ??= MoveMessage((Creature)entity);
                 foreach (Player watcher in entity.Watchers)
                 {
                     if (!watcher.ViewEntered.Contains(entity))
@@ -104,12 +106,11 @@ namespace PortfolioMmo.Server
 
             foreach (Player observer in _entities.Players)
             {
-                Send(observer);
+                Send(observer, tick);
             }
 
             foreach (Entity entity in _moving)
             {
-                entity.Moved = false;
                 entity.Teleported = false;
                 entity.MoveMessage = null;
             }
@@ -152,16 +153,16 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 움직인 개체, 표시 상태가 바뀐 개체, 월드의 소환수를 한 번에 모은다.
+        /// 움직임을 알릴 개체(54), 표시 상태가 바뀐 개체, 월드의 소환수를 한 번에 모은다.
         /// </summary>
-        private void Collect()
+        private void Collect(uint tick)
         {
             _moving.Clear();
             _stateChanged.Clear();
             _summonsNow.Clear();
             foreach (Entity entity in _entities.All)
             {
-                if (entity.Moved || entity.Teleported)
+                if ((entity is Creature creature) && _notifier.Due(creature, tick))
                 {
                     _moving.Add(entity);
                 }
@@ -419,7 +420,22 @@ namespace PortfolioMmo.Server
             return _entities.Find(entity.Id) == entity;
         }
 
-        private static void Send(Player observer)
+        /// <summary>
+        /// 이번 틱에 알리는 움직임: 지금 위치와 방향, 알린 빠르기, 걷는 몬스터·경비병·소환수의 다음 꺾이는 점(54).
+        /// </summary>
+        private static EntityMove MoveMessage(Creature creature)
+        {
+            var move = new EntityMove { Id = creature.Id, X = creature.X, Z = creature.Z, Yaw = creature.Yaw, Teleport = creature.Teleported, Speed = creature.SentSpeed };
+            if ((creature.SentSpeed > 0) && (creature is AiCreature))
+            {
+                move.NextX = creature.SentNext.X;
+                move.NextZ = creature.SentNext.Z;
+            }
+
+            return move;
+        }
+
+        private static void Send(Player observer, uint tick)
         {
             if (observer.ViewLeave != null)
             {
@@ -428,6 +444,7 @@ namespace PortfolioMmo.Server
 
             if (observer.ViewEnter != null)
             {
+                observer.ViewEnter.Tick = tick;
                 observer.Session.Send(new Packet { EntitiesEnter = observer.ViewEnter });
             }
 

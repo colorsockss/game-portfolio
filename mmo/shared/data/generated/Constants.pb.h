@@ -268,6 +268,11 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kPetPickIntervalMsFieldNumber = 48,
     kSummonLeashDistanceFieldNumber = 47,
     kViewMarginFieldNumber = 49,
+    kMoveTurnYawFieldNumber = 50,
+    kMoveTurnMsFieldNumber = 51,
+    kMoveConfirmMsFieldNumber = 52,
+    kMoveStopMsFieldNumber = 53,
+    kMoveGoalMsFieldNumber = 54,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -749,11 +754,61 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_view_margin(double value);
 
   public:
+  // uint32 move_turn_yaw = 50;
+  void clear_move_turn_yaw() ;
+  [[nodiscard]] ::uint32_t move_turn_yaw() const;
+  void set_move_turn_yaw(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_move_turn_yaw() const;
+  void _internal_set_move_turn_yaw(::uint32_t value);
+
+  public:
+  // uint32 move_turn_ms = 51;
+  void clear_move_turn_ms() ;
+  [[nodiscard]] ::uint32_t move_turn_ms() const;
+  void set_move_turn_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_move_turn_ms() const;
+  void _internal_set_move_turn_ms(::uint32_t value);
+
+  public:
+  // uint32 move_confirm_ms = 52;
+  void clear_move_confirm_ms() ;
+  [[nodiscard]] ::uint32_t move_confirm_ms() const;
+  void set_move_confirm_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_move_confirm_ms() const;
+  void _internal_set_move_confirm_ms(::uint32_t value);
+
+  public:
+  // uint32 move_stop_ms = 53;
+  void clear_move_stop_ms() ;
+  [[nodiscard]] ::uint32_t move_stop_ms() const;
+  void set_move_stop_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_move_stop_ms() const;
+  void _internal_set_move_stop_ms(::uint32_t value);
+
+  public:
+  // uint32 move_goal_ms = 54;
+  void clear_move_goal_ms() ;
+  [[nodiscard]] ::uint32_t move_goal_ms() const;
+  void set_move_goal_ms(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_move_goal_ms() const;
+  void _internal_set_move_goal_ms(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 48,
+      ::google::protobuf::internal::TcParseTable<5, 53,
                           0, 0,
                           9>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -830,6 +885,11 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t pet_pick_interval_ms_;
     double summon_leash_distance_;
     double view_margin_;
+    ::uint32_t move_turn_yaw_;
+    ::uint32_t move_turn_ms_;
+    ::uint32_t move_confirm_ms_;
+    ::uint32_t move_stop_ms_;
+    ::uint32_t move_goal_ms_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -2002,6 +2062,126 @@ inline double Constants::_internal_view_margin() const {
 inline void Constants::_internal_set_view_margin(double value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.view_margin_ = value;
+}
+
+// uint32 move_turn_yaw = 50;
+inline void Constants::clear_move_turn_yaw() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_turn_yaw_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00010000U);
+}
+inline ::uint32_t Constants::move_turn_yaw() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.move_turn_yaw)
+  return _internal_move_turn_yaw();
+}
+inline void Constants::set_move_turn_yaw(::uint32_t value) {
+  _internal_set_move_turn_yaw(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00010000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.move_turn_yaw)
+}
+inline ::uint32_t Constants::_internal_move_turn_yaw() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.move_turn_yaw_;
+}
+inline void Constants::_internal_set_move_turn_yaw(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_turn_yaw_ = value;
+}
+
+// uint32 move_turn_ms = 51;
+inline void Constants::clear_move_turn_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_turn_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00020000U);
+}
+inline ::uint32_t Constants::move_turn_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.move_turn_ms)
+  return _internal_move_turn_ms();
+}
+inline void Constants::set_move_turn_ms(::uint32_t value) {
+  _internal_set_move_turn_ms(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00020000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.move_turn_ms)
+}
+inline ::uint32_t Constants::_internal_move_turn_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.move_turn_ms_;
+}
+inline void Constants::_internal_set_move_turn_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_turn_ms_ = value;
+}
+
+// uint32 move_confirm_ms = 52;
+inline void Constants::clear_move_confirm_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_confirm_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00040000U);
+}
+inline ::uint32_t Constants::move_confirm_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.move_confirm_ms)
+  return _internal_move_confirm_ms();
+}
+inline void Constants::set_move_confirm_ms(::uint32_t value) {
+  _internal_set_move_confirm_ms(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00040000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.move_confirm_ms)
+}
+inline ::uint32_t Constants::_internal_move_confirm_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.move_confirm_ms_;
+}
+inline void Constants::_internal_set_move_confirm_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_confirm_ms_ = value;
+}
+
+// uint32 move_stop_ms = 53;
+inline void Constants::clear_move_stop_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_stop_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00080000U);
+}
+inline ::uint32_t Constants::move_stop_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.move_stop_ms)
+  return _internal_move_stop_ms();
+}
+inline void Constants::set_move_stop_ms(::uint32_t value) {
+  _internal_set_move_stop_ms(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00080000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.move_stop_ms)
+}
+inline ::uint32_t Constants::_internal_move_stop_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.move_stop_ms_;
+}
+inline void Constants::_internal_set_move_stop_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_stop_ms_ = value;
+}
+
+// uint32 move_goal_ms = 54;
+inline void Constants::clear_move_goal_ms() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_goal_ms_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00100000U);
+}
+inline ::uint32_t Constants::move_goal_ms() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.move_goal_ms)
+  return _internal_move_goal_ms();
+}
+inline void Constants::set_move_goal_ms(::uint32_t value) {
+  _internal_set_move_goal_ms(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00100000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.move_goal_ms)
+}
+inline ::uint32_t Constants::_internal_move_goal_ms() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.move_goal_ms_;
+}
+inline void Constants::_internal_set_move_goal_ms(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.move_goal_ms_ = value;
 }
 
 #ifdef __GNUC__

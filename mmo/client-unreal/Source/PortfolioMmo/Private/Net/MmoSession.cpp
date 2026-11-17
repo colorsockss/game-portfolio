@@ -235,7 +235,7 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 		bDemoAvailable = Packet.login_result().demo_available();
 	}
 	const double Now = FPlatformTime::Seconds();
-	WorldState.Apply(Packet, Now);
+	WorldState.Apply(Packet, Now, Field());
 	InventoryState.Apply(Packet);
 	StorageState.Apply(Packet);
 	SkillBook.Apply(Packet);

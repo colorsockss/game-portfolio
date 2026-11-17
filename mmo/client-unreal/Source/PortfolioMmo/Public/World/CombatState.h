@@ -195,12 +195,12 @@ namespace MmoWorld
 		FSkillStep UpdateSkill(const FWorldState& World, const FFieldMap& Field, const MmoData::FGameData& Data, int32_t X, int32_t Z, const FParty* Party = nullptr);
 
 		/**
-		 * 누른 스킬을 보낸다: 시전 시간이 있으면 캐릭터를 세우고 밀린 위치를 먼저 보내며(Sender.Flush), 쥐고 있던 이동 입력을 놓을 때까지 무시한다.
+		 * 누른 스킬을 보낸다: 시전 시간이 있으면 캐릭터를 세우고 밀린 위치를 먼저 보내며(Sender.Flush. 선 것이라 움직이는 중 표시는 끔), 쥐고 있던 이동 입력을 놓을 때까지 무시한다.
 		 * 직선 발사체의 스킬도 밀린 위치와 방향을 먼저 보낸다(대상이 없으면 서버가 보는 쪽으로 쏨). 대상은 살아 있을 때만 싣는다.
 		 * 시전 시간이 없으면 쿨다운을 미리 돌린다. 내 동작(시전이면 ProgressStart, 아니면 Skill)을 미리 쌓고 답을 기다린다.
 		 * 강제 공격이 켜져 있으면 표시를 싣는다(44).
 		 */
-		FSkillFire FireSkill(const FWorldState& World, const MmoData::FGameData& Data, FMoveSender& Sender, int32_t X, int32_t Z, uint32_t Yaw, double NowSeconds);
+		FSkillFire FireSkill(const FWorldState& World, const MmoData::FGameData& Data, FMoveSender& Sender, int32_t X, int32_t Z, uint32_t Yaw, bool bMoving, double NowSeconds);
 
 		/** 이번 프레임의 이동 입력을 써도 되는가. 시전 시간이 있는 스킬을 보낼 때 쥐고 있던 입력은 한 번 없어질 때까지 막는다. */
 		bool AllowMove(bool bHasInput);

@@ -146,6 +146,17 @@ namespace PortfolioMmo.Server
         internal double MoveBudget { get; set; }
 
         /// <summary>
+        /// 걷는 중이다(54): 움직이는 중 표시가 켜진 Move가 바로 앞의 Move와 다른 자리로 왔다. 표시가 꺼진 Move, 같은 자리의 Move, 되돌림과 순간 이동,
+        /// Constants.moveStopMs 동안 Move가 없는 것이 끈다. 죽음, 기절, 연결이 떨어져 남은 것은 MoveNotifier가 멈춤으로 본다.
+        /// </summary>
+        internal bool Walking { get; set; }
+
+        /// <summary>
+        /// 마지막으로 받아들인 Move 뒤로 지난 틱 수(54). MovementSystem이 틱마다 올린다.
+        /// </summary>
+        internal uint TicksSinceMove { get; set; }
+
+        /// <summary>
         /// 5초 바뀜 표시(38): 마지막 사본 뒤에 아이템, 골드, 스킬, 퀵슬롯, 레벨이 바뀌었다. 5초 주기의 저장 차례가 사본을 넣는다.
         /// </summary>
         internal bool DirtyFast { get; set; }

@@ -5,6 +5,7 @@
 #include <cstdlib>
 
 #include "Data/GameData.h"
+#include "World/FieldMap.h"
 #include "World/MoveSender.h"
 #include "World/Units.h"
 #include "World/WorldState.h"
@@ -27,9 +28,10 @@ namespace
 		return std::abs(A - B) < 1e-9;
 	}
 
-	portfolio::mmo::Packet Enter(uint32_t Id, int32_t X, int32_t Z, const char* Name)
+	portfolio::mmo::Packet Enter(uint32_t Id, int32_t X, int32_t Z, const char* Name, uint32_t Tick = 0)
 	{
 		portfolio::mmo::Packet Packet;
+		Packet.mutable_entities_enter()->set_tick(Tick);
 		portfolio::mmo::EntityEnter* Entity = Packet.mutable_entities_enter()->add_entities();
 		Entity->set_id(Id);
 		Entity->set_x(X);
@@ -39,7 +41,7 @@ namespace
 		return Packet;
 	}
 
-	portfolio::mmo::Packet Moves(uint32_t Tick, uint32_t Id, int32_t X, int32_t Z, uint32_t Yaw = 0)
+	portfolio::mmo::Packet Moves(uint32_t Tick, uint32_t Id, int32_t X, int32_t Z, uint32_t Yaw = 0, uint32_t Speed = 0)
 	{
 		portfolio::mmo::Packet Packet;
 		Packet.mutable_entity_moves()->set_tick(Tick);
@@ -48,7 +50,22 @@ namespace
 		Move->set_x(X);
 		Move->set_z(Z);
 		Move->set_yaw(Yaw);
+		Move->set_speed(Speed);
 		return Packet;
+	}
+
+	/** 걷는 플레이어의 빠르기(6 m/s, 좌표 칸/초). 한 틱에 9.6칸 간다. */
+	constexpr uint32_t WalkSpeed = 192;
+
+	/** 기록 하나. 다음 꺾이는 점이 있으면 몬스터 쪽이다. */
+	MmoWorld::FTrackSample At(double Tick, int32_t X, int32_t Z, uint32_t Yaw, uint32_t Speed = 0, std::optional<std::pair<int32_t, int32_t>> Next = std::nullopt)
+	{
+		return { Tick, X, Z, Yaw, Speed, Next.has_value(), Next ? Next->first : 0, Next ? Next->second : 0 };
+	}
+
+	bool Close(double A, double B)
+	{
+		return std::abs(A - B) < 1.0;
 	}
 
 	void UnitsConvert()
@@ -65,42 +82,46 @@ namespace
 	{
 		MmoWorld::FMoveSender Sender;
 		portfolio::mmo::Move Move;
-		Expect(!Sender.Update(0.02, 10, 0, 0, 0, Move), "nothing is sent before 50 ms");
-		Expect(!Sender.Update(0.02, 20, 0, 0, 0, Move), "still nothing at 40 ms");
-		Expect(Sender.Update(0.02, 30, 0, 0, 0, Move) && Move.x() == 30, "the latest position goes out at 50 ms");
+		Expect(!Sender.Update(0.02, 10, 0, 0, true, 0, Move), "nothing is sent before 50 ms");
+		Expect(!Sender.Update(0.02, 20, 0, 0, true, 0, Move), "still nothing at 40 ms");
+		Expect(Sender.Update(0.02, 30, 0, 0, true, 0, Move) && Move.x() == 30 && Move.moving(), "the latest position goes out at 50 ms with the walking flag");
 
 		// 30 fps(33 ms)에서도 평균 50 ms 간격이 된다: 1초(30 프레임) 걸으면 20번 나간다.
 		int Sent = 0;
 		for (int Frame = 1; Frame <= 30; ++Frame)
 		{
-			Sent += Sender.Update(1.0 / 30, 30 + Frame, 0, 0, 0, Move) ? 1 : 0;
+			Sent += Sender.Update(1.0 / 30, 30 + Frame, 0, 0, true, 0, Move) ? 1 : 0;
 		}
 		Expect(Sent == 20, "walking for one second at 30 fps sends 20 moves");
 
-		Expect(!Sender.Update(0.05, 60, 0, 0, 0, Move), "the same position is not sent again");
-		Expect(!Sender.Update(0.05, 60, 0, 0, 0, Move), "standing still sends nothing");
-		Expect(Sender.Update(0.01, 61, 0, 0, 0, Move), "moving again after standing sends on the first frame");
+		Expect(!Sender.Update(0.05, 60, 0, 0, true, 0, Move), "the same position is not sent again");
+		Expect(!Sender.Update(0.05, 60, 0, 0, true, 0, Move), "standing still sends nothing");
+		Expect(Sender.Update(0.01, 61, 0, 0, true, 0, Move), "moving again after standing sends on the first frame");
 
-		// 멈추면: 걷다가 선 자리가 다음 간격에 한 번 가고 그 뒤로는 없다.
-		Sender.Update(0.02, 70, 0, 0, 0, Move);
-		Expect(Sender.Update(0.05, 75, 0, 0, 0, Move) && Move.x() == 75, "the stop position is sent once");
-		Expect(!Sender.Update(0.05, 75, 0, 0, 0, Move), "nothing after the stop position");
+		// 멈추면: 걷다가 선 자리가 표시를 끈 채 다음 간격에 한 번 가고 그 뒤로는 없다.
+		Sender.Update(0.02, 70, 0, 0, true, 0, Move);
+		Expect(Sender.Update(0.05, 75, 0, 0, false, 0, Move) && Move.x() == 75 && !Move.moving(), "the stop position is sent once with the flag off");
+		Expect(!Sender.Update(0.05, 75, 0, 0, false, 0, Move), "nothing after the stop position");
 
-		Expect(Sender.Update(0.05, 75, 0, 64, 0, Move) && Move.yaw() == 64, "turning in place is sent");
-		Expect(Sender.Update(0.05, 75, 0, 64, 3, Move) && Move.ack() == 3, "a new ack is sent");
+		Expect(Sender.Update(0.05, 75, 0, 64, false, 0, Move) && Move.yaw() == 64, "turning in place is sent");
+		Expect(Sender.Update(0.05, 75, 0, 64, false, 3, Move) && Move.ack() == 3, "a new ack is sent");
+
+		// 자리가 같아도 표시가 바뀌면 간다(벽에 막혀 선 자리에서 걷기 시작하거나 입력을 놓음. 54).
+		Expect(Sender.Update(0.05, 75, 0, 64, true, 3, Move) && Move.moving(), "the walking flag alone is sent");
+		Expect(Sender.Update(0.05, 75, 0, 64, false, 3, Move) && !Move.moving() && Move.x() == 75, "the stop flag alone is sent");
 	}
 
 	void MoveSenderFlushesBeforeActions()
 	{
 		MmoWorld::FMoveSender Sender;
 		portfolio::mmo::Move Move;
-		Sender.Update(0.02, 5, 6, 7, 0, Move);
-		Expect(Sender.Flush(5, 6, 7, 0, Move) && Move.x() == 5 && Move.z() == 6 && Move.yaw() == 7, "Flush sends a pending position now");
-		Expect(!Sender.Flush(5, 6, 7, 0, Move), "Flush sends nothing when everything is sent");
-		Expect(!Sender.Update(0.05, 5, 6, 7, 0, Move), "the flushed move is not sent again");
+		Sender.Update(0.02, 5, 6, 7, true, 0, Move);
+		Expect(Sender.Flush(5, 6, 7, false, 0, Move) && Move.x() == 5 && Move.z() == 6 && Move.yaw() == 7 && !Move.moving(), "Flush sends a pending position now");
+		Expect(!Sender.Flush(5, 6, 7, false, 0, Move), "Flush sends nothing when everything is sent");
+		Expect(!Sender.Update(0.05, 5, 6, 7, false, 0, Move), "the flushed move is not sent again");
 
 		Sender.Reset();
-		Expect(Sender.Flush(5, 6, 7, 0, Move), "Reset forgets the sent move");
+		Expect(Sender.Flush(5, 6, 7, false, 0, Move), "Reset forgets the sent move");
 	}
 
 	void LoginAndViewAreKept()
@@ -210,11 +231,11 @@ namespace
 		Pose = Track.Sample(11.5);
 		Expect(Near(Pose.X, 15) && Near(Pose.Z, -30), "between two samples is linear");
 		Expect(Near(Track.Sample(9).X, 0), "before the first sample stands at the first");
-		Expect(Near(Track.Sample(13).X, 20), "after the last sample stands at the last, never ahead");
+		Expect(Near(Track.Sample(13).X, 20), "after a standing last sample stands at the last");
 
-		for (int64_t Tick = 13; Tick < 30; ++Tick)
+		for (int Tick = 13; Tick < 30; ++Tick)
 		{
-			Track.Push({ Tick, 0, 0, 0 });
+			Track.Push(At(Tick, 0, 0, 0));
 		}
 		Expect(Track.History().size() == MmoWorld::FEntityTrack::Capacity, "the history keeps only the latest samples");
 
@@ -236,33 +257,92 @@ namespace
 		Expect(Near(Back.Sample(0.75).Yaw, 253), "0 to 255 turns backward across the wrap");
 	}
 
-	void TrackKeepsWalkersSmoothAndStartsStillOnes()
+	void TrackKeepsWalkersSmoothAcrossMissingTicks()
 	{
-		// 계속 걷는 개체: 한두 틱이 빠져도 끼워 넣는 기록이 없어 멈칫하지 않는다.
+		// 서 있다고 알린 기록들 사이는 그대로 보간한다: 한두 틱이 빠져도 끼워 넣는 기록이 없어 멈칫하지 않는다.
 		MmoWorld::FEntityTrack Walker;
 		Walker.Push({ 10, 0, 0, 0 });
 		Walker.Push({ 12, 20, 0, 0 });
 		Walker.Push({ 15, 50, 0, 0 });
 		Expect(Walker.History().size() == 3, "a walker missing a few ticks gets no extra samples");
 		Expect(Near(Walker.Sample(11).X, 10) && Near(Walker.Sample(13.5).X, 35), "a walker moves at a steady speed across missing ticks");
-
-		// 오래 서 있던 개체: 출발 한 틱 앞에 옛 자리를 끼워 넣어, 서 있던 시간 동안 미끄러지지 않는다.
-		MmoWorld::FEntityTrack Still;
-		Still.Push({ 10, 0, 0, 0 });
-		Still.Push({ 100, 10, 0, 0 });
-		Expect(Still.History().size() == 3 && Still.History()[1].Tick == 99, "a restart inserts the old position one tick before");
-		Expect(Near(Still.Sample(50).X, 0) && Near(Still.Sample(99.5).X, 5), "a restarting entity does not slide while it stood");
 	}
 
-	void EnteredEntitiesStartAtTheLastTick()
+	/** 마지막 기록 뒤는 그 빠르기로 이어 그리고, 다음 확인이 오면 지금 그린 자리에서 잇는다(54). */
+	void TrackExtrapolatesUntilTheNextNotice()
+	{
+		MmoWorld::FEntityTrack Track;
+		Track.Push(At(10, 0, 0, 64, WalkSpeed));
+		Expect(Close(Track.Sample(15).X, 48) && Close(Track.Sample(15).Z, 0), "a walker goes on toward its yaw at its speed");
+		Expect(Close(Track.Sample(18).X, 76.8), "eight ticks later it is 76.8 cells ahead");
+
+		// 서버가 0.5초 뒤에 보낸 확인이 이어 그린 자리와 같으면 그대로 간다.
+		Track.Push(At(20, 96, 0, 64, WalkSpeed), 18);
+		Expect(Close(Track.Sample(18).X, 76.8) && Close(Track.Sample(19).X, 86.4), "a matching confirmation changes nothing on screen");
+
+		// 이어 그린 자리보다 뒤처진 확인이 와도 지금 그린 자리에서 이어 튀지 않는다.
+		MmoWorld::FEntityTrack Slow;
+		Slow.Push(At(10, 0, 0, 64, WalkSpeed));
+		Slow.Push(At(20, 80, 0, 64, WalkSpeed), 18);
+		Expect(Close(Slow.Sample(18).X, 76.8) && Close(Slow.Sample(20).X, 80), "a lagging confirmation is joined from the drawn spot");
+
+		// 그리는 틱이 이미 지난 기록은 그 기록에서 이어 그린 한 틱 뒤의 자리로 따라잡는다.
+		MmoWorld::FEntityTrack Late;
+		Late.Push(At(10, 0, 0, 64, WalkSpeed));
+		Late.Push(At(20, 96, 0, 64, WalkSpeed), 25);
+		Expect(Close(Late.Sample(25).X, 144) && Close(Late.Sample(26).X, 153.6), "a late sample is caught up within a tick");
+
+		// 이어 그리기는 MaxExtrapolationTicks까지다.
+		Expect(Close(Track.Sample(100).X, 96 + 9.6 * MmoWorld::FEntityTrack::MaxExtrapolationTicks), "a walker with no news stops after the longest extrapolation");
+	}
+
+	/** 다른 플레이어를 막힌 칸 앞까지만, 몬스터는 알려 준 꺾이는 점까지만 이어 그리고, 빠르기 0인 기록 뒤로는 선다. */
+	void TrackStopsAtWallsNextPointsAndStops()
+	{
+		// 16 m 필드(-8..8 m)의 x 칸 3(96..127칸)이 벽이다.
+		portfolio::mmo::data::MapGrid Grid;
+		Grid.set_width(16);
+		Grid.set_depth(16);
+		Grid.set_origin_x(-8);
+		Grid.set_origin_z(-8);
+		std::string Cells(16 * 16, '\0');
+		for (int Row = 0; Row < 16; ++Row)
+		{
+			Cells[Row * 16 + 11] = 1;
+		}
+		Grid.set_cells(Cells);
+		const std::optional<MmoWorld::FFieldMap> Field = MmoWorld::FFieldMap::Make(16, {}, Grid);
+		Expect(Field.has_value(), "the test field is made");
+
+		MmoWorld::FEntityTrack Walker;
+		Walker.Push(At(10, 0, 16, 64, WalkSpeed), 0, &*Field);
+		const double Stopped = Walker.Sample(30).X;
+		Expect(Stopped < 96 && Stopped > 90, "a walker heading into a wall stops in front of it");
+
+		// 몬스터는 다음 꺾이는 점까지 시간의 끝 없이 간다(10 m를 3 m/s로 66틱).
+		MmoWorld::FEntityTrack Monster;
+		Monster.Push(At(10, 0, 0, 64, 96, std::pair<int32_t, int32_t>{ 320, 0 }));
+		Expect(Close(Monster.Sample(15).X, 24), "a monster walks toward its next point");
+		Expect(Close(Monster.Sample(70).X, 288), "a monster keeps walking to a far next point");
+		Expect(Close(Monster.Sample(100).X, 320) && Close(Monster.Sample(100).Z, 0), "a monster stops at its next point, never past it");
+
+		MmoWorld::FEntityTrack Stop;
+		Stop.Push(At(10, 0, 0, 64, WalkSpeed));
+		Stop.Push(At(14, 40, 0, 64, 0));
+		Expect(Close(Stop.Sample(30).X, 40), "after a stop the entity stands");
+	}
+
+	void EnteredEntitiesStartAtTheEnterTick()
 	{
 		MmoWorld::FWorldState World;
-		World.Apply(Moves(40, 1, 0, 0), 0);
-		World.Apply(Enter(2, 64, 0, "b"), 0);
-		World.Apply(Moves(41, 2, 70, 0), 0);
+		portfolio::mmo::Packet Entered = Enter(2, 64, 0, "b", 40);
+		Entered.mutable_entities_enter()->mutable_entities(0)->set_kind(portfolio::mmo::ENTITY_KIND_PLAYER);
+		Entered.mutable_entities_enter()->mutable_entities(0)->set_speed(WalkSpeed);
+		Entered.mutable_entities_enter()->mutable_entities(0)->set_yaw(64);
+		World.Apply(Entered, 0);
 		const MmoWorld::FEntityTrack& Track = World.Entities().at(2).Track;
-		Expect(Track.History().size() == 2 && Track.History()[0].Tick == 40, "an entering entity is recorded at the last known tick");
-		Expect(Near(Track.Sample(40.5).X, 67), "an entering entity that keeps walking moves smoothly");
+		Expect(Track.History().size() == 1 && Track.History()[0].Tick == 40, "an entering entity is recorded at the enter tick");
+		Expect(Close(Track.Sample(45).X, 112), "an entity entering while walking goes on at once");
 	}
 
 	void KindsAndDisplayStatesAreKept()
@@ -478,8 +558,10 @@ int main()
 	WorldClockComesFromEnterPongAndMoves();
 	TrackInterpolates();
 	TrackYawTurnsTheShortWay();
-	TrackKeepsWalkersSmoothAndStartsStillOnes();
-	EnteredEntitiesStartAtTheLastTick();
+	TrackKeepsWalkersSmoothAcrossMissingTicks();
+	TrackExtrapolatesUntilTheNextNotice();
+	TrackStopsAtWallsNextPointsAndStops();
+	EnteredEntitiesStartAtTheEnterTick();
 	KindsAndDisplayStatesAreKept();
 	VitalsAndStatsAreKept();
 	ExpAndLevelUpsAreKept();

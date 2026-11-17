@@ -104,6 +104,7 @@ namespace PortfolioMmo.Server
             bool regenerate = _second.Due(tick);
             foreach (Monster monster in _monsters)
             {
+                Rest(monster);
                 // 기절한 몬스터는 움직이지도 치지도 않는다(공격 상태는 남고 CombatSystem이 쉬게 함).
                 if (!monster.Dead && !monster.Stunned)
                 {
@@ -113,16 +114,29 @@ namespace PortfolioMmo.Server
 
             foreach (Guard guard in _guards)
             {
+                Rest(guard);
                 Think(guard, tick, elapsedTicks);
             }
 
             foreach (Summon summon in _summons)
             {
+                Rest(summon);
                 if (!summon.Dead && !summon.Stunned)
                 {
                     Think(summon, elapsedTicks);
                 }
             }
+        }
+
+        /// <summary>
+        /// 이번 틱의 걸음 표시를 내린다(54). 걸으면 MoveToward가 다시 켠다. 다음 꺾이는 점은 쫓는 대상이 그대로일 때만 간격에 걸린다(Chase가 정함).
+        /// </summary>
+        private static void Rest(AiCreature mob)
+        {
+            mob.Walked = false;
+            mob.NextImmediate = true;
+            mob.PreviousChased = mob.Chased;
+            mob.Chased = 0;
         }
 
         /// <summary>
@@ -376,12 +390,29 @@ namespace PortfolioMmo.Server
         /// </summary>
         private bool Chase(AiCreature mob, Creature target, double step, int range, int radius)
         {
+            mob.Chased = target.Id;
+            mob.NextImmediate = mob.PreviousChased != target.Id;
             if (_field.CanWalkLine(mob.X, mob.Z, target.X, target.Z, mob.WalkerKind))
             {
+                // 길의 꺾이는 점을 돌아 대상이 트인 것도 점에 닿아 넘어간 것이다.
+                mob.NextImmediate |= mob.Path.Count > 0;
                 mob.Path.Clear();
-                // 사거리의 끝에 서면 반올림으로 사거리 밖과 안을 오가므로 0.25 m 안쪽까지 간다.
-                double distance = Math.Sqrt(DistanceSquared(mob.X, mob.Z, target.X, target.Z));
-                MoveToward(mob, target.X, target.Z, Math.Min(step, Math.Max(0, distance - range + (Units.PerMeter / 4.0))));
+                // 사거리의 끝에 서면 반올림으로 사거리 밖과 안을 오가므로 0.25 m 안쪽에 설 자리로 간다(그 자리가 알리는 다음 꺾이는 점. 54).
+                if (mob.NextImmediate || (mob.StopFor != (target.X, target.Z)))
+                {
+                    double distance = Math.Sqrt(DistanceSquared(mob.X, mob.Z, target.X, target.Z));
+                    double approach = Math.Max(0, distance - range + (Units.PerMeter / 4.0));
+                    if ((approach <= 0) || (distance <= 0))
+                    {
+                        return true;
+                    }
+
+                    // 이번 틱에 걷지 못해도(반올림한 첫 걸음이 막힘) 설 자리를 남겨, 다음 틱이 옛 점을 쓰지 않게 한다.
+                    mob.StopFor = (target.X, target.Z);
+                    mob.Next = (mob.X + (int)Math.Round((target.X - mob.X) * approach / distance), mob.Z + (int)Math.Round((target.Z - mob.Z) * approach / distance));
+                }
+
+                MoveToward(mob, mob.Next.X, mob.Next.Z, step);
                 return true;
             }
 
@@ -531,12 +562,13 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 길의 꺾이는 점을 따라 step만큼 간다(지난 틱 수만큼의 거리를 점마다 나눠 감).
+        /// 길의 꺾이는 점을 따라 step만큼 간다(지난 틱 수만큼의 거리를 점마다 나눠 감). 둘째 점부터는 앞 점에 닿아 넘어간 것이라 그때마다 알린다(54).
         /// </summary>
         private void FollowPath(AiCreature mob, double step)
         {
             while ((step > 0) && (mob.PathIndex < mob.Path.Count))
             {
+                mob.NextImmediate |= mob.PathIndex > 0;
                 (int x, int z) = mob.Path[mob.PathIndex];
                 double left = MoveToward(mob, x, z, step);
                 if ((mob.X != x) || (mob.Z != z))
@@ -551,6 +583,7 @@ namespace PortfolioMmo.Server
 
         /// <summary>
         /// (x, z) 쪽으로 step(1/32 m)만큼 곧게 간다. 닿으면 그 자리에 서고 남은 거리를 낸다. 반올림한 다음 자리까지 걷는 선이 막히면 서 있는다.
+        /// 걸었으면 이번 틱의 걸음과 다음 꺾이는 점(x, z)을 남긴다(54).
         /// </summary>
         private double MoveToward(AiCreature monster, int x, int z, double step)
         {
@@ -577,6 +610,8 @@ namespace PortfolioMmo.Server
 
             Face(monster, dx, dz);
             Place(monster, nextX, nextZ);
+            monster.Walked = true;
+            monster.Next = (x, z);
             return distance > step ? 0 : step - distance;
         }
 
@@ -584,12 +619,11 @@ namespace PortfolioMmo.Server
         {
             monster.X = x;
             monster.Z = z;
-            monster.Moved = true;
             _grid.Moved(monster);
         }
 
         /// <summary>
-        /// 방향을 (dx, dz) 쪽으로 돌린다(yaw 0이 +z, 시계 방향). 바뀌었을 때만 움직임으로 알린다.
+        /// 방향을 (dx, dz) 쪽으로 돌린다(yaw 0이 +z, 시계 방향). 알릴지는 MoveNotifier가 정한다.
         /// </summary>
         private static void Face(AiCreature monster, double dx, double dz)
         {
@@ -598,12 +632,7 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            uint yaw = Units.YawOf(dx, dz);
-            if (yaw != monster.Yaw)
-            {
-                monster.Yaw = yaw;
-                monster.Moved = true;
-            }
+            monster.Yaw = Units.YawOf(dx, dz);
         }
 
         private static int ToUnits(double meters)

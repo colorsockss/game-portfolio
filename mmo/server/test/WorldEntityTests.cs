@@ -29,7 +29,7 @@ namespace PortfolioMmo.Server.Tests
             world.AddEntity(new TestNpc(far, x: 200 * Units.PerMeter, z: 0, templateId: 3));
             world.Step();
             Assert.Equal(
-                new[] { Enter(new EntityEnter { Id = near, Kind = EntityKind.Npc, X = 10 * Units.PerMeter, TemplateId = 2 }) },
+                new[] { Enter(world.Tick - 1, new EntityEnter { Id = near, Kind = EntityKind.Npc, X = 10 * Units.PerMeter, TemplateId = 2 }) },
                 Take(session));
 
             world.RemoveEntity(npc);

@@ -433,7 +433,7 @@ namespace MmoWorld
 		return { FSkillStep::EKind::Approach, { Target->second.X, Target->second.Z } };
 	}
 
-	FSkillFire FCombatState::FireSkill(const FWorldState& World, const MmoData::FGameData& Data, FMoveSender& Sender, int32_t X, int32_t Z, uint32_t Yaw, double NowSeconds)
+	FSkillFire FCombatState::FireSkill(const FWorldState& World, const MmoData::FGameData& Data, FMoveSender& Sender, int32_t X, int32_t Z, uint32_t Yaw, bool bMoving, double NowSeconds)
 	{
 		FSkillFire Fire;
 		const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Pending);
@@ -455,7 +455,7 @@ namespace MmoWorld
 		if (Skill->cast_ms() > 0 || Launches(*Skill))
 		{
 			portfolio::mmo::Packet Move;
-			if (Sender.Flush(X, Z, Yaw, World.Ack(), *Move.mutable_move()))
+			if (Sender.Flush(X, Z, Yaw, bMoving && !Fire.bStop, World.Ack(), *Move.mutable_move()))
 			{
 				Fire.Packets.push_back(Move);
 			}

@@ -39,12 +39,13 @@ namespace PortfolioMmo.Contract.Tests
                 new Packet { EnterWorldResult = new EnterWorldResult { Result = EnterWorldResultCode.Ok, SelfId = 7, Tick = 100 } },
                 new Packet { LeaveWorld = new LeaveWorld() },
                 new Packet { Kicked = new Kicked { Reason = KickReason.DuplicateLogin } },
-                new Packet { Move = new Move { X = -3, Z = 32767, Yaw = 255, Ack = 2 } },
+                new Packet { Move = new Move { X = -3, Z = 32767, Yaw = 255, Ack = 2, Moving = true } },
                 new Packet { PositionReset = new PositionReset { X = 1, Z = -1, Ack = 3 } },
                 new Packet
                 {
                     EntitiesEnter = new EntitiesEnter
                     {
+                        Tick = 72000,
                         Entities =
                         {
                             new EntityEnter
@@ -52,7 +53,7 @@ namespace PortfolioMmo.Contract.Tests
                                 Id = 7, X = 48, Z = 0, Yaw = 64, Kind = EntityKind.Player, Name = "기사01", CharacterClass = CharacterClass.Mage,
                                 Level = 12, NameColor = NameColor.Outlaw, WeaponItemId = 1001, Hp = 90, MaxHp = 120,
                                 Effects = { new EffectState { EffectId = 3, EndTick = 900 } },
-                                Progress = new ProgressState { Kind = ProgressKind.Cast, Id = 5, EndTick = 880 }, Speed = 192, MoveYaw = 32,
+                                Progress = new ProgressState { Kind = ProgressKind.Cast, Id = 5, EndTick = 880 }, Speed = 192,
                             },
                             new EntityEnter { Id = 8, Kind = EntityKind.Monster, TemplateId = 2, Hp = 0, MaxHp = 50, Dead = true, Speed = 96, NextX = -40, NextZ = 7 },
                             new EntityEnter
@@ -63,7 +64,7 @@ namespace PortfolioMmo.Contract.Tests
                     },
                 },
                 new Packet { EntitiesLeave = new EntitiesLeave { Ids = { 7, 8 } } },
-                new Packet { EntityMoves = new EntityMoves { Tick = 72000, Entities = { s_sampleMove, new EntityMove { Id = 9, X = 1, Z = 2, Teleport = true } } } },
+                new Packet { EntityMoves = new EntityMoves { Tick = 72000, Entities = { s_sampleMove, new EntityMove { Id = 9, X = 1, Z = 2, Teleport = true }, new EntityMove { Id = 8, X = 3, Z = 4, Speed = 96, NextX = -40, NextZ = 7 } } } },
                 new Packet { EntityState = new EntityState { Id = 7, NameColor = NameColor.Aggressor, WeaponItemId = 1002, Level = 13 } },
                 new Packet { SelfVitals = new SelfVitals { Hp = 140, Mp = 0, CombatEndTick = 72100, AggressorEndTick = 72600 } },
                 new Packet { EntityVitals = new EntityVitals { Entities = { new EntityVital { Id = 7, Hp = 95, MaxHp = 120 }, new EntityVital { Id = 8, Hp = 50, MaxHp = 50 } } } },

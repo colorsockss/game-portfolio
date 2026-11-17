@@ -15,7 +15,7 @@ namespace MmoWorld
 		*this = FMoveSender();
 	}
 
-	bool FMoveSender::Update(double DeltaSeconds, int32_t X, int32_t Z, uint32_t Yaw, uint32_t Ack, portfolio::mmo::Move& Out)
+	bool FMoveSender::Update(double DeltaSeconds, int32_t X, int32_t Z, uint32_t Yaw, bool bMoving, uint32_t Ack, portfolio::mmo::Move& Out)
 	{
 		Elapsed += DeltaSeconds;
 		if (Elapsed < SendInterval)
@@ -23,7 +23,7 @@ namespace MmoWorld
 			return false;
 		}
 
-		if (!SendIfChanged(X, Z, Yaw, Ack, Out))
+		if (!SendIfChanged(X, Z, Yaw, bMoving, Ack, Out))
 		{
 			// 서 있는 동안은 간격을 채운 채로 두어, 다시 움직이는 첫 프레임에 바로 보낸다.
 			Elapsed = SendInterval;
@@ -39,14 +39,14 @@ namespace MmoWorld
 		return true;
 	}
 
-	bool FMoveSender::Flush(int32_t X, int32_t Z, uint32_t Yaw, uint32_t Ack, portfolio::mmo::Move& Out)
+	bool FMoveSender::Flush(int32_t X, int32_t Z, uint32_t Yaw, bool bMoving, uint32_t Ack, portfolio::mmo::Move& Out)
 	{
-		return SendIfChanged(X, Z, Yaw, Ack, Out);
+		return SendIfChanged(X, Z, Yaw, bMoving, Ack, Out);
 	}
 
-	bool FMoveSender::SendIfChanged(int32_t X, int32_t Z, uint32_t Yaw, uint32_t Ack, portfolio::mmo::Move& Out)
+	bool FMoveSender::SendIfChanged(int32_t X, int32_t Z, uint32_t Yaw, bool bMoving, uint32_t Ack, portfolio::mmo::Move& Out)
 	{
-		if (bSent && X == SentX && Z == SentZ && Yaw == SentYaw && Ack == SentAck)
+		if (bSent && X == SentX && Z == SentZ && Yaw == SentYaw && bMoving == bSentMoving && Ack == SentAck)
 		{
 			return false;
 		}
@@ -55,11 +55,13 @@ namespace MmoWorld
 		SentX = X;
 		SentZ = Z;
 		SentYaw = Yaw;
+		bSentMoving = bMoving;
 		SentAck = Ack;
 		Out.set_x(X);
 		Out.set_z(Z);
 		Out.set_yaw(Yaw);
 		Out.set_ack(Ack);
+		Out.set_moving(bMoving);
 		return true;
 	}
 }

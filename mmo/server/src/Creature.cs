@@ -24,7 +24,33 @@ namespace PortfolioMmo.Server
         protected Creature(uint id, EntityKind kind, int x, int z, uint yaw)
             : base(id, kind, x, z, yaw)
         {
+            SentX = x;
+            SentZ = z;
+            SentYaw = yaw;
         }
+
+        /// <summary>
+        /// 보는 쪽에 마지막으로 알린 움직임(54): 빠르기(좌표 칸/초, 0이면 섬), 위치, 방향, 다음 꺾이는 점. 시야에 새로 든 연결의 EntityEnter도
+        /// 이 빠르기와 점을 싣는다. MoveNotifier만 고친다.
+        /// </summary>
+        internal uint SentSpeed { get; set; }
+
+        internal int SentX { get; set; }
+
+        internal int SentZ { get; set; }
+
+        internal uint SentYaw { get; set; }
+
+        internal (int X, int Z) SentNext { get; set; }
+
+        /// <summary>
+        /// 마지막으로 알린 틱, 방향을 바꿔 알린 틱, 다음 꺾이는 점을 바꿔 알린 틱(알림의 간격을 잼).
+        /// </summary>
+        internal uint SentTick { get; set; }
+
+        internal uint SentYawTick { get; set; }
+
+        internal uint SentNextTick { get; set; }
 
         /// <summary>
         /// 능력치. StatSystem이 다시 구해 SetStats로 넣는다.
@@ -154,8 +180,22 @@ namespace PortfolioMmo.Server
             };
         }
 
+        /// <summary>
+        /// 마지막으로 알린 움직임을 EntityEnter에 싣는다(54). 들어온 연결도 다른 연결과 같은 것을 이어 그린다.
+        /// </summary>
+        protected void FillMotion(EntityEnter enter)
+        {
+            enter.Speed = SentSpeed;
+            if ((SentSpeed > 0) && (this is AiCreature))
+            {
+                enter.NextX = SentNext.X;
+                enter.NextZ = SentNext.Z;
+            }
+        }
+
         protected override void Fill(EntityEnter enter)
         {
+            FillMotion(enter);
             enter.Hp = Hp;
             enter.MaxHp = MaxHp;
             enter.Dead = Dead;
