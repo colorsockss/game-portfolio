@@ -15,15 +15,21 @@ namespace MmoCharacterLook
 	void ShowWeapon(USkeletalMeshComponent& Mesh, TObjectPtr<UStaticMeshComponent>& Weapon, const portfolio::mmo::data::ItemsRow* Item, const UMmoEntityVisuals* Visuals,
 		UMaterialInterface* Hidden)
 	{
-		for (int32 Index = 0; Hidden && Index < Mesh.GetNumMaterials(); ++Index)
+		const TSoftObjectPtr<UStaticMesh>* Drawn = Item && Visuals ? Visuals->Weapons.Find(static_cast<int32>(Item->family())) : nullptr;
+		UStaticMesh* Shape = Drawn ? Drawn->LoadSynchronous() : nullptr;
+		// 구운 무기: 들지 않았으면 감추고, 들었는데 그 종의 메시가 없으면 그대로 보인다(91: 지팡이 모델이 CC0 팩에 없어 캐릭터 팩의 무기를 씀).
+		// 감춘 칸은 지금 재질로는 찾을 수 없어 메시의 원래 재질의 이름(MI_<직업>_Weapon)으로 찾는다.
+		const bool bBaked = Item && !Shape;
+		const USkeletalMesh* Asset = Mesh.GetSkeletalMeshAsset();
+		for (int32 Index = 0; Hidden && Asset && Index < Asset->GetMaterials().Num(); ++Index)
 		{
-			const UMaterialInterface* Material = Mesh.GetMaterial(Index);
-			if (Material && Material != Hidden && Material->GetName().Contains(TEXT("Weapon")))
+			UMaterialInterface* Original = Asset->GetMaterials()[Index].MaterialInterface;
+			if (Original && Original->GetName().Contains(TEXT("Weapon")))
 			{
-				Mesh.SetMaterial(Index, Hidden);
+				Mesh.SetMaterial(Index, bBaked ? Original : Hidden);
 			}
 		}
-		if (!Item)
+		if (!Shape)
 		{
 			if (Weapon)
 			{
@@ -41,24 +47,7 @@ namespace MmoCharacterLook
 			// 팩의 뼈는 크기가 커서(FBX의 단위) 무기의 크기는 뼈와 상관없이 정한다.
 			Weapon->SetUsingAbsoluteScale(true);
 		}
-		const TSoftObjectPtr<UStaticMesh>* Drawn = Visuals ? Visuals->Weapons.Find(static_cast<int32>(Item->family())) : nullptr;
-		UStaticMesh* Shape = Drawn ? Drawn->LoadSynchronous() : nullptr;
-		Weapon->SetStaticMesh(Shape ? Shape : (Visuals ? Visuals->WeaponPlaceholder.Get() : nullptr));
-		if (!Shape)
-		{
-			// 자리 표시: 0.9 m 막대(검은 은색, 지팡이는 갈색)를 뼈의 축을 따라 손에서 앞으로 놓는다. 위치는 뼈의 크기로 곱해지므로 그만큼 나눈다.
-			const FTransform Bone = Mesh.GetSocketTransform(TEXT("Weapon_R"));
-			FVector Axis = Bone.InverseTransformPositionNoScale(Mesh.GetSocketLocation(TEXT("Weapon_R_end"))).GetSafeNormal();
-			Axis = Axis.IsNearlyZero() ? FVector::YAxisVector : Axis;
-			const double BoneScale = FMath::Max(Bone.GetScale3D().GetAbsMax(), UE_KINDA_SMALL_NUMBER);
-			Weapon->SetRelativeRotation(FRotationMatrix::MakeFromZ(Axis).Rotator());
-			Weapon->SetRelativeLocation(Axis * (45.0 / BoneScale));
-			Weapon->SetWorldScale3D(FVector(0.05, 0.05, 0.9));
-			Weapon->SetMaterial(0, Visuals ? Visuals->PlaceholderMaterial.Get() : nullptr);
-			const bool bStaff = Item->has_class_() && Item->class_() == portfolio::mmo::CHARACTER_CLASS_MAGE;
-			const FLinearColor Color = bStaff ? FLinearColor(0.5f, 0.33f, 0.15f) : FLinearColor(0.8f, 0.8f, 0.85f);
-			Weapon->SetCustomPrimitiveDataVector4(0, FVector4(Color.R, Color.G, Color.B, 1.0));
-		}
+		Weapon->SetStaticMesh(Shape);
 		Weapon->SetVisibility(true);
 	}
 

@@ -113,13 +113,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<FMmoPlaceholder> Placeholders;
 
-	/** 무기의 종(Items의 family) → 손에 붙일 메시(34). 등급은 같은 메시다. 줄이 없는 종은 WeaponPlaceholder(가는 막대)로 그린다. */
+	/** 무기의 종(Items의 family) → 손에 붙일 메시(34). 등급은 같은 메시다. 줄이 없는 종은 캐릭터 팩의 메시에 구워진 무기로 그린다(91. 지금은 모두). */
 	UPROPERTY(EditAnywhere)
 	TMap<int32, TSoftObjectPtr<UStaticMesh>> Weapons;
-
-	/** 그림이 없는 무기의 자리 표시(엔진의 원기둥을 가늘고 길게). 하드 참조라 함께 쿠킹된다. */
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UStaticMesh> WeaponPlaceholder;
 
 	UPROPERTY(EditAnywhere)
 	TArray<FMmoEntityVisual> Rows;

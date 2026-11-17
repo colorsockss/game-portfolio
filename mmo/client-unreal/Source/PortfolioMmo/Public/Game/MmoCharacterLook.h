@@ -23,8 +23,8 @@ namespace portfolio::mmo::data
 namespace MmoCharacterLook
 {
 	/**
-	 * 손의 무기(34). 캐릭터 팩의 메시에 구워진 무기는 그 재질 칸(MI_<직업>_Weapon)을 Hidden(투명한 재질)으로 감추고, Item이 있으면 표현 표의 무기 메시나
-	 * 자리 표시 막대를 Weapon_R 뼈에 붙인다(없으면 만든다). 막대는 뼈의 축(Weapon_R → Weapon_R_end)을 따라 놓는다. Item이 없으면 맨손이다.
+	 * 손의 무기(34). Item이 없으면 캐릭터 팩의 메시에 구워진 무기의 재질 칸(MI_<직업>_Weapon)을 Hidden(투명한 재질)으로 감춰 맨손이다. Item이 있으면
+	 * 표현 표에 그 종(family)의 무기 메시가 있을 때 그것을 Weapon_R 뼈에 붙이고(없으면 만든다) 구운 무기를 감추며, 없으면 구운 무기를 보인다(91).
 	 */
 	void ShowWeapon(USkeletalMeshComponent& Mesh, TObjectPtr<UStaticMeshComponent>& Weapon, const portfolio::mmo::data::ItemsRow* Item, const UMmoEntityVisuals* Visuals,
 		UMaterialInterface* Hidden);

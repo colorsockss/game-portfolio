@@ -318,8 +318,7 @@ namespace
 			}
 			Visuals->Placeholders.Add({ Placeholder.Kind, Shape, Placeholder.Color, Placeholder.Scale });
 		}
-		// 무기(34): 그림이 생기면(91) 종 → 메시의 줄을 Weapons에 더한다. 지금은 모두 자리 표시 막대다.
-		Visuals->WeaponPlaceholder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+		// 무기(34): 종 → 메시의 줄을 Weapons에 더하면 그 메시를 손에 붙인다. 지금은 줄이 없어 캐릭터 팩에 구워진 검과 지팡이를 쓴다(91).
 
 		for (const FCreature& Creature : Creatures)
 		{
