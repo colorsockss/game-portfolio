@@ -8,6 +8,8 @@ namespace PortfolioMmo.Server
     /// 시야 칸을 옮기지 않은 플레이어는 둘레 3×3 시야 칸에서 이 틱에 들고 난 개체(Grid의 목록)만 보고, 칸을 옮겼거나 막 들어온 플레이어만 둘레를 통째로 다시 본다.
     /// 소환수(95)는 시야 칸으로 찾지 않고 주인에 딸려 들고 난다(내 소환수는 늘). 3×3칸을 벗어난 개체는 바깥 테두리에서 여유(78)를 넘게 멀어져야 나간다. 움직임과 표시 상태는 개체마다 받은 연결의 목록으로 모아, 연결마다
     /// 나간 것 → 들어온 것 → 움직임 → 표시 상태의 차례로 보낸다. 움직임은 MoveNotifier가 알리기로 한 개체만 보낸다(54).
+    /// 연결이 받는 다른 플레이어는 시야 인원 상한(55)까지다. 상한에 이른 연결은 새 플레이어를 받지 않고 표시만 해 두었다가, 1초마다의 차례에 둘레를 통째로 보고
+    /// 파티원 → 나를 공격하는 캐릭터 → 내 대상 → 이미 받은 캐릭터 → 새 후보의 차례(같은 무리는 가까운 순)로 다시 고른다. 다른 종류의 개체에는 상한이 없다.
     /// </summary>
     internal sealed class ViewSystem
     {
@@ -24,11 +26,16 @@ namespace PortfolioMmo.Server
         private HashSet<Player> _observers = new HashSet<Player>();
         private HashSet<Player> _observersNext = new HashSet<Player>();
         private readonly List<Summon> _deferred = new List<Summon>();
+        private readonly List<(int Rank, long Distance, Player Player)> _candidates = new List<(int Rank, long Distance, Player Player)>();
+        private readonly HashSet<Player> _selected = new HashSet<Player>();
         private readonly long _marginSquared;
+        private readonly int _playerLimit;
 
         /// <param name="marginMeters">시야 경계의 여유(m, 78). 0이면 3×3칸을 벗어나는 틱에 나간다.</param>
-        public ViewSystem(EntityTable entities, Grid grid, MoveNotifier notifier, double marginMeters = 0)
+        /// <param name="playerLimit">연결 하나가 받는 다른 플레이어의 상한(55).</param>
+        public ViewSystem(EntityTable entities, Grid grid, MoveNotifier notifier, double marginMeters = 0, int playerLimit = int.MaxValue)
         {
+            _playerLimit = playerLimit;
             _entities = entities;
             _grid = grid;
             _notifier = notifier;
@@ -72,6 +79,11 @@ namespace PortfolioMmo.Server
                 }
 
                 CheckMargin(observer);
+                if (observer.ViewReselect.Due(tick) && observer.ViewCapped)
+                {
+                    Reselect(observer, tick);
+                }
+
                 observer.ViewCell = observer.Cell;
             }
 
@@ -145,6 +157,8 @@ namespace PortfolioMmo.Server
 
                     player.Visible.Clear();
                     player.ViewMargin.Clear();
+                    player.ViewPlayers = 0;
+                    player.ViewCapped = false;
                     player.ViewCell = long.MinValue;
                 }
             }
@@ -251,11 +265,21 @@ namespace PortfolioMmo.Server
                 (observer.ViewChanged ??= new List<Entity>()).Add(observer);
             }
 
+            // 소환수는 주인을 받은 뒤에 주인을 따라 받는다(상한으로 주인을 받지 않으면 소환수도 받지 않음).
             foreach (Entity entity in next)
             {
-                if (!observer.Visible.Contains(entity))
+                if ((entity is not Summon) && !observer.Visible.Contains(entity))
                 {
-                    Enter(observer, entity);
+                    TryEnter(observer, entity);
+                }
+            }
+
+            foreach (Entity entity in _touched)
+            {
+                var summon = (Summon)entity;
+                if (!observer.Visible.Contains(summon) && ((summon.Owner == observer) || observer.Visible.Contains(summon.Owner)))
+                {
+                    Enter(observer, summon);
                 }
             }
         }
@@ -283,8 +307,7 @@ namespace PortfolioMmo.Server
                 bool shown = inWorld && Grid.Near(entity.Cell, observer.Cell);
                 if (shown && !observer.Visible.Contains(entity))
                 {
-                    Enter(observer, entity);
-                    if ((entity is Player { Summon: { } summon }) && !observer.Visible.Contains(summon))
+                    if (TryEnter(observer, entity) && (entity is Player { Summon: { } summon }) && !observer.Visible.Contains(summon))
                     {
                         Enter(observer, summon);
                     }
@@ -399,17 +422,137 @@ namespace PortfolioMmo.Server
             }
         }
 
+        /// <summary>
+        /// 시야 인원 상한(55) 안이면 받게 하고 true다. 상한에 이른 연결에 다른 플레이어는 받게 하지 않고, 다시 고를 차례에 보도록 표시한다.
+        /// </summary>
+        private bool TryEnter(Player observer, Entity entity)
+        {
+            if ((entity is Player) && (observer.ViewPlayers >= _playerLimit))
+            {
+                observer.ViewCapped = true;
+                return false;
+            }
+
+            Enter(observer, entity);
+            return true;
+        }
+
+        /// <summary>
+        /// 시야를 다시 고른다(55): 둘레 3×3칸의 플레이어와 받은 플레이어(여유의 것 포함)가 후보다. 모두 상한 안이면 받지 않은 것을 받고 표시를 내린다.
+        /// 넘으면 차례대로 상한까지 골라, 고르지 않은 받은 플레이어는 나가게 하고 고른 새 플레이어는 받게 한다(소환수도 따라 들고 남).
+        /// </summary>
+        private void Reselect(Player observer, uint tick)
+        {
+            HashSet<Entity> around = observer.NextVisible;
+            around.Clear();
+            _grid.CollectAround(observer.Cell, around);
+            _candidates.Clear();
+            foreach (Entity entity in around)
+            {
+                if ((entity is Player player) && (player != observer))
+                {
+                    _candidates.Add((Rank(observer, player, tick), DistanceSquared(observer, player), player));
+                }
+            }
+
+            foreach (Entity entity in observer.Visible)
+            {
+                if ((entity is Player player) && !around.Contains(player))
+                {
+                    _candidates.Add((Rank(observer, player, tick), DistanceSquared(observer, player), player));
+                }
+            }
+
+            observer.ViewCapped = _candidates.Count > _playerLimit;
+            if (observer.ViewCapped)
+            {
+                _candidates.Sort((a, b) => (a.Rank != b.Rank) ? a.Rank.CompareTo(b.Rank) : (a.Distance != b.Distance) ? a.Distance.CompareTo(b.Distance) : a.Player.Id.CompareTo(b.Player.Id));
+                _candidates.RemoveRange(_playerLimit, _candidates.Count - _playerLimit);
+            }
+
+            _selected.Clear();
+            foreach ((int _, long _, Player player) in _candidates)
+            {
+                _selected.Add(player);
+            }
+
+            _leaving.Clear();
+            foreach (Entity entity in observer.Visible)
+            {
+                if ((entity is Player player) && !_selected.Contains(player))
+                {
+                    _leaving.Add(player);
+                }
+            }
+
+            foreach (Entity player in _leaving)
+            {
+                LeaveWithSummon(observer, player);
+            }
+
+            foreach (Player player in _selected)
+            {
+                if (!observer.Visible.Contains(player))
+                {
+                    Enter(observer, player);
+                    if ((player.Summon != null) && !observer.Visible.Contains(player.Summon))
+                    {
+                        Enter(observer, player.Summon);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 다시 고를 때의 무리(작을수록 먼저): 0 파티원, 1 나를 공격하는 캐릭터(공격 중인 대상이 나이거나, 전투 상태에서 마지막으로 스킬을 쓴 대상이 나),
+        /// 2 내 대상(내가 공격 중이거나, 전투 상태에서 마지막으로 스킬을 쓴 캐릭터), 3 이미 받은 캐릭터, 4 새 후보.
+        /// </summary>
+        private static int Rank(Player observer, Player player, uint tick)
+        {
+            if ((player.PartyId != 0) && (player.PartyId == observer.PartyId))
+            {
+                return 0;
+            }
+
+            if ((player.AttackTarget == observer.Id) || (player.InCombat(tick) && (player.LastSkillTarget == observer.Id)))
+            {
+                return 1;
+            }
+
+            if ((observer.AttackTarget == player.Id) || (observer.InCombat(tick) && (observer.LastSkillTarget == player.Id)))
+            {
+                return 2;
+            }
+
+            return observer.Visible.Contains(player) ? 3 : 4;
+        }
+
+        private static long DistanceSquared(Entity a, Entity b)
+        {
+            long dx = a.X - b.X;
+            long dz = a.Z - b.Z;
+            return (dx * dx) + (dz * dz);
+        }
+
         private void Enter(Player observer, Entity entity)
         {
             observer.Visible.Add(entity);
             entity.Watchers.Add(observer);
             observer.ViewEntered.Add(entity);
             (observer.ViewEnter ??= new EntitiesEnter()).Entities.Add(entity.EnterMessage());
+            if (entity is Player)
+            {
+                observer.ViewPlayers++;
+            }
         }
 
         private static void Leave(Player observer, Entity entity)
         {
-            observer.Visible.Remove(entity);
+            if (observer.Visible.Remove(entity) && (entity is Player))
+            {
+                observer.ViewPlayers--;
+            }
+
             observer.ViewMargin.Remove(entity);
             entity.Watchers.Remove(observer);
             (observer.ViewLeave ??= new EntitiesLeave()).Ids.Add(entity.Id);

@@ -150,7 +150,7 @@ namespace PortfolioMmo.Server
                 _pk.Entered(player);
                 _bosses.Entered(player);
             };
-            _view = new ViewSystem(_entities, _grid, new MoveNotifier(data.Constants), data.Constants.ViewMargin);
+            _view = new ViewSystem(_entities, _grid, new MoveNotifier(data.Constants), data.Constants.ViewMargin, (int)data.Constants.ViewPlayerLimit);
             _rateLimits = RateLimiter.Limits.From(data.Constants);
             _dev = dev ? new DevSystem(data, field, _entities, _movement, _progress, _spawn, _growth, _inventory, _pk) : null;
         }

@@ -273,6 +273,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     kMoveConfirmMsFieldNumber = 52,
     kMoveStopMsFieldNumber = 53,
     kMoveGoalMsFieldNumber = 54,
+    kViewPlayerLimitFieldNumber = 55,
   };
   // uint32 field_size = 1;
   void clear_field_size() ;
@@ -804,11 +805,21 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
   void _internal_set_move_goal_ms(::uint32_t value);
 
   public:
+  // uint32 view_player_limit = 55;
+  void clear_view_player_limit() ;
+  [[nodiscard]] ::uint32_t view_player_limit() const;
+  void set_view_player_limit(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_view_player_limit() const;
+  void _internal_set_view_player_limit(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:portfolio.mmo.data.Constants)
  private:
   class _Internal;
   using ParseTableT_ =
-      ::google::protobuf::internal::TcParseTable<5, 53,
+      ::google::protobuf::internal::TcParseTable<5, 54,
                           0, 0,
                           9>;
   static constexpr ParseTableT_ InternalGenerateParseTable_(
@@ -890,6 +901,7 @@ class  PROTOBUF_FUTURE_ADD_EARLY_WARN_UNUSED Constants final : public ::google::
     ::uint32_t move_confirm_ms_;
     ::uint32_t move_stop_ms_;
     ::uint32_t move_goal_ms_;
+    ::uint32_t view_player_limit_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -2182,6 +2194,30 @@ inline ::uint32_t Constants::_internal_move_goal_ms() const {
 inline void Constants::_internal_set_move_goal_ms(::uint32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.move_goal_ms_ = value;
+}
+
+// uint32 view_player_limit = 55;
+inline void Constants::clear_view_player_limit() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.view_player_limit_ = 0u;
+  ClearHasBit(_impl_._has_bits_[1], 0x00200000U);
+}
+inline ::uint32_t Constants::view_player_limit() const {
+  // @@protoc_insertion_point(field_get:portfolio.mmo.data.Constants.view_player_limit)
+  return _internal_view_player_limit();
+}
+inline void Constants::set_view_player_limit(::uint32_t value) {
+  _internal_set_view_player_limit(value);
+  SetHasBit(_impl_._has_bits_[1], 0x00200000U);
+  // @@protoc_insertion_point(field_set:portfolio.mmo.data.Constants.view_player_limit)
+}
+inline ::uint32_t Constants::_internal_view_player_limit() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.view_player_limit_;
+}
+inline void Constants::_internal_set_view_player_limit(::uint32_t value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.view_player_limit_ = value;
 }
 
 #ifdef __GNUC__

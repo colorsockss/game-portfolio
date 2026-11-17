@@ -24,7 +24,7 @@ namespace PortfolioMmo.Data {
     static ConstantsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSKlCwoJQ29u",
+            "Cg9Db25zdGFudHMucHJvdG8SEnBvcnRmb2xpby5tbW8uZGF0YSLACwoJQ29u",
             "c3RhbnRzEhIKCmZpZWxkX3NpemUYASABKA0SGgoSY29tYmF0X2R1cmF0aW9u",
             "X21zGAIgASgNEhUKDXJlZ2VuX3BlcmNlbnQYAyABKA0SHAoUY29tYmF0X3Jl",
             "Z2VuX3BlcmNlbnQYBCABKA0SEwoLY3JpdF9jaGFuY2UYBSABKAESFwoPY3Jp",
@@ -57,11 +57,12 @@ namespace PortfolioMmo.Data {
             "EhMKC3ZpZXdfbWFyZ2luGDEgASgBEhUKDW1vdmVfdHVybl95YXcYMiABKA0S",
             "FAoMbW92ZV90dXJuX21zGDMgASgNEhcKD21vdmVfY29uZmlybV9tcxg0IAEo",
             "DRIUCgxtb3ZlX3N0b3BfbXMYNSABKA0SFAoMbW92ZV9nb2FsX21zGDYgASgN",
-            "QhSqAhFQb3J0Zm9saW9NbW8uRGF0YWIGcHJvdG8z"));
+            "EhkKEXZpZXdfcGxheWVyX2xpbWl0GDcgASgNQhSqAhFQb3J0Zm9saW9NbW8u",
+            "RGF0YWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain", "DeathExpPercent", "OutlawDeathExpPercent", "OutlawDropInventoryPercent", "OutlawDropEquipmentPercent", "SummonFollowDistance", "SummonLeashDistance", "PetPickIntervalMs", "ViewMargin", "MoveTurnYaw", "MoveTurnMs", "MoveConfirmMs", "MoveStopMs", "MoveGoalMs" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PortfolioMmo.Data.Constants), global::PortfolioMmo.Data.Constants.Parser, new[]{ "FieldSize", "CombatDurationMs", "RegenPercent", "CombatRegenPercent", "CritChance", "CritMultiplier", "PlayerRadius", "UnreachableMs", "RepathDistance", "ReturnRangeMargin", "ReturnRegenPercent", "WanderPauseMinMs", "WanderPauseMaxMs", "ReviveHpPercent", "DeadMonsterMs", "InteractRange", "InteractPickRange", "RateLimitTokens", "RateLimitRefillPerSecond", "RateLimitKickMs", "RateLimitResetMs", "InventorySlots", "DropLifetimeMs", "OwnerOnlyMs", "DropScatter", "AutoHuntRange", "AutoHuntHpPercent", "AutoHuntMpPercent", "AutoHuntExcludeMs", "AutoHuntStallMs", "AutoHuntManualPauseMs", "StorageSlots", "ChatMaxBytes", "ChatPerSecond", "PartyExpBonusPercent", "PartyInviteMs", "AggressorMs", "PkMinLevel", "KarmaKillPenalty", "KarmaMonsterGain", "DeathExpPercent", "OutlawDeathExpPercent", "OutlawDropInventoryPercent", "OutlawDropEquipmentPercent", "SummonFollowDistance", "SummonLeashDistance", "PetPickIntervalMs", "ViewMargin", "MoveTurnYaw", "MoveTurnMs", "MoveConfirmMs", "MoveStopMs", "MoveGoalMs", "ViewPlayerLimit" }, null, null, null, null)
           }));
     }
     #endregion
@@ -156,6 +157,7 @@ namespace PortfolioMmo.Data {
       moveConfirmMs_ = other.moveConfirmMs_;
       moveStopMs_ = other.moveStopMs_;
       moveGoalMs_ = other.moveGoalMs_;
+      viewPlayerLimit_ = other.viewPlayerLimit_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -960,6 +962,21 @@ namespace PortfolioMmo.Data {
       }
     }
 
+    /// <summary>Field number for the "view_player_limit" field.</summary>
+    public const int ViewPlayerLimitFieldNumber = 55;
+    private uint viewPlayerLimit_;
+    /// <summary>
+    /// 연결 하나가 받는 다른 플레이어의 상한(55). 넘으면 1초마다 파티원 → 나를 공격하는 캐릭터 → 내 대상 → 이미 받은 캐릭터 → 새 후보의 차례(같은 무리는 가까운 순)로 고른다. 몬스터·NPC·채집물·바닥 아이템에는 상한이 없다
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint ViewPlayerLimit {
+      get { return viewPlayerLimit_; }
+      set {
+        viewPlayerLimit_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1028,6 +1045,7 @@ namespace PortfolioMmo.Data {
       if (MoveConfirmMs != other.MoveConfirmMs) return false;
       if (MoveStopMs != other.MoveStopMs) return false;
       if (MoveGoalMs != other.MoveGoalMs) return false;
+      if (ViewPlayerLimit != other.ViewPlayerLimit) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1088,6 +1106,7 @@ namespace PortfolioMmo.Data {
       if (MoveConfirmMs != 0) hash ^= MoveConfirmMs.GetHashCode();
       if (MoveStopMs != 0) hash ^= MoveStopMs.GetHashCode();
       if (MoveGoalMs != 0) hash ^= MoveGoalMs.GetHashCode();
+      if (ViewPlayerLimit != 0) hash ^= ViewPlayerLimit.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1318,6 +1337,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(176, 3);
         output.WriteUInt32(MoveGoalMs);
       }
+      if (ViewPlayerLimit != 0) {
+        output.WriteRawTag(184, 3);
+        output.WriteUInt32(ViewPlayerLimit);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1540,6 +1563,10 @@ namespace PortfolioMmo.Data {
         output.WriteRawTag(176, 3);
         output.WriteUInt32(MoveGoalMs);
       }
+      if (ViewPlayerLimit != 0) {
+        output.WriteRawTag(184, 3);
+        output.WriteUInt32(ViewPlayerLimit);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1708,6 +1735,9 @@ namespace PortfolioMmo.Data {
       }
       if (MoveGoalMs != 0) {
         size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MoveGoalMs);
+      }
+      if (ViewPlayerLimit != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt32Size(ViewPlayerLimit);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1879,6 +1909,9 @@ namespace PortfolioMmo.Data {
       }
       if (other.MoveGoalMs != 0) {
         MoveGoalMs = other.MoveGoalMs;
+      }
+      if (other.ViewPlayerLimit != 0) {
+        ViewPlayerLimit = other.ViewPlayerLimit;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2111,6 +2144,10 @@ namespace PortfolioMmo.Data {
             MoveGoalMs = input.ReadUInt32();
             break;
           }
+          case 440: {
+            ViewPlayerLimit = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -2340,6 +2377,10 @@ namespace PortfolioMmo.Data {
           }
           case 432: {
             MoveGoalMs = input.ReadUInt32();
+            break;
+          }
+          case 440: {
+            ViewPlayerLimit = input.ReadUInt32();
             break;
           }
         }

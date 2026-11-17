@@ -20,6 +20,7 @@ namespace PortfolioMmo.Server
             Name = character.Name;
             Class = character.Class;
             Session = session;
+            ViewReselect = new Periodic(id % Units.TicksPerSecond, Units.TicksPerSecond);
         }
 
         /// <summary>
@@ -219,6 +220,21 @@ namespace PortfolioMmo.Server
         /// 시야 경계의 여유(78)에 있는 개체: 둘레 3×3 시야 칸을 벗어났지만 그 바깥 테두리에서 여유 안이라 아직 받은 것으로 두는 개체(Visible에도 듦).
         /// </summary>
         internal HashSet<Entity> ViewMargin { get; } = new HashSet<Entity>();
+
+        /// <summary>
+        /// 받은 다른 플레이어의 수(55. Visible에 든 플레이어, 여유의 것 포함). ViewSystem의 Enter와 Leave가 센다.
+        /// </summary>
+        internal int ViewPlayers { get; set; }
+
+        /// <summary>
+        /// 시야 인원 상한(55) 때문에 받지 못한 플레이어가 둘레에 있다. 다시 고를 차례에 둘레를 통째로 보고, 모두 받을 수 있으면 내린다.
+        /// </summary>
+        internal bool ViewCapped { get; set; }
+
+        /// <summary>
+        /// 시야를 다시 고를 차례(55. 1초마다, 개체 번호로 위상을 엇갈려 한 틱에 몰리지 않음).
+        /// </summary>
+        internal Periodic ViewReselect { get; }
 
         internal EntityMoves? ViewMoves { get; set; }
 
