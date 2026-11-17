@@ -30,9 +30,14 @@ void UMmoSession::Initialize(FSubsystemCollectionBase& Collection)
 	if (FParse::Value(FCommandLine::Get(), TEXT("MmoServer="), Server))
 	{
 		FString PortText;
-		if (Server.Split(TEXT(":"), &Host, &PortText))
+		// 끝의 콜론에서 나눠 [IPv6]:포트도 받는다(예: [::1]:7800).
+		if (Server.Split(TEXT(":"), &Host, &PortText, ESearchCase::CaseSensitive, ESearchDir::FromEnd))
 		{
 			Port = FCString::Atoi(*PortText);
+			if (Host.StartsWith(TEXT("[")) && Host.EndsWith(TEXT("]")))
+			{
+				Host = Host.Mid(1, Host.Len() - 2);
+			}
 		}
 		else
 		{

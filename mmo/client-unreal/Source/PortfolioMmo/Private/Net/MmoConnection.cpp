@@ -20,7 +20,7 @@ namespace
 	const FTimespan ConnectTimeout = FTimespan::FromSeconds(5);
 }
 
-/** 이름을 풀고 연결한 뒤, 받은 바이트를 프레임으로 잘라 Packet을 큐에 넣는다. 끝날 때는 항상 Closed를 넣는다. */
+/** 이름을 풀고 조회 결과를 차례로 연결해 본 뒤, 받은 바이트를 프레임으로 잘라 Packet을 큐에 넣는다. 끝날 때는 항상 Closed를 넣는다. */
 class FMmoReceiveWorker : public FRunnable
 {
 public:
@@ -45,30 +45,30 @@ private:
 	FString Receive()
 	{
 		ISocketSubsystem* Sockets = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
-		// 소켓을 IPv4로 만들었으므로 IPv4 주소만 받는다(localhost가 IPv6로 먼저 풀리는 것을 막는다).
-		FAddressInfoResult Resolved = Sockets->GetAddressInfo(*Host, nullptr, EAddressInfoFlags::Default, FNetworkProtocolTypes::IPv4, SOCKTYPE_Streaming);
+		// IPv4와 IPv6를 모두 받아 조회 결과의 차례대로 시도한다(IPv6만 되는 망에서는 DNS64가 만든 IPv6 주소, localhost는 ::1 다음 127.0.0.1).
+		// OnlyUsableAddresses(AI_ADDRCONFIG): 이 기기에 그 종류의 주소가 없으면 그 종류는 받지 않는다.
+		FAddressInfoResult Resolved = Sockets->GetAddressInfo(*Host, nullptr, EAddressInfoFlags::OnlyUsableAddresses, NAME_None, SOCKTYPE_Streaming);
 		if (Resolved.ReturnCode != SE_NO_ERROR || Resolved.Results.IsEmpty())
 		{
 			return FString::Printf(TEXT("Cannot resolve %s"), *Host);
 		}
-		TSharedRef<FInternetAddr> Address = Resolved.Results[0].Address;
-		Address->SetPort(Port);
-
-		FSocket* Socket = Owner.Socket;
-		Socket->Connect(*Address);
-		const FDateTime Deadline = FDateTime::UtcNow() + ConnectTimeout;
-		while (Socket->GetConnectionState() != SCS_Connected)
+		FSocket* Socket = nullptr;
+		for (const FAddressInfoResultData& Result : Resolved.Results)
 		{
-			if (bStopping)
+			Result.Address->SetPort(Port);
+			Socket = TryConnect(*Sockets, *Result.Address);
+			if (Socket || bStopping)
 			{
-				return TEXT("Closed");
+				break;
 			}
-			if (Socket->GetConnectionState() == SCS_ConnectionError || FDateTime::UtcNow() > Deadline)
-			{
-				return FString::Printf(TEXT("Cannot connect to %s:%d"), *Host, Port);
-			}
-			Socket->Wait(ESocketWaitConditions::WaitForWrite, PollInterval);
+			UE_LOG(LogMmoNet, Log, TEXT("Cannot connect to %s"), *Result.Address->ToString(true));
 		}
+		if (!Socket)
+		{
+			return bStopping ? TEXT("Closed") : FString::Printf(TEXT("Cannot connect to %s:%d"), *Host, Port);
+		}
+		// 게임 스레드는 Connected를 꺼낸 뒤(Send)나 이 스레드가 끝난 뒤(Shutdown)에만 Socket을 본다.
+		Owner.Socket = Socket;
 		Owner.Inbox.Enqueue({ UMmoConnection::FInbound::EKind::Connected, nullptr, FString() });
 
 		MmoProtocol::FFrameReader Reader;
@@ -101,6 +101,35 @@ private:
 			}
 		}
 		return TEXT("Closed");
+	}
+
+	/** 주소 하나에 연결한다. 연결되면 소켓을, 거절되거나 시간이 지나거나 멈추라고 하면 소켓을 닫고 nullptr를 낸다. */
+	FSocket* TryConnect(ISocketSubsystem& Sockets, const FInternetAddr& Address)
+	{
+		FSocket* Socket = Sockets.CreateSocket(NAME_Stream, TEXT("MmoConnection"), Address.GetProtocolType());
+		if (!Socket)
+		{
+			return nullptr;
+		}
+		// 수신 스레드가 Wait로 기다리다 멈춤 요청을 확인할 수 있게 논블로킹으로 쓴다.
+		Socket->SetNonBlocking(true);
+		Socket->SetNoDelay(true);
+		bool bOk = Socket->Connect(Address);
+		const FDateTime Deadline = FDateTime::UtcNow() + ConnectTimeout;
+		// 연결이 끝나면 붙은 것은 쓸 수 있게, 거절된 것은 읽을 수 있게(macOS는 POLLIN|POLLHUP) 된다. 서버는 로그인 전에 보내지 않는다.
+		while (bOk && !Socket->Wait(ESocketWaitConditions::WaitForWrite, PollInterval) && !Socket->Wait(ESocketWaitConditions::WaitForRead, FTimespan::Zero()))
+		{
+			bOk = !bStopping && FDateTime::UtcNow() <= Deadline;
+		}
+		// 상대 주소가 있어야 붙은 것이다. GetConnectionState는 Connect 뒤 5초 동안 오류가 없으면 붙었다고 해 거절을 놓친다.
+		const TSharedRef<FInternetAddr> Peer = Sockets.CreateInternetAddr(Address.GetProtocolType());
+		if (!bOk || bStopping || !Socket->GetPeerAddress(*Peer))
+		{
+			Socket->Close();
+			Sockets.DestroySocket(Socket);
+			return nullptr;
+		}
+		return Socket;
 	}
 
 	UMmoConnection& Owner;
@@ -136,10 +165,7 @@ void UMmoConnection::Deinitialize()
 void UMmoConnection::Connect(const FString& Host, int32 Port)
 {
 	Shutdown();
-	// 수신 스레드가 Wait로 기다리다 멈춤 요청을 확인할 수 있게 논블로킹으로 쓴다.
-	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("MmoConnection"), FNetworkProtocolTypes::IPv4);
-	Socket->SetNonBlocking(true);
-	Socket->SetNoDelay(true);
+	// 소켓은 수신 스레드가 이름을 푼 뒤 그 주소의 종류(IPv4, IPv6)로 만든다.
 	Worker = MakeUnique<FMmoReceiveWorker>(*this, Host, Port);
 	Thread.Reset(FRunnableThread::Create(Worker.Get(), TEXT("MmoReceive")));
 	UE_LOG(LogMmoNet, Log, TEXT("Connecting to %s:%d"), *Host, Port);
