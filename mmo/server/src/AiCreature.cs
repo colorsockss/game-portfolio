@@ -43,6 +43,11 @@ namespace PortfolioMmo.Server
         internal Periodic Detect { get; }
 
         /// <summary>
+        /// 둘레 9개의 시야 칸에 플레이어가 없어 몬스터 차례가 건너뛰는 중이다(56). 깨어날 때 인식의 위상을 맞추는 데 쓴다.
+        /// </summary>
+        internal bool Asleep { get; set; }
+
+        /// <summary>
         /// 따라가는 길의 꺾이는 점(1/32 m)과 다음 점의 차례. 비었으면 곧게 간다.
         /// </summary>
         internal List<(int X, int Z)> Path { get; } = new List<(int X, int Z)>();

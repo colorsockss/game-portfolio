@@ -11,6 +11,7 @@ namespace PortfolioMmo.Server.Tests
     /// 몬스터의 놓기, 인식, 추적, 복귀, 배회를 글자 맵(64 m, 원점이 가운데)에서 틱을 손으로 돌려 본다. 시험용 몬스터 1은 선공, 2는 비선공이고
     /// 3 m/s, 인식 8 m, 추적 한계 20 m, 사거리 2 m다. 플레이어는 맵의 가장 작은 모서리(마을)에서 들어와 테스트가 옮긴다.
     /// 무리의 자리 (x, z) m의 몬스터는 그 칸의 가운데 (x × 32 + 16, z × 32 + 16)에 선다(흩는 반경 0).
+    /// 둘레 9개의 시야 칸에 플레이어가 없는 몬스터는 계산하지 않으므로(56), 플레이어 없이 몬스터를 움직여 보는 테스트도 플레이어 하나를 들인다.
     /// </summary>
     public partial class WorldTests
     {
@@ -252,6 +253,7 @@ namespace PortfolioMmo.Server.Tests
         {
             World world = MonsterWorld(TestData.Draw(64, (10, -3, 11, 4, '#')), 1, TestData.Spawn(1, 0, 0, 2));
             Monster monster = world.Monsters[0];
+            Enter(world, "hero_01", Center(-25), Center(-25));
             world.Place(monster, Center(21), Center(0));
 
             world.Step();
@@ -297,6 +299,7 @@ namespace PortfolioMmo.Server.Tests
             World world = MonsterWorld(TestData.Draw(64), 1, TestData.Spawn(1, 0, 0, 2), TestData.Spawn(2, -20, 10, 2));
             Monster returning = world.Monsters[0];
             Monster idle = world.Monsters[1];
+            Enter(world, "hero_01", Center(-25), Center(-25));
             world.Place(returning, Center(21), Center(0));
             returning.Hp = 10;
             idle.Hp = 10;
@@ -418,6 +421,7 @@ namespace PortfolioMmo.Server.Tests
             World world = MonsterWorld(TestData.Draw(64), 1, TestData.Spawn(1, 0, 0, 2));
             Monster monster = world.Monsters[0];
             Session session = Join(world, "hero_01");
+            Enter(world, "hero_02", Center(-25), Center(-25));
             world.Place(session.Player!, Center(5), Center(0));
             monster.Damage.Add(session.Player!.Id, 10);
             world.Disconnect(session);

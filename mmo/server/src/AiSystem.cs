@@ -106,7 +106,7 @@ namespace PortfolioMmo.Server
             {
                 Rest(monster);
                 // 기절한 몬스터는 움직이지도 치지도 않는다(공격 상태는 남고 CombatSystem이 쉬게 함).
-                if (!monster.Dead && !monster.Stunned)
+                if (Awake(monster, tick) && !monster.Dead && !monster.Stunned)
                 {
                     Think(monster, tick, elapsedTicks, regenerate);
                 }
@@ -115,7 +115,10 @@ namespace PortfolioMmo.Server
             foreach (Guard guard in _guards)
             {
                 Rest(guard);
-                Think(guard, tick, elapsedTicks);
+                if (Awake(guard, tick))
+                {
+                    Think(guard, tick, elapsedTicks);
+                }
             }
 
             foreach (Summon summon in _summons)
@@ -126,6 +129,29 @@ namespace PortfolioMmo.Server
                     Think(summon, elapsedTicks);
                 }
             }
+        }
+
+        /// <summary>
+        /// 둘레 9개의 시야 칸에 플레이어가 있으면 깨어 있다(56). 없으면 계산하지 않고 공격 상태를 내린다. 걸음 표시는 Rest가 내렸으므로 걷던 개체는
+        /// 이 틱에 멈춤이 알려진다(54. 여유 목록(78)으로 아직 받는 연결이 이어 그리지 않게). 깨어나면 하던 상태(대기, 추적, 복귀)를 그대로 잇고,
+        /// 인식은 처음 위상(번호 % 5)의 다음 차례부터 한다(함께 깨어난 몬스터의 인식이 한 틱에 몰리지 않게). 소환수는 늘 주인 곁이라 재우지 않는다.
+        /// </summary>
+        private bool Awake(AiCreature mob, uint tick)
+        {
+            if (!_grid.HasPlayerAround(mob.Cell))
+            {
+                mob.AttackTarget = 0;
+                mob.Asleep = true;
+                return false;
+            }
+
+            if (mob.Asleep)
+            {
+                mob.Asleep = false;
+                mob.Detect.Resume(tick);
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -516,16 +542,11 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 대기: 둘레 9개의 시야 칸에 플레이어가 있을 때만, 놓인 점에서 배회 반경 안이고 지금 자리에서 걷는 선이 트인 무작위 점으로 걷고,
-        /// 닿으면 정한 시간 동안 선다. 그런 점만 고르므로 길찾기를 쓰지 않는다.
+        /// 대기: 놓인 점에서 배회 반경 안이고 지금 자리에서 걷는 선이 트인 무작위 점으로 걷고, 닿으면 정한 시간 동안 선다. 그런 점만 고르므로
+        /// 길찾기를 쓰지 않는다. 둘레 9개의 시야 칸에 플레이어가 없으면 몬스터 차례가 건너뛰므로(56) 배회하지 않는다.
         /// </summary>
         private void Wander(Monster monster, uint tick, double step)
         {
-            if (!_grid.HasPlayerAround(monster.Cell))
-            {
-                return;
-            }
-
             if (!monster.Wandering)
             {
                 if (tick < monster.WanderResumeTick)

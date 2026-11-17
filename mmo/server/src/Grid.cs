@@ -24,6 +24,12 @@ namespace PortfolioMmo.Server
         private readonly Stack<List<Entity>> _freeLists = new Stack<List<Entity>>();
 
         /// <summary>
+        /// 시야 칸마다 둘레 3×3칸의 플레이어 수(56. 몬스터 재우기). 플레이어가 놓이고 빠지고 칸을 옮길 때만 고치고, 0이 된 칸은 뺀다.
+        /// 연결이 떨어진 채 월드에 남은 캐릭터(46)도 격자에 있으므로 센다.
+        /// </summary>
+        private readonly Dictionary<long, int> _playersAround = new Dictionary<long, int>();
+
+        /// <summary>
         /// 개체를 지금 위치의 칸에 넣는다.
         /// </summary>
         public void Add(Entity entity)
@@ -31,12 +37,14 @@ namespace PortfolioMmo.Server
             entity.Cell = CellOf(entity.X, entity.Z);
             CellEntities(entity.Cell).Add(entity);
             Touch(entity.Cell, entity);
+            CountPlayer(entity, entity.Cell, 1);
         }
 
         public void Remove(Entity entity)
         {
             _cells[entity.Cell].Remove(entity);
             Touch(entity.Cell, entity);
+            CountPlayer(entity, entity.Cell, -1);
         }
 
         /// <summary>
@@ -49,9 +57,11 @@ namespace PortfolioMmo.Server
             {
                 _cells[entity.Cell].Remove(entity);
                 Touch(entity.Cell, entity);
+                CountPlayer(entity, entity.Cell, -1);
                 CellEntities(cell).Add(entity);
                 entity.Cell = cell;
                 Touch(cell, entity);
+                CountPlayer(entity, cell, 1);
             }
         }
 
@@ -131,24 +141,11 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 칸 둘레 3×3칸에 플레이어가 있는가(몬스터의 배회. 재우는 판단은 56).
+        /// 칸 둘레 3×3칸에 플레이어가 있는가(56. 몬스터와 경비병을 재우는 판단). 칸마다 세어 둔 수를 본다.
         /// </summary>
         public bool HasPlayerAround(long cell)
         {
-            int cellX = (int)(cell >> 32);
-            int cellZ = (int)cell;
-            for (int offsetX = -1; offsetX <= 1; offsetX++)
-            {
-                for (int offsetZ = -1; offsetZ <= 1; offsetZ++)
-                {
-                    if (_cells.TryGetValue(CellKey(cellX + offsetX, cellZ + offsetZ), out List<Entity>? entities) && entities.Exists(entity => entity.Kind == Contract.EntityKind.Player))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return _playersAround.ContainsKey(cell);
         }
 
         /// <summary>
@@ -212,6 +209,36 @@ namespace PortfolioMmo.Server
         private static long CellKey(int cellX, int cellZ)
         {
             return ((long)cellX << 32) | (uint)cellZ;
+        }
+
+        /// <summary>
+        /// 플레이어가 cell에 들거나(delta 1) 났다(-1). 그 칸을 둘레로 가진 3×3칸의 수를 고친다.
+        /// </summary>
+        private void CountPlayer(Entity entity, long cell, int delta)
+        {
+            if (entity.Kind != Contract.EntityKind.Player)
+            {
+                return;
+            }
+
+            int cellX = (int)(cell >> 32);
+            int cellZ = (int)cell;
+            for (int offsetX = -1; offsetX <= 1; offsetX++)
+            {
+                for (int offsetZ = -1; offsetZ <= 1; offsetZ++)
+                {
+                    long key = CellKey(cellX + offsetX, cellZ + offsetZ);
+                    int count = _playersAround.GetValueOrDefault(key) + delta;
+                    if (count == 0)
+                    {
+                        _playersAround.Remove(key);
+                    }
+                    else
+                    {
+                        _playersAround[key] = count;
+                    }
+                }
+            }
         }
 
         private void Touch(long cell, Entity entity)

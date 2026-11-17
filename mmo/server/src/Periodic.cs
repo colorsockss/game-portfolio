@@ -35,5 +35,17 @@ namespace PortfolioMmo.Server
             Next += (((now - Next) / _interval) + 1) * _interval;
             return true;
         }
+
+        /// <summary>
+        /// 쉬던 동안(잠든 몬스터. 56) 지난 차례를 하지 않은 것으로 버리고, 다음 차례를 now 이후의 첫 위상(now일 수 있음)에 둔다.
+        /// 함께 쉬다 다시 시작한 것들이 밀린 차례를 한 틱에 몰아 하지 않게 한다.
+        /// </summary>
+        public void Resume(uint now)
+        {
+            if (Next < now)
+            {
+                Next += (now - Next + _interval - 1) / _interval * _interval;
+            }
+        }
     }
 }

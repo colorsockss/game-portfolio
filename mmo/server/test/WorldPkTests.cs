@@ -329,6 +329,8 @@ namespace PortfolioMmo.Server.Tests
         {
             World world = GuardWorld();
             Guard guard = world.Guards.Single();
+            // 쫓던 대상이 빠진 뒤에도 둘레에 플레이어가 있어야 경비병이 깨어 있다(56).
+            Fighter(world, "hero_09", -20, -20);
             Session runner = Duelist(world, "hero_01", 2, 6);
             runner.Player!.Karma = -1;
             StepUntil(world, () => guard.State == MonsterState.Chase, 10);
