@@ -42,7 +42,8 @@ void UMmoItemSlotWidget::Show(uint32 ItemId, uint32 Count)
 {
 	UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>();
 	const portfolio::mmo::data::ItemsRow* Item = ItemId != 0 ? Session->Data().Item(ItemId) : nullptr;
-	GradeBorder->SetBrushColor(Item ? GradeColor(Item->grade()) : FLinearColor(0.2f, 0.2f, 0.22f));
+	// 칸 그림(청동 테두리)에 곱한다. 빈 칸은 어둡게.
+	GradeBorder->SetBrushColor(Item ? GradeColor(Item->grade()) : FLinearColor(0.55f, 0.55f, 0.58f));
 	const UMmoIcons* Icons = LoadObject<UMmoIcons>(nullptr, UMmoIcons::Path);
 	UTexture2D* Texture = Item && Icons ? Icons->Load(EMmoIconKind::Item, static_cast<int32>(ItemId)) : nullptr;
 	IconImage->SetVisibility(Texture ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);

@@ -80,17 +80,17 @@ namespace
 	{
 		FLinearColor Backdrop{ 0.02f, 0.02f, 0.03f, 1.0f };
 		FLinearColor Dim{ 0.0f, 0.0f, 0.0f, 0.5f };
-		FLinearColor Panel{ 0.06f, 0.07f, 0.09f, 0.96f };
 		FLinearColor Text{ 0.92f, 0.92f, 0.90f, 1.0f };
 		FLinearColor Positive{ 0.45f, 0.9f, 0.55f, 1.0f };
 		FLinearColor Negative{ 1.0f, 0.4f, 0.35f, 1.0f };
 		FLinearColor Shadow{ 0.0f, 0.0f, 0.0f, 0.8f };
 		FLinearColor NoticeBack{ 0.0f, 0.0f, 0.0f, 0.65f };
-		FLinearColor ButtonNormal{ 0.82f, 0.80f, 0.74f, 1.0f };
-		FLinearColor ButtonHovered{ 0.95f, 0.92f, 0.84f, 1.0f };
-		FLinearColor ButtonPressed{ 0.62f, 0.60f, 0.55f, 1.0f };
-		FLinearColor ButtonDisabled{ 0.40f, 0.40f, 0.40f, 1.0f };
-		FLinearColor ButtonText{ 0.05f, 0.05f, 0.05f, 1.0f };
+		/** 버튼의 그림(button.png. 밝기만)에 곱하는 색(99: 청동). */
+		FLinearColor ButtonNormal{ 0.50f, 0.36f, 0.20f, 1.0f };
+		FLinearColor ButtonHovered{ 0.65f, 0.48f, 0.28f, 1.0f };
+		FLinearColor ButtonPressed{ 0.34f, 0.24f, 0.13f, 1.0f };
+		FLinearColor ButtonDisabled{ 0.20f, 0.20f, 0.20f, 1.0f };
+		FLinearColor ButtonText{ 0.96f, 0.90f, 0.76f, 1.0f };
 		/** 체력·마나 바의 채움과 바탕. */
 		FLinearColor Hp{ 0.75f, 0.12f, 0.10f, 1.0f };
 		FLinearColor Mp{ 0.15f, 0.35f, 0.85f, 1.0f };
@@ -100,8 +100,8 @@ namespace
 		FLinearColor Cast{ 0.95f, 0.75f, 0.2f, 1.0f };
 		FLinearColor Status{ 1.0f, 0.6f, 0.3f, 1.0f };
 		FLinearColor CooldownShade{ 0.0f, 0.0f, 0.0f, 0.65f };
-		/** 고른 버튼(캐릭터 칸, 직업)의 배경 곱. */
-		FLinearColor Selected{ 1.0f, 0.78f, 0.3f, 1.0f };
+		/** 고른 버튼(캐릭터 칸, 직업)의 배경 곱. 버튼의 색과 곱한 뒤에 0–1로 잘리므로 1보다 커도 된다(청동 → 금). */
+		FLinearColor Selected{ 2.1f, 1.8f, 1.1f, 1.0f };
 		/** 채팅의 줄 색(주변, 파티, 전체, 귓속말, 시스템. 41)과 채팅창·말풍선의 바탕. */
 		FLinearColor ChatNearby{ 0.92f, 0.92f, 0.90f, 1.0f };
 		FLinearColor ChatParty{ 0.45f, 0.75f, 1.0f, 1.0f };
@@ -122,8 +122,21 @@ namespace
 		float ButtonRadius = 6.0f;
 		FMargin ButtonPadding{ 16.0f, 6.0f };
 
-		float PanelRadius = 10.0f;
-		float PanelPadding = 24.0f;
+		/** 창 판의 안쪽 여백. 판의 테두리 장식(화면에서 약 23 px) 안에 내용을 둔다. */
+		float PanelPadding = 32.0f;
+		/**
+		 * UI 그림(99. mmo/art/ui/)의 9-slice: 가장자리의 비율(그림의 몇 %가 테두리인지. mmo/art/ui/source/prompts.md의 조건)과,
+		 * 그 비율을 곱해 화면에서의 테두리 크기를 정하는 그림의 크기(ImageSize).
+		 */
+		FMargin PanelMargin{ 0.18f };
+		FVector2D PanelImageSize{ 128.0, 128.0 };
+		FMargin ButtonMargin{ 0.2f };
+		FVector2D ButtonImageSize{ 128.0, 36.0 };
+		FMargin BarMargin{ 0.15f, 0.25f };
+		/** 바의 테두리 안에 채움을 두는 여백. 이보다 낮은 바(이름표)는 그림 없이 둥근 상자다. */
+		float BarInset = 4.0f;
+		float BarArtMinHeight = 12.0f;
+		FMargin SlotMargin{ 0.15f };
 		/** 세로로 쌓은 것 사이와 나란한 버튼 사이. */
 		float Gap = 8.0f;
 		float Section = 16.0f;
@@ -158,6 +171,79 @@ namespace
 	};
 
 	const FMmoStyle Style;
+
+	/** mmo/art/<Folder>/<Name>.png를 Destination/<Name>의 UI 텍스처(압축은 UI용, 밉 없음, 늘 메모리에)로 가져온다. 실패하면 nullptr. */
+	UTexture2D* ImportTexture(const TCHAR* Folder, const TCHAR* Destination, const FString& Name)
+	{
+		const FString Source = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() / TEXT("../art") / Folder / (Name + TEXT(".png")));
+		const FString PackageName = FString(Destination) / Name;
+		const FString Filename = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
+		IFileManager::Get().Delete(*Filename, false, true, true);
+		UAssetImportTask* Task = NewObject<UAssetImportTask>();
+		Task->Filename = Source;
+		Task->DestinationPath = Destination;
+		Task->DestinationName = Name;
+		Task->bAutomated = true;
+		Task->bReplaceExisting = true;
+		Task->bSave = false;
+		FAssetToolsModule::GetModule().Get().ImportAssetTasks({ Task });
+		UTexture2D* Texture = Task->GetObjects().IsEmpty() ? nullptr : Cast<UTexture2D>(Task->GetObjects()[0]);
+		if (!Texture)
+		{
+			UE_LOG(LogMmoCreateWidgets, Error, TEXT("Could not import %s."), *Source);
+			return nullptr;
+		}
+		Texture->CompressionSettings = TC_EditorIcon;
+		Texture->LODGroup = TEXTUREGROUP_UI;
+		Texture->MipGenSettings = TMGS_NoMipmaps;
+		Texture->NeverStream = true;
+		Texture->PostEditChange();
+		FSavePackageArgs Args;
+		Args.TopLevelFlags = RF_Public | RF_Standalone;
+		return UPackage::SavePackage(Texture->GetPackage(), Texture, *Filename, Args) ? Texture : nullptr;
+	}
+
+	/**
+	 * UI 그림(99): Codex image_gen으로 만든 판타지 MMO풍 그림(mmo/art/ui/. 프롬프트와 후처리는 mmo/art/ui/source/). 창 판, 버튼(밝기만이라 색을 곱함),
+	 * 바의 바탕과 채움(밝기만), 아이템 칸, 조이스틱. Main이 맨 먼저 가져온다. 채팅·알림·말풍선의 반투명 바탕은 그림 없이 둔다.
+	 */
+	struct FMmoArt
+	{
+		UTexture2D* Panel = nullptr;
+		UTexture2D* Button = nullptr;
+		UTexture2D* BarFrame = nullptr;
+		UTexture2D* BarFill = nullptr;
+		UTexture2D* Slot = nullptr;
+		UTexture2D* JoystickBase = nullptr;
+		UTexture2D* JoystickThumb = nullptr;
+
+		bool Import()
+		{
+			const auto Get = [](const TCHAR* Name) { return ImportTexture(TEXT("ui"), TEXT("/Game/UI/Art"), Name); };
+			Panel = Get(TEXT("panel"));
+			Button = Get(TEXT("button"));
+			BarFrame = Get(TEXT("bar_frame"));
+			BarFill = Get(TEXT("bar_fill"));
+			Slot = Get(TEXT("slot"));
+			JoystickBase = Get(TEXT("joystick_base"));
+			JoystickThumb = Get(TEXT("joystick_thumb"));
+			return Panel && Button && BarFrame && BarFill && Slot && JoystickBase && JoystickThumb;
+		}
+	};
+
+	FMmoArt Art;
+
+	/** 9-slice 그림의 브러시: 가장자리(Margin 비율)는 그대로 그리고 가운데만 늘린다. ImageSize에 비율을 곱한 것이 화면에서의 테두리 크기다. */
+	FSlateBrush BoxBrush(UTexture2D* Texture, const FVector2D& ImageSize, const FMargin& Margin, const FLinearColor& Tint = FLinearColor::White)
+	{
+		FSlateBrush Brush;
+		Brush.SetResourceObject(Texture);
+		Brush.ImageSize = ImageSize;
+		Brush.DrawAs = ESlateBrushDrawType::Box;
+		Brush.Margin = Margin;
+		Brush.TintColor = FSlateColor(Tint);
+		return Brush;
+	}
 
 	/** 위젯 블루프린트 하나를 만드는 동안의 상태. 디스크의 옛 파일을 지우고 새로 만든다. */
 	class FWidgetBlueprintBuilder
@@ -263,7 +349,7 @@ namespace
 			SizeSlot->SetVerticalAlignment(VAlign_Center);
 
 			UBorder* Panel = Add<UBorder>(TEXT("Panel"));
-			Panel->SetBrush(FSlateRoundedBoxBrush(Style.Panel, Style.PanelRadius));
+			Panel->SetBrush(BoxBrush(Art.Panel, Style.PanelImageSize, Style.PanelMargin));
 			Panel->SetPadding(FMargin(Style.PanelPadding));
 			Size->SetContent(Panel);
 			UVerticalBox* Column = Add<UVerticalBox>(TEXT("Column"));
@@ -376,9 +462,9 @@ namespace
 		Column.AddChildToVerticalBox(Buttons)->SetHorizontalAlignment(HAlign_Right);
 	}
 
-	FSlateBrush RoundedButtonBrush(const FLinearColor& Color)
+	FSlateBrush ButtonBrush(const FLinearColor& Color)
 	{
-		return FSlateRoundedBoxBrush(Color, Style.ButtonRadius);
+		return BoxBrush(Art.Button, Style.ButtonImageSize, Style.ButtonMargin, Color);
 	}
 
 	/** 공용 버튼(WBP_Button). 다른 화면이 모두 이것을 놓으므로 맨 먼저 만든다. */
@@ -389,10 +475,10 @@ namespace
 		Builder.SetRoot(Size);
 		UButton* Button = Builder.Add<UButton>(TEXT("Button"), true);
 		FButtonStyle ButtonStyle = Button->GetStyle();
-		ButtonStyle.SetNormal(RoundedButtonBrush(Style.ButtonNormal));
-		ButtonStyle.SetHovered(RoundedButtonBrush(Style.ButtonHovered));
-		ButtonStyle.SetPressed(RoundedButtonBrush(Style.ButtonPressed));
-		ButtonStyle.SetDisabled(RoundedButtonBrush(Style.ButtonDisabled));
+		ButtonStyle.SetNormal(ButtonBrush(Style.ButtonNormal));
+		ButtonStyle.SetHovered(ButtonBrush(Style.ButtonHovered));
+		ButtonStyle.SetPressed(ButtonBrush(Style.ButtonPressed));
+		ButtonStyle.SetDisabled(ButtonBrush(Style.ButtonDisabled));
 		ButtonStyle.SetNormalPadding(FMargin(0.0f));
 		ButtonStyle.SetPressedPadding(FMargin(0.0f));
 		Button->SetStyle(ButtonStyle);
@@ -448,17 +534,20 @@ namespace
 		UOverlay* Stack = Builder.Add<UOverlay>(TEXT("Stack"));
 		Root->SetContent(Stack);
 
-		// 엔진의 모바일 HUD 텍스처다. 이 위젯 블루프린트가 참조하므로 함께 쿠킹된다.
 		UImage* Base = Builder.Add<UImage>(TEXT("Base"));
-		Base->SetBrushFromTexture(LoadObject<UTexture2D>(nullptr, TEXT("/Engine/MobileResources/HUD/VirtualJoystick_Background.VirtualJoystick_Background")));
+		Base->SetBrushFromTexture(Art.JoystickBase);
 		UOverlaySlot* BaseSlot = Stack->AddChildToOverlay(Base);
 		BaseSlot->SetHorizontalAlignment(HAlign_Fill);
 		BaseSlot->SetVerticalAlignment(VAlign_Fill);
 
+		// 손잡이의 크기는 크기 상자로 정한다. 이미지의 크기(브러시 크기, 크기 덮어쓰기)는 게임에서 기본 32 px로 나왔다(99 전의 손잡이도 같았음).
+		USizeBox* ThumbSize = Builder.Add<USizeBox>(TEXT("ThumbSize"));
+		ThumbSize->SetWidthOverride(Style.JoystickSize * 0.42f);
+		ThumbSize->SetHeightOverride(Style.JoystickSize * 0.42f);
 		UImage* Thumb = Builder.Add<UImage>(TEXT("Thumb"), true);
-		Thumb->SetBrushFromTexture(LoadObject<UTexture2D>(nullptr, TEXT("/Engine/MobileResources/HUD/VirtualJoystick_Thumb.VirtualJoystick_Thumb")));
-		Thumb->SetDesiredSizeOverride(FVector2D(Style.JoystickSize * 0.42, Style.JoystickSize * 0.42));
-		UOverlaySlot* ThumbSlot = Stack->AddChildToOverlay(Thumb);
+		Thumb->SetBrushFromTexture(Art.JoystickThumb);
+		ThumbSize->SetContent(Thumb);
+		UOverlaySlot* ThumbSlot = Stack->AddChildToOverlay(ThumbSize);
 		ThumbSlot->SetHorizontalAlignment(HAlign_Center);
 		ThumbSlot->SetVerticalAlignment(VAlign_Center);
 		return Builder.Save() ? Builder.GeneratedClass() : nullptr;
@@ -473,16 +562,37 @@ namespace
 		UOverlay* Stack = Builder.Add<UOverlay>(*FString::Printf(TEXT("%sBarStack"), Name));
 		Size->SetContent(Stack);
 
+		// 그림의 바탕(bar_frame) 위 여백 안에 채움(bar_fill. 밝기만이라 Fill을 곱함)을 둔다. 낮은 바(이름표)는 테두리가 보이지 않아 둥근 상자다.
+		const bool bArt = Height >= Style.BarArtMinHeight;
+		if (bArt)
+		{
+			UImage* Frame = Builder.Add<UImage>(*FString::Printf(TEXT("%sBarFrame"), Name));
+			Frame->SetBrush(BoxBrush(Art.BarFrame, FVector2D(128.0, Height), Style.BarMargin));
+			UOverlaySlot* FrameSlot = Stack->AddChildToOverlay(Frame);
+			FrameSlot->SetHorizontalAlignment(HAlign_Fill);
+			FrameSlot->SetVerticalAlignment(VAlign_Fill);
+		}
 		UProgressBar* Progress = Builder.Add<UProgressBar>(*FString::Printf(TEXT("%sBar"), Name), true);
 		FProgressBarStyle BarStyle = Progress->GetWidgetStyle();
-		BarStyle.BackgroundImage = FSlateRoundedBoxBrush(Style.BarBack, Style.ButtonRadius);
-		BarStyle.FillImage = FSlateRoundedBoxBrush(FLinearColor::White, Style.ButtonRadius);
+		if (bArt)
+		{
+			BarStyle.BackgroundImage = FSlateNoResource();
+			FSlateBrush FillBrush;
+			FillBrush.SetResourceObject(Art.BarFill);
+			BarStyle.FillImage = FillBrush;
+		}
+		else
+		{
+			BarStyle.BackgroundImage = FSlateRoundedBoxBrush(Style.BarBack, Style.ButtonRadius);
+			BarStyle.FillImage = FSlateRoundedBoxBrush(FLinearColor::White, Style.ButtonRadius);
+		}
 		Progress->SetWidgetStyle(BarStyle);
 		Progress->SetFillColorAndOpacity(Fill);
 		Progress->SetPercent(1.0f);
 		UOverlaySlot* BarSlot = Stack->AddChildToOverlay(Progress);
 		BarSlot->SetHorizontalAlignment(HAlign_Fill);
 		BarSlot->SetVerticalAlignment(VAlign_Fill);
+		BarSlot->SetPadding(FMargin(bArt ? Style.BarInset : 0.0f));
 
 		if (!bText)
 		{
@@ -813,14 +923,13 @@ namespace
 		Size->SetWidthOverride(Style.ItemSlot);
 		Size->SetHeightOverride(Style.ItemSlot);
 		Builder.SetRoot(Size);
+		// 칸 그림(slot.png)에 UMmoItemSlotWidget이 등급의 색을 곱한다(99). 내용은 청동 테두리 안에 둔다.
 		UBorder* Grade = Builder.Add<UBorder>(TEXT("GradeBorder"), true);
-		Grade->SetPadding(FMargin(2.0f));
+		Grade->SetBrush(BoxBrush(Art.Slot, FVector2D(Style.ItemSlot, Style.ItemSlot), Style.SlotMargin));
+		Grade->SetPadding(FMargin(Style.ItemSlot * Style.SlotMargin.Left * 0.6f));
 		Size->SetContent(Grade);
-		UBorder* Inner = Builder.Add<UBorder>(TEXT("Inner"));
-		Inner->SetBrushColor(Style.BarBack);
-		Grade->SetContent(Inner);
 		UOverlay* Stack = Builder.Add<UOverlay>(TEXT("Stack"));
-		Inner->SetContent(Stack);
+		Grade->SetContent(Stack);
 		UImage* Icon = Builder.Add<UImage>(TEXT("IconImage"), true);
 		Icon->SetVisibility(ESlateVisibility::Collapsed);
 		UOverlaySlot* IconSlot = Stack->AddChildToOverlay(Icon);
@@ -1207,32 +1316,7 @@ namespace
 	/** mmo/art/icons/<Name>.png를 /Game/UI/Icons/<Name>으로 가져온다(UI용: 압축하지 않고 밉맵 없음). */
 	UTexture2D* ImportIcon(const FString& Name)
 	{
-		const FString Source = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() / TEXT("../art/icons") / (Name + TEXT(".png")));
-		const FString PackageName = TEXT("/Game/UI/Icons/") + Name;
-		const FString Filename = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
-		IFileManager::Get().Delete(*Filename, false, true, true);
-		UAssetImportTask* Task = NewObject<UAssetImportTask>();
-		Task->Filename = Source;
-		Task->DestinationPath = TEXT("/Game/UI/Icons");
-		Task->DestinationName = Name;
-		Task->bAutomated = true;
-		Task->bReplaceExisting = true;
-		Task->bSave = false;
-		FAssetToolsModule::GetModule().Get().ImportAssetTasks({ Task });
-		UTexture2D* Texture = Task->GetObjects().IsEmpty() ? nullptr : Cast<UTexture2D>(Task->GetObjects()[0]);
-		if (!Texture)
-		{
-			UE_LOG(LogMmoCreateWidgets, Error, TEXT("Could not import %s."), *Source);
-			return nullptr;
-		}
-		Texture->CompressionSettings = TC_EditorIcon;
-		Texture->LODGroup = TEXTUREGROUP_UI;
-		Texture->MipGenSettings = TMGS_NoMipmaps;
-		Texture->NeverStream = true;
-		Texture->PostEditChange();
-		FSavePackageArgs Args;
-		Args.TopLevelFlags = RF_Public | RF_Standalone;
-		return UPackage::SavePackage(Texture->GetPackage(), Texture, *Filename, Args) ? Texture : nullptr;
+		return ImportTexture(TEXT("icons"), TEXT("/Game/UI/Icons"), Name);
 	}
 
 	/**
@@ -1294,6 +1378,11 @@ namespace
 
 int32 UMmoCreateWidgetsCommandlet::Main(const FString& Params)
 {
+	if (!Art.Import())
+	{
+		UE_LOG(LogMmoCreateWidgets, Error, TEXT("The UI art (mmo/art/ui/, made by mmo/art/ui/source/process.py) is missing."));
+		return 1;
+	}
 	FWidgetBlueprintBuilder::ButtonClass = CreateButton();
 	UClass* Joystick = CreateJoystick();
 	UClass* ItemSlot = CreateItemSlot();

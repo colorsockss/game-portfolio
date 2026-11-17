@@ -1,10 +1,10 @@
 # 그림 목록
 
-MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저장소에 두지 않고, 받는 곳과 가져오는 스크립트만 적습니다. 가져온 에셋(`client-unreal/Content/`)은 LFS로 커밋합니다. 엔진의 마네킹 등 Epic 콘텐츠는 공개 저장소에 올릴 수 없어 쓰지 않습니다.
+MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본은 저장소에 두지 않고 받는 곳과 가져오는 스크립트만 적으며, 두 엔진이 함께 읽을 원본(맵의 것과 움직이지 않는 개체의 FBX, 캐릭터의 FBX와 텍스처, 아이콘, 이펙트 그림, 소리, UI 그림)은 `mmo/art/`에 둡니다(LFS). 가져온 에셋(`client-unreal/Content/`)은 LFS로 커밋합니다. 엔진의 마네킹 등 Epic 콘텐츠는 공개 저장소에 올릴 수 없어 쓰지 않습니다.
 
 ## 필요한 것
 
-게임에 들어갈 그림과 소리의 목록입니다(2026-11-14, backlog 73). 직접 만든 것이나 CC0만 넣습니다. 그림이 없는 것은 자리 표시로 두고 기능 항목은 자리 표시로 끝낼 수 있으며, 실제 것으로 바꾸는 것은 backlog 91입니다. "정하지 않음"은 91이 고르고 그때 받는 곳, 라이선스, 가져오는 스크립트를 이 문서의 표에 적습니다.
+게임에 들어갈 그림과 소리의 목록입니다(2026-11-14, backlog 73). 직접 만든 것, CC0, 생성 도구로 만든 것(99부터. 도구와 약관은 아래 "UI 그림")만 넣습니다. 그림이 없는 것은 자리 표시로 두고 기능 항목은 자리 표시로 끝낼 수 있으며, 실제 것으로 바꾸는 것은 backlog 91입니다. "정하지 않음"은 91이 고르고 그때 받는 곳, 라이선스, 가져오는 스크립트를 이 문서의 표에 적습니다.
 
 | 무엇 | 수 | 지금 | 넣을 것 |
 |---|---|---|---|
@@ -23,6 +23,7 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | 아이템 아이콘 | 장비 21종, 소모품 18(물약 4, 귀환·강화 주문서 2, 스킬북 10, 펫 2), 재료 15(채집 6, 몬스터 부산물 9) | 일부 있음(아래 "아이콘". 2026-11-17): 검·갑옷·장갑·반지, 물약, 주문서, 금화, 스킬북, 부산물, 광석. 지팡이·투구·장화·펫·나무·약초는 팩에 맞는 그림이 없어 글자 아이콘 | 남은 것은 정하지 않음 |
 | 스킬 아이콘 | 12(소환 95 포함) | 글자 아이콘(퀵슬롯) | 정하지 않음 |
 | 효과 아이콘 | 4와 전투 상태, 선공 표시 | HUD의 글 한 줄 | 정하지 않음. 아이콘으로 보이는 것은 그 화면을 고치는 항목 |
+| UI 그림(창 판, 버튼, 바, 아이템 칸, 조이스틱) | 7 | 있음(아래 "UI 그림". Codex image_gen, 99) | - |
 | 메뉴와 버튼 아이콘 | 메뉴 5(가방, 캐릭터, 스킬, 퀘스트, 설정)와 터치 버튼 | 글을 쓴 버튼 | 정하지 않음 |
 | 글꼴 | 한글과 영문이 함께 나오는 것 1 | 엔진 기본 글꼴(한글도 그려짐) | 정하지 않음. CC0 글꼴이 없으면 엔진 기본 글꼴로 둠 |
 | 이펙트와 소리 | 아래 "이펙트와 소리"와 보스 등장(소리는 있음, 이펙트는 자리 표시) | 아래 표의 자리 표시(레벨 업은 31, 줍기는 33, 강화의 소리는 35가 더함). 보스 등장은 43이 연출 표에 줄을 더함 | 정하지 않음 |
@@ -42,7 +43,7 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | `Characters/<직업>/MI_*` | `Scripts/import_characters.py` |
 | `Creatures/<이름>/` 전부(메시, 스켈레톤, 애니메이션, 머티리얼 인스턴스) | `Scripts/import_creatures.py`(아래 "몬스터·소환수·NPC"의 원본에서) |
 | `Characters/<직업>/ABP_*`, `BS_*_Locomotion`, `Creatures/<이름>/ABP_*`, `BS_*_Locomotion`, `Characters/DA_EntityVisuals` | 에디터 모듈의 `MmoCreateCharacterAssets` |
-| `UI/WBP_*`, `UI/DA_Icons` | 에디터 모듈의 `MmoCreateWidgets` |
+| `UI/WBP_*`, `UI/DA_Icons`, `UI/Art/`(`mmo/art/ui/`에서) | 에디터 모듈의 `MmoCreateWidgets` |
 | `Effects/` 전부 | 에디터 모듈의 `MmoCreateEffectAssets`(아래 "이펙트와 소리") |
 
 ## 캐릭터
@@ -131,6 +132,26 @@ Quaternius의 Ultimate RPG Items Pack(CC0)에 든 모델마다의 아이콘(1000
 | Ultimate RPG Items Pack | [OpenGameArt: Low Poly RPG Pack](https://opengameart.org/content/low-poly-rpg-pack) (`ultimate_rpg_items_pack_by_quaternius_0.zip`, 42.6 MB) | CC0 1.0(페이지) |
 
 - 함께 받았지만 아직 쓰지 않은 것(모두 OpenGameArt, CC0 1.0): Kenney Game Icons(`Kenney_gameIcons.zip`, 1.0 MB. 톱니바퀴·나가기 같은 UI 기호뿐이라 스킬 아이콘으로 맞지 않음), Medieval Weapons Pack(`Medieval Weapons Pack - Sept 2018.zip`, 3.6 MB. 무기 메시), Kenney Particle Pack(`kenney_particlePack.zip`, 9.3 MB. 이펙트).
+
+## UI 그림
+
+2026-11-17(backlog 99). 창 판, 버튼, 바의 바탕과 채움, 아이템 칸, 조이스틱의 바탕과 손잡이 7장을 판타지 MMO풍 한 화풍(어두운 가죽, 앤틱 금·청동 테두리)으로 생성했습니다(사용자가 Codex image_gen으로 정함). Codex(codex-cli 0.159.3)를 `codex exec`로 저장소 루트에서 돌려 `mmo/art/ui/source/prompts.md`의 규칙·공통 스타일·표대로 `imagegen` 스킬의 기본 `image_gen`(투명 배경)으로 한 장씩 뽑았고, 9-slice의 가운데가 평평하지 않거나 비율이 다른 것은 뽑은 그림을 편집해 한 가지씩 고쳤습니다(실제로 쓴 명세는 `source/prompts-used.md`). 원본(1024–2172 px)은 `mmo/art/ui/source/`, 최종본은 `mmo/art/ui/`(`source/process.py`가 저장소 밖 가상환경의 Pillow로 투명 여백을 잘라 줄이고 9-slice 가운데의 밝기 흩어짐을 잼. 0.5–0.8/255)입니다. 위젯 생성기가 `/Game/UI/Art/`로 가져와(UI 압축, 밉맵 없음) 브러시로 씁니다(MANUAL의 위젯 블루프린트).
+
+| 파일 | 쓰는 곳 | 최종 크기 | 만든 사람 | 도구 |
+|---|---|---|---|---|
+| `panel.png` | 모든 창과 팝업의 판(9-slice, 테두리 18%) | 512×512 | colorsocks | Codex image_gen |
+| `button.png` | 공용 버튼(9-slice, 테두리 20%. 밝기만이라 상태의 색을 곱함) | 512×144 | colorsocks | Codex image_gen |
+| `bar_frame.png` | 체력·마나·경험치·시전·보스 바의 바탕(9-slice) | 512×64 | colorsocks | Codex image_gen |
+| `bar_fill.png` | 그 바의 채움(밝기만이라 색을 곱함) | 512×64 | colorsocks | Codex image_gen |
+| `slot.png` | 아이템 칸(9-slice, 테두리 15%. 등급의 색을 곱함) | 256×256 | colorsocks | Codex image_gen |
+| `joystick_base.png`, `joystick_thumb.png` | 터치의 가상 조이스틱(엔진의 모바일 HUD 텍스처를 바꿈) | 512×512, 256×256 | colorsocks | Codex image_gen |
+
+| 도구 | 약관 | 출력의 권리 |
+|---|---|---|
+| Codex image_gen(OpenAI) | [OpenAI Terms of Use](https://openai.com/policies/terms-of-use) | 약관상 출력은 사용자의 것입니다 |
+
+- 버튼은 회색 그림에 청동(보통 0.50, 0.36, 0.20)을 곱하고, 고른 버튼은 1보다 큰 곱으로 금빛이 됩니다. 글은 밝은 크림색입니다.
+- 채팅·알림·말풍선의 반투명 바탕과 이름표의 낮은 바는 그림 없이 둡니다(작거나 반투명해 테두리가 보이지 않음). 아이콘(메뉴, 스킬, 효과, 아이템)은 100입니다.
 
 ## 이펙트와 소리
 
