@@ -1,6 +1,8 @@
 #include "MmoCreateEffectAssetsCommandlet.h"
 
+#include "AssetImportTask.h"
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "AssetToolsModule.h"
 #include "Game/MmoCues.h"
 #include "Game/MmoEntityVisuals.h"
 #include "HAL/FileManager.h"
@@ -8,6 +10,7 @@
 #include "Materials/MaterialExpressionConstant3Vector.h"
 #include "Materials/MaterialExpressionScalarParameter.h"
 #include "Misc/PackageName.h"
+#include "Misc/Paths.h"
 #include "NiagaraSystem.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundClass.h"
@@ -84,9 +87,52 @@ namespace
 		return Samples;
 	}
 
-	/** 소리 하나를 만들어 저장한다. Attenuation이 있으면 거리에 따라 작아지는 3D 효과음이다. */
+	/** 소리의 원본 mmo/art/sounds/<Name>.(ogg|wav|flac)(91. 출처는 docs/art.md). 없으면 빈 문자열. */
+	FString SourceOf(const TCHAR* Name)
+	{
+		const FString Folder = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() / TEXT("../art/sounds"));
+		for (const TCHAR* Extension : { TEXT("ogg"), TEXT("wav"), TEXT("flac") })
+		{
+			const FString File = Folder / FString::Printf(TEXT("%s.%s"), Name, Extension);
+			if (FPaths::FileExists(File))
+			{
+				return File;
+			}
+		}
+		return FString();
+	}
+
+	/**
+	 * 소리 하나를 만들어 저장한다. Attenuation이 있으면 거리에 따라 작아지는 3D 효과음이다. mmo/art/sounds/에 그 이름의 원본이 있으면 그것을 가져오고,
+	 * 없으면 Samples(코드로 합성한 소리)로 만든다.
+	 */
 	USoundWave* CreateSound(const TCHAR* Name, const TArray<float>& Samples, USoundClass* Class, USoundAttenuation* Attenuation, bool bLooping)
 	{
+		if (const FString Source = SourceOf(Name); !Source.IsEmpty())
+		{
+			const FString PackageName = FString::Printf(TEXT("/Game/Effects/Sounds/%s"), Name);
+			const FString Filename = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
+			IFileManager::Get().Delete(*Filename, false, true, true);
+			UAssetImportTask* Task = NewObject<UAssetImportTask>();
+			Task->Filename = Source;
+			Task->DestinationPath = TEXT("/Game/Effects/Sounds");
+			Task->DestinationName = Name;
+			Task->bAutomated = true;
+			Task->bReplaceExisting = true;
+			Task->bSave = false;
+			FAssetToolsModule::GetModule().Get().ImportAssetTasks({ Task });
+			USoundWave* Imported = Task->GetObjects().IsEmpty() ? nullptr : Cast<USoundWave>(Task->GetObjects()[0]);
+			if (!Imported)
+			{
+				UE_LOG(LogMmoCreateEffectAssets, Error, TEXT("Could not import %s."), *Source);
+				return nullptr;
+			}
+			Imported->bLooping = bLooping;
+			Imported->SoundClassObject = Class;
+			Imported->AttenuationSettings = Attenuation;
+			return Save(Imported->GetPackage(), Imported, Filename) ? Imported : nullptr;
+		}
+
 		FString Filename;
 		UPackage* Package = NewPackage(FString::Printf(TEXT("/Game/Effects/Sounds/%s"), Name), Filename);
 		USoundWave* Sound = NewObject<USoundWave>(Package, Name, RF_Public | RF_Standalone);

@@ -20,6 +20,7 @@ public class PortfolioMmoEditor : ModuleRules
             "AnimGraph",
             "AnimGraphRuntime",
             "AssetRegistry",
+            "AssetTools",
             "BlueprintGraph",
             "Slate",
             "SlateCore",

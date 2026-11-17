@@ -25,7 +25,7 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | 효과 아이콘 | 4와 전투 상태, 선공 표시 | HUD의 글 한 줄 | 정하지 않음. 아이콘으로 보이는 것은 그 화면을 고치는 항목 |
 | 메뉴와 버튼 아이콘 | 메뉴 5(가방, 캐릭터, 스킬, 퀘스트, 설정)와 터치 버튼 | 글을 쓴 버튼 | 정하지 않음 |
 | 글꼴 | 한글과 영문이 함께 나오는 것 1 | 엔진 기본 글꼴(한글도 그려짐) | 정하지 않음. CC0 글꼴이 없으면 엔진 기본 글꼴로 둠 |
-| 이펙트와 소리 | 아래 "이펙트와 소리"와 보스 등장 | 아래 표의 자리 표시(레벨 업은 31, 줍기는 33, 강화의 소리는 35가 더함). 보스 등장은 43이 연출 표에 줄을 더함 | 정하지 않음 |
+| 이펙트와 소리 | 아래 "이펙트와 소리"와 보스 등장(소리는 있음, 이펙트는 자리 표시) | 아래 표의 자리 표시(레벨 업은 31, 줍기는 33, 강화의 소리는 35가 더함). 보스 등장은 43이 연출 표에 줄을 더함 | 정하지 않음 |
 
 - 개체의 자리 표시: 표현 표(`/Game/Characters/DA_EntityVisuals`)에 줄이 없는 템플릿은 개체 종류마다의 도형과 색(`Placeholders`)으로 그립니다. 플레이어 파란 원기둥, 몬스터 빨간 원기둥, NPC 초록 원기둥, 채집물 갈색 원뿔, 바닥 아이템 노란 상자, 소환수 보라색 구(95)이고, 재질은 `M_Placeholder`(색은 커스텀 프리미티브 데이터)입니다. 그림이 생기면 표에 줄을 더할 뿐 자리 표시는 그대로 둡니다.
 - 아이콘 표: `/Game/UI/DA_Icons`(아이템, 스킬, 효과의 번호 → 그림의 소프트 참조)이고 지금은 줄이 없습니다. 줄이 없는 것은 이름의 첫 글자를 크게 쓴 글자 아이콘이라, 한 직업의 스킬은 두 언어 모두 첫 글자가 다르게 짓습니다(엔진 없는 테스트가 봄).
@@ -118,5 +118,5 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | 무엇 | 지금 | 출처 |
 |---|---|---|
 | 타격, 스킬이 맞음(`RadialBurst`), 스킬 동작과 부활(`DirectionalBurst`), 따라가는 발사체(`FountainLightweight`) | Niagara 플러그인의 템플릿 시스템(`/Niagara/DefaultAssets/Templates/Systems/`)을 소프트 참조로 가리킨 자리 표시 | 엔진에 든 것. 저장소에 복사하지 않고 패키지에만 쿠킹됩니다(엔진 기본 도형과 같음) |
-| 효과음 `S_Hit`, `S_Skill`, `S_Revive`, `S_Footstep`, `S_UiClick`, `S_UiWindow`, `S_UiLevelUp`(31), `S_UiPickUp`(33), `S_UiEnchantSuccess`·`S_UiEnchantFailure`(35) | 커맨드렛이 합성한 짧은 소리(잡음, 사인파의 미끄럼, 세 음) | 직접 만든 것(코드로 합성. 원본 파일 없음) |
-| 배경음 `M_Town`, `M_Hunting`, `M_Gathering`, `M_Boss` | 커맨드렛이 합성한 8초 되풀이의 화음(구역의 종류마다) | 직접 만든 것 |
+| 효과음 `S_Hit`, `S_Skill`, `S_Revive`, `S_Footstep`, `S_UiClick`, `S_UiWindow`, `S_UiLevelUp`, `S_UiPickUp`, `S_UiEnchantSuccess`, `S_UiEnchantFailure`, `S_UiBossAppeared` | `mmo/art/sounds/<이름>.ogg`(2026-11-17, 91): 타격 `blade_01`, 스킬 `spell_01`, 부활 `spell_02`, 보스 등장 `creature_roar_01`(rubberduck의 80 CC0 RPG SFX), 발소리 `footstep00`, 줍기 `handleCoins`(Kenney RPG Audio), 클릭 `click_001`, 창 `open_001`, 강화 실패 `error_001`(Kenney Interface Sounds), 레벨 업 `jingles_NES00`, 강화 성공 `jingles_STEEL00`(Kenney 85 Short music jingles) | [80 CC0 RPG SFX](https://opengameart.org/content/80-cc0-rpg-sfx), [50 RPG sound effects](https://opengameart.org/content/50-rpg-sound-effects), [Interface Sounds](https://opengameart.org/content/interface-sounds), [85 Short music jingles](https://opengameart.org/content/85-short-music-jingles). 모두 CC0 1.0(페이지). 원본이 없는 이름은 커맨드렛이 합성한다 |
+| 배경음 `M_Town`, `M_Hunting`, `M_Gathering`, `M_Boss` | `mmo/art/sounds/<이름>.flac`(2026-11-17, 91): cynicmusic의 Town Theme RPG, Happy Lullaby(song17), Another August, Battle Theme A를 `afconvert`로 모노 22.05 kHz 16비트 FLAC으로 바꿈(합 11.5 MB) | [Town Theme RPG](https://opengameart.org/content/town-theme-rpg), [Happy Lullaby](https://opengameart.org/content/happy-lullaby-song17), [Another August](https://opengameart.org/content/another-august), [Battle Theme A](https://opengameart.org/content/battle-theme-a). 모두 CC0 1.0(페이지) |
