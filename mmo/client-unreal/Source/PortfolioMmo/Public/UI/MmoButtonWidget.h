@@ -17,6 +17,7 @@ class UTextBlock;
  *   - 키 표시: PC에서 단축키를 오른쪽 위에 붙일 자리(KeyHint. 비면 감춤. 키는 backlog 89의 키 표가 붙임).
  *   - 기다림: 요청의 답을 기다리는 동안 누를 수 없게 한다(SetWaiting).
  *   - 아이콘(SetIcon): 퀵슬롯처럼 아이콘을 보이는 버튼. 그림이 없으면 이름의 첫 글자를 크게 쓴 글자 아이콘이다(73).
+ *     생성기가 Icon을 정해 두면(메뉴 버튼. 100) 라벨 대신 그 그림을 보이고 정사각형이다.
  *   - 터치 기기에서만 보임(bTouchOnly): 공격·상호작용·대상 고르기·강제 공격 버튼처럼 PC에는 키가 있는 버튼.
  * 누른 손가락은 터치 나눔(MmoScreen::FTouchOwners)에서 버튼의 것이 되어 카메라로 가지 않는다. OnClicked는 UButton과 같은 신호다.
  */
@@ -56,6 +57,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FText KeyHint;
+
+	/** 생성기가 정해 두는 그림(메뉴 버튼. 100). 있으면 라벨(LabelKey의 문장)을 쓰지 않고 이 그림을 보이며, 폭을 높이와 같게 둔다. */
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UTexture2D> Icon;
 
 	UPROPERTY(EditAnywhere)
 	bool bTouchOnly = false;

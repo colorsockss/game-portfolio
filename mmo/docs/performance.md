@@ -336,6 +336,7 @@ Mac Shipping 앱을 `-MmoLogin=hero_02`로 띄우고, 로그인 화면이 만들
 | 2026-11-17 | 685c0ab | Android APK(arm64, Shipping, 91 뒤) | 89,930,615 B(62보다 +8.8 MB, 10.9%): 콘텐츠 OBB 33.3 → 42.1 MB, `libUnreal.so`는 그대로 |
 | 2026-11-17 | 98 | Android APK(arm64, Shipping, 98 뒤) | 89,848,971 B(91보다 −80 KB): 2등신 캐릭터(직업마다 텍스처 2장)를 사람 체형(텍스처 11장, 512–1024 px)으로 바꿈 |
 | 2026-11-17 | 99 | Android APK(arm64, Shipping, 99 뒤) | 90,884,251 B(98보다 +1.0 MB): UI 그림 7장(256–512 px, UI 압축) |
+| 2026-11-17 | 100 | Android APK(arm64, Shipping, 100 뒤) | 97,237,439 B(99보다 +6.4 MB): 아이콘 28 → 68장(256 px, 압축 없음) |
 | 2026-11-17 | 6d8c990 | Android APK(arm64, Shipping, 62) | 81,118,623 B(27 뒤 +363 KB): `libUnreal.so` 압축 전 106.8 MB(APK 안 42.5 MB), 콘텐츠 OBB 33.3 MB(압축하지 않음), `classes.dex` 9.7 MB(3.7 MB) |
 
 줄인 방법은 [MANUAL의 Unreal 클라이언트](../MANUAL.md#unreal-클라이언트)에 있습니다.

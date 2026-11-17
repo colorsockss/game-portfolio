@@ -20,16 +20,16 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 | 몬스터 애니메이션 | 종마다 대기, 걷기, 공격, 피격, 죽음 | 있음(슬라임과 해골은 피격 동작이 없음) | - |
 | 소환수 메시와 애니메이션(95) | 1(정령): 대기, 걷기, 공격, 피격, 죽음과 나타나고 사라지는 이펙트 | 메시와 동작은 있음(Ghost). 나타나고 사라지는 이펙트는 아래 "이펙트와 소리" | 이펙트는 정하지 않음 |
 | 펫 메시와 애니메이션(96) | 2(고양이, 부엉이): 걷기, 줍기 | 있음(아래 "몬스터·소환수·NPC"). 줍기 동작은 없음 | - |
-| 아이템 아이콘 | 장비 21종, 소모품 18(물약 4, 귀환·강화 주문서 2, 스킬북 10, 펫 2), 재료 15(채집 6, 몬스터 부산물 9) | 일부 있음(아래 "아이콘". 2026-11-17): 검·갑옷·장갑·반지, 물약, 주문서, 금화, 스킬북, 부산물, 광석. 지팡이·투구·장화·펫·나무·약초는 팩에 맞는 그림이 없어 글자 아이콘 | 남은 것은 정하지 않음 |
-| 스킬 아이콘 | 12(소환 95 포함) | 글자 아이콘(퀵슬롯) | 정하지 않음 |
-| 효과 아이콘 | 4와 전투 상태, 선공 표시 | HUD의 글 한 줄 | 정하지 않음. 아이콘으로 보이는 것은 그 화면을 고치는 항목 |
+| 아이템 아이콘 | 장비 21종, 소모품 18(물약 4, 귀환·강화 주문서 2, 스킬북 10, 펫 2), 재료 15(채집 6, 몬스터 부산물 9) | 있음(아래 "아이콘". Codex image_gen, 100. 스킬북은 직업마다 한 그림) | - |
+| 스킬 아이콘 | 12(소환 95 포함) | 있음(아래 "아이콘". 100) | - |
+| 효과 아이콘 | 4와 전투 상태, 선공 표시 | 효과 4는 있음(HUD의 아이콘 칸. 100). 전투 상태와 선공 표시는 HUD의 글 한 줄 | - |
 | UI 그림(창 판, 버튼, 바, 아이템 칸, 조이스틱) | 7 | 있음(아래 "UI 그림". Codex image_gen, 99) | - |
-| 메뉴와 버튼 아이콘 | 메뉴 5(가방, 캐릭터, 스킬, 퀘스트, 설정)와 터치 버튼 | 글을 쓴 버튼 | 정하지 않음 |
+| 메뉴와 버튼 아이콘 | 메뉴 5(가방, 캐릭터, 스킬, 퀘스트, 설정)와 터치 버튼 | 메뉴 5는 있음(100). 터치 버튼은 글을 쓴 버튼 | 터치 버튼은 정하지 않음 |
 | 글꼴 | 한글과 영문이 함께 나오는 것 1 | 엔진 기본 글꼴(한글도 그려짐) | 정하지 않음. CC0 글꼴이 없으면 엔진 기본 글꼴로 둠 |
 | 이펙트와 소리 | 아래 "이펙트와 소리"와 보스 등장(소리는 있음, 이펙트는 자리 표시) | 아래 표의 자리 표시(레벨 업은 31, 줍기는 33, 강화의 소리는 35가 더함). 보스 등장은 43이 연출 표에 줄을 더함 | 정하지 않음 |
 
 - 개체의 자리 표시: 표현 표(`/Game/Characters/DA_EntityVisuals`)에 줄이 없는 템플릿은 개체 종류마다의 도형과 색(`Placeholders`)으로 그립니다. 플레이어 파란 원기둥, 몬스터 빨간 원기둥, NPC 초록 원기둥, 채집물 갈색 원뿔, 바닥 아이템 노란 상자, 소환수 보라색 구(95)이고, 재질은 `M_Placeholder`(색은 커스텀 프리미티브 데이터)입니다. 그림이 생기면 표에 줄을 더할 뿐 자리 표시는 그대로 둡니다.
-- 아이콘 표: `/Game/UI/DA_Icons`(아이템, 스킬, 효과의 번호 → 그림의 소프트 참조)이고 지금은 줄이 없습니다. 줄이 없는 것은 이름의 첫 글자를 크게 쓴 글자 아이콘이라, 한 직업의 스킬은 두 언어 모두 첫 글자가 다르게 짓습니다(엔진 없는 테스트가 봄).
+- 아이콘 표: `/Game/UI/DA_Icons`(아이템, 스킬, 효과의 번호 → 그림의 소프트 참조. 아래 "아이콘")입니다. 줄이 없는 것은 이름의 첫 글자를 크게 쓴 글자 아이콘이라, 한 직업의 스킬은 두 언어 모두 첫 글자가 다르게 짓습니다(엔진 없는 테스트가 봄).
 
 ## 만든 에셋
 
@@ -117,19 +117,20 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 
 ## 아이콘
 
-Quaternius의 Ultimate RPG Items Pack(CC0)에 든 모델마다의 아이콘(1000 px PNG)을 `sips -Z 256`으로 줄여 `mmo/art/icons/<원본 이름>.png`(28장, LFS)에 두고, 위젯 생성기(`MmoCreateWidgets`)가 `/Game/UI/Icons/`로 가져와(압축 없음, 밉맵 없음) 아이콘 표(`DA_Icons`)에 아이템 id마다 줄을 둡니다. 장비는 종(family)마다 그림 하나이고 등급은 같은 그림입니다.
+2026-11-17(backlog 100). 아이템 47(장비 종 21, 소모품 11, 재료 15), 스킬 12, 효과 4, 메뉴 5의 68장을 UI 그림(99)과 같은 어두운 판타지 MMO풍으로 생성했습니다(사용자가 Codex image_gen으로 정함). 91의 Quaternius 아이콘(28장)과 글자 아이콘을 바꿨습니다. 프롬프트(`mmo/art/icons/source/prompts.md`)의 "시험" 묶음 5장(기사의 검, 체력 물약, 베기, 기절, 가방)을 먼저 뽑아 화풍을 정하고, 나머지 네 묶음(장비, 소모품과 재료, 스킬, 효과와 메뉴)은 그 5장을 화풍의 기준으로 붙여(`codex exec -i`) 함께 뽑았습니다. 실제로 쓴 명세는 `source/prompts-used-<묶음>.md`입니다. 원본(1254 px)은 `mmo/art/icons/source/`, 최종본은 `mmo/art/icons/<파일>`(256×256. `source/process.py`가 투명한 것은 여백을 잘라 가운데에 두고, 스킬은 정사각형으로 줄임)이고, 위젯 생성기가 `/Game/UI/Icons/`로 가져와(압축 없음, 밉맵 없음) 아이콘 표에 줄을 둡니다(MANUAL의 명령 표).
 
-| 아이템 | 그림 |
-|---|---|
-| 검 셋(f1–f3), 갑옷 셋(f10–f12), 장갑 셋(f13–f15), 반지 셋(f19–f21) | `Sword`, `Sword_Big`, `Sword_Big_Golden`, `Armor_Leather`, `Armor_Metal`, `Armor_Golden`, `Glove`, `Ring1`–`Ring3` |
-| 체력·마력 물약, 귀환 주문서, 강화 주문서, 금화 | `Potion1_Filled_Red`, `Potion1_Filled_Blue`, `Scroll`, `Parchment`, `Coin` |
-| 스킬북(기사 102–106, 마법사 202–206) | `Book1_Closed`, `Book3_Closed` |
-| 몬스터 부산물(3101–3109) | `Crystal1`, `Crystal2`, `ChickenLeg`, `Coin_Skull`, `Bone`, `Arrow`, `Skull`, `Skull2`, `Fishbone` |
-| 구리·철 광석 | `Mineral`, `Gold_Ingots` |
+| 종류 | 파일 | 쓰는 곳 | 만든 사람 | 도구 |
+|---|---|---|---|---|
+| 장비 | `family_1`–`family_21`(종. 등급 1–4는 같은 그림이고 칸의 등급 색이 가름) | 가방·창고·상점·장비 칸 | colorsocks | Codex image_gen |
+| 소모품 | `item_potion_*`(4), `item_scroll_recall`, `item_scroll_enchant`, `item_skillbook_knight`·`_mage`(2102–2106, 2202–2206), `item_pet_cat_bell`, `item_pet_owl_feather`, `item_gold` | 같음, 물약은 퀵슬롯 | colorsocks | Codex image_gen |
+| 재료 | 몬스터 부산물 9(`item_jelly` 등, 3101–3109), 채집물 6(`item_pine_log` 등, 3201–3206) | 가방·창고 | colorsocks | Codex image_gen |
+| 스킬 | `skill_101`–`skill_106`(기사), `skill_201`–`skill_206`(마법사) | 퀵슬롯, 스킬 창 | colorsocks | Codex image_gen |
+| 효과 | `effect_1`–`effect_4`(기절, 감속, 방어력 올림, 공격력 올림) | HUD의 효과 아이콘 칸 | colorsocks | Codex image_gen |
+| 메뉴 | `menu_bag`, `menu_character`, `menu_skills`, `menu_quest`, `menu_settings` | HUD 오른쪽 위의 메뉴 버튼(라벨 대신) | colorsocks | Codex image_gen |
 
-| 팩 | 받는 곳 | 라이선스 |
-|---|---|---|
-| Ultimate RPG Items Pack | [OpenGameArt: Low Poly RPG Pack](https://opengameart.org/content/low-poly-rpg-pack) (`ultimate_rpg_items_pack_by_quaternius_0.zip`, 42.6 MB) | CC0 1.0(페이지) |
+- 약관은 위 "UI 그림"의 표(Codex image_gen, OpenAI Terms of Use)와 같습니다.
+- 아이템은 투명 배경에 물건 하나, 스킬은 꽉 찬 정사각형(기사는 강철·진홍·금, 마법사는 비전의 파랑·보라·불꽃 주황), 효과와 메뉴는 앤틱 금속의 문장입니다.
+- 앞의 Quaternius Ultimate RPG Items Pack(CC0) 아이콘은 100에서 지웠습니다.
 
 - 함께 받았지만 아직 쓰지 않은 것(모두 OpenGameArt, CC0 1.0): Kenney Game Icons(`Kenney_gameIcons.zip`, 1.0 MB. 톱니바퀴·나가기 같은 UI 기호뿐이라 스킬 아이콘으로 맞지 않음), Medieval Weapons Pack(`Medieval Weapons Pack - Sept 2018.zip`, 3.6 MB. 무기 메시), Kenney Particle Pack(`kenney_particlePack.zip`, 9.3 MB. 이펙트).
 

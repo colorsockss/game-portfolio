@@ -35,8 +35,9 @@ struct FMmoIcon
 
 /**
  * 아이콘 표(73). 클라이언트의 표현 표라 데이터 테이블에는 아이콘의 키를 두지 않는다(UMmoEntityVisuals와 같은 방식).
- * 에셋은 위젯 생성기(MmoCreateWidgets)가 만들고, 그림이 생기면(91) 생성기에 줄을 더한다. 줄이 없는 것은 이름의 첫 글자를 쓴
- * 글자 아이콘으로 그린다(UMmoButtonWidget::SetIcon).
+ * 에셋은 위젯 생성기(MmoCreateWidgets)가 mmo/art/icons/의 그림(100. Codex image_gen)으로 만든다: 스킬·효과·장비의 종은 파일 이름(skill_<id>,
+ * effect_<id>, family_<종>)에서 번호를 읽고, 소모품·재료는 생성기의 줄로 잇는다. 줄이 없는 것은 이름의 첫 글자를 쓴 글자 아이콘으로 그린다
+ * (UMmoButtonWidget::SetIcon).
  */
 UCLASS()
 class PORTFOLIOMMO_API UMmoIcons : public UDataAsset

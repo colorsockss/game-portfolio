@@ -1,5 +1,7 @@
 #include "UI/MmoButtonWidget.h"
 
+#include "Components/ButtonSlot.h"
+
 #include "UI/MmoText.h"
 
 #include "Components/Image.h"
@@ -17,7 +19,7 @@ bool UMmoButtonWidget::IsTouchDevice()
 
 void UMmoButtonWidget::RefreshText()
 {
-	if (!LabelKey.IsEmpty())
+	if (!LabelKey.IsEmpty() && !Icon)
 	{
 		SetLabel(MmoText::Get(this, LabelKey));
 	}
@@ -71,7 +73,18 @@ void UMmoButtonWidget::NativePreConstruct()
 		RefreshText();
 	}
 	SetKeyHint(KeyHint);
-	Size->SetMinDesiredHeight(IsTouchDevice() ? MinHeightTouch : MinHeightPointer);
+	const float Height = IsTouchDevice() ? MinHeightTouch : MinHeightPointer;
+	Size->SetMinDesiredHeight(Height);
+	if (Icon)
+	{
+		// 그림만 있는 버튼은 정사각형이고, 그림이 작아지지 않게 라벨의 안쪽 여백을 줄인다.
+		SetIcon(Icon, FText::GetEmpty());
+		Size->SetMinDesiredWidth(Height);
+		if (UButtonSlot* Content = Cast<UButtonSlot>(Button->GetContentSlot()))
+		{
+			Content->SetPadding(FMargin(4.0f));
+		}
+	}
 	if (bTouchOnly && !IsDesignTime() && !IsTouchDevice())
 	{
 		SetVisibility(ESlateVisibility::Collapsed);

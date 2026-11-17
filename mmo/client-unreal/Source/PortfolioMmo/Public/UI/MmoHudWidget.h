@@ -47,6 +47,8 @@ public:
 
 	/** 미니맵 그림의 한 변(픽셀)과 보이는 둘레(m). */
 	static constexpr float MinimapSize = 180.0f;
+	/** 걸린 효과의 아이콘 칸 수(100). 생성기가 이만큼 Effect<n>(그림 Effect<n>Icon, 남은 초 Effect<n>Time)을 둔다. 넘치는 효과는 글 줄에 쓴다. */
+	static constexpr int32 EffectIconCount = 6;
 	static constexpr double MinimapMeters = 60.0;
 
 	/** 채팅창(41). PC의 Enter가 화면 관리자를 거쳐 초점을 준다. */
@@ -295,6 +297,16 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> CastText;
 
+	/** 효과 아이콘 칸, 그 그림, 남은 초(이름 Effect<n>, Effect<n>Icon, Effect<n>Time으로 찾음. 100). */
+	UPROPERTY()
+	TArray<TObjectPtr<UWidget>> EffectCells;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UImage>> EffectImages;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UTextBlock>> EffectTimes;
+
 	/** 퀵슬롯 칸의 버튼과 쿨다운 가림(이름 Slot<n>, Slot<n>Cooldown으로 찾음). */
 	UPROPERTY()
 	TArray<TObjectPtr<UMmoButtonWidget>> Slots;
@@ -309,6 +321,7 @@ private:
 	/** 퀵슬롯마다 보인 것(종류 << 56 | 번호 << 24 | 물약의 가진 수). 처음에는 어떤 것과도 다르게 둔다. */
 	TArray<uint64> ShownSlots;
 	FString ShownEffects = TEXT("-");
+	FString ShownEffectIcons = TEXT("-");
 	uint32 ShownProgress = MAX_uint32;
 	/** 마지막으로 보인 상호작용의 종류(MmoWorld::EInteractKind). 처음에는 어떤 종류와도 다르게 둔다. */
 	uint8 ShownInteract = MAX_uint8;

@@ -18,6 +18,7 @@
 #include "Components/ScrollBox.h"
 #include "Components/OverlaySlot.h"
 #include "Components/SafeZone.h"
+#include "Components/ScaleBox.h"
 #include "Components/SafeZoneSlot.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
@@ -145,6 +146,8 @@ namespace
 		float WindowWide = 440.0f;
 		/** 아이템 칸 한 변(32). */
 		float ItemSlot = 64.0f;
+		/** HUD의 효과 아이콘 한 변(100). */
+		float EffectIcon = 40.0f;
 		/** HUD의 요소가 화면 모서리(안전 영역 안)에서 떨어지는 거리. */
 		float HudMargin = 24.0f;
 		float JoystickSize = 240.0f;
@@ -201,6 +204,12 @@ namespace
 		FSavePackageArgs Args;
 		Args.TopLevelFlags = RF_Public | RF_Standalone;
 		return UPackage::SavePackage(Texture->GetPackage(), Texture, *Filename, Args) ? Texture : nullptr;
+	}
+
+	/** mmo/art/icons/<Name>.png를 /Game/UI/Icons/<Name>으로 가져온다(아이콘 표와 메뉴 버튼). */
+	UTexture2D* ImportIcon(const FString& Name)
+	{
+		return ImportTexture(TEXT("icons"), TEXT("/Game/UI/Icons"), Name);
 	}
 
 	/**
@@ -490,9 +499,13 @@ namespace
 		StackSlot->SetPadding(Style.ButtonPadding);
 		StackSlot->SetHorizontalAlignment(HAlign_Fill);
 		StackSlot->SetVerticalAlignment(VAlign_Fill);
+		// 아이콘은 비율을 지킨 채 칸에 맞춘다(넓적한 퀵슬롯에서 찌그러지지 않게. 100).
+		UScaleBox* IconFit = Builder.Add<UScaleBox>(TEXT("IconFit"));
+		IconFit->SetStretch(EStretch::ScaleToFit);
 		UImage* Icon = Builder.Add<UImage>(TEXT("IconImage"), true);
 		Icon->SetVisibility(ESlateVisibility::Collapsed);
-		UOverlaySlot* IconSlot = Stack->AddChildToOverlay(Icon);
+		IconFit->SetContent(Icon);
+		UOverlaySlot* IconSlot = Stack->AddChildToOverlay(IconFit);
 		IconSlot->SetHorizontalAlignment(HAlign_Fill);
 		IconSlot->SetVerticalAlignment(VAlign_Fill);
 		UTextBlock* Label = Builder.Text(TEXT("LabelText"), FText::GetEmpty(), Style.BodySize, true, Style.ButtonText);
@@ -672,7 +685,25 @@ namespace
 		UMmoTextBlock* SafeZoneText = Builder.KeyText(TEXT("SafeZoneText"), TEXT("hud.safeZone"), Style.SmallSize, true, Style.Positive);
 		SafeZoneText->SetVisibility(ESlateVisibility::Collapsed);
 		Zone->AddChildToVerticalBox(SafeZoneText);
-		// 걸린 효과와 전투 상태의 글자 아이콘과 남은 시간(아이콘 표는 73).
+		// 걸린 효과의 아이콘과 남은 초(100. 쓰지 않는 칸은 UMmoHudWidget이 감춤), 그 아래 그림이 없는 효과·전투 상태·소환수·선공 표시의 글 줄.
+		UHorizontalBox* EffectIcons = Builder.Add<UHorizontalBox>(TEXT("EffectIcons"));
+		for (int32 Index = 0; Index < UMmoHudWidget::EffectIconCount; ++Index)
+		{
+			USizeBox* Cell = Builder.Add<USizeBox>(*FString::Printf(TEXT("Effect%d"), Index));
+			Cell->SetWidthOverride(Style.EffectIcon);
+			Cell->SetHeightOverride(Style.EffectIcon);
+			Cell->SetVisibility(ESlateVisibility::Collapsed);
+			UOverlay* Stack = Builder.Add<UOverlay>(*FString::Printf(TEXT("Effect%dStack"), Index));
+			Cell->SetContent(Stack);
+			UOverlaySlot* IconSlot = Stack->AddChildToOverlay(Builder.Add<UImage>(*FString::Printf(TEXT("Effect%dIcon"), Index)));
+			IconSlot->SetHorizontalAlignment(HAlign_Fill);
+			IconSlot->SetVerticalAlignment(VAlign_Fill);
+			UOverlaySlot* TimeSlot = Stack->AddChildToOverlay(Builder.Text(*FString::Printf(TEXT("Effect%dTime"), Index), FText::GetEmpty(), Style.KeySize + 1));
+			TimeSlot->SetHorizontalAlignment(HAlign_Right);
+			TimeSlot->SetVerticalAlignment(VAlign_Bottom);
+			EffectIcons->AddChildToHorizontalBox(Cell)->SetPadding(FMargin(Index == 0 ? 0.0f : Style.Gap * 0.5f, 0.0f, 0.0f, 0.0f));
+		}
+		Zone->AddChildToVerticalBox(EffectIcons)->SetPadding(FMargin(0.0f, Style.Gap * 0.5f, 0.0f, 0.0f));
 		Zone->AddChildToVerticalBox(Builder.Text(TEXT("EffectsText"), FText::GetEmpty(), Style.SmallSize, true, Style.Status));
 		// 받은 퀘스트의 진행 한 줄(50). 받은 것이 없으면 UMmoHudWidget이 감춘다.
 		UTextBlock* QuestText = Builder.Text(TEXT("QuestText"), FText::GetEmpty(), Style.SmallSize + 2, true);
@@ -778,12 +809,19 @@ namespace
 		Corner(*Root, TopRight, ECorner::TopRight);
 		UTextBlock* Stats = Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.SmallSize, true);
 		Stats->SetVisibility(ESlateVisibility::Collapsed);
+		// 메뉴 버튼은 라벨 대신 그림이다(100. mmo/art/icons/menu_<이름>.png).
+		const auto MenuButton = [&Builder](const TCHAR* Name, const TCHAR* LabelKey, const TCHAR* Icon)
+		{
+			UMmoButtonWidget* Result = Builder.Button(Name, LabelKey);
+			Result->Icon = ImportIcon(Icon);
+			return Result;
+		};
 		TopRight->AddChildToVerticalBox(Row(Builder, TEXT("MenuButtons"), {
-			Builder.Button(TEXT("BagButton"), TEXT("menu.bag")),
-			Builder.Button(TEXT("CharacterButton"), TEXT("menu.character")),
-			Builder.Button(TEXT("SkillsButton"), TEXT("menu.skills")),
-			Builder.Button(TEXT("QuestButton"), TEXT("menu.quest")),
-			Builder.Button(TEXT("SettingsButton"), TEXT("menu.settings")),
+			MenuButton(TEXT("BagButton"), TEXT("menu.bag"), TEXT("menu_bag")),
+			MenuButton(TEXT("CharacterButton"), TEXT("menu.character"), TEXT("menu_character")),
+			MenuButton(TEXT("SkillsButton"), TEXT("menu.skills"), TEXT("menu_skills")),
+			MenuButton(TEXT("QuestButton"), TEXT("menu.quest"), TEXT("menu_quest")),
+			MenuButton(TEXT("SettingsButton"), TEXT("menu.settings"), TEXT("menu_settings")),
 		}));
 		// 미니맵(76): 투명한 버튼(누르면 지도) 안에 바탕 그림, 점의 캔버스, 가운데의 내 화살표.
 		UButton* Minimap = Builder.Add<UButton>(TEXT("MinimapButton"), true);
@@ -1314,14 +1352,11 @@ UMmoCreateWidgetsCommandlet::UMmoCreateWidgetsCommandlet()
 namespace
 {
 	/** mmo/art/icons/<Name>.png를 /Game/UI/Icons/<Name>으로 가져온다(UI용: 압축하지 않고 밉맵 없음). */
-	UTexture2D* ImportIcon(const FString& Name)
-	{
-		return ImportTexture(TEXT("icons"), TEXT("/Game/UI/Icons"), Name);
-	}
 
 	/**
-	 * 아이콘 표(73). 그림은 Quaternius의 Ultimate RPG Items Pack(CC0)의 아이콘을 256 px로 줄여 mmo/art/icons/에 둔 것이다(91. 출처는 docs/art.md).
-	 * 줄이 없는 것(지팡이, 투구, 장화, 펫, 나무와 약초, 스킬, 효과)은 이름의 첫 글자를 쓴 글자 아이콘이다(팩에 맞는 그림이 없음).
+	 * 아이콘 표(73): Codex image_gen으로 만든 mmo/art/icons/의 그림(100. 프롬프트와 후처리는 mmo/art/icons/source/, 출처는 docs/art.md).
+	 * 스킬(skill_<id>), 효과(effect_<id>), 장비의 종(family_<종>. 등급 1–4는 같은 그림이고 칸의 등급 색이 가름)은 파일 이름에서 번호를 읽고,
+	 * 소모품과 재료(item_<이름>)는 아래의 줄로 아이템 id를 잇는다. 메뉴의 그림(menu_<이름>)은 HUD가 버튼에 정한다.
 	 */
 	bool CreateIcons()
 	{
@@ -1330,39 +1365,60 @@ namespace
 		IFileManager::Get().Delete(*Filename, false, true, true);
 		UPackage* Package = CreatePackage(*PackageName);
 		UMmoIcons* Icons = NewObject<UMmoIcons>(Package, *FPackageName::GetShortName(PackageName), RF_Public | RF_Standalone);
-		// 아이템 id → 그림. 장비는 1000 + 종 × 10 + 등급(1–4)이고 등급은 같은 그림이다(Items의 family).
-		TArray<TPair<int32, const TCHAR*>> Items = {
-			{ 2001, TEXT("Potion1_Filled_Red") }, { 2002, TEXT("Potion1_Filled_Red") }, { 2003, TEXT("Potion1_Filled_Blue") }, { 2004, TEXT("Potion1_Filled_Blue") },
-			{ 2005, TEXT("Scroll") }, { 2006, TEXT("Parchment") }, { 4001, TEXT("Coin") },
-			{ 3101, TEXT("Crystal1") }, { 3102, TEXT("Crystal2") }, { 3103, TEXT("ChickenLeg") }, { 3104, TEXT("Coin_Skull") }, { 3105, TEXT("Bone") },
-			{ 3106, TEXT("Arrow") }, { 3107, TEXT("Skull") }, { 3108, TEXT("Skull2") }, { 3109, TEXT("Fishbone") },
-			{ 3202, TEXT("Mineral") }, { 3205, TEXT("Gold_Ingots") },
+		TArray<TPair<int32, FString>> Items = {
+			{ 2001, TEXT("item_potion_hp") }, { 2002, TEXT("item_potion_hp_greater") }, { 2003, TEXT("item_potion_mp") }, { 2004, TEXT("item_potion_mp_greater") },
+			{ 2005, TEXT("item_scroll_recall") }, { 2006, TEXT("item_scroll_enchant") }, { 2301, TEXT("item_pet_cat_bell") }, { 2302, TEXT("item_pet_owl_feather") },
+			{ 4001, TEXT("item_gold") },
+			{ 3101, TEXT("item_jelly") }, { 3102, TEXT("item_mushroom_cap") }, { 3103, TEXT("item_boar_tusk") }, { 3104, TEXT("item_goblin_earring") },
+			{ 3105, TEXT("item_wolf_pelt") }, { 3106, TEXT("item_broken_arrow") }, { 3107, TEXT("item_orc_tooth") }, { 3108, TEXT("item_old_bone") },
+			{ 3109, TEXT("item_troll_blood") },
+			{ 3201, TEXT("item_pine_log") }, { 3202, TEXT("item_copper_ore") }, { 3203, TEXT("item_mugwort") }, { 3204, TEXT("item_oak_log") },
+			{ 3205, TEXT("item_iron_ore") }, { 3206, TEXT("item_ginseng") },
 		};
+		// 스킬북은 직업마다 한 그림이다(기사 2102–2106, 마법사 2202–2206).
 		for (const int32 Book : { 2102, 2103, 2104, 2105, 2106 })
 		{
-			Items.Add({ Book, TEXT("Book1_Closed") });
-			Items.Add({ Book + 100, TEXT("Book3_Closed") });
+			Items.Add({ Book, TEXT("item_skillbook_knight") });
+			Items.Add({ Book + 100, TEXT("item_skillbook_mage") });
 		}
-		const TPair<int32, const TCHAR*> Families[] = {
-			{ 1, TEXT("Sword") }, { 2, TEXT("Sword_Big") }, { 3, TEXT("Sword_Big_Golden") }, { 10, TEXT("Armor_Leather") }, { 11, TEXT("Armor_Metal") },
-			{ 12, TEXT("Armor_Golden") }, { 13, TEXT("Glove") }, { 14, TEXT("Glove") }, { 15, TEXT("Glove") }, { 19, TEXT("Ring1") }, { 20, TEXT("Ring2") }, { 21, TEXT("Ring3") },
-		};
-		for (const auto& [Family, Icon] : Families)
+		TArray<TPair<int32, FString>> Skills;
+		TArray<TPair<int32, FString>> Effects;
+		TArray<FString> Files;
+		IFileManager::Get().FindFiles(Files, *(FPaths::ProjectDir() / TEXT("../art/icons/*.png")), true, false);
+		for (const FString& File : Files)
 		{
-			for (int32 Grade = 1; Grade <= 4; ++Grade)
+			const FString Name = FPaths::GetBaseFilename(File);
+			const auto Number = [&Name](const TCHAR* Prefix) { return Name.StartsWith(Prefix) ? FCString::Atoi(*Name.RightChop(FCString::Strlen(Prefix))) : 0; };
+			if (const int32 Family = Number(TEXT("family_")))
 			{
-				Items.Add({ 1000 + Family * 10 + Grade, Icon });
+				for (int32 Grade = 1; Grade <= 4; ++Grade)
+				{
+					Items.Add({ 1000 + Family * 10 + Grade, Name });
+				}
+			}
+			else if (const int32 Skill = Number(TEXT("skill_")))
+			{
+				Skills.Add({ Skill, Name });
+			}
+			else if (const int32 Effect = Number(TEXT("effect_")))
+			{
+				Effects.Add({ Effect, Name });
 			}
 		}
+		UE_LOG(LogMmoCreateWidgets, Display, TEXT("Icons: %d items, %d skills, %d effects."), Items.Num(), Skills.Num(), Effects.Num());
 		TMap<FString, UTexture2D*> Imported;
-		for (const auto& [Id, Name] : Items)
+		for (const auto& [Kind, Rows] : { TPair<EMmoIconKind, const TArray<TPair<int32, FString>>*>{ EMmoIconKind::Item, &Items },
+				{ EMmoIconKind::Skill, &Skills }, { EMmoIconKind::Effect, &Effects } })
 		{
-			UTexture2D*& Texture = Imported.FindOrAdd(Name);
-			if (!Texture && !(Texture = ImportIcon(Name)))
+			for (const auto& [Id, Name] : *Rows)
 			{
-				return false;
+				UTexture2D*& Texture = Imported.FindOrAdd(Name);
+				if (!Texture && !(Texture = ImportIcon(Name)))
+				{
+					return false;
+				}
+				Icons->Rows.Add({ Kind, Id, Texture });
 			}
-			Icons->Rows.Add({ EMmoIconKind::Item, Id, Texture });
 		}
 		FAssetRegistryModule::AssetCreated(Icons);
 		FSavePackageArgs Args;

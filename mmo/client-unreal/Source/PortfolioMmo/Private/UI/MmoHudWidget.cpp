@@ -130,6 +130,19 @@ void UMmoHudWidget::NativeOnInitialized()
 	{
 		Menu.Key->SetKeyHint(MmoKeys::Hint(Menu.Value));
 	}
+	for (int32 Index = 0; Index < EffectIconCount; ++Index)
+	{
+		UWidget* Cell = WidgetTree->FindWidget(FName(*FString::Printf(TEXT("Effect%d"), Index)));
+		UImage* Image = WidgetTree->FindWidget<UImage>(FName(*FString::Printf(TEXT("Effect%dIcon"), Index)));
+		UTextBlock* Time = WidgetTree->FindWidget<UTextBlock>(FName(*FString::Printf(TEXT("Effect%dTime"), Index)));
+		if (!Cell || !Image || !Time)
+		{
+			break;
+		}
+		EffectCells.Add(Cell);
+		EffectImages.Add(Image);
+		EffectTimes.Add(Time);
+	}
 	for (int32 Index = 0; Index < QuickslotCount(); ++Index)
 	{
 		UMmoButtonWidget* Slot = WidgetTree->FindWidget<UMmoButtonWidget>(*FString::Printf(TEXT("Slot%d"), Index));
@@ -248,18 +261,52 @@ void UMmoHudWidget::ShowEffects(double ServerTick)
 	{
 		Add(*MmoText::Get(this, TEXT("effect.aggressor")).ToString(), Session->World().SelfState().AggressorEndTick);
 	}
+	// 걸린 효과는 아이콘 칸에 그림과 남은 초로(100), 그림이 없거나 칸이 모자라면 글 줄에 쓴다.
+	if (!Icons)
+	{
+		Icons = LoadObject<UMmoIcons>(nullptr, UMmoIcons::Path);
+	}
+	TArray<TPair<UTexture2D*, int32>, TInlineAllocator<EffectIconCount>> Shown;
 	for (int32 Index = 0; Me && Index < Me->Info.effects_size(); ++Index)
 	{
 		const portfolio::mmo::EffectState& Effect = Me->Info.effects(Index);
 		if (const portfolio::mmo::data::EffectsRow* Row = Session->Data().Effect(Effect.effect_id()))
 		{
-			Add(*MmoText::Get(this, EffectKey(Row->kind())).ToString(), Effect.end_tick());
+			UTexture2D* Icon = Icons && Shown.Num() < EffectCells.Num() ? Icons->Load(EMmoIconKind::Effect, static_cast<int32>(Row->id())) : nullptr;
+			if (Icon)
+			{
+				Shown.Add({ Icon, FMath::CeilToInt32(FMath::Max(0.0, (Effect.end_tick() - ServerTick) / MmoWorld::Units::TicksPerSecond)) });
+			}
+			else
+			{
+				Add(*MmoText::Get(this, EffectKey(Row->kind())).ToString(), Effect.end_tick());
+			}
 		}
 	}
 	if (Text != ShownEffects)
 	{
 		ShownEffects = Text;
 		EffectsText->SetText(FText::FromString(Text));
+	}
+	FString IconKey;
+	for (const TPair<UTexture2D*, int32>& Entry : Shown)
+	{
+		IconKey += FString::Printf(TEXT("%s:%d "), *GetNameSafe(Entry.Key), Entry.Value);
+	}
+	if (IconKey == ShownEffectIcons)
+	{
+		return;
+	}
+	ShownEffectIcons = IconKey;
+	for (int32 Index = 0; Index < EffectCells.Num(); ++Index)
+	{
+		const bool bUsed = Index < Shown.Num();
+		EffectCells[Index]->SetVisibility(bUsed ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+		if (bUsed)
+		{
+			EffectImages[Index]->SetBrushFromTexture(Shown[Index].Key);
+			EffectTimes[Index]->SetText(FText::AsNumber(Shown[Index].Value));
+		}
 	}
 }
 
@@ -491,6 +538,7 @@ void UMmoHudWidget::NativeConstruct()
 	ShownTarget = MAX_uint32;
 	ShownSlots.Reset();
 	ShownEffects = TEXT("-");
+	ShownEffectIcons = TEXT("-");
 	ShownProgress = MAX_uint32;
 	ShownInteract = MAX_uint8;
 	ShownExp = MAX_uint32;
@@ -550,6 +598,7 @@ void UMmoHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		ShownTarget = MAX_uint32;
 		ShownSlots.Reset();
 		ShownEffects = TEXT("-");
+		ShownEffectIcons = TEXT("-");
 		ShownProgress = MAX_uint32;
 		ShownInteract = MAX_uint8;
 		ShownExp = MAX_uint32;
