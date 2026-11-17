@@ -15,7 +15,7 @@ namespace PortfolioMmo.LoadTest
     /// <summary>
     /// 봇 여러 명을 서버에 붙여 틱마다 최대 속도로 걷게 하고, 봇 하나가 받는 양을 잰다. 봇은 서버와 같은 맵(격자)을 읽어
     /// 서버의 FieldMap.CanWalkLine으로 벽을 피하므로 정상 클라이언트처럼 되돌려지지 않는다. --hunt면 가까운 몬스터에 다가가 기본 공격과
-    /// 쿨다운이 돈 스킬을 쓰고 죽으면 부활하며(기사), --gather x,z면 그 점(m) 둘레(--gather-radius m)로 모인다(클라이언트 200명 측정).
+    /// 쿨다운이 돈 스킬을 쓰고 죽으면 부활하며(기사), --gather x,z면 그 점(m) 둘레(--gather-radius m)로 서버의 PathFinder가 찾은 길을 따라 모인다(클라이언트 200명 측정, 체험 봇의 사냥터).
     /// 서버는 따로 띄우고(--spawn-half-extent를 이 도구의 --half-extent와 같게), 틱 시간·CPU·메모리는 서버 로그에서 읽는다.
     /// </summary>
     public static class Program
@@ -61,6 +61,8 @@ namespace PortfolioMmo.LoadTest
 
             Console.WriteLine($"Connected {bots.Count} bots");
             var random = new Random(1);
+            // 봇은 이 루프에서 차례로 걸으므로 길찾기 하나를 함께 쓴다(버퍼를 다시 씀).
+            var paths = new PathFinder(field);
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1.0 / Units.TicksPerSecond));
             var clock = Stopwatch.StartNew();
             long startBytes = 0;
@@ -72,7 +74,7 @@ namespace PortfolioMmo.LoadTest
                 tick++;
                 for (int index = 0; index < bots.Count; index++)
                 {
-                    bots[index].Step(random, halfExtent, field, behavior, tick);
+                    bots[index].Step(random, halfExtent, field, paths, behavior, tick);
                     // 끝없이 도는 봇(Live)은 서버가 다시 뜨면 다시 붙는다(10초마다 한 번 시도).
                     if ((seconds == 0) && !bots[index].IsAlive && (tick % (10 * Units.TicksPerSecond) == index % (10 * Units.TicksPerSecond)))
                     {
@@ -107,7 +109,7 @@ namespace PortfolioMmo.LoadTest
             Console.WriteLine(
                 $"bots {alive}/{bots.Count} alive, received {bytes / elapsed / bots.Count:F0} B/s per bot, "
                 + $"resets {bots.Sum(bot => bot.Resets) - startResets} in {elapsed:F0} s, kills {bots.Sum(bot => bot.Kills)}, deaths {bots.Sum(bot => bot.Deaths)}, "
-                + $"pick-ups {bots.Sum(bot => bot.PickUps)}, potions {bots.Sum(bot => bot.Potions)}");
+                + $"pick-ups {bots.Sum(bot => bot.PickUps)}, potions {bots.Sum(bot => bot.Potions)}, summons {bots.Count(bot => bot.HasSummon)}");
             foreach (Bot bot in bots)
             {
                 bot.Dispose();
@@ -149,6 +151,11 @@ namespace PortfolioMmo.LoadTest
         /// 틱마다 걷는 거리(칸). 서버가 받아 주는 최대 속도로 걷는다.
         /// </summary>
         private const double Stride = Units.MaxSpeedMetersPerSecond * Units.PerMeter / Units.TicksPerSecond;
+
+        /// <summary>
+        /// 길을 찾을 때 출발과 도착을 잇는 원의 반지름에 더하는 여유(1/32 m). 벽을 돌아가는 길이 이 안에 있어야 찾는다.
+        /// </summary>
+        private const int PlanMargin = 60 * Units.PerMeter;
 
         /// <summary>
         /// 사냥: 대상을 고르는 거리, 서서 치는 거리(기사의 사거리 2 m 안쪽), 쓰는 스킬(기사의 첫째, 쿨다운 4초)과 다시 쓰는 간격(틱), 부활을 다시 보내는 간격(틱).
@@ -263,6 +270,13 @@ namespace PortfolioMmo.LoadTest
         private double _heading;
 
         /// <summary>
+        /// 모이는 점까지 찾은 길의 꺾이는 점(1/32 m)과 다음에 갈 점의 차례, 길을 다시 찾을 수 있는 틱(찾은 뒤 1초).
+        /// </summary>
+        private readonly List<(int X, int Z)> _path = new List<(int X, int Z)>();
+        private int _pathIndex;
+        private long _planTick;
+
+        /// <summary>
         /// 걷는 중이라고 보낸 Move가 마지막이다(54). 서서 치기 시작하면 움직이는 중 표시를 끈 Move를 한 번 보낸다(실제 클라이언트처럼).
         /// </summary>
         private bool _walking;
@@ -345,6 +359,20 @@ namespace PortfolioMmo.LoadTest
         public int Potions => Volatile.Read(ref _potions);
 
         /// <summary>
+        /// 끝날 때 자기 소환수가 있는 마법사 봇인가(95).
+        /// </summary>
+        public bool HasSummon
+        {
+            get
+            {
+                lock (_gate)
+                {
+                    return _summonId != 0;
+                }
+            }
+        }
+
+        /// <summary>
         /// 서버가 아직 끊지 않았다.
         /// </summary>
         public bool IsAlive { get; private set; } = true;
@@ -367,7 +395,7 @@ namespace PortfolioMmo.LoadTest
         /// 벽은 서버가 가진 지난 위치(보낸 반올림 좌표나 되돌림의 자리)에서 다음 자리까지를 서버와 같은 선 검사로 본다.
         /// 칸만 보면 모서리를 지나는 걸음을 서버가 되돌린다.
         /// </summary>
-        public void Step(Random random, double halfExtent, FieldMap field, in Behavior behavior, long tick)
+        public void Step(Random random, double halfExtent, FieldMap field, PathFinder paths, in Behavior behavior, long tick)
         {
             Move move;
             var requests = new List<Packet>();
@@ -424,6 +452,7 @@ namespace PortfolioMmo.LoadTest
                     _heading += (random.NextDouble() - 0.5) * 0.4;
                 }
                 Behavior here = _demo >= 0 ? behavior with { Gather = (_demo % 2) == 0 ? (-100.0 * Units.PerMeter, 0.0) : (0.0, 190.0 * Units.PerMeter), GatherRadius = 40 * Units.PerMeter } : behavior;
+                double stride = Stride;
                 if (following && _leaderAt is (int towardX, int towardZ))
                 {
                     _target = 0;
@@ -437,7 +466,33 @@ namespace PortfolioMmo.LoadTest
                 }
                 else if (here.Gather is (double gatherX, double gatherZ) && (Math.Pow(gatherX - _x, 2) + Math.Pow(gatherZ - _z, 2) > here.GatherRadius * here.GatherRadius))
                 {
-                    _heading = Math.Atan2(gatherZ - _z, gatherX - _x);
+                    // 벽을 돌아가는 길(서버의 A*)의 꺾이는 점을 따라 걷는다(63: 곧게 걸으면 사냥터로 가는 길의 벽에 막혔음). 지금 자리에서
+                    // 다음 점까지 트이지 않았으면(죽어 마을로 갔거나 대상을 쫓았음) 다시 찾고, 길이 없으면 곧게 간다.
+                    int fromX = (int)Math.Round(_x);
+                    int fromZ = (int)Math.Round(_z);
+                    if ((_pathIndex >= _path.Count) || !field.CanWalkLine(fromX, fromZ, _path[_pathIndex].X, _path[_pathIndex].Z, Walker.Player))
+                    {
+                        _path.Clear();
+                        _pathIndex = 0;
+                        if (tick >= _planTick)
+                        {
+                            _planTick = tick + Units.TicksPerSecond;
+                            int toX = (int)gatherX;
+                            int toZ = (int)gatherZ;
+                            int radius = (int)(Math.Sqrt(Math.Pow(toX - fromX, 2) + Math.Pow(toZ - fromZ, 2)) / 2) + PlanMargin;
+                            paths.Find(fromX, fromZ, toX, toZ, Walker.Player, (fromX + toX) / 2, (fromZ + toZ) / 2, radius, _path);
+                        }
+                    }
+
+                    (double nextX, double nextZ) = _pathIndex < _path.Count ? _path[_pathIndex] : (gatherX, gatherZ);
+                    double left = Math.Sqrt(Math.Pow(nextX - _x, 2) + Math.Pow(nextZ - _z, 2));
+                    _heading = Math.Atan2(nextZ - _z, nextX - _x);
+                    // 꺾이는 점을 지나치지 않고 그 자리에 멈춘다(지나치면 다음 구간이 벽 모서리에 걸림).
+                    if ((_pathIndex < _path.Count) && (left <= Stride))
+                    {
+                        stride = left;
+                        _pathIndex++;
+                    }
                 }
                 else if (here.Edge)
                 {
@@ -448,8 +503,8 @@ namespace PortfolioMmo.LoadTest
                     _heading = _x > line + swing ? Math.PI : _x < line - swing ? 0 : (Math.Cos(_heading) >= 0 ? 0 : Math.PI);
                 }
 
-                double x = _x + (Math.Cos(_heading) * Stride);
-                double z = _z + (Math.Sin(_heading) * Stride);
+                double x = _x + (Math.Cos(_heading) * stride);
+                double z = _z + (Math.Sin(_heading) * stride);
                 if (((here.Gather == null) && ((Math.Abs(x) > halfExtent) || (Math.Abs(z) > halfExtent)))
                     || !field.CanWalkLine((int)Math.Round(_x), (int)Math.Round(_z), (int)Math.Round(x), (int)Math.Round(z), Walker.Player))
                 {
