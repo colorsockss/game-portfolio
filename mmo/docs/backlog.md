@@ -1900,7 +1900,7 @@ data/                기획 데이터 원본
     - 클라이언트(`Scripts/`, `Tests/`)와 문서만 고친 커밋(51b8e7d4)의 푸시에서는 `mmo-unreal-ci`만 돌아 통과했습니다(44044473653, 잡 93초).
   - 남은 것: `packets.proto`를 고친 커밋에서 둘 다 도는 것과 엔진 헤더를 include한 커밋이 실패하는 것은 그런 커밋을 푸시할 때 봅니다.
 
-- [ ] **67. iOS와 Windows** `M7` — Mac과 Android 말고 다른 플랫폼으로 빌드합니다.
+- [x] **67. iOS와 Windows** `M7` — Mac과 Android 말고 다른 플랫폼으로 빌드합니다.
   - **계약·데이터**: 없음.
   - **서버**: 없음. IPv6만 되는 망은 통신사가 IPv4로 바꿔 주므로(NAT64) 서버는 지금처럼 IPv4로만 들어도 됩니다.
   - **화면**: 플랫폼마다 할 일입니다.
@@ -1909,7 +1909,8 @@ data/                기획 데이터 원본
     - Windows: 패키지는 Mac에서 만들 수 없어 Windows PC가 있을 때 만듭니다. 라이브러리도 그때 `build.mjs`에 Windows를 더해 빌드합니다.
   - **확인**: iOS 기기에서 로그인해 걷고, 안전 영역(93)과 터치 조작이 Android와 같은지 봅니다. IPv6만 되는 망(Mac의 NAT64 공유)에서 붙는지 봅니다. Mac과 Android에서 주소를 바꾼 뒤에도 로컬 서버(`127.0.0.1`)와 Live 서버에 붙는지 봅니다. Windows 빌드를 만들지 못했으면 README에 없다고 적습니다(69).
   - 주소 한 것(2026-11-17): `UMmoConnection`이 이름을 IPv4와 IPv6로 조회해(`AI_ADDRCONFIG`) 결과를 차례로 그 종류의 소켓으로 붙어 보고, 엔진이 iOS 말고는 IPv6 결과를 버리므로 `DefaultEngine.ini`에서 `net.DisableIPv6=0`으로 켰습니다. 거절을 알아채지 못하던 것(`GetConnectionState`가 연결 뒤 5초 동안 오류가 없으면 붙었다고 해, 서버가 없어도 붙은 뒤 `Send failed`로 끊김)도 상대 주소로 보게 고쳤고, `-MmoServer`가 `[IPv6]:포트`를 받습니다. Mac에서 본 것: `[::1]:7801`(IPv6로만 듣는 중계) 로그인, `localhost:7800`(`::1` 거절 1 ms 뒤 `127.0.0.1`로 로그인), IPv4로만 듣는 서버에 `[::1]`(거절 뒤 다시 연결), `127.0.0.1` 로그인, Live(`mmo.dennou.cloud`, DNS의 IPv4로 붙어 옛 빌드일 때 `VERSION_MISMATCH`, 같은 날 배포한 뒤 로그인). Android는 컴파일만 했습니다.
-  - 남은 것: 설치한 UE 5.8에 iOS 플랫폼이 없습니다(`Engine/Binaries/IOS/UnrealGame.target` 없음. Epic Games Launcher의 엔진 옵션에서 iOS를 받아야 함). iOS 라이브러리·패키징·기기 확인은 그것과 Apple 개발자 서명, iOS 기기가 있을 때 합니다. IPv6만 되는 망(Mac의 NAT64 공유에 다른 기기를 붙임)과 Android 기기에서의 확인, Windows(PC가 있을 때)도 남았습니다.
+  - 정한 것(2026-11-17, 사용자): 내보낼 클라이언트는 Android만이라 iOS와 Windows 빌드는 하지 않습니다. 주소 처리(IPv4·IPv6)만 넣고 이 항목을 닫습니다. README에는 Windows·iOS 빌드가 없다고 적습니다(69).
+  - (닫기 전에 남겨 둔 것) 설치한 UE 5.8에 iOS 플랫폼이 없습니다(`Engine/Binaries/IOS/UnrealGame.target` 없음. Epic Games Launcher의 엔진 옵션에서 iOS를 받아야 함). iOS 라이브러리·패키징·기기 확인은 그것과 Apple 개발자 서명, iOS 기기가 있을 때 합니다. IPv6만 되는 망(Mac의 NAT64 공유에 다른 기기를 붙임)과 Android 기기에서의 확인, Windows(PC가 있을 때)도 남았습니다.
 
 - [x] **91. 그림과 소리 채우기** `M7` — 자리 표시를 실제 그림, 이펙트, 소리, 글꼴로 바꿉니다. [설계: 콘텐츠의 양](design.md#콘텐츠의-양)
   - **계약·데이터**: 없음. 수치와 줄은 그대로이고 클라이언트의 표현 표만 바뀝니다.
