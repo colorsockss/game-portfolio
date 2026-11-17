@@ -20,7 +20,7 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | 몬스터 애니메이션 | 종마다 대기, 걷기, 공격, 피격, 죽음 | 있음(슬라임과 해골은 피격 동작이 없음) | - |
 | 소환수 메시와 애니메이션(95) | 1(정령): 대기, 걷기, 공격, 피격, 죽음과 나타나고 사라지는 이펙트 | 메시와 동작은 있음(Ghost). 나타나고 사라지는 이펙트는 아래 "이펙트와 소리" | 이펙트는 정하지 않음 |
 | 펫 메시와 애니메이션(96) | 2(고양이, 부엉이): 걷기, 줍기 | 있음(아래 "몬스터·소환수·NPC"). 줍기 동작은 없음 | - |
-| 아이템 아이콘 | 장비 21종, 소모품 18(물약 4, 귀환·강화 주문서 2, 스킬북 10, 펫 2), 재료 15(채집 6, 몬스터 부산물 9) | 글자 아이콘(인벤토리의 칸, 퀵슬롯의 물약. 32) | 정하지 않음 |
+| 아이템 아이콘 | 장비 21종, 소모품 18(물약 4, 귀환·강화 주문서 2, 스킬북 10, 펫 2), 재료 15(채집 6, 몬스터 부산물 9) | 일부 있음(아래 "아이콘". 2026-11-17): 검·갑옷·장갑·반지, 물약, 주문서, 금화, 스킬북, 부산물, 광석. 지팡이·투구·장화·펫·나무·약초는 팩에 맞는 그림이 없어 글자 아이콘 | 남은 것은 정하지 않음 |
 | 스킬 아이콘 | 12(소환 95 포함) | 글자 아이콘(퀵슬롯) | 정하지 않음 |
 | 효과 아이콘 | 4와 전투 상태, 선공 표시 | HUD의 글 한 줄 | 정하지 않음. 아이콘으로 보이는 것은 그 화면을 고치는 항목 |
 | 메뉴와 버튼 아이콘 | 메뉴 5(가방, 캐릭터, 스킬, 퀘스트, 설정)와 터치 버튼 | 글을 쓴 버튼 | 정하지 않음 |
@@ -110,6 +110,24 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | Medieval Village Pack | [OpenGameArt: LowPoly Medieval Village Pack](https://opengameart.org/content/lowpoly-medieval-village-pack) (`medieval_village_pack_-_dec_2020.zip`, 8.0 MB) | CC0 1.0(팩의 License.txt) |
 
 - 진짜 메시가 없는 종류는 `MmoBuildMap`이 맵 액터마다 엔진 기본 도형(`/Engine/BasicShapes/`)을 차지하는 칸에 맞춰 키우고 종류의 색을 입힙니다(2026-11-13, backlog 87). 지금은 아홉 종류 모두 진짜 메시입니다.
+
+## 아이콘
+
+Quaternius의 Ultimate RPG Items Pack(CC0)에 든 모델마다의 아이콘(1000 px PNG)을 `sips -Z 256`으로 줄여 `mmo/art/icons/<원본 이름>.png`(28장, LFS)에 두고, 위젯 생성기(`MmoCreateWidgets`)가 `/Game/UI/Icons/`로 가져와(압축 없음, 밉맵 없음) 아이콘 표(`DA_Icons`)에 아이템 id마다 줄을 둡니다. 장비는 종(family)마다 그림 하나이고 등급은 같은 그림입니다.
+
+| 아이템 | 그림 |
+|---|---|
+| 검 셋(f1–f3), 갑옷 셋(f10–f12), 장갑 셋(f13–f15), 반지 셋(f19–f21) | `Sword`, `Sword_Big`, `Sword_Big_Golden`, `Armor_Leather`, `Armor_Metal`, `Armor_Golden`, `Glove`, `Ring1`–`Ring3` |
+| 체력·마력 물약, 귀환 주문서, 강화 주문서, 금화 | `Potion1_Filled_Red`, `Potion1_Filled_Blue`, `Scroll`, `Parchment`, `Coin` |
+| 스킬북(기사 102–106, 마법사 202–206) | `Book1_Closed`, `Book3_Closed` |
+| 몬스터 부산물(3101–3109) | `Crystal1`, `Crystal2`, `ChickenLeg`, `Coin_Skull`, `Bone`, `Arrow`, `Skull`, `Skull2`, `Fishbone` |
+| 구리·철 광석 | `Mineral`, `Gold_Ingots` |
+
+| 팩 | 받는 곳 | 라이선스 |
+|---|---|---|
+| Ultimate RPG Items Pack | [OpenGameArt: Low Poly RPG Pack](https://opengameart.org/content/low-poly-rpg-pack) (`ultimate_rpg_items_pack_by_quaternius_0.zip`, 42.6 MB) | CC0 1.0(페이지) |
+
+- 함께 받았지만 아직 쓰지 않은 것(모두 OpenGameArt, CC0 1.0): Kenney Game Icons(`Kenney_gameIcons.zip`, 1.0 MB. 톱니바퀴·나가기 같은 UI 기호뿐이라 스킬 아이콘으로 맞지 않음), Medieval Weapons Pack(`Medieval Weapons Pack - Sept 2018.zip`, 3.6 MB. 무기 메시), Kenney Particle Pack(`kenney_particlePack.zip`, 9.3 MB. 이펙트).
 
 ## 이펙트와 소리
 

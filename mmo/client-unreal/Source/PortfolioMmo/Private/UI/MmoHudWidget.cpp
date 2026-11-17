@@ -182,7 +182,8 @@ void UMmoHudWidget::ShowSlots(double ServerTick)
 			Slots[Index]->SetIcon(Icon, Name);
 			if (Potion)
 			{
-				Slots[Index]->SetLabel(FText::FromString(FString::Printf(TEXT("%s %u"), *Name.ToString().Left(1), Count)));
+				// 그림이 있으면 개수만, 없으면 글자 아이콘의 첫 글자와 개수를 쓴다(91).
+				Slots[Index]->SetLabel(Icon ? FText::AsNumber(Count) : FText::FromString(FString::Printf(TEXT("%s %u"), *Name.ToString().Left(1), Count)));
 			}
 			// 키 표시는 PC만(크기와 규칙은 93).
 			Slots[Index]->SetKeyHint(MmoKeys::Hint(MmoKeys::Slot(Index)));

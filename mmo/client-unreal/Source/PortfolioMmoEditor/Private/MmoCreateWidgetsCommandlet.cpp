@@ -27,7 +27,11 @@
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
 #include "Engine/Texture2D.h"
+#include "AssetImportTask.h"
+#include "AssetToolsModule.h"
+#include "Engine/Texture2D.h"
 #include "HAL/FileManager.h"
+#include "Misc/Paths.h"
 #include "Kismet2/KismetEditorUtilities.h"
 #include "UObject/SavePackage.h"
 #include "UI/MmoButtonWidget.h"
@@ -1200,7 +1204,41 @@ UMmoCreateWidgetsCommandlet::UMmoCreateWidgetsCommandlet()
 
 namespace
 {
-	/** 아이콘 표(73). 지금은 줄이 없어 모두 글자 아이콘이고, 그림이 생기면(91) 여기에 줄을 더한다. */
+	/** mmo/art/icons/<Name>.png를 /Game/UI/Icons/<Name>으로 가져온다(UI용: 압축하지 않고 밉맵 없음). */
+	UTexture2D* ImportIcon(const FString& Name)
+	{
+		const FString Source = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() / TEXT("../art/icons") / (Name + TEXT(".png")));
+		const FString PackageName = TEXT("/Game/UI/Icons/") + Name;
+		const FString Filename = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
+		IFileManager::Get().Delete(*Filename, false, true, true);
+		UAssetImportTask* Task = NewObject<UAssetImportTask>();
+		Task->Filename = Source;
+		Task->DestinationPath = TEXT("/Game/UI/Icons");
+		Task->DestinationName = Name;
+		Task->bAutomated = true;
+		Task->bReplaceExisting = true;
+		Task->bSave = false;
+		FAssetToolsModule::GetModule().Get().ImportAssetTasks({ Task });
+		UTexture2D* Texture = Task->GetObjects().IsEmpty() ? nullptr : Cast<UTexture2D>(Task->GetObjects()[0]);
+		if (!Texture)
+		{
+			UE_LOG(LogMmoCreateWidgets, Error, TEXT("Could not import %s."), *Source);
+			return nullptr;
+		}
+		Texture->CompressionSettings = TC_EditorIcon;
+		Texture->LODGroup = TEXTUREGROUP_UI;
+		Texture->MipGenSettings = TMGS_NoMipmaps;
+		Texture->NeverStream = true;
+		Texture->PostEditChange();
+		FSavePackageArgs Args;
+		Args.TopLevelFlags = RF_Public | RF_Standalone;
+		return UPackage::SavePackage(Texture->GetPackage(), Texture, *Filename, Args) ? Texture : nullptr;
+	}
+
+	/**
+	 * 아이콘 표(73). 그림은 Quaternius의 Ultimate RPG Items Pack(CC0)의 아이콘을 256 px로 줄여 mmo/art/icons/에 둔 것이다(91. 출처는 docs/art.md).
+	 * 줄이 없는 것(지팡이, 투구, 장화, 펫, 나무와 약초, 스킬, 효과)은 이름의 첫 글자를 쓴 글자 아이콘이다(팩에 맞는 그림이 없음).
+	 */
 	bool CreateIcons()
 	{
 		const FString PackageName = FPackageName::ObjectPathToPackageName(FString(UMmoIcons::Path));
@@ -1208,6 +1246,40 @@ namespace
 		IFileManager::Get().Delete(*Filename, false, true, true);
 		UPackage* Package = CreatePackage(*PackageName);
 		UMmoIcons* Icons = NewObject<UMmoIcons>(Package, *FPackageName::GetShortName(PackageName), RF_Public | RF_Standalone);
+		// 아이템 id → 그림. 장비는 1000 + 종 × 10 + 등급(1–4)이고 등급은 같은 그림이다(Items의 family).
+		TArray<TPair<int32, const TCHAR*>> Items = {
+			{ 2001, TEXT("Potion1_Filled_Red") }, { 2002, TEXT("Potion1_Filled_Red") }, { 2003, TEXT("Potion1_Filled_Blue") }, { 2004, TEXT("Potion1_Filled_Blue") },
+			{ 2005, TEXT("Scroll") }, { 2006, TEXT("Parchment") }, { 4001, TEXT("Coin") },
+			{ 3101, TEXT("Crystal1") }, { 3102, TEXT("Crystal2") }, { 3103, TEXT("ChickenLeg") }, { 3104, TEXT("Coin_Skull") }, { 3105, TEXT("Bone") },
+			{ 3106, TEXT("Arrow") }, { 3107, TEXT("Skull") }, { 3108, TEXT("Skull2") }, { 3109, TEXT("Fishbone") },
+			{ 3202, TEXT("Mineral") }, { 3205, TEXT("Gold_Ingots") },
+		};
+		for (const int32 Book : { 2102, 2103, 2104, 2105, 2106 })
+		{
+			Items.Add({ Book, TEXT("Book1_Closed") });
+			Items.Add({ Book + 100, TEXT("Book3_Closed") });
+		}
+		const TPair<int32, const TCHAR*> Families[] = {
+			{ 1, TEXT("Sword") }, { 2, TEXT("Sword_Big") }, { 3, TEXT("Sword_Big_Golden") }, { 10, TEXT("Armor_Leather") }, { 11, TEXT("Armor_Metal") },
+			{ 12, TEXT("Armor_Golden") }, { 13, TEXT("Glove") }, { 14, TEXT("Glove") }, { 15, TEXT("Glove") }, { 19, TEXT("Ring1") }, { 20, TEXT("Ring2") }, { 21, TEXT("Ring3") },
+		};
+		for (const auto& [Family, Icon] : Families)
+		{
+			for (int32 Grade = 1; Grade <= 4; ++Grade)
+			{
+				Items.Add({ 1000 + Family * 10 + Grade, Icon });
+			}
+		}
+		TMap<FString, UTexture2D*> Imported;
+		for (const auto& [Id, Name] : Items)
+		{
+			UTexture2D*& Texture = Imported.FindOrAdd(Name);
+			if (!Texture && !(Texture = ImportIcon(Name)))
+			{
+				return false;
+			}
+			Icons->Rows.Add({ EMmoIconKind::Item, Id, Texture });
+		}
 		FAssetRegistryModule::AssetCreated(Icons);
 		FSavePackageArgs Args;
 		Args.TopLevelFlags = RF_Public | RF_Standalone;
