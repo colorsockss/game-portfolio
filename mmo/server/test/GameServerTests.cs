@@ -12,8 +12,18 @@ using Xunit;
 namespace PortfolioMmo.Server.Tests
 {
     /// <summary>
+    /// 실제 시간에 기대는 테스트의 컬렉션. 다른 테스트와 나란히 돌면 스레드 풀이 붐벼 수신이 늦게 도는 동안에도 틱은 실제 시간으로 지나가(79)
+    /// 짧은 무응답 시간 제한이 흔들리므로(CI 러너에서 Ping을 보내는데도 Kicked), 나란히 도는 테스트가 끝난 뒤에 따로 돈다.
+    /// </summary>
+    [CollectionDefinition(nameof(RealTimeCollection), DisableParallelization = true)]
+    public sealed class RealTimeCollection
+    {
+    }
+
+    /// <summary>
     /// 루프백 TCP로 서버를 돌려 프레임, 로그인, 끊기를 확인한다.
     /// </summary>
+    [Collection(nameof(RealTimeCollection))]
     public class GameServerTests
     {
         /// <summary>
