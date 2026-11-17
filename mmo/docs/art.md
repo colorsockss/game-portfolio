@@ -12,11 +12,11 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | 몬스터 메시 | 9종과 필드 보스 1 | 있음(아래 "몬스터·소환수·NPC". 2026-11-17) | - |
 | NPC 메시 | 5종(상점, 창고, 제작, 퀘스트, 경비병) | 있음(아래 "몬스터·소환수·NPC") | - |
 | 채집물 메시 | 6종(나무·광석·약초 × 2단계) | 있음(아래 "맵의 것과 움직이지 않는 개체") | - |
-| 무기 메시 | 2(검, 지팡이) | 캐릭터 팩에 구워진 검과 지팡이(무기를 들면 보이고 들지 않으면 감춤. 2026-11-17) | 종마다 다른 메시는 넣지 않음: Medieval Weapons Pack(받아 둠)에 검은 있지만 지팡이가 없음 |
+| 무기 메시 | 2(검, 지팡이) | System G6의 검과 지팡이를 캐릭터의 오른손 뼈에 구움(98. 무기를 들면 보이고 들지 않으면 감춤. 원본 텍스처가 없어 단색) | 종마다 다른 메시는 넣지 않음: Medieval Weapons Pack(받아 둠)에 검은 있지만 지팡이가 없음 |
 | 바닥 아이템 메시 | 1 | 있음(가방) | - |
 | 환경 메시 | 9종 | 있음(아래 "맵의 것과 움직이지 않는 개체") | - |
-| 캐릭터 애니메이션 | 대기, 달리기, 공격, 피격, 죽음, 시전 | 있음(캐릭터 팩) | - |
-| 채집·제작·귀환 동작 | 3 | 아직 없음(47, 48, 32) | 캐릭터 팩의 `PickUp`(채집)이 후보 |
+| 캐릭터 애니메이션 | 대기, 달리기, 공격, 피격, 죽음, 시전 | 있음(System G6. 피격 동작은 팩에 없음) | - |
+| 채집·제작·귀환 동작 | 3 | 채집과 제작은 System G6의 `gathering`(98). 귀환은 없음 | - |
 | 몬스터 애니메이션 | 종마다 대기, 걷기, 공격, 피격, 죽음 | 있음(슬라임과 해골은 피격 동작이 없음) | - |
 | 소환수 메시와 애니메이션(95) | 1(정령): 대기, 걷기, 공격, 피격, 죽음과 나타나고 사라지는 이펙트 | 메시와 동작은 있음(Ghost). 나타나고 사라지는 이펙트는 아래 "이펙트와 소리" | 이펙트는 정하지 않음 |
 | 펫 메시와 애니메이션(96) | 2(고양이, 부엉이): 걷기, 줍기 | 있음(아래 "몬스터·소환수·NPC"). 줍기 동작은 없음 | - |
@@ -47,13 +47,16 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 
 ## 캐릭터
 
-| 직업 | 원본 | 받는 곳 | 라이선스 | 가져오기 |
-|---|---|---|---|---|
-| 기사 | Quaternius "RPG Characters - Nov 2020"의 `Warrior`(메시, 애니메이션, `Warrior_Texture`, `Warrior_Sword_Texture`) | [OpenGameArt: LowPoly RPG Characters](https://opengameart.org/content/lowpoly-rpg-characters) (`rpg_characters_-_nov_2020.zip`, 12.9 MB) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) | `client-unreal/Scripts/import_characters.py` |
-| 마법사 | 같은 팩의 `Wizard`(메시, 애니메이션, `Wizard_Texture`, `Wizard_Staff_Texture`) | 같음 | CC0 1.0 | 같음 |
+2026-11-17(backlog 98). 사람 체형(약 7.4등신, 2천~3천 삼각형)의 System G6 팩입니다. Quaternius의 Modular Character Outfits는 판금 기사와 마법사 의상이 유료판에만 있어 쓰지 않았습니다(사용자가 Quaternius 밖에서 찾기로 정함). 원본은 Blender 2.79의 .blend라 Blender 5.3.0(`blender-5.3.0-macos-arm64.dmg`, 360 MB, download.blender.org, GPL. 배포처의 SHA-256을 확인하고 `~/.cache/blender/`에 둠)으로 열어 `client-unreal/Scripts/export_characters.py`가 `mmo/art/characters/`의 FBX와 텍스처로 냅니다(저장소에 둠). 원본 압축 파일은 `MMO_ART_SOURCE`의 `system-g6/`에 풉니다.
 
-- 팩의 FBX 하나에 스켈레탈 메시, 스켈레톤, 애니메이션(대기·달리기·공격·죽음 등)이 함께 들어 있습니다. 지금은 `Idle_Weapon`과 `Run_Weapon`만 씁니다(대기·달리기 블렌드 스페이스).
-- 기사·마법사 말고 같은 팩의 성직자(Cleric), 수도사(Monk), 궁수(Ranger), 도적(Rogue)은 세 번째 직업부터 쓸 수 있습니다.
+| 직업 | 원본(System G6의 `human_male.blend`) | 받는 곳 | 라이선스 | 가져오기 |
+|---|---|---|---|---|
+| 기사 | 조각 `head_default`, `heavy_armor`, `heavy_boots`, `heavy_gloves`, `heavy_helmet`과 무기 `main_hand_sword_old`. 동작 `idle_combat_main_hand_melee`(대기), `run`, `cast_main_hand_melee`(공격), `cast_main_hand_melee_2`(스킬), `gathering`, `death` | [OpenGameArt: Modular RPG Characters](https://opengameart.org/content/modular-rpg-characters) (`modular_rpg_characters.7z`, 16.6 MB. 무기는 `modular_rpg_characters_ik_rig_for_animating.7z`, 1.2 MB) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) | `client-unreal/Scripts/export_characters.py` → `import_characters.py` |
+| 마법사 | 조각 `head_default`, `hair_2`, `light_armor`, `light_boots`, `light_gloves`, `light_helmet`(챙 넓은 모자)과 무기 `staff_old`. 동작 `idle_combat_two_handed_staff`(대기), `run`, `cast_two_handed_staff`(공격), `cast_unarmed_magic`(스킬), `channel_two_handed_staff`(시전), `gathering`, `death` | 같음 | CC0 1.0 | 같음 |
+
+- 갑옷 조각은 뼈의 버텍스 그룹만 있고 아마추어에 붙어 있지 않아 내보낼 때 붙입니다. 무기는 IK 리그 파일에서 손의 뼈(`wep_pos_R`)에 붙은 자리 그대로 가져와 그 뼈에 다 묶습니다(구운 무기). 무기의 텍스처는 작가의 다른 폴더를 가리켜 팩에 없어 단색(검 회색, 지팡이 갈색)입니다.
+- 동작은 24 fps의 10–20프레임이고 피격 동작이 없습니다. 같은 팩의 여자 캐릭터(`human_female.blend`), 레인저(`medium_*`), 상인·대장장이·여관 주인 옷(`light_armor_2–4`), 활·석궁·방패·완드 동작은 아직 쓰지 않습니다.
+- 앞의 캐릭터(2등신, Quaternius "RPG Characters - Nov 2020"의 `Warrior`와 `Wizard`)는 98에서 지웠습니다.
 
 ## 몬스터·소환수·NPC
 

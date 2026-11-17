@@ -1,29 +1,35 @@
-# 직업마다 캐릭터(스켈레탈 메시, 스켈레톤, 애니메이션, 텍스처, 머티리얼)를 가져온다. 원본은 저장소에 두지 않고(docs/art.md에 출처),
-# 압축을 푼 Quaternius "RPG Characters - Nov 2020"(CC0) 폴더를 MMO_CHARACTER_SOURCE로 준다. 다시 돌리면 같은 에셋을 덮는다.
-# 캐릭터 머티리얼(M_Character)은 먼저 create_entity_materials.py로 만든다.
+# 직업마다 캐릭터(스켈레탈 메시, 스켈레톤, 애니메이션, 텍스처, 머티리얼)를 mmo/art/characters/<직업>.fbx에서 가져온다(backlog 98).
+# FBX와 텍스처는 export_characters.py가 System G6의 Modular RPG Characters(CC0)에서 Blender로 내보내 저장소에 둔 것이다(docs/art.md).
+# 다시 돌리면 직업의 폴더를 지우고 새로 만든다. 캐릭터 머티리얼(M_Character, M_EntityColor)은 먼저 create_entity_materials.py로 만든다.
 #
-#   MMO_CHARACTER_SOURCE="<압축을 푼 폴더>/RPG Characters - Nov 2020" \
 #   "/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor-Cmd" "$PWD/mmo/client-unreal/PortfolioMmo.uproject" \
 #     -run=pythonscript -script="$PWD/mmo/client-unreal/Scripts/import_characters.py" -unattended -nosplash -nullrhi
-# 대기·달리기 블렌드 스페이스는 그 뒤에 에디터 모듈의 MmoCreateCharacterAssets 커맨드렛이 만든다(Python으로는 다시 계산되지 않음).
+# 대기·달리기 블렌드 스페이스와 애니메이션 블루프린트, 표현 표의 줄은 그 뒤에 에디터 모듈의 MmoCreateCharacterAssets 커맨드렛이 만든다.
 import os
 
 import unreal
 
-SOURCE = os.environ.get("MMO_CHARACTER_SOURCE")
-if not SOURCE or not os.path.isdir(SOURCE):
-    raise RuntimeError("Set MMO_CHARACTER_SOURCE to the unzipped 'RPG Characters - Nov 2020' folder.")
+ART = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../art/characters"))
+CHARACTER = "/Game/Characters/M_Character"
+ENTITY_COLOR = "/Game/Characters/M_EntityColor"
 
-# 직업 → 원본 이름. 기사는 Warrior, 마법사는 Wizard다.
-CLASSES = {"Knight": "Warrior", "Mage": "Wizard"}
-MATERIAL = "/Game/Characters/M_Character"
+# 직업의 폴더 이름 → FBX 이름. 메시는 FBX의 이름, 스켈레톤은 <FBX>_Skeleton이 된다.
+CLASSES = {"Knight": "knight", "Mage": "mage"}
+# 구운 무기의 칸(머티리얼 이름 Weapon_*)은 텍스처가 없어(원본의 무기 텍스처가 팩에 없음) 색만 준다. 게임은 이름에 Weapon이 든 칸을 무기로 본다.
+WEAPON_COLORS = {"Weapon_Sword": (0.55, 0.57, 0.6), "Weapon_Staff": (0.3, 0.17, 0.08)}
 
 assets = unreal.EditorAssetLibrary
 materials = unreal.MaterialEditingLibrary
 tools = unreal.AssetToolsHelpers.get_asset_tools()
 
+for path in (CHARACTER, ENTITY_COLOR):
+    if unreal.load_asset(path) is None:
+        raise RuntimeError(f"{path} is missing. Run create_entity_materials.py first.")
+
 
 def import_file(path, destination, options=None):
+    if not os.path.isfile(path):
+        raise RuntimeError(f"{path} is missing. Run export_characters.py first.")
     task = unreal.AssetImportTask()
     task.set_editor_property("filename", path)
     task.set_editor_property("destination_path", destination)
@@ -44,30 +50,34 @@ def save(asset):
         raise RuntimeError(f"Could not save {asset.get_path_name()}")
 
 
-# 텍스처 하나를 받는 캐릭터 머티리얼(나타나고 사라짐 포함)은 create_entity_materials.py가 만든다. 직업마다 인스턴스가 텍스처만 바꾼다.
-material = unreal.load_asset(MATERIAL)
-if material is None:
-    raise RuntimeError(f"{MATERIAL} is missing. Run create_entity_materials.py first.")
-
-
-def material_instance(name, folder, texture_file):
-    """M_Character에 텍스처 하나를 끼운 인스턴스."""
-    texture_path = import_file(os.path.join(SOURCE, "Textures", texture_file), folder)[0]
+def instance(name, folder, parent):
     path = f"{folder}/{name}"
     if assets.does_asset_exist(path):
         assets.delete_asset(path)
-    instance = tools.create_asset(name, folder, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
-    materials.set_material_instance_parent(instance, material)
-    materials.set_material_instance_texture_parameter_value(instance, "BaseColor", unreal.load_asset(texture_path))
-    save(instance)
-    return instance
+    created = tools.create_asset(name, folder, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
+    materials.set_material_instance_parent(created, unreal.load_asset(parent))
+    return created
 
 
-# 원본의 무기 이름(텍스처 파일 이름의 앞부분).
-WEAPONS = {"Warrior": "Warrior_Sword", "Wizard": "Wizard_Staff"}
+def slot_material(class_name, folder, slot_name):
+    """칸 이름이 텍스처의 이름이면 그 텍스처를 끼운 M_Character의 인스턴스, 무기면 색을 준 M_EntityColor의 인스턴스."""
+    if slot_name in WEAPON_COLORS:
+        # 게임이 무기 칸을 머티리얼 이름(Weapon)으로 찾는다(MmoCharacterLook::ShowWeapon).
+        created = instance(f"MI_{class_name}_Weapon", folder, ENTITY_COLOR)
+        materials.set_material_instance_vector_parameter_value(created, "Color", unreal.LinearColor(*WEAPON_COLORS[slot_name], 1.0))
+    else:
+        texture = import_file(os.path.join(ART, "textures", f"{slot_name}.png"), f"{folder}/Textures")[0]
+        created = instance(f"MI_{slot_name}", folder, CHARACTER)
+        materials.set_material_instance_texture_parameter_value(created, "BaseColor", unreal.load_asset(texture))
+    save(created)
+    return created
+
 
 for class_name, source_name in CLASSES.items():
     folder = f"/Game/Characters/{class_name}"
+    # 늘 새로 가져온다(지난 팩의 메시와 동작이 남지 않게). 블렌드 스페이스와 블루프린트는 커맨드렛이 다시 만든다.
+    if assets.does_directory_exist(folder):
+        assets.delete_directory(folder)
 
     options = unreal.FbxImportUI()
     options.set_editor_property("import_mesh", True)
@@ -77,16 +87,15 @@ for class_name, source_name in CLASSES.items():
     options.set_editor_property("import_textures", False)
     options.set_editor_property("create_physics_asset", False)
     options.set_editor_property("mesh_type_to_import", unreal.FBXImportType.FBXIT_SKELETAL_MESH)
-    import_file(os.path.join(SOURCE, "FBX", f"{source_name}.fbx"), folder, options)
+    # FBX는 원본의 1 단위(키 4.2)를 1 cm로 담아(export_characters.py) 100배로 가져온다. 메시와 동작에 같은 배수를 준다.
+    options.get_editor_property("skeletal_mesh_import_data").set_editor_property("import_uniform_scale", 100.0)
+    options.get_editor_property("anim_sequence_import_data").set_editor_property("import_uniform_scale", 100.0)
+    import_file(os.path.join(ART, f"{source_name}.fbx"), folder, options)
 
-    # 메시의 슬롯은 몸(<원본>_Texture)과 무기(<무기>_Texture) 둘이고, 슬롯 이름이 원본의 텍스처 이름이다.
-    body = material_instance(f"MI_{class_name}", folder, f"{source_name}_Texture.png")
-    weapon = material_instance(f"MI_{class_name}_Weapon", folder, f"{WEAPONS[source_name]}_Texture.png")
     mesh = unreal.load_asset(f"{folder}/{source_name}")
     slots = []
     for slot in mesh.get_editor_property("materials"):
-        is_weapon = str(slot.get_editor_property("material_slot_name")).startswith(WEAPONS[source_name])
-        slot.set_editor_property("material_interface", weapon if is_weapon else body)
+        slot.set_editor_property("material_interface", slot_material(class_name, folder, str(slot.get_editor_property("material_slot_name"))))
         slots.append(slot)
     mesh.modify()
     mesh.set_editor_property("materials", slots)
@@ -95,8 +104,10 @@ for class_name, source_name in CLASSES.items():
 # 가져오기 작업은 돌려준 에셋(메시)만 저장하므로, 함께 만든 스켈레톤과 애니메이션을 여기서 저장한다.
 if not unreal.EditorLoadingAndSavingUtils.save_dirty_packages(save_map_packages=False, save_content_packages=True):
     raise RuntimeError("Could not save the imported packages")
-for path in unreal.EditorAssetLibrary.list_assets("/Game/Characters", recursive=True):
-    asset = unreal.load_asset(path)
-    if isinstance(asset, unreal.SkeletalMesh):
-        names = [slot.get_editor_property("material_interface").get_name() for slot in asset.get_editor_property("materials")]
-        unreal.log(f"[import] {path} materials {names}")
+for class_name, source_name in CLASSES.items():
+    folder = f"/Game/Characters/{class_name}"
+    mesh = unreal.load_asset(f"{folder}/{source_name}")
+    bounds = mesh.get_bounds()
+    names = [slot.get_editor_property("material_interface").get_name() for slot in mesh.get_editor_property("materials")]
+    clips = sorted(path.rsplit(".", 1)[-1] for path in assets.list_assets(folder) if isinstance(unreal.load_asset(path), unreal.AnimSequence))
+    unreal.log_warning(f"[import] {folder}: height {bounds.box_extent.z * 2.0:.1f}, materials {names}, clips {clips}")
