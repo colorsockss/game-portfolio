@@ -490,7 +490,7 @@ namespace PortfolioMmo.Contract {
     /// </summary>
     [pbr::OriginalName("CONSTANT_YAW_STEPS")] YawSteps = 256,
     /// <summary>
-    /// 서버의 초당 틱 수. EntityMoves.tick이 틱마다 1씩 오른다.
+    /// 서버의 초당 틱 수. 틱 번호(EntityMoves.tick 등)는 실제 시간을 따라 오르므로 틱이 밀리면 건너뛴다(79).
     /// </summary>
     [pbr::OriginalName("CONSTANT_TICKS_PER_SECOND")] TicksPerSecond = 20,
     /// <summary>

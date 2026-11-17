@@ -119,6 +119,11 @@ namespace PortfolioMmo.Server
         /// 차례별 시간, 패킷 종류별 수와 바이트, 보내기 큐, 타이머의 흔들림.
         /// </summary>
         private readonly TickProfile _profile = new TickProfile(Stopwatch.Frequency);
+
+        /// <summary>
+        /// 이번 틱에 지난 틱 수를 실제 시간으로 구한다(79. 틱이 밀려도 게임 시간이 실제 시간을 따라감).
+        /// </summary>
+        private readonly TickClock _clock = new TickClock(Stopwatch.Frequency);
         private readonly EntityMovesEncoder _moves = new EntityMovesEncoder();
 
         /// <summary>
@@ -312,7 +317,8 @@ namespace PortfolioMmo.Server
             Drain();
             long drained = Stopwatch.GetTimestamp();
             _profile.Add(TickPhase.Input, drained - started);
-            _world.Step(1, _profile);
+            // 밀린 틱을 몰아서 돌리지 않고, 지난 틱 수만큼 한 번에 진행한다(100 ms가 걸린 틱 다음은 번호가 2 오름).
+            _world.Step(_clock.Advance(started), _profile);
             long stepped = Stopwatch.GetTimestamp();
             _statsSentBytes += Flush();
             long flushed = Stopwatch.GetTimestamp();
