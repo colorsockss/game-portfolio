@@ -188,7 +188,8 @@ namespace PortfolioMmo.Server
                 return 1;
             }
 
-            Drain();
+            // 내려갈 때는 틱을 진행하지 않으므로 지금 번호로 받는다.
+            Drain(_world.Tick);
             foreach (Connection connection in _connections)
             {
                 _world.Kick(connection.Session, KickReason.ServerShutdown);
@@ -314,11 +315,13 @@ namespace PortfolioMmo.Server
             long started = Stopwatch.GetTimestamp();
             TimeSpan pauseStarted = GC.GetTotalPauseDuration();
             _profile.TickStarted(started);
-            Drain();
+            // 밀린 틱을 몰아서 돌리지 않고, 지난 틱 수만큼 한 번에 진행한다(100 ms가 걸린 틱 다음은 번호가 2 오름).
+            uint elapsedTicks = _clock.Advance(started);
+            // 받은 때는 이번 틱을 진행한 뒤의 번호로 남긴다. 루프가 늦게 돈 동안 온 패킷을 건너뛴 틱만큼 오래된 것으로 보아 끊지 않게 한다.
+            Drain(_world.Tick + elapsedTicks);
             long drained = Stopwatch.GetTimestamp();
             _profile.Add(TickPhase.Input, drained - started);
-            // 밀린 틱을 몰아서 돌리지 않고, 지난 틱 수만큼 한 번에 진행한다(100 ms가 걸린 틱 다음은 번호가 2 오름).
-            _world.Step(_clock.Advance(started), _profile);
+            _world.Step(elapsedTicks, _profile);
             long stepped = Stopwatch.GetTimestamp();
             _statsSentBytes += Flush();
             long flushed = Stopwatch.GetTimestamp();
@@ -346,9 +349,9 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 소켓 쪽에서 넘어온 일을 들어온 순서대로 월드에 넘긴다.
+        /// 소켓 쪽에서 넘어온 일을 들어온 순서대로 월드에 넘긴다. tick은 연결과 받은 때로 남길 번호다(이번 틱을 진행한 뒤의 번호).
         /// </summary>
-        private void Drain()
+        private void Drain(uint tick)
         {
             while (_inbound.TryDequeue(out Inbound item))
             {
@@ -356,12 +359,12 @@ namespace PortfolioMmo.Server
                 switch (item.Kind)
                 {
                     case InboundKind.Connected:
-                        session.ConnectedTick = _world.Tick;
-                        session.LastReceivedTick = _world.Tick;
+                        session.ConnectedTick = tick;
+                        session.LastReceivedTick = tick;
                         _connections.Add(item.Connection);
                         break;
                     case InboundKind.Received:
-                        session.LastReceivedTick = _world.Tick;
+                        session.LastReceivedTick = tick;
                         _world.Receive(session, item.Packet!);
                         break;
                     case InboundKind.Malformed:

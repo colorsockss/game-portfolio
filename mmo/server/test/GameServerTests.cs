@@ -95,9 +95,9 @@ namespace PortfolioMmo.Server.Tests
         public async Task KicksAConnectionThatSendsNothing()
         {
             using var cancellation = new CancellationTokenSource();
-            // 시간 제한 10틱(0.5초).
+            // 시간 제한 20틱(1초). Ping 간격(0.2초 + 왕복)과 넉넉히 떨어뜨려 붐비는 CI 러너에서 클라이언트가 늦게 돌아도 끊기지 않게 한다.
             var server = new GameServer(
-                new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new CharacterStore(":memory:"), TestData.Data), idleTimeoutTicks: 10);
+                new IPEndPoint(IPAddress.Loopback, 0), new World(10, 0, new Random(1), new CharacterStore(":memory:"), TestData.Data), idleTimeoutTicks: 20);
             Task running = server.RunAsync(cancellation.Token);
 
             using var client = new TcpClient();
@@ -108,8 +108,8 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(LoginResultCode.Ok, (await ReadAsync(reader))!.LoginResult.Result);
             await ReadAsync(reader);
 
-            // 시간 제한의 두 배(1초) 동안 0.2초마다 Ping을 보낸다.
-            for (int count = 0; count < 5; count++)
+            // 시간 제한의 두 배(2초) 동안 0.2초마다 Ping을 보낸다.
+            for (int count = 0; count < 10; count++)
             {
                 await Task.Delay(200);
                 new Packet { Ping = new Ping() }.WriteDelimitedTo(stream);
@@ -119,6 +119,48 @@ namespace PortfolioMmo.Server.Tests
             Assert.Equal(KickReason.IdleTimeout, (await ReadAsync(reader))!.Kicked.Reason);
             Assert.Null(await ReadAsync(reader));
 
+            cancellation.Cancel();
+            await running;
+        }
+
+        /// <summary>
+        /// 틱 루프가 시간 제한보다 오래 멈춘 동안 온 Ping은 루프가 돌아온 틱에 받은 것으로 보아 끊지 않는다(틱 번호는 멈춘 만큼 건너뛴다).
+        /// </summary>
+        [Fact]
+        public async Task KeepsAConnectionWhosePingArrivesWhileTheTickLoopStalls()
+        {
+            using var cancellation = new CancellationTokenSource();
+            var world = new World(10, 0, new Random(1), new CharacterStore(":memory:"), TestData.Data);
+            // 시간 제한 10틱(0.5초).
+            var server = new GameServer(new IPEndPoint(IPAddress.Loopback, 0), world, idleTimeoutTicks: 10);
+            Task running = server.RunAsync(cancellation.Token);
+
+            using var client = new TcpClient();
+            await client.ConnectAsync(IPAddress.Loopback, server.Port);
+            NetworkStream stream = client.GetStream();
+            var reader = new PacketReader(stream, 64 * 1024);
+            new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = TestData.Hash } }.WriteDelimitedTo(stream);
+            Assert.Equal(LoginResultCode.Ok, (await ReadAsync(reader))!.LoginResult.Result);
+            await ReadAsync(reader);
+
+            // 다음 틱이 1초(20틱) 멈추고, 그 가운데에 Ping을 보낸다.
+            int stalls = 0;
+            world.StepHook = () =>
+            {
+                if (Interlocked.Increment(ref stalls) == 1)
+                {
+                    Thread.Sleep(1000);
+                }
+            };
+            await Task.Delay(500);
+            new Packet { Ping = new Ping() }.WriteDelimitedTo(stream);
+            Assert.Equal(Packet.BodyOneofCase.Pong, (await ReadAsync(reader))!.BodyCase);
+            // 끊었으면 Pong과 같은 틱에 Kicked가 뒤따른다. 한 번 더 보내 연결이 남았는지 본다.
+            new Packet { Ping = new Ping() }.WriteDelimitedTo(stream);
+            Assert.Equal(Packet.BodyOneofCase.Pong, (await ReadAsync(reader))!.BodyCase);
+
+            // 서버가 내려갈 때 클라이언트가 닫기를 기다리지 않게 먼저 닫는다.
+            client.Close();
             cancellation.Cancel();
             await running;
         }
