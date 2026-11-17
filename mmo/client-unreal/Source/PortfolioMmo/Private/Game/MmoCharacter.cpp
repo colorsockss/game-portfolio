@@ -12,12 +12,12 @@
 
 namespace
 {
-	// 내려다보는 쿼터뷰(ROM 같은 리니지라이크)의 거리. 처음에는 캐릭터가 화면 높이의 11%쯤이다.
-	constexpr float DefaultArmLength = 2400.0f;
-	constexpr float MinArmLength = 1300.0f;
-	constexpr float MaxArmLength = 3600.0f;
-	/** 좁은 화각으로 원근 왜곡을 줄여 내려다보는 느낌을 낸다(엔진 기본은 90°). */
-	constexpr float FieldOfView = 45.0f;
+	// 리니지(2D)처럼 보이는 고정 시점(97): 대각선에서 낮게 내려다보고 화각을 좁혀 원근을 줄인다. 40 m에서 화면 가로가 약 14 m다.
+	constexpr float DefaultArmLength = 4000.0f;
+	constexpr float MinArmLength = 2800.0f;
+	constexpr float MaxArmLength = 5600.0f;
+	/** 좁은 화각으로 원근을 줄여 2D 아이소메트릭에 가깝게 한다(엔진 기본은 90°). */
+	constexpr float FieldOfView = 20.0f;
 }
 
 AMmoCharacter::AMmoCharacter()

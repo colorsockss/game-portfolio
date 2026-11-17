@@ -27,14 +27,14 @@
 
 namespace
 {
-	/** 터치로 끈 거리(픽셀) → 카메라 회전(도). */
-	constexpr float TouchTurnRate = 0.2f;
 	/** 휠 한 칸에 당기는 거리(언리얼 단위). */
 	constexpr float WheelZoomStep = 100.0f;
-	/** 처음 내려다보는 각도와 돌릴 수 있는 범위(도, 아래가 음수). 쿼터뷰를 벗어나 눕지 않게 좁힌다. */
-	constexpr float DefaultPitch = -60.0f;
-	constexpr float MinPitch = -80.0f;
-	constexpr float MaxPitch = -45.0f;
+	/**
+	 * 리니지(2D)처럼 보이는 고정 시점(97): 2:1 아이소메트릭에 가깝게 대각선(방위 45°)에서 35° 내려다보고 돌리지 않는다.
+	 * 맵의 것이 축에 맞춰 놓여 화면에서는 마름모로 보인다.
+	 */
+	constexpr float DefaultPitch = -35.0f;
+	constexpr float DefaultYaw = 45.0f;
 	/** 자유 카메라가 이동 입력으로 움직이는 빠르기(언리얼 단위/초)와 휠 한 칸의 거리. */
 	constexpr float FreeCameraSpeed = 2000.0f;
 	constexpr float FreeCameraWheelStep = 300.0f;
@@ -285,9 +285,9 @@ void AMmoPlayerController::BeginPlay()
 	Super::BeginPlay();
 	if (PlayerCameraManager)
 	{
-		// 위에서 비스듬히 내려다보는 범위로만 돌린다.
-		PlayerCameraManager->ViewPitchMin = MinPitch;
-		PlayerCameraManager->ViewPitchMax = MaxPitch;
+		// 시점은 고정이다(97).
+		PlayerCameraManager->ViewPitchMin = DefaultPitch;
+		PlayerCameraManager->ViewPitchMax = DefaultPitch;
 	}
 	PacketHandle = GetGameInstance()->GetSubsystem<UMmoSession>()->OnPacket.AddUObject(this, &AMmoPlayerController::HandlePacket);
 	ReconnectHandle = GetGameInstance()->GetSubsystem<UMmoSession>()->OnReconnecting.AddUObject(this, &AMmoPlayerController::HandleReconnecting);
@@ -319,8 +319,8 @@ void AMmoPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	MoveSender.Reset();
-	// 캐릭터가 보던 쪽과 상관없이 북쪽(패킷의 +z, Unreal의 +X)이 화면 위다. 미니맵(북쪽이 위로 고정)과 같은 방향이다.
-	SetControlRotation(FRotator(DefaultPitch, 0.0, 0.0));
+	// 캐릭터가 보던 쪽과 상관없이 북동쪽이 화면 위인 대각선 시점이다(97. 미니맵은 북쪽이 위라 45° 어긋남).
+	SetControlRotation(FRotator(DefaultPitch, DefaultYaw, 0.0));
 }
 
 void AMmoPlayerController::PlayerTick(float DeltaTime)
@@ -957,8 +957,7 @@ void AMmoPlayerController::HandleLook(const FInputActionValue& Value)
 		FreeCamera->SetActorRotation(Rotation);
 		return;
 	}
-	AddYawInput(Delta.X);
-	AddPitchInput(-Delta.Y);
+	// 플레이어의 시점은 리니지처럼 고정이라 돌리지 않는다(97). 자유 카메라만 돈다.
 }
 
 void AMmoPlayerController::HandleZoom(const FInputActionValue& Value)
@@ -1034,9 +1033,7 @@ void AMmoPlayerController::UpdateTouchCamera()
 	else if (CameraCount == 1 && Held(CameraFingers[0]) && Gestures.Move(CameraFingers[0], Now[CameraFingers[0]].X, Now[CameraFingers[0]].Y))
 	{
 		// 화면 좌표는 아래가 +y다. 끄는 쪽으로 화면이 따라오게 돌린다(DefaultInput.ini에서 옛 입력 배율을 꺼 값이 곧 각도다).
-		const FVector2D Delta = Now[CameraFingers[0]] - TouchWas[CameraFingers[0]];
-		AddYawInput(Delta.X * TouchTurnRate);
-		AddPitchInput(-Delta.Y * TouchTurnRate);
+		// 시점은 리니지처럼 고정이라 한 손가락으로 끌어도 돌리지 않는다(97). 끄는 손가락은 계속 카메라의 것으로 잡아 둔다.
 	}
 
 	for (int32 Finger = 0; Finger < MmoScreen::FTouchOwners::MaxFingers; ++Finger)
