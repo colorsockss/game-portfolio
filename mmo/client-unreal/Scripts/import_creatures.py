@@ -1,4 +1,4 @@
-# 몬스터, 소환수, NPC의 스켈레탈 메시·스켈레톤·애니메이션·머티리얼을 가져온다(backlog 91). 원본은 저장소에 두지 않고(docs/art.md에 출처),
+# 몬스터, 소환수, NPC, 펫의 스켈레탈 메시·스켈레톤·애니메이션·머티리얼을 가져온다(backlog 91). 원본은 저장소에 두지 않고(docs/art.md에 출처),
 # Quaternius의 CC0 팩들을 압축을 푼 폴더들의 부모를 MMO_ART_SOURCE로 준다(기본 ~/.cache/mmo-art-sources). 다시 돌리면 같은 에셋을 덮는다.
 #   cute-monsters/      Cute Animated Monsters - Aug 2020   (OpenGameArt. 모델마다 텍스처 하나)
 #   monster-pack/       Animated Monster Pack by @Quaternius  (OpenGameArt. 머티리얼 색)
@@ -36,6 +36,9 @@ CREATURES = [
     ("Troll", CUTE, "FBX/Cyclops.fbx", "Textures/Cyclops_Texture.png", None),
     ("StoneGiant", CUTE, "FBX/Yeti.fbx", "Textures/Yeti_Texture.png", (0.58, 0.58, 0.62)),
     ("Spirit", CUTE, "FBX/Ghost.fbx", "Textures/Ghost_Texture.png", None),
+    # 펫(96). 부엉이가 CC0로 없어 둥근 새(Birb)다.
+    ("Cat", ULTIMATE, "Cat.fbx", "Atlas_Monsters.png", None),
+    ("Owl", ULTIMATE, "Birb.fbx", "Atlas_Monsters.png", None),
     ("Merchant", PEOPLE, "FBX/OldClassy_Male.fbx", None, None),
     ("Keeper", PEOPLE, "FBX/Worker_Male.fbx", None, None),
     ("Crafter", PEOPLE, "FBX/Viking_Male.fbx", None, None),

@@ -126,6 +126,9 @@ private:
 	/** 자리 표시 액터 하나(엔진의 기본 도형, 색은 커스텀 프리미티브 데이터). Material이 없으면 맵의 자리 표시와 같은 불투명한 머티리얼이다. */
 	AStaticMeshActor* SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color, UMaterialInterface* Material = nullptr);
 
+	/** 펫 액터를 만든다. 표에 그 펫의 줄이 있으면 모습을 입히고, 없으면 펫마다 색이 다른 작은 구다. 그림자는 드리우지 않는다. */
+	AActor* SpawnPet(uint32 PetId, const FVector& Location);
+
 	/** 개체 번호 → 그 개체의 액터(내 캐릭터 포함). */
 	UPROPERTY()
 	TMap<uint32, TObjectPtr<AActor>> Actors;
@@ -192,9 +195,9 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<AStaticMeshActor>> WarningFills;
 
-	/** 주인 → 펫의 자리 표시와 그린 자리(96). */
+	/** 주인 → 펫의 액터(AMmoEntityActor. 표에 그 펫의 줄이 없으면 자리 표시 구)와 그린 자리(96). */
 	UPROPERTY()
-	TMap<uint32, TObjectPtr<AStaticMeshActor>> PetActors;
+	TMap<uint32, TObjectPtr<AActor>> PetActors;
 	TMap<uint32, MmoWorld::FPoint> PetPoints;
 
 	/** 범위 스킬의 원(바닥 표시)과 저마다 감출 때(초). */

@@ -417,15 +417,23 @@ void UMmoEntitySubsystem::DrawPets(const MmoWorld::FWorldState& World, const Mmo
 		}
 		const MmoWorld::FPoint Next = MmoWorld::NextPetPosition(*Field, Step);
 		PetPoints.Add(Id, Next);
-		AStaticMeshActor* Actor = PetActors.FindRef(Id);
+		const FVector Location = MmoCoordinates::ToWorld(Next.X, Next.Z);
+		AActor* Actor = PetActors.FindRef(Id);
 		if (!Actor)
 		{
-			Actor = SpawnMarker(TEXT("Sphere"), FVector(0.35), PetId == 1 ? FLinearColor(1.0f, 0.75f, 0.35f) : FLinearColor(0.85f, 0.9f, 1.0f),
-				Visuals ? Visuals->PlaceholderMaterial.Get() : nullptr);
+			Actor = SpawnPet(PetId, Location);
 			PetActors.Add(Id, Actor);
 		}
+		// 움직인 만큼 걷기와 대기를 섞고 가는 쪽을 본다(펫의 걸음은 주인을 따르는 클라이언트의 계산이라 서버의 속도가 없다).
+		const FVector Moved = Location - Actor->GetActorLocation();
+		const double Speed = DeltaTime > 0.0f ? Moved.Size2D() / DeltaTime : 0.0;
 		Actor->SetActorHiddenInGame(false);
-		Actor->SetActorLocation(MmoCoordinates::ToWorld(Next.X, Next.Z) + FVector(0, 0, 25));
+		Actor->SetActorLocation(Location);
+		if (Speed > 1.0)
+		{
+			Actor->SetActorRotation(FRotator(0.0, Moved.Rotation().Yaw, 0.0));
+		}
+		MmoCharacterLook::SetSpeed(*ComponentsOf(*Actor).Key, Speed);
 		SetFade(*Actor, OwnerShown);
 	}
 	for (auto It = PetActors.CreateIterator(); It; ++It)
@@ -433,7 +441,7 @@ void UMmoEntitySubsystem::DrawPets(const MmoWorld::FWorldState& World, const Mmo
 		if (!Seen.Contains(It.Key()))
 		{
 			// 주인이 시야에서 나갔으면 그 자리에서 서서히 사라지고, 주인을 다 감췄거나 펫을 넣었으면 바로 지운다.
-			if (AStaticMeshActor* Pet = It.Value(); Pet && !World.Entities().contains(It.Key()))
+			if (AActor* Pet = It.Value(); Pet && !World.Entities().contains(It.Key()))
 			{
 				LeavingActors.Add(Pet);
 				LeavingShown.Add(1.0f);
@@ -825,6 +833,27 @@ AStaticMeshActor* UMmoEntitySubsystem::SpawnMarker(const TCHAR* Shape, const FVe
 	Mesh->SetCastShadow(false);
 	Marker->SetActorScale3D(Scale);
 	return Marker;
+}
+
+AActor* UMmoEntitySubsystem::SpawnPet(uint32 PetId, const FVector& Location)
+{
+	FActorSpawnParameters Spawn;
+	Spawn.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AMmoEntityActor* Pet = GetWorld()->SpawnActor<AMmoEntityActor>(Location, FRotator::ZeroRotator, Spawn);
+	const FMmoEntityVisual* Row = Visuals ? Visuals->Find(UMmoEntityVisuals::PetKind(), static_cast<int32>(PetId)) : nullptr;
+	// 펫의 모습은 둘뿐이고 처음 꺼낼 때 한 번만 불러오므로 기다려 불러온다.
+	if (Row && Row->Mesh.LoadSynchronous() && Row->Animation.LoadSynchronous())
+	{
+		MmoCharacterLook::Apply(Pet->Mesh(), Pet->PlaceholderMesh(), Row->Mesh.Get(), Row->Animation.Get(), Row->Scale);
+	}
+	else
+	{
+		MmoCharacterLook::ShowPlaceholder(Pet->Mesh(), Pet->PlaceholderMesh(), LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere")),
+			Visuals ? Visuals->PlaceholderMaterial.Get() : nullptr, PetId == 1 ? FLinearColor(1.0f, 0.75f, 0.35f) : FLinearColor(0.85f, 0.9f, 1.0f), FVector(0.35));
+	}
+	Pet->Mesh().SetCastShadow(false);
+	Pet->PlaceholderMesh().SetCastShadow(false);
+	return Pet;
 }
 
 void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::mmo::EntityEnter& Info)

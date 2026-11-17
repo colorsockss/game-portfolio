@@ -130,6 +130,8 @@ public:
 	static int32 GatherNodeKind();
 	static int32 GroundItemKind();
 	static int32 SummonKind();
+	/** 펫(96)의 줄의 종류. 펫은 개체가 아니라 EntityKind에 없어 그 밖의 값을 쓰고, 키는 펫 번호(Pets의 id)다. */
+	static int32 PetKind();
 	static int32 KnightKey();
 	static int32 MageKey();
 };

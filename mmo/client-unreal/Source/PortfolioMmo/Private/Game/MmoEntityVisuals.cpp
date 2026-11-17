@@ -43,6 +43,11 @@ int32 UMmoEntityVisuals::SummonKind()
 	return portfolio::mmo::ENTITY_KIND_SUMMON;
 }
 
+int32 UMmoEntityVisuals::PetKind()
+{
+	return -1;
+}
+
 int32 UMmoEntityVisuals::KnightKey()
 {
 	return portfolio::mmo::CHARACTER_CLASS_KNIGHT;

@@ -396,6 +396,9 @@ int32 UMmoCreateCharacterAssetsCommandlet::Main(const FString& Params)
 		{ nullptr, TEXT("Troll"), TEXT("Cyclops"), Monster, { 9 }, 2.6f, 1.0f, 300.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Bite_InPlace"), TEXT("HitRecieve"), TEXT("Death") },
 		{ nullptr, TEXT("StoneGiant"), TEXT("Yeti"), Monster, { 10 }, 4.5f, 1.0f, 300.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Bite_InPlace"), TEXT("HitRecieve"), TEXT("Death") },
 		{ nullptr, TEXT("Spirit"), TEXT("Ghost"), UMmoEntityVisuals::SummonKind(), { 12 }, 1.4f, 1.0f, 700.0f, TEXT("Idle"), TEXT("Walk"), TEXT("Bite_InPlace"), TEXT("HitRecieve"), TEXT("Death") },
+		// 펫(96)은 주인의 달리기 속도로 따라간다. 부엉이가 CC0로 없어 둥근 새(Birb)다.
+		{ nullptr, TEXT("Cat"), TEXT("Cat"), UMmoEntityVisuals::PetKind(), { 1 }, 0.5f, 1.0f, RunSpeed, TEXT("Idle"), TEXT("Walk"), TEXT("Bite_Front"), TEXT("HitRecieve"), TEXT("Death") },
+		{ nullptr, TEXT("Owl"), TEXT("Birb"), UMmoEntityVisuals::PetKind(), { 2 }, 0.45f, 1.0f, RunSpeed, TEXT("Idle"), TEXT("Walk"), TEXT("Bite_Front"), TEXT("HitRecieve"), TEXT("Death") },
 		People(TEXT("Merchant"), TEXT("OldClassy_Male"), { 1 }, 300.0f),
 		People(TEXT("Keeper"), TEXT("Worker_Male"), { 2 }, 300.0f),
 		People(TEXT("Guard"), TEXT("Knight_Male"), { 3, 4, 5, 6 }, 550.0f),
