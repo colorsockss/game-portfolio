@@ -217,7 +217,7 @@ namespace PortfolioMmo.Server
                 player.NextPetPickTick = tick + _petTicks;
                 int range = (int)Math.Round(pet.PickRange * Units.PerMeter);
                 _grid.Query(player.X, player.Z, range, entity => entity is GroundItem { DroppedByPlayer: false }, _near);
-                _near.Sort((a, b) => DistanceSquared(player, a).CompareTo(DistanceSquared(player, b)));
+                SortByDistance(player);
                 foreach (Entity entity in _near)
                 {
                     var item = (GroundItem)entity;
@@ -239,6 +239,14 @@ namespace PortfolioMmo.Server
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// 찾은 바닥 아이템을 플레이어에게 가까운 차례로 둔다. 비교 람다가 플레이어를 잡으므로 PetStep의 반복과 따로 두어, 줍지 않는 플레이어마다 클로저를 만들지 않는다(53).
+        /// </summary>
+        private void SortByDistance(Player player)
+        {
+            _near.Sort((a, b) => DistanceSquared(player, a).CompareTo(DistanceSquared(player, b)));
         }
 
         private static long DistanceSquared(Entity a, Entity b)

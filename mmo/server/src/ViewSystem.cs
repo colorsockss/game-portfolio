@@ -19,6 +19,11 @@ namespace PortfolioMmo.Server
         private readonly List<Entity> _touched = new List<Entity>();
         private readonly List<Entity> _leaving = new List<Entity>();
         private readonly List<Entity> _moving = new List<Entity>();
+
+        /// <summary>
+        /// 보낸 뒤 돌려받아 다시 쓰는 Packet { EntityMoves }(53. 원소의 배열도 다시 씀). 돌려주지 않은 것(테스트가 가져간 것)은 새로 만든다.
+        /// </summary>
+        private readonly Stack<Packet> _freeMoves = new Stack<Packet>();
         private readonly List<Entity> _stateChanged = new List<Entity>();
         private readonly List<Summon> _summonsNow = new List<Summon>();
         private HashSet<Summon> _summons = new HashSet<Summon>();
@@ -100,7 +105,7 @@ namespace PortfolioMmo.Server
                 {
                     if (!watcher.ViewEntered.Contains(entity))
                     {
-                        (watcher.ViewMoves ??= new EntityMoves { Tick = tick }).Entities.Add(entity.MoveMessage);
+                        (watcher.ViewMoves ??= RentMoves(tick)).EntityMoves.Entities.Add(entity.MoveMessage);
                     }
                 }
             }
@@ -578,6 +583,28 @@ namespace PortfolioMmo.Server
             return move;
         }
 
+        /// <summary>
+        /// 보낸 패킷 가운데 Packet { EntityMoves }를 비워 풀에 돌려준다. 패킷을 바이트로 쓴 뒤 GameServer가 부른다.
+        /// </summary>
+        public void Recycle(List<Packet> sent)
+        {
+            foreach (Packet packet in sent)
+            {
+                if (packet.BodyCase == Packet.BodyOneofCase.EntityMoves)
+                {
+                    packet.EntityMoves.Entities.Clear();
+                    _freeMoves.Push(packet);
+                }
+            }
+        }
+
+        private Packet RentMoves(uint tick)
+        {
+            Packet packet = _freeMoves.Count > 0 ? _freeMoves.Pop() : new Packet { EntityMoves = new EntityMoves() };
+            packet.EntityMoves.Tick = tick;
+            return packet;
+        }
+
         private static void Send(Player observer, uint tick)
         {
             if (observer.ViewLeave != null)
@@ -593,7 +620,7 @@ namespace PortfolioMmo.Server
 
             if (observer.ViewMoves != null)
             {
-                observer.Session.Send(new Packet { EntityMoves = observer.ViewMoves });
+                observer.Session.Send(observer.ViewMoves);
             }
 
             if (observer.ViewChanged != null)

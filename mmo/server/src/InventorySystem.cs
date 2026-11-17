@@ -541,32 +541,41 @@ namespace PortfolioMmo.Server
             foreach (Player player in players)
             {
                 Bag bag = player.Bag;
-                if (bag.ChangedStorage.Count > 0)
+                // 바뀐 칸을 담는 람다가 bag을 잡으므로 바뀐 것이 있는 플레이어만 따로 부른다(53. 클로저를 플레이어마다 틱마다 만들지 않음).
+                if ((bag.ChangedStorage.Count > 0) || (bag.Changed.Count > 0) || (bag.ChangedEquipment.Count > 0) || bag.GoldChanged || (bag.Gains.Count > 0))
                 {
-                    // 창고의 바뀜은 StorageChanged로만 간다(75).
-                    player.DirtyFast = true;
-                    var storage = new StorageChanged();
-                    storage.Slots.Add(bag.ChangedStorage.Select(index => bag.Storage[index].Clone()));
-                    bag.ChangedStorage.Clear();
-                    player.Session.Send(new Packet { StorageChanged = storage });
+                    Flush(player, bag);
                 }
-
-                if ((bag.Changed.Count == 0) && (bag.ChangedEquipment.Count == 0) && !bag.GoldChanged && (bag.Gains.Count == 0))
-                {
-                    continue;
-                }
-
-                player.DirtyFast = true;
-                var changed = new InventoryChanged { Gold = bag.Gold };
-                changed.Slots.Add(bag.Changed.Select(index => bag.Slots[index].Clone()));
-                changed.Slots.Add(bag.ChangedEquipment.Select(index => bag.Equipment[index].Clone()));
-                changed.Gains.Add(bag.Gains);
-                bag.Changed.Clear();
-                bag.ChangedEquipment.Clear();
-                bag.Gains.Clear();
-                bag.GoldChanged = false;
-                player.Session.Send(new Packet { InventoryChanged = changed });
             }
+        }
+
+        private static void Flush(Player player, Bag bag)
+        {
+            if (bag.ChangedStorage.Count > 0)
+            {
+                // 창고의 바뀜은 StorageChanged로만 간다(75).
+                player.DirtyFast = true;
+                var storage = new StorageChanged();
+                storage.Slots.Add(bag.ChangedStorage.Select(index => bag.Storage[index].Clone()));
+                bag.ChangedStorage.Clear();
+                player.Session.Send(new Packet { StorageChanged = storage });
+            }
+
+            if ((bag.Changed.Count == 0) && (bag.ChangedEquipment.Count == 0) && !bag.GoldChanged && (bag.Gains.Count == 0))
+            {
+                return;
+            }
+
+            player.DirtyFast = true;
+            var changed = new InventoryChanged { Gold = bag.Gold };
+            changed.Slots.Add(bag.Changed.Select(index => bag.Slots[index].Clone()));
+            changed.Slots.Add(bag.ChangedEquipment.Select(index => bag.Equipment[index].Clone()));
+            changed.Gains.Add(bag.Gains);
+            bag.Changed.Clear();
+            bag.ChangedEquipment.Clear();
+            bag.Gains.Clear();
+            bag.GoldChanged = false;
+            player.Session.Send(new Packet { InventoryChanged = changed });
         }
     }
 }

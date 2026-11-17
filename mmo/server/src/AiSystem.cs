@@ -152,10 +152,23 @@ namespace PortfolioMmo.Server
             ((Monster)_entities.Find(job.Owner)!).Unreachable.Remove(job.A);
         }
 
+        /// <summary>
+        /// 피해 표에서 칠 대상을 고른다. 람다가 잡는 몬스터를 이 함수에만 두어, Think가 부를 때마다 클로저를 만들지 않게 한다(53).
+        /// </summary>
+        private uint? PickTarget(Monster monster)
+        {
+            return monster.Damage.Pick(id => Selectable(monster, id), _party.SideOf);
+        }
+
         private void Think(Monster monster, uint tick, uint elapsedTicks, bool regenerate)
         {
             // 월드에서 빠진 플레이어는 표에서 뺀다(플레이어의 번호는 다시 쓰지 않음). 죽은 플레이어는 25가, 소환수의 줄은 95가 옮기거나 뺀다.
-            monster.Damage.RemoveWhere(id => _entities.Find(id) is not (Player or Summon));
+            // 표가 빈 몬스터(대부분)는 대리자를 만들지 않는다(53. 몬스터마다 틱마다 부름).
+            if (monster.Damage.Count > 0)
+            {
+                monster.Damage.RemoveWhere(id => _entities.Find(id) is not (Player or Summon));
+            }
+
             double step = Step(monster, elapsedTicks);
             // 공격 상태는 아래의 공격 갈래에서만 켠다(치는 것은 CombatSystem).
             monster.AttackTarget = 0;
@@ -177,7 +190,7 @@ namespace PortfolioMmo.Server
                 return;
             }
 
-            uint? targetId = monster.Damage.Pick(id => Selectable(monster, id), _party.SideOf);
+            uint? targetId = monster.Damage.Count > 0 ? PickTarget(monster) : null;
             if (targetId == null)
             {
                 if (monster.Damage.Count > 0)

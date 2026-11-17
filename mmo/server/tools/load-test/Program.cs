@@ -553,11 +553,10 @@ namespace PortfolioMmo.LoadTest
         /// </summary>
         private async Task ReceiveAsync()
         {
-            var stream = new BufferedStream(_stream);
-            byte[] buffer = new byte[1024 * 1024];
+            var reader = new PacketReader(_stream, 1024 * 1024);
             try
             {
-                while (await PacketReader.ReadAsync(stream, buffer, CancellationToken.None) is Packet packet)
+                while (await reader.ReadAsync(CancellationToken.None) is Packet packet)
                 {
                     int size = packet.CalculateSize();
                     Interlocked.Add(ref _receivedBytes, CodedOutputStream.ComputeLengthSize(size) + size);

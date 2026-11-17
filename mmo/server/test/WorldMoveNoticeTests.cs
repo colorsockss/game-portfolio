@@ -383,6 +383,58 @@ namespace PortfolioMmo.Server.Tests
         }
 
         /// <summary>
+        /// 보낸 Packet { EntityMoves }를 World.Recycle로 돌려주면 다음에 보낼 때 그것을 비워 다시 쓰고(원소의 배열도 남김), 돌려주지 않은 것은
+        /// 다시 쓰지 않는다(53. 테스트처럼 패킷을 쥐고 있는 쪽의 내용이 바뀌지 않음).
+        /// </summary>
+        [Fact]
+        public void SentMovesAreReusedOnlyAfterRecycling()
+        {
+            World world = NoticeWorld();
+            Session observer = Fighter(world, "hero_01", 0, 0);
+            Session walker = Fighter(world, "hero_02", 5, 0);
+            world.Step();
+            Take(observer);
+
+            Packet first = NextMoves(world, walker, observer);
+            EntityMove started = first.EntityMoves.Entities.Single();
+            world.Recycle(observer.Outbox);
+            observer.Outbox.Clear();
+            Assert.Empty(first.EntityMoves.Entities);
+            Assert.True(first.EntityMoves.Entities.Capacity > 0);
+
+            Packet second = NextMoves(world, walker, observer);
+            Assert.Same(first, second);
+            Assert.Equal(world.Tick - 1, second.EntityMoves.Tick);
+            Assert.NotSame(started, second.EntityMoves.Entities.Single());
+            observer.Outbox.Clear();
+
+            Packet third = NextMoves(world, walker, observer);
+            Assert.NotSame(second, third);
+            Assert.Single(second.EntityMoves.Entities);
+        }
+
+        /// <summary>
+        /// 걷는 플레이어를 보는 쪽이 EntityMoves를 받을 때까지(확인 간격 안) 틱을 돌리고 그 패킷을 낸다. 그 틱의 패킷은 Outbox에 남긴다.
+        /// </summary>
+        private static Packet NextMoves(World world, Session walker, Session observer)
+        {
+            Player player = walker.Player!;
+            for (int i = 0; i < 2 * Units.TicksPerSecond; i++)
+            {
+                world.Receive(walker, new Packet { Move = new Move { X = player.X + 9, Z = player.Z, Yaw = 64, Ack = player.Ack, Moving = true } });
+                world.Step();
+                if (observer.Outbox.SingleOrDefault(packet => packet.EntityMoves != null) is Packet moves)
+                {
+                    return moves;
+                }
+
+                observer.Outbox.Clear();
+            }
+
+            throw new Xunit.Sdk.XunitException("No EntityMoves was sent.");
+        }
+
+        /// <summary>
         /// 시험 몬스터들과 256 m 필드. 이동 알림의 기준은 실제 값이다.
         /// </summary>
         private static World NoticeWorld(params SpawnsRow[] spawns)

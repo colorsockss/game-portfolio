@@ -1,7 +1,9 @@
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -84,6 +86,16 @@ namespace PortfolioMmo.Server
         private TimeSpan _statsMaxTickTime;
 
         /// <summary>
+        /// 가장 오래 걸린 틱 안에서 GC가 스레드를 멈춘 시간(53).
+        /// </summary>
+        private TimeSpan _statsMaxTickPause;
+
+        /// <summary>
+        /// 이번 통계 구간이 시작될 때까지 GC가 멈춘 시간의 합.
+        /// </summary>
+        private TimeSpan _statsPauseStarted = GC.GetTotalPauseDuration();
+
+        /// <summary>
         /// 이번 통계 구간에 보낸 바이트(TCP/IP 머리 제외).
         /// </summary>
         private long _statsSentBytes;
@@ -108,7 +120,12 @@ namespace PortfolioMmo.Server
         /// </summary>
         private readonly TickProfile _profile = new TickProfile(Stopwatch.Frequency);
         private readonly EntityMovesEncoder _moves = new EntityMovesEncoder();
-        private readonly List<int> _packetSizes = new List<int>();
+
+        /// <summary>
+        /// 한 연결의 틱 패킷을 이어 쓰는 곳. 연결마다 비워서 다시 쓰고, 다 쓴 바이트를 풀에서 빌린 버퍼에 옮긴다(53).
+        /// </summary>
+        private readonly MemoryStream _frameStream = new MemoryStream();
+        private readonly CodedOutputStream _frameOutput;
 
         /// <summary>
         /// endpoint에서 연결을 받을 서버를 만든다. 포트가 0이면 RunAsync를 부른 뒤 Port에서 실제 포트를 읽는다.
@@ -119,6 +136,7 @@ namespace PortfolioMmo.Server
             _listener = new TcpListener(endpoint);
             _world = world;
             _idleTimeoutTicks = idleTimeoutTicks;
+            _frameOutput = new CodedOutputStream(_frameStream, leaveOpen: true);
         }
 
         /// <summary>
@@ -212,42 +230,45 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 이번 틱의 패킷을 한 버퍼에 이어 쓴다(길이 구분 프레임). 패킷마다 종류와 바이트를 측정에 넘긴다. EntityMoves는 원소를 틱에 한 번만 인코딩해
-        /// 연결마다 이어 붙인다(51. 보는 연결 수만큼 다시 인코딩하지 않음).
+        /// 이번 틱의 패킷을 한 버퍼에 이어 쓴다(길이 구분 프레임). 버퍼는 ArrayPool&lt;byte&gt;.Shared에서 빌리고 Connection이 돌려준다(53).
+        /// 패킷마다 종류와 바이트를 측정에 넘긴다. EntityMoves는 원소를 틱에 한 번만 인코딩해 연결마다 이어 붙인다(51. 보는 연결 수만큼 다시 인코딩하지 않음).
         /// </summary>
-        private byte[] Serialize(List<Packet> packets)
+        private ArraySegment<byte> Serialize(List<Packet> packets)
         {
-            int size = 0;
-            _packetSizes.Clear();
+            _frameStream.SetLength(0);
+            int expected = 0;
             foreach (Packet packet in packets)
             {
-                int packetSize = packet.BodyCase == Packet.BodyOneofCase.EntityMoves ? _moves.PacketSize(packet.EntityMoves) : packet.CalculateSize();
-                _packetSizes.Add(packetSize);
-                int framed = CodedOutputStream.ComputeLengthSize(packetSize) + packetSize;
-                size += framed;
+                bool moves = packet.BodyCase == Packet.BodyOneofCase.EntityMoves;
+                int packetSize = moves ? _moves.PacketSize(packet.EntityMoves) : packet.CalculateSize();
 
                 // 보내지 못하고 끊는 연결의 것도 센다(드묾). 그래서 종류별 합이 송신량보다 조금 클 수 있다.
+                int framed = CodedOutputStream.ComputeLengthSize(packetSize) + packetSize;
+                expected += framed;
                 _profile.Sent(packet.BodyCase, framed);
-            }
-
-            byte[] frame = new byte[size];
-            var output = new CodedOutputStream(frame);
-            for (int index = 0; index < packets.Count; index++)
-            {
-                Packet packet = packets[index];
-                if (packet.BodyCase == Packet.BodyOneofCase.EntityMoves)
+                _frameOutput.WriteLength(packetSize);
+                if (moves)
                 {
-                    output.WriteLength(_packetSizes[index]);
-                    _moves.WritePacket(output, packet.EntityMoves);
+                    _moves.WritePacket(_frameOutput, packet.EntityMoves);
                 }
                 else
                 {
-                    output.WriteMessage(packet);
+                    packet.WriteTo(_frameOutput);
                 }
             }
 
-            output.CheckNoSpaceLeft();
-            return frame;
+            _frameOutput.Flush();
+            int size = (int)_frameStream.Length;
+
+            // 앞에 쓴 길이가 실제로 쓴 바이트와 어긋나면(EntityMovesEncoder의 버그) 프레임이 깨지므로 보내지 않는다.
+            if (size != expected)
+            {
+                throw new InvalidOperationException($"Frame has {size} bytes but its packets declared {expected}.");
+            }
+
+            byte[] frame = ArrayPool<byte>.Shared.Rent(size);
+            _frameStream.GetBuffer().AsSpan(0, size).CopyTo(frame);
+            return new ArraySegment<byte>(frame, 0, size);
         }
 
         /// <summary>
@@ -286,6 +307,7 @@ namespace PortfolioMmo.Server
         private void RunTick()
         {
             long started = Stopwatch.GetTimestamp();
+            TimeSpan pauseStarted = GC.GetTotalPauseDuration();
             _profile.TickStarted(started);
             Drain();
             long drained = Stopwatch.GetTimestamp();
@@ -299,7 +321,11 @@ namespace PortfolioMmo.Server
             TimeSpan elapsed = Stopwatch.GetElapsedTime(started, flushed);
             _statsTicks++;
             _statsTickTime += elapsed;
-            _statsMaxTickTime = elapsed > _statsMaxTickTime ? elapsed : _statsMaxTickTime;
+            if (elapsed > _statsMaxTickTime)
+            {
+                _statsMaxTickTime = elapsed;
+                _statsMaxTickPause = GC.GetTotalPauseDuration() - pauseStarted;
+            }
 
             // 50 ms를 넘은 틱은 10초를 기다리지 않고 그 틱의 차례별 시간과 함께 바로 남긴다.
             if (_profile.TickEnded(_world.Tick, flushed - started) is string slow)
@@ -365,11 +391,12 @@ namespace PortfolioMmo.Server
 
                 if (session.Outbox.Count > 0)
                 {
-                    byte[] frame = Serialize(session.Outbox);
+                    ArraySegment<byte> frame = Serialize(session.Outbox);
+                    _world.Recycle(session.Outbox);
                     session.Outbox.Clear();
                     if (connection.TrySend(frame))
                     {
-                        sent += frame.Length;
+                        sent += frame.Count;
                         _profile.Queued(connection.QueuedFrames);
                     }
                     else
@@ -401,6 +428,7 @@ namespace PortfolioMmo.Server
             double seconds = Stopwatch.GetElapsedTime(_statsStarted).TotalSeconds;
             TimeSpan cpu = Environment.CpuUsage.TotalTime;
             long allocated = GC.GetTotalAllocatedBytes();
+            TimeSpan paused = GC.GetTotalPauseDuration();
             int players = _world.PlayerCount;
             double sentPerSecond = _statsSentBytes / seconds;
             Console.WriteLine(
@@ -410,11 +438,14 @@ namespace PortfolioMmo.Server
                 + $"cpu {(cpu - _statsCpuStarted).TotalSeconds / seconds * 100:F0}%, "
                 + $"heap {GC.GetTotalMemory(false) / 1e6:F0} MB, working set {Environment.WorkingSet / 1e6:F0} MB, "
                 + $"alloc {(allocated - _statsAllocatedStarted) / seconds / 1e6:F1} MB/s, "
-                + $"gc {GC.CollectionCount(0)}/{GC.CollectionCount(1)}/{GC.CollectionCount(2)}\n{_world.SaveReport()}\n{_profile.Report()}");
+                + $"gc {GC.CollectionCount(0)}/{GC.CollectionCount(1)}/{GC.CollectionCount(2)} "
+                + $"pause {(paused - _statsPauseStarted).TotalMilliseconds:F1} ms (max tick {_statsMaxTickPause.TotalMilliseconds:F2} ms)\n{_world.SaveReport()}\n{_profile.Report()}");
 
             _statsTicks = 0;
             _statsTickTime = TimeSpan.Zero;
             _statsMaxTickTime = TimeSpan.Zero;
+            _statsMaxTickPause = TimeSpan.Zero;
+            _statsPauseStarted = paused;
             _statsSentBytes = 0;
             _statsStarted = Stopwatch.GetTimestamp();
             _statsCpuStarted = cpu;

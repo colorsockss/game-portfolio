@@ -236,7 +236,10 @@ namespace PortfolioMmo.Server
         /// </summary>
         internal Periodic ViewReselect { get; }
 
-        internal EntityMoves? ViewMoves { get; set; }
+        /// <summary>
+        /// 이번 틱에 보낼 Packet { EntityMoves }. ViewSystem의 풀에서 빌리고, 보낸 뒤 GameServer가 World.Recycle로 돌려준다(53).
+        /// </summary>
+        internal Packet? ViewMoves { get; set; }
 
         internal List<Entity>? ViewChanged { get; set; }
 

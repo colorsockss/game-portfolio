@@ -34,32 +34,33 @@ namespace PortfolioMmo.Server.Tests
             using var client = new TcpClient();
             await client.ConnectAsync(IPAddress.Loopback, server.Port);
             NetworkStream stream = client.GetStream();
+            var reader = new PacketReader(stream, 64 * 1024);
             new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = TestData.Hash } }.WriteDelimitedTo(stream);
-            Assert.Equal(LoginResultCode.Ok, (await ReadAsync(stream))!.LoginResult.Result);
-            Assert.Empty((await ReadAsync(stream))!.CharacterList.Characters);
+            Assert.Equal(LoginResultCode.Ok, (await ReadAsync(reader))!.LoginResult.Result);
+            Assert.Empty((await ReadAsync(reader))!.CharacterList.Characters);
 
             new Packet { CreateCharacter = new CreateCharacter { Name = "Arthur", CharacterClass = CharacterClass.Knight } }.WriteDelimitedTo(stream);
-            Assert.Equal(CreateCharacterResultCode.Ok, (await ReadAsync(stream))!.CreateCharacterResult.Result);
-            CharacterSummary created = (await ReadAsync(stream))!.CharacterList.Characters.Single();
+            Assert.Equal(CreateCharacterResultCode.Ok, (await ReadAsync(reader))!.CreateCharacterResult.Result);
+            CharacterSummary created = (await ReadAsync(reader))!.CharacterList.Characters.Single();
 
             new Packet { EnterWorld = new EnterWorld { CharacterId = created.Id } }.WriteDelimitedTo(stream);
-            Assert.Equal(EnterWorldResultCode.Ok, (await ReadAsync(stream))!.EnterWorldResult.Result);
-            Assert.Equal(0u, (await ReadAsync(stream))!.ExpGained.Exp);
-            Assert.Equal(6, (await ReadAsync(stream))!.Cooldowns.Entries.Count);
-            Assert.Equal(2, (await ReadAsync(stream))!.Inventory.Slots.Count);
-            Assert.Equal(new uint[] { 101 }, (await ReadAsync(stream))!.LearnedSkills.Skills);
-            Assert.Equal(8, (await ReadAsync(stream))!.Quickslots.Slots.Count);
-            Assert.Equal(new QuestState(), (await ReadAsync(stream))!.QuestState);
-            Assert.Equal(0u, (await ReadAsync(stream))!.PetState.PetId);
-            Assert.Equal(0, (await ReadAsync(stream))!.Karma.Karma_);
-            Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(stream))!.SelfStats.MaxHp);
-            Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(stream))!.SelfVitals.Hp);
-            Assert.Equal("Arthur", (await ReadAsync(stream))!.EntitiesEnter.Entities[0].Name);
+            Assert.Equal(EnterWorldResultCode.Ok, (await ReadAsync(reader))!.EnterWorldResult.Result);
+            Assert.Equal(0u, (await ReadAsync(reader))!.ExpGained.Exp);
+            Assert.Equal(6, (await ReadAsync(reader))!.Cooldowns.Entries.Count);
+            Assert.Equal(2, (await ReadAsync(reader))!.Inventory.Slots.Count);
+            Assert.Equal(new uint[] { 101 }, (await ReadAsync(reader))!.LearnedSkills.Skills);
+            Assert.Equal(8, (await ReadAsync(reader))!.Quickslots.Slots.Count);
+            Assert.Equal(new QuestState(), (await ReadAsync(reader))!.QuestState);
+            Assert.Equal(0u, (await ReadAsync(reader))!.PetState.PetId);
+            Assert.Equal(0, (await ReadAsync(reader))!.Karma.Karma_);
+            Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(reader))!.SelfStats.MaxHp);
+            Assert.Equal(TestData.KnightLevel1.MaxHp, (await ReadAsync(reader))!.SelfVitals.Hp);
+            Assert.Equal("Arthur", (await ReadAsync(reader))!.EntitiesEnter.Entities[0].Name);
 
             // varint 길이 16383. 서버가 받는 상한(256바이트)을 넘는다.
             await stream.WriteAsync(new byte[] { 0xFF, 0x7F });
-            Assert.Equal(KickReason.MalformedPacket, (await ReadAsync(stream))!.Kicked.Reason);
-            Assert.Null(await ReadAsync(stream));
+            Assert.Equal(KickReason.MalformedPacket, (await ReadAsync(reader))!.Kicked.Reason);
+            Assert.Null(await ReadAsync(reader));
 
             cancellation.Cancel();
             await running;
@@ -78,9 +79,10 @@ namespace PortfolioMmo.Server.Tests
             using var client = new TcpClient();
             await client.ConnectAsync(IPAddress.Loopback, server.Port);
             NetworkStream stream = client.GetStream();
+            var reader = new PacketReader(stream, 64 * 1024);
             new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = TestData.Hash ^ 1 } }.WriteDelimitedTo(stream);
-            Assert.Equal(LoginResultCode.DataMismatch, (await ReadAsync(stream))!.LoginResult.Result);
-            Assert.Null(await ReadAsync(stream));
+            Assert.Equal(LoginResultCode.DataMismatch, (await ReadAsync(reader))!.LoginResult.Result);
+            Assert.Null(await ReadAsync(reader));
 
             cancellation.Cancel();
             await running;
@@ -101,20 +103,21 @@ namespace PortfolioMmo.Server.Tests
             using var client = new TcpClient();
             await client.ConnectAsync(IPAddress.Loopback, server.Port);
             NetworkStream stream = client.GetStream();
+            var reader = new PacketReader(stream, 64 * 1024);
             new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = TestData.Hash } }.WriteDelimitedTo(stream);
-            Assert.Equal(LoginResultCode.Ok, (await ReadAsync(stream))!.LoginResult.Result);
-            await ReadAsync(stream);
+            Assert.Equal(LoginResultCode.Ok, (await ReadAsync(reader))!.LoginResult.Result);
+            await ReadAsync(reader);
 
             // 시간 제한의 두 배(1초) 동안 0.2초마다 Ping을 보낸다.
             for (int count = 0; count < 5; count++)
             {
                 await Task.Delay(200);
                 new Packet { Ping = new Ping() }.WriteDelimitedTo(stream);
-                Assert.Equal(Packet.BodyOneofCase.Pong, (await ReadAsync(stream))!.BodyCase);
+                Assert.Equal(Packet.BodyOneofCase.Pong, (await ReadAsync(reader))!.BodyCase);
             }
 
-            Assert.Equal(KickReason.IdleTimeout, (await ReadAsync(stream))!.Kicked.Reason);
-            Assert.Null(await ReadAsync(stream));
+            Assert.Equal(KickReason.IdleTimeout, (await ReadAsync(reader))!.Kicked.Reason);
+            Assert.Null(await ReadAsync(reader));
 
             cancellation.Cancel();
             await running;
@@ -135,12 +138,13 @@ namespace PortfolioMmo.Server.Tests
             using var client = new TcpClient();
             await client.ConnectAsync(IPAddress.Loopback, server.Port);
             NetworkStream stream = client.GetStream();
+            var reader = new PacketReader(stream, 64 * 1024);
             new Packet { Login = new Login { ProtocolVersion = ProtocolVersion.Current, LoginId = "hero_01", DataHash = TestData.Hash } }.WriteDelimitedTo(stream);
             new Packet { EnterWorld = new EnterWorld { CharacterId = (ulong)id } }.WriteDelimitedTo(stream);
             Packet? entered;
             do
             {
-                entered = await ReadAsync(stream);
+                entered = await ReadAsync(reader);
             }
             while ((entered != null) && (entered.BodyCase != Packet.BodyOneofCase.EnterWorldResult));
 
@@ -150,7 +154,7 @@ namespace PortfolioMmo.Server.Tests
             Packet? packet;
             do
             {
-                packet = await ReadAsync(stream);
+                packet = await ReadAsync(reader);
             }
             while ((packet != null) && (packet.BodyCase != Packet.BodyOneofCase.Kicked));
 
@@ -163,10 +167,10 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// 서버가 보낸 패킷 하나를 읽는다. 서버가 닫았으면 null.
         /// </summary>
-        private static async Task<Packet?> ReadAsync(NetworkStream stream)
+        private static async Task<Packet?> ReadAsync(PacketReader reader)
         {
             using var timeout = new CancellationTokenSource(s_timeout);
-            return await PacketReader.ReadAsync(stream, new byte[64 * 1024], timeout.Token);
+            return await reader.ReadAsync(timeout.Token);
         }
     }
 }

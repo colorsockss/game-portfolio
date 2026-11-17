@@ -240,6 +240,14 @@ namespace PortfolioMmo.Server
         public double AverageVisible => _view.AverageVisible;
 
         /// <summary>
+        /// 바이트로 쓴 한 연결의 패킷에서 다시 쓸 것을 돌려받는다(53). 틱 스레드에서 Outbox를 비우기 전에 부른다.
+        /// </summary>
+        public void Recycle(List<Packet> sent)
+        {
+            _view.Recycle(sent);
+        }
+
+        /// <summary>
         /// 연결에서 받은 패킷 하나를 처리한다(입력 차례). 요청을 처리하는 함수가 결과(Outcome)를 돌려주고, 무엇을 보내고 끊을지는 여기서 정한다:
         /// 실패는 ActionFailed, 되돌림은 PositionReset, 잘못된 패킷(세션의 상태에 맞지 않거나 클라이언트가 보낼 수 없는 패킷)은 끊기다.
         /// 받기 전에 빈도 제한의 토큰을 쓰고, 없으면 버리거나(버리는 일이 이어지면) 끊는다. 죽은 동안과 기절한 동안의 요청은 한 자리(Blocked)에서 막는다.

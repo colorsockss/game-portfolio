@@ -219,11 +219,12 @@ namespace PortfolioMmo.Server.Tests
             });
 
             Packet? packet;
+            var reader = new PacketReader(stream, 64 * 1024);
             using (var timeout = new CancellationTokenSource(System.TimeSpan.FromSeconds(10)))
             {
                 do
                 {
-                    packet = await PacketReader.ReadAsync(stream, new byte[64 * 1024], timeout.Token);
+                    packet = await reader.ReadAsync(timeout.Token);
                 }
                 while ((packet != null) && (packet.BodyCase != Packet.BodyOneofCase.Kicked));
             }

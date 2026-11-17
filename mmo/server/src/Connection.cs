@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Net.Sockets;
@@ -11,6 +12,7 @@ namespace PortfolioMmo.Server
 {
     /// <summary>
     /// TCP 연결 하나의 받기와 보내기. 받은 패킷은 큐에 넣기만 하고, 보낼 것은 틱 스레드가 틱마다 버퍼 하나로 넘긴다.
+    /// 넘겨받은 버퍼는 ArrayPool&lt;byte&gt;.Shared에서 빌린 것이고, 보낸 뒤나 보내지 못하고 닫을 때 이 연결이 돌려준다(53).
     /// </summary>
     internal sealed class Connection
     {
@@ -40,10 +42,15 @@ namespace PortfolioMmo.Server
         private readonly NetworkStream _stream;
 
         /// <summary>
-        /// 틱마다 보낼 버퍼. 틱 스레드가 쓰고 보내기 작업이 읽는다.
+        /// 틱마다 보낼 버퍼. 틱 스레드가 쓰고 보내기 작업이 읽는다. 보내기 작업도 끝날 때 닫으므로(남은 버퍼를 돌려주려고) 쓰는 쪽이 둘이다.
         /// </summary>
-        private readonly Channel<byte[]> _frames = Channel.CreateBounded<byte[]>(
-            new BoundedChannelOptions(MaxQueuedFrames) { SingleReader = true, SingleWriter = true });
+        private readonly Channel<ArraySegment<byte>> _frames = Channel.CreateBounded<ArraySegment<byte>>(
+            new BoundedChannelOptions(MaxQueuedFrames) { SingleReader = true });
+
+        /// <summary>
+        /// 이 연결이 넘겨받고 아직 풀에 돌려주지 않은 버퍼 수(테스트가 봄).
+        /// </summary>
+        private int _heldFrames;
 
         /// <summary>
         /// 받은 연결을 감싼다.
@@ -81,11 +88,24 @@ namespace PortfolioMmo.Server
         public int QueuedFrames => _frames.Reader.Count;
 
         /// <summary>
-        /// 틱 하나의 버퍼를 보내기 큐에 넣는다. 큐가 가득 차 넣지 못하면 false.
+        /// 넘겨받고 아직 풀에 돌려주지 않은 버퍼 수.
         /// </summary>
-        public bool TrySend(byte[] frame)
+        internal int HeldFrames => Volatile.Read(ref _heldFrames);
+
+        /// <summary>
+        /// 틱 하나의 버퍼(풀에서 빌린 배열의 앞부분)를 보내기 큐에 넣는다. 버퍼는 넣지 못해도 이 연결이 맡아 돌려준다.
+        /// 큐가 가득 찼거나 닫혔으면 false.
+        /// </summary>
+        public bool TrySend(ArraySegment<byte> frame)
         {
-            return _frames.Writer.TryWrite(frame);
+            Interlocked.Increment(ref _heldFrames);
+            if (_frames.Writer.TryWrite(frame))
+            {
+                return true;
+            }
+
+            Release(frame);
+            return false;
         }
 
         /// <summary>
@@ -110,11 +130,10 @@ namespace PortfolioMmo.Server
         /// </summary>
         private async Task ReceiveAsync(ConcurrentQueue<Inbound> inbound)
         {
-            var stream = new BufferedStream(_stream);
-            byte[] buffer = new byte[MaxPacketBytes];
+            var reader = new PacketReader(_stream, MaxPacketBytes);
             try
             {
-                while (await PacketReader.ReadAsync(stream, buffer, CancellationToken.None) is Packet packet)
+                while (await reader.ReadAsync(CancellationToken.None) is Packet packet)
                 {
                     inbound.Enqueue(new Inbound(this, InboundKind.Received, packet));
                 }
@@ -142,9 +161,16 @@ namespace PortfolioMmo.Server
         {
             try
             {
-                await foreach (byte[] frame in _frames.Reader.ReadAllAsync())
+                await foreach (ArraySegment<byte> frame in _frames.Reader.ReadAllAsync())
                 {
-                    await _stream.WriteAsync(frame);
+                    try
+                    {
+                        await _stream.WriteAsync(frame.AsMemory());
+                    }
+                    finally
+                    {
+                        Release(frame);
+                    }
                 }
 
                 // 바로 닫으면 상대가 아직 읽지 않은 마지막 패킷(Kicked 등)을 RST로 잃을 수 있다.
@@ -169,8 +195,21 @@ namespace PortfolioMmo.Server
             }
             finally
             {
+                // 보내지 못한 버퍼를 돌려준다. 닫은 뒤의 TrySend는 실패하고 그 버퍼는 TrySend가 돌려준다.
+                _frames.Writer.TryComplete();
+                while (_frames.Reader.TryRead(out ArraySegment<byte> left))
+                {
+                    Release(left);
+                }
+
                 _stream.Dispose();
             }
+        }
+
+        private void Release(ArraySegment<byte> frame)
+        {
+            ArrayPool<byte>.Shared.Return(frame.Array!);
+            Interlocked.Decrement(ref _heldFrames);
         }
     }
 }
