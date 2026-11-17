@@ -29,12 +29,13 @@ npm ci
 
 | 명령 | 설명 |
 | --- | --- |
-| `npm run check` | 커밋하지 않은 변경이 있는 영역의 검사만 (`scripts/check.mjs`): 문서(`*.md`)만이면 없음, `idle/`는 idle, `idle/shared/big-number/`와 `idle/tsconfig.base.json`은 idle과 tools(툴의 테스트가 씀), `tools/`는 tools, idle, mmo(두 게임이 툴의 출력을 커밋함), `mmo/`는 mmo, 그 밖(루트의 `package.json`, `scripts/` 등)은 모든 영역. 영역마다 `typecheck:*`와 `test:*`(mmo는 `test:mmo`만) |
+| `npm run check` | 커밋하지 않은 변경이 있는 영역의 검사만 (`scripts/check.mjs`): 문서(`*.md`)만이면 없음, `idle/`는 idle, `idle/shared/big-number/`와 `idle/tsconfig.base.json`은 idle과 tools(툴의 테스트가 씀), `tools/`는 tools, idle, mmo(두 게임이 툴의 출력을 커밋함), `mmo/client-unreal/`은 mmo-unreal, `mmo/shared/`는 mmo와 mmo-unreal(생성 파일과 비교 벡터를 둘 다 읽음), 그 밖의 `mmo/`는 mmo, 그 밖(루트의 `package.json`, `scripts/` 등)은 모든 영역. 영역마다 `typecheck:*`와 `test:*`(mmo는 `test:mmo`만, mmo-unreal은 `test:mmo-unreal`) |
 | `npm run typecheck` | 모든 워크스페이스 타입 검사. `typecheck:idle`, `typecheck:tools`는 그 영역만 |
-| `npm test` | `test:idle` → `test:tools` → `test:mmo` |
+| `npm test` | `test:idle` → `test:tools` → `test:mmo` → `test:mmo-unreal` |
 | `npm run test:idle` | idle의 생성 파일 검사 → import 경계 검사 → idle 워크스페이스 테스트 |
 | `npm run test:tools` | import 경계 검사 → 툴 테스트 |
 | `npm run test:mmo` | mmo의 생성 파일 검사 → C# 테스트(`dotnet test mmo/mmo.slnx`: 패킷, 서버) |
+| `npm run test:mmo-unreal` | Unreal 클라이언트의 엔진 없는 테스트(`mmo/client-unreal/Tests/run.mjs`. Mac과 arm64 Linux에서 돌고 그 밖에서는 건너뜀) |
 | `npm run coverage` | idle의 vitest 워크스페이스마다 커버리지 표 |
 | `npm run generate` | 게임의 원본(`idle/data/`, `mmo/shared/contract/packets.proto`, `mmo/data/`)에서 테이블 로더·데이터·공식·패킷 코드 재생성 (`-- --check`는 검사만, `-- idle`이나 `-- mmo`는 그 게임만) |
 
@@ -48,11 +49,12 @@ CI는 영역마다 워크플로 하나입니다. 각 워크플로는 `main`의 �
 | --- | --- | --- |
 | [`idle-ci.yml`](.github/workflows/idle-ci.yml) | `idle/`, `tools/`(idle이 툴의 출력을 커밋함), `scripts/`, `package.json`, `package-lock.json`, `.nvmrc`, `.gitattributes`(xlsx의 LFS) | xlsx LFS → `npm ci` → `typecheck:idle` → `test:idle` |
 | [`tools-ci.yml`](.github/workflows/tools-ci.yml) | `tools/`, `idle/shared/big-number/`와 `idle/tsconfig.base.json`(툴의 테스트가 씀), `scripts/check-boundaries.mjs`, `package.json`, `package-lock.json`, `.nvmrc` | `npm ci` → `typecheck:tools` → `test:tools` |
-| [`mmo-ci.yml`](.github/workflows/mmo-ci.yml) | `mmo/`, `tools/`(data-tool이 `mmo/data/`를 생성 파일로 바꿈), `scripts/generate.mjs`, `package.json`(`test:mmo`), `package-lock.json`, `.nvmrc`, `.gitattributes` | `mmo/data/*.xlsx`의 LFS → `npm ci` → .NET SDK 10 → `test:mmo` |
+| [`mmo-ci.yml`](.github/workflows/mmo-ci.yml) | `mmo/`, `tools/`(data-tool이 `mmo/data/`를 생성 파일로 바꿈), `scripts/generate.mjs`, `package.json`(`test:mmo`), `package-lock.json`, `.nvmrc`, `.gitattributes`. `mmo/client-unreal/`은 빼고 | `mmo/data/*.xlsx`의 LFS → `npm ci` → .NET SDK 10 → `test:mmo` |
+| [`mmo-unreal-ci.yml`](.github/workflows/mmo-unreal-ci.yml) | `mmo/client-unreal/`, `mmo/shared/`(생성된 C++, 비교 벡터, 데이터 파일), `package.json`(`test:mmo-unreal`), `.nvmrc`, `.gitattributes` | `ubuntu-24.04-arm` 러너 → Linux용 libprotobuf·abseil의 LFS → `test:mmo-unreal`(러너의 clang. 의존 패키지가 없어 `npm ci`는 하지 않음) |
 
-Node는 22.14.0입니다(`.nvmrc`. 로컬과 같은 버전이고, idle 서버가 `node:sqlite`를 씁니다. 릴리스 워크플로도 같은 파일을 읽습니다). npm 캐시(`~/.npm`, 약 41 MB)는 `setup-node`가 `package-lock.json` 해시로 저장합니다. 키우기 릴리스(`idle-release.yml`)도 `typecheck:idle`과 `test:idle`만 돌리므로 툴이나 mmo의 실패가 키우기 Live 내보내기를 막지 않습니다. mmo의 엔진 빌드와 테스트(Unity, Unreal)는 로컬에서 하고, 클라이언트의 엔진 없는 검사는 그 클라이언트를 시작할 때 워크플로를 더합니다([mmo/docs/backlog.md](mmo/docs/backlog.md) 7, 8, 10).
+Node는 22.14.0입니다(`.nvmrc`. 로컬과 같은 버전이고, idle 서버가 `node:sqlite`를 씁니다. 릴리스 워크플로도 같은 파일을 읽습니다). npm 캐시(`~/.npm`, 약 41 MB)는 `setup-node`가 `package-lock.json` 해시로 저장합니다. 키우기 릴리스(`idle-release.yml`)도 `typecheck:idle`과 `test:idle`만 돌리므로 툴이나 mmo의 실패가 키우기 Live 내보내기를 막지 않습니다. mmo의 엔진 빌드와 테스트(Unity, Unreal)는 로컬에서 하고, 클라이언트의 엔진 없는 검사는 그 클라이언트를 시작할 때 워크플로를 더합니다([mmo/docs/backlog.md](mmo/docs/backlog.md) 7, 8, 10. Unreal은 `mmo-unreal-ci`, 66). macOS 러너는 쓰지 않습니다(2026-11-17 정함. 공개 저장소인 지금은 둘 다 무료이지만 비공개 저장소의 분당 요금은 macOS가 Linux의 약 10배). 그래서 Unreal의 엔진 없는 테스트는 Docker로 빌드해 커밋한 Linux 라이브러리로 arm64 Linux 러너에서 돌립니다.
 
-- **LFS**: 체크아웃은 포인터만 받고, `idle-ci`는 `git lfs pull --include="idle/data/*.xlsx"`로 `generate --check`가 읽는 xlsx 15개(151,191바이트, 2026-11-09)를, `mmo-ci`는 같은 방법으로 `mmo/data/*.xlsx`(3개, 22,442바이트, 2026-11-13)를 받습니다. LFS 전체(981개, 약 241 MB, 2026-10-31. Unity 그림·오디오·폰트가 대부분)의 0.1%도 안 되고, 무료 다운로드량 월 10 GiB로 약 7만 회 실행할 수 있습니다. 툴의 테스트는 LFS 파일을 읽지 않습니다. 테스트가 다른 LFS 파일을 읽게 되면 `--include`에 더합니다. 키우기 릴리스(`idle-release`)의 Unity 실행은 `idle/`의 LFS만 받고 그 목록의 해시를 LFS 캐시 키로 써서, mmo 에셋은 받지 않고 mmo 에셋이 바뀌어도 캐시가 무효가 되지 않습니다.
+- **LFS**: 체크아웃은 포인터만 받고, `idle-ci`는 `git lfs pull --include="idle/data/*.xlsx"`로 `generate --check`가 읽는 xlsx 15개(151,191바이트, 2026-11-09)를, `mmo-ci`는 같은 방법으로 `mmo/data/*.xlsx`(3개, 22,442바이트, 2026-11-13)를, `mmo-unreal-ci`는 `mmo/client-unreal/Source/ThirdParty/MmoProtobuf/36.2/lib/Linux/**`(arm64 정적 라이브러리 91개, 9.8 MB, 2026-11-17)를 받습니다. LFS 전체(981개, 약 241 MB, 2026-10-31. Unity 그림·오디오·폰트가 대부분)의 0.1%도 안 되고, 무료 다운로드량 월 10 GiB로 약 7만 회 실행할 수 있습니다. 툴의 테스트는 LFS 파일을 읽지 않습니다. 테스트가 다른 LFS 파일을 읽게 되면 `--include`에 더합니다. 키우기 릴리스(`idle-release`)의 Unity 실행은 `idle/`의 LFS만 받고 그 목록의 해시를 LFS 캐시 키로 써서, mmo 에셋은 받지 않고 mmo 에셋이 바뀌어도 캐시가 무효가 되지 않습니다.
 - **PuerTS**: `npm run setup`(약 270 MB)은 돌리지 않습니다. 클라이언트 타입 검사는 커밋된 `types/`의 선언을, 번들 실행 테스트는 가짜 호스트(`test/support/puerts-host.mjs`)를 씁니다.
 - **시간**: 영역으로 나누기 전의 전체 단계(`npm ci` → `typecheck` → `test`)는 깨끗한 얕은 클론의 M4 Max에서 약 17초였습니다(`npm ci` 1.8초, 빈 캐시면 2.4초 / `typecheck` 6.4초 / `test` 7.8초, CPU 합 약 47초). 비공개 저장소의 표준 러너(2 vCPU)에서 잰 첫 실행(2026-10-22, 실행 39737281668)은 잡 111초로 로컬의 약 6.5배입니다: 체크아웃과 LFS 각 1초, `setup-node` 7초, `npm ci` 6초, `typecheck` 32초, `test` 59초. 2026-11-02에 공개 저장소가 되어 표준 러너는 무료이고, 4 vCPU 러너에서 잰 첫 실행은 잡 93초입니다. 나누기 직전의 실행(2026-11-06, 실행 42192687852)은 잡 81초였고(`setup-dotnet` 0.8초, `typecheck` 19초, `test` 49초 = 생성 파일 검사 4.5초 + 워크스페이스 테스트(idle과 툴) 40초 + `test:mmo` 4.2초), mmo만 바뀐 푸시도 이 81초를 다 썼습니다. 나눈 뒤 로컬(M4 Max, 캐시 있음, 2026-11-09)에서는 `typecheck:idle` 6.4초, `test:idle` 12.5초, `typecheck:tools` 2.0초, `test:tools` 2.9초, `test:mmo` 2.9초입니다. 나눈 뒤의 러너 시간은 아직 재지 않았습니다. 멈춘 테스트가 시간을 쓰지 않게 잡 한도는 10분입니다.
 

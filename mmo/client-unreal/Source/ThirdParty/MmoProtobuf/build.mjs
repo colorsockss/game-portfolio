@@ -2,17 +2,19 @@
 //   36.2/include/                      헤더(플랫폼마다 같다)
 //   36.2/lib/Mac/                      arm64·x86_64 유니버설
 //   36.2/lib/Android/arm64-v8a/        엔진과 같은 NDK, 정적 libc++(UE는 libc++_shared를 링크하는 라이브러리를 거부한다)
+//   36.2/lib/Linux/arm64/              엔진 없는 테스트를 GitHub의 arm64 Linux 러너(ubuntu-24.04-arm)에서 돌리는 데만 쓴다(66). 엔진에는 넣지 않는다
 // 결과는 LFS로 커밋하므로 버전을 바꿀 때만 다시 돌린다. 서버의 C# 런타임(Google.Protobuf)과 같은 버전이어야 한다.
 //
-//   node build.mjs [mac] [android]     플랫폼을 주지 않으면 둘 다
+//   node build.mjs [mac] [android] [linux]     플랫폼을 주지 않으면 셋 다
 //
-// cmake(3.16 이상)와 ninja가 PATH에 있어야 하고, android는 NDKROOT(UE와 같은 이름)에 NDK가 있어야 한다.
-// 내려받은 소스와 빌드 폴더는 OS 임시 폴더에 두고 다시 쓴다.
+// cmake(3.16 이상)와 ninja가 PATH에 있어야 하고, android는 NDKROOT(UE와 같은 이름)에 NDK가 있어야 한다. linux는 Docker(Mac에서는 colima 등)로
+// 러너와 같은 Ubuntu 24.04의 clang 컨테이너에서 빌드한다(arm64 Mac이면 에뮬레이션 없이).
+// 내려받은 소스와 빌드 폴더는 ~/.cache/에 두고 다시 쓴다(컨테이너가 같은 경로로 볼 수 있게 홈 아래에 둠).
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { homedir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -49,7 +51,18 @@ const PLATFORMS = {
       run(path.join(prebuilt, host, "bin/llvm-strip"), ["--strip-debug", lib]);
     },
   },
+  linux: {
+    output: "Linux/arm64",
+    // 러너의 clang(run.mjs가 씀)과 같은 Ubuntu 24.04의 clang과 libstdc++.
+    image: "mmo-protobuf-linux:24.04",
+    flags: () => ["-DCMAKE_C_COMPILER=clang", "-DCMAKE_CXX_COMPILER=clang++"],
+  },
 };
+
+// linux 빌드의 컨테이너 이미지. 없으면 만든다.
+const LINUX_DOCKERFILE = `FROM ubuntu:24.04
+RUN apt-get update && apt-get install -y --no-install-recommends clang cmake ninja-build && rm -rf /var/lib/apt/lists/*
+`;
 
 function ndk() {
   const root = process.env.NDKROOT;
@@ -65,7 +78,7 @@ const COMMON = ["-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", "-DCMAKE_CXX_STANDA
 
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 const outputDir = path.join(moduleDir, PROTOBUF.version);
-const workDir = path.join(tmpdir(), `mmo-protobuf-${PROTOBUF.version}`);
+const workDir = path.join(homedir(), ".cache", `mmo-protobuf-${PROTOBUF.version}`);
 
 const names = process.argv.slice(2);
 for (const name of names) {
@@ -81,6 +94,10 @@ for (const name of names.length > 0 ? names : Object.keys(PLATFORMS)) {
   const prefix = path.join(workDir, "install", name);
   await rm(prefix, { recursive: true, force: true });
   const flags = [...COMMON, ...platform.flags(), `-DCMAKE_INSTALL_PREFIX=${prefix}`];
+  if (platform.image && spawnSync("docker", ["image", "inspect", platform.image], { stdio: "ignore" }).status !== 0) {
+    run("docker", ["build", "-t", platform.image, "-"], LINUX_DOCKERFILE);
+  }
+  const build = (source, buildDir, buildFlags) => buildIn(platform.image, source, buildDir, buildFlags);
 
   build(abseilSource, path.join(workDir, "build", name, "abseil"), [
     ...flags,
@@ -137,14 +154,16 @@ async function fetchSource({ url, sha256 }, folder) {
   return source;
 }
 
-function build(source, buildDir, flags) {
-  run("cmake", ["-S", source, "-B", buildDir, ...flags]);
-  run("cmake", ["--build", buildDir]);
-  run("cmake", ["--install", buildDir]);
+// image가 있으면 그 컨테이너 안에서 같은 경로(작업 폴더를 그대로 마운트)로 cmake를 돈다.
+function buildIn(image, source, buildDir, flags) {
+  const cmake = image ? (args) => run("docker", ["run", "--rm", "-v", `${workDir}:${workDir}`, image, "cmake", ...args]) : (args) => run("cmake", args);
+  cmake(["-S", source, "-B", buildDir, ...flags]);
+  cmake(["--build", buildDir]);
+  cmake(["--install", buildDir]);
 }
 
-function run(command, args) {
-  const result = spawnSync(command, args, { stdio: "inherit" });
+function run(command, args, input) {
+  const result = spawnSync(command, args, input === undefined ? { stdio: "inherit" } : { input, stdio: ["pipe", "inherit", "inherit"] });
   if (result.status !== 0) {
     throw new Error(result.error ? `${command}: ${result.error.message}` : `${command} ${args[0]} failed with status ${result.status}`);
   }

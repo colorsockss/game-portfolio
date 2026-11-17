@@ -1,6 +1,6 @@
 // 엔진 없는 코드(Source/PortfolioMmo의 ENGINE_FREE 폴더)와 생성된 C++을 clang으로 빌드해 Tests/의 테스트를 돌린다.
 // 그 폴더의 .cpp를 모두 컴파일하므로, UE 헤더를 include한 파일이 하나라도 있으면 여기서 실패한다(경계 검사).
-// 지금은 커밋된 Mac 라이브러리로 Mac에서만 돌고, npm run test:mmo가 부른다.
+// 커밋된 라이브러리로 Mac(npm run test:mmo)과 GitHub의 arm64 Linux 러너(mmo-unreal-ci. 66)에서 돈다.
 //
 //   node mmo/client-unreal/Tests/run.mjs [이름…]   이름을 주면 파일 이름에 그 글이 든 테스트만(예: Crafting)
 import { spawn, spawnSync } from "node:child_process";
@@ -16,13 +16,15 @@ const generated = path.join(client, "../shared/contract/generated");
 const data = path.join(client, "../shared/data/files");
 const vectors = path.join(client, "../shared/vectors");
 const dataCode = path.join(client, "../shared/data/generated");
-// shortcut: 커밋된 라이브러리가 Mac용뿐이라 다른 OS에서는 건너뛴다. GitHub에서 돌리는 것은 backlog 66.
-if (process.platform !== "darwin") {
-  console.log("Skipped the engine-free Unreal tests: only macOS has prebuilt MmoProtobuf libraries.");
+// 커밋된 라이브러리: Mac(유니버설)과 arm64 Linux(MmoProtobuf/build.mjs linux). 그 밖의 기기에서는 건너뛴다.
+const mac = process.platform === "darwin";
+const libraryFolder = mac ? "lib/Mac" : process.platform === "linux" && process.arch === "arm64" ? "lib/Linux/arm64" : null;
+if (!libraryFolder) {
+  console.log("Skipped the engine-free Unreal tests: only macOS and arm64 Linux have prebuilt MmoProtobuf libraries.");
   process.exit(0);
 }
 
-const libraries = path.join(protobuf, "lib/Mac");
+const libraries = path.join(protobuf, libraryFolder);
 const out = mkdtempSync(path.join(tmpdir(), "mmo-unreal-tests-"));
 process.on("exit", () => rmSync(out, { recursive: true, force: true }));
 
@@ -40,7 +42,7 @@ const flags = [
   "-std=c++20",
   "-fno-rtti",
   "-fno-exceptions",
-  "-mmacosx-version-min=14.0",
+  ...(mac ? ["-mmacosx-version-min=14.0"] : []),
   "-Wall",
   "-Werror",
   `-I${path.join(client, "Source/PortfolioMmo/Public")}`,
@@ -57,16 +59,10 @@ const objects = await compileAll(sources.map((source, index) => [source, path.jo
 const testObjects = await compileAll(tests.map((test) => [path.join(client, "Tests", test), path.join(out, `${path.basename(test, ".cpp")}.o`)]));
 tests.forEach((test, index) => {
   const binary = path.join(out, path.basename(test, ".cpp"));
-  run("clang++", [
-    "-mmacosx-version-min=14.0",
-    testObjects[index],
-    ...objects,
-    ...readdirSync(libraries).filter((file) => file.endsWith(".a")).map((file) => path.join(libraries, file)),
-    "-framework",
-    "CoreFoundation",
-    "-o",
-    binary,
-  ]);
+  const archives = readdirSync(libraries).filter((file) => file.endsWith(".a")).map((file) => path.join(libraries, file));
+  // GNU ld는 정적 라이브러리를 한 번만 훑으므로 서로 부르는 abseil들을 한 묶음으로 준다.
+  const link = mac ? ["-mmacosx-version-min=14.0", ...archives, "-framework", "CoreFoundation"] : ["-Wl,--start-group", ...archives, "-Wl,--end-group", "-lpthread"];
+  run("clang++", [testObjects[index], ...objects, ...link, "-o", binary]);
   run(binary, [data, vectors]);
 });
 

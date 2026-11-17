@@ -1887,6 +1887,8 @@ data/                기획 데이터 원본
     - 엔진 빌드: 엔진이 필요한 빌드와 패키징은 로컬에서 합니다(10). GitHub 러너에는 엔진(수십 GB)을 두기 어렵고, self-hosted 러너는 공개 저장소에서 fork의 PR이 그 기기에서 코드를 돌릴 수 있어 쓰지 않습니다.
     - 영역 규칙: `mmo-ci.yml`의 `paths`에 `!mmo/client-unreal/**`를 더하고 `scripts/check.mjs`의 `mmo/` 규칙도 나눠, 클라이언트만 바뀌면 서버 테스트가 돌지 않게 합니다. `mmo/shared/`가 바뀌면 둘 다 돕니다. `check.mjs`의 규칙 테스트(파일 안의 `assert`)에 그 경우들을 더합니다.
   - **확인**: 클라이언트만 고친 커밋에서 `mmo-unreal-ci`만 돌고, 서버만 고친 커밋에서는 돌지 않고, `packets.proto`를 고친 커밋에서는 둘 다 도는 것을 봅니다. 엔진 헤더를 엔진 없는 폴더에 include한 커밋이 CI에서 실패하는 것을 봅니다. 로컬의 `npm run check`가 같은 영역으로 나눠 도는 것을 봅니다.
+  - 한 것(2026-11-17): macOS 러너는 쓰지 않기로 하고(비공개 저장소의 분당 요금이 Linux의 약 10배), `build.mjs linux`가 Docker(Mac은 colima)의 Ubuntu 24.04 clang 컨테이너에서 arm64 Linux용 libprotobuf·abseil을 빌드해 LFS로 커밋했습니다(91개, 9.8 MB). `run.mjs`는 Mac과 arm64 Linux에서 돌고(Linux는 `--start-group`으로 링크), 같은 컨테이너에서 모든 테스트가 통과했습니다. `test:mmo`에서 Unreal 테스트를 떼어 `test:mmo-unreal`로 두고, `mmo-unreal-ci.yml`(`ubuntu-24.04-arm`, Linux 라이브러리의 LFS만 받음)을 더하고, `mmo-ci.yml`의 `paths`와 `check.mjs`의 규칙을 나눴습니다(`client-unreal/`은 mmo-unreal, `shared/`는 둘 다, 그 밖의 `mmo/`는 mmo. 규칙 테스트를 더함).
+  - 남은 것: GitHub에서의 확인(위의 **확인**. 푸시한 뒤에 봄).
 
 - [ ] **67. iOS와 Windows** `M7` — Mac과 Android 말고 다른 플랫폼으로 빌드합니다.
   - **계약·데이터**: 없음.

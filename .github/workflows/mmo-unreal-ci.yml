@@ -1,0 +1,54 @@
+# Unreal 클라이언트의 엔진 없는 코드(Protocol, World, Screen, Data)와 생성된 C++을 clang과 서버와 같은 버전(36.2)의 libprotobuf로 빌드해 테스트한다(mmo backlog 66).
+# 엔진이 필요한 빌드와 패키징은 로컬에서 한다(GitHub 러너에 엔진을 두기 어렵고, 공개 저장소라 self-hosted 러너는 쓰지 않음).
+# 커밋된 Linux 라이브러리가 arm64라 arm64 러너에서 돈다(MmoProtobuf/build.mjs linux). 영역 폴더의 규칙은 scripts/check.mjs와 함께 고친다.
+name: mmo unreal CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mmo/client-unreal/**"
+      # 생성된 C++, 비교 벡터, 기획 데이터 파일을 테스트가 읽는다.
+      - "mmo/shared/**"
+      # test:mmo-unreal이 여기에 있다.
+      - "package.json"
+      - ".nvmrc"
+      - ".gitattributes"
+      - ".github/workflows/mmo-unreal-ci.yml"
+      - "!**/*.md"
+  pull_request:
+    paths:
+      - "mmo/client-unreal/**"
+      - "mmo/shared/**"
+      - "package.json"
+      - ".nvmrc"
+      - ".gitattributes"
+      - ".github/workflows/mmo-unreal-ci.yml"
+      - "!**/*.md"
+  workflow_dispatch:
+
+# 같은 PR(또는 브랜치)에 새 커밋이 오면 이전 실행을 취소해 무료 시간을 아낀다.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    steps:
+      # lfs가 꺼져 있으면 LFS 파일은 포인터로만 받는다.
+      - uses: actions/checkout@v7
+      # 테스트가 읽는 LFS 파일은 Linux용 libprotobuf·abseil뿐이다. Unreal 에셋과 다른 플랫폼의 라이브러리는 받지 않는다.
+      - run: |
+          git lfs install --local
+          git lfs pull --include="mmo/client-unreal/Source/ThirdParty/MmoProtobuf/36.2/lib/Linux/**"
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      # 러너의 clang으로 엔진 없는 소스를 컴파일하고, 엔진 헤더를 include한 파일이 있으면 여기서 실패한다(경계 검사).
+      - run: clang++ --version
+      - run: npm run test:mmo-unreal
