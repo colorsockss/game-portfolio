@@ -35,8 +35,14 @@ public:
 	UStaticMeshComponent& PlaceholderMesh() const { return *Placeholder; }
 
 private:
+	/** 카메라와 나 사이에서 카메라를 막는 맵의 것(건물, 테두리의 산)을 반투명하게 하고, 벗어나면 되돌린다(97). */
+	void FadeOccluders(float DeltaSeconds);
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> CameraArm;
+
+	/** 반투명하게 한 맵의 것의 메시 → 지금의 사라진 정도. 0으로 돌아오면 뺀다. */
+	TMap<TWeakObjectPtr<UStaticMeshComponent>, float> Occluders;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> Camera;

@@ -4,6 +4,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Game/MmoCharacterLook.h"
+#include "Game/MmoMapObject.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "HAL/IConsoleManager.h"
@@ -18,6 +19,13 @@ namespace
 	constexpr float MaxArmLength = 5600.0f;
 	/** 좁은 화각으로 원근을 줄여 2D 아이소메트릭에 가깝게 한다(엔진 기본은 90°). */
 	constexpr float FieldOfView = 20.0f;
+
+	/** 나를 가리는 맵의 것의 사라진 정도(0 다 보임 ~ 1 안 보임. 97). 디더라 남은 픽셀 사이로 내가 보인다. */
+	constexpr float OccluderFade = 0.6f;
+	/** 가리는 것을 찾는 구의 반지름(언리얼 단위). 몸의 가운데에서 몸통만큼. */
+	constexpr float OccluderProbeRadius = 40.0f;
+	/** 한 프레임에 찾는 가리는 것의 수. 카메라를 막는 것은 드물게 놓여 이만큼 겹치지 않는다. */
+	constexpr int32 MaxOccluders = 4;
 }
 
 AMmoCharacter::AMmoCharacter()
@@ -105,6 +113,56 @@ void AMmoCharacter::Tick(float DeltaSeconds)
 		Length -= 50.0f;
 	}
 	CameraArm->TargetArmLength = FMath::Max(Length, 0.0f);
+
+	FadeOccluders(DeltaSeconds);
+}
+
+void AMmoCharacter::FadeOccluders(float DeltaSeconds)
+{
+	// 카메라에서 몸의 가운데까지 카메라를 막는 상자(건물과 테두리의 산만 ECC_Camera를 막음)를 찾는다. 막는 채널은 첫 것에서 멈추므로 찾은 것을 빼고 다시 본다.
+	TSet<UStaticMeshComponent*> Hiding;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(MmoOccluders), false, this);
+	const FCollisionShape Probe = FCollisionShape::MakeSphere(OccluderProbeRadius);
+	FHitResult Hit;
+	for (int32 Index = 0; Index < MaxOccluders && GetWorld()->SweepSingleByChannel(Hit, Camera->GetComponentLocation(), GetActorLocation(), FQuat::Identity, ECC_Camera, Probe, Params); ++Index)
+	{
+		AActor* Actor = Hit.GetActor();
+		if (!Actor)
+		{
+			break;
+		}
+		if (const AMmoMapObject* Object = Cast<AMmoMapObject>(Actor))
+		{
+			Hiding.Add(&Object->Mesh());
+		}
+		Params.AddIgnoredActor(Actor);
+	}
+
+	for (UStaticMeshComponent* Mesh : Hiding)
+	{
+		Occluders.FindOrAdd(Mesh, 0.0f);
+	}
+	for (auto It = Occluders.CreateIterator(); It; ++It)
+	{
+		UStaticMeshComponent* Mesh = It.Key().Get();
+		if (!Mesh)
+		{
+			It.RemoveCurrent();
+			continue;
+		}
+		const float Target = Hiding.Contains(Mesh) ? OccluderFade : 0.0f;
+		const float Next = FMath::FInterpConstantTo(It.Value(), Target, DeltaSeconds, 1.0f / MmoCharacterLook::FadeSeconds);
+		if (Next != It.Value())
+		{
+			// M_EntityProp의 사라진 정도(import_props.py가 카메라를 막는 맵의 것을 이 머티리얼로 가져옴).
+			Mesh->SetCustomPrimitiveDataFloat(MmoCharacterLook::PlaceholderFadeIndex, Next);
+			It.Value() = Next;
+		}
+		if (Next == 0.0f)
+		{
+			It.RemoveCurrent();
+		}
+	}
 }
 
 void AMmoCharacter::Teleport(const FVector& Location)

@@ -22,6 +22,15 @@ namespace portfolio::mmo::data
 
 namespace MmoCharacterLook
 {
+	/** 서서히 나타나고 사라지는 시간(초. 59). 나를 가리는 맵의 것이 반투명해지는 것(97)도 같다. */
+	constexpr float FadeSeconds = 0.3f;
+	/**
+	 * 사라진 정도를 읽는 커스텀 프리미티브 데이터의 칸(create_entity_materials.py): 캐릭터 머티리얼은 0, 개체의 자리 표시·무기·펫과
+	 * M_EntityProp(채집물, 바닥 아이템, 카메라를 막는 맵의 것)은 3이다.
+	 */
+	constexpr int32 MeshFadeIndex = 0;
+	constexpr int32 PlaceholderFadeIndex = 3;
+
 	/**
 	 * 손의 무기(34). Item이 없으면 캐릭터 팩의 메시에 구워진 무기의 재질 칸(MI_<직업>_Weapon)을 Hidden(투명한 재질)으로 감춰 맨손이다. Item이 있으면
 	 * 표현 표에 그 종(family)의 무기 메시가 있을 때 그것을 Weapon_R 뼈에 붙이고(없으면 만든다) 구운 무기를 감추며, 없으면 구운 무기를 보인다(91).

@@ -88,7 +88,7 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 
 ## 맵의 것과 움직이지 않는 개체
 
-2026-11-17(backlog 91의 셋째 단계). 원본 FBX는 두 엔진이 함께 읽도록 저장소의 `mmo/art/`에 메시의 키 이름으로 둡니다(LFS). `Scripts/import_props.py`가 종류마다 키나 너비를 맞추고 원점을 바닥의 가운데로 옮겨, 맵의 것은 `/Game/Environment/<메시의 키>`(원본의 불투명한 머티리얼), 채집물과 바닥 아이템은 `/Game/Props/<이름>`(`M_EntityProp`의 인스턴스. 서서히 나타나고 사라짐)으로 가져옵니다. 그 뒤 `MmoBuildMap`이 맵 액터에 진짜 메시를 입히고 `MmoCreateCharacterAssets`가 표현 표에 채집물과 바닥 아이템의 줄을 둡니다.
+2026-11-17(backlog 91의 셋째 단계). 원본 FBX는 두 엔진이 함께 읽도록 저장소의 `mmo/art/`에 메시의 키 이름으로 둡니다(LFS). `Scripts/import_props.py`가 종류마다 키나 너비를 맞추고 원점을 바닥의 가운데로 옮겨, 맵의 것은 `/Game/Environment/<메시의 키>`(원본의 불투명한 머티리얼. 카메라를 막는 건물과 테두리의 산은 내 캐릭터를 가리면 반투명해지도록 `M_EntityProp`의 인스턴스. 97), 채집물과 바닥 아이템은 `/Game/Props/<이름>`(`M_EntityProp`의 인스턴스. 서서히 나타나고 사라짐)으로 가져옵니다. 그 뒤 `MmoBuildMap`이 맵 액터에 진짜 메시를 입히고 `MmoCreateCharacterAssets`가 표현 표에 채집물과 바닥 아이템의 줄을 둡니다.
 
 | 원본(`mmo/art/`) | 무엇 | 원본 모델(팩) | 크기 |
 |---|---|---|---|

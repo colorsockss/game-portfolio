@@ -15,7 +15,8 @@ CHARACTER = "/Game/Characters/M_Character"
 # 텍스처 없이 머티리얼 색만 쓰는 팩(91)의 기본 머티리얼. FBX를 가져올 때 원본의 머티리얼마다 인스턴스를 만들어 Color에 원본의 색을 넣는다.
 ENTITY_COLOR = "/Game/Characters/M_EntityColor"
 ENTITY_PLACEHOLDER = "/Game/Materials/M_EntityPlaceholder"
-# 움직이지 않는 개체(채집물, 바닥 아이템)의 스태틱 메시. 색은 M_EntityColor처럼 원본의 색이고, 자리 표시와 같은 컴포넌트에 그려 사라진 정도는 3번 칸이다.
+# 움직이지 않는 개체(채집물, 바닥 아이템)와 카메라를 막는 맵의 것(건물, 테두리의 산. 내 캐릭터를 가리면 반투명. 97)의 스태틱 메시. 색은 M_EntityColor처럼
+# 원본의 색이고, 개체는 자리 표시와 같은 컴포넌트에 그려 사라진 정도는 3번 칸이다(맵의 것도 같은 칸).
 ENTITY_PROP = "/Game/Materials/M_EntityProp"
 # 사라진 정도를 읽는 커스텀 프리미티브 데이터의 칸. 자리 표시는 0–2가 색이라 3이다(UMmoEntitySubsystem과 같은 수).
 CHARACTER_FADE_INDEX = 0

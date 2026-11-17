@@ -45,11 +45,9 @@ namespace
 	constexpr float HitFlashOpacity = 0.7f;
 	/** 연출을 트는 높이(언리얼 단위): 가슴(1 m). */
 	const FVector Chest(0.0, 0.0, 100.0);
-	/** 서서히 나타나고 사라지는 시간(초. 59). */
-	constexpr float FadeSeconds = 0.3f;
-	/** 사라진 정도를 읽는 커스텀 프리미티브 데이터의 칸: 캐릭터 머티리얼은 0, 개체의 자리 표시·무기·펫은 3(create_entity_materials.py). */
-	constexpr int32 MeshFadeIndex = 0;
-	constexpr int32 PlaceholderFadeIndex = 3;
+	using MmoCharacterLook::FadeSeconds;
+	using MmoCharacterLook::MeshFadeIndex;
+	using MmoCharacterLook::PlaceholderFadeIndex;
 	/** 품질 높음에서 그림자를 드리우는 다른 개체의 거리(언리얼 단위, 15 m. 59의 처음 값). */
 	constexpr double ShadowDistance = 1500.0;
 
