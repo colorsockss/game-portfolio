@@ -165,6 +165,7 @@ Protobuf를 고른 이유는 언어 중립 표준 정의 하나에서 protoc가 
   - 준비: `server/deploy/setup.sh`를 VPS에서 root로 한 번 돌립니다(폴더, 서비스, `deploy`가 그 서비스만 다시 시작하는 sudo 한 줄, ufw가 켜져 있으면 7777 열기). 배포 사용자 `deploy`와 SSH 키는 키우기의 것을 함께 쓰므로 키우기 준비가 먼저입니다. 서비스는 `Restart=always`(프로세스가 끝나면 다시 띄움)이고, 내려갈 때 위치를 저장하도록 `TimeoutStopSec=30`으로 기다립니다. DNS의 `mmo.dennou.cloud` A 레코드와 Hostinger 패널의 방화벽(쓴다면)은 손으로 맞춥니다.
   - 내보내기: GitHub Actions의 `mmo server`(손으로 실행)가 `test:mmo`를 돌리고, VPS의 CPU(`uname -m`)에 맞춰 .NET 런타임을 함께 실은 빌드(`dotnet publish --self-contained`, 약 81 MB)를 만들어 `server/deploy/deploy.sh`로 올립니다. VPS에 .NET을 설치하지 않으려는 것입니다. `deploy.sh`는 커밋마다 릴리스를 임시 이름에 올린 뒤 이름을 바꾸고, `current`를 한 번에 바꿔 다시 시작한 뒤 바깥에서 7777로 `Ping`을 보내 `Pong`이 오는지 봅니다(`server/deploy/check.mjs`). 이미 올린 커밋이면 올리기 없이 그 릴리스로 돌아가고(롤백), 가장 최근 릴리스 5개만 남깁니다. 다시 시작하면 접속한 플레이어는 `SERVER_SHUTDOWN`을 받고 끊깁니다.
   - 비밀값: 키우기와 같은 `secrets.VPS_SSH_KEY`, `VPS_KNOWN_HOSTS`, `vars.VPS_HOST`, `VPS_USER`를 씁니다. 새로 더할 것이 없습니다.
+  - 부하 측정(63): GitHub Actions의 `mmo load`(손으로 실행. 봇 수, 서버의 `--spawn-half-extent`, 초, 봇 인자)가 `server/deploy/load.sh`로 VPS에서 Live와 따로 잽니다. `current` 릴리스의 서버를 빈 임시 데이터베이스로 7790에 띄우고 같은 릴리스의 봇을 루프백으로 붙여, 서버 로그(10초 통계)와 봇의 끝 줄을 내고 둘 다 끈 뒤 임시 폴더를 지웁니다. 앞에 VPS의 코어·메모리, 셸과 Live `mmo-server` 프로세스의 열린 파일 한도, 소켓 버퍼의 설정을 찍고, 반쯤 지났을 때 서버가 연 파일 수와 서버·봇의 CPU를 찍습니다. 배포와 같은 동시 실행 그룹이라 겹치지 않습니다. 도는 동안 VPS의 CPU를 Live와 함께 씁니다.
 
 ### 부하 측정 (2026-11-06)
 

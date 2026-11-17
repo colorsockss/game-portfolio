@@ -1,0 +1,53 @@
+# MMO: Live VPS에서 Live와 따로 서버의 부하를 잰다(mmo backlog 63). 손으로 실행한다. current 릴리스의 서버를 빈 임시 데이터베이스로
+# 다른 포트에 띄우고 같은 VPS의 봇을 붙인다(mmo/server/deploy/load.sh). 도는 동안 VPS의 CPU를 Live와 함께 쓰므로 짧게 돌린다.
+name: mmo load
+
+on:
+  workflow_dispatch:
+    inputs:
+      bots:
+        description: 봇 수(동접 상한도 이 수)
+        default: "2000"
+      spawn_half_extent:
+        description: 서버의 --spawn-half-extent(m). 0이면 마을의 시작 자리
+        default: "285"
+      seconds:
+        description: 봇이 도는 시간(초)
+        default: "70"
+      bot_args:
+        description: 봇 인자(예 --hunt --half-extent 285, --gather 16,-39 --gather-radius 15)
+        default: "--hunt --half-extent 285"
+
+# 배포와 겹치면 재는 도중 current가 바뀌므로 같은 그룹에서 기다린다.
+concurrency:
+  group: mmo-live
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  VPS_HOST: ${{ vars.VPS_HOST }}
+  VPS_USER: ${{ vars.VPS_USER }}
+
+jobs:
+  load:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/vps-ssh
+        with:
+          key: ${{ secrets.VPS_SSH_KEY }}
+          known-hosts: ${{ secrets.VPS_KNOWN_HOSTS }}
+          host: ${{ env.VPS_HOST }}
+          user: ${{ env.VPS_USER }}
+      # 입력은 환경 변수로 넘겨 셸에 끼워 넣지 않고, load.sh가 숫자와 허용한 글자만 받는다.
+      - env:
+          BOTS: ${{ inputs.bots }}
+          HALF: ${{ inputs.spawn_half_extent }}
+          SECONDS_TO_RUN: ${{ inputs.seconds }}
+          BOT_ARGS: ${{ inputs.bot_args }}
+        run: |
+          read -r -a bot_args <<< "$BOT_ARGS"
+          mmo/server/deploy/load.sh "$BOTS" "$HALF" "$SECONDS_TO_RUN" "${bot_args[@]}"
