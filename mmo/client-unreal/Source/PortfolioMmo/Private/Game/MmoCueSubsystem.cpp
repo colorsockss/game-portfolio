@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "Game/MmoCoordinates.h"
 #include "Game/MmoEntitySubsystem.h"
+#include "Game/MmoFxActor.h"
 #include "HAL/PlatformTime.h"
 #include "Net/MmoConnection.h"
 #include "Kismet/GameplayStatics.h"
@@ -51,6 +52,25 @@ const FMmoCueRow* UMmoCueSubsystem::Row(EMmoCue Cue, int32 Kind, int32 Key)
 		{
 			return nullptr;
 		}
+		// 104: 배경음 말고 모든 줄의 에셋을 미리 불러온다(처음 쓰는 스킬의 연출이 불러오는 동안 빠지지 않게. 이펙트 그림과 효과음뿐이라 작음).
+		TArray<FSoftObjectPath> All;
+		for (const FMmoCueRow& Each : Cues->Rows)
+		{
+			if (Each.Cue == EMmoCue::Music)
+			{
+				continue;
+			}
+			All.Add(Each.Effect.ToSoftObjectPath());
+			All.Add(Each.Sound.ToSoftObjectPath());
+			for (const FMmoFxLayer& Layer : Each.Layers)
+			{
+				All.Add(Layer.Mesh.ToSoftObjectPath());
+				All.Add(Layer.Material.ToSoftObjectPath());
+			}
+		}
+		All.RemoveAll([this](const FSoftObjectPath& Path) { return Path.IsNull() || Requested.Contains(Path); });
+		Requested.Append(All);
+		Loads.Add(Streamable.RequestAsyncLoad(All));
 	}
 	const FMmoCueRow* Found = Cues->Find(Cue, Kind, Key);
 	if (!Found)
@@ -58,7 +78,13 @@ const FMmoCueRow* UMmoCueSubsystem::Row(EMmoCue Cue, int32 Kind, int32 Key)
 		return nullptr;
 	}
 	TArray<FSoftObjectPath> Missing;
-	for (const FSoftObjectPath& Path : { Found->Effect.ToSoftObjectPath(), Found->Sound.ToSoftObjectPath() })
+	TArray<FSoftObjectPath> Paths = { Found->Effect.ToSoftObjectPath(), Found->Sound.ToSoftObjectPath() };
+	for (const FMmoFxLayer& Layer : Found->Layers)
+	{
+		Paths.Add(Layer.Mesh.ToSoftObjectPath());
+		Paths.Add(Layer.Material.ToSoftObjectPath());
+	}
+	for (const FSoftObjectPath& Path : Paths)
 	{
 		if (!Path.IsNull() && !Path.ResolveObject() && !Requested.Contains(Path))
 		{
@@ -68,7 +94,7 @@ const FMmoCueRow* UMmoCueSubsystem::Row(EMmoCue Cue, int32 Kind, int32 Key)
 	}
 	if (!Missing.IsEmpty())
 	{
-		Streamable.RequestAsyncLoad(Missing);
+		Loads.Add(Streamable.RequestAsyncLoad(Missing));
 	}
 	return Found;
 }
@@ -88,15 +114,16 @@ USoundConcurrency* UMmoCueSubsystem::ConcurrencyFor(USoundBase* Sound)
 int32 UMmoCueSubsystem::ActiveEffects()
 {
 	Active.RemoveAll([](const UNiagaraComponent* Effect) { return !IsValid(Effect) || !Effect->IsActive(); });
-	return Active.Num();
+	Shapes.RemoveAll([](const TWeakObjectPtr<AMmoFxActor>& Shape) { return !Shape.IsValid(); });
+	return Active.Num() + Shapes.Num();
 }
 
-void UMmoCueSubsystem::Play(EMmoCue Cue, int32 Kind, int32 Key, const FVector& Location)
+AMmoFxActor* UMmoCueSubsystem::Play(EMmoCue Cue, int32 Kind, int32 Key, const FVector& Location, const FRotator& Facing, float Hold)
 {
 	const FMmoCueRow* Found = Row(Cue, Kind, Key);
 	if (!Found)
 	{
-		return;
+		return nullptr;
 	}
 	if (UNiagaraSystem* System = Found->Effect.Get(); System && ActiveEffects() < MaxActiveEffects)
 	{
@@ -106,6 +133,23 @@ void UMmoCueSubsystem::Play(EMmoCue Cue, int32 Kind, int32 Key, const FVector& L
 	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, Location, FRotator::ZeroRotator, 1.0f, 1.0f, 0.0f, nullptr, ConcurrencyFor(Sound));
 	}
+	if (Found->Layers.IsEmpty() || ActiveEffects() >= MaxActiveEffects)
+	{
+		return nullptr;
+	}
+	AMmoFxActor* Shape = GetWorld()->SpawnActor<AMmoFxActor>(Location, FRotator(0.0, Facing.Yaw, 0.0));
+	if (!Shape)
+	{
+		return nullptr;
+	}
+	Shape->Start(Found->Layers, Hold);
+	if (!IsValid(Shape))
+	{
+		// 겹의 에셋을 아직 불러오지 않아 그릴 것이 없었다.
+		return nullptr;
+	}
+	Shapes.Add(Shape);
+	return Shape;
 }
 
 UNiagaraComponent* UMmoCueSubsystem::StartLoop(EMmoCue Cue, int32 Kind, int32 Key, const FVector& Location)

@@ -9,6 +9,9 @@
 #include "NiagaraComponent.h"
 #include "Game/MmoEntityActor.h"
 #include "Game/MmoEntityVisuals.h"
+#include "Game/MmoFxActor.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "Animation/AnimSequence.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
@@ -29,13 +32,11 @@
 
 namespace
 {
-	/** 바닥 표시의 색: 내 대상의 원(노랑), 범위 스킬의 원(주황). 범위의 원이 보이는 시간(초). */
+	/** 바닥 표시의 색: 내 대상의 원(노랑). 범위 스킬의 원은 104부터 스킬마다의 연출(땅의 고리)이 그린다. */
 	const FLinearColor TargetColor(1.0f, 0.85f, 0.2f);
-	const FLinearColor AreaColor(1.0f, 0.45f, 0.1f);
 	/** 보스의 예고된 범위(43): 바깥 원(어두운 빨강)과 차오르는 안쪽 원(빨강). */
 	const FLinearColor WarningRingColor(0.35f, 0.05f, 0.05f);
 	const FLinearColor WarningFillColor(1.0f, 0.15f, 0.1f);
-	constexpr double AreaMarkerSeconds = 0.5;
 	/** 공격·스킬 동작 동안 대상 쪽을 보는 시간(초). 동작(0.75–1.2초)의 휘두름이 끝날 즈음까지이고, 그 뒤 서버의 방향으로 돌아온다. */
 	constexpr double FaceSeconds = 0.7;
 	/** 돌려 그리는 메시가 도는 빠르기(FInterpTo의 속도). */
@@ -298,6 +299,9 @@ void UMmoEntitySubsystem::Tick(float DeltaTime)
 	DrawWarnings(Session->Bosses(), World, Session->Data(), ServerTick);
 	DrawFadesAndShadows(World, *Session, DeltaTime, Now);
 	DrawPets(World, Session->Data(), ServerTick, DeltaTime);
+#if !UE_BUILD_SHIPPING
+	PreviewEffects(World, Session->Data(), Now);
+#endif
 }
 
 void UMmoEntitySubsystem::DrawFadesAndShadows(const MmoWorld::FWorldState& World, UMmoSession& Session, float DeltaTime, double Now)
@@ -497,9 +501,10 @@ void UMmoEntitySubsystem::ShowSkill(const MmoWorld::FCombatEvent& Event, const M
 	const FMmoEntityVisual* Row = Looks.FindRef(Event.Attacker);
 	PlayAction(Event.Attacker, Row && !Row->Skill.IsNull() ? &FMmoEntityVisual::Skill : &FMmoEntityVisual::Attack);
 
+	EndCharge(Event.Attacker);
 	if (const AActor* Caster = Actors.FindRef(Event.Attacker))
 	{
-		Cues().Play(EMmoCue::SkillCast, 0, static_cast<int32>(Event.Skill), Caster->GetActorLocation() + Chest);
+		Cues().Play(EMmoCue::SkillCast, 0, static_cast<int32>(Event.Skill), Caster->GetActorLocation() + Chest, FacingOf(Event.Attacker, Event.Target));
 	}
 
 	const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(Event.Skill);
@@ -512,14 +517,7 @@ void UMmoEntitySubsystem::ShowSkill(const MmoWorld::FCombatEvent& Event, const M
 	const uint32 Anchor = !MmoWorld::FCombatState::TargetsOther(*Skill) && Event.Attacker != 0 ? Event.Attacker : Event.Target;
 	if (!MmoWorld::FCombatState::Launches(*Skill))
 	{
-		PendingHits.Add({ FPlatformTime::Seconds() + Skill->hit_delay_ms() / 1000.0, Event.Skill, Anchor });
-	}
-	const AActor* At = Actors.FindRef(Anchor);
-	if (At && Skill->kind() == portfolio::mmo::data::SKILL_KIND_AREA_DAMAGE)
-	{
-		// 엔진의 원기둥은 지름 1 m라 지름(m)을 그대로 배율로 쓴다.
-		const double Diameter = Skill->radius() * 2.0;
-		Flash(AreaMarkers, AreaUntil, TEXT("Cylinder"), AreaColor, At->GetActorLocation() + FVector(0.0, 0.0, 3.0), FVector(Diameter, Diameter, 0.02), AreaMarkerSeconds);
+		PendingHits.Add({ FPlatformTime::Seconds() + Skill->hit_delay_ms() / 1000.0, Event.Skill, Anchor, Event.Attacker });
 	}
 }
 
@@ -678,31 +676,99 @@ void UMmoEntitySubsystem::StartCast(const MmoWorld::FCombatEvent& Event, const M
 	{
 		MmoCharacterLook::PlayAction(*ComponentsOf(*Actor).Key, Row->Cast.Get(), true);
 	}
+	if (Actor)
+	{
+		EndCharge(Event.Target);
+		AMmoFxActor* Charge = Cues().Play(EMmoCue::SkillCharge, 0, static_cast<int32>(Event.Skill), Actor->GetActorLocation() + Chest, Actor->GetActorRotation(),
+			Skill->cast_ms() / 1000.0f);
+		if (Charge)
+		{
+			ChargeEffects.Add(Event.Target, Charge);
+		}
+	}
+}
+
+void UMmoEntitySubsystem::PreviewEffects(const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double Now)
+{
+	FString List;
+	const AActor* Self = Actors.FindRef(World.SelfId());
+	if (!Self || !FParse::Value(FCommandLine::Get(), TEXT("MmoFxPreview="), List, false))
+	{
+		return;
+	}
+	if (PreviewNext == 0.0)
+	{
+		// 처음: 목록을 읽고(되풀이) 3초 뒤에 시작한다.
+		TArray<FString> Ids;
+		List.ParseIntoArray(Ids, TEXT(","));
+		for (const FString& Id : Ids)
+		{
+			PreviewSkills.Add(FCString::Atoi(*Id));
+		}
+		PreviewNext = Now + 3.0;
+	}
+	const FVector Forward = Self->GetActorForwardVector() * 400.0;
+	const portfolio::mmo::data::SkillsRow* Skill = Data.Skill(PreviewSkill);
+	if (PreviewCastAt >= 0.0 && Now >= PreviewCastAt)
+	{
+		PreviewCastAt = -1.0;
+		EndCharge(World.SelfId());
+		Cues().Play(EMmoCue::SkillCast, 0, PreviewSkill, Self->GetActorLocation() + Chest, Self->GetActorRotation());
+	}
+	if (PreviewHitAt >= 0.0 && Now >= PreviewHitAt && Skill)
+	{
+		PreviewHitAt = -1.0;
+		const FVector At = Self->GetActorLocation() + Chest + (MmoWorld::FCombatState::TargetsOther(*Skill) ? Forward : FVector::ZeroVector);
+		Cues().Play(EMmoCue::SkillHit, 0, PreviewSkill, At, Self->GetActorRotation());
+	}
+	if (PreviewSkills.IsEmpty() || Now < PreviewNext)
+	{
+		return;
+	}
+	PreviewSkill = PreviewSkills[0];
+	PreviewSkills.RemoveAt(0);
+	PreviewSkills.Add(PreviewSkill);
+	Skill = Data.Skill(PreviewSkill);
+	const double Cast = Skill ? Skill->cast_ms() / 1000.0 : 0.0;
+	if (AMmoFxActor* Charge = Cast > 0.0 ? Cues().Play(EMmoCue::SkillCharge, 0, PreviewSkill, Self->GetActorLocation() + Chest, Self->GetActorRotation(), Cast) : nullptr)
+	{
+		ChargeEffects.Add(World.SelfId(), Charge);
+	}
+	UE_LOG(LogTemp, Display, TEXT("FxPreview: skill %d"), PreviewSkill);
+	PreviewCastAt = Now + Cast;
+	PreviewHitAt = PreviewCastAt + (Skill ? Skill->hit_delay_ms() / 1000.0 : 0.0);
+	PreviewNext = PreviewHitAt + 3.0;
+}
+
+void UMmoEntitySubsystem::EndCharge(uint32 Id)
+{
+	TWeakObjectPtr<AMmoFxActor> Charge;
+	if (ChargeEffects.RemoveAndCopyValue(Id, Charge) && Charge.IsValid())
+	{
+		Charge->Finish();
+	}
+}
+
+FRotator UMmoEntitySubsystem::FacingOf(uint32 Caster, uint32 Target) const
+{
+	const AActor* From = Actors.FindRef(Caster);
+	const AActor* To = Actors.FindRef(Target);
+	if (!From)
+	{
+		return To ? To->GetActorRotation() : FRotator::ZeroRotator;
+	}
+	const FVector Direction = To && To != From ? (To->GetActorLocation() - From->GetActorLocation()).GetSafeNormal2D() : FVector::ZeroVector;
+	return Direction.IsNearlyZero() ? From->GetActorRotation() : Direction.Rotation();
 }
 
 void UMmoEntitySubsystem::StopAction(uint32 Id)
 {
 	CastEnds.Remove(Id);
+	EndCharge(Id);
 	if (AActor* Actor = Actors.FindRef(Id); Actor && Looks.Contains(Id))
 	{
 		MmoCharacterLook::StopAction(*ComponentsOf(*Actor).Key);
 	}
-}
-
-void UMmoEntitySubsystem::Flash(TArray<TObjectPtr<AStaticMeshActor>>& Pool, TArray<double>& Until, const TCHAR* Shape, const FLinearColor& Color, const FVector& Location, const FVector& Scale, double Seconds)
-{
-	const double Now = FPlatformTime::Seconds();
-	int32 Index = Until.IndexOfByPredicate([Now](double Each) { return Each <= Now; });
-	if (Index == INDEX_NONE)
-	{
-		Index = Pool.Add(SpawnMarker(Shape, Scale, Color));
-		Until.Add(0.0);
-	}
-	AStaticMeshActor* Marker = Pool[Index];
-	Marker->SetActorLocation(Location);
-	Marker->SetActorScale3D(Scale);
-	Marker->SetActorHiddenInGame(false);
-	Until[Index] = Now + Seconds;
 }
 
 void UMmoEntitySubsystem::PlayAction(uint32 Id, TSoftObjectPtr<UAnimSequence> FMmoEntityVisual::* Action)
@@ -785,15 +851,10 @@ void UMmoEntitySubsystem::DrawCombat(const MmoWorld::FWorldState& World, MmoWorl
 		}
 		if (const AActor* At = Actors.FindRef(PendingHits[Index].Anchor))
 		{
-			Cues().Play(EMmoCue::SkillHit, 0, static_cast<int32>(PendingHits[Index].Skill), At->GetActorLocation() + Chest);
+			Cues().Play(EMmoCue::SkillHit, 0, static_cast<int32>(PendingHits[Index].Skill), At->GetActorLocation() + Chest,
+				FacingOf(PendingHits[Index].Caster, PendingHits[Index].Anchor));
 		}
 		PendingHits.RemoveAtSwap(Index);
-	}
-
-	// 범위의 원은 정한 시간이 지나면 감춘다.
-	for (int32 Index = 0; Index < AreaMarkers.Num(); ++Index)
-	{
-		AreaMarkers[Index]->SetActorHiddenInGame(Now > AreaUntil[Index]);
 	}
 
 	// 대상의 발밑에 납작한 원을 둔다.

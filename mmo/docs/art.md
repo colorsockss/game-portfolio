@@ -14,7 +14,8 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 | 채집물 메시 | 6종(나무·광석·약초 × 2단계) | 있음(아래 "맵의 것과 움직이지 않는 개체") | - |
 | 무기 메시 | 2(검, 지팡이) | System G6의 검과 지팡이를 캐릭터의 오른손 뼈에 구움(98. 무기를 들면 보이고 들지 않으면 감춤. 원본 텍스처가 없어 단색) | 종마다 다른 메시는 넣지 않음: Medieval Weapons Pack(받아 둠)에 검은 있지만 지팡이가 없음 |
 | 바닥 아이템 메시 | 1 | 있음(가방) | - |
-| 환경 메시 | 9종 | 있음(아래 "맵의 것과 움직이지 않는 개체") | - |
+| 환경 메시 | 9종과 마을 소품 12종(102) | 있음(아래 "맵의 것과 움직이지 않는 개체". 102에서 같은 종류의 변형과 흩는 풀·덤불을 더함) | - |
+| 땅 텍스처 | 5(풀, 숲 바닥, 흙, 돌길, 그을린 땅)와 노멀 2, 노이즈 1 | 있음(아래 "땅 텍스처". Codex image_gen, 103) | - |
 | 캐릭터 애니메이션 | 대기, 달리기, 공격, 피격, 죽음, 시전 | 있음(System G6. 피격 동작은 팩에 없음) | - |
 | 채집·제작·귀환 동작 | 3 | 채집과 제작은 System G6의 `gathering`(98). 귀환은 없음 | - |
 | 몬스터 애니메이션 | 종마다 대기, 걷기, 공격, 피격, 죽음 | 있음(슬라임과 해골은 피격 동작이 없음) | - |
@@ -37,7 +38,8 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 
 | 에셋 | 만드는 것 |
 |---|---|
-| `Maps/Field`, `Materials/M_Ground`, `M_Sky`, `M_Placeholder` | `Scripts/create_content.py`(땅, 해, 하늘, 안개, 머티리얼)와 에디터 모듈의 `MmoBuildMap`(맵에 놓인 것의 자리 표시) |
+| `Maps/Field`, `Materials/M_Ground`, `M_Foliage`, `M_Sky`, `M_Placeholder`, `Environment/Ground/`(`mmo/art/ground/`에서) | `Scripts/create_content.py`(땅, 해, 하늘, 안개, 포스트 프로세스, 머티리얼, 땅 텍스처) |
+| `Environment/T_GroundMask`, `Environment/MI_Ground`, `Field`의 맵 액터와 `Foliage` | 에디터 모듈의 `MmoBuildMap`(맵에 놓인 것, 변형, 땅의 마스크, 흩은 풀. 102) |
 | `Characters/M_Character`, `Characters/M_EntityColor`, `Materials/M_EntityProp` | `Scripts/create_entity_materials.py`(가져온 텍스처나 원본의 색을 받는 머티리얼) |
 | `Environment/`, `Props/` 전부 | `Scripts/import_props.py`(`mmo/art/`의 원본에서) |
 | `Characters/<직업>/MI_*` | `Scripts/import_characters.py` |
@@ -103,6 +105,10 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 | `environment/mountain.fbx` | 테두리의 산 | `Rock_Moss_7`(Ultimate Nature Pack) | 너비 10 m. 산 모델이 없어 큰 바위 |
 | `environment/grass.fbx`, `flower.fbx` | 풀, 꽃 | `Grass`, `Flowers`(Ultimate Nature Pack) | 키 0.6 m |
 | `environment/rock.fbx`, `rock_large.fbx` | 바위, 큰 바위 | `Rock_1`, `Rock_Moss_3`(Ultimate Nature Pack) | 키 1.4 m, 너비 4 m |
+| `environment/tree_2.fbx`–`tree_5.fbx`, `tree_pine_1`–`3`, `tree_birch_1`–`2`, `tree_dead_1`–`3` | 나무의 변형(102. 죽은 나무는 보스 자리) | `CommonTree_2`–`5`, `PineTree_1`–`3`, `BirchTree_1`–`2`, `CommonTree_Dead_1`–`2`, `Willow_Dead_1`(Ultimate Nature Pack) | 키 5–7.5 m |
+| `environment/rock_2`–`5`, `rock_large_2`–`4`, `mountain_2`–`3`, `grass_2`–`3`, `flower_2` | 바위·큰 바위·산·풀·꽃의 변형(102) | `Rock_2`, `Rock_3`, `Rock_5`, `Rock_6`, `Rock_Moss_2`, `Rock_7`, `Rock_4`, `Rock_Moss_4`, `Rock_Moss_6`, `Grass_2`, `Grass_Short`, `Plant_5`(Ultimate Nature Pack) | 종류와 같음 |
+| `environment/well`, `market_stand`, `market_stall`, `barrel`, `crate`, `cart`, `bench`, `hay`, `bags`, `cauldron`, `bonfire`, `bell_tower` | 마을 소품(102. 막는 맵의 것, 종탑은 카메라도 막음) | `Well`, `MarketStand_1`, `MarketStand_2`, `Barrel`, `Crate`, `Cart`, `Bench_1`, `Hay`, `Bags`, `Cauldron`, `Bonfire_Lit`, `Bell_Tower`(Medieval Village Pack) | 발자국에 맞춤(종탑 너비 3 m) |
+| `environment/foliage/bush_1`, `bush_2`, `berries`, `plant_1`, `plant_3`, `plant_4`, `stump`, `log`, `pebble`, `twig`, `wheat` | 흩는 풀과 덤불(102. 충돌 없는 인스턴스 메시. 풀과 꽃은 맵의 것의 메시를 같이 씀) | `Bush_1`, `Bush_2`, `BushBerries_1`, `Plant_1`, `Plant_3`, `Plant_4`, `TreeStump_Moss`, `WoodLog_Moss`, `Rock_Moss_2`, `Plant_2`, `Wheat`(Ultimate Nature Pack) | 키 0.5–1.2 m, 통나무 2.4 m |
 | `entities/gather_pine.fbx`, `gather_oak.fbx` | 채집물 소나무, 참나무 | `PineTree_1`, `CommonTree_3`(Ultimate Nature Pack) | 키 6, 5.5 m |
 | `entities/gather_copper.fbx`, `gather_iron.fbx` | 채집물 구리, 철 광석 | `Rock_2`, `Rock_5`(Ultimate Nature Pack) | 너비 1.6 m. 광석 모델이 없어 바위에 구리색·회색 색조 |
 | `entities/gather_mugwort.fbx`, `gather_ginseng.fbx` | 채집물 쑥, 인삼 | `Plant_2`, `BushBerries_1`(Ultimate Nature Pack) | 키 0.8 m, 너비 0.9 m. 약초 모델이 없어 풀과 열매 덤불 |
@@ -113,7 +119,21 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 | Ultimate Nature Pack | [OpenGameArt: Low Poly Nature Pack](https://opengameart.org/content/low-poly-nature-pack-1) (`ultimate_nature_pack_by_quaternius_1.zip`, 21.9 MB) | CC0 1.0(팩의 License.txt) |
 | Medieval Village Pack | [OpenGameArt: LowPoly Medieval Village Pack](https://opengameart.org/content/lowpoly-medieval-village-pack) (`medieval_village_pack_-_dec_2020.zip`, 8.0 MB) | CC0 1.0(팩의 License.txt) |
 
-- 진짜 메시가 없는 종류는 `MmoBuildMap`이 맵 액터마다 엔진 기본 도형(`/Engine/BasicShapes/`)을 차지하는 칸에 맞춰 키우고 종류의 색을 입힙니다(2026-11-13, backlog 87). 지금은 아홉 종류 모두 진짜 메시입니다.
+- 진짜 메시가 없는 종류는 `MmoBuildMap`이 맵 액터마다 엔진 기본 도형(`/Engine/BasicShapes/`)을 차지하는 칸에 맞춰 키우고 종류의 색을 입힙니다(2026-11-13, backlog 87). 지금은 스물한 종류 모두 진짜 메시입니다.
+- 102(2026-11-18)의 모델은 91에 받아 둔 두 팩(`~/.cache/mmo-art-sources/nature`, `village`)에서 골랐고 새로 받은 것은 없습니다. 고를 때 Blender로 후보 60개의 썸네일을 그려 봤고, 팩의 `Bell_Tower`만 `Buildings/`에 있습니다.
+
+## 땅 텍스처
+
+2026-11-18(backlog 103). 땅 머티리얼이 섞는 타일 텍스처 다섯을 아이콘(100)과 같은 방법으로 생성했습니다. 프롬프트는 `mmo/art/ground/source/prompts.md`, 뽑은 원본(1254 px)은 `source/`, 최종본은 `mmo/art/ground/`입니다.
+
+| 파일 | 무엇 | 크기 | 만든 이 | 도구 |
+|---|---|---|---|---|
+| `grass.png`, `forest.png`, `dirt.png`, `cobble.png`, `scorched.png` | 풀밭, 숲 바닥, 흙길, 돌길, 그을린 땅(보스 자리) | 512×512 | colorsocks | Codex image_gen(codex-cli 0.159.3, 기본 `image_gen`) |
+| `cobble_n.png`, `scorched_n.png` | 돌길과 그을린 땅의 노멀 맵(밝기를 높이로 봄) | 512×512 | colorsocks | `source/process.py`(Pillow) |
+| `noise.png` | 큰 얼룩, 구름 그림자, 마스크 가장자리의 노이즈(R·G·B가 다른 씨앗) | 256×256 | colorsocks | `source/process.py`(Pillow) |
+
+- 생성기가 이음매 없는 타일을 지키지 못해 `process.py`가 반 칸 민 그림을 가장자리 쪽에 섞어 네 변을 잇고 512로 줄입니다. 흙의 바퀴 자국은 줄무늬로 되풀이가 보여 머티리얼이 돌린 두 크기를 섞고, 돌길은 돌이 작아 12 m에 한 번 되풀이합니다.
+- 약관과 소유는 위 "UI 그림"과 같습니다.
 
 ## 아이콘
 
@@ -157,6 +177,7 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 
 | 무엇 | 지금 | 출처 |
 |---|---|---|
+| 스킬마다의 연출(104) | 모양 겹의 가산 머티리얼 `M_Fx`와 인스턴스 `Fx/MI_Fx_<그림>`(판이나 구에 입힘), 색을 입힌 파티클 `M_ParticleTint`와 `NS_Steel`·`NS_Gold`·`NS_Shield`·`NS_Blood`·`NS_Embers`·`NS_Arcane`·`NS_ArcaneTrail`·`NS_Fire`·`NS_Heal`·`NS_Frost`·`NS_Spirit`·`NS_Dust`(템플릿 `RadialBurst`, `DirectionalBurst`, `FountainLightweight`의 복사본). 스킬마다의 모양과 색은 `MmoCreateEffectAssets`의 `AddSkillCues` | 그림은 Kenney Particle Pack(CC0, 91에 받은 `kenney_particlePack.zip`)의 `slash_02`, `slash_03`, `circle_02`, `circle_03`, `circle_05`, `light_01`, `magic_02`, `flame_01`, `smoke_01`, `star_06`, `twirl_02`를 256 px 회색으로 줄여 `mmo/art/effects/`에 더함(새로 받은 것은 없음) |
 | 타격(`NS_Hit`), 스킬과 부활(`NS_Skill`), 발사체(`NS_Projectile`) | Niagara 플러그인의 템플릿 시스템(`RadialBurst`, `DirectionalBurst`, `FountainLightweight`)을 `MmoCreateEffectAssets`가 복사해 스프라이트 렌더러의 머티리얼을 `M_Particle_<그림>`(가산, 흰 그림 × 파티클 색)으로 바꾼 것(2026-11-17, 91) | 그림은 Kenney Particle Pack(CC0, [OpenGameArt: Particle Pack (80+ sprites)](https://opengameart.org/content/particle-pack-80-sprites), `kenney_particlePack.zip` 9.3 MB)의 `spark_01`, `star_01`, `magic_01`을 128 px로 줄여 `mmo/art/effects/`에 둠. 움직임은 엔진 템플릿 그대로(쿠킹에 들어감) |
 | 효과음 `S_Hit`, `S_Skill`, `S_Revive`, `S_Footstep`, `S_UiClick`, `S_UiWindow`, `S_UiLevelUp`, `S_UiPickUp`, `S_UiEnchantSuccess`, `S_UiEnchantFailure`, `S_UiBossAppeared` | `mmo/art/sounds/<이름>.ogg`(2026-11-17, 91): 타격 `blade_01`, 스킬 `spell_01`, 부활 `spell_02`, 보스 등장 `creature_roar_01`(rubberduck의 80 CC0 RPG SFX), 발소리 `footstep00`, 줍기 `handleCoins`(Kenney RPG Audio), 클릭 `click_001`, 창 `open_001`, 강화 실패 `error_001`(Kenney Interface Sounds), 레벨 업 `jingles_NES00`, 강화 성공 `jingles_STEEL00`(Kenney 85 Short music jingles) | [80 CC0 RPG SFX](https://opengameart.org/content/80-cc0-rpg-sfx), [50 RPG sound effects](https://opengameart.org/content/50-rpg-sound-effects), [Interface Sounds](https://opengameart.org/content/interface-sounds), [85 Short music jingles](https://opengameart.org/content/85-short-music-jingles). 모두 CC0 1.0(페이지). 원본이 없는 이름은 커맨드렛이 합성한다 |
 | 배경음 `M_Town`, `M_Hunting`, `M_Gathering`, `M_Boss` | `mmo/art/sounds/<이름>.flac`(2026-11-17, 91): cynicmusic의 Town Theme RPG, Happy Lullaby(song17), Another August, Battle Theme A를 `afconvert`로 모노 22.05 kHz 16비트 FLAC으로 바꿈(합 11.5 MB) | [Town Theme RPG](https://opengameart.org/content/town-theme-rpg), [Happy Lullaby](https://opengameart.org/content/happy-lullaby-song17), [Another August](https://opengameart.org/content/another-august), [Battle Theme A](https://opengameart.org/content/battle-theme-a). 모두 CC0 1.0(페이지) |

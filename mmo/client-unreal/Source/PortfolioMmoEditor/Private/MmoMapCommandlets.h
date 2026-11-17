@@ -7,8 +7,9 @@
 
 /**
  * 맵 생성기가 낸 놓인 것의 목록(mmo/shared/data/files/Map.tsv)에서 Field 레벨의 맵 액터(AMmoMapObject)를 비우고 다시 놓는다.
- * 메시는 /Game/Environment/<메시의 키>가 있으면 그것이고, 없으면 엔진 기본 도형에 종류의 색을 입힌 자리 표시다.
- * 레벨 전체를 다시 만드는 차례는 Scripts/create_content.py(땅, 조명, 하늘) → 이 도구다. 에디터가 프로젝트를 열고 있지 않을 때 돌린다.
+ * 메시는 /Game/Environment/<메시의 키>(나무·바위 등은 그 변형 가운데 하나)가 있으면 그것이고, 없으면 엔진 기본 도형에 종류의 색을 입힌
+ * 자리 표시다. 이어서 꾸민다(102. MmoMapDecoration: 땅의 마스크와 MI_Ground, 흩은 풀과 덤불). 레벨 전체를 다시 만드는 차례는
+ * Scripts/create_content.py(땅, 조명, 하늘) → Scripts/import_props.py → 이 도구다. 에디터가 프로젝트를 열고 있지 않을 때 돌린다.
  *
  *   UnrealEditor-Cmd PortfolioMmo.uproject -run=MmoBuildMap -unattended -nosplash -nullrhi
  */

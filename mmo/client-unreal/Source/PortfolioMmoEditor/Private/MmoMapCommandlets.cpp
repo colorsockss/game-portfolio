@@ -1,6 +1,7 @@
 #include "MmoMapCommandlets.h"
 
 #include "Components/StaticMeshComponent.h"
+#include "Game/MmoFieldLayout.h"
 #include "Editor.h"
 #include "EngineUtils.h"
 #include "Engine/StaticMesh.h"
@@ -9,6 +10,7 @@
 #include "Materials/MaterialInterface.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "MmoMapDecoration.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMmoMap, Log, All);
 
@@ -102,16 +104,31 @@ namespace
 		return true;
 	}
 
-	/** 메시의 키로 메시를 고른다. 진짜 메시가 없으면 자리 표시 도형에 크기와 색(커스텀 프리미티브 데이터 0–2)을 입힌다. */
-	void ApplyMesh(AMmoMapObject& Object, UMaterialInterface* Placeholder)
+	/**
+	 * 메시의 키로 메시를 고른다(102: 나무·바위 등은 그 칸의 해시와 구역의 종류로 변형, 방향, 크기도 고름). 진짜 메시가 없으면 자리 표시
+	 * 도형에 크기와 색(커스텀 프리미티브 데이터 0–2)을 입힌다.
+	 */
+	void ApplyMesh(AMmoMapObject& Object, UMaterialInterface* Placeholder, const FMmoFieldLayout& Layout, const FPlaced& Placed)
 	{
 		const FMmoMapObjectKind& Kind = Object.Kind();
 		UStaticMeshComponent& Mesh = Object.Mesh();
-		const FString Asset = FString::Printf(TEXT("/Game/Environment/%s.%s"), *Kind.MeshKey, *Kind.MeshKey);
-		if (UStaticMesh* Real = LoadObject<UStaticMesh>(nullptr, *Asset, nullptr, LOAD_NoWarn | LOAD_Quiet))
+		const FVector Center = Object.GetActorLocation() / 100.0;
+		const uint32 Value = MmoMapDecoration::Hash(Placed.X, Placed.Z, 1);
+		if (UStaticMesh* Real = MmoMapDecoration::VariantOf(Kind.MeshKey, Layout.KindAt(FMath::FloorToInt32(Center.Y), FMath::FloorToInt32(Center.X)), Value))
 		{
 			Mesh.SetStaticMesh(Real);
-			Object.SetHeight(Real->GetBoundingBox().Max.Z / 100.0);
+			double Height = 1.0;
+			if (MmoMapDecoration::Jitters(Kind.MeshKey))
+			{
+				// 정사각형 발자국은 아무 방향, 길쭉하면 뒤집기와 조금만(메시가 발자국을 크게 벗어나지 않음). 산은 높이를 더 흔든다.
+				const double Roll = (MmoMapDecoration::Hash(Placed.X, Placed.Z, 2) & 0xFFFF) / 65536.0;
+				const double Yaw = Kind.Width == Kind.Depth ? Roll * 360.0 : (Value & 1) * 180.0 + (Roll - 0.5) * 16.0;
+				const double Scale = 0.88 + 0.27 * ((MmoMapDecoration::Hash(Placed.X, Placed.Z, 3) & 0xFFFF) / 65536.0);
+				Height = Kind.MeshKey == TEXT("mountain") ? 0.75 + 0.7 * Roll : Scale;
+				Mesh.SetRelativeRotation(FRotator(0.0, Yaw, 0.0));
+				Mesh.SetRelativeScale3D(FVector(Scale, Scale, Height));
+			}
+			Object.SetHeight(Real->GetBoundingBox().Max.Z * Height / 100.0);
 			return;
 		}
 
@@ -150,9 +167,10 @@ int32 UMmoBuildMapCommandlet::Main(const FString& Params)
 	TArray<FPlaced> Objects;
 	UMaterialInterface* Placeholder = LoadObject<UMaterialInterface>(nullptr, PlaceholderMaterial);
 	UWorld* World = LoadField();
-	if (!ReadMapList(Kinds, Objects) || !World || !Placeholder)
+	const TOptional<FMmoFieldLayout> Layout = FMmoFieldLayout::Load();
+	if (!ReadMapList(Kinds, Objects) || !World || !Placeholder || !Layout)
 	{
-		UE_LOG(LogMmoMap, Error, TEXT("Need Map.tsv, the Field level and %s (Scripts/create_content.py)."), PlaceholderMaterial);
+		UE_LOG(LogMmoMap, Error, TEXT("Need Map.tsv and the data files (npm run generate -- mmo), the Field level and %s (Scripts/create_content.py)."), PlaceholderMaterial);
 		return 1;
 	}
 
@@ -163,6 +181,7 @@ int32 UMmoBuildMapCommandlet::Main(const FString& Params)
 		++Removed;
 	}
 
+	TArray<MmoMapDecoration::FTreeSpot> Trees;
 	for (const FPlaced& Placed : Objects)
 	{
 		const FMmoMapObjectKind* Kind = Kinds.Find(Placed.Kind);
@@ -174,9 +193,18 @@ int32 UMmoBuildMapCommandlet::Main(const FString& Params)
 
 		AMmoMapObject* Object = World->SpawnActor<AMmoMapObject>();
 		Object->Place(*Kind, Placed.X, Placed.Z, Placed.Rotation);
-		ApplyMesh(*Object, Placeholder);
+		ApplyMesh(*Object, Placeholder, *Layout, Placed);
 		Object->SetActorLabel(FString::Printf(TEXT("%s_%d_%d"), *Kind->MeshKey, Placed.X, Placed.Z));
 		Object->SetFolderPath(TEXT("Map"));
+		if (Kind->MeshKey == TEXT("tree"))
+		{
+			Trees.Add({ Object->GetActorLocation().Y / 100.0, Object->GetActorLocation().X / 100.0 });
+		}
+	}
+
+	if (!MmoMapDecoration::Decorate(*World, *Layout, Trees))
+	{
+		return 1;
 	}
 
 	if (!UEditorLoadingAndSavingUtils::SaveMap(World, Level))

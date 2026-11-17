@@ -10,6 +10,18 @@ kind	6	10	6	1	1	house_large
 kind	7	2	2	1	0	rock
 kind	8	4	3	1	0	rock_large
 kind	9	1	1	0	0	flower
+kind	10	2	2	1	0	well
+kind	11	3	2	1	0	market_stand
+kind	12	3	1	1	0	market_stall
+kind	13	1	1	1	0	barrel
+kind	14	1	1	1	0	crate
+kind	15	2	3	1	0	cart
+kind	16	2	1	1	0	bench
+kind	17	1	1	1	0	hay
+kind	18	1	1	1	0	bags
+kind	19	1	1	1	0	cauldron
+kind	20	2	2	1	0	bonfire
+kind	21	3	3	1	1	bell_tower
 object	1	-32	-16	0
 object	1	26	-16	0
 object	1	-32	8	0
@@ -1937,3 +1949,29 @@ object	9	211	245	0
 object	9	241	247	0
 object	9	272	277	0
 object	9	-178	284	0
+object	10	4	4	0
+object	11	10	-7	0
+object	12	10	-4	0
+object	14	11	-19	0
+object	14	12	-19	0
+object	13	11	-14	0
+object	18	12	-14	0
+object	19	-11	-5	0
+object	13	-12	-3	0
+object	14	-12	-7	0
+object	16	-12	-19	0
+object	15	5	-37	0
+object	17	-25	9	0
+object	17	-24	9	0
+object	17	-25	10	0
+object	13	25	9	0
+object	13	25	10	0
+object	14	24	9	0
+object	13	-33	-15	0
+object	14	-33	-14	0
+object	14	25	-15	0
+object	18	24	-15	0
+object	21	5	14	0
+object	20	-6	14	0
+object	16	-6	17	0
+object	16	-9	14	90

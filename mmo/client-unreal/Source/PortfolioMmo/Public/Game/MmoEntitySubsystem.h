@@ -11,6 +11,7 @@
 #include "MmoEntitySubsystem.generated.h"
 
 class AStaticMeshActor;
+class AMmoFxActor;
 class UMmoCueSubsystem;
 class UMmoSession;
 class UNiagaraComponent;
@@ -81,6 +82,9 @@ private:
 	 */
 	void DrawPets(const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick, float DeltaTime);
 
+	/** 개발용(104): -MmoFxPreview=101,202,…면 스킬마다 차례로 그 연출(시전, 쓰기, 맞기)만 내 캐릭터 앞에서 튼다(전투 없이 확인). */
+	void PreviewEffects(const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double Now);
+
 	/** 보스의 예고된 범위(43): 바깥 원과, 피해를 주는 틱까지 차오르는 안쪽 원. 끝난 예고는 감춘다. */
 	void DrawWarnings(MmoWorld::FBossWatch& Watch, const MmoWorld::FWorldState& World, const MmoData::FGameData& Data, double ServerTick);
 
@@ -119,9 +123,6 @@ private:
 
 	/** 맞은 개체를 0.1초 번쩍인다(보이는 메시에 번쩍임 머티리얼을 덮음). */
 	void FlashHit(uint32 Id, double Now);
-
-	/** 풀에서 감춰진 자리 표시를 꺼내(없으면 만듦) Seconds 동안 보인다. */
-	void Flash(TArray<TObjectPtr<AStaticMeshActor>>& Pool, TArray<double>& Until, const TCHAR* Shape, const FLinearColor& Color, const FVector& Location, const FVector& Scale, double Seconds);
 
 	/** 자리 표시 액터 하나(엔진의 기본 도형, 색은 커스텀 프리미티브 데이터). Material이 없으면 맵의 자리 표시와 같은 불투명한 머티리얼이다. */
 	AStaticMeshActor* SpawnMarker(const TCHAR* Shape, const FVector& Scale, const FLinearColor& Color, UMaterialInterface* Material = nullptr);
@@ -175,12 +176,13 @@ private:
 	UPROPERTY()
 	TMap<uint32, TObjectPtr<UNiagaraComponent>> LineEffects;
 
-	/** 타격까지의 시간 뒤에 틀 스킬의 맞는 연출: 틀 때(초), 스킬, 그 자리의 개체. */
+	/** 타격까지의 시간 뒤에 틀 스킬의 맞는 연출: 틀 때(초), 스킬, 그 자리의 개체, 시전자(연출의 방향. 104). */
 	struct FPendingHit
 	{
 		double At = 0.0;
 		uint32 Skill = 0;
 		uint32 Anchor = 0;
+		uint32 Caster = 0;
 	};
 	TArray<FPendingHit> PendingHits;
 
@@ -200,13 +202,25 @@ private:
 	TMap<uint32, TObjectPtr<AActor>> PetActors;
 	TMap<uint32, MmoWorld::FPoint> PetPoints;
 
-	/** 범위 스킬의 원(바닥 표시)과 저마다 감출 때(초). */
-	UPROPERTY()
-	TArray<TObjectPtr<AStaticMeshActor>> AreaMarkers;
-	TArray<double> AreaUntil;
 
 	/** 시전 동작을 트는 개체 → 시전이 끝나는 서버 틱. */
 	TMap<uint32, uint32> CastEnds;
+
+	/** PreviewEffects의 남은 스킬과 다음 차례의 때(초), 지금 스킬의 쓰기·맞기 때. */
+	TArray<int32> PreviewSkills;
+	double PreviewNext = 0.0;
+	double PreviewCastAt = -1.0;
+	double PreviewHitAt = -1.0;
+	int32 PreviewSkill = 0;
+
+	/** 시전하는 개체 → 그 시전의 연출(104. 시전이 끝나거나 끊기면 흐리고 끝냄). */
+	TMap<uint32, TWeakObjectPtr<AMmoFxActor>> ChargeEffects;
+
+	/** 시전의 연출을 끝낸다. */
+	void EndCharge(uint32 Id);
+
+	/** 시전자가 그 개체를 보는 방향(같거나 없으면 시전자의 방향). */
+	FRotator FacingOf(uint32 Caster, uint32 Target) const;
 
 	/** 그릴 다른 플레이어(59). */
 	MmoWorld::FDrawSelection Drawing;

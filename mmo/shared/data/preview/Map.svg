@@ -1939,6 +1939,32 @@
 <rect x="541" y="52" width="1" height="1" fill="#8fc77a"/>
 <rect x="572" y="22" width="1" height="1" fill="#8fc77a"/>
 <rect x="122" y="15" width="1" height="1" fill="#8fc77a"/>
+<rect x="304" y="294" width="2" height="2" fill="#3b3b3b"/>
+<rect x="310" y="305" width="3" height="2" fill="#3b3b3b"/>
+<rect x="310" y="303" width="3" height="1" fill="#3b3b3b"/>
+<rect x="311" y="318" width="1" height="1" fill="#3b3b3b"/>
+<rect x="312" y="318" width="1" height="1" fill="#3b3b3b"/>
+<rect x="311" y="313" width="1" height="1" fill="#3b3b3b"/>
+<rect x="312" y="313" width="1" height="1" fill="#3b3b3b"/>
+<rect x="289" y="304" width="1" height="1" fill="#3b3b3b"/>
+<rect x="288" y="302" width="1" height="1" fill="#3b3b3b"/>
+<rect x="288" y="306" width="1" height="1" fill="#3b3b3b"/>
+<rect x="288" y="318" width="2" height="1" fill="#3b3b3b"/>
+<rect x="305" y="334" width="2" height="3" fill="#3b3b3b"/>
+<rect x="275" y="290" width="1" height="1" fill="#3b3b3b"/>
+<rect x="276" y="290" width="1" height="1" fill="#3b3b3b"/>
+<rect x="275" y="289" width="1" height="1" fill="#3b3b3b"/>
+<rect x="325" y="290" width="1" height="1" fill="#3b3b3b"/>
+<rect x="325" y="289" width="1" height="1" fill="#3b3b3b"/>
+<rect x="324" y="290" width="1" height="1" fill="#3b3b3b"/>
+<rect x="267" y="314" width="1" height="1" fill="#3b3b3b"/>
+<rect x="267" y="313" width="1" height="1" fill="#3b3b3b"/>
+<rect x="325" y="314" width="1" height="1" fill="#3b3b3b"/>
+<rect x="324" y="314" width="1" height="1" fill="#3b3b3b"/>
+<rect x="305" y="283" width="3" height="3" fill="#3b3b3b"/>
+<rect x="294" y="284" width="2" height="2" fill="#3b3b3b"/>
+<rect x="294" y="282" width="2" height="1" fill="#3b3b3b"/>
+<rect x="291" y="284" width="1" height="2" fill="#3b3b3b"/>
 <circle cx="300.5" cy="309.5" r="3" fill="#2fbf4f" stroke="#000" stroke-width="0.5"/>
 <circle cx="160.5" cy="439.5" r="3" fill="#d0302f" stroke="#000" stroke-width="0.5"/>
 <circle cx="346.5" cy="393.5" r="3" fill="#8a3fd1" stroke="#000" stroke-width="0.5"/>
