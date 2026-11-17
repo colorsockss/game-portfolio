@@ -129,6 +129,9 @@ private:
 	/** 내가 죽었다(Died, 또는 죽은 채 넘겨받음. 46): 열린 창을 닫고 사망 화면을 띄운다. */
 	void ShowDeath();
 	void HandleClosed(const FString& Reason);
+
+	/** 다시 붙는 동안 알림 층에 "다시 연결 중"을, 다시 붙으면 "다시 연결되었습니다"를 띄운다(64). 월드와 HUD는 그대로 둔다. */
+	void HandleReconnecting(bool bReconnecting);
 	APlayerController* PlayerController() const;
 	UMmoSession& Session() const;
 
@@ -153,6 +156,7 @@ private:
 	TSharedPtr<IInputProcessor> KeyCodeInput;
 	FDelegateHandle PacketHandle;
 	FDelegateHandle ClosedHandle;
+	FDelegateHandle ReconnectHandle;
 	FDelegateHandle LanguageHandle;
 
 	/** 게임 종료로 로그아웃하는 중이다(닫히면 앱을 끝냄). */

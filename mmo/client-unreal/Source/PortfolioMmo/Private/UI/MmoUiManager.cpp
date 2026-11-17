@@ -134,6 +134,7 @@ void UMmoUiManager::Initialize(FSubsystemCollectionBase& Collection)
 	PacketHandle = Net.OnPacket.AddUObject(this, &UMmoUiManager::HandlePacket);
 	LanguageHandle = Net.OnLanguageChanged.AddUObject(this, &UMmoUiManager::RefreshTexts);
 	ClosedHandle = Net.OnClosed.AddUObject(this, &UMmoUiManager::HandleClosed);
+	ReconnectHandle = Net.OnReconnecting.AddUObject(this, &UMmoUiManager::HandleReconnecting);
 }
 
 void UMmoUiManager::Deinitialize()
@@ -150,6 +151,7 @@ void UMmoUiManager::Deinitialize()
 	{
 		Net->OnPacket.Remove(PacketHandle);
 		Net->OnClosed.Remove(ClosedHandle);
+		Net->OnReconnecting.Remove(ReconnectHandle);
 		Net->OnLanguageChanged.Remove(LanguageHandle);
 	}
 	Super::Deinitialize();
@@ -733,6 +735,15 @@ void UMmoUiManager::HandleClosed(const FString& Reason)
 	if (bWasPlaying && Reason != UMmoSession::LoggedOutReason)
 	{
 		ShowNotice(MmoText::Get(GetLocalPlayer(), TEXT("common.disconnected")));
+	}
+}
+
+void UMmoUiManager::HandleReconnecting(bool bReconnecting)
+{
+	// 다시 붙는 동안에는 시도마다 다시 띄워(1–30초 간격) 알림이 사라지지 않게 한다.
+	if (Stack.IsOpen(EScreen::Hud))
+	{
+		ShowNotice(MmoText::Get(GetLocalPlayer(), bReconnecting ? TEXT("connection.reconnecting") : TEXT("connection.reconnected")));
 	}
 }
 

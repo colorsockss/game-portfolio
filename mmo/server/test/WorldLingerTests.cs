@@ -17,6 +17,44 @@ namespace PortfolioMmo.Server.Tests
         /// 전투 상태에서 끊긴 캐릭터는 월드에 남아 다른 연결에 그대로 보이고(나감이 가지 않음) 기본 공격을 멈춘다. 전투 상태가 끝나는 틱에 빠지며 사본이 들어가고
         /// 그때 다른 연결이 나감을 받는다. 전투 상태도 선공 표시도 없으면 그 틱에 빠진다.
         /// </summary>
+        /// <summary>
+        /// 다시 연결(64)로 같은 캐릭터가 들어올 때 받는 상태: 처음 들어올 때와 남아 있던 캐릭터를 넘겨받을 때 모두 경험치, 쿨다운 전체, 인벤토리(장비, 골드),
+        /// 배운 스킬, 퀵슬롯, 퀘스트 진행, 펫, 성향, 능력치, 내 상태(체력, 마나, 전투 상태와 선공 표시가 끝나는 틱), 내 개체(레벨, 걸린 효과, 죽었는지)를 받는다.
+        /// </summary>
+        [Fact]
+        public void EnteringAndTakingOverSendTheSameState()
+        {
+            World world = CombatWorld(TestData.Draw(64));
+            Session first = Join(world, "hero_01");
+            world.Step();
+            HashSet<Packet.BodyOneofCase> entered = first.Outbox.Select(packet => packet.BodyCase).ToHashSet();
+            Player player = first.Player!;
+            long characterId = player.CharacterId;
+            world.Effects.Apply(player, TestData.Effects.Rows.Single(row => row.Id == 1), world.Tick);
+            player.CombatEndTick = world.Tick + 200;
+
+            world.Disconnect(first);
+            Assert.Equal(1, world.Lingering.Count);
+            Session again = LogIn(world, "hero_01");
+            again.Outbox.Clear();
+            Enter(world, again, characterId);
+            world.Step();
+            HashSet<Packet.BodyOneofCase> resumed = again.Outbox.Select(packet => packet.BodyCase).ToHashSet();
+
+            Packet.BodyOneofCase[] expected =
+            {
+                Packet.BodyOneofCase.EnterWorldResult, Packet.BodyOneofCase.ExpGained, Packet.BodyOneofCase.Cooldowns, Packet.BodyOneofCase.Inventory,
+                Packet.BodyOneofCase.LearnedSkills, Packet.BodyOneofCase.Quickslots, Packet.BodyOneofCase.QuestState, Packet.BodyOneofCase.PetState,
+                Packet.BodyOneofCase.Karma, Packet.BodyOneofCase.SelfStats, Packet.BodyOneofCase.SelfVitals, Packet.BodyOneofCase.EntitiesEnter,
+            };
+            Assert.All(expected, kind => Assert.Contains(kind, entered));
+            Assert.All(expected, kind => Assert.Contains(kind, resumed));
+            Assert.Same(player, again.Player);
+            EntityEnter self = again.Outbox.Where(packet => packet.EntitiesEnter != null).SelectMany(packet => packet.EntitiesEnter.Entities).Single(entity => entity.Id == player.Id);
+            Assert.Single(self.Effects);
+            Assert.Equal(player.CombatEndTick, again.Outbox.Last(packet => packet.SelfVitals != null).SelfVitals.CombatEndTick);
+        }
+
         [Fact]
         public void FightersStayUntilTheirCombatEnds()
         {

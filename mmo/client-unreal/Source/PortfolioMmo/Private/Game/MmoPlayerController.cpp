@@ -290,6 +290,7 @@ void AMmoPlayerController::BeginPlay()
 		PlayerCameraManager->ViewPitchMax = MaxPitch;
 	}
 	PacketHandle = GetGameInstance()->GetSubsystem<UMmoSession>()->OnPacket.AddUObject(this, &AMmoPlayerController::HandlePacket);
+	ReconnectHandle = GetGameInstance()->GetSubsystem<UMmoSession>()->OnReconnecting.AddUObject(this, &AMmoPlayerController::HandleReconnecting);
 #if !UE_BUILD_SHIPPING
 	// 개발용: -MmoDevOverlay면 개발용 표시(F3)를 켠 채 시작한다.
 	bDevOverlay = FParse::Param(FCommandLine::Get(), TEXT("MmoDevOverlay"));
@@ -301,8 +302,17 @@ void AMmoPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (UMmoSession* Session = GetGameInstance()->GetSubsystem<UMmoSession>())
 	{
 		Session->OnPacket.Remove(PacketHandle);
+		Session->OnReconnecting.Remove(ReconnectHandle);
 	}
 	Super::EndPlay(EndPlayReason);
+}
+
+void AMmoPlayerController::HandleReconnecting(bool bReconnecting)
+{
+	if (bReconnecting && AutoHunt.IsOn())
+	{
+		SetAutoHunt(false);
+	}
 }
 
 void AMmoPlayerController::OnPossess(APawn* InPawn)
@@ -782,7 +792,8 @@ std::optional<MmoWorld::FInteractTarget> AMmoPlayerController::InteractCandidate
 void AMmoPlayerController::Interact()
 {
 	NoteManual();
-	if (bManualMoveBlocked || Session().World().SelfState().bDead || IsStunned())
+	// 다시 붙는 동안(64)에도 막는다: 서버가 모르는 걸음이 되므로.
+	if (bManualMoveBlocked || Session().World().SelfState().bDead || IsStunned() || Session().IsReconnecting())
 	{
 		return;
 	}
@@ -913,7 +924,7 @@ void AMmoPlayerController::HandleMove(const FInputActionValue& Value)
 	}
 	bMoveInput |= !Axis.IsNearlyZero();
 	// 시전 시간이 있는 스킬을 보낼 때 쥐고 있던 입력은 한 번 놓을 때까지 쓰지 않는다(그대로 걸으면 시전이 바로 취소됨).
-	if (!Self || bManualMoveBlocked || Session().World().SelfState().bDead || IsStunned() || !Session().Combat().AllowMove(!Axis.IsNearlyZero()))
+	if (!Self || bManualMoveBlocked || Session().World().SelfState().bDead || IsStunned() || Session().IsReconnecting() || !Session().Combat().AllowMove(!Axis.IsNearlyZero()))
 	{
 		return;
 	}
@@ -1060,7 +1071,7 @@ void AMmoPlayerController::HandlePacket(const portfolio::mmo::Packet& Packet)
 
 void AMmoPlayerController::ToggleAutoHunt()
 {
-	if (!GetPawn() || Session().World().SelfState().bDead)
+	if (!GetPawn() || Session().World().SelfState().bDead || Session().IsReconnecting())
 	{
 		return;
 	}

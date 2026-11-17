@@ -1183,3 +1183,7 @@ Defeat {0}
 equipSlot.5신발Boots
 #
 equipSlot.6	장신구	Accessory
+q
+connection.reconnecting4연결이 끊겨 다시 연결하는 중입니다… Connection lost. Reconnecting…
+E
+connection.reconnected다시 연결되었습니다.Reconnected.

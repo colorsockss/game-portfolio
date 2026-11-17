@@ -253,4 +253,8 @@ private:
 	FVector2D TouchWas[MmoScreen::FTouchOwners::MaxFingers];
 	bool bTouchWasDown[MmoScreen::FTouchOwners::MaxFingers] = {};
 	FDelegateHandle PacketHandle;
+
+	/** 다시 붙기 시작하면 자동 사냥을 끈다(64. 다시 붙은 뒤에도 꺼져 있음). */
+	void HandleReconnecting(bool bReconnecting);
+	FDelegateHandle ReconnectHandle;
 };

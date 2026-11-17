@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Containers/Ticker.h"
 #include "Protocol/MmoPackets.h"
 #include "Data/GameData.h"
 #include "Data/Strings.h"
@@ -12,6 +13,7 @@
 #include "World/Inventory.h"
 #include "World/Party.h"
 #include "World/QuestState.h"
+#include "World/ReconnectPolicy.h"
 #include "World/SkillBook.h"
 #include "World/WorldState.h"
 
@@ -33,6 +35,7 @@ public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnPacket, const portfolio::mmo::Packet&);
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnClosed, const FString& /* Reason */);
 	DECLARE_MULTICAST_DELEGATE(FOnLanguageChanged);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnReconnecting, bool /* bReconnecting */);
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
@@ -123,8 +126,20 @@ public:
 	FOnConnected OnConnected;
 	/** 서버가 보낸 패킷. 월드에는 이미 반영되어 있다. */
 	FOnPacket OnPacket;
-	/** 연결하지 못했거나 끊겼다. */
+	/** 연결하지 못했거나 끊겼다. 다시 붙는 동안(64)에는 오지 않고, 다시 붙지 않거나 2분 동안 붙지 못했을 때 온다. */
 	FOnClosed OnClosed;
+
+	/**
+	 * 다시 연결(64): 뜻하지 않게 끊겨 다시 붙는 시도를 할 때마다 true로, 다시 들어갔거나 로그인까지 됐을 때 false로 온다(그만두면 false 없이 OnClosed).
+	 * 그동안 월드 모델과 액터는 그대로 두고, 다시 들어가면(EnterWorldResult) 모델을 새로 받은 것으로 바꾼다.
+	 */
+	FOnReconnecting OnReconnecting;
+
+	/** 다시 붙는 중이다(첫 끊김부터 다시 들어갈 때까지). 화면은 그동안 이동과 요청의 입력을 막는다. */
+	bool IsReconnecting() const { return Reconnect.Reconnecting(); }
+
+	/** 앱이 백그라운드에서 돌아왔다: 마지막으로 받은 때부터 15초가 지났으면 기다리지 않고 닫은 뒤 다시 붙는다(64). */
+	void HandleForeground();
 
 private:
 	void HandleConnected();
@@ -133,6 +148,19 @@ private:
 	void LoadData();
 	void HandleClosed(const FString& Reason);
 	UMmoConnection& Connection() const;
+
+	/** 월드와 그에 딸린 모델을 비운다(보이던 개체는 나간 큐로 가 화면이 지움). bChat이면 채팅 기록도 비운다. */
+	void ResetModels(bool bChat);
+
+	/** Delay초 뒤에 같은 서버로 다시 연결한다(64). */
+	void ScheduleReconnect(double Delay);
+
+	/** 다시 붙을지와 간격(64). */
+	MmoWorld::FReconnectPolicy Reconnect;
+	FTSTicker::FDelegateHandle ReconnectTimer;
+
+	/** 마지막으로 패킷을 받은 때(초. 백그라운드에서 돌아올 때 봄). */
+	double LastReceived = 0.0;
 
 	/** 연결할 서버. UMmoSettings의 값이고, 명령줄의 -MmoServer=호스트:포트가 이긴다. */
 	FString Host;

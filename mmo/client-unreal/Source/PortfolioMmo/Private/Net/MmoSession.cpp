@@ -8,6 +8,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Misc/CommandLine.h"
+#include "Misc/CoreDelegates.h"
 #include "Net/MmoConnection.h"
 #include "Net/MmoSettings.h"
 #include "HAL/IConsoleManager.h"
@@ -20,6 +21,7 @@ void UMmoSession::Initialize(FSubsystemCollectionBase& Collection)
 	Net->OnConnected.AddUObject(this, &UMmoSession::HandleConnected);
 	Net->OnPacket.AddUObject(this, &UMmoSession::HandlePacket);
 	Net->OnClosed.AddUObject(this, &UMmoSession::HandleClosed);
+	FCoreDelegates::ApplicationHasEnteredForegroundDelegate.AddUObject(this, &UMmoSession::HandleForeground);
 
 	const UMmoSettings* Settings = GetDefault<UMmoSettings>();
 	Host = Settings->ServerHost;
@@ -100,12 +102,15 @@ void UMmoSession::Deinitialize()
 		Net->OnPacket.RemoveAll(this);
 		Net->OnClosed.RemoveAll(this);
 	}
+	FCoreDelegates::ApplicationHasEnteredForegroundDelegate.RemoveAll(this);
+	FTSTicker::GetCoreTicker().RemoveTicker(ReconnectTimer);
 	Super::Deinitialize();
 }
 
 void UMmoSession::LogIn(const FString& InLoginId)
 {
 	CurrentLoginId = InLoginId;
+	Reconnect.SetCharacter(0);
 	WorldState.Reset();
 	CharacterList.Clear();
 	Connection().Connect(Host, Port);
@@ -140,6 +145,7 @@ void UMmoSession::CreateCharacter(const FString& Name, portfolio::mmo::Character
 void UMmoSession::EnterWorld(uint64 CharacterId)
 {
 	LastCharacterId = CharacterId;
+	Reconnect.SetCharacter(CharacterId);
 	portfolio::mmo::Packet Packet;
 	Packet.mutable_enter_world()->set_character_id(CharacterId);
 	Connection().Send(Packet);
@@ -188,6 +194,7 @@ void UMmoSession::LeaveWorld()
 	portfolio::mmo::Packet Packet;
 	Packet.mutable_leave_world();
 	Connection().Send(Packet);
+	Reconnect.SetCharacter(0);
 	WorldState.Reset();
 	CombatState.Reset();
 	InventoryState.Reset();
@@ -235,6 +242,25 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 		bDemoAvailable = Packet.login_result().demo_available();
 	}
 	const double Now = FPlatformTime::Seconds();
+	LastReceived = Now;
+	const bool bWasReconnecting = Reconnect.Reconnecting();
+	Reconnect.Note(Packet);
+	if (bWasReconnecting && Packet.body_case() == portfolio::mmo::Packet::kEnterWorldResult)
+	{
+		// 다시 들어갔으면 끊기기 전의 월드를 비우고 새로 받은 것으로 바꾼다(액터는 나간 큐로 지워지고 새 EntitiesEnter로 다시 생김). 시계는 EnterWorldResult가 다시 맞춘다.
+		// 거절됐으면 캐릭터 선택에 있으므로 다시 붙는 것을 그만두고 끊김으로 알린다.
+		const bool bEntered = Packet.enter_world_result().result() == portfolio::mmo::ENTER_WORLD_RESULT_CODE_OK;
+		ResetModels(!bEntered);
+		Reconnect.Finish();
+		if (!bEntered)
+		{
+			Connection().Close();
+			OnClosed.Broadcast(TEXT("Could not re-enter the world"));
+			return;
+		}
+		UE_LOG(LogMmoNet, Display, TEXT("Reconnected and re-entered the world as entity %u"), Packet.enter_world_result().self_id());
+		OnReconnecting.Broadcast(false);
+	}
 	WorldState.Apply(Packet, Now, Field());
 	InventoryState.Apply(Packet);
 	StorageState.Apply(Packet);
@@ -247,23 +273,72 @@ void UMmoSession::HandlePacket(const portfolio::mmo::Packet& Packet)
 	{
 		Send(*Stop);
 	}
+	// 다시 붙어 로그인이 되면 월드에 있던 캐릭터로 다시 들어가고(답을 기다리던 요청은 다시 보내지 않음), 캐릭터 선택에 있었으면 거기서 그친다.
+	if (bWasReconnecting && Packet.body_case() == portfolio::mmo::Packet::kLoginResult && Packet.login_result().result() == portfolio::mmo::LOGIN_RESULT_CODE_OK)
+	{
+		if (const uint64 Character = Reconnect.LoggedIn())
+		{
+			EnterWorld(Character);
+			return;
+		}
+		UE_LOG(LogMmoNet, Display, TEXT("Reconnected at the character list"));
+		Reconnect.Finish();
+		OnReconnecting.Broadcast(false);
+	}
 	OnPacket.Broadcast(Packet);
 }
 
-void UMmoSession::HandleClosed(const FString& InReason)
+void UMmoSession::ResetModels(bool bChat)
 {
-	// 내가 로그아웃해 서버가 닫은 것은 끊김이 아니다(다시 붙지 않는 판단은 64가 씀).
-	const FString Reason = std::exchange(bLoggingOut, false) ? LoggedOutReason : InReason;
-	// 보이던 개체(내 캐릭터 포함)가 모두 나간 것으로 큐에 들어가 화면이 지운다.
 	WorldState.Reset();
 	CombatState.Reset();
 	InventoryState.Reset();
 	StorageState.Reset();
 	SkillBook.Reset();
-	ChatLog.Reset();
+	if (bChat)
+	{
+		ChatLog.Reset();
+	}
 	PartyState.Reset();
 	QuestModel.Reset();
 	BossState.Reset();
+}
+
+void UMmoSession::ScheduleReconnect(double Delay)
+{
+	FTSTicker::GetCoreTicker().RemoveTicker(ReconnectTimer);
+	ReconnectTimer = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateWeakLambda(this, [this](float)
+	{
+		UE_LOG(LogMmoNet, Display, TEXT("Reconnecting to %s:%d"), *Host, Port);
+		Connection().Connect(Host, Port);
+		return false;
+	}), static_cast<float>(Delay));
+}
+
+void UMmoSession::HandleForeground()
+{
+	if (Connection().IsConnected() && MmoWorld::FReconnectPolicy::StaleAfterBackground(LastReceived, FPlatformTime::Seconds()))
+	{
+		// 서버는 이미 무응답으로 끊었을 것이므로 기다리지 않고 닫은 뒤 다시 붙는다. 2분 한도는 지금부터 센다.
+		Connection().Close();
+		HandleClosed(TEXT("Stale after the background"));
+	}
+}
+
+void UMmoSession::HandleClosed(const FString& InReason)
+{
+	// 내가 로그아웃해 서버가 닫은 것은 끊김이 아니다.
+	const FString Reason = std::exchange(bLoggingOut, false) ? LoggedOutReason : InReason;
+	if (const std::optional<double> Delay = Reconnect.Closed(Reason == LoggedOutReason, FPlatformTime::Seconds()))
+	{
+		// 다시 붙는 동안 월드(액터와 HUD)는 그대로 둔다.
+		UE_LOG(LogMmoNet, Display, TEXT("Connection lost (%s); reconnecting in %.0f s"), *Reason, *Delay);
+		ScheduleReconnect(*Delay);
+		OnReconnecting.Broadcast(true);
+		return;
+	}
+	// 다시 붙지 않거나 그만뒀다(OnReconnecting(false)는 다시 붙었을 때만 옴). 보이던 개체(내 캐릭터 포함)가 모두 나간 것으로 큐에 들어가 화면이 지운다.
+	ResetModels(true);
 	OnClosed.Broadcast(Reason);
 }
 
