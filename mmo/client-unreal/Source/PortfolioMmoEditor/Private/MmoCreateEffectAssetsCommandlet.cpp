@@ -11,6 +11,13 @@
 #include "Materials/MaterialExpressionScalarParameter.h"
 #include "Misc/PackageName.h"
 #include "Misc/Paths.h"
+#include "Engine/Texture2D.h"
+#include "Materials/MaterialExpressionMultiply.h"
+#include "Materials/MaterialExpressionParticleColor.h"
+#include "Materials/MaterialExpressionTextureSample.h"
+#include "NiagaraEmitter.h"
+#include "NiagaraEmitterHandle.h"
+#include "NiagaraSpriteRendererProperties.h"
 #include "NiagaraSystem.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundClass.h"
@@ -148,6 +155,87 @@ namespace
 		Sound->AttenuationSettings = Attenuation;
 		Sound->InvalidateCompressedData(true, false);
 		return Save(Package, Sound, Filename) ? Sound : nullptr;
+	}
+
+	/** mmo/art/effects/<Name>.png(Kenney Particle Pack, CC0. 91)를 /Game/Effects/Textures/<Name>으로 가져온다. */
+	UTexture2D* ImportParticle(const TCHAR* Name)
+	{
+		const FString Source = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() / TEXT("../art/effects") / FString::Printf(TEXT("%s.png"), Name));
+		const FString Filename = FPackageName::LongPackageNameToFilename(FString::Printf(TEXT("/Game/Effects/Textures/%s"), Name), FPackageName::GetAssetPackageExtension());
+		IFileManager::Get().Delete(*Filename, false, true, true);
+		UAssetImportTask* Task = NewObject<UAssetImportTask>();
+		Task->Filename = Source;
+		Task->DestinationPath = TEXT("/Game/Effects/Textures");
+		Task->DestinationName = Name;
+		Task->bAutomated = true;
+		Task->bReplaceExisting = true;
+		Task->bSave = false;
+		FAssetToolsModule::GetModule().Get().ImportAssetTasks({ Task });
+		UTexture2D* Texture = Task->GetObjects().IsEmpty() ? nullptr : Cast<UTexture2D>(Task->GetObjects()[0]);
+		if (!Texture)
+		{
+			UE_LOG(LogMmoCreateEffectAssets, Error, TEXT("Could not import %s."), *Source);
+			return nullptr;
+		}
+		return Save(Texture->GetPackage(), Texture, Filename) ? Texture : nullptr;
+	}
+
+	/** 파티클 스프라이트의 머티리얼: 흰 그림 × 파티클 색 × 파티클 알파를 빛으로 더한다(가산, 그림자 없음). */
+	UMaterial* CreateParticleMaterial(const TCHAR* Name, UTexture2D* Texture)
+	{
+		FString Filename;
+		UPackage* Package = NewPackage(FString::Printf(TEXT("/Game/Effects/%s"), Name), Filename);
+		UMaterial* Material = NewObject<UMaterial>(Package, Name, RF_Public | RF_Standalone);
+		Material->BlendMode = BLEND_Additive;
+		Material->SetShadingModel(MSM_Unlit);
+		Material->bUsedWithNiagaraSprites = true;
+		UMaterialExpressionTextureSample* Sample = NewObject<UMaterialExpressionTextureSample>(Material);
+		Sample->Texture = Texture;
+		UMaterialExpressionParticleColor* Color = NewObject<UMaterialExpressionParticleColor>(Material);
+		UMaterialExpressionMultiply* Tinted = NewObject<UMaterialExpressionMultiply>(Material);
+		Tinted->A.Connect(1, Sample);
+		Tinted->B.Connect(1, Color);
+		UMaterialExpressionMultiply* Faded = NewObject<UMaterialExpressionMultiply>(Material);
+		Faded->A.Connect(0, Tinted);
+		Faded->B.Connect(4, Color);
+		for (UMaterialExpression* Expression : TArray<UMaterialExpression*>{ Sample, Color, Tinted, Faded })
+		{
+			Material->GetExpressionCollection().AddExpression(Expression);
+		}
+		Material->GetEditorOnlyData()->EmissiveColor.Connect(0, Faded);
+		Material->PostEditChange();
+		return Save(Package, Material, Filename) ? Material : nullptr;
+	}
+
+	/** 엔진의 템플릿 시스템을 /Game/Effects/<Name>으로 복사하고 스프라이트 렌더러의 머티리얼을 바꾼다(91). 움직임은 템플릿 그대로다. */
+	UNiagaraSystem* CreateParticleSystem(const TCHAR* Name, const TCHAR* Template, UMaterialInterface* Material)
+	{
+		UNiagaraSystem* Source = LoadObject<UNiagaraSystem>(nullptr, *FString::Printf(TEXT("/Niagara/DefaultAssets/Templates/Systems/%s.%s"), Template, Template));
+		if (!Source || !Material)
+		{
+			UE_LOG(LogMmoCreateEffectAssets, Error, TEXT("The Niagara template %s or the particle material is missing."), Template);
+			return nullptr;
+		}
+		FString Filename;
+		UPackage* Package = NewPackage(FString::Printf(TEXT("/Game/Effects/%s"), Name), Filename);
+		UNiagaraSystem* System = DuplicateObject<UNiagaraSystem>(Source, Package, Name);
+		System->SetFlags(RF_Public | RF_Standalone);
+		for (const FNiagaraEmitterHandle& Handle : System->GetEmitterHandles())
+		{
+			if (FVersionedNiagaraEmitterData* Data = Handle.GetEmitterData())
+			{
+				for (UNiagaraRendererProperties* Renderer : Data->GetRenderers())
+				{
+					if (UNiagaraSpriteRendererProperties* Sprite = Cast<UNiagaraSpriteRendererProperties>(Renderer))
+					{
+						Sprite->Material = Material;
+					}
+				}
+			}
+		}
+		System->RequestCompile(false);
+		System->WaitForCompilationComplete();
+		return Save(Package, System, Filename) ? System : nullptr;
 	}
 
 	template <typename T>
@@ -291,9 +379,17 @@ int32 UMmoCreateEffectAssetsCommandlet::Main(const FString& Params)
 	{
 		return TSoftObjectPtr<UNiagaraSystem>(FSoftObjectPath(FString::Printf(TEXT("/Niagara/DefaultAssets/Templates/Systems/%s.%s"), Name, Name)));
 	};
-	const TSoftObjectPtr<UNiagaraSystem> Burst = Template(TEXT("RadialBurst"));
-	const TSoftObjectPtr<UNiagaraSystem> Directional = Template(TEXT("DirectionalBurst"));
-	const TSoftObjectPtr<UNiagaraSystem> Fountain = Template(TEXT("FountainLightweight"));
+	// 91: 템플릿의 움직임에 Kenney Particle Pack의 그림을 입힌 복사본이다(타격 spark, 스킬·부활 star, 발사체 magic).
+	FModuleManager::Get().LoadModuleChecked(TEXT("NiagaraEditor"));
+	const auto Particle = [&](const TCHAR* System, const TCHAR* Source, const TCHAR* Sprite)
+	{
+		UTexture2D* Texture = ImportParticle(Sprite);
+		UMaterial* Material = Texture ? CreateParticleMaterial(*FString::Printf(TEXT("M_Particle_%s"), Sprite), Texture) : nullptr;
+		return TSoftObjectPtr<UNiagaraSystem>(CreateParticleSystem(System, Source, Material));
+	};
+	const TSoftObjectPtr<UNiagaraSystem> Burst = Particle(TEXT("NS_Hit"), TEXT("RadialBurst"), TEXT("spark_01"));
+	const TSoftObjectPtr<UNiagaraSystem> Directional = Particle(TEXT("NS_Skill"), TEXT("DirectionalBurst"), TEXT("star_01"));
+	const TSoftObjectPtr<UNiagaraSystem> Fountain = Particle(TEXT("NS_Projectile"), TEXT("FountainLightweight"), TEXT("magic_01"));
 	for (const TSoftObjectPtr<UNiagaraSystem>& System : { Burst, Directional, Fountain })
 	{
 		if (!System.LoadSynchronous())
