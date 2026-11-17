@@ -870,6 +870,29 @@ void UMmoEntitySubsystem::ShowEntity(uint32 Id, AActor& Actor, const portfolio::
 
 	const auto [Mesh, Placeholder] = ComponentsOf(Actor);
 	const FMmoEntityVisual* Row = Visuals->Find(Info.kind(), KeyOf(Info));
+	// 움직이지 않는 개체(채집물, 바닥 아이템)는 스태틱 메시 하나다. 불러오는 동안은 종류의 자리 표시다.
+	if (Row && !Row->Prop.IsNull())
+	{
+		if (UStaticMesh* Prop = Row->Prop.Get())
+		{
+			MmoCharacterLook::ApplyProp(*Mesh, *Placeholder, Prop, Row->Scale);
+			return;
+		}
+		const FMmoPlaceholder* Look = Visuals->PlaceholderOf(Info.kind());
+		MmoCharacterLook::ShowPlaceholder(*Mesh, *Placeholder, Look ? Look->Mesh.Get() : nullptr, Visuals->PlaceholderMaterial, Look ? Look->Color : FLinearColor::White,
+			Look ? Look->Scale : FVector(0.6, 0.6, 1.8));
+		const TWeakObjectPtr<AActor> Requested(&Actor);
+		Streamable.RequestAsyncLoad(Row->Prop.ToSoftObjectPath(), FStreamableDelegate::CreateWeakLambda(this, [this, Id, Requested, Row]()
+		{
+			AActor* Current = Actors.FindRef(Id);
+			if (Requested.IsValid() && Current == Requested.Get() && Row->Prop.Get())
+			{
+				const auto [LoadedMesh, LoadedPlaceholder] = ComponentsOf(*Current);
+				MmoCharacterLook::ApplyProp(*LoadedMesh, *LoadedPlaceholder, Row->Prop.Get(), Row->Scale);
+			}
+		}));
+		return;
+	}
 	// 피격 동작이 없는 모델도 있다(슬라임, 해골. 91).
 	if (Row && Row->Mesh.Get() && Row->Animation.Get() && Row->Attack.Get() && (Row->Hit.IsNull() || Row->Hit.Get()) && Row->Death.Get())
 	{

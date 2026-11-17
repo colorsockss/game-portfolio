@@ -357,6 +357,30 @@ namespace
 				Row.Scale = Scale;
 			}
 		}
+		// 움직이지 않는 개체(91): 채집물의 키는 GatherNodes의 id, 바닥 아이템은 아이템마다가 아니라 기본 줄(키 0) 하나다.
+		// 메시는 Scripts/import_props.py가 크기와 원점을 맞춰 /Game/Props/에 가져온 것이다.
+		const struct { int32 Kind; int32 Key; const TCHAR* Name; } Props[] = {
+			{ UMmoEntityVisuals::GatherNodeKind(), 1, TEXT("gather_pine") },
+			{ UMmoEntityVisuals::GatherNodeKind(), 2, TEXT("gather_copper") },
+			{ UMmoEntityVisuals::GatherNodeKind(), 3, TEXT("gather_mugwort") },
+			{ UMmoEntityVisuals::GatherNodeKind(), 4, TEXT("gather_oak") },
+			{ UMmoEntityVisuals::GatherNodeKind(), 5, TEXT("gather_iron") },
+			{ UMmoEntityVisuals::GatherNodeKind(), 6, TEXT("gather_ginseng") },
+			{ UMmoEntityVisuals::GroundItemKind(), 0, TEXT("ground_item") },
+		};
+		for (const auto& Prop : Props)
+		{
+			UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("/Game/Props/%s.%s"), Prop.Name, Prop.Name));
+			if (!Mesh)
+			{
+				UE_LOG(LogMmoCreateCharacterAssets, Error, TEXT("/Game/Props/%s is missing. Run Scripts/import_props.py first."), Prop.Name);
+				return false;
+			}
+			FMmoEntityVisual& Row = Visuals->Rows.AddDefaulted_GetRef();
+			Row.Kind = Prop.Kind;
+			Row.Key = Prop.Key;
+			Row.Prop = Mesh;
+		}
 		return Save(Package, Visuals, Filename);
 	}
 }

@@ -35,6 +35,9 @@ namespace MmoCharacterLook
 	/** 불러온 메시와 애니메이션 블루프린트를 표현 표의 크기(Scale)로 입히고 자리 표시를 감춘다. */
 	void Apply(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, USkeletalMesh* SkeletalMesh, TSubclassOf<UMmoAnimInstance> Animation, float Scale);
 
+	/** 움직이지 않는 개체의 스태틱 메시(표현 표의 Prop)를 자리 표시 컴포넌트에 원본의 머티리얼로 바닥에 놓고 스켈레탈 메시를 감춘다. */
+	void ApplyProp(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* Prop, float Scale);
+
 	/** 속도(언리얼 단위/초)로 대기와 달리기를 섞는다. 0이 대기, 600(6 m/s)이 달리기다. */
 	void SetSpeed(USkeletalMeshComponent& Mesh, double Speed);
 

@@ -15,6 +15,8 @@ CHARACTER = "/Game/Characters/M_Character"
 # 텍스처 없이 머티리얼 색만 쓰는 팩(91)의 기본 머티리얼. FBX를 가져올 때 원본의 머티리얼마다 인스턴스를 만들어 Color에 원본의 색을 넣는다.
 ENTITY_COLOR = "/Game/Characters/M_EntityColor"
 ENTITY_PLACEHOLDER = "/Game/Materials/M_EntityPlaceholder"
+# 움직이지 않는 개체(채집물, 바닥 아이템)의 스태틱 메시. 색은 M_EntityColor처럼 원본의 색이고, 자리 표시와 같은 컴포넌트에 그려 사라진 정도는 3번 칸이다.
+ENTITY_PROP = "/Game/Materials/M_EntityProp"
 # 사라진 정도를 읽는 커스텀 프리미티브 데이터의 칸. 자리 표시는 0–2가 색이라 3이다(UMmoEntitySubsystem과 같은 수).
 CHARACTER_FADE_INDEX = 0
 PLACEHOLDER_FADE_INDEX = 3
@@ -102,6 +104,15 @@ materials.connect_material_property(constant(entity_color, 0.8, -300, 250), "", 
 fade(entity_color, CHARACTER_FADE_INDEX)
 save(entity_color)
 
+entity_prop = fresh(ENTITY_PROP)
+prop_color = materials.create_material_expression(entity_prop, unreal.MaterialExpressionVectorParameter, -300, 0)
+prop_color.set_editor_property("parameter_name", "Color")
+prop_color.set_editor_property("default_value", unreal.LinearColor(0.5, 0.5, 0.5, 1.0))
+materials.connect_material_property(prop_color, "", unreal.MaterialProperty.MP_BASE_COLOR)
+materials.connect_material_property(constant(entity_prop, 0.85, -300, 250), "", unreal.MaterialProperty.MP_ROUGHNESS)
+fade(entity_prop, PLACEHOLDER_FADE_INDEX)
+save(entity_prop)
+
 # 개체의 자리 표시와 손의 무기·펫: 색은 커스텀 프리미티브 데이터 0–2(맵의 M_Placeholder와 같음), 사라진 정도는 3.
 # 맵의 자리 표시는 불투명한 M_Placeholder로 두어(마스크는 그리기가 더 비쌈) 나누었다.
 placeholder = fresh(ENTITY_PLACEHOLDER)
@@ -114,4 +125,4 @@ materials.connect_material_property(color, "", unreal.MaterialProperty.MP_BASE_C
 materials.connect_material_property(constant(placeholder, 0.85, -300, 250), "", unreal.MaterialProperty.MP_ROUGHNESS)
 fade(placeholder, PLACEHOLDER_FADE_INDEX)
 save(placeholder)
-unreal.log(f"[materials] {CHARACTER}, {ENTITY_COLOR} and {ENTITY_PLACEHOLDER} are masked with the fade in custom primitive data {CHARACTER_FADE_INDEX} and {PLACEHOLDER_FADE_INDEX}")
+unreal.log(f"[materials] {CHARACTER}, {ENTITY_COLOR}, {ENTITY_PLACEHOLDER} and {ENTITY_PROP} are masked with the fade in custom primitive data {CHARACTER_FADE_INDEX} and {PLACEHOLDER_FADE_INDEX}")

@@ -11,10 +11,10 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | 캐릭터 메시 | 2(기사, 마법사) | 있음(아래 "캐릭터") | - |
 | 몬스터 메시 | 9종과 필드 보스 1 | 있음(아래 "몬스터·소환수·NPC". 2026-11-17) | - |
 | NPC 메시 | 5종(상점, 창고, 제작, 퀘스트, 경비병) | 있음(아래 "몬스터·소환수·NPC") | - |
-| 채집물 메시 | 6종(나무·광석·약초 × 2단계) | 아직 없음(47). 넣으면 갈색 원뿔 | 정하지 않음 |
+| 채집물 메시 | 6종(나무·광석·약초 × 2단계) | 있음(아래 "맵의 것과 움직이지 않는 개체") | - |
 | 무기 메시 | 2(검, 지팡이) | 캐릭터 메시에 붙어 있음 | 입은 무기를 바꿔 보이는 것은 34가 정함 |
-| 바닥 아이템 메시 | 1 | 자리 표시: 노란 작은 상자(33) | 정하지 않음 |
-| 환경 메시 | 아래 "맵의 것"의 9종 | 엔진 기본 도형의 자리 표시 | 아래 "맵의 것" |
+| 바닥 아이템 메시 | 1 | 있음(가방) | - |
+| 환경 메시 | 9종 | 있음(아래 "맵의 것과 움직이지 않는 개체") | - |
 | 캐릭터 애니메이션 | 대기, 달리기, 공격, 피격, 죽음, 시전 | 있음(캐릭터 팩) | - |
 | 채집·제작·귀환 동작 | 3 | 아직 없음(47, 48, 32) | 캐릭터 팩의 `PickUp`(채집)이 후보 |
 | 몬스터 애니메이션 | 종마다 대기, 걷기, 공격, 피격, 죽음 | 있음(슬라임과 해골은 피격 동작이 없음) | - |
@@ -37,7 +37,8 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 | 에셋 | 만드는 것 |
 |---|---|
 | `Maps/Field`, `Materials/M_Ground`, `M_Sky`, `M_Placeholder` | `Scripts/create_content.py`(땅, 해, 하늘, 안개, 머티리얼)와 에디터 모듈의 `MmoBuildMap`(맵에 놓인 것의 자리 표시) |
-| `Characters/M_Character`, `Characters/M_EntityColor` | `Scripts/create_entity_materials.py`(가져온 텍스처나 원본의 색을 받는 머티리얼) |
+| `Characters/M_Character`, `Characters/M_EntityColor`, `Materials/M_EntityProp` | `Scripts/create_entity_materials.py`(가져온 텍스처나 원본의 색을 받는 머티리얼) |
+| `Environment/`, `Props/` 전부 | `Scripts/import_props.py`(`mmo/art/`의 원본에서) |
 | `Characters/<직업>/MI_*` | `Scripts/import_characters.py` |
 | `Creatures/<이름>/` 전부(메시, 스켈레톤, 애니메이션, 머티리얼 인스턴스) | `Scripts/import_creatures.py`(아래 "몬스터·소환수·NPC"의 원본에서) |
 | `Characters/<직업>/ABP_*`, `BS_*_Locomotion`, `Creatures/<이름>/ABP_*`, `BS_*_Locomotion`, `Characters/DA_EntityVisuals` | 에디터 모듈의 `MmoCreateCharacterAssets` |
@@ -85,16 +86,30 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 원본 파일은 저�
 - 함께 받았지만 쓰지 않은 것: Animal Pack Vol.2(OpenGameArt `Animal Pack Vol.2 by @Quaternius.zip`, 2.0 MB, CC0. 고양이·독수리·늑대가 대기와 걷기뿐).
 - 버린 후보: Quaternius의 Bestiary·Fantasy Races는 CC0가 아니라 자체 라이선스(QAL)이고, OpenGameArt의 "496 pixel art icons"는 CC0로 적혀 있지만 CC-BY 3.0인 그림이 섞여 있습니다(91의 조사, 2026-11-17).
 
-## 맵의 것
+## 맵의 것과 움직이지 않는 개체
 
-| 종류(메시의 키) | 지금 | 진짜 메시 |
+2026-11-17(backlog 91의 셋째 단계). 원본 FBX는 두 엔진이 함께 읽도록 저장소의 `mmo/art/`에 메시의 키 이름으로 둡니다(LFS). `Scripts/import_props.py`가 종류마다 키나 너비를 맞추고 원점을 바닥의 가운데로 옮겨, 맵의 것은 `/Game/Environment/<메시의 키>`(원본의 불투명한 머티리얼), 채집물과 바닥 아이템은 `/Game/Props/<이름>`(`M_EntityProp`의 인스턴스. 서서히 나타나고 사라짐)으로 가져옵니다. 그 뒤 `MmoBuildMap`이 맵 액터에 진짜 메시를 입히고 `MmoCreateCharacterAssets`가 표현 표에 채집물과 바닥 아이템의 줄을 둡니다.
+
+| 원본(`mmo/art/`) | 무엇 | 원본 모델(팩) | 크기 |
+|---|---|---|---|
+| `environment/house_small.fbx` | 작은 집 | `House_1`(Medieval Village Pack) | 너비 6 m |
+| `environment/house_large.fbx` | 큰 집 | `Inn`(Medieval Village Pack) | 너비 10 m(90° 돌림) |
+| `environment/fence.fbx` | 울타리 | `Fence`(Medieval Village Pack) | 너비 4 m(90° 돌림) |
+| `environment/tree.fbx` | 나무 | `CommonTree_1`(Ultimate Nature Pack) | 키 6 m |
+| `environment/mountain.fbx` | 테두리의 산 | `Rock_Moss_7`(Ultimate Nature Pack) | 너비 10 m. 산 모델이 없어 큰 바위 |
+| `environment/grass.fbx`, `flower.fbx` | 풀, 꽃 | `Grass`, `Flowers`(Ultimate Nature Pack) | 키 0.6 m |
+| `environment/rock.fbx`, `rock_large.fbx` | 바위, 큰 바위 | `Rock_1`, `Rock_Moss_3`(Ultimate Nature Pack) | 키 1.4 m, 너비 4 m |
+| `entities/gather_pine.fbx`, `gather_oak.fbx` | 채집물 소나무, 참나무 | `PineTree_1`, `CommonTree_3`(Ultimate Nature Pack) | 키 6, 5.5 m |
+| `entities/gather_copper.fbx`, `gather_iron.fbx` | 채집물 구리, 철 광석 | `Rock_2`, `Rock_5`(Ultimate Nature Pack) | 너비 1.6 m. 광석 모델이 없어 바위에 구리색·회색 색조 |
+| `entities/gather_mugwort.fbx`, `gather_ginseng.fbx` | 채집물 쑥, 인삼 | `Plant_2`, `BushBerries_1`(Ultimate Nature Pack) | 키 0.8 m, 너비 0.9 m. 약초 모델이 없어 풀과 열매 덤불 |
+| `entities/ground_item.fbx` | 바닥 아이템(모두 같음) | `Bag`(Medieval Village Pack) | 너비 0.6 m |
+
+| 팩 | 받는 곳 | 라이선스 |
 |---|---|---|
-| 작은 집(`house_small`), 큰 집(`house_large`), 울타리(`fence`) | 엔진 기본 상자에 색을 입힌 자리 표시 | 없음 |
-| 나무(`tree`), 테두리의 산(`mountain`), 풀(`grass`) | 엔진 기본 원뿔 | 없음 |
-| 바위(`rock`), 큰 바위(`rock_large`), 꽃(`flower`) | 엔진 기본 구 | 없음 |
+| Ultimate Nature Pack | [OpenGameArt: Low Poly Nature Pack](https://opengameart.org/content/low-poly-nature-pack-1) (`ultimate_nature_pack_by_quaternius_1.zip`, 21.9 MB) | CC0 1.0(팩의 License.txt) |
+| Medieval Village Pack | [OpenGameArt: LowPoly Medieval Village Pack](https://opengameart.org/content/lowpoly-medieval-village-pack) (`medieval_village_pack_-_dec_2020.zip`, 8.0 MB) | CC0 1.0(팩의 License.txt) |
 
-- 자리 표시는 에디터 모듈의 `MmoBuildMap`이 맵 액터마다 엔진 기본 도형(`/Engine/BasicShapes/`)을 차지하는 칸에 맞춰 키우고 종류의 색을 입힌 것입니다(2026-11-13, backlog 87에서 자리 표시로 먼저 하기로 정함).
-- 진짜 메시는 `/Game/Environment/<메시의 키>`라는 이름의 스태틱 메시로 들이면 다음 `MmoBuildMap`부터 그것을 씁니다. 원본(FBX나 glTF)은 두 엔진이 함께 읽는 `mmo/art/`에 두고 캐릭터처럼 가져오는 스크립트를 둡니다. 후보는 캐릭터와 화풍이 같은 Quaternius의 CC0 팩(Ultimate Nature Pack: 나무·바위·풀·꽃, itch.io에서 받음, 약 21 MB. 집·울타리가 든 마을 팩)이고, 넣을 때 받는 곳과 라이선스를 이 표에 적습니다.
+- 진짜 메시가 없는 종류는 `MmoBuildMap`이 맵 액터마다 엔진 기본 도형(`/Engine/BasicShapes/`)을 차지하는 칸에 맞춰 키우고 종류의 색을 입힙니다(2026-11-13, backlog 87). 지금은 아홉 종류 모두 진짜 메시입니다.
 
 ## 이펙트와 소리
 

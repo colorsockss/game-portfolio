@@ -59,6 +59,13 @@ struct FMmoEntityVisual
 	/** 메시의 크기 배수. 팩마다 단위와 키가 달라, 커맨드렛이 원하는 키(m)를 바인드 포즈의 높이로 나눠 정한다(91). */
 	UPROPERTY(EditAnywhere)
 	float Scale = 1.0f;
+
+	/**
+	 * 움직이지 않는 개체(채집물, 바닥 아이템)의 스태틱 메시(91). 있으면 Mesh와 동작 대신 이것을 자리 표시 컴포넌트에 원본의 머티리얼로 그린다.
+	 * 크기와 원점(바닥의 가운데)은 가져올 때 맞췄다(Scripts/import_props.py).
+	 */
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UStaticMesh> Prop;
 };
 
 /** 표에 줄이 없는 개체(와 불러오는 동안)의 자리 표시 하나: 개체 종류 → 도형과 색. */
@@ -117,7 +124,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<FMmoEntityVisual> Rows;
 
-	/** (종류, 키)의 줄. 없으면 nullptr. */
+	/** (종류, 키)의 줄. 없으면 그 종류의 기본 줄(키 0. 바닥 아이템은 아이템마다가 아니라 하나), 그것도 없으면 nullptr. */
 	const FMmoEntityVisual* Find(int32 Kind, int32 Key) const;
 
 	/** 종류의 자리 표시. 없으면 첫 줄, 표가 비었으면 nullptr. */

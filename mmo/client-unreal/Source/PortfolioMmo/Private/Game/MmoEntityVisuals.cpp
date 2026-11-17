@@ -4,7 +4,8 @@
 
 const FMmoEntityVisual* UMmoEntityVisuals::Find(int32 Kind, int32 Key) const
 {
-	return Rows.FindByPredicate([Kind, Key](const FMmoEntityVisual& Row) { return Row.Kind == Kind && Row.Key == Key; });
+	const FMmoEntityVisual* Found = Rows.FindByPredicate([Kind, Key](const FMmoEntityVisual& Row) { return Row.Kind == Kind && Row.Key == Key; });
+	return Found ? Found : Rows.FindByPredicate([Kind](const FMmoEntityVisual& Row) { return Row.Kind == Kind && Row.Key == 0; });
 }
 
 const FMmoPlaceholder* UMmoEntityVisuals::PlaceholderOf(int32 Kind) const

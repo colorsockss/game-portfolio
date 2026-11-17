@@ -85,6 +85,17 @@ namespace MmoCharacterLook
 		Placeholder.SetVisibility(false);
 	}
 
+	void ApplyProp(USkeletalMeshComponent& Mesh, UStaticMeshComponent& Placeholder, UStaticMesh* Prop, float Scale)
+	{
+		Mesh.SetVisibility(false);
+		Placeholder.SetStaticMesh(Prop);
+		// 자리 표시의 머티리얼을 걷어 내 원본의 머티리얼(M_EntityProp의 인스턴스)로 그린다. 원점이 바닥의 가운데다.
+		Placeholder.EmptyOverrideMaterials();
+		Placeholder.SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+		Placeholder.SetRelativeScale3D(FVector(Scale));
+		Placeholder.SetVisibility(true);
+	}
+
 	void SetSpeed(USkeletalMeshComponent& Mesh, double Speed)
 	{
 		if (UMmoAnimInstance* Instance = Cast<UMmoAnimInstance>(Mesh.GetAnimInstance()))
