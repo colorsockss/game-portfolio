@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 namespace PortfolioMmo.Server
 {
     /// <summary>
+    /// 저장 스레드의 10초 통계(57): 끝난 일의 수와 든 시간(합, 가장 긴 것), 큐의 가장 긴 길이(넣을 때 센 남은 일), 체크포인트의 수와 시간과 옮긴 쪽 수.
+    /// </summary>
+    internal readonly record struct SaveStats(int Jobs, TimeSpan Total, TimeSpan Max, int MaxPending, int Checkpoints, TimeSpan CheckpointTotal, TimeSpan CheckpointMax, long CheckpointPages);
+
+    /// <summary>
     /// 저장 스레드의 일 하나(38). Run은 저장 스레드에서 데이터베이스를 읽고 쓰고, Complete는 틱 스레드의 입력 차례에서 그 결과를 월드에 반영한다(쓰기는 할 일이 없음).
     /// </summary>
     internal abstract class StoreJob
@@ -36,6 +41,7 @@ namespace PortfolioMmo.Server
     /// <summary>
     /// 틱이 넣은 일을 들어온 순서대로 하나씩 하는 저장 스레드(38). 틱은 넣기만 하고 디스크를 기다리지 않는다. 일이 있을 때만 스레드 풀의 스레드 하나가
     /// 돌며 큐를 비우므로 한 번에 하나씩, 넣은 차례대로 돈다. 끝난 일은 완료 큐에 쌓였다가 틱의 입력 차례(CompleteFinished)에서 Complete가 불린다.
+    /// 쓰기 묶음을 쓴 뒤에는 같은 스레드가 WAL 체크포인트를 따로 돌린다(57. 연결이 하나라 체크포인트가 틱 스레드에서 도는 일이 없음).
     /// </summary>
     internal sealed class SaveQueue
     {
@@ -47,9 +53,7 @@ namespace PortfolioMmo.Server
         private int _pendingWrites;
         private volatile bool _writeFailed;
         private readonly object _statsLock = new object();
-        private int _statsJobs;
-        private TimeSpan _statsTotal;
-        private TimeSpan _statsMax;
+        private SaveStats _stats;
 
         public SaveQueue(CharacterStore store)
         {
@@ -77,21 +81,26 @@ namespace PortfolioMmo.Server
         public bool WriteFailed => _writeFailed;
 
         /// <summary>
-        /// 지난번에 꺼낸 뒤로 끝난 일의 수, 든 시간의 합과 가장 긴 것(10초 통계 줄. 측정용).
+        /// 지난번에 꺼낸 뒤의 통계(10초 통계 줄. 측정용). 큐의 가장 긴 길이는 지금 남은 일부터 다시 센다.
         /// </summary>
-        public (int Jobs, TimeSpan Total, TimeSpan Max) TakeStats()
+        public SaveStats TakeStats()
         {
             lock (_statsLock)
             {
-                (int, TimeSpan, TimeSpan) stats = (_statsJobs, _statsTotal, _statsMax);
-                (_statsJobs, _statsTotal, _statsMax) = (0, TimeSpan.Zero, TimeSpan.Zero);
+                SaveStats stats = _stats;
+                _stats = new SaveStats { MaxPending = Pending };
                 return stats;
             }
         }
 
         public void Enqueue(StoreJob job)
         {
-            Interlocked.Increment(ref _pending);
+            int pending = Interlocked.Increment(ref _pending);
+            lock (_statsLock)
+            {
+                _stats = _stats with { MaxPending = Math.Max(_stats.MaxPending, pending) };
+            }
+
             if (job.IsWrite)
             {
                 Interlocked.Increment(ref _pendingWrites);
@@ -157,6 +166,39 @@ namespace PortfolioMmo.Server
             Interlocked.Decrement(ref _pending);
         }
 
+        /// <summary>
+        /// 쓰기 묶음 뒤의 WAL 체크포인트. 실패해도 커밋한 것은 WAL에 남아 있으므로 로그만 남기고 이어 간다(다음 묶음 뒤에 다시 함).
+        /// </summary>
+        private void Checkpoint()
+        {
+            long started = Stopwatch.GetTimestamp();
+            int pages;
+            try
+            {
+                lock (_store)
+                {
+                    pages = _store.Checkpoint();
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine($"A WAL checkpoint failed: {exception}");
+                return;
+            }
+
+            TimeSpan elapsed = Stopwatch.GetElapsedTime(started);
+            lock (_statsLock)
+            {
+                _stats = _stats with
+                {
+                    Checkpoints = _stats.Checkpoints + 1,
+                    CheckpointTotal = _stats.CheckpointTotal + elapsed,
+                    CheckpointMax = elapsed > _stats.CheckpointMax ? elapsed : _stats.CheckpointMax,
+                    CheckpointPages = _stats.CheckpointPages + pages,
+                };
+            }
+        }
+
         private void Pump()
         {
             while (true)
@@ -192,15 +234,18 @@ namespace PortfolioMmo.Server
                     TimeSpan elapsed = Stopwatch.GetElapsedTime(started);
                     lock (_statsLock)
                     {
-                        _statsJobs++;
-                        _statsTotal += elapsed;
-                        _statsMax = elapsed > _statsMax ? elapsed : _statsMax;
+                        _stats = _stats with { Jobs = _stats.Jobs + 1, Total = _stats.Total + elapsed, Max = elapsed > _stats.Max ? elapsed : _stats.Max };
                     }
 
                     if ((job.Failure != null) && job.IsWrite)
                     {
                         Console.Error.WriteLine($"Writing a save batch failed; later jobs are dropped: {job.Failure}");
                         _writeFailed = true;
+                    }
+                    else if (job.IsWrite)
+                    {
+                        // 남은 일로 세는 동안(Done 전에) 해서, 큐가 비기를 기다리는 쪽(내려가기, 시험)이 체크포인트까지 기다린다.
+                        Checkpoint();
                     }
 
                     _finished.Enqueue(job);

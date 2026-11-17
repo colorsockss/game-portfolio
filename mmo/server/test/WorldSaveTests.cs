@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using PortfolioMmo.Contract;
 using PortfolioMmo.Server;
@@ -223,6 +224,44 @@ namespace PortfolioMmo.Server.Tests
         /// <summary>
         /// 저장 스레드의 쓰기와 읽기를 일부러 늦춰도 틱은 기다리지 않는다.
         /// </summary>
+        /// <summary>
+        /// 쓰기 묶음마다 저장 스레드가 WAL 체크포인트를 따로 돌리고, 큐가 비기를 기다리면 체크포인트까지 끝나 있다(57). 큐의 가장 긴 길이도 센다.
+        /// </summary>
+        [Fact]
+        public void WriteBatchesAreCheckpointedOnTheSaveThread()
+        {
+            string path = Path.Combine(Path.GetTempPath(), $"mmo-save-{Guid.NewGuid():N}.sqlite");
+            try
+            {
+                using (var store = new CharacterStore(path))
+                {
+                    World world = NewWorld(store: store);
+                    Session first = Join(world, "hero_01");
+                    Session second = Join(world, "hero_02");
+                    Assert.True(world.Saves.WaitIdle(TimeSpan.FromSeconds(5)));
+                    world.Saves.TakeStats();
+
+                    world.Saves.Delay = TimeSpan.FromMilliseconds(30);
+                    world.Receive(first, new Packet { LeaveWorld = new LeaveWorld() });
+                    world.Receive(second, new Packet { LeaveWorld = new LeaveWorld() });
+                    world.Step();
+                    Assert.True(world.Saves.WaitIdle(TimeSpan.FromSeconds(5)));
+                    SaveStats stats = world.Saves.TakeStats();
+                    Assert.Equal(2, stats.Checkpoints);
+                    Assert.True(stats.CheckpointPages > 0);
+                    Assert.True(stats.MaxPending >= 2, $"queue max {stats.MaxPending}");
+                    world.Saves.Delay = TimeSpan.Zero;
+                }
+            }
+            finally
+            {
+                foreach (string suffix in new[] { string.Empty, "-wal", "-shm" })
+                {
+                    File.Delete(path + suffix);
+                }
+            }
+        }
+
         [Fact]
         public void ASlowSaveThreadDoesNotSlowTheTick()
         {

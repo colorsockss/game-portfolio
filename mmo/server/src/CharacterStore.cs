@@ -130,6 +130,7 @@ namespace PortfolioMmo.Server
         private readonly SqliteCommand _insertItem;
         private readonly SqliteCommand _insertSkill;
         private readonly SqliteCommand _insertQuickslot;
+        private readonly SqliteCommand _checkpoint;
 
         /// <summary>
         /// path의 SQLite 파일을 연다(":memory:"는 이 객체가 사는 동안만 남는다). 버전이 다른 파일은 옆에 이름을 바꿔 두고 새로 만든다.
@@ -205,6 +206,7 @@ namespace PortfolioMmo.Server
             _insertQuickslot = Command(
                 "INSERT INTO quickslots (owner, slot, kind, id) VALUES ($id, $slot, $kind, $value)",
                 ("$id", SqliteType.Integer), ("$slot", SqliteType.Integer), ("$kind", SqliteType.Integer), ("$value", SqliteType.Integer));
+            _checkpoint = Command("PRAGMA wal_checkpoint(PASSIVE)");
         }
 
         /// <summary>
@@ -358,6 +360,17 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
+        /// WAL의 커밋된 쪽을 데이터베이스 파일로 옮기고(PASSIVE: 다른 연결을 기다리지 않음. 연결은 이것 하나) 옮긴 쪽 수를 낸다(57).
+        /// 자동 체크포인트는 꺼 두었으므로 SaveQueue가 쓰기 묶음마다 따로 부른다. 메모리 데이터베이스는 WAL이 없어 0이다.
+        /// </summary>
+        public int Checkpoint()
+        {
+            using SqliteDataReader reader = _checkpoint.ExecuteReader();
+            reader.Read();
+            return Math.Max(0, reader.GetInt32(2));
+        }
+
+        /// <summary>
         /// 문장과 연결을 닫는다. 저장 스레드(SaveQueue)가 일 하나를 하는 동안은 그 일이 끝나기를 기다린다(같은 잠금). 닫은 뒤의 일은 실패로 끝난다.
         /// </summary>
         public void Dispose()
@@ -373,7 +386,7 @@ namespace PortfolioMmo.Server
             foreach (SqliteCommand command in new[]
             {
                 _list, _load, _loadItems, _loadSkills, _loadQuickslots, _loadQuest, _saveQuest, _count, _insert, _update, _deleteItems, _deleteSkills, _deleteQuickslots, _insertItem, _insertSkill,
-                _insertQuickslot,
+                _insertQuickslot, _checkpoint,
             })
             {
                 command.Dispose();
@@ -388,8 +401,9 @@ namespace PortfolioMmo.Server
             var connection = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = path, Pooling = false }.ToString());
             connection.Open();
             // 저장 스레드가 커밋마다 fsync를 기다리지 않게 NORMAL이다. 전원이 나가면 마지막 커밋을 잃을 수 있지만 파일은 깨지지 않는다.
+            // 자동 체크포인트(커밋 안에서 1,000쪽마다)는 끄고 SaveQueue가 쓰기 묶음 뒤에 따로 돌려, 묶음의 시간과 체크포인트의 시간을 나눠 잰다(57).
             using SqliteCommand command = connection.CreateCommand();
-            command.CommandText = "PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL;";
+            command.CommandText = "PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL; PRAGMA wal_autocheckpoint = 0;";
             command.ExecuteNonQuery();
             return connection;
         }

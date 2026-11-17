@@ -157,6 +157,38 @@ namespace PortfolioMmo.Server.Tests
                 new uint[] { 101 }, new[] { new SavedQuickslot(0, QuickslotKind.Skill, 101), new SavedQuickslot(1, QuickslotKind.Item, 2001) });
         }
 
+        /// <summary>
+        /// 자동 체크포인트는 꺼져 있고(쓴 쪽이 WAL에 남음), Checkpoint가 커밋된 쪽을 데이터베이스 파일로 옮겨 그 수를 낸다(57). 메모리 데이터베이스는 0이다.
+        /// </summary>
+        [Fact]
+        public void CheckpointsMoveCommittedPagesIntoTheDatabase()
+        {
+            string path = TempPath();
+            try
+            {
+                using (var store = new CharacterStore(path))
+                {
+                    long knight = store.Create("hero_01", "Arthur", CharacterClass.Knight, Start()).Id;
+                    for (int i = 0; i < 300; i++)
+                    {
+                        store.Write(new[] { Snapshot(knight, level: (uint)i + 1) });
+                    }
+
+                    Assert.True(new FileInfo(path + "-wal").Length > 1000 * 4096, "the WAL kept every page without automatic checkpoints");
+                    int pages = store.Checkpoint();
+                    Assert.True(pages > 1000, $"checkpointed {pages} pages");
+                    Assert.Equal(300u, store.Load(knight)!.State.Level);
+                }
+
+                using var memory = new CharacterStore(":memory:");
+                Assert.Equal(0, memory.Checkpoint());
+            }
+            finally
+            {
+                Delete(path);
+            }
+        }
+
         private static CharacterSnapshot Snapshot(long id, uint level)
         {
             return Start() with { Id = id, Position = new SavedPosition(10, -11, 255), Level = level, Exp = 40, Hp = 90, Mp = 20, Gold = 1234 };

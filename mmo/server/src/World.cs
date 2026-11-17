@@ -799,12 +799,14 @@ namespace PortfolioMmo.Server
         }
 
         /// <summary>
-        /// 10초 통계의 저장 스레드 줄: 끝난 일의 수, 평균과 가장 긴 시간, 남은 일.
+        /// 10초 통계의 저장 스레드 줄: 끝난 일의 수, 평균과 가장 긴 시간, 큐의 가장 긴 길이, 체크포인트(57)의 수와 평균·가장 긴 시간과 옮긴 쪽 수, 남은 일.
         /// </summary>
         public string SaveReport()
         {
-            (int jobs, TimeSpan total, TimeSpan max) = _queue.TakeStats();
-            return $"save: {jobs} jobs, avg {(jobs == 0 ? 0 : total.TotalMilliseconds / jobs):F2} ms max {max.TotalMilliseconds:F2} ms, pending {_queue.Pending}";
+            SaveStats stats = _queue.TakeStats();
+            return $"save: {stats.Jobs} jobs, avg {(stats.Jobs == 0 ? 0 : stats.Total.TotalMilliseconds / stats.Jobs):F2} ms max {stats.Max.TotalMilliseconds:F2} ms, "
+                + $"queue max {stats.MaxPending}, checkpoint {stats.Checkpoints} avg {(stats.Checkpoints == 0 ? 0 : stats.CheckpointTotal.TotalMilliseconds / stats.Checkpoints):F2} ms "
+                + $"max {stats.CheckpointMax.TotalMilliseconds:F2} ms {stats.CheckpointPages} pages, pending {_queue.Pending}";
         }
 
         /// <summary>
