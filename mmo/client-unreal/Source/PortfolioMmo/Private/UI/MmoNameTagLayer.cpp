@@ -29,6 +29,14 @@ namespace
 	constexpr float NumberRise = 60.0f;
 	/** 말풍선이 떠 있는 시간(초. 41). */
 	constexpr double BubbleSeconds = 5.0;
+	/** 이 층의 화면 밖으로 이만큼(위젯 단위) 넘은 자리의 이름표와 피해 숫자는 그리지 않고 풀로 돌린다(60). 이름표의 너비와 높이를 덮는다. */
+	constexpr double OffscreenMargin = 150.0;
+
+	/** 층의 크기(Size) 밖으로 여유보다 더 나간 자리인가. 투영은 카메라 앞이면 화면 밖이어도 성공한다. */
+	bool Offscreen(const FVector2D& Position, const FVector2D& Size)
+	{
+		return Position.X < -OffscreenMargin || Position.Y < -OffscreenMargin || Position.X > Size.X + OffscreenMargin || Position.Y > Size.Y + OffscreenMargin;
+	}
 
 	/** 선공 몬스터의 이름 색, 내가 받은 피해의 색, 치명타의 색. */
 	const FLinearColor AggressiveColor(1.0f, 0.45f, 0.3f);
@@ -113,7 +121,8 @@ void UMmoNameTagLayer::UpdateNumbers(float DeltaTime)
 		const AActor* Actor = Actors ? Actors->FindActor(Number.Target) : nullptr;
 		FVector2D Position;
 		if (Number.Age >= NumberLife || !Actor || !Controller
-			|| !UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(Controller, Actor->GetActorLocation() + FVector(0.0, 0.0, TagHeight), Position, false))
+			|| !UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(Controller, Actor->GetActorLocation() + FVector(0.0, 0.0, TagHeight), Position, false)
+			|| Offscreen(Position, GetCachedGeometry().GetLocalSize()))
 		{
 			Number.Text->SetVisibility(ESlateVisibility::Collapsed);
 			NumberPool.Add(Number.Text);
@@ -187,7 +196,7 @@ void UMmoNameTagLayer::NativeTick(const FGeometry& Geometry, float DeltaTime)
 		FVector2D Position;
 		// 바닥 아이템의 이름은 바닥 가까이에 둔다(33).
 		const double Height = Entity.Info.kind() == portfolio::mmo::ENTITY_KIND_GROUND_ITEM ? GroundTagHeight : TagHeight;
-		if (!UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(Controller, FVector(Location.X, Location.Y, Height), Position, false))
+		if (!UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(Controller, FVector(Location.X, Location.Y, Height), Position, false) || Offscreen(Position, Geometry.GetLocalSize()))
 		{
 			continue;
 		}

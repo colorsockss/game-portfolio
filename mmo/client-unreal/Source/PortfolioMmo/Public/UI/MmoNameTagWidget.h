@@ -11,9 +11,9 @@ class UTextBlock;
 /**
  * 개체 머리 위의 이름표 하나(WBP_NameTag의 기반): 상태 이상의 글자 아이콘(기절, 감속), 이름(몬스터는 이름과 레벨), 그 아래 작은 체력 바
  * (플레이어와 몬스터만)와 진행 바(시전 등. 진행 중일 때만), 그 위의 말풍선(주변 채팅. 41).
- * UMmoNameTagLayer가 풀로 돌려쓴다. 길드 등은 그 항목이 더한다.
+ * UMmoNameTagLayer가 풀로 돌려쓴다. 길드 등은 그 항목이 더한다. 스스로 하는 일이 없어 위젯의 틱을 끈다(60. 200개면 틱만 0.3 ms).
  */
-UCLASS(Abstract)
+UCLASS(Abstract, meta = (DisableNativeTick))
 class UMmoNameTagWidget : public UUserWidget
 {
 	GENERATED_BODY()
