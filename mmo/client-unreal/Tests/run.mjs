@@ -1,6 +1,6 @@
 // 엔진 없는 코드(Source/PortfolioMmo의 ENGINE_FREE 폴더)와 생성된 C++을 clang으로 빌드해 Tests/의 테스트를 돌린다.
 // 그 폴더의 .cpp를 모두 컴파일하므로, UE 헤더를 include한 파일이 하나라도 있으면 여기서 실패한다(경계 검사).
-// 커밋된 라이브러리로 Mac(npm run test:mmo)과 GitHub의 arm64 Linux 러너(mmo-unreal-ci. 66)에서 돈다.
+// 커밋된 라이브러리로 Mac(npm run test:mmo-unreal)과 GitHub의 arm64 Linux 러너(mmo-unreal-ci. 66)에서 돈다.
 //
 //   node mmo/client-unreal/Tests/run.mjs [이름…]   이름을 주면 파일 이름에 그 글이 든 테스트만(예: Crafting)
 import { spawn, spawnSync } from "node:child_process";

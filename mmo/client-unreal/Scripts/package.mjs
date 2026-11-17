@@ -3,7 +3,7 @@
 // Mac은 실행 파일의 로컬 심볼을 지우고(약 100 MB) 다시 서명한다.
 //
 // live는 올릴 빌드라 먼저 멈출 것을 본다(mmo backlog 10): main 체크아웃인가(worktree가 아님), 작업 트리가 깨끗한가(다른 세션이 같은
-// 작업 트리를 씀), 엔진 없는 검사(npm run test:mmo), Live 서버의 프로토콜 버전과 데이터 해시가 이 빌드와 같은가.
+// 작업 트리를 씀), 생성 파일과 서버의 검사(npm run test:mmo), 엔진 없는 검사(npm run test:mmo-unreal), Live 서버의 프로토콜 버전과 데이터 해시가 이 빌드와 같은가.
 //
 //   node mmo/client-unreal/Scripts/package.mjs <mac|android> [--target local|live] [--config Shipping|Development]
 //
@@ -105,6 +105,7 @@ async function checkLive(server) {
     throw new Error(`Commit or remove these changes before a live build:\n${dirty}`);
   }
   run("npm", ["run", "test:mmo", "--prefix", repo]);
+  run("npm", ["run", "test:mmo-unreal", "--prefix", repo]);
   // 클라이언트가 싣는 값: 패킷 정의의 PROTOCOL_VERSION_CURRENT와 생성한 데이터의 해시(패키지가 shared/data/files를 싣는다).
   const version = Number(/PROTOCOL_VERSION_CURRENT = (\d+);/.exec(readFileSync(path.join(client, "../shared/contract/packets.proto"), "utf8"))[1]);
   const hash = readFileSync(path.join(client, "../shared/data/files/data.hash"), "utf8").trim();
