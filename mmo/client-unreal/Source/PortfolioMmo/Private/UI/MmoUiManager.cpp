@@ -696,6 +696,18 @@ void UMmoUiManager::OpenFromCommandLine()
 	{
 		Quantity(MmoText::Get(GetLocalPlayer(), TEXT("dev.previewQuantity")), 99, nullptr);
 	}
+	else if (Screen == TEXT("Map"))
+	{
+		ToggleMap();
+	}
+	else if (Screen == TEXT("Quest"))
+	{
+		ToggleQuest();
+	}
+	else if (Screen == TEXT("Party"))
+	{
+		TogglePartyWindow();
+	}
 	else if (Screen == TEXT("Notice"))
 	{
 		// 줄이 이어 와 쌓이고 3초 뒤에 사라지는 것을 보도록 1초마다 한 줄을 더한다.

@@ -100,6 +100,14 @@ namespace
 		FLinearColor ButtonPressed{ 0.012f, 0.01f, 0.009f, 0.95f };
 		FLinearColor ButtonDisabled{ 0.02f, 0.02f, 0.02f, 0.8f };
 		FLinearColor ButtonText{ 0.95f, 0.90f, 0.80f, 1.0f };
+		/** 주 버튼(구매, 확인 등)의 호박색 바탕과 밝은 금빛 선, 위험 버튼(버리기, 나가기)의 붉은 선, 절 제목과 설명 글의 색(101). */
+		FLinearColor PrimaryNormal{ 0.16f, 0.09f, 0.03f, 0.96f };
+		FLinearColor PrimaryHovered{ 0.24f, 0.14f, 0.05f, 0.96f };
+		FLinearColor PrimaryPressed{ 0.09f, 0.05f, 0.015f, 0.96f };
+		FLinearColor PrimaryLine{ 0.92f, 0.74f, 0.38f, 1.0f };
+		FLinearColor DangerLine{ 0.72f, 0.26f, 0.2f, 1.0f };
+		FLinearColor Label{ 0.86f, 0.72f, 0.46f, 1.0f };
+		FLinearColor TextDim{ 0.68f, 0.65f, 0.6f, 1.0f };
 		/** HUD의 원형 행동 버튼과 미니맵·칸의 바탕. */
 		FLinearColor RoundFill{ 0.02f, 0.02f, 0.025f, 0.6f };
 		FLinearColor SlotFill{ 0.012f, 0.012f, 0.014f, 1.0f };
@@ -541,6 +549,36 @@ namespace
 		return LineBox(Color, Style.Line, Style.ButtonRadius);
 	}
 
+	/** 주 버튼(101): 호박색 바탕에 밝은 금빛 선. 창에서 그 창의 일(구매, 제작, 확인 등)을 하는 버튼이다. */
+	UMmoButtonWidget* Primary(UMmoButtonWidget* Button)
+	{
+		Button->bOwnStyle = true;
+		FButtonStyle Look;
+		Look.SetNormal(LineBox(Style.PrimaryNormal, Style.PrimaryLine, Style.ButtonRadius));
+		Look.SetHovered(LineBox(Style.PrimaryHovered, Style.PrimaryLine, Style.ButtonRadius));
+		Look.SetPressed(LineBox(Style.PrimaryPressed, Style.PrimaryLine, Style.ButtonRadius));
+		Look.SetDisabled(LineBox(Style.ButtonDisabled, Style.LineDim, Style.ButtonRadius));
+		Look.SetNormalPadding(FMargin(0.0f));
+		Look.SetPressedPadding(FMargin(0.0f));
+		Button->OwnStyle = Look;
+		return Button;
+	}
+
+	/** 위험 버튼(101): 공용 버튼의 바탕에 붉은 선. 되돌릴 수 없는 일(버리기, 나가기, 강퇴, 게임 종료)이다. */
+	UMmoButtonWidget* Danger(UMmoButtonWidget* Button)
+	{
+		Button->bOwnStyle = true;
+		FButtonStyle Look;
+		Look.SetNormal(LineBox(Style.ButtonNormal, Style.DangerLine, Style.ButtonRadius));
+		Look.SetHovered(LineBox(Style.ButtonHovered, Style.DangerLine, Style.ButtonRadius));
+		Look.SetPressed(LineBox(Style.ButtonPressed, Style.DangerLine, Style.ButtonRadius));
+		Look.SetDisabled(LineBox(Style.ButtonDisabled, Style.LineDim, Style.ButtonRadius));
+		Look.SetNormalPadding(FMargin(0.0f));
+		Look.SetPressedPadding(FMargin(0.0f));
+		Button->OwnStyle = Look;
+		return Button;
+	}
+
 	/** 공용 버튼(WBP_Button). 다른 화면이 모두 이것을 놓으므로 맨 먼저 만든다. */
 	UClass* CreateButton()
 	{
@@ -594,7 +632,7 @@ namespace
 		UEditableTextBox* LoginIdBox = Builder.Add<UEditableTextBox>(TEXT("LoginIdBox"), true);
 		LoginIdBox->SetHintText(FText::FromString(TEXT("login.idHint")));
 		AddWithGap(*Column, LoginIdBox);
-		AddWithGap(*Column, Builder.Button(TEXT("LogInButton"), TEXT("login.logIn")));
+		AddWithGap(*Column, Primary(Builder.Button(TEXT("LogInButton"), TEXT("login.logIn"))));
 		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), Style.SmallSize + 2, true);
 		Status->SetAutoWrapText(true);
 		Column->AddChildToVerticalBox(Status);
@@ -1072,7 +1110,7 @@ namespace
 		UTextBlock* Penalty = Builder.Text(TEXT("PenaltyText"), FText::GetEmpty(), Style.SmallSize, true);
 		Penalty->SetAutoWrapText(true);
 		AddWithGap(*Column, Penalty, Style.Section);
-		Column->AddChildToVerticalBox(Builder.Button(TEXT("ReviveButton"), TEXT("death.revive")));
+		Column->AddChildToVerticalBox(Primary(Builder.Button(TEXT("ReviveButton"), TEXT("death.revive"))));
 		return Builder.Save();
 	}
 
@@ -1100,7 +1138,7 @@ namespace
 		AddWithGap(*Column, Builder.Button(TEXT("CharacterSelectButton"), TEXT("settings.characterSelect")));
 		AddWithGap(*Column, Builder.Button(TEXT("LogOutButton"), TEXT("settings.logOut")));
 		AddWithGap(*Column, Builder.Button(TEXT("GuideButton"), TEXT("settings.guide")));
-		AddWithGap(*Column, Builder.Button(TEXT("QuitButton"), TEXT("settings.quit")));
+		AddWithGap(*Column, Danger(Builder.Button(TEXT("QuitButton"), TEXT("settings.quit"))));
 		return Builder.Save();
 	}
 
@@ -1169,7 +1207,7 @@ namespace
 		UTextBlock* Detail = Builder.Text(TEXT("DetailText"), FText::GetEmpty(), Style.BodySize, true);
 		Detail->SetAutoWrapText(true);
 		AddWithGap(*Column, Detail, Style.Section);
-		AddWithGap(*Column, Builder.Text(TEXT("HintText"), FText::GetEmpty(), Style.SmallSize + 2, true));
+		AddWithGap(*Column, Builder.Text(TEXT("HintText"), FText::GetEmpty(), Style.SmallSize + 2, true, Style.TextDim));
 		AddWithGap(*Column, Builder.Add<UMmoQuickslotBarWidget>(QuickslotBarClass, TEXT("SlotBar"), true), Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
 			Builder.Button(TEXT("ClearButton"), TEXT("skills.clear")) }));
@@ -1192,7 +1230,7 @@ namespace
 		AddWithGap(*Column, TargetSize);
 		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("ResultText"), FText::GetEmpty(), Style.BodySize, true, Style.Positive), Style.Section);
-		AddWithGap(*Column, Builder.Button(TEXT("GoButton"), TEXT("enchant.go")));
+		AddWithGap(*Column, Primary(Builder.Button(TEXT("GoButton"), TEXT("enchant.go"))));
 		return Builder.Save();
 	}
 
@@ -1204,7 +1242,7 @@ namespace
 		Header(Builder, *Column, TEXT("shop.title"), true);
 		const auto Grid = [&](const TCHAR* Name, const TCHAR* TitleName, const TCHAR* TitleKey, int32 Rows)
 		{
-			AddWithGap(*Column, Builder.KeyText(TitleName, TitleKey, Style.SmallSize + 2));
+			AddWithGap(*Column, Builder.KeyText(TitleName, TitleKey, Style.SmallSize + 2, false, Style.Label));
 			UTileView* Tiles = Builder.Add<UTileView>(Name, true);
 			Tiles->SetEntryWidth(Style.ItemSlot);
 			Tiles->SetEntryHeight(Style.ItemSlot);
@@ -1219,7 +1257,7 @@ namespace
 		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("GoldText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("ActButton"), TEXT("shop.buy")) }));
+			Primary(Builder.Button(TEXT("ActButton"), TEXT("shop.buy"))) }));
 		return Builder.Save();
 	}
 
@@ -1236,8 +1274,8 @@ namespace
 		AddWithGap(*Column, Builder.Text(TEXT("ConditionText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("RewardText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("GoalButton"), TEXT("quest.goal")), Builder.Button(TEXT("AcceptButton"), TEXT("quest.accept")),
-			Builder.Button(TEXT("CompleteButton"), TEXT("quest.complete")) }));
+			Builder.Button(TEXT("GoalButton"), TEXT("quest.goal")), Primary(Builder.Button(TEXT("AcceptButton"), TEXT("quest.accept"))),
+			Primary(Builder.Button(TEXT("CompleteButton"), TEXT("quest.complete"))) }));
 		return Builder.Save();
 	}
 
@@ -1262,7 +1300,7 @@ namespace
 		}
 		AddWithGap(*Column, Builder.Text(TEXT("RoomText"), FText::GetEmpty(), Style.BodySize, true), Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("ActButton"), TEXT("craft.make")) }));
+			Primary(Builder.Button(TEXT("ActButton"), TEXT("craft.make"))) }));
 		return Builder.Save();
 	}
 
@@ -1300,13 +1338,13 @@ namespace
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::Storage, UMmoStorageWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 10 + Style.Gap * 6 + Style.PanelPadding * 2, Style.Dim);
 		Header(Builder, *Column, TEXT("storage.title"), true);
-		UTextBlock* Hint = Builder.KeyText(TEXT("HintText"), TEXT("storage.hint"), Style.SmallSize + 2);
+		UTextBlock* Hint = Builder.KeyText(TEXT("HintText"), TEXT("storage.hint"), Style.SmallSize + 2, false, Style.TextDim);
 		Hint->SetAutoWrapText(true);
 		AddWithGap(*Column, Hint, Style.Section);
 		const auto Side = [&](const TCHAR* Name, const TCHAR* TitleKey)
 		{
 			UVerticalBox* Box = Builder.Add<UVerticalBox>(*FString::Printf(TEXT("%sBox"), Name));
-			AddWithGap(*Box, Builder.KeyText(*FString::Printf(TEXT("%sTitle"), Name), TitleKey, Style.SmallSize + 2));
+			AddWithGap(*Box, Builder.KeyText(*FString::Printf(TEXT("%sTitle"), Name), TitleKey, Style.SmallSize + 2, false, Style.Label));
 			UTileView* Tiles = Builder.Add<UTileView>(Name, true);
 			Tiles->SetEntryWidth(Style.ItemSlot);
 			Tiles->SetEntryHeight(Style.ItemSlot);
@@ -1329,7 +1367,7 @@ namespace
 		UVerticalBox* Column = Builder.Window(Style.ItemSlot * 6 + Style.Gap * 2, Style.SideDim, true);
 		Header(Builder, *Column, TEXT("inventory.title"), true);
 		// 입은 장비 여섯 칸(34): 무기, 투구, 갑옷, 장갑, 신발, 장신구.
-		AddWithGap(*Column, Builder.KeyText(TEXT("EquipmentTitle"), TEXT("inventory.equipment"), Style.SmallSize + 2));
+		AddWithGap(*Column, Builder.KeyText(TEXT("EquipmentTitle"), TEXT("inventory.equipment"), Style.SmallSize + 2, false, Style.Label));
 		UTileView* EquipGrid = Builder.Add<UTileView>(TEXT("EquipGrid"), true);
 		EquipGrid->SetEntryWidth(Style.ItemSlot);
 		EquipGrid->SetEntryHeight(Style.ItemSlot);
@@ -1358,18 +1396,18 @@ namespace
 		FWidgetBlueprintBuilder Builder(MmoUiPaths::ItemDetail, UMmoItemDetailWidget::StaticClass());
 		UVerticalBox* Column = Builder.Window(Style.WindowNarrow, Style.Dim);
 		Header(Builder, *Column, Builder.Text(TEXT("NameText"), FText::GetEmpty(), Style.TitleSize, true), true);
-		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.SmallSize + 2, true));
+		AddWithGap(*Column, Builder.Text(TEXT("InfoText"), FText::GetEmpty(), Style.SmallSize + 2, true, Style.TextDim));
 		AddWithGap(*Column, Builder.Text(TEXT("StatsText"), FText::GetEmpty(), Style.BodySize, true));
 		AddWithGap(*Column, Builder.Text(TEXT("WarnText"), FText::GetEmpty(), Style.SmallSize + 2, true, Style.Negative));
 		UTextBlock* Desc = Builder.Text(TEXT("DescText"), FText::GetEmpty(), Style.BodySize, true);
 		Desc->SetAutoWrapText(true);
 		AddWithGap(*Column, Desc, Style.Section);
-		AddWithGap(*Column, Builder.Button(TEXT("EquipButton"), TEXT("detail.equip")));
+		AddWithGap(*Column, Primary(Builder.Button(TEXT("EquipButton"), TEXT("detail.equip"))));
 		AddWithGap(*Column, Builder.Button(TEXT("EnchantButton"), TEXT("detail.enchant")));
-		AddWithGap(*Column, Builder.Button(TEXT("UseButton"), TEXT("detail.use")));
-		AddWithGap(*Column, Builder.KeyText(TEXT("QuickslotTitle"), TEXT("detail.quickslot"), Style.SmallSize + 2, true));
+		AddWithGap(*Column, Primary(Builder.Button(TEXT("UseButton"), TEXT("detail.use"))));
+		AddWithGap(*Column, Builder.KeyText(TEXT("QuickslotTitle"), TEXT("detail.quickslot"), Style.SmallSize + 2, true, Style.Label));
 		AddWithGap(*Column, Builder.Add<UMmoQuickslotBarWidget>(QuickslotBarClass, TEXT("SlotBar"), true));
-		AddWithGap(*Column, Builder.Button(TEXT("DropButton"), TEXT("detail.drop")));
+		AddWithGap(*Column, Danger(Builder.Button(TEXT("DropButton"), TEXT("detail.drop"))));
 		return Builder.Save();
 	}
 
@@ -1402,7 +1440,7 @@ namespace
 		}
 
 		Column->AddChildToVerticalBox(Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("CreateButton"), TEXT("select.create")), Builder.Button(TEXT("StartButton"), TEXT("select.start")) }))
+			Builder.Button(TEXT("CreateButton"), TEXT("select.create")), Primary(Builder.Button(TEXT("StartButton"), TEXT("select.start"))) }))
 			->SetPadding(FMargin(0.0f, Style.Gap, 0.0f, Style.Gap));
 		Cast<UVerticalBoxSlot>(Column->GetChildAt(Column->GetChildrenCount() - 1)->Slot)->SetHorizontalAlignment(HAlign_Right);
 		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), Style.SmallSize + 2, true);
@@ -1424,7 +1462,7 @@ namespace
 		// 체험 캐릭터(94). 서버가 만들 수 있다고 알렸을 때만 보인다(기반 클래스가 정함).
 		AddWithGap(*Column, Builder.Button(TEXT("DemoButton"), TEXT("create.demo")), Style.Section);
 		UHorizontalBox* Buttons = Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("CancelButton"), TEXT("common.cancel")), Builder.Button(TEXT("CreateButton"), TEXT("create.create")) });
+			Builder.Button(TEXT("CancelButton"), TEXT("common.cancel")), Primary(Builder.Button(TEXT("CreateButton"), TEXT("create.create"))) });
 		Column->AddChildToVerticalBox(Buttons)->SetPadding(FMargin(0.0f, 0.0f, 0.0f, Style.Gap));
 		Cast<UVerticalBoxSlot>(Buttons->Slot)->SetHorizontalAlignment(HAlign_Right);
 		UTextBlock* Status = Builder.Text(TEXT("StatusText"), FText::GetEmpty(), Style.SmallSize + 2, true);
@@ -1441,7 +1479,7 @@ namespace
 		Message->SetAutoWrapText(true);
 		AddWithGap(*Column, Message, Style.Section);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("YesButton"), TEXT("common.yes")), Builder.Button(TEXT("NoButton"), TEXT("common.no")) }));
+			Primary(Builder.Button(TEXT("YesButton"), TEXT("common.yes"))), Builder.Button(TEXT("NoButton"), TEXT("common.no")) }));
 		return Builder.Save();
 	}
 
@@ -1461,11 +1499,11 @@ namespace
 			UHorizontalBoxSlot* NameSlot = Line->AddChildToHorizontalBox(Builder.Text(*FString::Printf(TEXT("Member%dText"), Index), FText::GetEmpty(), Style.BodySize));
 			NameSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 			NameSlot->SetVerticalAlignment(VAlign_Center);
-			Line->AddChildToHorizontalBox(Builder.Button(*FString::Printf(TEXT("Member%dKick"), Index), TEXT("party.kick")));
+			Line->AddChildToHorizontalBox(Danger(Builder.Button(*FString::Printf(TEXT("Member%dKick"), Index), TEXT("party.kick"))));
 			AddWithGap(*Column, Line);
 		}
 		Column->AddChildToVerticalBox(Builder.Add<USizeBox>(TEXT("Spacer")))->SetPadding(FMargin(0.0f, Style.Section * 0.5f, 0.0f, 0.0f));
-		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), { Builder.Button(TEXT("LeaveButton"), TEXT("party.leave")) }));
+		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), { Danger(Builder.Button(TEXT("LeaveButton"), TEXT("party.leave"))) }));
 		return Builder.Save();
 	}
 
@@ -1485,7 +1523,7 @@ namespace
 		AddWithGap(*Column, Steps, Style.Section);
 		Cast<UVerticalBoxSlot>(Steps->Slot)->SetHorizontalAlignment(HAlign_Center);
 		ButtonsAtEnd(*Column, Row(Builder, TEXT("Buttons"), {
-			Builder.Button(TEXT("CancelButton"), TEXT("common.cancel")), Builder.Button(TEXT("OkButton"), TEXT("common.ok")) }));
+			Builder.Button(TEXT("CancelButton"), TEXT("common.cancel")), Primary(Builder.Button(TEXT("OkButton"), TEXT("common.ok"))) }));
 		return Builder.Save();
 	}
 }
