@@ -148,7 +148,8 @@ namespace
 	/**
 	 * 애니메이션 블루프린트 ABP_<이름>(부모 UMmoAnimInstance)를 만든다. 이동 블렌드 스페이스(축 = 인스턴스의 Speed)를 둘 두어,
 	 * 하나는 그대로 하체가 되고 다른 하나는 상체 슬롯(UpperBody)을 지나 뼈마다 섞기(Abdomen부터 위)의 상체가 된 뒤, 온몸 슬롯(DefaultSlot) → 출력이다.
-	 * 공격·스킬·피격 동작은 UMmoAnimInstance::PlayAction이 상체 슬롯에, 죽음은 온몸 슬롯에 넣는다(걷는 중에 쳐도 다리는 걷는 동작을 이어 감).
+	 * 공격·스킬·피격 동작은 UMmoAnimInstance::PlayAction이 서 있으면 온몸 슬롯에, 움직이는 중이면 상체 슬롯에 넣고(걷는 중에 쳐도 다리는 걷는
+	 * 동작을 이어 감), 죽음은 온몸 슬롯에 넣는다.
 	 * 뼈대에 Abdomen이 없으면(몬스터, 동물) 섞지 않고 이동 → 상체 슬롯 → 온몸 슬롯 → 출력이라, 동작이 온몸에 든다.
 	 * 상체 슬롯은 뼈대의 슬롯 그룹에 등록하고 뼈대를 저장한다. 블렌드 스페이스를 만든 뒤에 부른다.
 	 */
@@ -260,8 +261,9 @@ namespace
 			FGraphNodeCreator<UAnimGraphNode_LayeredBoneBlend> BlendCreator(*Graph);
 			UAnimGraphNode_LayeredBoneBlend* Blend = BlendCreator.CreateNode();
 			Blend->Node.LayerSetup[0].BranchFilters.Add({ UMmoAnimInstance::UpperBodyBone, 0 });
-			// 상체의 회전을 메시 공간에서 섞어, 하체가 돌아도 상체 동작이 같은 쪽을 본다.
-			Blend->Node.bMeshSpaceRotationBlend = true;
+			// 상체의 회전은 부모(골반) 기준으로 섞어, 움직이며 튼 동작의 가슴이 엉덩이에 대해 동작에 든 만큼만 돈다. 메시 공간으로 섞으면 비스듬히 선
+			// 대기·달리기의 골반 위에 동작의 가슴 방향이 그대로 얹혀, 기사(UAL)의 베기에서 상체만 반 바퀴 가까이 비틀렸다(107).
+			Blend->Node.bMeshSpaceRotationBlend = false;
 			Blend->NodePosX = -300;
 			BlendCreator.Finalize();
 

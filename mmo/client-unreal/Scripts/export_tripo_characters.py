@@ -32,15 +32,19 @@ OUT = os.path.join(ART, "characters")
 TEXTURE_SIZE = 1024
 FPS = 30
 
-# 직업 → 역할마다 (팩, 동작, 앞에서 버릴 프레임 수) 조각들. 조각은 이어 붙인다(공격 = 베기 + 회복). ("hold", n)은 다음 조각의 첫 자세를 n프레임
-# 더 둔다. 칼끝이 가장 빨리 나가는 때를 데이터의 타격까지의 시간(Classes의 기사 공격 430 ms, Skills의 기사 공격 스킬 280 ms)에 맞춘 것이다:
-# Sword_Regular_A는 250 ms라 5프레임을 앞에 두어 417 ms, Sword_Regular_C는 650 ms라 준비 11프레임을 버려 283 ms.
+# 직업 → 역할마다 (팩, 동작, 앞에서 버릴 프레임 수) 조각들. 조각은 이어 붙인다(스킬 = 베기 + 회복). ("hold", n)은 다음 조각의 첫 자세를 n프레임
+# 더 둔다. 칼끝이 가장 빨리 나가는 때를 데이터의 타격까지의 시간(Classes의 기사 공격 430 ms, Skills의 기사 공격 스킬 280 ms)에 맞춘 것이다.
+# Sword_Attack은 383 ms, Sword_Regular_A는 250 ms라 1프레임씩 앞에 두어 417 ms와 283 ms.
+ATTACK_HOLD = 1
+SKILL_HOLD = 1
+# 공격은 대기(Sword_Idle)의 자세에서 시작해 그 자세로 끝나는 Sword_Attack이다. 연속기의 조각(Sword_Regular_A·B·C)은 몸이 120–170° 돌아
+# 기본 공격으로 되풀이하면 빙빙 돌아 보여서, 한 번 크게 도는 베기(Sword_Regular_A + 회복)는 스킬에 쓴다.
 CLASSES = {
     "knight": {
         "Idle": [("ual1", "Sword_Idle", 0)],
         "Run": [("ual1", "Jog_Fwd_Loop", 0)],
-        "Attack": [("hold", 5), ("ual2", "Sword_Regular_A", 0), ("ual2", "Sword_Regular_A_Rec", 0)],
-        "Skill": [("ual2", "Sword_Regular_C", 11)],
+        "Attack": [("hold", ATTACK_HOLD), ("ual1", "Sword_Attack", 0)],
+        "Skill": [("hold", SKILL_HOLD), ("ual2", "Sword_Regular_A", 0), ("ual2", "Sword_Regular_A_Rec", 0)],
         "Gather": [("ual2", "Farm_Harvest", 0)],
         "Hit": [("ual1", "Hit_Chest", 0)],
         "Death": [("ual1", "Death01", 0)],

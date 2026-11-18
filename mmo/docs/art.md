@@ -58,8 +58,8 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 |---|---|---|---|
 | 메시, 뼈대, 텍스처 | Tripo(삼각형 5,451) | 사용자가 Tripo에서 만듦 | 유료 플랜으로 만든 출력은 사용자의 것입니다([Tripo 도움말](https://www.tripo3d.ai/help/privacy-policy/how-to-use-tripo-models-commercially), 약관 5.2.2. 무료 플랜의 출력은 Tripo의 것이라 넣지 않음) |
 | 어라운드 시트 | Codex image_gen | 아래 "UI 그림"과 같음 | 아래 "UI 그림"과 같음 |
-| 동작 `Sword_Idle`(대기), `Jog_Fwd_Loop`(달리기), `Hit_Chest`(피격), `Death01`(죽음) | Universal Animation Library(Standard, `UAL1_Standard.fbx`의 제자리 판) | [itch.io: Universal Animation Library](https://quaternius.itch.io/universal-animation-library) (`Universal Animation Library[Standard].zip`, 15.9 MB) | CC0 1.0(팩의 License.txt) |
-| 동작 `Sword_Regular_A`·`_A_Rec`(공격), `Sword_Regular_C`(스킬), `Farm_Harvest`(채집) | Universal Animation Library 2(Standard, `UAL2_Standard.fbx`의 제자리 판) | [itch.io: Universal Animation Library 2](https://quaternius.itch.io/universal-animation-library-2) (`Universal Animation Library 2[Standard].zip`, 18.7 MB) | CC0 1.0(팩의 License.txt) |
+| 동작 `Sword_Idle`(대기), `Jog_Fwd_Loop`(달리기), `Sword_Attack`(공격), `Hit_Chest`(피격), `Death01`(죽음) | Universal Animation Library(Standard, `UAL1_Standard.fbx`의 제자리 판) | [itch.io: Universal Animation Library](https://quaternius.itch.io/universal-animation-library) (`Universal Animation Library[Standard].zip`, 15.9 MB) | CC0 1.0(팩의 License.txt) |
+| 동작 `Sword_Regular_A`·`_A_Rec`(스킬), `Farm_Harvest`(채집) | Universal Animation Library 2(Standard, `UAL2_Standard.fbx`의 제자리 판) | [itch.io: Universal Animation Library 2](https://quaternius.itch.io/universal-animation-library-2) (`Universal Animation Library 2[Standard].zip`, 18.7 MB) | CC0 1.0(팩의 License.txt) |
 | 검 | System G6의 `main_hand_sword_old`(아래 표) | 아래 표 | CC0 1.0 |
 
 - UAL의 zip은 `MMO_ART_SOURCE`의 `ual1/`, `ual2/`에 받은 대로 풉니다. 두 팩에 함께 받았지만 쓰지 않은 동작이 많습니다(마법사, NPC, 고블린·오크, 해골에 쓸 것은 `prompts.md`의 "동작").

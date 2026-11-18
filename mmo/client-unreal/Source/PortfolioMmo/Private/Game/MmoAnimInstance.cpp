@@ -11,7 +11,10 @@ void UMmoAnimInstance::PlayAction(UAnimSequenceBase* Sequence, bool bLoop)
 {
 	if (Sequence && !DeathMontage)
 	{
-		PlaySlotAnimationAsDynamicMontage(Sequence, UpperSlotName, 0.1f, 0.15f, 1.0f, bLoop ? MAX_int32 : 1);
+		bActionFullBody = Speed < StandingSpeed;
+		bActionLoop = bLoop;
+		ActionSequence = Sequence;
+		ActionMontage = PlaySlotAnimationAsDynamicMontage(Sequence, bActionFullBody ? SlotName : UpperSlotName, 0.1f, 0.15f, 1.0f, bLoop ? MAX_int32 : 1);
 	}
 }
 
@@ -20,7 +23,10 @@ void UMmoAnimInstance::StopAction()
 	if (!DeathMontage)
 	{
 		StopSlotAnimation(0.15f, UpperSlotName);
+		StopSlotAnimation(0.15f, SlotName);
 	}
+	ActionMontage = nullptr;
+	ActionSequence = nullptr;
 }
 
 namespace
@@ -57,5 +63,12 @@ void UMmoAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (DeathMontage && Montage_IsPlaying(DeathMontage) && Montage_GetPosition(DeathMontage) >= DeathMontage->GetPlayLength() - HoldBeforeEnd)
 	{
 		Montage_Pause(DeathMontage);
+	}
+	// 온몸으로 트는 동작 중에 움직이기 시작하면 다리가 미끄러지지 않게 같은 자리부터 상체 슬롯으로 넘긴다(한 그룹이라 온몸의 것은 섞여 꺼짐).
+	if (bActionFullBody && !DeathMontage && ActionMontage && ActionSequence && Speed >= StandingSpeed && Montage_IsPlaying(ActionMontage))
+	{
+		const float Position = Montage_GetPosition(ActionMontage);
+		bActionFullBody = false;
+		ActionMontage = PlaySlotAnimationAsDynamicMontage(ActionSequence, UpperSlotName, 0.15f, 0.15f, 1.0f, bActionLoop ? MAX_int32 : 1, -1.0f, Position);
 	}
 }
