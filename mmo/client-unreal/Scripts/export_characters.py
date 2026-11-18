@@ -1,5 +1,6 @@
-# 직업마다 캐릭터(몸, 갑옷, 무기, 동작)를 System G6의 Modular RPG Characters(CC0, OpenGameArt)에서 골라 mmo/art/characters/<직업>.fbx와
-# 그 텍스처로 내보낸다(backlog 98). 원본은 Blender 2.79의 .blend라 Blender로 열고, 내보낸 FBX는 두 엔진이 함께 읽도록 저장소에 둔다(LFS).
+# 마법사(몸, 옷, 무기, 동작)를 System G6의 Modular RPG Characters(CC0, OpenGameArt)에서 골라 mmo/art/characters/<직업>.fbx와
+# 그 텍스처로 내보낸다(backlog 98). 기사는 Tripo의 모델로 바꿔 export_tripo_characters.py가 낸다.
+# 원본은 Blender 2.79의 .blend라 Blender로 열고, 내보낸 FBX는 두 엔진이 함께 읽도록 저장소에 둔다(LFS).
 # Unreal은 그 뒤 import_characters.py가 가져온다. 원본은 저장소에 두지 않고 MMO_ART_SOURCE(기본 ~/.cache/mmo-art-sources)에 압축을 푼다.
 #   system-g6/unpacked/modular_rpg_characters/                         modular_rpg_characters.7z(본편: 몸, 갑옷, 동작, 텍스처)
 #   system-g6/ikrig/modular_rpg_characters_IK_rig_for_animating/        modular_rpg_characters_ik_rig_for_animating.7z(무기)
@@ -28,18 +29,6 @@ BONES = {"torso": "Abdomen", "wep_pos_R": "Weapon_R"}
 
 # 직업 → 조각, 무기(IK 리그 파일의 오브젝트, 머티리얼 이름), 역할 → 원본의 동작(앞의 human_male_를 뺀 이름).
 CLASSES = {
-    "knight": {
-        "parts": ["head_default", "heavy_armor", "heavy_boots", "heavy_gloves", "heavy_helmet"],
-        "weapon": ("main_hand_sword_old", "Weapon_Sword"),
-        "actions": {
-            "Idle": "idle_combat_main_hand_melee",
-            "Run": "run",
-            "Attack": "cast_main_hand_melee",
-            "Skill": "cast_main_hand_melee_2",
-            "Gather": "gathering",
-            "Death": "death",
-        },
-    },
     "mage": {
         "parts": ["head_default", "hair_2", "light_armor", "light_boots", "light_gloves", "light_helmet"],
         "weapon": ("staff_old", "Weapon_Staff"),

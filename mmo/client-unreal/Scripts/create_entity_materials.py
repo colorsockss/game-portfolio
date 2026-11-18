@@ -12,6 +12,7 @@ materials = unreal.MaterialEditingLibrary
 tools = unreal.AssetToolsHelpers.get_asset_tools()
 
 CHARACTER = "/Game/Characters/M_Character"
+CHARACTER_PBR = "/Game/Characters/M_CharacterPBR"
 # 텍스처 없이 머티리얼 색만 쓰는 팩(91)의 기본 머티리얼. FBX를 가져올 때 원본의 머티리얼마다 인스턴스를 만들어 Color에 원본의 색을 넣는다.
 ENTITY_COLOR = "/Game/Characters/M_EntityColor"
 ENTITY_PLACEHOLDER = "/Game/Materials/M_EntityPlaceholder"
@@ -94,6 +95,35 @@ materials.connect_material_property(constant(character, 0.8, -300, 250), "", unr
 fade(character, CHARACTER_FADE_INDEX)
 save(character)
 
+# PBR 텍스처 셋(색, 노멀, ORM: R 가림, G 거칠기, B 금속)을 받는 캐릭터 머티리얼. Tripo로 만든 직업이 쓴다(import_characters.py).
+# 기본 텍스처는 샘플러 종류에 맞는 엔진의 것(노멀 맵, 선형)이라야 컴파일된다.
+character_pbr = fresh(CHARACTER_PBR)
+character_pbr.set_editor_property("used_with_skeletal_mesh", True)
+pbr_color = materials.create_material_expression(character_pbr, unreal.MaterialExpressionTextureSampleParameter2D, -700, -200)
+pbr_color.set_editor_property("parameter_name", "BaseColor")
+pbr_color.set_editor_property("texture", unreal.load_asset("/Engine/EngineResources/DefaultTexture.DefaultTexture"))
+pbr_tint = materials.create_material_expression(character_pbr, unreal.MaterialExpressionVectorParameter, -700, 50)
+pbr_tint.set_editor_property("parameter_name", "Tint")
+pbr_tint.set_editor_property("default_value", unreal.LinearColor(1.0, 1.0, 1.0, 1.0))
+pbr_tinted = materials.create_material_expression(character_pbr, unreal.MaterialExpressionMultiply, -400, -200)
+materials.connect_material_expressions(pbr_color, "RGB", pbr_tinted, "A")
+materials.connect_material_expressions(pbr_tint, "", pbr_tinted, "B")
+materials.connect_material_property(pbr_tinted, "", unreal.MaterialProperty.MP_BASE_COLOR)
+pbr_normal = materials.create_material_expression(character_pbr, unreal.MaterialExpressionTextureSampleParameter2D, -700, 250)
+pbr_normal.set_editor_property("parameter_name", "Normal")
+pbr_normal.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+pbr_normal.set_editor_property("texture", unreal.load_asset("/Engine/EngineMaterials/DefaultNormal.DefaultNormal"))
+materials.connect_material_property(pbr_normal, "RGB", unreal.MaterialProperty.MP_NORMAL)
+pbr_orm = materials.create_material_expression(character_pbr, unreal.MaterialExpressionTextureSampleParameter2D, -700, 550)
+pbr_orm.set_editor_property("parameter_name", "ORM")
+pbr_orm.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_LINEAR_COLOR)
+pbr_orm.set_editor_property("texture", unreal.load_asset("/Engine/EngineMaterials/T_Default_Material_Grid_M.T_Default_Material_Grid_M"))
+materials.connect_material_property(pbr_orm, "R", unreal.MaterialProperty.MP_AMBIENT_OCCLUSION)
+materials.connect_material_property(pbr_orm, "G", unreal.MaterialProperty.MP_ROUGHNESS)
+materials.connect_material_property(pbr_orm, "B", unreal.MaterialProperty.MP_METALLIC)
+fade(character_pbr, CHARACTER_FADE_INDEX)
+save(character_pbr)
+
 # 머티리얼 색만 쓰는 팩의 머티리얼: 색은 인스턴스의 Color(가져오기가 원본의 색을 넣음)이고, 나타나고 사라지는 것은 캐릭터와 같은 칸이다.
 entity_color = fresh(ENTITY_COLOR)
 entity_color.set_editor_property("used_with_skeletal_mesh", True)
@@ -126,4 +156,4 @@ materials.connect_material_property(color, "", unreal.MaterialProperty.MP_BASE_C
 materials.connect_material_property(constant(placeholder, 0.85, -300, 250), "", unreal.MaterialProperty.MP_ROUGHNESS)
 fade(placeholder, PLACEHOLDER_FADE_INDEX)
 save(placeholder)
-unreal.log(f"[materials] {CHARACTER}, {ENTITY_COLOR}, {ENTITY_PLACEHOLDER} and {ENTITY_PROP} are masked with the fade in custom primitive data {CHARACTER_FADE_INDEX} and {PLACEHOLDER_FADE_INDEX}")
+unreal.log(f"[materials] {CHARACTER}, {CHARACTER_PBR}, {ENTITY_COLOR}, {ENTITY_PLACEHOLDER} and {ENTITY_PROP} are masked with the fade in custom primitive data {CHARACTER_FADE_INDEX} and {PLACEHOLDER_FADE_INDEX}")

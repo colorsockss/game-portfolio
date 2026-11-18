@@ -8,16 +8,16 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 
 | 무엇 | 수 | 지금 | 넣을 것 |
 |---|---|---|---|
-| 캐릭터 메시 | 2(기사, 마법사) | 있음(아래 "캐릭터") | - |
+| 캐릭터 메시 | 2(기사, 마법사) | 있음(아래 "캐릭터". 기사는 Tripo로 만든 것, 107) | 마법사도 Tripo로(107의 흐름) |
 | 몬스터 메시 | 9종과 필드 보스 1 | 있음(아래 "몬스터·소환수·NPC". 2026-11-17) | - |
 | NPC 메시 | 5종(상점, 창고, 제작, 퀘스트, 경비병) | 있음(아래 "몬스터·소환수·NPC") | - |
 | 채집물 메시 | 6종(나무·광석·약초 × 2단계) | 있음(아래 "맵의 것과 움직이지 않는 개체") | - |
-| 무기 메시 | 2(검, 지팡이) | System G6의 검과 지팡이를 캐릭터의 오른손 뼈에 구움(98. 무기를 들면 보이고 들지 않으면 감춤. 원본 텍스처가 없어 단색) | 종마다 다른 메시는 넣지 않음: Medieval Weapons Pack(받아 둠)에 검은 있지만 지팡이가 없음 |
+| 무기 메시 | 2(검, 지팡이) | System G6의 검과 지팡이를 캐릭터의 오른손 뼈에 구움(98. 무기를 들면 보이고 들지 않으면 감춤. 원본 텍스처가 없어 단색. 107의 기사도 G6의 검을 새 무기 뼈에 구움) | 종마다 다른 메시는 넣지 않음: Medieval Weapons Pack(받아 둠)에 검은 있지만 지팡이가 없음 |
 | 바닥 아이템 메시 | 1 | 있음(가방) | - |
 | 환경 메시 | 9종과 마을 소품 12종(102) | 있음(아래 "맵의 것과 움직이지 않는 개체". 102에서 같은 종류의 변형과 흩는 풀·덤불을 더함) | - |
 | 땅 텍스처 | 5(풀, 숲 바닥, 흙, 돌길, 그을린 땅)와 노멀 2, 노이즈 1 | 있음(아래 "땅 텍스처". Codex image_gen, 103) | - |
-| 캐릭터 애니메이션 | 대기, 달리기, 공격, 피격, 죽음, 시전 | 있음(System G6. 피격 동작은 팩에 없음) | - |
-| 채집·제작·귀환 동작 | 3 | 채집과 제작은 System G6의 `gathering`(98). 귀환은 없음 | - |
+| 캐릭터 애니메이션 | 대기, 달리기, 공격, 피격, 죽음, 시전 | 기사는 Universal Animation Library 1·2(107. 피격 있음), 마법사는 System G6(피격 동작은 팩에 없음) | - |
+| 채집·제작·귀환 동작 | 3 | 채집과 제작은 기사가 UAL의 `Farm_Harvest`(107), 마법사가 System G6의 `gathering`(98). 귀환은 없음 | - |
 | 몬스터 애니메이션 | 종마다 대기, 걷기, 공격, 피격, 죽음 | 있음(슬라임과 해골은 피격 동작이 없음) | - |
 | 소환수 메시와 애니메이션(95) | 1(정령): 대기, 걷기, 공격, 피격, 죽음과 나타나고 사라지는 이펙트 | 메시와 동작은 있음(Ghost). 나타나고 사라지는 이펙트는 아래 "이펙트와 소리" | 이펙트는 정하지 않음 |
 | 펫 메시와 애니메이션(96) | 2(고양이, 부엉이): 걷기, 줍기 | 있음(아래 "몬스터·소환수·NPC"). 줍기 동작은 없음 | - |
@@ -50,16 +50,33 @@ MMORPG(`mmo/`)에 들어간 그림과 그 출처입니다. 받은 팩의 원본�
 
 ## 캐릭터
 
+### 기사(107)
+
+2026-11-18(backlog 107). 화풍을 맞추려고 기사를 Tripo로 다시 만들었습니다. Codex image_gen으로 어라운드 시트(앞, 왼쪽, 뒤, 오른쪽)를 그려 네 장으로 자르고, Tripo의 Image to 3D(multi-view, Smart Mesh, PBR 텍스처)와 자동 리깅(Skeleton Preset `UE5 Mannequin`, 뼈 80개)으로 만들었습니다. 프롬프트와 차례는 `mmo/art/models/prompts.md`, 시트와 네 장은 `mmo/art/models/source/`, Tripo에서 받은 FBX와 텍스처(색·노멀 1024, ORM 4096)는 `mmo/art/models/knight/`입니다. 동작은 Quaternius의 Universal Animation Library 1·2 무료판에서 옮기고, `client-unreal/Scripts/export_tripo_characters.py`(Blender)가 `mmo/art/characters/knight.fbx`와 텍스처(`knight_basecolor`, `knight_normal`, `knight_orm`)로 냅니다.
+
+| 무엇 | 원본 | 받는 곳 | 라이선스 |
+|---|---|---|---|
+| 메시, 뼈대, 텍스처 | Tripo(삼각형 5,451) | 사용자가 Tripo에서 만듦 | 유료 플랜으로 만든 출력은 사용자의 것입니다([Tripo 도움말](https://www.tripo3d.ai/help/privacy-policy/how-to-use-tripo-models-commercially), 약관 5.2.2. 무료 플랜의 출력은 Tripo의 것이라 넣지 않음) |
+| 어라운드 시트 | Codex image_gen | 아래 "UI 그림"과 같음 | 아래 "UI 그림"과 같음 |
+| 동작 `Sword_Idle`(대기), `Jog_Fwd_Loop`(달리기), `Hit_Chest`(피격), `Death01`(죽음) | Universal Animation Library(Standard, `UAL1_Standard.fbx`의 제자리 판) | [itch.io: Universal Animation Library](https://quaternius.itch.io/universal-animation-library) (`Universal Animation Library[Standard].zip`, 15.9 MB) | CC0 1.0(팩의 License.txt) |
+| 동작 `Sword_Regular_A`·`_A_Rec`(공격), `Sword_Regular_C`(스킬), `Farm_Harvest`(채집) | Universal Animation Library 2(Standard, `UAL2_Standard.fbx`의 제자리 판) | [itch.io: Universal Animation Library 2](https://quaternius.itch.io/universal-animation-library-2) (`Universal Animation Library 2[Standard].zip`, 18.7 MB) | CC0 1.0(팩의 License.txt) |
+| 검 | System G6의 `main_hand_sword_old`(아래 표) | 아래 표 | CC0 1.0 |
+
+- UAL의 zip은 `MMO_ART_SOURCE`의 `ual1/`, `ual2/`에 받은 대로 풉니다. 두 팩에 함께 받았지만 쓰지 않은 동작이 많습니다(마법사, NPC, 고블린·오크, 해골에 쓸 것은 `prompts.md`의 "동작").
+- 무기는 아직 Tripo로 만들지 않아 G6의 검을 씁니다(단색 회색).
+
+### 마법사(98)
+
 2026-11-17(backlog 98). 사람 체형(약 7.4등신, 2천~3천 삼각형)의 System G6 팩입니다. Quaternius의 Modular Character Outfits는 판금 기사와 마법사 의상이 유료판에만 있어 쓰지 않았습니다(사용자가 Quaternius 밖에서 찾기로 정함). 원본은 Blender 2.79의 .blend라 Blender 5.3.0(`blender-5.3.0-macos-arm64.dmg`, 360 MB, download.blender.org, GPL. 배포처의 SHA-256을 확인하고 `~/.cache/blender/`에 둠)으로 열어 `client-unreal/Scripts/export_characters.py`가 `mmo/art/characters/`의 FBX와 텍스처로 냅니다(저장소에 둠). 원본 압축 파일은 `MMO_ART_SOURCE`의 `system-g6/`에 풉니다.
 
 | 직업 | 원본(System G6의 `human_male.blend`) | 받는 곳 | 라이선스 | 가져오기 |
 |---|---|---|---|---|
-| 기사 | 조각 `head_default`, `heavy_armor`, `heavy_boots`, `heavy_gloves`, `heavy_helmet`과 무기 `main_hand_sword_old`. 동작 `idle_combat_main_hand_melee`(대기), `run`, `cast_main_hand_melee`(공격), `cast_main_hand_melee_2`(스킬), `gathering`, `death` | [OpenGameArt: Modular RPG Characters](https://opengameart.org/content/modular-rpg-characters) (`modular_rpg_characters.7z`, 16.6 MB. 무기는 `modular_rpg_characters_ik_rig_for_animating.7z`, 1.2 MB) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) | `client-unreal/Scripts/export_characters.py` → `import_characters.py` |
-| 마법사 | 조각 `head_default`, `hair_2`, `light_armor`, `light_boots`, `light_gloves`, `light_helmet`(챙 넓은 모자)과 무기 `staff_old`. 동작 `idle_combat_two_handed_staff`(대기), `run`, `cast_two_handed_staff`(공격), `cast_unarmed_magic`(스킬), `channel_two_handed_staff`(시전), `gathering`, `death` | 같음 | CC0 1.0 | 같음 |
+| 마법사 | 조각 `head_default`, `hair_2`, `light_armor`, `light_boots`, `light_gloves`, `light_helmet`(챙 넓은 모자)과 무기 `staff_old`. 동작 `idle_combat_two_handed_staff`(대기), `run`, `cast_two_handed_staff`(공격), `cast_unarmed_magic`(스킬), `channel_two_handed_staff`(시전), `gathering`, `death` | [OpenGameArt: Modular RPG Characters](https://opengameart.org/content/modular-rpg-characters) (`modular_rpg_characters.7z`, 16.6 MB. 무기는 `modular_rpg_characters_ik_rig_for_animating.7z`, 1.2 MB) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) | `client-unreal/Scripts/export_characters.py` → `import_characters.py` |
+| 기사의 검(107) | IK 리그 파일의 `main_hand_sword_old` | 같음 | CC0 1.0 | `export_tripo_characters.py` |
 
 - 갑옷 조각은 뼈의 버텍스 그룹만 있고 아마추어에 붙어 있지 않아 내보낼 때 붙입니다. 무기는 IK 리그 파일에서 손의 뼈(`wep_pos_R`)에 붙은 자리 그대로 가져와 그 뼈에 다 묶습니다(구운 무기). 무기의 텍스처는 작가의 다른 폴더를 가리켜 팩에 없어 단색(검 회색, 지팡이 갈색)입니다.
 - 동작은 24 fps의 10–20프레임이고 피격 동작이 없습니다. 같은 팩의 여자 캐릭터(`human_female.blend`), 레인저(`medium_*`), 상인·대장장이·여관 주인 옷(`light_armor_2–4`), 활·석궁·방패·완드 동작은 아직 쓰지 않습니다.
-- 앞의 캐릭터(2등신, Quaternius "RPG Characters - Nov 2020"의 `Warrior`와 `Wizard`)는 98에서 지웠습니다.
+- 앞의 캐릭터(2등신, Quaternius "RPG Characters - Nov 2020"의 `Warrior`와 `Wizard`)는 98에서 지웠습니다. 98의 기사(조각 `heavy_*`와 그 텍스처 넷)는 107에서 지웠습니다.
 
 ## 몬스터·소환수·NPC
 

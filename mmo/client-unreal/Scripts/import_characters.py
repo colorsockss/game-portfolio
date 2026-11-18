@@ -1,5 +1,6 @@
 # 직업마다 캐릭터(스켈레탈 메시, 스켈레톤, 애니메이션, 텍스처, 머티리얼)를 mmo/art/characters/<직업>.fbx에서 가져온다(backlog 98).
-# FBX와 텍스처는 export_characters.py가 System G6의 Modular RPG Characters(CC0)에서 Blender로 내보내 저장소에 둔 것이다(docs/art.md).
+# FBX와 텍스처는 Blender로 내보내 저장소에 둔 것이다(docs/art.md): 기사는 export_tripo_characters.py(Tripo의 모델과 UAL의 동작, PBR 텍스처),
+# 마법사는 export_characters.py(System G6의 Modular RPG Characters, 색 텍스처).
 # 다시 돌리면 직업의 폴더를 지우고 새로 만든다. 캐릭터 머티리얼(M_Character, M_EntityColor)은 먼저 create_entity_materials.py로 만든다.
 #
 #   "/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor-Cmd" "$PWD/mmo/client-unreal/PortfolioMmo.uproject" \
@@ -11,6 +12,7 @@ import unreal
 
 ART = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../art/characters"))
 CHARACTER = "/Game/Characters/M_Character"
+CHARACTER_PBR = "/Game/Characters/M_CharacterPBR"
 ENTITY_COLOR = "/Game/Characters/M_EntityColor"
 
 # 직업의 폴더 이름 → FBX 이름. 메시는 FBX의 이름, 스켈레톤은 <FBX>_Skeleton이 된다.
@@ -22,7 +24,7 @@ assets = unreal.EditorAssetLibrary
 materials = unreal.MaterialEditingLibrary
 tools = unreal.AssetToolsHelpers.get_asset_tools()
 
-for path in (CHARACTER, ENTITY_COLOR):
+for path in (CHARACTER, CHARACTER_PBR, ENTITY_COLOR):
     if unreal.load_asset(path) is None:
         raise RuntimeError(f"{path} is missing. Run create_entity_materials.py first.")
 
@@ -59,12 +61,32 @@ def instance(name, folder, parent):
     return created
 
 
+def import_texture(path, folder, srgb=True, compression=None, flip_green=False):
+    texture = unreal.load_asset(import_file(path, f"{folder}/Textures")[0])
+    texture.set_editor_property("srgb", srgb)
+    if compression is not None:
+        texture.set_editor_property("compression_settings", compression)
+    texture.set_editor_property("flip_green_channel", flip_green)
+    save(texture)
+    return texture
+
+
 def slot_material(class_name, folder, slot_name):
-    """칸 이름이 텍스처의 이름이면 그 텍스처를 끼운 M_Character의 인스턴스, 무기면 색을 준 M_EntityColor의 인스턴스."""
+    """칸 이름이 텍스처의 이름이면 그 텍스처를 끼운 M_Character의 인스턴스, PBR 셋(<칸>_basecolor, _normal, _orm)이 있으면 M_CharacterPBR의
+    인스턴스, 무기면 색을 준 M_EntityColor의 인스턴스."""
+    pbr = os.path.join(ART, "textures", f"{slot_name}_basecolor.jpg")
     if slot_name in WEAPON_COLORS:
         # 게임이 무기 칸을 머티리얼 이름(Weapon)으로 찾는다(MmoCharacterLook::ShowWeapon).
         created = instance(f"MI_{class_name}_Weapon", folder, ENTITY_COLOR)
         materials.set_material_instance_vector_parameter_value(created, "Color", unreal.LinearColor(*WEAPON_COLORS[slot_name], 1.0))
+    elif os.path.isfile(pbr):
+        created = instance(f"MI_{slot_name}", folder, CHARACTER_PBR)
+        materials.set_material_instance_texture_parameter_value(created, "BaseColor", import_texture(pbr, folder))
+        # Tripo의 노멀 맵은 OpenGL 방식(초록 = 위)이라 Unreal(DirectX 방식)에 맞게 초록을 뒤집는다.
+        normal = import_texture(os.path.join(ART, "textures", f"{slot_name}_normal.jpg"), folder, False, unreal.TextureCompressionSettings.TC_NORMALMAP, True)
+        materials.set_material_instance_texture_parameter_value(created, "Normal", normal)
+        orm = import_texture(os.path.join(ART, "textures", f"{slot_name}_orm.png"), folder, False, unreal.TextureCompressionSettings.TC_DEFAULT)
+        materials.set_material_instance_texture_parameter_value(created, "ORM", orm)
     else:
         texture = import_file(os.path.join(ART, "textures", f"{slot_name}.png"), f"{folder}/Textures")[0]
         created = instance(f"MI_{slot_name}", folder, CHARACTER)
@@ -87,7 +109,7 @@ for class_name, source_name in CLASSES.items():
     options.set_editor_property("import_textures", False)
     options.set_editor_property("create_physics_asset", False)
     options.set_editor_property("mesh_type_to_import", unreal.FBXImportType.FBXIT_SKELETAL_MESH)
-    # FBX는 원본의 1 단위(키 4.2)를 1 cm로 담아(export_characters.py) 100배로 가져온다. 메시와 동작에 같은 배수를 준다.
+    # FBX는 Blender의 1 단위를 1 cm로 담아(마법사는 키 4.2, 기사는 키 1) 100배로 가져온다. 메시와 동작에 같은 배수를 주고, 게임의 키는 표현 표의 크기 배수가 맞춘다.
     options.get_editor_property("skeletal_mesh_import_data").set_editor_property("import_uniform_scale", 100.0)
     options.get_editor_property("anim_sequence_import_data").set_editor_property("import_uniform_scale", 100.0)
     import_file(os.path.join(ART, f"{source_name}.fbx"), folder, options)

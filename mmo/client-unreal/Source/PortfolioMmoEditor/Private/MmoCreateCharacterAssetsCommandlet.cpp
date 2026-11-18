@@ -397,15 +397,16 @@ int32 UMmoCreateCharacterAssetsCommandlet::Main(const FString& Params)
 	const int32 Player = UMmoEntityVisuals::PlayerKind();
 	const int32 Monster = UMmoEntityVisuals::MonsterKind();
 	// 몬스터의 키는 Monsters의 id, NPC는 Npcs의 id(경비병 넷이 3–6), 소환수는 몬스터 템플릿의 id다. 이동 속도는 데이터의 speed(m/s)다.
-	// 플레이어는 import_characters.py가, 나머지는 import_creatures.py가 가져온 폴더다(원본은 docs/art.md). 플레이어의 크기는 바인드 포즈의
-	// 발바닥부터 머리 끝까지 421 단위를 1.8 m로 줄인 값이다(98. 투구와 모자가 머리 위로 나와 높이로 정하지 않음). 피격 동작은 팩에 없다.
+	// 플레이어는 import_characters.py가, 나머지는 import_creatures.py가 가져온 폴더다(원본은 docs/art.md). 기사는 Tripo의 모델(투구까지 키 1)에
+	// UAL의 동작을 옮긴 것이라 1.8배이고(export_tripo_characters.py) 피격 동작이 있다. 마법사(System G6)는 바인드 포즈의 발바닥부터 머리 끝까지
+	// 421 단위를 1.8 m로 줄인 값이다(98. 모자가 머리 위로 나와 높이로 정하지 않음). 피격 동작은 그 팩에 없다.
 	const auto People = [](const TCHAR* Name, const TCHAR* Source, TArray<int32> Keys, float MoveSpeed, const TCHAR* Attack = TEXT("Punch"))
 	{
 		return FCreature{ nullptr, Name, Source, UMmoEntityVisuals::NpcKind(), MoveTemp(Keys), 1.8f, 1.0f, MoveSpeed, TEXT("Idle"), TEXT("Walk"), Attack, TEXT("RecieveHit"), TEXT("Defeat") };
 	};
 	TArray<FCreature> Creatures = {
-		{ TEXT("/Game/Characters/Knight"), TEXT("Knight"), TEXT("knight"), Player, { UMmoEntityVisuals::KnightKey() }, 0.0f, 180.0f / 421.0f, RunSpeed,
-			TEXT("Idle"), TEXT("Run"), TEXT("Attack"), nullptr, TEXT("Death"), TEXT("Skill"), nullptr, TEXT("Gather") },
+		{ TEXT("/Game/Characters/Knight"), TEXT("Knight"), TEXT("knight"), Player, { UMmoEntityVisuals::KnightKey() }, 0.0f, 1.8f, RunSpeed,
+			TEXT("Idle"), TEXT("Run"), TEXT("Attack"), TEXT("Hit"), TEXT("Death"), TEXT("Skill"), nullptr, TEXT("Gather") },
 		{ TEXT("/Game/Characters/Mage"), TEXT("Mage"), TEXT("mage"), Player, { UMmoEntityVisuals::MageKey() }, 0.0f, 180.0f / 421.0f, RunSpeed,
 			TEXT("Idle"), TEXT("Run"), TEXT("Attack"), nullptr, TEXT("Death"), TEXT("Skill"), TEXT("Cast"), TEXT("Gather") },
 		{ nullptr, TEXT("Slime"), TEXT("Slime"), Monster, { 1 }, 0.7f, 1.0f, 250.0f, TEXT("Slime_Idle"), TEXT("Slime_Walk"), TEXT("Slime_Attack"), nullptr, TEXT("Slime_Death") },
